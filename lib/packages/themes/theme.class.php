@@ -276,7 +276,10 @@ class theme
 
         foreach($files_or as $f)
         {
-            // metadata
+            // error protection
+            if(empty($f->id))
+                continue;
+
             $files[$f->id] = new file();
             $files[$f->id]->load_from_resultset(array($f));
             $files[$f->id]->id = 0;
@@ -316,6 +319,7 @@ class theme
         }
 
 
+
         // items
         $items = array();
         $items_or = unserialize(file_get_contents($ptf.'/items.serialized'));
@@ -330,6 +334,19 @@ class theme
                 $item->category = $structure[$item->category]->id;
 
             $item->dictionary = theme::import_sample_parse_dictionary($item->dictionary, $files);
+
+            // gallery images (correct FILE ids)
+            if(!empty($item->galleries))
+            {
+                $ngallery = array();
+                foreach($item->galleries as $gid => $gallery)
+                {
+                    foreach($gallery as $fid => $caption)
+                        $ngallery[$files[$fid]->id] = $caption;
+
+                    $item->galleries[$gid] = $ngallery;
+                }
+            }
 
             $item->insert();
 
@@ -402,7 +419,6 @@ class theme
             $comment->ip = '';
             $comment->insert();
         }
-
 
         // properties
         // array ('structure' => ..., 'item' => ..., 'block' => ...)
@@ -492,7 +508,7 @@ class theme
 
         for($c=0; $c < count($a_comments); $c++)
         {
-            $tmp = new structure();
+            $tmp = new comment();
             $tmp->load($a_comments[$c]);
             $comments[$tmp->id] = $tmp;
         }
@@ -592,7 +608,10 @@ class theme
         if(is_array($dictionary))
         {
             foreach($dictionary as $language => $dictionary_data)
-                list($dictionary, $files) = theme::export_sample_parse_array($dictionary_data, $files);
+            {
+                list($dictionary_data, $files) = theme::export_sample_parse_array($dictionary_data, $files);
+                $dictionary[$language] = $dictionary_data;
+            }
         }
 
         return array($dictionary, $files);
@@ -627,9 +646,9 @@ class theme
                 }
 
                 // example route substitutions
-                // http://192.168.1.30/navigate/navigate_download.php --> NAVIGATE_DOWNLOAD
-                // http://192.168.1.30/ocean [ $website->absolute_path() ] --> WEBSITE_ABSOLUTE_PATH
-                // http://192.168.1.30/navigate/themes/ocean [ NAVIGATE_PARENT.NAVIGATE_FOLDER.'/themes/'.$website->theme ] --> THEME_ABSOLUTE_PATH
+                // http://192.168.x.x/navigate/navigate_download.php --> NAVIGATE_DOWNLOAD
+                // http://192.168.x.x/ocean [ $website->absolute_path() ] --> WEBSITE_ABSOLUTE_PATH
+                // http://192.168.x.x/navigate/themes/ocean [ NAVIGATE_PARENT.NAVIGATE_FOLDER.'/themes/'.$website->theme ] --> THEME_ABSOLUTE_PATH
 
                 $content = str_replace(NAVIGATE_DOWNLOAD, 'url://{{NAVIGATE_DOWNLOAD}}', $content);
                 $content = str_replace($website->absolute_path(), 'url://{{WEBSITE_ABSOLUTE_PATH}}', $content);
@@ -647,7 +666,7 @@ class theme
         if(is_array($dictionary))
         {
             foreach($dictionary as $language => $foo)
-                theme::import_sample_parse_array($dictionary[$language], $files);
+                $dictionary[$language] = theme::import_sample_parse_array($dictionary[$language], $files);
         }
 
         return $dictionary;

@@ -259,7 +259,8 @@ function nvweb_route_parse($route="")
 		default:
 			$DB->query('SELECT * FROM nv_paths 
 						 WHERE path = '.protect('/'.$route).' 
-						   AND website = '.$website->id);
+						   AND website = '.$website->id.'
+						 ORDER BY id DESC');
 			$rs = $DB->result();
 
 			if(empty($rs))
