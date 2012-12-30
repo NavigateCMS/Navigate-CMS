@@ -1,0 +1,26 @@
+[
+    {
+        "name": "websites.edit",
+        "scope": "functions",
+        "function": "websites",
+        "description": "Allow creating and editing websites",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "websites.delete",
+        "scope": "functions",
+        "function": "websites",
+        "description": "Allow deleting websites",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "websites.allowed",
+        "scope": "functions",
+        "function": "websites",
+        "description": "List of websites which the user can manipulate (empty for all). Separate the IDs with commas.",
+        "type": "string",
+        "dvalue": ""
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "name": "navigatecms.privacy_mode",
+        "scope": "system",
+        "description": "Hide Navigate CMS logo and favicon",
+        "type": "boolean",
+        "dvalue": "false"
+    },
+    {
+        "name": "navigatecms.display_version",
+        "scope": "system",
+        "description": "Display Navigate CMS version in status bar",
+        "type": "boolean",
+        "dvalue": "true"
+    }
+]

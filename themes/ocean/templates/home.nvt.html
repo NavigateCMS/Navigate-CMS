@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <nv object="include" file="templates/head.nvt.html" />
+</head>
+
+<body>
+    <nv object="nvweb" name="liveedit" />
+	<div class="wrapper">
+        <div id="header">
+            <a href="{{nv object='root'}}" id="logo">
+                <OCEAN_LOGO />
+            </a>
+            <div id="languages">
+                <nv object="webget" name="languages" mode="select" />
+            </div>
+
+            <div id="search">
+                <form action="{{nv object='root'}}/nvsearch" method="get"><input type="text" name="q" /><input id="search-submit" size="0" type="submit" value="{{nv object='dictionary' id='send' default='Send'}}" /><img src="img/zoom.png" width="26" height="26" align="absmiddle" onclick="$(this).parent().submit();" /></form>
+            </div>
+        </div>
+        
+        <div id="menu">
+            <nv object="nvweb" name="menu" mode="ul" />
+        </div>
+        
+        <div id="slider">
+            <OCEAN_HOME_SLIDER />
+        </div>
+
+        <div class="separator"></div>
+
+        <div id="home-blocks">
+            <nv object="nvweb" name="content" mode="section" section="home_blocks" />
+        </div>
+
+        <div class="separator"></div>
+
+        <nv object="nvweb" name="content" mode="section" section="main" />
+        <div style="clear:both;"></div>
+
+        <OCEAN_HOME_QUOTE />
+
+        <div class="home-samples">
+
+            <h1><nv object="dictionary" id="home_portfolio_title" property="Latest works" /></h1>
+
+            <nv object="list" items="4" source="item" order="priority" categories="{{OCEAN_HOME_PORTFOLIO_CATEGORY}}">
+                <div class="home-sample">
+                    <a href="{{nvlist value='url'}}"><nvlist value="property" property="portfolio-image" width="225" height="169" border="false" /></a>
+                    <h5>{{nvlist value='title'}}</h5>
+                    <span><nvlist value="property" property="portfolio-intro" /></span>
+                    <a href="{{nvlist value='url'}}" class="button-read"><nv object="dictionary" id="read_more" default="Read more" /></a>
+                </div>
+            </nv>
+
+            <div style="clear: both;"></div>
+        </div>
+
+        <nv object="include" file="templates/footer.nvt.html" />
+
+    </div>
+
+</body>
+</html>
+<!-- theme by Seleneart -->
+<!-- http://www.seleneart.com -->

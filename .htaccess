@@ -1,0 +1,27 @@
+<IfModule mod_security.c>
+    SecFilterEngine On
+    SecFilterScanPOST Off
+</IfModule>
+
+Options +FollowSymLinks
+ 
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{HTTP:Accept-Encoding} gzip
+RewriteCond %{REQUEST_FILENAME}.jgz -f
+RewriteRule (.*)\.js$ $1\.js.jgz [L]
+AddType text/javascript .js.jgz
+AddType text/css .css.jgz
+AddEncoding gzip .jgz
+
+# litespeed double gzip compression bug workaround
+<FilesMatch "\.css\.jgz$">
+    ForceType text/css
+</FilesMatch>
+<FilesMatch "\.js\.jgz$">
+    ForceType application/x-javascript
+</FilesMatch>
+
+RewriteRule \.jgz - [E=no-gzip:1]
+Rewriterule \.jgz - [E=Cache-control:no-cache]

@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <title>kvaTree jQuery plugin demo</title>
+    
+    <link rel="stylesheet" type="text/css" href="css/kvaTree.css" />
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/jquery-ui-personalized-1.5.3.min.js"></script>
+    <script type="text/javascript" src="js/kvaTree.min.js"></script>
+    
+    <style>
+        div#info {
+            margin: 15px 0 15px 0;
+            padding-left: 15px;
+            padding-bottom: 10px;
+            text-align: left;
+            border-bottom: 1px dashed black;
+        }
+        
+        #info a, #info a:hover {
+            color: black;
+            text-decoration: underline;
+        }
+        
+        #info a:hover {
+            text-decoration: none;
+        }
+    
+        div.ctrls {
+            margin: 15px 0 15px 0;
+            text-align: left;
+            border-bottom: 1px dashed black;
+        }
+        
+        .ctrls p {
+            width: 120px;
+            float: left;
+            margin: 0 0 15px 15px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        div#help {
+            padding-top: 15px;
+            padding-left: 15px;
+            text-align: left;
+            border-top: 1px dashed black;
+        }
+    </style>
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <script type="text/javascript">
+        function Bind(h,o)
+        {
+            $(h + ' p.addnode').click(function () {
+                o.kvaTree.AddNode(o,'node');
+            });
+            
+            $(h + ' p.addleaf').click(function () {
+                o.kvaTree.AddNode(o,'leaf');
+            });
+            
+            $(h + ' p.edit').click(function () {
+                o.kvaTree.EditNode(o);
+            });
+            
+            $(h + ' p.del').click(function () {
+                o.kvaTree.DeleteNode(o);
+            });
+        }//Bind
+    
+        $(function () {
+            var obj  = $('ul#tree1');
+            
+            var opts = {
+                multi: false
+            };
+            
+            obj.kvaTree(opts);
+            
+            Bind('.ctrls:eq(0)',obj);
+        });
+    </script>
+</head>
+
+<body>
+
+    <div id="info">
+        See the <a href="http://www.kvaq.sk/en/kvatree-jquery-plugin.html" style="">Documentation</a>.
+        <br />
+        <a href="http://web.archive.org/web/20090213122604/http://kvaq.sk/en/kvatree-jquery-plugin.html">[Archive]</a>
+    </div>
+
+    <div class="ctrls">
+        <p class="addnode">Add node</p>
+        <p class="addleaf">Add leaf</p>
+        <p class="edit">Edit node / leaf</p>
+        <p class="del">Delete node / leaf</p>
+        
+        <div style="clear: both;"></div>
+    </div><!-- /ctrls -->
+
+    <div style="margin: 15px; text-align: left;">
+        <ul id="tree1">
+            <li class="open">
+                <span>Root item here</span>
+                
+                <ul>
+                    <li><span>Item 1 here</span></li>
+                    <li>
+                        <span>Item 2 here</span>
+                        
+                        <ul>
+                            <li><span>Item 1 here</span></li>
+                            <li><span>Item 2 here</span></li>
+                            <li>
+                                <span>Item 3 here</span>
+                                
+                                <ul>
+                                    <li><span>Item 1 here</span></li>
+                                    <li><span>Item 2 here</span></li>
+                                    <li><span>Item 3 here</span></li>
+                                    <li><span>Item 4 here</span></li>
+                                </ul>
+                            </li>
+                            <li class="fixedLevel">
+                                <span>Item 4 here</span>
+                                
+                                <ul>
+                                    <li><span>Item 1 here</span></li>
+                                    <li><span>Item 2 here</span></li>
+                                    <li><span>Item 3 here</span></li>
+                                    <li><span>Item 4 here</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><span>Item 3 here</span></li>
+                    <li><span>Item 4 here</span></li>
+                    <li class="open">
+                        <span>Item 5 here</span>
+                        
+                        <ul>
+                            <li><span>Item 1 here</span></li>
+                            <li><span>Item 2 here</span></li>
+                            <li>
+                                <span>Item 3 here</span>
+                                
+                                <ul>
+                                    <li><span>Item 1 here</span></li>
+                                    <li><span>Item 2 here</span></li>
+                                    <li><span>Item 3 here</span></li>
+                                    <li><span>Item 4 here</span></li>
+                                </ul>
+                            </li>
+                            <li><span>Item 4 here</span></li>
+                        </ul>
+                    </li>
+                    <li class="node"><span>Item 6 here</span></li>
+                    <li><span>Item 7 here</span></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+    <div id="help">
+        <p>
+            I will use following terms: node (dir), leaf (item).<br /><br />
+        
+            <strong>Managing nodes / leafs:</strong><br /><br />
+            
+            To Add, Edit, Delete node / leaf you have to select a node / leaf first. This can be done by clicking node / leaf.<br /><br />
+            
+            Edit, Delete node / leaf - will be performed upon selected node / leaf<br /><br />
+            
+            Add:<br />
+            - if node is selected the new item (node or leaf) will be appended to the end of this node as its item<br />
+            - if leaf is selected the new item will be appended after this leaf<br /><br />
+            
+            <strong>Drag & drop:</strong><br /><br />
+            
+            You can drag & drop nodes / leafs by dragging the text of a node / leaf
+        </p>
+    </div><!-- /help -->
+    
+</body>
+</html>

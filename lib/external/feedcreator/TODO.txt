@@ -1,0 +1,10 @@
+[TODO]
+- fix feedcreator quirks and bugs
+- improve ATOM 1.0 support
+- create wiki page for nice and tidy documentation
+
+
+
+[WONT FIX/ADD]
+- add non-standard modules to RSS/ATOM, this will introduce complexities in feed readers
+- ATOMCreator10 <source> tags (is it important?)

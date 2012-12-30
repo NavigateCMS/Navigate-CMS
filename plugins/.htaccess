@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^/]+)/.*\ HTTP [NC]
+RewriteRule .* - [F,L]

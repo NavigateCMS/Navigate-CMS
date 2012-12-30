@@ -1,0 +1,396 @@
+{
+	"title": "Ocean",
+	"version": "1.0",
+	"author": "Seleneart / Naviwebs",
+	"website": "http://www.naviwebs.com",
+	"languages":
+	{
+		"en": "i18n/en.json",
+		"es": "i18n/es.json"
+	},
+	"styles":
+    {
+        "blue":
+        {
+            "name": "@blue",
+            "global": "css/blue/global.css",
+            "color": "css/blue/blue.css",
+            "content": "css/blue/content.css"
+        },
+        "black":
+        {
+            "name": "@black",
+            "global": "css/black/global.css",
+            "color": "css/black/black.css",
+            "content": "css/black/content.css"
+        }
+    },
+	"options": [
+        {
+            "id": "facebook_page",
+            "name": "@facebook_page",
+            "type": "value"
+        },
+        {
+            "id": "twitter_page",
+            "name": "@twitter_page",
+            "type": "value"
+        },
+        {
+            "id": "feed_url",
+            "name": "@feed_url",
+            "type": "text"
+        },
+        {
+            "id": "logo",
+            "name": "@logo",
+            "type": "image",
+            "dvalue": "img/logo-ocean.png"
+        },
+        {
+            "id": "home_portfolio_category",
+            "name": "@home_portfolio_category",
+            "type": "category",
+            "dvalue": "4"
+        },
+        {
+            "id": "footer_latest_entries",
+            "name": "@footer_latest_entries",
+            "type": "category",
+            "dvalue": "6"
+        },
+        {
+            "id": "footer_card_name",
+            "name": "@footer_card_name",
+            "type": "value",
+            "dvalue": "Ocean company"
+        },
+        {
+            "id": "footer_card_logo",
+            "name": "@footer_card_logo",
+            "type": "image",
+            "dvalue": "img/logo-ocean.png"
+        },
+        {
+            "id": "footer_card_text",
+            "name": "@footer_card_text",
+            "type": "textarea",
+            "editor": "raw",
+            "width": "285"
+        },
+        {
+            "id": "footer_link_1",
+            "name": "@footer_link",
+            "type": "link"
+        },
+        {
+            "id": "footer_link_2",
+            "name": "@footer_link",
+            "type": "link"
+        },
+        {
+            "id": "footer_link_3",
+            "name": "@footer_link",
+            "type": "link"
+        },
+        {
+            "id": "footer_link_4",
+            "name": "@footer_link",
+            "type": "link"
+        }
+	],
+	"templates": [
+		{
+			"type": "home",
+			"file": "templates/home.nvt.html",
+            "gallery": false,
+            "statistics": true,
+            "sections": [
+                {
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "960"
+                },
+                {
+                    "name": "home_blocks",
+                    "code": "home_blocks",
+                    "editor": "tinymce",
+                    "width": "1024"
+                },
+                {
+                    "name": "home_quote",
+                    "code": "home_quote",
+                    "editor": "raw",
+                    "width": "960"
+                }
+            ],
+            "properties": [
+                {
+                    "id": "slideshow_pause",
+                    "name": "@slideshow_pause",
+                    "element": "item",
+                    "type": "value",
+                    "dvalue": "5"
+                }
+            ]
+		},
+		{
+			"type": "content",
+			"file": "templates/content.nvt.html",
+            "enabled": true,
+            "permission": 0,
+			"statistics": true,
+			"gallery": false,
+			"comments": false,
+			"tags": true,
+			"sections": [
+				{
+					"name": "intro_fullwidth",
+					"code": "intro",
+					"editor": "tinymce",
+					"width": "960"
+				},
+				{
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "610"
+                }
+			]
+		},
+        {
+            "type": "content_right",
+            "file": "templates/content-right.nvt.html",
+            "enabled": true,
+            "permission": 0,
+            "statistics": true,
+            "gallery": false,
+            "comments": false,
+            "tags": true,
+            "sections": [
+                {
+                    "name": "intro_fullwidth",
+                    "code": "intro",
+                    "editor": "tinymce",
+                    "width": "960"
+                },
+                {
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "610"
+                }
+            ]
+        },
+        {
+            "type": "content_fullwidth",
+            "file": "templates/content-fullwidth.nvt.html",
+            "enabled": true,
+            "permission": 0,
+            "statistics": true,
+            "gallery": false,
+            "comments": false,
+            "tags": true,
+            "sections": [
+                {
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "960"
+                }
+            ]
+        },
+        {
+            "type": "search",
+            "file": "templates/search.nvt.html",
+            "statistics": true,
+            "enabled": true,
+            "gallery": false,
+            "comments": false,
+            "tags": false
+        },
+        {
+			"type": "blog",
+			"file": "templates/blog.nvt.html",
+			"statistics": true,
+			"enabled": true,
+			"gallery": false,
+			"comments": false,
+			"tags": false
+        },
+        {
+            "type": "blog_entry",
+            "file": "templates/blog-entry.nvt.html",
+            "enabled": true,
+            "permission": 0,
+            "statistics": true,
+            "gallery": false,
+            "comments": true,
+            "tags": true,
+            "sections": [
+                {
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "610"
+                }
+            ],
+            "properties":[
+                {
+                    "id": "blog_entry_image",
+                    "type": "image",
+                    "name": "@blog_entry_image",
+                    "element": "item",
+                    "enabled": "1"
+                }
+            ]
+        },
+        {
+            "type": "contact",
+            "file": "templates/contact.nvt.html",
+            "enabled": true,
+            "statistics": true,
+            "gallery": false,
+            "comments": false,
+            "tags": false,
+            "sections": [
+                {
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "600"
+                },
+                {
+                    "name": "address",
+                    "code": "address",
+                    "editor": "tinymce",
+                    "width": "300"
+                }
+            ],
+            "properties": [
+                {
+                    "id": "contact_image",
+                    "type": "image",
+                    "name": "@contact_image",
+                    "element": "item",
+                    "dvalue": "img/contact.jpg",
+                    "position": "1",
+                    "enabled": "1"
+                },
+                {
+                    "id": "placemark",
+                    "type": "coordinates",
+                    "name": "@placemark",
+                    "element": "item",
+                    "position": "2",
+                    "enabled": "1"
+                }
+            ]
+        },
+        {
+            "type": "portfolio",
+            "file": "templates/portfolio.nvt.html",
+            "enabled": true,
+            "permission": 0,
+            "statistics": true,
+            "gallery": false,
+            "comments": false,
+            "tags": true,
+            "sections": [
+                {
+                    "name": "#main#",
+                    "code": "main",
+                    "editor": "tinymce",
+                    "width": "960"
+                }
+            ]
+        },
+        {
+            "type": "portfolio_item",
+            "file": "templates/portfolio-item.nvt.html",
+            "statistics": true,
+            "tags": true,
+            "gallery": false,
+            "properties": [
+                {
+                    "id": "portfolio-image",
+                    "type": "image",
+                    "name": "@portfolio_image",
+                    "element": "item",
+                    "enabled": "1"
+                },
+                {
+                    "id": "portfolio-intro",
+                    "type": "text",
+                    "name": "@portfolio_description",
+                    "element": "item"
+                },
+                {
+                    "id": "image-fullsize",
+                    "type": "image",
+                    "name": "@image_fullsize",
+                    "element": "item",
+                    "enabled": "1"
+                }
+            ]
+        }
+    ],
+	"blocks": [
+	    {
+            "id": "ocean-home-slider-item",
+            "code": "ocean-home-slider",
+            "title": "@ocean_home_slider",
+            "type": "block",
+            "width": 960,
+            "height": 330,
+            "order": "priority"
+    	},
+    	{
+    	    "id": "sidebar-text-content",
+    	    "code": "sidebar-text-content",
+    	    "title": "@ocean_sidebar_text_block",
+    	    "type": "theme",
+            "width": "300",
+            "order": "priority"
+    	},
+    	{
+    	    "id": "sidebar-links",
+    	    "code": "sidebar-links",
+    	    "title": "@ocean_sidebar_link",
+    	    "type": "block",
+            "width": "300",
+            "order": "priority"
+    	},
+    	{
+            "id": "sidebar-quote",
+            "code": "sidebar-quote",
+            "title": "@ocean_sidebar_quote",
+            "type": "theme",
+            "width": "220",
+            "order": "random"
+        }
+	],
+	"content_samples": [
+	    {
+	        "title": "Home",
+	        "file": "samples/home.html"
+	    },
+	    {
+            "title": "Home blocks",
+            "file": "samples/home_blocks.html"
+        },
+        {
+             "title": "Introduction (fullwidth)",
+             "file": "samples/content_fullwidth.html"
+        },
+        {
+             "title": "Main content (left)",
+             "file": "samples/left_content.html"
+        },
+        {
+            "title": "Main content (right)",
+            "file": "samples/right_content.html"
+        }
+	]
+}

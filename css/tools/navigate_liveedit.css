@@ -1,0 +1,81 @@
+#navigate_liveedit_bar
+{
+    background: #174570; /* Old browsers */
+    background: -moz-linear-gradient(top,  #174570 0%, #002048 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#174570), color-stop(100%,#002048)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #174570 0%,#002048 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #174570 0%,#002048 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #174570 0%,#002048 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #174570 0%,#002048 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#174570', endColorstr='#002048',GradientType=0 ); /* IE6-9 */
+    position: fixed;
+    height: 28px;
+    bottom: 0px;
+    width: 100%;
+    z-index: 2147483647;
+    box-shadow: 0px 0px 5px #000000;
+    color: #fff;
+    opacity: 0.97;
+    font-size: 10px;
+    font-family: Tahoma;
+    left: 0px;
+}
+
+#navigate_liveedit_bar div,
+#navigate_liveedit_bar a
+{
+    float: left;
+    padding: 0 5px;
+    height: 28px;
+    border-right: solid 1px #174570;
+    border-left: solid 1px #174570;
+    border-bottom: solid 1px #174570;
+    color: #eee;
+    display: block;
+    line-height: 28px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+#navigate_liveedit_bar div:hover,
+#navigate_liveedit_bar a:hover,
+#navigate_liveedit_bar .active
+{
+    background: #002048; /* Old browsers */
+    background: -moz-linear-gradient(top,  #002048 0%, #174570 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#002048), color-stop(100%,#174570)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #002048 0%,#174570 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #002048 0%,#174570 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #002048 0%,#174570 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #002048 0%,#174570 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#002048', endColorstr='#174570',GradientType=0 ); /* IE6-9 */
+}
+
+#navigate_liveedit_bar img
+{
+    vertical-align: middle;
+}
+
+#navigate_liveedit_bar div#navigate_liveedit_bar_information
+{
+    clear: both;
+    border: none;
+    cursor: default;
+}
+
+#navigate_liveedit_bar div#navigate_liveedit_bar_information:hover
+{
+    background: transparent;
+}
+
+#navigate_liveedit_bar_information span
+{
+    float: left;
+    margin-right: 10px;
+}
+
+#navigate_liveedit_bar_spacer
+{
+    height: 28px;
+    font-size: 1px;
+}

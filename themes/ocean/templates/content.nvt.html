@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <nv object="include" file="templates/head.nvt.html" />
+</head>
+
+<body>
+    <nv object="nvweb" name="liveedit" />
+    <div class="wrapper">
+        <div id="header">
+            <a href="{{nv object='root'}}" id="logo">
+                <OCEAN_LOGO />
+            </a>
+            <div id="languages">
+                <nv object="webget" name="languages" mode="select" />
+            </div>
+
+            <div id="search">
+                <form action="{{nv object='root'}}/nvsearch" method="get"><input type="text" name="q" /><input id="search-submit" size="0" type="submit" value="{{nv object='dictionary' id='send' default='Send'}}" /><img src="img/zoom.png" width="26" height="26" align="absmiddle" onclick="$(this).parent().submit();" /></form>
+            </div>
+        </div>
+
+        <div id="menu">
+            <nv object="nvweb" name="menu" mode="ul" />
+        </div>
+
+        <nv object="nvweb" name="content" mode="section" section="intro" />
+
+        <nv object="nvweb" name="content" mode="section" section="main" />
+
+        <div class="sidebar-right">
+            <div class="block-sidebar-right">
+                <nv object="nvweb" name="blocks" type="sidebar-text-content" />
+            </div>
+
+            <div class="block-sidebar-right">
+                <h5 style="font-style: italic;"><nv object="dictionary" id="links" default="Links" /></h5>
+                <div class="sidebar-link">
+                    <nv object="nvweb" name="blocks" type="sidebar-links" />
+                </div>
+            </div>
+
+            <nv object="nvweb" name="blocks" type="sidebar-quote" number="1" />
+        </div>
+
+        <div style="clear:both;"></div>
+
+        <nv object="include" file="templates/footer.nvt.html" />
+    </div>
+
+</body>
+</html>
+<!-- theme by Seleneart -->
+<!-- http://www.seleneart.com -->

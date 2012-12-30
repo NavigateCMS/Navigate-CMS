@@ -1,0 +1,154 @@
+/*@import url('null.css');*/
+
+/*
+
+		GENERAL
+
+*/
+
+.cleaner {
+	clear: both;
+}
+
+/*
+
+		MAIN
+
+*/
+/*
+body {   
+	font-size: 80%;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+*/
+/*
+
+		kvaTree
+
+*/
+
+.alt {
+   display: none;	
+}
+
+ul.kvaTree 
+{
+	/*width: 100%;*/
+	margin-top:0;
+	padding-left:4px;	
+}
+
+ul.kvaTree, ul.kvaTree li {
+	list-style: none;
+}
+
+ul.kvaTree li {
+	min-height: 16px;
+	_height: 16px;
+	padding-left: 30px;
+	position: relative;
+}
+
+ul.kvaTree li.separator {
+	width: 100%;
+	min-height: 8px;
+	_height: 8px;
+	line-height: 8px;
+	font-size: 8px;
+	background: url(../img/line-vertical.gif) left top repeat-y;
+}
+
+ul.kvaTree li.node {
+	width: 100%;
+	background: url(../img/node-closed.gif) left top no-repeat;
+}
+
+ul.kvaTree li.node.open {
+	width: 100%;
+	background: url(../img/node-opened.gif) left top no-repeat;
+}
+
+ul.kvaTree li.leaf {
+	width: 100%;
+	background: url(../img/leaf.gif) left top no-repeat;
+}
+
+ul.kvaTree li.node ul {
+	display: none;
+	_display: block;
+	background: url(../img/line-vertical.gif) -13px top repeat-y;
+	position: relative;
+	left: -13px;
+}
+
+ul.kvaTree li.node.open > ul {
+	display: block;
+}
+
+ul.kvaTree li span {
+	cursor: default;
+	-moz-user-select: none;
+}
+
+ul.kvaTree li span.active {
+	background: #c3e1ff;
+	padding: 4px;
+	margin-left: -4px;
+}
+
+ul.kvaTree li span.sign {
+	display: block;
+	width: 30px;
+	height: 15px;
+	cursor: pointer;
+	position: absolute;
+	left: -4px;
+	top: 0;
+}
+
+ul.kvaTree li span.sign.plus {
+	background: url(../img/plus.gif) left 2px no-repeat;
+}
+
+ul.kvaTree li span.sign.minus {
+	background: url(../img/minus.gif) left 2px no-repeat;
+}
+
+/*
+
+		kvaTree management
+
+*/
+
+ul.kvaTree input {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 1em;
+	position: absolute;
+	left: 30px;
+	top: 0;
+}
+
+/*
+
+		kvaTree Drag & Drop
+
+*/
+
+div#kvaTree-drag {
+	padding: 3px;
+	padding-left: 30px;
+	z-index: 1000;
+	position: absolute;
+}
+
+#kvaTree-drag.node {
+	background: #C3E1FF url(../img/node-drag.gif) left 3px no-repeat;
+}
+
+#kvaTree-drag.leaf {
+	background: #C3E1FF url(../img/leaf-drag.gif) left 3px no-repeat;
+}
+
+ul.kvaTree li.separator.dd-hover {
+	background: transparent url(../img/separator-drag.gif) 3px 1px no-repeat;
+}

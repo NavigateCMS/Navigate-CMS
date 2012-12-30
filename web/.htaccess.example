@@ -1,0 +1,11 @@
+Options +FollowSymLinks
+Options -Indexes
+ 
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.+) navigate/web/nvweb.php?route=$1 [QSA]
+RewriteRule ^$ /navigate/web/nvweb.php?route=nv.home [L]

@@ -1,0 +1,124 @@
+<!doctype html>
+
+<!--
+  ~ jquery.mb.components
+  ~ Copyright (c) 2001-2010. Matteo Bicocchi (Pupunzi); Open lab srl, Firenze - Italy
+  ~ email: mbicocchi@open-lab.com
+  ~ site: http://pupunzi.com
+  ~
+  ~ Licences: MIT, GPL
+  ~ http://www.opensource.org/licenses/mit-license.php
+  ~ http://www.gnu.org/licenses/gpl.html
+  -->
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>mb.extruder with mb.YTPlayer</title>
+  <style type="text/css">
+    body{
+      font-family:Arial, Helvetica, sans-serif;
+      margin:10px;
+    }
+    .wrapper{
+      position:relative;
+      font-family:Arial, Helvetica, sans-serif;
+      padding-top:90px;
+      padding-left:50px;
+      width:80%;
+      margin:auto
+    }
+    .wrapper .text{
+      font-family:Arial, Helvetica, sans-serif;
+      padding-top:50px;
+    }
+    .wrapper h1{
+      font-family:Arial, Helvetica, sans-serif;
+      font-size:26px;
+    }
+    .longText{
+      margin-top:20px;
+      width:600px;
+      font:18px/24px Arial, Helvetica, sans-serif;
+      color:gray;
+    }
+    span.btn{
+      padding:10px;
+      display:inline-block;
+      cursor:pointer;
+      font:12px/14px Arial, Helvetica, sans-serif;
+      color:#aaa;
+      background-color:#eee;
+      -moz-border-radius:10px;
+      -webkit-border-radius:10px;
+      -moz-box-shadow:#999 2px 0px 3px;
+      -webkit-box-shadow:#999 2px 0px 3px;
+    }
+    span.btn:hover{
+      background-color:#000;
+    }
+
+    .extruder .content{
+      background:transparent !important;
+      background-color:#000!important;
+      opacity:.9
+    }
+
+  </style>
+
+  <link href="../css/mbExtruder.css" media="all" rel="stylesheet" type="text/css">
+
+  <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
+  <script type="text/javascript" src="../inc/jquery.hoverIntent.min.js"></script>
+  <script type="text/javascript" src="../inc/jquery.metadata.js"></script>
+  <script type="text/javascript" src="../inc/jquery.mb.flipText.js"></script>
+  <script type="text/javascript" src="../inc/mbExtruder.js"></script>
+  <script type="text/javascript" src="jquery.mb.YTPlayer.js"></script>
+  <script type="text/javascript">
+
+    $(function(){
+
+      if (self.location.href == top.location.href){
+        $("body").css({font:"normal 13px/16px 'trebuchet MS', verdana, sans-serif"});
+        var logo=$("<a href='http://pupunzi.com'><img id='logo' border='0' src='http://pupunzi.com/images/logo.png' alt='mb.ideas.repository' style='display:none;'></a>").css({position:"absolute"});
+        $("body").prepend(logo);
+        $("#logo").fadeIn();
+      }
+
+      $("#extruderVideo").buildMbExtruder({
+        position:"top",
+        width:700,
+        extruderOpacity:1,
+        onExtOpen:function(){$("#bgndVideo").mb_YTPlayer();},
+        onExtContentLoad:function(){},
+        onExtClose:function(){}
+      });
+
+    });
+
+  </script>
+</head>
+<body >
+<div class="wrapper">
+  <h1>mb.extruder.video.demo</h1>
+
+  <div class="text">
+    <h2> Here is the mb.extruder!</h2>
+    In this case I add a video using jquery.mb.YTPlayer into the mb.extruder panel.
+  </div>
+  <br>
+  <br>
+  <span class="btn" onclick="$('#extruderVideo').openMbExtruder(true);">show the video</span>
+
+  <div class="longText" style="position:relative;padding-left:50px">
+
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin purus orci, volutpat ut pulvinar volutpat, convallis in orci. Quisque eget arcu convallis dui lacinia vestibulum non ut odio. Cras fringilla mollis mattis. Cras dictum rutrum ultricies. Donec auctor, risus eu tincidunt auctor, diam ligula facilisis libero, sit amet interdum felis enim ut est. Maecenas nec nulla quis ante convallis volutpat convallis at justo. Pellentesque quam orci, consectetur sit amet interdum a, tempus eget erat. Nam in ante odio. Vivamus nec augue vitae mi molestie pretium sed id elit. Aenean ultrices auctor ipsum eu vestibulum. Phasellus non dolor vel nisi congue egestas in a eros. Phasellus nunc nulla, interdum ut viverra eu, tristique sed sapien.
+
+      Proin vel pulvinar diam. Integer commodo dapibus massa, a faucibus purus imperdiet in. Morbi a purus est. Aliquam lacinia vehicula consequat. Pellentesque gravida dui vitae magna hendrerit varius. Pellentesque ullamcorper purus nec nisi eleifend a pharetra nulla sollicitudin. Maecenas sed gravida sem. Sed molestie luctus interdum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam viverra, ipsum quis adipiscing dignissim, sapien velit vehicula dolor, vitae dictum leo sem vel ante. Donec sodales augue sit amet velit ullamcorper nec rhoncus ipsum semper. Sed nec sodales sapien. Sed ornare auctor lacus ornare condimentum. Curabitur varius consequat condimentum. Mauris sed libero libero, id mollis nibh.
+
+    </div>
+  </div>
+<div id="extruderVideo" class="{title:'view the video ', url:'movie.html'}"></div>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+syntax: glob
+cache/1/*
+private/1
+private/1/*
+private/1/files/*
+private/1/thumbnails/*
+private/1/webgets/*
+private/1/templates/*
+setup/*.zip
+cfg/globals.php
+private/thumbnails/*
+lib/external/tinymce/*.gz

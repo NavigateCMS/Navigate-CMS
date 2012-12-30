@@ -1,0 +1,74 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style media="screen" type="text/css">
+        .navigate_wrapper_info  {   background: #E5F1FF;    border-radius: 6px; margin: 10px auto;  padding: 1px 20px 20px 20px;    color: #595959; font-size: 12px;    font-family: Verdana;   }
+        h1  {   margin: 25px 0px 10px 0px;  font-size: 17px;    font-weight: bold;  }
+        h2  {   margin: 25px 0px 10px 0px;  font-size: 14px;    font-weight: bold;  }
+        p, ol   {   background: #fff;   border-radius: 6px; padding: 10px;  margin-top: 5px;    line-height: 25px;  text-align: left;    font-size: 12px;    display: block; }
+        a   {   color: #595959; }
+        .date   {   margin-left: 5px;   font-style: italic; font-size: 11px;    }
+        .change {   margin-left: 28px;  }
+    </style>
+</head>
+<body>
+<div class="navigate_wrapper_info">
+
+    <h1>votes</h1>
+    <p>Plugin to submit a user vote to Navigate CMS. It is needed by extensions like "Raty voting plugin".</p>
+
+    <h2>Author</h2>
+    <p><a href="http://www.naviwebs.com" target="_blank">Naviwebs</a> [ <a href="mailto:info@naviwebs.com">info@naviwebs.com</a> ]</p>
+
+    <h2>Licenses</h2>
+    <p>
+        Code: GPL<br />
+    </p>
+
+    <h2>Instructions</h2>
+    <p>
+        <span>
+            In your templates, call the javascript function "nvweb_votes_plugin_vote".
+            <br />
+            The function expects two parameters:
+            <br /><br />
+            -value: score given by the user (integer)
+            <br />
+            -callback: name of the function which will get the vote result.
+            <br />
+            <br />
+            Note: the webuser must be logged in to vote.
+            <br />
+            <br />
+            The callback function will receive one parameter: vote result.<br />
+            {ok: "true"}<br />
+            or<br />
+            {error: "error_code"}<br />
+            error codes: no_webuser, already_voted, error
+        </span>
+    </p>
+
+    <h2>Roadmap</h2>
+    <p>no new features planned</p>
+
+    <h2>Known bugs and problems</h2>
+    <p>
+        none
+    </p>
+
+    <h2>Releases</h2>
+    <p>
+        <span>1.1 <span class="date">12-Ago-2012</span></span><br />
+        <span class="change">converted to a Navigate CMS extension</span><br />
+        <br />
+        <span>1.0 <span class="date">02-Jul-2011</span></span><br />
+        <span class="change">first release</span><br />
+    </p>
+    <a href="http://www.naviwebs.com" target="_blank" style="float: right;">
+        <img src="naviwebs.png" width="75" height="75" />
+    </a>
+    <div style="clear: both;"></div>
+</div>
+
+</body>
+</html>

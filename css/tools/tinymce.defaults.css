@@ -1,0 +1,26 @@
+body
+{
+	overflow: auto !important;
+    padding: 10px !important;
+}
+
+td,th
+{
+	float: none !important;
+}
+
+/* useful classes always available */
+/* (don't modify the line below!) */
+/* nvweb */
+
+.navigatecms-image-left
+{
+    float: left;
+    margin: 5px 5px 5px 0px;
+}
+
+.navigatecms-image-right
+{
+    float: right;
+    margin: 5px 0px 5px 5px;
+}
