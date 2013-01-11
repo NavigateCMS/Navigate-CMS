@@ -281,7 +281,7 @@ body
 {
     line-height: 20px;
     text-align: justify;
-    display: block;
+    /*display: block;*/
     margin-bottom: 20px;
 }
 
@@ -342,7 +342,7 @@ body
 {
     line-height: 20px;
     text-align: justify;
-    display: block;
+    /*display: block;*/
 }
 
 .block-sidebar-left

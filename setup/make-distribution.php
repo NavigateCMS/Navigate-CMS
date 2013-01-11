@@ -147,7 +147,7 @@ foreach($tables as $table)
 {
     $extra = '';
     if($table=='nv_files')
-        $extra .= ' WHERE (id = 119) OR (id >= 160 AND id <= 172)';
+        $extra .= ' WHERE (id = 119) OR (id >= 160 AND id <= 172) OR (id=190 OR id=189 OR id=188)';
 
     $DB->query('SELECT * FROM '.$table.$extra, 'array');
     $rs = $DB->result();

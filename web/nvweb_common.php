@@ -34,5 +34,16 @@ require_once(NAVIGATE_PATH.'/web/nvweb_plugins.php');
 
 disable_magic_quotes();
 
+if(!preg_match("/^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])".
+    "(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$/", $_SERVER['SERVER_NAME'])
+    && $_SERVER['SERVER_NAME']!='localhost')
+{
+    $session_cookie_domain = $_SERVER['SERVER_NAME'];
+    if(substr_count($_SERVER['SERVER_NAME'], '.') > 1)
+        $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
 
+    ini_set('session.cookie_domain', $session_cookie_domain);
+}
+
+session_start();
 ?>
