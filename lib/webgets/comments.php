@@ -28,18 +28,18 @@ function nvweb_comments($vars=array())
 		
 		// default translations		
 		$webgets[$webget]['translations'] = array(
-				'post_a_comment' => t(379, 'Post a comment'),
-				'name' => t(159, 'Name'),
-				'email' => t(44, 'E-Mail'),
-				'message' => t(380, 'Message'),
-				'email_will_not_be_published' => t(381, 'E-Mail will not be published'),
-				'submit' => t(382, 'Submit'),
-				'sign_in_or_sign_up_to_post_a_comment' => t(383, 'Sign in or Sign up to post a comment'),
-				'comments_on_this_entry_are_closed' => t(384, 'Comments on this entry are closed'),
-				'please_dont_leave_any_field_blank' => t(385, 'Please don\'t leave any field blank'),
-				'your_comment_has_been_received_and_will_be_published_shortly' => t(386, 'Your comment has been received and will be published shortly'),
-				'new_comment' => t(387, 'New comment'),
-				'review_comments' => t(388, 'Review comments')
+            'post_a_comment' => t(379, 'Post a comment'),
+            'name' => t(159, 'Name'),
+            'email' => t(44, 'E-Mail'),
+            'message' => t(380, 'Message'),
+            'email_will_not_be_published' => t(381, 'E-Mail will not be published'),
+            'submit' => t(382, 'Submit'),
+            'sign_in_or_sign_up_to_post_a_comment' => t(383, 'Sign in or Sign up to post a comment'),
+            'comments_on_this_entry_are_closed' => t(384, 'Comments on this entry are closed'),
+            'please_dont_leave_any_field_blank' => t(385, 'Please don\'t leave any field blank'),
+            'your_comment_has_been_received_and_will_be_published_shortly' => t(386, 'Your comment has been received and will be published shortly'),
+            'new_comment' => t(387, 'New comment'),
+            'review_comments' => t(388, 'Review comments')
 		);
 		
 		// theme translations 
@@ -58,13 +58,14 @@ function nvweb_comments($vars=array())
 			"your_comment_has_been_received_and_will_be_published_shortly": "Your comment has been received and will be published shortly",
 			"new_comment": "New comment",
 			"review_comments": "Review comments"
-			
 		*/
-		if(!empty($website->theme) && function_exists($theme->t))
+
+		if(!empty($website->theme) && method_exists($theme, 't'))
 		{
 			foreach($webgets[$webget]['translations'] as $code => $text)
 			{
 				$theme_translation = $theme->t($code);
+
 				if(!empty($theme_translation))
 					$webgets[$webget]['translations'][$code] = $theme_translation;
 			}	
@@ -122,6 +123,7 @@ function nvweb_comments($vars=array())
                 $comment->insert();
 
                 // reload the element to retrieve the new comments
+                $element = new item();
                 $element->load($element->id);
 
                 // trigger the "new_comment" event through the plugin system
@@ -256,6 +258,11 @@ function nvweb_comments_list($offset=0, $limit=2147483647, $permission=NULL, $or
         if(empty($current['structure_elements']))
             $current['structure_elements'] = $element->elements();
         $element = $current['structure_elements'][0];
+    }
+    else if($current['type']=='item')
+    {
+        $element = new item();
+        $element->load($current['id']);
     }
 
     $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
