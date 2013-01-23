@@ -188,7 +188,7 @@ function nvweb_comments($vars=array())
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
-							<div><label>&nbsp;</label> <img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline" width="32" height="32" align="absmiddle" /> <span>'.$webuser->username.'</span></div>
+							<div><label style="display: none;">&nbsp;</label> <img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline" width="32" height="32" align="absmiddle" /> <span>'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
 							<br/>
 							<div><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
 							<div><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>

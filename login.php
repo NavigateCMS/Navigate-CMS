@@ -1,5 +1,4 @@
 <?php
-// comprobar autenticació
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
@@ -304,7 +303,7 @@ $(document).ready(function()
 </script>
 
 <?php
-    // is a password change process?
+    // are we on a password change process?
     if($_REQUEST['action']=='password-reset')
     {
         $value = trim($_REQUEST['value']);

@@ -79,6 +79,13 @@ try
 	else if(!empty($_COOKIE["webuser"]))
 		$webuser->load_by_hash($_COOKIE['webuser']);
 
+    // check if the webuser wants to sign out
+    if(isset($_REQUEST['webuser_signout']))
+    {
+        $webuser->unset_cookie();
+        unset($webuser);
+    }
+
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 	date_default_timezone_set($webuser->timezone? $webuser->timezone : $website->default_timezone);
 

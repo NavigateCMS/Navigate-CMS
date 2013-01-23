@@ -235,11 +235,14 @@ foreach($navigate_files as $file)
         if(substr($file, 0, strlen('themes/ocean/'))!='themes/ocean/')
             continue;
     }
+
+    /* all files under plugins/ are safe to be added
     if(substr($file, 0, strlen('plugins/'))=='plugins/')
     {
         if(substr($file, 0, strlen('plugins/votes/'))!='plugins/votes/')
             continue;
     }
+    */
 
     if(substr($file, 0, strlen('lib/external/tinymce/'))=='lib/external/tinymce/')
     {
