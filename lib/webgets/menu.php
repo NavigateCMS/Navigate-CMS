@@ -82,7 +82,24 @@ function nvweb_menu($vars=array())
     if($vars['mode']=='next' || $vars['mode']=='previous')
         $out = nvweb_menu_render_arrow($vars);
     else
+    {
         $out = nvweb_menu_generate($vars['mode'], $vars['levels'], $parent, 0, $option, $vars['class']);
+
+        if($vars['mode'] == 'select')
+        {
+            nvweb_after_body('js', '
+                // jQuery required
+                $("select.menu_level_0").off("change").on("change", function()
+                {
+                    var option = $(this).find("option[value=" + $(this).val() + "]");
+                    if($(option).attr("target") == "_blank")
+                        window.open($(option).attr("href"));
+                    else
+                        window.location.replace($(option).attr("href"));
+                });
+            ');
+        }
+    }
 
 	return $out;
 }
@@ -94,7 +111,8 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 
 	$out = '';
 
-	if($level >= $levels && $levels > 0) return '';
+	if($level >= $levels && $levels > 0)
+        return '';
 	
 	nvweb_menu_load_structure($parent);
 			
@@ -132,11 +150,68 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$structure['dictionary'][$mid].'</a>';
 					if($option==$m)
 						return array_pop($out);
-					$out[] = nvweb_menu_generate($mode, $levels, $mid, $level+1);
+
+                    $out[] = nvweb_menu_generate($mode, $levels, $mid, $level+1);
 				}
 				$out[] = '</div>';		
 				$out = implode("\n", $out);	
 				break;
+
+            case 'select':
+                $out[] = '<select class="menu_level_'.$level.' '.$class.'">';
+                for($m=0; $m < count($structure['cat-'.$parent]); $m++)
+                {
+                    if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
+                        continue;
+
+                    if($structure['cat-'.$parent][$m]->visible == 0)
+                        continue;
+
+                    $mid = $structure['cat-'.$parent][$m]->id;
+
+                    // hide menu items without a title
+                    if(empty($structure['dictionary'][$mid]))
+                        continue;
+
+                    $aclass = '';
+                    if(in_array($mid, $current['hierarchy']))
+                        $aclass = ' class="menu_option_active" selected="selected"';
+
+                    $target = '';
+                    $act = nvweb_menu_action($mid);
+                    if(strpos($act, 'target="_blank"')!==false)
+                        $target = 'target="_blank"';
+                    if(strpos($act, 'onclick')!==false)
+                        $act = '#';
+                    $act = str_replace('target="_blank"', '', $act);
+                    $act = str_replace('href="', '', $act);
+                    $act = str_replace('"', '', $act);
+                    $act = trim($act);
+
+                    $out[] = '<option'.$aclass.' value="'.$mid.'" href="'.$act.'" '.$target.'>'
+                             .$structure['dictionary'][$mid]
+                             .'</option>';
+
+                    if($option==$m)
+                        return array_pop($out);
+
+                    $submenu = nvweb_menu_generate($mode, $levels, $mid, $level+1);
+                    $submenu = strip_tags($submenu, '<option>');
+
+                    $parts = explode('>', $submenu);
+                    $submenu = '';
+                    for($p=0; $p < count($parts); $p++)
+                    {
+                        if(strpos($parts[$p], '</option')!==false)
+                            $parts[$p] = '&ndash;&nbsp;'.$parts[$p];
+                    }
+                    $submenu = implode('>', $parts);
+
+                    $out[] = $submenu;
+                }
+                $out[] = '</select>';
+                $out = implode("\n", $out);
+                break;
 	
 			default:
 			case 'ul':

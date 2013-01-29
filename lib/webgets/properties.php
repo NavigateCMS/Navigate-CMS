@@ -325,11 +325,13 @@ function nvweb_properties_render($property, $vars)
             break;
 			
 		case 'article':
-			// not done
+			// TO DO
 			break;
 			
 		case 'category':
-			// not done
+			// use "return" attribute to determine what to return of a category (title, ID...)
+            $out = $property->value;
+            break;
 			
 		default:	
 	}

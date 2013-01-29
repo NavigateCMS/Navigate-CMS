@@ -199,7 +199,7 @@ function websites_list()
 	$navibars->add_actions(
         array(
             (($user->permission('websites.edit')=='true')? '<a href="?fid='.$_REQUEST['fid'].'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-            (($user->permission('websites.edit')=='true')? '<a href="?fid='.$_REQUEST['fid'].'&act=wizard"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').' [Wizard]</a>' : ''),
+            //(($user->permission('websites.edit')=='true')? '<a href="?fid='.$_REQUEST['fid'].'&act=wizard"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').' [Wizard]</a>' : ''),
             '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
             'search_form'
         )
