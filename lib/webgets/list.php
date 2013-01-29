@@ -444,7 +444,6 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 			break;
 
         case 'block':
-            // TODO: HERE!!!
             switch($tag['attributes']['value'])
             {
                 case 'title':

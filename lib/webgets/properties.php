@@ -28,6 +28,18 @@ function nvweb_properties($vars=array())
 				if(empty($vars['template']))
 					$vars['template'] = $DB->query_single('template', 'nv_items', ' id = '.protect($vars['id']));
 
+                // if template is not defined (embedded element), take its category template
+                if(empty($vars['template']))
+                    $vars['template'] = $DB->query_single(
+                        'template',
+                        'nv_structure',
+                        ' id = (
+                            SELECT category
+                            FROM nv_items
+                            WHERE id = '.intval($vars['id']).'
+                        )'
+                    );
+
 				$properties['item-'.$vars['id']] = property::load_properties("item", $vars['template'], 'item', $vars['id']);
 			}
 
@@ -169,7 +181,6 @@ function nvweb_properties($vars=array())
 
 			break;			
 	}
-	
 		
 	return $out;
 }
