@@ -1488,7 +1488,8 @@ function items_form($item)
 		
 		// Properties TAB (only if needed)
 		$properties_html = '';
-		if($item->association == 'free' && ($item->template > 0))
+
+		if($item->association == 'free' && !empty($item->template) && $item->template != '0')
 		{
 			// we already know the properties to show: template is set on item
 			$properties_html = navigate_property_layout_form('item', $item->template, 'item', $item->id);

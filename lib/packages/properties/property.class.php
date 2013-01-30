@@ -447,7 +447,6 @@ class property
 		global $DB;
 		global $website;
         global $theme;
-        global $properties;
 
 		// load properties associated with the element type
 		$e_properties = property::elements($template, $item_type);
