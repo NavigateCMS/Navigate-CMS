@@ -447,9 +447,10 @@ class property
 		global $DB;
 		global $website;
         global $theme;
-		
+        global $properties;
+
 		// load properties associated with the element type
-		$properties = property::elements($template, $item_type); //$element);
+		$e_properties = property::elements($template, $item_type);
 
 		// load multilanguage strings
 		$dictionary = webdictionary::load_element_strings('property-'.$element, $item_id);
@@ -458,43 +459,51 @@ class property
 		$DB->query('SELECT * FROM nv_properties_items 
  				     WHERE element = '.protect($item_type).'
 					   AND node_id = '.protect($item_id).'
-					   AND website = '.$website->id);					   
+					   AND website = '.$website->id,
+                    'array');
 			
 		$values = $DB->result();
-				
-		if(!is_array($values)) $values = array();
 
-		for($p = 0; $p < count($properties); $p++)
+		if(!is_array($values))
+            $values = array();
+
+        $o_properties = array();
+
+		for($p = 0; $p < count($e_properties); $p++)
 		{
-            if(isset($properties[$p]->dvalue))
-                $properties[$p]->value = $properties[$p]->dvalue;
+            if(is_object($e_properties[$p]))
+                $o_properties[$p] = clone $e_properties[$p];
+            else
+                $o_properties[$p] = $e_properties[$p];
+
+            if(isset($o_properties[$p]->dvalue))
+                $o_properties[$p]->value = $o_properties[$p]->dvalue;
 
 			foreach($values as $value)
 			{
-				if($value->property_id == $properties[$p]->id)
+    			if($value['property_id'] == $o_properties[$p]->id)
 				{
-					$properties[$p]->value = $value->value;
+    				$o_properties[$p]->value = $value['value'];
 
-					if($value->value=='[dictionary]')
+					if($value['value']=='[dictionary]')
 					{
-						$properties[$p]->value = array();
+						$o_properties[$p]->value = array();
 						foreach($website->languages_list as $lang)
 						{
-							$properties[$p]->value[$lang] = $dictionary[$lang]['property-'.$properties[$p]->id.'-'.$lang];
+							$o_properties[$p]->value[$lang] = $dictionary[$lang]['property-'.$o_properties[$p]->id.'-'.$lang];
 						}
 					}
 				}
 			}
 
-            if(substr($properties[$p]->name, 0, 1)=='@')  // get translation from theme dictionary
-                $properties[$p]->name = $theme->t(substr($properties[$p]->name, 1));
+            if(substr($o_properties[$p]->name, 0, 1)=='@')  // get translation from theme dictionary
+                $o_properties[$p]->name = $theme->t(substr($o_properties[$p]->name, 1));
 
-            if(is_object($properties[$p]->value))
-                $properties[$p]->value = (array)$properties[$p]->value;
+            if(is_object($o_properties[$p]->value))
+                $o_properties[$p]->value = (array)$o_properties[$p]->value;
 		}
 
-		return $properties;
-
+		return $o_properties;
 	}
 
     // called when using navigate cms

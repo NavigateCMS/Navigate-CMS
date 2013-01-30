@@ -388,6 +388,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         $out = nvweb_prepare_link($structure['routes'][$item->category]);
 					break;
 
+                case 'id':
+                    if($source=='structure' || $source=='category')
+                        $out = $item->id;
+                    else // source = 'item'?
+                        $out = $item->category;
+                    break;
+
 				default:
 					break;
 			}
@@ -485,6 +492,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 		default:
 			switch($tag['attributes']['value'])
 			{
+                case 'id':
+                    $out = $item->id;
+                    break;
+
 				case 'title':
 					$out = $item->dictionary[$current['lang']]['title'];
 

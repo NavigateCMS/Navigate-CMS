@@ -215,7 +215,8 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 	
 			default:
 			case 'ul':
-				$out[] = '<ul class="menu_level_'.$level.' '.$class.'">';				
+                $ul_items = 0;
+				$out[] = '<ul class="menu_level_'.$level.' '.$class.'">';
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
 				{					
 					if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
@@ -233,14 +234,21 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                     $aclass = '';
 					if(in_array($mid, $current['hierarchy']))
 						$aclass = ' class="menu_option_active"';
+
 					$out[] = '<li'.$aclass.'>';
 					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$structure['dictionary'][$mid].'</a>';
 					if($option==$m)
 						return array_pop($out);					
 					$out[] = nvweb_menu_generate($mode, $levels, $mid, $level+1);
-					$out[] = '</li>';				
+					$out[] = '</li>';
+                    $ul_items++;
 				}
-				$out[] = '</ul>';		
+                $out[] = '</ul>';
+                if($ul_items==0) // no option found, remove the last two lines (<ul> and </ul>)
+                {
+                    array_pop($out);
+                    array_pop($out);
+                }
 				$out = implode("\n", $out);			
 				break;
 		}
@@ -318,7 +326,6 @@ function nvweb_menu_load_dictionary()
 	if(empty($structure['dictionary']))
 	{
 		$structure['dictionary'] = array();
-		
 
 		$DB->query('SELECT node_id, text
 					  FROM nv_webdictionary 

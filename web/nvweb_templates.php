@@ -132,6 +132,7 @@ function nvweb_template_parse($template)
 	global $DB;
 	global $current;
 	global $website;
+    global $structure;
 	global $session;
 	
 	$html = $template;
@@ -203,9 +204,25 @@ function nvweb_template_parse($template)
 				
 			case 'dict':
 			case 'dictionary':
-				$content = $dictionary[$tag['attributes']['id']];
-				if(empty($content))
-					$content = $tag['attributes']['label'];
+                if(!empty($tag['attributes']['type']))
+                {
+                    if($tag['attributes']['type']=='structure' || $tag['attributes']['type']=='category')
+                    {
+                        // force loading dictionary for all elements in structure (for the current language)
+                        nvweb_menu_load_dictionary();
+                        $content = $structure['dictionary'][$tag['attributes']['id']];
+                    }
+                    else if($tag['attributes']['type']=='item')
+                    {
+                        $tmp = webdictionary::load_element_strings('item', $tag['attributes']['id']);
+                        $content = $tmp[$current['lang']]['title'];
+                    }
+                }
+                else
+                    $content = $dictionary[$tag['attributes']['id']];
+
+                if(empty($content))
+                    $content = $tag['attributes']['label'];
                 if(empty($content))
                     $content = $tag['attributes']['default'];
 				break;

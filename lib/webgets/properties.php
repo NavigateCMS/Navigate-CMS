@@ -22,7 +22,7 @@ function nvweb_properties($vars=array())
             break;
 
 		case 'item':
-			if(!isset($properties['item-'.$vars['id']]))	
+            if(!isset($properties['item-'.$vars['id']]))
 			{
 				// load item template
 				if(empty($vars['template']))
@@ -290,11 +290,17 @@ function nvweb_properties_render($property, $vars)
 			$extra = '';
 			
 			if(isset($vars['width']))
+            {
 				$add .= ' width="'.$vars['width'].'" ';
+                $extra .= '&width='.$vars['width'];
+            }
 			if(isset($vars['height']))
-				$add .= ' height="'.$vars['height'].'" ';		
+            {
+				$add .= ' height="'.$vars['height'].'" ';
+                $extra .= '&height='.$vars['height'];
+            }
 			if(isset($vars['border']))
-				$extra = '&border='.$vars['border'];							
+				$extra .= '&border='.$vars['border'];
 			
 			$img_url = NVWEB_OBJECT.'?type=image&id='.$property->value.$extra;
 			
