@@ -361,7 +361,7 @@ function websites_form($item)
 											$naviforms->textfield('domain', $item->domain),
 											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' naviwebs.net</span>' ));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(141, 'Carpeta').'</label>',
+	$navibars->add_tab_content_row(array(	'<label>'.t(141, 'Folder').'</label>',
 											$naviforms->textfield('folder', $item->folder),
 											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /new-website</span>' ));
 
@@ -399,29 +399,51 @@ function websites_form($item)
 												));
 	}
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
-											$naviforms->selectfield('permission',
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-												),
-												array(
-														0 => t(69, 'Published'),
-														1 => t(70, 'Private'),
-														2 => t(71, 'Closed')
-												),
-												$item->permission,
-												'',
-												false,
-												array(
-														0 => t(360, 'Visible to everybody'),
-														1 => t(359, 'Visible only to Navigate CMS users'),
-														2 => t(358, 'Hidden to everybody')
-												)
-											)
-										)
-									);
+	$navibars->add_tab_content_row(array(
+            '<label>'.t(68, 'Status').'</label>',
+            $naviforms->selectfield(
+                'permission',
+                array(
+                        0 => 0,
+                        1 => 1,
+                        2 => 2
+                ),
+                array(
+                        0 => t(69, 'Published'),
+                        1 => t(70, 'Private'),
+                        2 => t(71, 'Closed')
+                ),
+                $item->permission,
+                '',
+                false,
+                array(
+                        0 => t(360, 'Visible to everybody'),
+                        1 => t(359, 'Visible only to Navigate CMS users'),
+                        2 => t(358, 'Hidden to everybody')
+                )
+            )
+        )
+    );
+
+    $layout->add_script('
+        $("#permission").on("change", function()
+        {
+            if($(this).val() > 0)
+                $("#redirect_to").parent().show();
+            else
+                $("#redirect_to").parent().hide();
+        });
+
+        $("#permission").trigger("change");
+    ');
+
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(505, 'Redirect to').'</label>',
+            $naviforms->textfield('redirect_to', $item->redirect_to),
+            '<span class="navigate-form-row-info">'.t(230, 'Ex.').' /landing_page.html</span>'
+        )
+    );
+
 
 	$navibars->add_tab(t(63, "Languages"));
 

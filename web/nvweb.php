@@ -38,8 +38,12 @@ try
 		$website = nvweb_load_website_by_url($url);
 
 	if(	($website->permission == 2) || 
-		($website->permission == 1 && empty($_SESSION['APP_USER']))) 
-		nvweb_clean_exit();		
+		($website->permission == 1 && empty($_SESSION['APP_USER'])))
+    {
+        if(!empty($website->redirect_to))
+            header('location: '.$website->redirect_to);
+        nvweb_clean_exit();
+    }
 	
 	// global helper variables
 	$session = array();		// webuser session

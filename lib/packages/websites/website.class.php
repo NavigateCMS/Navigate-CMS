@@ -8,6 +8,7 @@ class website
 	public $subdomain; // usually "www"
 	public $domain; // naviwebs.net
 	public $folder; // usually empty, used when the website is IN a folder, ex. http://www.naviwebs.com/demo/homepage
+    public $redirect_to; // if the website is private or closed, redirect anonymous visitors to a real path
 	public $languages; // array('en' => array( 'language' => 'en', 'variant' => 'US', 'code' => 'en_US' => 'system_locale' => 'ENU_USA'), 'es_ES' => array(...), ...)
 	public $languages_published; // array ('en', 'es_ES')
 	public $date_format;
@@ -18,6 +19,7 @@ class website
 	public $block_types;
 	public $homepage;
 	public $default_timezone;
+    public $aliases;
 	//public $server_time_offset;
 	public $metatags;
 	public $mail_server;
@@ -69,7 +71,9 @@ class website
 		$this->subdomain		= $main->subdomain;
 		$this->domain			= $main->domain;				
 		$this->folder			= $main->folder;		
-		
+
+		$this->redirect_to		= $main->redirect_to;
+
 		$this->languages		    = mb_unserialize($main->languages);
 		$this->languages_published  = mb_unserialize($main->languages_published);
 		$this->date_format		= $main->date_format;
@@ -116,7 +120,10 @@ class website
 		$this->subdomain		= $_REQUEST['subdomain'];
 		$this->domain			= $_REQUEST['domain'];				
 		$this->folder			= $_REQUEST['folder'];				
-		$this->date_format		= $_REQUEST['date_format'];
+
+        $this->redirect_to		= $_REQUEST['redirect_to'];
+
+        $this->date_format		= $_REQUEST['date_format'];
 		$this->tinymce_css		= $_REQUEST['tinymce_css'];
 		$this->resize_uploaded_images = intval($_REQUEST['resize_uploaded_images']);
 
@@ -292,7 +299,7 @@ class website
 		global $DB;
 			
 		$ok = $DB->execute(' INSERT INTO nv_websites
-								(	id, name, protocol, subdomain, domain, folder, 
+								(	id, name, protocol, subdomain, domain, folder, redirect_to,
 									languages, languages_published,
 									aliases, date_format, tinymce_css, resize_uploaded_images,
 									statistics_script, permission,
@@ -306,6 +313,7 @@ class website
 								  '.protect($this->subdomain).',
 								  '.protect($this->domain).',
 								  '.protect($this->folder).',								  
+								  '.protect($this->redirect_to).',
 								  '.protect($this->languages).',
 								  '.protect($this->languages_published).',
 								  '.protect(json_encode($this->aliases)).',
@@ -385,6 +393,7 @@ class website
                     subdomain = ?,
                     domain	=   ?,
                     folder	=   ?,
+                    redirect_to = ?,
                     languages = ?,
                     languages_published = ?,
                     aliases = ?,
@@ -413,6 +422,7 @@ class website
                 $this->subdomain,
                 $this->domain,
                 $this->folder,
+                $this->redirect_to,
                 $this->languages,
                 $this->languages_published,
                 json_encode($this->aliases),
@@ -478,8 +488,8 @@ class website
     function create_default()
     {
         global $DB;
-        // check if there are really NO websites
 
+        // check if there are really NO websites
         $test = $DB->query_single('id', 'nv_websites');
         if(!empty($test))
         {
@@ -487,15 +497,31 @@ class website
             core_terminate();
         }
 
-        $url = parse_url(nvweb_self_url());
-        firephp_nv::log($url);
+        $url = nvweb_self_url();
+        $url = parse_url($url);
+
+        // do we have a subdomain in the url?
+        if(preg_match("/^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$/", $url['host']))
+        {
+            $domain = $url['host'];
+            $subdomain = '';
+        }
+        else
+        {
+            $host = explode('.', $url['host']);
+
+            $domain = array_pop($host);
+            $domain = array_pop($host) . '.' . $domain;
+            $subdomain = implode('.', $host);
+        }
 
         $this->name				= "Ocean";
 
         $this->protocol			= "http";
-        $this->subdomain		= $url['subdomain'];
-        $this->domain			= $url['host'];
+        $this->subdomain		= $subdomain;
+        $this->domain			= $domain;
         $this->folder			= '';
+        $this->redirect_to      = '';
         $this->date_format		= 'Y/m/d';
         $this->homepage			= '/en/home';
         $this->permission		= 0;
@@ -556,7 +582,6 @@ class website
    		$ts = $utc + $offset;
 
 		return $ts;
-
 	}
 
     public function languages()
