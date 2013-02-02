@@ -226,13 +226,16 @@ function nvweb_blocks_render($type, $trigger, $action, $zone)
 {
 	global $current;
 	global $website;
+    global $theme;
 
-    if(!is_array($website->block_types))
-        $website->block_types = (array)$website->block_types;
+    $block_types = array_merge((array)$website->block_types, (array)$theme->blocks);
 
-	foreach($website->block_types as $btype)
-	{	
-		if($btype['title']==$type)	$type  = $btype;	
+	foreach($block_types as $btype)
+	{
+        $btype = (array)$btype;
+
+		if($btype['title']==$type || $btype['code']==$type)
+            $type  = $btype;
 	}
 	
 	$lang = $current['lang'];
@@ -240,7 +243,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone)
 	$sizes = '';
 	
 	if(!empty($type['width'])) $sizes.= ' width="'.$type['width'].'" ';
-	if(!empty($type['height'])) $sizes.= ' height="'.$type['height'].'" ';	
+	if(!empty($type['height'])) $sizes.= ' height="'.$type['height'].'" ';
 
 	switch($trigger['trigger-type'][$lang])
 	{

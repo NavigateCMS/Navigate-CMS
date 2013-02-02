@@ -191,12 +191,14 @@ function nvweb_content_fix_paths($in)
 	
 	$out = $in;
 	$nv_download = basename(NAVIGATE_DOWNLOAD);
-	
+
 	if(is_array($data[0]))
 	{
 		foreach($data[0] as $url)
 		{
+            $url = html_entity_decode($url, ENT_QUOTES, 'UTF-8');
 			$url_parsed = parse_url($url);
+
 			if(strpos($url_parsed['path'], $nv_download) !== false)
 			{
 				$out = str_replace($url, NVWEB_OBJECT.'?'.$url_parsed['query'], $out);
