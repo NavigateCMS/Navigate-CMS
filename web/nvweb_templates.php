@@ -620,7 +620,7 @@ function nvweb_country_language()
  * Apply some template tweaks to improve Navigate CMS theme developing experience like:
  *
  * <ul>
- * <li>Guess absolute paths to images, stylesheets and scripts</li>
+ * <li>Guess absolute paths to images, stylesheets and scripts (even on urls without http, "//")</li>
  * <li>Convert &lt;a rel="video"&gt; and &lt;a rel="audio"&gt;  to &lt;video&gt; and &lt;audio&gt; tags</li>
  * <li>Process &lt;img&gt; tags to generate optimized images</li>
  * <li>Add Navigate CMS content default styles</li>
@@ -640,7 +640,6 @@ function nvweb_template_tweaks($html)
 	else
 		$website_absolute_path = $website->absolute_path(false);
 	
-	
 	// stylesheets
 	$tags = nvweb_tags_extract($html, 'link', NULL, true, 'UTF-8');
 	foreach($tags as $tag)
@@ -649,7 +648,12 @@ function nvweb_template_tweaks($html)
 		if(substr($tag['attributes']['href'], 0, 7)!='http://' &&
 		   substr($tag['attributes']['href'], 0, 8)!='https://')
 		{
-			$src = $website_absolute_path.'/'.$tag['attributes']['href'];
+            // treat "//" paths (without http or https)
+            if(substr($tag['attributes']['href'], 0, 2)=='//')
+                $src = $website->protocol.substr($tag['attributes']['href'], 2);
+            else
+			    $src = $website_absolute_path.'/'.$tag['attributes']['href'];
+
 			$tag['new'] = '<link href="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
 			{
@@ -669,7 +673,11 @@ function nvweb_template_tweaks($html)
 		if(substr($tag['attributes']['src'], 0, 7)!='http://' && 
 		   substr($tag['attributes']['src'], 0, 8)!='https://')
 		{
-			$src = $website_absolute_path.'/'.$tag['attributes']['src'];
+            if(substr($tag['attributes']['src'], 0, 2)=='//')
+                $src = $website->protocol.substr($tag['attributes']['src'], 2);
+            else
+                $src = $website_absolute_path.'/'.$tag['attributes']['src'];
+
 			$tag['new'] = '<script src="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
 			{
@@ -691,7 +699,10 @@ function nvweb_template_tweaks($html)
 		   substr($tag['attributes']['src'], 0, 8)!='https://' &&
 		   substr($tag['attributes']['src'], 0, 5)!='data:')
 		{
-			$src = $website_absolute_path.'/'.$tag['attributes']['src'];
+            if(substr($tag['attributes']['src'], 0, 2)=='//')
+                $src = $website->protocol.substr($tag['attributes']['src'], 2);
+            else
+			    $src = $website_absolute_path.'/'.$tag['attributes']['src'];
 			
 			$tag['new'] = '<img src="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
@@ -744,7 +755,8 @@ function nvweb_template_tweaks($html)
 
 		foreach($tag['attributes'] as $name => $value)
 		{
-			if($name!='src') $tag['new'] .= $name.'="'.$value.'" ';
+			if($name!='src')
+                $tag['new'] .= $name.'="'.$value.'" ';
 			
 			if($name=='width' && strpos($src, '?')!==false)
 				$src .= '&width='.$value;
