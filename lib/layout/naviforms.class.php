@@ -335,7 +335,7 @@ class naviforms
 		
 		$height = 400;
 		
-		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.htmlentities($value).'</textarea>';
+		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', false).'</textarea>';
 
         // determine stylesheet for content (website > theme + default navigate cms)
 		$content_css = $website->tinymce_css;

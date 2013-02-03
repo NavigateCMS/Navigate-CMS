@@ -139,11 +139,11 @@ class item
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
 					$this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
 			}
-		
+
 			if(substr($key, 0, strlen('path-'))=='path-')
 				$this->paths[substr($key, strlen('path-'))] = $value;
-		}	
-		
+		}
+
 		// image galleries
 		$this->galleries	= array();	
 		
