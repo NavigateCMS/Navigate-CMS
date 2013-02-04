@@ -330,7 +330,7 @@ function files_browser($parent, $search="")
 				// General settings
 		        runtimes : "flash,silverlight,html5",
 				url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
-				max_file_size : "50mb",
+				max_file_size : "'.NAVIGATE_UPLOAD_MAX_SIZE.'mb",
 				chunk_size : "1mb",
 				unique_names: false,
 				sortable: false,

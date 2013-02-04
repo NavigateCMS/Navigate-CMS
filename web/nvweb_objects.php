@@ -10,9 +10,9 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 	$item = new file();	
 	
 	header('Cache-Control: private');
-	header('Pragma: private');		
-	
-	$type = $_REQUEST['type'];
+	header('Pragma: private');
+
+    $type = $_REQUEST['type'];
 	$id = $_REQUEST['id'];
 	
 	if(!empty($_REQUEST['id']))
@@ -133,17 +133,52 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 		
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filemtime($path).'-'.$item->permission.$etag_add);
 						
-			header('ETag: "'.$etag.'"');					
-			header('Content-type: '.$item->mime);
-			header("Content-Length: ". $item->size); 
+			header('ETag: "'.$etag.'"');
+            header('Content-type: '.$item->mime);
+            header("Accept-Ranges: bytes");
 
-			if(empty($_REQUEST['disposition'])) $_REQUEST['disposition'] = 'attachment';
-			header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');			
-			
-			// check the browser cache and stop downloading again the file
-			$cached = file::cacheHeaders(filemtime($path), $etag);			
+            if(empty($_REQUEST['disposition'])) $_REQUEST['disposition'] = 'attachment';
+            header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');
 
-			if(!$cached) readfile($path);		
+            // check the browser cache and stop downloading again the file
+            $cached = file::cacheHeaders(filemtime($path), $etag);
+
+            if(!$cached)
+            {
+                $range = 0;
+
+                $size = $item->size;
+
+                if(isset($_SERVER['HTTP_RANGE']))
+                {
+                    list($a, $range) = explode("=", $_SERVER['HTTP_RANGE']);
+                    str_replace($range, "-", $range);
+                    $size2 = $size - 1;
+                    $new_length = $size - $range;
+                    header("HTTP/1.1 206 Partial Content");
+                    header("Content-Length: $new_length");
+                    header("Content-Range: bytes $range$size2/$size");
+                }
+                else
+                {
+                    $size2 = $size - 1;
+                    header("Content-Range: bytes 0-$size2/$size");
+                    header("Content-Length: ".$size);
+                }
+
+                $fp = fopen($path,"rb");
+                fseek($fp, $range);
+                while(!feof($fp) and (connection_status()==0))
+                {
+                    set_time_limit(0);
+                    print(fread($fp, 1024 * 1024)); // 1 MB per second
+                    flush();
+                    ob_flush();
+                    sleep(1);
+                }
+                fclose($fp);
+
+            }
 			break;
 	}
 	

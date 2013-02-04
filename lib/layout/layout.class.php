@@ -625,6 +625,7 @@ class layout
         $this->add_script(' var NAVIGATE_DOWNLOAD = "'.NAVIGATE_DOWNLOAD.'"; ');
         $this->add_script(' var NAVIGATE_URL = "'.NAVIGATE_URL.'"; ');
         $this->add_script(' var NAVIGATE_APP = "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'"; ');
+        $this->add_script(' var NAVIGATE_MAX_UPLOAD_SIZE = '.NAVIGATE_UPLOAD_MAX_SIZE.'; ');
         $this->add_script('
             var navigate_lang_dictionary = {
                 6: "'.t(6, 'Loading').'",
