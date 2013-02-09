@@ -638,6 +638,62 @@ class naviforms
 
         return implode("\n", $out);
     }
+
+    function multiselect($id, $values, $texts, $selected_values=array(), $onChange="", $titles=array(), $style=" height: 200px; width: 600px;")
+    {
+        global $layout;
+
+        $out = array();
+
+        $out[] = '<select name="'.$id.'[]" id="'.$id.'" multiple="multiple" style=" '.$style.' " >';
+
+        for($i=0; $i < count($values); $i++)
+        {
+            if( (is_array($selected_values) && in_array($values[$i], $selected_values)) ||
+                ($values[$i]==$selected_values))
+                $out[] = '<option value="'.$values[$i].'" selected="selected"  title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            else
+                $out[] = '<option value="'.$values[$i].'"  title="'.$titles[$i].'">'.$texts[$i].'</option>';
+        }
+
+        $out[] = '</select>';
+
+        $layout->add_script('
+             $.uix.multiselect.i18n["navigatecms"] = {
+                itemsSelected: "'.t(510, 'Selected items').': {count}",            // 0, 1
+                itemsSelected_plural: "'.t(510, 'Selected items').': {count}",    // n
+                //itemsSelected_plural_two: ...                      // 2
+                //itemsSelected_plural_few: ...                      // 3, 4
+                itemsAvailable: "'.t(511, 'Available items').': {count}",
+                itemsAvailable_plural: "'.t(511, 'Available items').': {count}",
+                //itemsAvailable_plural_two: ...
+                //itemsAvailable_plural_few: ...
+                itemsFiltered: "{count}",
+                itemsFiltered_plural: "{count}",
+                //itemsFiltered_plural_two: ...
+                //itemsFiltered_plural_few: ...
+                selectAll: "'.t(481, 'Select all').'",
+                deselectAll: "'.t(507, 'Deselect all').'",
+                search: "'.t(41, "Search").'",
+                collapseGroup: "'.t(508, "Collapse").'",
+                expandGroup: "'.t(509, "Expand").'",
+                selectAllGroup: "'.t(481, 'Select all').'",
+                deselectAllGroup: "'.t(507, 'Deselect all').'"
+            };
+            $("#'.$id.'").multiselect({
+                "locale": "navigatecms",
+                splitRatio: 0.55,
+                sortable: true,
+                moveEffect: "fade",
+                multiselectChange: function(evt, iu)
+                {
+                    '.(!empty($onChange)? $onChange.'(evt, ui)' : '').'
+                }
+            });
+        ');
+
+        return implode("\n", $out);
+    }
 }
 
 ?>

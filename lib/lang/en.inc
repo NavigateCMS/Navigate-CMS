@@ -504,3 +504,9 @@
 503     # Now
 504     # Time
 505     # Redirect to
+506     # Groups
+507     # Deselect all
+508     # Collapse
+509     # Expand
+510     # Selected items
+511     # Available items

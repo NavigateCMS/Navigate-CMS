@@ -176,6 +176,9 @@ class layout
         $this->add_script_tag('lib/external/colorpicker/js/colorpicker.js');
         $this->add_style_tag('lib/external/colorpicker/css/colorpicker.css');
 
+        $this->add_script_tag('lib/external/jquery.uix.multiselect/js/jquery-multiselect-2.0.js');
+        $this->add_style_tag('lib/external/jquery.uix.multiselect/css/jquery-multiselect-2.0.css');
+
 		//$this->add_style_tag('css/skins/blue.css');	
 		$this->add_style_tag('css/silk-sprite/silk-sprite.css');
 

@@ -76,6 +76,9 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://ivaynberg.github.com/select2" target="_blank">Select2 v3.2</a><br />' ));
 
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+                                            '<a href="http://mind2soft.com/labs/jquery/multiselect/" target="_blank">jQuery UIx Multiselect v2.0RC</a><br />' ));
+
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.prokvk.com/en/kvatree-jquery-plugin.html" target="_blank">kvaTree v1.0</a><br />' ));
 

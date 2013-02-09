@@ -1969,3 +1969,22 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 .ui-timepicker-rtl{ direction: rtl; }
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
+
+
+/* css for uix.multiselect */
+
+.uix-multiselect .ui-widget-header .uix-search
+{
+    height: 8px;
+}
+
+.uix-multiselect .option-element, .dragged-element
+{
+    padding: 4px;
+    background-image: none;
+}
+
+.uix-multiselect .ui-widget-header div.header-text
+{
+    font-weight: normal;
+}

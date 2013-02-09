@@ -504,3 +504,9 @@
 503     # Ahora
 504     # Hora
 505     # Redirigir a
+506     # Grupos
+507     # Deseleccionar todo
+508     # Plegar
+509     # Desplegar
+510     # Elementos seleccionados
+511     # Elementos disponibles
