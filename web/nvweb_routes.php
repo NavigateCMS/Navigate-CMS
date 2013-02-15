@@ -367,16 +367,17 @@ function nvweb_route_parse($route="")
 function nvweb_check_permission()
 {
 	global $current;
+    global $webuser;
 	
 	$permission = true;
 	
 	switch($current['object']->permission)
 	{
-		case 2:	// not visible for ANYBODY
+		case 2:	// hidden to ANYONE
 			$permission = false;
 			break;
 			
-		case 1:	// not visible to ANYBODY except NAVIGATE users
+		case 1:	// hidden to ANYBODY except NAVIGATE users
 			$permission = (!empty($_SESSION['APP_USER']));
 			break;
 			
@@ -393,7 +394,18 @@ function nvweb_check_permission()
 		
 		switch($current['object']->access)
 		{
-			case 2:	// accessible to NOT SIGNED IN visitors
+            case 3: // accessible to SELECTED WEB USER GROUPS only
+                $access = false;
+                $groups = $current['object']->groups;
+                if( !empty($current['webuser']) )
+                {
+                    $groups = array_intersect($webuser->groups, $groups);
+                    if(count($groups) > 0)
+                        $access = true;
+                }
+                break;
+
+            case 2:	// accessible to NOT SIGNED IN visitors
 				$access = empty($current['webuser']);
 				break;
 			
@@ -415,6 +427,7 @@ function nvweb_check_permission()
 function nvweb_object_enabled($object)
 {
 	global $current;
+    global $webuser;
 	
 	$enabled = true;
 
@@ -443,7 +456,18 @@ function nvweb_object_enabled($object)
 		
 		switch($object->access)
 		{
-			case 2:	// accessible to NOT SIGNED IN visitors ONLY
+            case 3: // accessible to SELECTED WEB USER GROUPS only
+                $access = false;
+                $groups = $current['object']->groups;
+                if( !empty($current['webuser']) )
+                {
+                    $groups = array_intersect($webuser->groups, $groups);
+                    if(count($groups) > 0)
+                        $access = true;
+                }
+                break;
+
+            case 2:	// accessible to NOT SIGNED IN visitors ONLY
 				$access = empty($current['webuser']);
 				break;
 			

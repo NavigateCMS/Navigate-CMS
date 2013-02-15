@@ -7,6 +7,7 @@ class webuser
 	public $username;
 	public $password;
 	public $email;
+    public $groups;
 	public $fullname;
 	public $gender; // male / female / (empty)
 	public $avatar;
@@ -90,16 +91,21 @@ class webuser
 		$this->newsletter	= $main->newsletter;
 		$this->activation_key	= $main->activation_key;
 		$this->cookie_hash	= $main->cookie_hash;
-		$this->blocked		= $main->blocked;				
+		$this->blocked		= $main->blocked;
+
+        // to get the array of groups first we remove the "g" character
+        $groups = str_replace('g', '', $main->groups);
+        $this->groups	    = explode(',', $groups);
 	}
 	
 	public function load_from_post()
-	{		
+	{
 		//$this->website      = $_REQUEST['webuser-website'];
 		$this->username		= trim($_REQUEST['webuser-username']);
 		if(!empty($_REQUEST['webuser-password']))
 			$this->set_password($_REQUEST['webuser-password']);			
    		$this->email	    = $_REQUEST['webuser-email'];
+   		$this->groups	    = $_REQUEST['webuser-groups'];
 		$this->fullname		= $_REQUEST['webuser-fullname'];
 		$this->gender		= $_REQUEST['webuser-gender'][0];		
 		$this->avatar		= $_REQUEST['webuser-avatar'];		
@@ -125,8 +131,6 @@ class webuser
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 		  return $this->update();
 		else
@@ -160,7 +164,7 @@ class webuser
 		global $website;
 
 		$ok = $DB->execute(' INSERT INTO nv_webusers
-								(	id, website, username, password, email, fullname, gender, avatar, birthdate, 
+								(	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
 									language, country, timezone, address, zipcode, location, phone, social_website,
 									joindate, newsletter, activation_key, cookie_hash, blocked)
 								VALUES 
@@ -169,6 +173,7 @@ class webuser
 								  '.protect($this->username).',
 								  '.protect($this->password).',
 								  '.protect($this->email).',
+								  '.protect('g'.implode(',g', $this->groups)).',
 								  '.protect($this->fullname).',
 								  '.protect($this->gender).',								  
 								  '.protect($this->avatar).',								  
@@ -205,6 +210,7 @@ class webuser
 								  username = '.protect($this->username).',
 								  password = '.protect($this->password).',
 								  email = '.protect($this->email).',
+								  groups = '.protect('g'.implode(',g', $this->groups)).',
 								  fullname = '.protect($this->fullname).',
 								  gender = '.protect($this->gender).',
 								  avatar = '.protect($this->avatar).',								  
@@ -402,7 +408,7 @@ class webuser
         $out = array();
 
         $DB->query('
-            SELECT id, website, username, email, fullname, gender,
+            SELECT id, website, username, email, groups, fullname, gender,
                 '/*avatar,*/.'
                 birthdate, language, country, timezone,
                 address, zipcode, location, phone, social_website,
@@ -415,6 +421,7 @@ class webuser
             t(177, 'Website').' [NV]',
             t(1, 'User'),
             t(44, 'E-Mail'),
+            t(506, 'Groups'),
             t(159, 'Name'),
             t(304, 'Gender'),
             //(246, 'Avatar'),

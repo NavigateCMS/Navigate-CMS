@@ -337,8 +337,33 @@ function nvweb_properties_render($property, $vars)
             break;
 
         case 'video':
-            // TO DO: put HTML code for video (if requested)
-            $out = $property->value;
+            // TODO: value may be a numeric file ID, a Youtube/Vimeo code (not URL), or a full URL
+            $video_id = $property->value;
+
+            $add = '';
+            if(isset($vars['width']))
+                $add .= ' width="'.$vars['width'].'" ';
+            if(isset($vars['height']))
+                $add .= ' height="'.$vars['height'].'" ';
+
+            if(is_numeric($video_id))
+            {
+                $file = new file();
+                $file->load($property->value);
+
+                $vsrc = NVWEB_OBJECT.'?type=file&id='.$file->id.'&disposition=inline';
+
+                $out = '
+                    <video id="video-file-'.$video_id.'" '.$add.' controls="controls" preload="metadata" poster="">
+                        <source src="'.$vsrc.'" type="'.$file->mime.'" />
+                        <p>Error loading video</p>
+                    </video>
+                ';
+            }
+            else
+            {
+
+            }
             break;
 			
 		case 'article':

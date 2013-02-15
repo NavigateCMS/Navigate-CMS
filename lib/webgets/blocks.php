@@ -10,8 +10,16 @@ function nvweb_blocks($vars=array())
     $webget = 'blocks';
 
 	$out = '';
-	
-    $access = (!empty($current['webuser'])? 1 : 2); // 1: only signed in users, 2: only NON signed in users
+
+    $access = array();
+    $access[] = 0;
+    if(empty($current['webuser'])) // 1: only signed in users, 2: only NON signed in users
+        $access[] = 2;
+    else
+    {
+        $access[] = 1;
+        $access[] = 3;
+    }
 
     // blocks type cache
     if(empty($webgets[$webget]['block_types']))
@@ -48,7 +56,7 @@ function nvweb_blocks($vars=array())
                            AND website = '.$website->id.'
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-                           AND (access = 0 OR access = '.$access.')
+                           AND access IN('.implode(',', $access).')
                            AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
                            AND id = '.protect($vars['id'])
             );
@@ -66,7 +74,7 @@ function nvweb_blocks($vars=array())
 						   AND website = '.$website->id.'
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-                           AND (access = 0 OR access = '.$access.')
+                           AND access IN('.implode(',', $access).')
                            AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
 					  ORDER BY position ASC');
 		
@@ -91,7 +99,7 @@ function nvweb_blocks($vars=array())
 						   AND website = '.$website->id.'
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-                           AND (access = 0 OR access = '.$access.')
+                           AND access IN('.implode(',', $access).')
                            AND fixed = 1
                            AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
 					  ORDER BY position ASC');
@@ -110,7 +118,7 @@ function nvweb_blocks($vars=array())
 						   AND website = '.$website->id.'
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-                           AND (access = 0 OR access = '.$access.')
+                           AND access IN('.implode(',', $access).')
                            AND id NOT IN('.implode(",", $fixed_rows_ids).')
                            AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
 						 ORDER BY RAND()');

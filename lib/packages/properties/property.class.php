@@ -34,8 +34,9 @@ class property
         // Video
         // Source code
         // Rich text area (multi)
-		// Article (not yet)
-		// Category (not yet)		
+        // Web user groups
+        // Category (Structure entry)
+		// Product (not yet!)
 	
 	public function load($id)
 	{
@@ -359,28 +360,30 @@ class property
 	
 	public static function types()
 	{
-		$types = array(	'value'			=>	t(193, 'Value'),
-						'boolean'		=>  t(206, 'Boolean'),
-						'option' 		=>	t(194, 'Option'),
-						'moption' 		=>	t(211, 'Multiple option'),
-						'text'			=>	t(54, 'Text'),
-						'textarea'		=>	t(195, 'Textarea'),
-						'rich_textarea'	=>	t(488, 'Rich textarea'),
-						'date'			=>	t(86, 'Date'),
-						'datetime'		=>	t(196, 'Date & time'),
-						'link'			=>	t(197, 'Link'),
-						'image'			=>	t(157, 'Image'),
-						'file'			=>	t(82, 'File'),
-						'video'			=>	t(272, 'Video'),
-						'color' 		=>  t(441, 'Color'),
-                        'comment'		=>  t(205, 'Comment'),
-						'rating'		=>	t(222, 'Rating'),
-						'country'		=>	t(224, 'Country'),
-						'coordinates'	=>	t(297, 'Coordinates'),
-						'article'		=>	t(198, 'Article'),
-						'category'		=>	t(78, 'Category'),
-                        'source_code'   =>  t(489, 'Source code')
-						);	
+		$types = array(
+            'value'			=>	t(193, 'Value'),
+            'boolean'		=>  t(206, 'Boolean'),
+            'option' 		=>	t(194, 'Option'),
+            'moption' 		=>	t(211, 'Multiple option'),
+            'text'			=>	t(54, 'Text'),
+            'textarea'		=>	t(195, 'Textarea'),
+            'rich_textarea'	=>	t(488, 'Rich textarea'),
+            'date'			=>	t(86, 'Date'),
+            'datetime'		=>	t(196, 'Date & time'),
+            'link'			=>	t(197, 'Link'),
+            'image'			=>	t(157, 'Image'),
+            'file'			=>	t(82, 'File'),
+            'video'			=>	t(272, 'Video'),
+            'color' 		=>  t(441, 'Color'),
+            'comment'		=>  t(205, 'Comment'),
+            'rating'		=>	t(222, 'Rating'),
+            'country'		=>	t(224, 'Country'),
+            'coordinates'	=>	t(297, 'Coordinates'),
+            'product'		=>	t(198, 'Product'),
+            'category'		=>	t(78, 'Category'),
+            'source_code'   =>  t(489, 'Source code'),
+            'webuser_groups'=>  t(512, 'Selected web user groups')
+        );
 						
 		return $types;		
 	}
@@ -468,12 +471,16 @@ class property
 
         $o_properties = array();
 
-		for($p = 0; $p < count($e_properties); $p++)
+        if(!is_array($e_properties))
+            $e_properties = array();
+
+        $p = 0;
+		foreach($e_properties as $e_property)
 		{
-            if(is_object($e_properties[$p]))
-                $o_properties[$p] = clone $e_properties[$p];
+            if(is_object($e_property))
+                $o_properties[$p] = clone $e_property;
             else
-                $o_properties[$p] = $e_properties[$p];
+                $o_properties[$p] = $e_property;
 
             if(isset($o_properties[$p]->dvalue))
                 $o_properties[$p]->value = $o_properties[$p]->dvalue;
@@ -500,6 +507,8 @@ class property
 
             if(is_object($o_properties[$p]->value))
                 $o_properties[$p]->value = (array)$o_properties[$p]->value;
+
+            $p++;
 		}
 
 		return $o_properties;
@@ -516,35 +525,41 @@ class property
 		// load properties associated with the element type
 		$properties = property::elements($_REQUEST['property-template'], $_REQUEST['property-element']);
 
-		for($p = 0; $p < count($properties); $p++)
+        if(!is_array($properties))
+            $properties = array();
+
+		foreach($properties as $property)
 		{
 			/* we ALWAYS SAVE the property value, even if it is empty
-			$property_empty = empty($_REQUEST['property-'.$properties[$p]->id]);
+			$property_empty = empty($_REQUEST['property-'.$property->id]);
 			if($property_empty) // maybe is a multilanguage property?
 			{
 				foreach($website->languages_list as $lang)
-					$property_empty = $property_empty && empty($_REQUEST['property-'.$properties[$p]->id.'-'.$lang]);
+					$property_empty = $property_empty && empty($_REQUEST['property-'.$property->id.'-'.$lang]);
 			}
 */			// has value? (direct or multilanguage)
 //			if(!$property_empty)
 //			{		
 				// multilanguage property?
-				if(in_array($properties[$p]->type, array('text', 'textarea', 'link', 'rich_textarea')))
-					$_REQUEST['property-'.$properties[$p]->id] = '[dictionary]';
+				if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
+					$_REQUEST['property-'.$property->id] = '[dictionary]';
 				
 				// date/datetime property?
-				if($properties[$p]->type=='date' || $properties[$p]->type=='datetime')
-					$_REQUEST['property-'.$properties[$p]->id] = core_date2ts($_REQUEST['property-'.$properties[$p]->id]);
+				if($property->type=='date' || $property->type=='datetime')
+					$_REQUEST['property-'.$property->id] = core_date2ts($_REQUEST['property-'.$property->id]);
 					
-				if($properties[$p]->type=='moption' && !empty($_REQUEST['property-'.$properties[$p]->id]))
-					$_REQUEST['property-'.$properties[$p]->id] = implode(',', $_REQUEST['property-'.$properties[$p]->id]);		
+				if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
+					$_REQUEST['property-'.$property->id] = implode(',', $_REQUEST['property-'.$property->id]);		
 				
-				if($properties[$p]->type=='coordinates')
-					$_REQUEST['property-'.$properties[$p]->id] = $_REQUEST['property-'.$properties[$p]->id.'-latitude'].'#'.$_REQUEST['property-'.$properties[$p]->id.'-longitude'];	
+				if($property->type=='coordinates')
+					$_REQUEST['property-'.$property->id] = $_REQUEST['property-'.$property->id.'-latitude'].'#'.$_REQUEST['property-'.$property->id.'-longitude'];
+
+                if($property->type=='webuser_groups' && !empty($_REQUEST['property-'.$property->id]))
+                    $_REQUEST['property-'.$property->id] = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
 								
 				// remove the old element
 				$DB->execute('DELETE FROM nv_properties_items
-								WHERE property_id = '.protect($properties[$p]->id).'
+								WHERE property_id = '.protect($property->id).'
 								  AND element = '.protect($item_type).'
 								  AND node_id = '.protect($item_id).'
 								  AND website = '.$website->id);
@@ -555,29 +570,29 @@ class property
 								VALUES
 								(0,
 								 '.$website->id.',
-								 '.protect($properties[$p]->id).',
+								 '.protect($property->id).',
 								 '.protect($item_type).',
 								 '.protect($item_id).',
-								 '.protect($properties[$p]->name).',
-								 '.protect($_REQUEST['property-'.$properties[$p]->id]).'
+								 '.protect($property->name).',
+								 '.protect($_REQUEST['property-'.$property->id]).'
 								)');
 								
 				$pid = $DB->get_last_id();
 
 				// set the dictionary for the multilanguage properties
-				if(in_array($properties[$p]->type, array('text', 'textarea', 'rich_textarea')))
+				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')))
 				{
 					foreach($website->languages_list as $lang)
 					{
-						$dictionary[$lang]['property-'.$properties[$p]->id.'-'.$lang] = $_REQUEST['property-'.$properties[$p]->id.'-'.$lang];
+						$dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
 					}					
 				}
-                else if($properties[$p]->type == 'link')
+                else if($property->type == 'link')
                 {
                     foreach($website->languages_list as $lang)
                     {
-                        $link = $_REQUEST['property-'.$properties[$p]->id.'-'.$lang.'-link'].'##'.$_REQUEST['property-'.$properties[$p]->id.'-'.$lang.'-title'];
-                        $dictionary[$lang]['property-'.$properties[$p]->id.'-'.$lang] = $link;
+                        $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].'##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'];
+                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
                     }
                 }
             /*
@@ -586,7 +601,7 @@ class property
                         {
                             // remove the property value assigned (if any)
                             $DB->execute('DELETE FROM nv_properties_items
-                                                WHERE property_id = '.protect($properties[$p]->id).'
+                                                WHERE property_id = '.protect($property->id).'
                                                   AND element = '.protect($item_type).'
                                                   AND node_id = '.protect($item_id));
                         }
@@ -613,38 +628,44 @@ class property
    		// load properties associated with the element type
    		$properties = property::elements($template, $item_type);
 
-   		for($p = 0; $p < count($properties); $p++)
+        if(!is_array($properties))
+            $properties = array();
+
+        foreach($properties as $property)
    		{
-            if(!isset($properties_assoc[$properties[$p]->name]) && !isset($properties_assoc[$properties[$p]->id]))
+            if(!isset($properties_assoc[$property->name]) && !isset($properties_assoc[$property->id]))
                 continue;
 
             $values_dict = array();
 
             // we try to find the property value by "property name", if empty then we try to find it via "property id"
-            $value = $properties_assoc[$properties[$p]->name];
+            $value = $properties_assoc[$property->name];
 
             if(empty($value))
-                $value = $properties_assoc[$properties[$p]->id];
+                $value = $properties_assoc[$property->id];
 
             // multilanguage property?
-            if(in_array($properties[$p]->type, array('text', 'textarea', 'link', 'rich_textarea')))
+            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
             {
-                $values_dict = $properties_assoc[$properties[$p]->name];
+                $values_dict = $properties_assoc[$property->name];
                 if(empty($values_dict))
-                    $values_dict = $properties_assoc[$properties[$p]->id];
+                    $values_dict = $properties_assoc[$property->id];
 
                 $value = '[dictionary]';
             }
 
-            if($properties[$p]->type=='moption' && !empty($_REQUEST['property-'.$properties[$p]->id]))
+            if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
                 $value = implode(',', $value);
 
-            if($properties[$p]->type=='coordinates')
+            if($property->type=='coordinates')
                 $value = $value['latitude'].'#'.$value['longitude'];
 
-            // remove the old element
+            if($property->type=='webuser_groups' && !empty($value))
+                $value = 'g'.implode(',g', $value);
+
+               // remove the old element
             $DB->execute('DELETE FROM nv_properties_items
-                            WHERE property_id = '.protect($properties[$p]->id).'
+                            WHERE property_id = '.protect($property->id).'
                               AND element = '.protect($item_type).'
                               AND node_id = '.protect($item_id).'
                               AND website = '.$website->id);
@@ -655,21 +676,21 @@ class property
                             VALUES
                             (0,
                              '.$website->id.',
-                             '.protect($properties[$p]->id).',
+                             '.protect($property->id).',
                              '.protect($item_type).',
                              '.protect($item_id).',
-                             '.protect($properties[$p]->name).',
+                             '.protect($property->name).',
                              '.protect($value).'
                             )');
 
             $pid = $DB->get_last_id();
 
             // set the dictionary for the multilanguage properties
-            if(in_array($properties[$p]->type, array('text', 'textarea', 'link', 'rich_textarea')))
+            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
             {
                 foreach($website->languages_list as $lang)
                 {
-                    $dictionary[$lang]['property-'.$properties[$p]->id.'-'.$lang] = $values_dict[$lang];
+                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$lang];
                 }
             }
    		}
@@ -738,6 +759,10 @@ class property
 
         if($property->type=='coordinates')
             $value = $value['latitude'].'#'.$value['longitude'];
+
+        if($property->type=='webuser_groups' && !empty($value))
+            $value = 'g'.implode(',g', $value);
+
 
         // now we insert a new row
         $DB->execute('INSERT INTO nv_properties_items

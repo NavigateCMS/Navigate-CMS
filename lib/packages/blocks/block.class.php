@@ -8,6 +8,7 @@ class block
 	public $date_published;
 	public $date_unpublish;		
 	public $access;
+    public $groups;
 	public $enabled;
 	public $trigger;
 	public $action;
@@ -67,6 +68,10 @@ class block
         $this->position			= $main->position;
         $this->fixed	        = $main->fixed;
         $this->categories		= array_filter(explode(',', $main->categories));
+
+        // to get the array of groups first we remove the "g" character
+        $groups = str_replace('g', '', $main->groups);
+        $this->groups	    = explode(',', $groups);
 	}
 	
 	public function load_from_post()
@@ -77,7 +82,12 @@ class block
 		$this->type  			= $_REQUEST['type'];
 		$this->date_published	= (empty($_REQUEST['date_published'])? '' : core_date2ts($_REQUEST['date_published']));	
 		$this->date_unpublish	= (empty($_REQUEST['date_unpublish'])? '' : core_date2ts($_REQUEST['date_unpublish']));	
-		$this->access			= intval($_REQUEST['access']);	
+		$this->access			= intval($_REQUEST['access']);
+
+        $this->groups	        = $_REQUEST['groups'];
+        if($this->access < 3)
+            $this->groups = array();
+
 		$this->enabled			= intval($_REQUEST['enabled']);	
 		$this->notes  			= pquotes($_REQUEST['notes']);
 
@@ -155,8 +165,6 @@ class block
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 			return $this->update();
 		else
@@ -168,7 +176,6 @@ class block
 		global $DB;
 		global $website;
 
-		// remove all old entries
 		if(!empty($this->id))
 		{
 			webdictionary::save_element_strings('block', $this->id, array());
@@ -189,11 +196,15 @@ class block
 
         if(!is_array($this->categories))
             $this->categories = array();
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
 					
 		$ok = $DB->execute(' INSERT INTO nv_blocks
 								(id, website, type, date_published, date_unpublish, 
 								 position, fixed, categories,
-								 access, enabled, `trigger`, action, notes)
+								 access, groups, enabled, `trigger`, action, notes)
 								VALUES 
 								( 0,
 								  '.protect($website->id).',
@@ -204,6 +215,7 @@ class block
 								  '.protect($this->fixed).',
 								  '.protect(implode(',', $this->categories)).',  
 								  '.protect($this->access).',
+								  '.protect($groups).',
 								  '.protect($this->enabled).',			
 								  '.protect(serialize($this->trigger)).',  
 								  '.protect(serialize($this->action)).',
@@ -226,8 +238,12 @@ class block
 
         if(!is_array($this->categories))
             $this->categories = array();
-						
-		$ok = $DB->execute(' UPDATE nv_blocks
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
+        $ok = $DB->execute(' UPDATE nv_blocks
 								SET 
 									type			= '.protect($this->type).',
 									date_published 	= '.protect($this->date_published).',
@@ -238,6 +254,7 @@ class block
 									`trigger` 		= '.protect(serialize($this->trigger)).',
 									action	 		= '.protect(serialize($this->action)).',
 									access 			= '.protect($this->access).',
+									groups          = '.protect($groups).',
 									enabled 		= '.protect($this->enabled).',
 									notes	 		= '.protect($this->notes).'									
 							WHERE id = '.$this->id.'

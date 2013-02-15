@@ -196,7 +196,7 @@
 195		# Text area
 196		# Date and time
 197		# Link
-198		# Article
+198		# Product
 199		# Default value
 200		# Options
 201		# One line per option, following the format: value#title
@@ -510,3 +510,4 @@
 509     # Expand
 510     # Selected items
 511     # Available items
+512     # Selected web user groups

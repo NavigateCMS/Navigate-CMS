@@ -1973,6 +1973,13 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 
 /* css for uix.multiselect */
 
+.uix-multiselect .ui-widget-header
+{
+    background: url("../../img/skins/background_menu_items.png") repeat scroll 0 0 #E8EDFF;
+    padding: 4px;
+    color: #111166;
+}
+
 .uix-multiselect .ui-widget-header .uix-search
 {
     height: 8px;

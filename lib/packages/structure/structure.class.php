@@ -9,7 +9,8 @@ class structure
 	public $website;
 	public $parent;
 	public $position;
-	public $access;
+	public $access; // 0 => everyone, 1 => logged in, 2 => not logged in, 3 => selected webuser groups
+    public $groups; // webuser groups
 	public $permission;
 	public $icon;
 	public $metatags;
@@ -65,8 +66,12 @@ class structure
 		
 		$this->dictionary	= webdictionary::load_element_strings('structure', $this->id);
 		$this->paths		= path::loadElementPaths('structure', $this->id);
-		$this->visible		= $main->visible;		
-	}
+		$this->visible		= $main->visible;
+
+        // to get the array of groups first we remove the "g" character
+        $groups = str_replace('g', '', $main->groups);
+        $this->groups	    = explode(',', $groups);
+    }
 	
 	public function load_from_post()
 	{
@@ -76,7 +81,12 @@ class structure
 			$this->parent 		= intval($_REQUEST['parent']);
 			
 		$this->template 	= $_REQUEST['template'];
-		$this->access		= intval($_REQUEST['access']);	
+		$this->access		= intval($_REQUEST['access']);
+
+        $this->groups	    = $_REQUEST['groups'];
+        if($this->access < 3)
+            $this->groups = array();
+
 		$this->permission	= intval($_REQUEST['permission']);		
 		$this->visible		= intval($_REQUEST['visible']);		
 		
@@ -106,18 +116,10 @@ class structure
 	
 	public function save()
 	{
-		global $DB;
-
-		// remove all old entries
 		if(!empty($this->id))
-		{
 			return $this->update();
-		}
 		else
-		{		
-			// insert the new ones
-			return $this->insert();			
-		}
+			return $this->insert();
 	}
 	
 	public function delete()
@@ -130,8 +132,7 @@ class structure
 			// remove dictionary elements
 			webdictionary::save_element_strings('structure', $this->id, array());
 			// remove path elements
-			path::saveElementPaths('structure', $this->id, array());			
-			
+			path::saveElementPaths('structure', $this->id, array());
 			// remove all votes assigned to the element
 			webuser_vote::remove_object_votes('structure', $this->id);			
 			
@@ -163,8 +164,12 @@ class structure
             $this->position = intval($max[0]) + 1;
         }
 
-		$ok = $DB->execute(' INSERT INTO nv_structure
-								(id, website, parent, position, access, permission, 
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
+        $ok = $DB->execute(' INSERT INTO nv_structure
+								(id, website, parent, position, access, groups, permission,
 								 icon, metatags, template, date_published, date_unpublish, 
 								 visible, views, votes, score)
 								VALUES
@@ -173,6 +178,7 @@ class structure
 								  '.protect($this->parent).',
 								  '.protect($this->position).',
 								  '.protect($this->access).',
+								  '.protect($groups).',
 								  '.protect($this->permission).',
 								  '.protect($this->icon).',
 								  '.protect($this->metatags).',
@@ -199,13 +205,17 @@ class structure
 	{
 		global $DB;
 		global $website;
-    			
-		// one entry per language
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
 		$ok = $DB->execute(' UPDATE nv_structure
 								SET 
 									parent = '.protect($this->parent).',
 									position = '.protect($this->position).',
 									access = '.protect($this->access).',
+									groups = '.protect($groups).',
 									permission = '.protect($this->permission).',
 									icon = '.protect($this->icon).',
 									metatags = '.protect($this->metatags).',

@@ -7,6 +7,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 
 function run()
 {
@@ -227,7 +228,8 @@ function structure_tree($hierarchy)
 
 	$access = array(		0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
 							1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
-							2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />'
+							2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
+                            3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
 	);	
 	
 	$permissions = array(	0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
@@ -490,23 +492,53 @@ function structure_form($item)
 											$naviforms->selectfield('access', 
 												array(
 														0 => 0,
-														1 => 1,
-														2 => 2
+														1 => 2,
+														2 => 1,
+														3 => 3
 													),
 												array(
 														0 => t(254, 'Everybody'),
-														1 => t(361, 'Web users only'),
-														2 => t(362, 'Not signed in')
+                                                        1 => t(362, 'Not signed in'),
+                                                        2 => t(361, 'Web users only'),
+														3 => t(512, 'Selected web user groups')
 													),
 												$item->access,
-												'',
+												'navigate_webuser_groups_visibility($(this).val());',
 												false,
 												array(
-														2 => t(363, 'Users who have not yet signed in')
+														1 => t(363, 'Users who have not yet signed in')
 												)
 											)
 										)
-									);	
+									);
+
+    $webuser_groups = webuser_group::all_in_array();
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(506, "Groups").'</label>',
+            $naviforms->multiselect(
+                'groups',
+                array_keys($webuser_groups),
+                array_values($webuser_groups),
+                $item->groups
+            )
+        ),
+        'webuser-groups-field'
+    );
+
+    $layout->add_script('
+        function navigate_webuser_groups_visibility(access_value)
+        {
+            if(access_value==3)
+                $("#webuser-groups-field").show();
+            else
+                $("#webuser-groups-field").hide();
+        }
+
+        navigate_webuser_groups_visibility('.$item->access.');
+    ');
+
 																				
 	$navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
 											$naviforms->selectfield('permission', 

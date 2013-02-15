@@ -16,10 +16,11 @@ class item
 	public $date_unpublish;
 	public $galleries;
 	public $date_created;
-	public $data_modified;
+	public $date_modified;
 	public $comments_enabled_to; // 0 => nobody, 1=>registered, 2=>everyone
 	public $comments_moderator; // user_id
-	public $access; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
+	public $access; // 0 => everyone, 1 => logged in, 2 => not logged in, 3 => selected webuser groups
+    public $groups;
 	public $permission; // 0 => public, 1 => private (only navigate cms users), 2 => hidden
 	public $views;
 	public $author;
@@ -85,6 +86,10 @@ class item
 
 		$this->dictionary		= webdictionary::load_element_strings('item', $this->id);
 		$this->paths			= path::loadElementPaths('item', $this->id);
+
+        // to get the array of groups first we remove the "g" character
+        $groups = str_replace('g', '', $main->groups);
+        $this->groups	    = explode(',', $groups);
 	}
 	
 	public function load_from_post()
@@ -99,7 +104,12 @@ class item
 		
 		$this->date_published	= (empty($_REQUEST['date_published'])? '' : core_date2ts($_REQUEST['date_published']));	
 		$this->date_unpublish	= (empty($_REQUEST['date_unpublish'])? '' : core_date2ts($_REQUEST['date_unpublish']));	
-		$this->access			= intval($_REQUEST['access']);	
+		$this->access			= intval($_REQUEST['access']);
+
+        $this->groups	        = $_REQUEST['groups'];
+        if($this->access < 3)
+            $this->groups = array();
+
 		$this->permission		= intval($_REQUEST['permission']);	
 
 		$this->comments_enabled_to 	= intval($_REQUEST['item-comments_enabled_to']);
@@ -172,8 +182,6 @@ class item
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 			return $this->update();
 		else
@@ -216,12 +224,16 @@ class item
 		
 		$this->date_created  = core_time();		
 		$this->date_modified = core_time();
-		
-		$ok = $DB->execute(' INSERT INTO nv_items
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
+        $ok = $DB->execute(' INSERT INTO nv_items
 								(id, website, association, category, embedding, template, 
 								 date_published, date_unpublish, date_created, date_modified, author,
 								 galleries, comments_enabled_to, comments_moderator, 
-								 access, permission,
+								 access, groups, permission,
 								 views, votes, score)
 								VALUES 
 								( 0,
@@ -239,6 +251,7 @@ class item
 								  '.protect($this->comments_enabled_to).',
 								  '.protect($this->comments_moderator).',
 								  '.protect($this->access).',
+								  '.protect($groups).',
 								  '.protect($this->permission).',
   								  0,
 								  0,
@@ -261,9 +274,13 @@ class item
 		global $DB;
 		global $website;
 			
-		$this->date_modified = core_time();		
-			
-		$ok = $DB->execute(' UPDATE nv_items
+		$this->date_modified = core_time();
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
+        $ok = $DB->execute(' UPDATE nv_items
 								SET 
 									association	= '.protect($this->association).',
 									category	=   '.protect($this->category).',
@@ -277,6 +294,7 @@ class item
 									comments_enabled_to = '.protect($this->comments_enabled_to).',
 									comments_moderator = '.protect($this->comments_moderator).',
 									access	 	=  '.protect($this->access).',
+									groups      =  '.protect($groups).',
 									permission 	=  '.protect($this->permission).',
 									views 	=  '.protect($this->views).',
 									votes 	=  '.protect($this->votes).',
@@ -365,6 +383,7 @@ class item
             $item->comments_enabled_to = 2; // 0 => nobody, 1=>registered, 2=>everyone
             $item->comments_moderator = 0; // user_id
             $item->access = 0; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
+            $item->groups = array();
             $item->permission = 0; // 0 => public, 1 => private (only navigate cms users), 2 => hidden
             $item->views = 0;
             $item->author = $article['creator'];

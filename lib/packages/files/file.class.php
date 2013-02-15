@@ -18,6 +18,7 @@ class file
 	public $date_added;
 	public $uploaded_by;	
 	public $access; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
+    public $groups;
 	public $permission;
 	public $enabled;
 	
@@ -41,6 +42,7 @@ class file
 			$this->uploaded_by = 'system';
 			$this->permission = 0;
 			$this->enabled = 1;
+            $this->groups = array();
 			$this->access = 0;
 			$mime = $this->getMime($this->absolute_path());			
 			$this->mime = $mime[0];
@@ -77,7 +79,11 @@ class file
 	
 		$this->access		= $main->access;			
 		$this->permission	= $main->permission;
-		$this->enabled		= $main->enabled;			
+		$this->enabled		= $main->enabled;
+
+        // to get the array of groups first we remove the "g" character
+        $groups = str_replace('g', '', $main->groups);
+        $this->groups = explode(',', $groups);
 	}	
 	
 	public function load_from_post()
@@ -96,7 +102,12 @@ class file
 		$this->date_added	= core_time();
 		//$this->uploaded_by	= $_REQUEST['uploaded_by'];		// ?
 	
-		$this->access		= intval($_REQUEST['access']);	
+		$this->access		= intval($_REQUEST['access']);
+
+        $this->groups	    = $_REQUEST['groups'];
+        if($this->access < 3)
+            $this->groups = array();
+
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);			
 	}
@@ -104,8 +115,6 @@ class file
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 			return $this->update();
 		else
@@ -187,9 +196,15 @@ class file
 	{
 		global $DB;
 		global $website;
-			
-		$ok = $DB->execute(' INSERT INTO nv_files
-								(id, website, type, parent, name, size, mime, width, height, date_added, uploaded_by, permission, access, enabled)
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
+        $ok = $DB->execute(' INSERT INTO nv_files
+								(   id, website, type, parent, name, size, mime,
+								    width, height, date_added, uploaded_by,
+								    permission, access, groups, enabled)
 								VALUES 
 								( 0,
 								  '.protect($website->id).',
@@ -204,6 +219,7 @@ class file
 								  '.protect($this->uploaded_by).',								  											  
 								  '.protect($this->permission).',
 								  '.protect($this->access).',
+								  '.protect($groups).',
 								  '.protect($this->enabled).'						  
 								)');
 			
@@ -218,8 +234,12 @@ class file
 	{
 		global $DB;
 		global $website;
-			
-		$ok = $DB->execute(' UPDATE nv_files
+
+        $groups = '';
+        if(!empty($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
+        $ok = $DB->execute(' UPDATE nv_files
 								SET 
 									type		=	'.protect($this->type).',
 									parent		=	'.protect($this->parent).',
@@ -231,6 +251,7 @@ class file
 									date_added	=	'.protect($this->date_added).',
 									uploaded_by	=	'.protect($this->uploaded_by).',
 									access		=	'.protect($this->access).',
+									groups      =   '.protect($groups).',
 									permission	=	'.protect($this->permission).',
 									enabled		=	'.protect($this->enabled).'
 							WHERE id = '.$this->id.'
@@ -392,7 +413,8 @@ class file
             'mov' => array('video/quicktime', 'video'),
             'avi' => array('video/x-msvideo', 'video'),		
             'mp4' => array('video/mp4', 'video'),	
-            'wmv' => array('video/x-ms-wmv', 'video'),					
+            'webm' => array('video/webm', 'video'),
+            'wmv' => array('video/x-ms-wmv', 'video'),
             'swf' => array('application/x-shockwave-flash', 'flash'),
             'flv' => array('video/x-flv', 'video'),				
 

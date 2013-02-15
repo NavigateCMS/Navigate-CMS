@@ -415,12 +415,7 @@ function navigate_property_layout_field($property)
 			$field[] = '</div>';								
 			break;
 			
-		case 'article':
-			// TO DO (when navigate has products!)
-			break;
-			
 		case 'category':
-			// not done
             $hierarchy = structure::hierarchy(0);
             $categories_list = structure::hierarchyList($hierarchy, $property->value);
 
@@ -431,6 +426,28 @@ function navigate_property_layout_field($property)
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->dropdown_tree("property-".$property->id, $categories_list, $property->value);
             $field[] = '</div>';
+            break;
+
+        case 'webuser_groups':
+            $webuser_groups = webuser_group::all_in_array();
+
+            // to get the array of groups first we remove the "g" character
+            $property->value    = str_replace('g', '', $property->value);
+            $property->value    = explode(',', $property->value);
+
+            $field[] = '<div class="navigate-form-row">';
+            $field[] = '<label>'.$property->name.'</label>';
+            $field[] = $naviforms->multiselect(
+                'property-'.$property->id,
+                array_keys($webuser_groups),
+                array_values($webuser_groups),
+                $property->value
+            );
+            $field[] = '</div>';
+            break;
+
+        case 'product':
+            // TO DO (when navigate has products!)
             break;
 			
 		default:

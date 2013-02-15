@@ -246,6 +246,7 @@ class backup
             'webdictionary_history',
             'website',
             'webuser',
+            'webuser_group',
             //'webuser_favorites', // ???
             'webuser_vote'
         );
@@ -268,6 +269,7 @@ class backup
         include_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary_history.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/websites/website.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
+        include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_profile.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/webuser_votes/webuser_vote.class.php');
 

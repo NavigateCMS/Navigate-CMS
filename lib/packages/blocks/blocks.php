@@ -2,6 +2,7 @@
 require_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
+require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 
 function run()
 {
@@ -108,7 +109,8 @@ function run()
 						
 						$access = array(	0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
 											1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
-											2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />'
+											2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
+                                            3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
 						);						
 						
 						if(empty($dataset[$i]['date_published'])) 
@@ -533,29 +535,59 @@ function blocks_form($item)
 										
 	$navibars->add_tab_content_row(array(	'<label>'.t(168, 'Notes').'</label>',
 											$naviforms->textarea('notes', $item->notes)
-										));																									
+										));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
-											$naviforms->selectfield('access', 
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-													),
-												array(
-														0 => t(254, 'Everybody'),
-														1 => t(361, 'Web users only'),
-														2 => t(362, 'Not signed in')
-													),
-												$item->access,
-												'',
-												false,
-												array(
-														2 => t(363, 'Users who have not yet signed in')
-												)
-											)
-										)
-									);	
+    $navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
+            $naviforms->selectfield('access',
+                array(
+                    0 => 0,
+                    1 => 2,
+                    2 => 1,
+                    3 => 3
+                ),
+                array(
+                    0 => t(254, 'Everybody'),
+                    1 => t(362, 'Not signed in'),
+                    2 => t(361, 'Web users only'),
+                    3 => t(512, 'Selected web user groups')
+                ),
+                $item->access,
+                'navigate_webuser_groups_visibility($(this).val());',
+                false,
+                array(
+                    1 => t(363, 'Users who have not yet signed in')
+                )
+            )
+        )
+    );
+
+
+    $webuser_groups = webuser_group::all_in_array();
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(506, "Groups").'</label>',
+            $naviforms->multiselect(
+                'groups',
+                array_keys($webuser_groups),
+                array_values($webuser_groups),
+                $item->groups
+            )
+        ),
+        'webuser-groups-field'
+    );
+
+    $layout->add_script('
+        function navigate_webuser_groups_visibility(access_value)
+        {
+            if(access_value==3)
+                $("#webuser-groups-field").show();
+            else
+                $("#webuser-groups-field").hide();
+        }
+
+        navigate_webuser_groups_visibility('.$item->access.');
+    ');
 
 	if(empty($item->id)) $item->enabled = true;
 										
