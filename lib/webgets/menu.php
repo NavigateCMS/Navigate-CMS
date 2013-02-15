@@ -218,11 +218,11 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                 $ul_items = 0;
 				$out[] = '<ul class="menu_level_'.$level.' '.$class.'">';
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
-				{					
+				{
 					if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
                         continue;
 
-					if($structure['cat-'.$parent][$m]->visible == 0)
+                    if($structure['cat-'.$parent][$m]->visible == 0)
                         continue;
 
 					$mid = $structure['cat-'.$parent][$m]->id;
@@ -424,6 +424,14 @@ function nvweb_menu_load_structure($parent=0)
 					  ORDER BY position ASC');
 				  
 		$structure['cat-'.$parent] = $DB->result();
+
+        // parse some result values
+        foreach($structure['cat-'.$parent] as $key => $value)
+        {
+            $value->groups = str_replace('g', '', $value->groups);
+            $value->groups = array_filter(explode(',', $value->groups));
+            $structure[$key] = clone $value;
+        }
 	}
 }
 

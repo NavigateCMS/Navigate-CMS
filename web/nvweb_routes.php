@@ -458,7 +458,8 @@ function nvweb_object_enabled($object)
 		{
             case 3: // accessible to SELECTED WEB USER GROUPS only
                 $access = false;
-                $groups = $current['object']->groups;
+                $groups = $object->groups;
+
                 if( !empty($current['webuser']) )
                 {
                     $groups = array_intersect($webuser->groups, $groups);
