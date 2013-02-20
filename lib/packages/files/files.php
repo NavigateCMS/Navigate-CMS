@@ -18,43 +18,14 @@ function run()
         case "json":
 			if($_REQUEST['op']=='upload')
 			{
-				$tmpname = base64_encode($_REQUEST['name']);
-				if(!file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmpname))	
-					$tmpname = $_REQUEST['target_name'];
-				
-				if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmpname))
-				{
-					$mime = file::getMime($_REQUEST['name']);
-					
-					$file = new file();
-					$file->id = 0;
-                    $file->website = $website->id;
-					$file->mime = $mime[0];
-					$file->type = $mime[1];
-					$file->parent = intval($_REQUEST['parent']);
-					$file->name = $_REQUEST['name'];
-					$file->size = $_REQUEST['size'];
-					
-					if($file->type == 'image')
-					{					
-						$dimensions = file::image_dimensions(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmpname);
-						$file->width = $dimensions['width'];
-						$file->height = $dimensions['height'];
-					}
-					
-					$file->date_added = core_time();
-					$file->uploaded_by = $user->id;
-					$file->permission = 0;
-					$file->enabled = 1;
-					
-					$file->save(); 
-		
-					rename( NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmpname,
-                            NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$file->id   );
+                $file = file::register_upload(
+                    $_REQUEST['target_name'],
+                    $_REQUEST['name'],
+                    $_REQUEST['parent']
+                );
 
-					if($file->type == 'image')
-						$file->resize_uploaded_image();
-					
+				if(!empty($file))
+                {
 					echo json_encode(array('id' => $file->id, 'name' => $file->name));
 				}
 				else

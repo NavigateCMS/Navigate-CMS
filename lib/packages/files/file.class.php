@@ -32,9 +32,13 @@ class file
 			// is it a path?, then create a virtual file object
 			$id = urldecode($id);
 			$this->id = $id;
+            $this->website = $website->id;
 			$this->parent = 0;
 			$this->name = basename($id);
 			$this->size = @filesize($this->absolute_path());
+            $mime = $this->getMime($this->absolute_path());
+            $this->mime = $mime[0];
+            $this->type = $mime[1];
 			$dimensions = $this->image_dimensions($this->absolute_path());
 			$this->width = $dimensions['width'];
 			$this->height = $dimensions['height'];
@@ -44,9 +48,6 @@ class file
 			$this->enabled = 1;
             $this->groups = array();
 			$this->access = 0;
-			$mime = $this->getMime($this->absolute_path());			
-			$this->mime = $mime[0];
-			$this->type = $mime[1];
 		}
 		else
 		{		
@@ -431,16 +432,19 @@ class file
 
 		$ext = file::getExtension($filename);
 		
-        if (array_key_exists($ext, $mime_types)) {
+        if(array_key_exists($ext, $mime_types))
+        {
             return $mime_types[$ext];
         }
-        elseif (function_exists('finfo_open')) {
+        else if(function_exists('finfo_open'))
+        {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $filename);
             finfo_close($finfo);
             return $mimetype;
         }
-        else {
+        else
+        {
             return array('application/octet-stream', 'file');
         }
 	
@@ -530,13 +534,15 @@ class file
 	}
 	
 	
-	public static function thumbnail($item, $width=0, $height=0, $border=true)
+	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='')
 	{	
 		$original  = $item->absolute_path();
 		$thumbnail = '';
 
 		$item_id = $item->id;
-		if(!is_numeric($item_id)) 
+        if(!empty($ftname))
+            $item_id = $ftname;
+		else if(!is_numeric($item_id))
 			$item_id = md5($item->id);
 			
 		if($border===true || $border==='true' || $border===1)
@@ -560,8 +566,10 @@ class file
 			$thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;		
 
 			$handle = new upload($original);
-			$size = array(	'width' => $handle->image_src_x,
-							'height' => $handle->image_src_y);			
+			$size = array(
+                'width' => $handle->image_src_x,
+				'height' => $handle->image_src_y
+            );
 
 			$handle->image_convert = 'png';
 			
@@ -569,12 +577,12 @@ class file
 			if(empty($width))
 			{
 				$width = round(($height / $size['height']) * $size['width']);
-				return file::thumbnail($item, $width, $height, $border);
+				return file::thumbnail($item, $width, $height, $border, $ftname);
 			}
 			else if(empty($height))
 			{
 				$height = round(($width / $size['width']) * $size['height']);
-				return file::thumbnail($item, $width, $height, $border);
+				return file::thumbnail($item, $width, $height, $border, $ftname);
 			}
 			
 			$handle->image_x = $width;
@@ -730,6 +738,54 @@ class file
 
 		return $path;
 	}
+
+    // precondition: the file must exist in the website "files" folder
+    public static function register_upload($tmp_name, $target_name, $parent, $mime=NULL)
+    {
+        global $website;
+        global $user;
+
+        $file = NULL;
+
+        if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name))
+        {
+            if(empty($mime))
+                $mime = file::getMime($target_name);
+
+            $file = new file();
+            $file->id = 0;
+            $file->website = $website->id;
+            $file->mime = $mime[0];
+            $file->type = $mime[1];
+            $file->parent = intval($parent);
+            $file->name = $target_name;
+            $file->size = filesize(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
+
+            if($file->type == 'image')
+            {
+                $dimensions = file::image_dimensions(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
+                $file->width = $dimensions['width'];
+                $file->height = $dimensions['height'];
+            }
+
+            $file->date_added = core_time();
+            $file->uploaded_by = (empty($user->id)? '0' : $user->id);
+            $file->permission = 0;
+            $file->enabled = 1;
+
+            $file->save();
+
+            rename(
+                NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name,
+                NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$file->id
+            );
+
+            if($file->type == 'image')
+                $file->resize_uploaded_image();
+        }
+
+        return $file;
+    }
 
     public function backup($type='json')
     {
