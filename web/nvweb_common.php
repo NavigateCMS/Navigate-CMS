@@ -13,6 +13,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webuser_votes/webuser_vote.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
 
