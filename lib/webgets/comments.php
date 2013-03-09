@@ -96,8 +96,11 @@ function nvweb_comments($vars=array())
 			if($_REQUEST['form-type']=='comment-reply')
 			{
 				// add comment	
-				if( (	(empty($_REQUEST['reply-name']) ||	empty($_REQUEST['reply-email'])) && empty($webuser->id)) ||
-					empty($_REQUEST['reply-message']))
+				if(
+                    ( (empty($_REQUEST['reply-name'])  ||  empty($_REQUEST['reply-email'])) && empty($webuser->id) )
+                    ||
+					empty($_REQUEST['reply-message'])
+                )
 				{
 					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['please_dont_leave_any_field_blank'].'");');
 					return;
@@ -126,13 +129,16 @@ function nvweb_comments($vars=array())
                 $element = new item();
                 $element->load($element->id);
 
-                // trigger the "new_comment" event through the plugin system
-                $events->trigger('comment', 'after_insert', array('comment' => $comment));
+                if($current['type']=='item')
+                    $current['object'] = $element;
 
-				if($DB->get_last_id() > 0 && $status == -1)
+                // trigger the "new_comment" event through the plugin system
+                $events->trigger('comment', 'after_insert', array('comment' => $comment));;
+
+				if(!empty($comment->id) && $status == -1)
 					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
 
-				$title = $DB->query_single('text', 'nv_webdictionary', ' node_type= "item" AND 
+				$title = $DB->query_single('text', 'nv_webdictionary', ' node_type= "item" AND
 																		 node_id = '.protect($element->id).' AND
 																		 subtype = "title" AND 
 																		 lang = '.protect($current['lang']));					
@@ -179,16 +185,19 @@ function nvweb_comments($vars=array())
 					</div>
 				';
 			}
-			else if($element->comments_enabled_to > 0	&& !empty($webuser->id))
+			else if($element->comments_enabled_to > 0 && !empty($webuser->id))
 			{
 				// Post a comment (signed in users)
+                if(empty($vars['avatar_size']))
+                    $vars['avatar_size'] = 32;
+
 				$out = '
 					<div class="comments-reply">
 						<div><div class="comments-reply-info">'.$webgets[$webget]['translations']['post_a_comment'].'</div></div>
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
-							<div><label style="display: none;">&nbsp;</label> <img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline" width="32" height="32" align="absmiddle" /> <span>'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
+							<div><label style="display: none;">&nbsp;</label> <img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline&width='.$vars['avatar_size'].'&height='.$vars['avatar_size'].'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
 							<br/>
 							<div><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
 							<div><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
