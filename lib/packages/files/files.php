@@ -18,8 +18,12 @@ function run()
         case "json":
 			if($_REQUEST['op']=='upload')
 			{
+                $tmp_name = $_REQUEST['tmp_name'];
+                if($tmp_name=="{{BASE64}}")
+                    $tmp_name = base64_encode($_REQUEST['name']);
+
                 $file = file::register_upload(
-                    $_REQUEST['target_name'],
+                    $tmp_name,
                     $_REQUEST['name'],
                     $_REQUEST['parent']
                 );
@@ -300,10 +304,10 @@ function files_browser($parent, $search="")
 			$("#navigate-files-uploader").plupload(
 			{
 				// General settings
-		        runtimes : "flash,silverlight,html5",
+		        runtimes : "html5,flash,silverlight",
 				url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
 				max_file_size : "'.NAVIGATE_UPLOAD_MAX_SIZE.'mb",
-				chunk_size : "1mb",
+				chunk_size : "384kb",
 				unique_names: false,
 				sortable: false,
 				rename: true,
@@ -319,14 +323,18 @@ function files_browser($parent, $search="")
 					$.ajax(
 					{
 						async: true,
-						url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1&op=upload&parent='.$parent.'",
+						url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=json&op=upload",
 						success: function(data)
 						{
 		
 						},
 						type: "post",
 						dataType: "json",
-						data: File
+						data: {
+						    tmp_name: "{{BASE64}}",
+						    name: File.name,
+						    parent: '.$parent.'
+						}
 					});
 				});
 			}								 

@@ -929,14 +929,14 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 						async: false,
 						url: NAVIGATE_APP + "?fid=files&act=1&op=upload&parent=" + parent,
 						success: function(data)
-						{	
+						{
 							if(callbacks.afterOne)
 								callbacks.afterOne(data);
 						},
 						type: "post",
 						dataType: "json",
 						data: ({
-							target_name: uploaded.temporal,
+							tmp_name: uploaded.temporal,
 							name: uploaded.filename,
 							size: file.size
 						})
