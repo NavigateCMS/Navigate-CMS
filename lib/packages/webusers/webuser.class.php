@@ -163,6 +163,10 @@ class webuser
 		global $DB;	
 		global $website;
 
+        $groups = 'g'.implode(',g', $this->groups);
+        if($groups == 'g')
+            $groups = '';
+
 		$ok = $DB->execute(' INSERT INTO nv_webusers
 								(	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
 									language, country, timezone, address, zipcode, location, phone, social_website,
@@ -173,7 +177,7 @@ class webuser
 								  '.protect($this->username).',
 								  '.protect($this->password).',
 								  '.protect($this->email).',
-								  '.protect('g'.implode(',g', $this->groups)).',
+								  '.protect($groups).',
 								  '.protect($this->fullname).',
 								  '.protect($this->gender).',								  
 								  '.protect($this->avatar).',								  
@@ -203,6 +207,10 @@ class webuser
 	public function update()
 	{
 		global $DB;
+
+        $groups = 'g'.implode(',g', $this->groups);
+        if($groups == 'g')
+            $groups = '';
 	    
 		$ok = $DB->execute(' UPDATE nv_webusers
 								SET
@@ -210,7 +218,7 @@ class webuser
 								  username = '.protect($this->username).',
 								  password = '.protect($this->password).',
 								  email = '.protect($this->email).',
-								  groups = '.protect('g'.implode(',g', $this->groups)).',
+								  groups = '.protect($groups).',
 								  fullname = '.protect($this->fullname).',
 								  gender = '.protect($this->gender).',
 								  avatar = '.protect($this->avatar).',								  

@@ -16,6 +16,7 @@ function nvweb_list($vars=array())
 	global $cache;
 	global $structure;
 	global $webgets;
+    global $webuser;
 
 	$out = array();
 
@@ -67,7 +68,26 @@ function nvweb_list($vars=array())
 	$offset = intval($_GET['page'] - 1) * $vars['items'];
 
 	$permission = (!empty($_SESSION['APP_USER'])? 1 : 0);
-    $access     = (!empty($current['webuser'])? 1 : 2);
+
+    // public access / webuser based / webuser groups based
+    $access     = 2;
+    $access_extra = '';
+    if(!empty($current['webuser']))
+    {
+        $access = 1;
+        if(!empty($webuser->groups))
+        {
+            $access_groups = array();
+            foreach($webuser->groups as $wg)
+            {
+                if(empty($wg))
+                    continue;
+                $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
+            }
+            if(!empty($access_groups))
+                $access_extra = ' OR (s.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+        }
+    }
 
     // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
     $order      = @$_REQUEST['order'];
@@ -94,7 +114,7 @@ function nvweb_list($vars=array())
 			   AND s.permission <= '.$permission.'
 			   AND (s.date_published = 0 OR s.date_published < '.core_time().')
 			   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
-			   AND (s.access = 0 OR s.access = '.$access.')
+			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
 			   AND d.website = s.website
 			   AND d.node_type = "structure"
 			   AND d.subtype = "title"
@@ -167,6 +187,9 @@ function nvweb_list($vars=array())
 
         */
 
+        // reuse structure.access permission
+        $access_extra_items = str_replace('s.', 'i.', $access_extra);
+
 		// default source for retrieving items
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
@@ -182,8 +205,8 @@ function nvweb_list($vars=array())
 			   AND (s.date_published = 0 OR s.date_published < '.core_time().')
 			   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
 			   AND s.permission <= '.$permission.'
-			   AND (s.access = 0 OR s.access = '.$access.')
-			   AND (i.access = 0 OR i.access = '.$access.')
+			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
+			   AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
                AND d.website = i.website
 			   AND d.node_type = "item"
 			   AND d.subtype = "title"

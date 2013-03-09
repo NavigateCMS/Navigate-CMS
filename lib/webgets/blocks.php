@@ -6,6 +6,7 @@ function nvweb_blocks($vars=array())
 	global $DB;
 	global $current;
     global $webgets;
+    global $webuser;
 
     $webget = 'blocks';
 
@@ -13,7 +14,7 @@ function nvweb_blocks($vars=array())
 
     $access = array();
     $access[] = 0;
-    if(empty($current['webuser'])) // 1: only signed in users, 2: only NON signed in users
+    if(empty($current['webuser'])) // 1: only signed in users, 2: only NON signed in users, 3: selected web user groups only
         $access[] = 2;
     else
     {
