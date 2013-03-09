@@ -341,17 +341,18 @@ class property
                 $theme_template = new template();
                 $theme_template->load_from_theme($template);
 
-                $data = $theme_template->properties;
+                $template_properties = $theme_template->properties;
 
-                if(empty($data))
-                    $data = array();
+                if(empty($template_properties))
+                    $template_properties = array();
 
-                for($p=0; $p < count($data); $p++)
+                $data = array();
+
+                for($p=0; $p < count($template_properties); $p++)
                 {
-                    if($data[$p]->element != $element)
-                        unset($data[$p]);
+                    if($template_properties[$p]->element == $element)
+                        $data[] = $template_properties[$p];
                 }
-                $data = array_filter($data);
             }
         }
 
