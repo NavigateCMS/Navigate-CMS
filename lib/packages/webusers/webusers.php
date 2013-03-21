@@ -45,7 +45,7 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 				
-					$DB->queryLimit('id,avatar,username,fullname,joindate,blocked', 
+					$DB->queryLimit('id,avatar,username,fullname,groups,joindate,blocked',
 									'nv_webusers', 
 									$where, 
 									$orderby, 
@@ -54,19 +54,34 @@ function run()
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
-					
+
+                    global $webusers_groups_all;
+                    $webusers_groups_all = webuser_group::all_in_array();
+
 					//echo $DB->get_last_error();
 					
 					$out = array();					
 											
 					for($i=0; $i < count($dataset); $i++)
-					{							
+					{
+                        $wug = str_replace('g', '', $dataset[$i]['groups']);
+                        $wug = explode(',', $wug);
+                        $wug = array_map(
+                            function($in) {
+                                global $webusers_groups_all;
+                                if(empty($in))
+                                    return;
+                                return $webusers_groups_all[$in];
+                            },
+                            $wug
+                        );
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
+							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.$dataset[$i]['username'].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
 							2	=> $dataset[$i]['username'],
 							3	=> $dataset[$i]['fullname'],
-							4	=> $dataset[$i]['groups'],
+							4	=> implode("<br />", $wug),
 							5 	=> core_ts2date($dataset[$i]['joindate'], true),
 							6	=> (($dataset[$i]['blocked']==0)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />')
 						);

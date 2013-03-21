@@ -177,7 +177,7 @@ class database
  				   ORDER BY '.$order.' 
 					  LIMIT '.$max.'
 					 OFFSET '.$offset;
-		
+
 			$statement = $this->db->query($sql);	
 			$statement->setFetchMode($fetch);
 			$this->lastResult = $statement->fetchAll();

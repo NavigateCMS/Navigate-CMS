@@ -1123,6 +1123,11 @@ label.ui-state-active #navigate_media_browser_folder_path
     overflow: visible;
 }
 
+.ui-jqgrid-view
+{
+    text-overflow: ellipsis;
+}
+
 
 /* IMAGE GALLERIES */
 .items-gallery
