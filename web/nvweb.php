@@ -29,7 +29,7 @@ try
 	// which website do we have to load?
 	$url = nvweb_self_url();
 
-	if(!empty($_REQUEST['wid']))
+    if(!empty($_REQUEST['wid']))
 	{
 		$website = new website();
 		$website->load(intval($_REQUEST['wid']));
@@ -44,8 +44,8 @@ try
             header('location: '.$website->redirect_to);
         nvweb_clean_exit();
     }
-	
-	// global helper variables
+
+    // global helper variables
 	$session = array();		// webuser session
 	$structure = array();	// web menu structure
 	$webgets = array(); 	// webgets static data
@@ -53,7 +53,7 @@ try
 	$theme = new theme();
 	if(!empty($website->theme))
 		$theme->load($website->theme);
-		
+
 	$nvweb_absolute = $idn->encode($website->absolute_path());
 
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
@@ -101,6 +101,8 @@ try
 		'template' 			=> '',
 		'category' 			=> '',
 		'webuser'  			=> $session['webuser'],
+        'plugins'           => $plugins,
+        'plugins_called'    => '',
         'delayed_nvlists'   => array(),
         'delayed_nvsearches'=> array(),
 		'navigate_session' 	=> !empty($_SESSION['APP_USER']),
@@ -141,6 +143,7 @@ try
     // we do it now because new nv tags could be added
     $html = nvweb_template_parse_special($template->file_contents);
 
+    $current['plugins_called'] = nvweb_plugins_called_in_template($html);
     $html = nvweb_plugins_event('before_parse', $html);
 
     $html = nvweb_theme_settings($html);

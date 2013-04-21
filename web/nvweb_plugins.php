@@ -35,17 +35,26 @@ function nvweb_plugins_load()
 	}
 }
 
+function nvweb_plugins_called_in_template($html)
+{
+    preg_match_all("/(object=)(\"|\')(nvweb)(\"|\')((\s)+)(name=)(\"|\')(\w+)(\"|\')/", $html, $matches);
+    $plugins_called = array_unique($matches[9]);
+    sort($plugins_called);
+    return $plugins_called;
+}
+
 // events: 	before_parse, after_parse	
 function nvweb_plugins_event($event, $html)
 {
 	global $plugins;
-		
-	if(!is_array($plugins)) return;
+
+    if(!is_array($plugins))
+        return;
 	
 	foreach($plugins as $plugin)
 	{
 		$fname = 'nvweb_'.$plugin.'_event';
-		
+
 		if(function_exists($fname))
 			$html = $fname($event, $html);
 	}

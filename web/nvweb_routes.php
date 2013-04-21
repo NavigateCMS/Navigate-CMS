@@ -263,7 +263,7 @@ function nvweb_route_parse($route="")
 						 ORDER BY id DESC');
 			$rs = $DB->result();
 
-			if(empty($rs))
+    		if(empty($rs))
 			{
 				// no valid route found, redirect to 404
 				//header("HTTP/1.0 404 Not Found");
