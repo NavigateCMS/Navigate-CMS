@@ -95,7 +95,7 @@ class item
 	public function load_from_post()
 	{
 		global $website;
-								
+
 		$this->association		= $_REQUEST['association'][0];
 		$this->category			= intval($_REQUEST['category']);
 		$this->embedding		= ($_REQUEST['embedding'][0]=='1')? '1' : '0';
@@ -151,7 +151,14 @@ class item
 			}
 
 			if(substr($key, 0, strlen('path-'))=='path-')
-				$this->paths[substr($key, strlen('path-'))] = $value;
+            {
+                // set a path only if "Free" or "Category/Own Path" associations
+                if( $this->association=='free' ||
+                    ($this->association=='category' && $this->embedding==0) )
+                {
+				    $this->paths[substr($key, strlen('path-'))] = $value;
+                }
+            }
 		}
 
 		// image galleries
@@ -176,7 +183,7 @@ class item
 		}
 		
 		$this->galleries = $gallery_items;
-		// galleries[0] = array( [id-file] => array(es => '', ca => '',.. ), [id-file-2] => array... )	
+		// galleries[0] = array( [id-file] => array(es => '', ca => '',.. ), [id-file-2] => array... )
 	}
 	
 	
