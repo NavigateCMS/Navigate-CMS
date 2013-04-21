@@ -682,7 +682,7 @@ function structure_form($item)
 			else
 				surl = "/" + language;
 			var title = $("#title-"+language).val();
-			title = title.replace(/\s+/g, "_");
+			title = title.replace(/[.\s]+/g, "_");
 			title = title.replace(/([\'"?:!¿#\\\\])/g, "");
 			surl += "/" + title;
 			$(el).val(surl.toLowerCase());

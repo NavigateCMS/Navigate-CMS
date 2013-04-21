@@ -1834,7 +1834,7 @@ function items_form($item)
 									d.setUTCHours(0);
 									var i = d.getTime();
 									do {
-										// when we dont set yaxis, the rectangle automatically
+										// when we don\'t set yaxis, the rectangle automatically
 										// extends to infinity upwards and downwards
 										markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
 										i += 7 * 24 * 60 * 60 * 1000;

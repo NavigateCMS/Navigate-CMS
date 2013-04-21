@@ -435,7 +435,7 @@ function feeds_form($item)
 			var surl = "";
 			surl = "/" + language;
 			var title = $("#title-"+language).val();
-			title = title.replace(/\s+/g, "_");
+			title = title.replace(/[.\s]+/g, "_");
 			title = title.replace(/([\'"?:#\\\\])/g, "");
 			surl += "/" + title;
 			$(el).val(surl.toLowerCase());
