@@ -162,13 +162,19 @@ class layout
 		$this->add_script_tag('js/mbextruder/inc/mbExtruder.js');		
 		
 		$this->add_script_tag('lib/external/codemirror/lib/codemirror.js');
-        $this->add_script_tag('lib/external/codemirror/lib/util/simple-hint.js');
+        $this->add_script_tag('lib/external/codemirror/addon/hint/html-hint.js');
+        $this->add_script_tag('lib/external/codemirror/addon/hint/javascript-hint.js');
+        $this->add_script_tag('lib/external/codemirror/addon/hint/show-hint.js');
+        $this->add_script_tag('lib/external/codemirror/addon/edit/closebrackets.js');
+        $this->add_script_tag('lib/external/codemirror/addon/edit/closetag.js');
+        $this->add_script_tag('lib/external/codemirror/addon/selection/active-line.js');
 		$this->add_script_tag('lib/external/codemirror/mode/xml/xml.js');
 		$this->add_script_tag('lib/external/codemirror/mode/javascript/javascript.js');
 		$this->add_script_tag('lib/external/codemirror/mode/css/css.js');
         $this->add_script_tag('lib/external/codemirror/mode/htmlmixed/htmlmixed.js');
 
 		$this->add_style_tag('lib/external/codemirror/lib/codemirror.css');
+		$this->add_style_tag('lib/external/codemirror/addon/hint/show-hint.css');
 
 		$this->add_script_tag('lib/external/mediaelement/mediaelement-and-player.js');
 		$this->add_style_tag('lib/external/mediaelement/mediaelementplayer.css');

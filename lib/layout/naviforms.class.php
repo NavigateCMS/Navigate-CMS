@@ -311,9 +311,16 @@ class naviforms
 											mode: "text/html", 
 											tabMode: "indent",
 											lineNumbers: true,
-											matchBrackets: true
+											styleActiveLine: true,
+											matchBrackets: true,
+											autoCloseTags: true,
+                                            extraKeys: {"Ctrl-Space": "autocomplete"}
 										});
-										
+
+		        CodeMirror.commands.autocomplete = function(cm) {
+                    CodeMirror.showHint(cm, CodeMirror.htmlHint);
+                }
+
 				navigate_codemirror_instances.push(cm);
 	
 				$("#'.$name.'").next().attr("style", "'.$style.'");
