@@ -186,11 +186,11 @@ class database
 		}
 		catch(PDOException $e)
 		{
-			$this->lastError = $e->getMessage();	
+			$this->lastError = $e->getMessage();
 		}
 		catch(Exception $e)
 		{
-			return false;	
+			return false;
 		}		
 		
 		return empty($this->lastError);			

@@ -362,7 +362,7 @@ class user
         $this->activation_key = md5($this->id . $this->password . $this->username . time());
         $this->save();
 
-        $subject = 'Navigate CMS: '.t(407, 'Forgot password?');
+        $subject = 'Navigate CMS | '.t(407, 'Forgot password?');
 
         $url = NAVIGATE_PARENT.NAVIGATE_FOLDER.'/login.php?action=password-reset&value='.$this->activation_key;
 

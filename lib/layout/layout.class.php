@@ -914,6 +914,6 @@ class layout
 		$html = $this->silk_sprite($html);
 		
 		return $html;
-	}
+    }
 }
 ?>
