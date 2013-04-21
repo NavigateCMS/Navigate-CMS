@@ -133,6 +133,7 @@ function core_load_function($fid)
 function core_date2ts($date)
 {
 	global $user;
+    global $website;
 	
 	$ts = 0;
 	
@@ -147,6 +148,9 @@ function core_date2ts($date)
 		$hour = 0;
         $minute = 0;
 	}
+
+    if(empty($user->timezone))
+        $user->timezone = 'UTC';
 	
 	switch($user->date_format)
 	{
@@ -174,9 +178,14 @@ function core_date2ts($date)
 			list($month, $day, $year) = explode("/", $date);				
 			break;
 	}
-	
-	$ts = mktime(intval($hour), intval($minute), 0, intval($month), intval($day), intval($year));
-	
+
+    // works on PHP 5.2+
+    $userTimezone = new DateTimeZone($user->timezone);
+    $utcTimezone = new DateTimeZone('UTC');
+    $date = new DateTime($year.'-'.$month.'-'.$day.' '.$hour.':'.$minute, $userTimezone);
+    $offset = $utcTimezone->getOffset($date);
+    $ts = $date->format('U') + $offset;
+
 	return $ts;	
 }
 
@@ -199,7 +208,7 @@ function core_ts2date($timestamp, $time=false)
         $user->timezone = 'UTC';
 
 	$date = new DateTime();		
-	if(version_compare(PHP_VERSION, '5.3.0') < 0) 
+	if(version_compare(PHP_VERSION, '5.3.0') < 0)
 	{
 		$datets = getdate( ( int ) $timestamp );
 		$date->setDate( $datets['year'] , $datets['mon'] , $datets['mday'] );

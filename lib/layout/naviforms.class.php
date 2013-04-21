@@ -148,10 +148,10 @@ class naviforms
 	{
 		global $layout;
 		global $user;
-		
-		if(!empty($value)) 
-			$value = core_ts2date($value, $hour);		
-		
+
+		if(!empty($value))
+			$value = core_ts2date($value, $hour);
+
 		$out = '<input type="text" class="datepicker" name="'.$name.'" id="'.$name.'" value="'.$value.'" />
 				<img src="img/icons/silk/calendar_delete.png" width="16" height="16" align="absmiddle" 
 					 style=" cursor: pointer; " onclick=" $(this).parent().find(\'input\').val(\'\'); " />';
