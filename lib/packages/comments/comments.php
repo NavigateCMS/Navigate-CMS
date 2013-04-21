@@ -89,7 +89,7 @@ function run()
 							1	=> $title,
 							2	=> core_ts2date($dataset[$i]['date_created'], true),
 							3	=> (empty($dataset[$i]['user'])? $dataset[$i]['email'] : $webuser),
-							4 	=> $message,	
+							4 	=> strip_tags($message),
 							5	=> $permissions[$dataset[$i]['status']]
 						);
 					}
