@@ -934,6 +934,8 @@ function files_item_properties($item)
 			{
 				pluginPath: "'.NAVIGATE_URL.'/lib/external/mediaelement/"
 			});
+
+			$("#audio_'.$item->id.'").addClass("ui-state-default");
 		');												
 		
 	}

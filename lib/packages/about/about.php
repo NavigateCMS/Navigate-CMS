@@ -89,7 +89,7 @@ function about_layout()
 											'<a href="http://player.bitgravity.com" target="_blank">Bitgravity free video player v6</a><br />' ));
 											
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://mediaelementjs.com/" target="_blank">MediaElement.js v2.1.9</a><br />' ));
+											'<a href="http://mediaelementjs.com/" target="_blank">MediaElement.js v2.11.2</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/pisi/Longclick" target="_blank">jQuery Long Click v0.3.2 (22-Jun-2010)</a><br />' ));

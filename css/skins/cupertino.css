@@ -2000,3 +2000,24 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 {
     font-weight: normal;
 }
+
+/* mediaelement.js styles */
+.mejs-controls div.mejs-time-rail
+{
+    width: 215px !important;
+}
+
+.mejs-controls .mejs-time-rail .mejs-time-total
+{
+    width: 208px !important;
+}
+
+.mejs-container
+{
+    background: transparent;
+}
+
+.mejs-controls .mejs-time-rail .mejs-time-loaded
+{
+    background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3;
+}
