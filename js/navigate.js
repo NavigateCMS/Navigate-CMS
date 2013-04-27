@@ -857,6 +857,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 						alert(navigate_lang_dictionary[403] + ': ' + file.name);
 						break;
 					default:
+                        alert(err + ': ' + file.name);
 						break;
 				}
 			},
@@ -921,7 +922,8 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 				if(response.filename)	uploaded = response;
 				else if(response[0])	uploaded = response[0];
 						
-				if(uploaded.error) navigate_notification(navigate_lang_dictionary[262] + ": " + uploaded.filename); // Error uploading file
+				if(uploaded.error)
+                    navigate_notification(navigate_lang_dictionary[262] + ": " + uploaded.filename); // Error uploading file
 				else
 				{
 					$.ajax(

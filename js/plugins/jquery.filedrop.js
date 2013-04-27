@@ -269,6 +269,7 @@
           builder;
 
       newName = rename(file.name || file.fileName);
+      newName = unescape(encodeURIComponent(file.name)); // force UTF-8 conversion
 
       if (typeof newName === "string") {
         builder = getBuilder(newName, e.target.result, boundary);
