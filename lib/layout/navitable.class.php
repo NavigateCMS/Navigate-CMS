@@ -138,7 +138,6 @@ class navitable
 			cell	the actual data. Note that CDATA can be used. This way we can add images, links and check boxes.		
 		*/
 	
-		global $DB;
 		$obj = new stdClass();
 		
 		$obj->rows = array();
@@ -576,7 +575,10 @@ class navitable
 			        }
 			    });
 
-			    $('.navigate_grid_notes_span').bind('click', function() { $(this).next().trigger('click'); });
+			    $('.navigate_grid_notes_span').bind('click', function()
+			    {
+			        $(this).next().trigger('click');
+			    });
 
 			    // prepare grid notes button
                 $('.grid_note_edit').each(function()
@@ -726,7 +728,15 @@ class navitable
 			               success: function(msg)
 			               {
 			                  $(tr).find('img.grid_color_swatch').attr('ng-background', new_background);
-			                  $(tr).find('td').animate({'background': new_background}, 500);
+			                  $(tr).find('td').animate(
+			                    {'background-color': new_background},
+			                    500,
+			                    'swing',
+			                    function()
+			                    {
+			                        $(this).trigger('mouseleave');
+			                    }
+                              );
 			               }
 			             });
 			        });
