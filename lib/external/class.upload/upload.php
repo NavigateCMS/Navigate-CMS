@@ -17,8 +17,9 @@ if ($cli) {
 $dir_dest = (isset($_GET['dir']) ? $_GET['dir'] : 'test');
 $dir_pics = (isset($_GET['pics']) ? $_GET['pics'] : $dir_dest);
 
-if (!$cli) {
+if (!$cli && !(isset($_SERVER['HTTP_X_FILE_NAME']) && isset($_SERVER['CONTENT_LENGTH']))) {
 ?>
+
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -29,27 +30,33 @@ if (!$cli) {
     <style>
         body {
         }
+        p.result {
+          width: 50%;
+          margin: 15px 0px 25px 0px;
+          padding: 0px;
+          clear: right;
+        }
+        img {
+          float: right;
+          background: url(bg.gif);
+        }
         fieldset {
-            width: 50%;
-            background: url(bg.gif);
-            margin: 15px 0px 25px 0px;
-            padding: 15px;
+          width: 50%;
+          margin: 15px 0px 25px 0px;
+          padding: 15px;
         }
         legend {
-            font-weight: bold;
-        }
-        fieldset img {
-            float: right;
+          font-weight: bold;
         }
         fieldset p {
-            font-size: 70%;
-            font-style: italic;
+          font-size: 70%;
+          font-style: italic;
         }
         .button {
-            text-align: right;
+          text-align: right;
         }
         .button input {
-            font-weight: bold;
+          font-weight: bold;
         }
     </style>
 </head>
@@ -85,36 +92,17 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         // we check if everything went OK
         if ($handle->processed) {
             // everything was fine !
-            echo '<fieldset>';
-            echo '  <legend>file uploaded with success</legend>';
-            echo '  <p>' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB</p>';
-            echo '  link to the file just uploaded: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
-            echo '</fieldset>';
+            echo '<p class="result">';
+            echo '  <b>File uploaded with success</b><br />';
+            echo '  File: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
+            echo '   (' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB)';
+            echo '</p>';
         } else {
             // one error occured
-            echo '<fieldset>';
-            echo '  <legend>file not uploaded to the wanted location</legend>';
+            echo '<p class="result">';
+            echo '  <b>File not uploaded to the wanted location</b><br />';
             echo '  Error: ' . $handle->error . '';
-            echo '</fieldset>';
-        }
-
-        // we copy the file a second time
-        $handle->Process($dir_dest);
-
-        // we check if everything went OK
-        if ($handle->processed) {
-            // everything was fine !
-            echo '<fieldset>';
-            echo '  <legend>file uploaded with success</legend>';
-            echo '  <p>' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB</p>';
-            echo '  link to the file just uploaded: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
-            echo '</fieldset>';
-        } else {
-            // one error occured
-            echo '<fieldset>';
-            echo '  <legend>file not uploaded to the wanted location</legend>';
-            echo '  Error: ' . $handle->error . '';
-            echo '</fieldset>';
+            echo '</p>';
         }
 
         // we delete the temporary files
@@ -123,11 +111,12 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
     } else {
         // if we're here, the upload file failed for some reasons
         // i.e. the server didn't receive the file
-        echo '<fieldset>';
-        echo '  <legend>file not uploaded on the server</legend>';
+        echo '<p class="result">';
+        echo '  <b>File not uploaded on the server</b><br />';
         echo '  Error: ' . $handle->error . '';
-        echo '</fieldset>';
+        echo '</p>';
     }
+
 
 } else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'image') {
 
@@ -156,19 +145,19 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         // we check if everything went OK
         if ($handle->processed) {
             // everything was fine !
-            echo '<fieldset>';
-            echo '  <legend>file uploaded with success</legend>';
+            echo '<p class="result">';
+            echo '  <b>File uploaded with success</b><br />';
             echo '  <img src="'.$dir_pics.'/' . $handle->file_dst_name . '" />';
             $info = getimagesize($handle->file_dst_pathname);
-            echo '  <p>' . $info['mime'] . ' &nbsp;-&nbsp; ' . $info[0] . ' x ' . $info[1] .' &nbsp;-&nbsp; ' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB</p>';
-            echo '  link to the file just uploaded: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a><br/>';
-            echo '</fieldset>';
+            echo '  File: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a><br/>';
+            echo '   (' . $info['mime'] . ' - ' . $info[0] . ' x ' . $info[1] .' -  ' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB)';
+            echo '</p>';
         } else {
             // one error occured
-            echo '<fieldset>';
-            echo '  <legend>file not uploaded to the wanted location</legend>';
+            echo '<p class="result">';
+            echo '  <b>File not uploaded to the wanted location</b><br />';
             echo '  Error: ' . $handle->error . '';
-            echo '</fieldset>';
+            echo '</p>';
         }
 
         // we now process the image a second time, with some other settings
@@ -183,19 +172,19 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         // we check if everything went OK
         if ($handle->processed) {
             // everything was fine !
-            echo '<fieldset>';
-            echo '  <legend>file uploaded with success</legend>';
+            echo '<p class="result">';
+            echo '  <b>File uploaded with success</b><br />';
             echo '  <img src="'.$dir_pics.'/' . $handle->file_dst_name . '" />';
             $info = getimagesize($handle->file_dst_pathname);
-            echo '  <p>' . $info['mime'] . ' &nbsp;-&nbsp; ' . $info[0] . ' x ' . $info[1] .' &nbsp;-&nbsp; ' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB</p>';
-            echo '  link to the file just uploaded: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a><br/>';
-            echo '</fieldset>';
+            echo '  File: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a><br/>';
+            echo '   (' . $info['mime'] . ' - ' . $info[0] . ' x ' . $info[1] .' - ' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB)';
+            echo '</p>';
         } else {
             // one error occured
-            echo '<fieldset>';
-            echo '  <legend>file not uploaded to the wanted location</legend>';
+            echo '<p class="result">';
+            echo '  <b>File not uploaded to the wanted location</b><br />';
             echo '  Error: ' . $handle->error . '';
-            echo '</fieldset>';
+            echo '</p>';
         }
 
         // we delete the temporary files
@@ -204,12 +193,68 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
     } else {
         // if we're here, the upload file failed for some reasons
         // i.e. the server didn't receive the file
-        echo '<fieldset>';
-        echo '  <legend>file not uploaded on the server</legend>';
+        echo '<p class="result">';
+        echo '  <b>File not uploaded on the server</b><br />';
         echo '  Error: ' . $handle->error . '';
-        echo '</fieldset>';
+        echo '</p>';
     }
 
+
+} else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'xhr') {
+
+    // ---------- XMLHttpRequest UPLOAD ----------
+
+    // we first check if it is a XMLHttpRequest call
+    if (isset($_SERVER['HTTP_X_FILE_NAME']) && isset($_SERVER['CONTENT_LENGTH'])) {
+
+        // we create an instance of the class, feeding in the name of the file
+        // sent via a XMLHttpRequest request, prefixed with 'php:'
+        $handle = new Upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);  
+
+    } else {  
+        // we create an instance of the class, giving as argument the PHP object
+        // corresponding to the file field from the form
+        // This is the fallback, using the standard way
+        $handle = new Upload($_FILES['my_field']);       
+    }
+    
+    // then we check if the file has been uploaded properly
+    // in its *temporary* location in the server (often, it is /tmp)
+    if ($handle->uploaded) {
+
+        // yes, the file is on the server
+        // now, we start the upload 'process'. That is, to copy the uploaded file
+        // from its temporary location to the wanted location
+        // It could be something like $handle->Process('/home/www/my_uploads/');
+        $handle->Process($dir_dest);
+
+        // we check if everything went OK
+        if ($handle->processed) {
+            // everything was fine !
+            echo '<p class="result">';
+            echo '  <b>File uploaded with success</b><br />';
+            echo '  File: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
+            echo '   (' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB)';
+            echo '</p>';
+        } else {
+            // one error occured
+            echo '<p class="result">';
+            echo '  <b>File not uploaded to the wanted location</b><br />';
+            echo '  Error: ' . $handle->error . '';
+            echo '</p>';
+        }
+
+        // we delete the temporary files
+        $handle-> Clean();
+
+    } else {
+        // if we're here, the upload file failed for some reasons
+        // i.e. the server didn't receive the file
+        echo '<p class="result">';
+        echo '  <b>File not uploaded on the server</b><br />';
+        echo '  Error: ' . $handle->error . '';
+        echo '</p>';
+    }
 
 
 } else if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '')) == 'multiple') {
@@ -244,26 +289,26 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
             // we check if everything went OK
             if ($handle->processed) {
                 // everything was fine !
-                echo '<fieldset>';
-                echo '  <legend>file uploaded with success</legend>';
-                echo '  <p>' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB</p>';
-                echo '  link to the file just uploaded: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
-                echo '</fieldset>';
+                echo '<p class="result">';
+                echo '  <b>File uploaded with success</b><br />';
+                echo '  File: <a href="'.$dir_pics.'/' . $handle->file_dst_name . '">' . $handle->file_dst_name . '</a>';
+                echo '   (' . round(filesize($handle->file_dst_pathname)/256)/4 . 'KB)';
+                echo '</p>';
             } else {
                 // one error occured
-                echo '<fieldset>';
-                echo '  <legend>file not uploaded to the wanted location</legend>';
+                echo '<p class="result">';
+                echo '  <b>File not uploaded to the wanted location</b><br />';
                 echo '  Error: ' . $handle->error . '';
-                echo '</fieldset>';
+                echo '</p>';
             }
 
         } else {
             // if we're here, the upload file failed for some reasons
             // i.e. the server didn't receive the file
-            echo '<fieldset>';
-            echo '  <legend>file not uploaded on the server</legend>';
+            echo '<p class="result">';
+            echo '  <b>File not uploaded on the server</b><br />';
             echo '  Error: ' . $handle->error . '';
-            echo '</fieldset>';
+            echo '</p>';
         }
     }
 
@@ -474,6 +519,12 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         TestProcess($handle, '5px red border', "\$foo->image_border          = 5;\n\$foo->image_border_color    = '#FF0000';");
 
         // -----------
+        $handle->image_border          = 5;
+        $handle->image_border_color    = '#00FF00';
+        $handle->image_border_opacity  = 50;
+        TestProcess($handle, '5px green semi-transparent border', "\$foo->image_border          = 5;\n\$foo->image_border_color    = '#00FF00';\n\$foo->image_border_opacity  = 50;");
+
+        // -----------
         $handle->image_border          = '5 20 1 25%';
         $handle->image_border_color    = '#0000FF';
         TestProcess($handle, '5px top, 20px right, 1px bot. and 25% left blue border', "\$foo->image_border          = '5 20 1 25%';\n\$foo->image_border_color    = '#0000FF';");
@@ -489,11 +540,29 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         TestProcess($handle, 'crossed colored frame, 7 px wide', "\$foo->image_frame           = 2;\n\$foo->image_frame_colors    = '#FFFFFF #BBBBBB\n                               #999999 #FF0000\n                               #666666 #333333\n                               #000000';");
 
         // -----------
+        $handle->image_frame           = 1;
+        $handle->image_frame_colors    = '#FF0000 #FF00FF #0000FF #000000';
+        $handle->image_frame_opacity   = 25;
+        TestProcess($handle, 'flat colored frame, 4 px wide, 25% opacity', "\$foo->image_frame           = 1;\n\$foo->image_frame_colors    = '#FF0000 #FF00FF\n                               #0000FF #000000';\n\$foo->image_frame_opacity   = 25;");
+
+        // -----------
+        $handle->image_border_transparent = 10;
+        TestProcess($handle, '10px fade-to-transparent border', "\$foo->image_border_transparent = 10;");
+
+        // -----------
+        $handle->image_border_transparent = '10 50 20 60';
+        TestProcess($handle, 'various fade-to-transparent borders', "\$foo->image_border_transparent = '10 50 20 60';");
+
+        // -----------
+        $handle->image_border_transparent = array(0, 150, 0, 0);
+        TestProcess($handle, 'right fading-out to transparency mask', "\$foo->image_border_transparent = array(0, 150, 0, 0);");
+
+        // -----------
         $handle->image_overlay_color   = '#FFFFFF';
-        $handle->image_overlay_percent = 50;
+        $handle->image_overlay_opacity = 50;
         $handle->image_rotate          = '180';
         $handle->image_tint_color      = '#FF0000';
-        TestProcess($handle, 'tint and 50% overlay and 180\' rotation', "\$foo->image_overlay_color   = '#FFFFFF';\n\$foo->image_overlay_percent = 50;\n\$foo->image_rotate          = '180';\n\$foo->image_tint_color      = '#FF0000';");
+        TestProcess($handle, 'tint and 50% overlay and 180\' rotation', "\$foo->image_overlay_color   = '#FFFFFF';\n\$foo->image_overlay_opacity = 50;\n\$foo->image_rotate          = '180';\n\$foo->image_tint_color      = '#FF0000';");
 
         // -----------
         $handle->image_tint_color      = '#FF0000';
@@ -501,18 +570,18 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
 
         // -----------
         $handle->image_overlay_color   = '#FF0000';
-        $handle->image_overlay_percent = 50;
-        TestProcess($handle, '50% overlay #FF0000', "\$foo->image_overlay_color   = '#FF0000';\n\$foo->image_overlay_percent = 50;");
+        $handle->image_overlay_opacity = 50;
+        TestProcess($handle, '50% overlay #FF0000', "\$foo->image_overlay_color   = '#FF0000';\n\$foo->image_overlay_opacity = 50;");
 
         // -----------
         $handle->image_overlay_color   = '#0000FF';
-        $handle->image_overlay_percent = 5;
-        TestProcess($handle, '5% overlay #0000FF', "\$foo->image_overlay_color   = '#0000FF';\n\$foo->image_overlay_percent = 5;");
+        $handle->image_overlay_opacity = 5;
+        TestProcess($handle, '5% overlay #0000FF', "\$foo->image_overlay_color   = '#0000FF';\n\$foo->image_overlay_opacity = 5;");
 
         // -----------
         $handle->image_overlay_color   = '#FFFFFF';
-        $handle->image_overlay_percent = 90;
-        TestProcess($handle, '90% overlay #FFFFFF', "\$foo->image_overlay_color   = '#FFFFFF';\n\$foo->image_overlay_percent = 90;");
+        $handle->image_overlay_opacity = 90;
+        TestProcess($handle, '90% overlay #FFFFFF', "\$foo->image_overlay_color   = '#FFFFFF';\n\$foo->image_overlay_opacity = 90;");
 
         // -----------
         $handle->image_brightness      = 25;
@@ -527,7 +596,15 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         TestProcess($handle, 'contrast 75', "\$foo->image_contrast        = 75;");
 
         // -----------
-        $handle->image_threshold        = 20;
+        $handle->image_opacity         = 75;
+        TestProcess($handle, 'opacity 75', "\$foo->image_opacity         = 75;");
+
+        // -----------
+        $handle->image_opacity         = 25;
+        TestProcess($handle, 'opacity 25', "\$foo->image_opacity         = 25;");
+
+        // -----------
+        $handle->image_threshold       = 20;
         TestProcess($handle, 'threshold filter', "\$foo->image_threshold       = 20;");
 
         // -----------
@@ -542,15 +619,23 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         TestProcess($handle, 'original file, again', '');
 
         // -----------
+        $handle->image_pixelate        = 3;
+        TestProcess($handle, 'pixelate, 3px block size', "\$foo->image_pixelate        = 3;");
+
+        // -----------
+        $handle->image_pixelate        = 10;
+        TestProcess($handle, 'pixelate, 10px block size', "\$foo->image_pixelate        = 10;");
+
+        // -----------
         $handle->image_unsharp         = true;
         TestProcess($handle, 'unsharp mask, default values', "\$foo->image_unsharp         = true;");
 
         // -----------
         $handle->image_unsharp         = true;
-        $handle->image_unsharp_amount  = 100;
-        $handle->image_unsharp_radius  = 50;
-        $handle->image_unsharp_threshold = 0;
-        TestProcess($handle, 'unsharp mask, different values', "\$foo->image_unsharp         = true;\n\$foo->image_unsharp_amount  = 100;\n\$foo->image_unsharp_radius  = 50;\n\$foo->image_unsharp_threshold = 0;");
+        $handle->image_unsharp_amount  = 200;
+        $handle->image_unsharp_radius  = 1;
+        $handle->image_unsharp_threshold = 5;
+        TestProcess($handle, 'unsharp mask, different values', "\$foo->image_unsharp         = true;\n\$foo->image_unsharp_amount  = 200;\n\$foo->image_unsharp_radius  = 1;\n\$foo->image_unsharp_threshold = 5;");
 
         // -----------
         $handle->image_brightness      = 75;
@@ -559,24 +644,24 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         $handle->image_x               = 100;
         $handle->image_rotate          = '90';
         $handle->image_overlay_color   = '#FF0000';
-        $handle->image_overlay_percent = 50;
+        $handle->image_overlay_opacity = 50;
         $handle->image_text            = 'verot.net';
         $handle->image_text_color      = '#0000FF';
         $handle->image_text_background = '#FFFFFF';
         $handle->image_text_position   = 'BL';
         $handle->image_text_padding_x  = 10;
         $handle->image_text_padding_y  = 2;
-        TestProcess($handle, 'brightness, resize, rotation, overlay &amp; label', "\$foo->image_brightness      = 75;\n\$foo->image_resize          = true;\n\$foo->image_y               = 200;\n\$foo->image_x               = 100;\n\$foo->image_rotate          = '90';\n\$foo->image_overlay_color   = '#FF0000';\n\$foo->image_overlay_percent = 50;\n\$foo->image_text            = 'verot.net';\n\$foo->image_text_color      = '#0000FF';\n\$foo->image_text_background = '#FFFFFF';\n\$foo->image_text_position   = 'BL';\n\$foo->image_text_padding_x  = 10;\n\$foo->image_text_padding_y  = 2;");
+        TestProcess($handle, 'brightness, resize, rotation, overlay &amp; label', "\$foo->image_brightness      = 75;\n\$foo->image_resize          = true;\n\$foo->image_y               = 200;\n\$foo->image_x               = 100;\n\$foo->image_rotate          = '90';\n\$foo->image_overlay_color   = '#FF0000';\n\$foo->image_overlay_opacity = 50;\n\$foo->image_text            = 'verot.net';\n\$foo->image_text_color      = '#0000FF';\n\$foo->image_text_background = '#FFFFFF';\n\$foo->image_text_position   = 'BL';\n\$foo->image_text_padding_x  = 10;\n\$foo->image_text_padding_y  = 2;");
 
         // -----------
         $handle->image_text            = 'verot.net';
         $handle->image_text_color      = '#000000';
-        $handle->image_text_percent    = 80;
+        $handle->image_text_opacity    = 80;
         $handle->image_text_background = '#FFFFFF';
-        $handle->image_text_background_percent  = 70;
+        $handle->image_text_background_opacity  = 70;
         $handle->image_text_font       = 5;
         $handle->image_text_padding    = 20;
-        TestProcess($handle, 'overlayed transparent label', "\$foo->image_text            = 'verot.net';\n\$foo->image_text_color      = '#000000';\n\$foo->image_text_percent    = 80;\n\$foo->image_text_background = '#FFFFFF';\n\$foo->image_text_background_percent = 70;\n\$foo->image_text_font       = 5;\n\$foo->image_text_padding    = 20;");
+        TestProcess($handle, 'overlayed transparent label', "\$foo->image_text            = 'verot.net';\n\$foo->image_text_color      = '#000000';\n\$foo->image_text_opacity    = 80;\n\$foo->image_text_background = '#FFFFFF';\n\$foo->image_text_background_opacity = 70;\n\$foo->image_text_font       = 5;\n\$foo->image_text_padding    = 20;");
 
         // -----------
         $handle->image_text            = 'verot.net';
@@ -594,56 +679,56 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         $handle->image_text_direction  = 'v';
         $handle->image_text_color      = '#FFFFFF';
         $handle->image_text_background = '#000000';
-        $handle->image_text_background_percent = 50;
+        $handle->image_text_background_opacity = 50;
         $handle->image_text_padding    = 5;
-        TestProcess($handle, 'overlayed vertical label, into BMP', "\$foo->image_convert         = 'bmp';\n\$foo->image_text            = 'verot.net';\n\$foo->image_text_direction  = 'v';\n\$foo->image_text_color      = '#FFFFFF';\n\$foo->image_text_background = '#000000';\n\$foo->image_text_background_percent = 50;\n\$foo->image_text_padding    = 5;");
+        TestProcess($handle, 'overlayed vertical label, into BMP', "\$foo->image_convert         = 'bmp';\n\$foo->image_text            = 'verot.net';\n\$foo->image_text_direction  = 'v';\n\$foo->image_text_color      = '#FFFFFF';\n\$foo->image_text_background = '#000000';\n\$foo->image_text_background_opacity = 50;\n\$foo->image_text_padding    = 5;");
 
         // -----------
         $handle->image_text            = 'verot.net';
-        $handle->image_text_percent    = 50;
+        $handle->image_text_opacity    = 50;
         $handle->image_text_background  = '#0000FF';
         $handle->image_text_x          = -5;
         $handle->image_text_y          = -5;
         $handle->image_text_padding    = 5;
-        TestProcess($handle, 'overlayed label with absolute negative position', "\$foo->image_text            = 'verot.net';\n\$foo->image_text_percent    = 50;\n\$foo->image_text_background  = '#0000FF';\n\$foo->image_text_x          = -5;\n\$foo->image_text_y          = -5;\n\$foo->image_text_padding    = 5;");
+        TestProcess($handle, 'overlayed label with absolute negative position', "\$foo->image_text            = 'verot.net';\n\$foo->image_text_opacity    = 50;\n\$foo->image_text_background  = '#0000FF';\n\$foo->image_text_x          = -5;\n\$foo->image_text_y          = -5;\n\$foo->image_text_padding    = 5;");
 
         // -----------
         $handle->image_text            = 'verot.net';
         $handle->image_text_background = '#0000FF';
-        $handle->image_text_background_percent = 25;
+        $handle->image_text_background_opacity = 25;
         $handle->image_text_x          = 5;
         $handle->image_text_y          = 5;
         $handle->image_text_padding    = 20;
-        TestProcess($handle, 'overlayed transparent label with absolute position', "\$foo->image_text            = 'verot.net';\n\$foo->image_text_background = '#0000FF';\n\$foo->image_text_background_percent = 25;\n\$foo->image_text_x          = 5;\n\$foo->image_text_y          = 5;\n\$foo->image_text_padding    = 20;");
+        TestProcess($handle, 'overlayed transparent label with absolute position', "\$foo->image_text            = 'verot.net';\n\$foo->image_text_background = '#0000FF';\n\$foo->image_text_background_opacity = 25;\n\$foo->image_text_x          = 5;\n\$foo->image_text_y          = 5;\n\$foo->image_text_padding    = 20;");
 
         // -----------
         $handle->image_text    = "verot.net\nclass\nupload";
         $handle->image_text_background = '#000000';
-        $handle->image_text_background_percent = 75;
+        $handle->image_text_background_opacity = 75;
         $handle->image_text_font       = 1;
         $handle->image_text_padding    = 10;
-        TestProcess($handle, 'text label with multiple lines and small font', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_background_percent = 75;\n\$foo->image_text_font       = 1;\n\$foo->image_text_padding    = 10;");
+        TestProcess($handle, 'text label with multiple lines and small font', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_background_opacity = 75;\n\$foo->image_text_font       = 1;\n\$foo->image_text_padding    = 10;");
 
         // -----------
         $handle->image_text    = "verot.net\nclass\nupload";
         $handle->image_text_color      = '#000000';
         $handle->image_text_background = '#FFFFFF';
-        $handle->image_text_background_percent = 60;
+        $handle->image_text_background_opacity = 60;
         $handle->image_text_padding    = 3;
         $handle->image_text_font       = 3;
         $handle->image_text_alignment  = 'R';
         $handle->image_text_direction  = 'V';
-        TestProcess($handle, 'vertical multi-lines text, right aligned', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_color      = '#000000';\n\$foo->image_text_background = '#FFFFFF';\n\$foo->image_text_background_percent = 60;\n\$foo->image_text_padding    = 3;\n\$foo->image_text_font       = 3;\n\$foo->image_text_alignment  = 'R';\n\$foo->image_text_direction  = 'V';");
+        TestProcess($handle, 'vertical multi-lines text, right aligned', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_color      = '#000000';\n\$foo->image_text_background = '#FFFFFF';\n\$foo->image_text_background_opacity = 60;\n\$foo->image_text_padding    = 3;\n\$foo->image_text_font       = 3;\n\$foo->image_text_alignment  = 'R';\n\$foo->image_text_direction  = 'V';");
 
         // -----------
         $handle->image_text    = "verot.net\nclass\nupload";
         $handle->image_text_background = '#000000';
-        $handle->image_text_background_percent = 50;
+        $handle->image_text_background_opacity = 50;
         $handle->image_text_padding    = 10;
         $handle->image_text_x          = -5;
         $handle->image_text_y          = -5;
         $handle->image_text_line_spacing = 10;
-        TestProcess($handle, 'text label with 10 pixels of line spacing', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_background_percent = 50;\n\$foo->image_text_padding    = 10;\n\$foo->image_text_x          = -5;\n\$foo->image_text_y          = -5;\n\$foo->image_text_line_spacing = 10;");
+        TestProcess($handle, 'text label with 10 pixels of line spacing', "\$foo->image_text            = \"verot.net\\nclass\\nupload\";\n\$foo->image_text_background = '#000000';\n\$foo->image_text_background_opacity = 50;\n\$foo->image_text_padding    = 10;\n\$foo->image_text_x          = -5;\n\$foo->image_text_y          = -5;\n\$foo->image_text_line_spacing = 10;");
 
         // -----------
         $handle->image_unsharp         = true;
@@ -794,21 +879,29 @@ if ((isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GE
         $handle->jpeg_quality          = 80;
         TestProcess($handle, 'JPG quality set to 80%', "\$foo->image_convert         = 'jpg';\n\$foo->jpeg_quality          = 80;");
 
+        // -----------
+        $handle->image_convert         = 'png';
+        $handle->png_compression       = 0;
+        TestProcess($handle, 'PNG compression set to 0 (fast, large files)', "\$foo->image_convert         = 'jpg';\n\$foo->png_compression       = 0;");
+
+        // -----------
+        $handle->image_convert         = 'png';
+        $handle->png_compression       = 9;
+        TestProcess($handle, 'PNG compression set to 9 (slow, smaller files)', "\$foo->image_convert         = 'jpg';\n\$foo->png_compression       = 9;");
 
     } else {
         // if we are here, the local file failed for some reasons
-        echo '<fieldset>';
-        echo '  <legend>local file error</legend>';
-        echo '  Error: ' . $handle->error . '';
-        echo '</fieldset>';
+        echo '<b>local file error</b><br />';
+        echo 'Error: ' . $handle->error . '';
     }
 
 
 }
 
 
-if (!$cli) {
-    echo '<p><a href="index.html">do another test</a></p>';
+if (!$cli && !(isset($_SERVER['HTTP_X_FILE_NAME']) && isset($_SERVER['CONTENT_LENGTH']))) {
+
+    echo '<p class="result"><a href="index.html">do another test</a></p>';
 
     if (isset($handle)) {
         echo '<pre>';

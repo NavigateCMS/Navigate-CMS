@@ -572,6 +572,7 @@ class file
             );
 
 			$handle->image_convert = 'png';
+            $handle->file_max_size = '512M'; // maximum image size: 512M (it really depends on available memory)
 			
 			// if needed, calculate width or height with aspect ratio
 			if(empty($width))
@@ -600,7 +601,7 @@ class file
 									floor( ($width - $size['width']) / 2 ));
 				$handle->image_border = $borderP;
 				$handle->image_border_color = '#FFFFFF';
-				$handle->image_border_transparency = 127;
+				$handle->image_border_opacity = 0;
 			}
 			else
 			{			
@@ -617,8 +618,8 @@ class file
 				$handle->image_ratio_fill = true;						
 				$handle->image_ratio_crop = true;	
 			}
-			$handle->process(dirname($thumbnail));
-			
+
+            $handle->process(dirname($thumbnail));
 			rename($handle->file_dst_pathname, $thumbnail);
 		}
 		return $thumbnail;

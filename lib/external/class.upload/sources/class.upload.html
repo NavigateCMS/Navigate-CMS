@@ -4,7 +4,7 @@
         <head>
             <!-- template designed by Marco Von Ballmoos -->
             <title>Docs For Class upload</title>
-            <link rel="stylesheet" href="phpdoc/stylesheet.css" />
+            <link rel="stylesheet" href="res/phpdoc/stylesheet.css" />
             <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
         </head>
         <body>
@@ -22,7 +22,7 @@
                 <li><span class="field">license:</span> <a href="http://opensource.org/licenses/gpl-license.php">GNU Public License version 2</a></li>
                 <li><span class="field">author:</span> Colin Verot &lt;<a href="mailto:colin@verot.net">colin@verot.net</a>&gt;</li>
                 <li><span class="field">version:</span>
-0.30
+0.32
 </li>
             </ul>
 
@@ -39,11 +39,11 @@
 					</div>
 	<div class="info-box-body">
         		<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Class upload</p>
-<p class="description"><p><strong>What does it do?</strong></p><p>It manages file uploads for you. In short, it manages the uploaded file,  and allows you to do whatever you want with the file, especially if it  is an image, and as many times as you want.</p><p>It is the ideal class to quickly integrate file upload in your site.  If the file is an image, you can convert, resize, crop it in many ways.  You can also apply filters, add borders, text, watermarks, etc...  That's all you need for a gallery script for instance. Supported formats  are PNG, JPG, GIF and BMP.</p><p>You can also use the class to work on local files, which is especially  useful to use the image manipulation features. The class also supports  Flash uploaders.</p><p>The class works with PHP 4 and 5, and its error messages can  be localized at will.</p><p><strong>How does it work?</strong></p><p>You instanciate the class with the $_FILES['my_field'] array  where my_field is the field name from your upload form.  The class will check if the original file has been uploaded  to its temporary location (alternatively, you can instanciate  the class with a local filename).</p><p>You can then set a number of processing variables to act on the file.  For instance, you can rename the file, and if it is an image,  convert and resize it in many ways.  You can also set what will the class do if the file already exists.</p><p>Then you call the function <a href="#methodprocess">process</a> to actually perform the actions  according to the processing parameters you set above.  It will create new instances of the original file,  so the original file remains the same between each process.  The file will be manipulated, and copied to the given location.  The processing variables will be reset once it is done.</p><p>You can repeat setting up a new set of processing variables,  and calling <a href="#methodprocess">process</a> again as many times as you want.  When you have finished, you can call <a href="#methodclean">clean</a> to delete  the original uploaded file.</p><p>If you don't set any processing parameters and call <a href="#methodprocess">process</a>  just after instanciating the class. The uploaded file will be simply  copied to the given location without any alteration or checks.</p><p>Don't forget to add <em>enctype=&quot;multipart/form-data&quot;</em> in your form  tag &lt;form&gt; if you want your form to upload the file.</p><p><strong>How to use it?</strong><br />  Create a simple HTML file, with a form such as:  <pre> &lt;form enctype="multipart/form-data" method="post" action="upload.php"&gt;
+
+<p class="description"><p><strong>What does it do?</strong></p><p>It manages file uploads for you. In short, it manages the uploaded file,  and allows you to do whatever you want with the file, especially if it  is an image, and as many times as you want.</p><p>It is the ideal class to quickly integrate file upload in your site.  If the file is an image, you can convert, resize, crop it in many ways.  You can also apply filters, add borders, text, watermarks, etc...  That's all you need for a gallery script for instance. Supported formats  are PNG, JPG, GIF and BMP.</p><p>You can also use the class to work on local files, which is especially  useful to use the image manipulation features. The class also supports  Flash uploaders.</p><p>The class works with PHP 4 and 5, and its error messages can  be localized at will.</p><p><strong>How does it work?</strong></p><p>You instanciate the class with the $_FILES['my_field'] array  where my_field is the field name from your upload form.  The class will check if the original file has been uploaded  to its temporary location (alternatively, you can instanciate  the class with a local filename).</p><p>You can then set a number of processing variables to act on the file.  For instance, you can rename the file, and if it is an image,  convert and resize it in many ways.  You can also set what will the class do if the file already exists.</p><p>Then you call the function <a href="#methodprocess">process</a> to actually perform the actions  according to the processing parameters you set above.  It will create new instances of the original file,  so the original file remains the same between each process.  The file will be manipulated, and copied to the given location.  The processing variables will be reset once it is done.</p><p>You can repeat setting up a new set of processing variables,  and calling <a href="#methodprocess">process</a> again as many times as you want.  When you have finished, you can call <a href="#methodclean">clean</a> to delete  the original uploaded file.</p><p>If you don't set any processing parameters and call <a href="#methodprocess">process</a>  just after instanciating the class. The uploaded file will be simply  copied to the given location without any alteration or checks.</p><p>Don't forget to add <em>enctype=&quot;multipart/form-data&quot;</em> in your form  tag &lt;form&gt; if you want your form to upload the file.</p><p><strong>How to use it?</strong><br />  Create a simple HTML file, with a form such as:  <pre> &lt;form enctype="multipart/form-data" method="post" action="#"&gt;
    &lt;input type="file" size="32" name="image_field" value=""&gt;
    &lt;input type="submit" name="Submit" value="upload"&gt;
- &lt;/form&gt;</pre>  Create a file called upload.php:  <pre>  $handle = new upload($_FILES['image_field']);
+ &lt;/form&gt;</pre>  Create a file called upload.php:  <pre class="code php">  $handle = new upload($_FILES['image_field']);
   if ($handle->uploaded) {
       $handle->file_new_name_body   = 'image_resized';
       $handle->image_resize         = true;
@@ -56,102 +56,136 @@
       } else {
           echo 'error : ' . $handle->error;
       }
-  }</pre></p><p><strong>How to process local files?</strong><br />  Use the class as following, the rest being the same as above:  <pre>  $handle = new upload('/home/user/myfile.jpg');</pre></p><p><strong>How to set the language?</strong><br />  Instantiate the class with a second argument being the language code:  <pre>  $handle = new upload($_FILES['image_field'], 'fr_FR');
-  $handle = new upload('/home/user/myfile.jpg', 'fr_FR');</pre></p><p><strong>How to output the resulting file or picture directly to the browser?</strong><br />  Simply call <a href="#methodprocess">process</a>() without an argument (or with null as first argument):  <pre>  $handle = new upload($_FILES['image_field']);
+  }</pre></p><p><strong>How to process a file uploaded via XMLHttpRequest?</strong><br />  Use the class as following, the rest being the same as above:  <pre class="code php">  $handle = new upload('php:'.$_SERVER['HTTP_X_FILE_NAME']);</pre>  Prefixing the argument with &quot;php:&quot; tells the class to retrieve the uploaded data  in php://input, and the rest is the stream's filename, which is generally in  $_SERVER['HTTP_X_FILE_NAME']. But you can use any other name you see fit:  <pre class="code php">  $handle = new upload('php:mycustomname.ext');</pre></p><p><strong>How to process local files?</strong><br />  Use the class as following, the rest being the same as above:  <pre class="code php">  $handle = new upload('/home/user/myfile.jpg');</pre></p><p><strong>How to set the language?</strong><br />  Instantiate the class with a second argument being the language code:  <pre class="code php">  $handle = new upload($_FILES['image_field'], 'fr_FR');
+  $handle = new upload('/home/user/myfile.jpg', 'fr_FR');</pre></p><p><strong>How to output the resulting file or picture directly to the browser?</strong><br />  Simply call <a href="#methodprocess">process</a>() without an argument (or with null as first argument):  <pre class="code php">  $handle = new upload($_FILES['image_field']);
   header('Content-type: ' . $handle->file_src_mime);
   echo $handle->Process();
-  die();</pre>  Or if you want to force the download of the file:  <pre>  $handle = new upload($_FILES['image_field']);
+  die();</pre>  Or if you want to force the download of the file:  <pre class="code php">  $handle = new upload($_FILES['image_field']);
   header('Content-type: ' . $handle->file_src_mime);
   header("Content-Disposition: attachment; filename=".rawurlencode($handle->file_src_name).";");
   echo $handle->Process();
-  die();</pre></p><p><strong>Processing parameters</strong> (reset after each process)  <ul><li><strong><a href="#var$file_new_name_body">file_new_name_body</a></strong> replaces the name body (default: '')<br />
-  <pre>$handle->file_new_name_body = 'new name';</pre></li><li><strong><a href="#var$file_name_body_add">file_name_body_add</a></strong> appends to the name body (default: '')<br />
-  <pre>$handle->file_name_body_add = '_uploaded';</pre></li><li><strong><a href="#var$file_name_body_pre">file_name_body_pre</a></strong> prepends to the name body (default: '')<br />
-  <pre>$handle->file_name_body_pre = 'thumb_';</pre></li><li><strong><a href="#var$file_new_name_ext">file_new_name_ext</a></strong> replaces the file extension (default: '')<br />
-  <pre>$handle->file_new_name_ext = 'txt';</pre></li><li><strong><a href="#var$file_safe_name">file_safe_name</a></strong> formats the filename (spaces changed to _) (default: true)<br />
-  <pre>$handle->file_safe_name = true;</pre></li><li><strong><a href="#var$file_overwrite">file_overwrite</a></strong> sets behaviour if file already exists (default: false)<br />
-  <pre>$handle->file_overwrite = true;</pre></li><li><strong><a href="#var$file_auto_rename">file_auto_rename</a></strong> automatically renames file if it already exists (default: true)<br />
-  <pre>$handle->file_auto_rename = true;</pre></li><li><strong><a href="#var$dir_auto_create">dir_auto_create</a></strong> automatically creates destination directory if missing (default: true)<br />
-  <pre>$handle->auto_create_dir = true;</pre></li><li><strong><a href="#var$dir_auto_chmod">dir_auto_chmod</a></strong> automatically attempts to chmod the destination directory if not writeable (default: true)<br />
-  <pre>$handle->dir_auto_chmod = true;</pre></li><li><strong><a href="#var$dir_chmod">dir_chmod</a></strong> chmod used when creating directory or if directory not writeable (default: 0777)<br />
-  <pre>$handle->dir_chmod = 0777;</pre></li><li><strong><a href="#var$file_max_size">file_max_size</a></strong> sets maximum upload size (default: upload_max_filesize from php.ini)<br />
-  <pre>$handle->file_max_size = '1024'; // 1KB</pre></li><li><strong><a href="#var$mime_check">mime_check</a></strong> sets if the class check the MIME against the <a href="#var$allowed">allowed</a> list (default: true)<br />
-  <pre>$handle->mime_check = true;</pre></li><li><strong><a href="#var$no_script">no_script</a></strong> sets if the class turns scripts into text files (default: true)<br />
-  <pre>$handle->no_script = false;</pre></li><li><strong><a href="#var$allowed">allowed</a></strong> array of allowed mime-types. wildcard accepted, as in image/* (default: check Init)<br />
-  <pre>$handle->allowed = array('application/pdf','application/msword', 'image/*');</pre></li><li><strong><a href="#var$forbidden">forbidden</a></strong> array of forbidden mime-types. wildcard accepted, as in image/*  (default: check Init)<br />
-  <pre>$handle->forbidden = array('application/*');</pre></li></ul>  <ul><li><strong><a href="#var$image_convert">image_convert</a></strong> if set, image will be converted (possible values : ''|'png'|'jpeg'|'gif'|'bmp'; default: '')<br />
-  <pre>$handle->image_convert = 'jpg';</pre></li><li><strong><a href="#var$image_background_color">image_background_color</a></strong> if set, will forcibly fill transparent areas with the color, in hexadecimal (default: null)<br />
-  <pre>$handle->image_background_color = '#FF00FF';</pre></li><li><strong><a href="#var$image_default_color">image_default_color</a></strong> fallback color background color for non alpha-transparent output formats, such as JPEG or BMP, in hexadecimal (default: #FFFFFF)<br />
-  <pre>$handle->image_default_color = '#FF00FF';</pre></li><li><strong><a href="#var$jpeg_quality">jpeg_quality</a></strong> sets the compression quality for JPEG images (default: 85)<br />
-  <pre>$handle->jpeg_quality = 50;</pre></li><li><strong><a href="#var$jpeg_size">jpeg_size</a></strong> if set to a size in bytes, will approximate <a href="#var$jpeg_quality">jpeg_quality</a> so the output image fits within the size (default: null)<br />
-  <pre>$handle->jpeg_size = 3072;</pre></li></ul>  The following eight settings can be used to invalidate an upload if the file is an image (note that <em>open_basedir</em> restrictions prevent the use of these settings)  <ul><li><strong><a href="#var$image_max_width">image_max_width</a></strong> if set to a dimension in pixels, the upload will be invalid if the image width is greater (default: null)<br />
-  <pre>$handle->image_max_width = 200;</pre></li><li><strong><a href="#var$image_max_height">image_max_height</a></strong> if set to a dimension in pixels, the upload will be invalid if the image height is greater (default: null)<br />
-  <pre>$handle->image_max_height = 100;</pre></li><li><strong><a href="#var$image_max_pixels">image_max_pixels</a></strong> if set to a number of pixels, the upload will be invalid if the image number of pixels is greater (default: null)<br />
-  <pre>$handle->image_max_pixels = 50000;</pre></li><li><strong><a href="#var$image_max_ratio">image_max_ratio</a></strong> if set to a aspect ratio (width/height), the upload will be invalid if the image apect ratio is greater (default: null)<br />
-  <pre>$handle->image_max_ratio = 1.5;</pre></li><li><strong><a href="#var$image_min_width">image_min_width</a></strong> if set to a dimension in pixels, the upload will be invalid if the image width is lower (default: null)<br />
-  <pre>$handle->image_min_width = 100;</pre></li><li><strong><a href="#var$image_min_height">image_min_height</a></strong> if set to a dimension in pixels, the upload will be invalid if the image height is lower (default: null)<br />
-  <pre>$handle->image_min_height = 500;</pre></li><li><strong><a href="#var$image_min_pixels">image_min_pixels</a></strong> if set to a number of pixels, the upload will be invalid if the image number of pixels is lower (default: null)<br />
-  <pre>$handle->image_min_pixels = 20000;</pre></li><li><strong><a href="#var$image_min_ratio">image_min_ratio</a></strong> if set to a aspect ratio (width/height), the upload will be invalid if the image apect ratio is lower (default: null)<br />
-  <pre>$handle->image_min_ratio = 0.5;</pre></li></ul>  <ul><li><strong><a href="#var$image_resize">image_resize</a></strong> determines is an image will be resized (default: false)<br />
-  <pre>$handle->image_resize = true;</pre></li></ul>   The following variables are used only if <a href="#var$image_resize">image_resize</a> == true  <ul><li><strong><a href="#var$image_x">image_x</a></strong> destination image width (default: 150)<br />
-  <pre>$handle->image_x = 100;</pre></li><li><strong><a href="#var$image_y">image_y</a></strong> destination image height (default: 150)<br />
-  <pre>$handle->image_y = 200;</pre></li></ul>   Use either one of the following  <ul><li><strong><a href="#var$image_ratio">image_ratio</a></strong> if true, resize image conserving the original sizes ratio, using <a href="#var$image_x">image_x</a> AND <a href="#var$image_y">image_y</a> as max sizes if true (default: false)<br />
-  <pre>$handle->image_ratio = true;</pre></li><li><strong><a href="#var$image_ratio_crop">image_ratio_crop</a></strong> if true, resize image conserving the original sizes ratio, using <a href="#var$image_x">image_x</a> AND <a href="#var$image_y">image_y</a> as max sizes, and cropping excedent to fill the space. setting can also be a string, with one or more from 'TBLR', indicating which side of the image will be kept while cropping (default: false)<br />
-  <pre>$handle->image_ratio_crop = true;</pre></li><li><strong><a href="#var$image_ratio_fill">image_ratio_fill</a></strong> if true, resize image conserving the original sizes ratio, using <a href="#var$image_x">image_x</a> AND <a href="#var$image_y">image_y</a> as max sizes, fitting the image in the space and coloring the remaining space. setting can also be a string, with one or more from 'TBLR', indicating which side of the space the image will be in (default: false)<br />
-  <pre>$handle->image_ratio_fill = true;</pre></li><li><strong><a href="#var$image_ratio_no_zoom_in">image_ratio_no_zoom_in</a></strong> same as <a href="#var$image_ratio">image_ratio</a>, but won't resize if the source image is smaller than <a href="#var$image_x">image_x</a> x <a href="#var$image_y">image_y</a> (default: false)<br />
-  <pre>$handle->image_ratio_no_zoom_in = true;</pre></li><li><strong><a href="#var$image_ratio_no_zoom_out">image_ratio_no_zoom_out</a></strong> same as <a href="#var$image_ratio">image_ratio</a>, but won't resize if the source image is bigger than <a href="#var$image_x">image_x</a> x <a href="#var$image_y">image_y</a> (default: false)<br />
-  <pre>$handle->image_ratio_no_zoom_out = true;</pre></li><li><strong><a href="#var$image_ratio_x">image_ratio_x</a></strong> if true, resize image, calculating <a href="#var$image_x">image_x</a> from <a href="#var$image_y">image_y</a> and conserving the original sizes ratio (default: false)<br />
-  <pre>$handle->image_ratio_x = true;</pre></li><li><strong><a href="#var$image_ratio_y">image_ratio_y</a></strong> if true, resize image, calculating <a href="#var$image_y">image_y</a> from <a href="#var$image_x">image_x</a> and conserving the original sizes ratio (default: false)<br />
-  <pre>$handle->image_ratio_y = true;</pre></li><li><strong><a href="#var$image_ratio_pixels">image_ratio_pixels</a></strong> if set to a long integer, resize image, calculating <a href="#var$image_y">image_y</a> and <a href="#var$image_x">image_x</a> to match a the number of pixels (default: false)<br />
-  <pre>$handle->image_ratio_pixels = 25000;</pre></li></ul>   The following image manipulations require GD2+  <ul><li><strong><a href="#var$image_brightness">image_brightness</a></strong> if set, corrects the brightness. value between -127 and 127 (default: null)<br />
-  <pre>$handle->image_brightness = 40;</pre></li><li><strong><a href="#var$image_contrast">image_contrast</a></strong> if set, corrects the contrast. value between -127 and 127 (default: null)<br />
-  <pre>$handle->image_contrast = 50;</pre></li><li><strong><a href="#var$image_tint_color">image_tint_color</a></strong> if set, will tint the image with a color, value as hexadecimal #FFFFFF (default: null)<br />
-  <pre>$handle->image_tint_color = '#FF0000';</pre></li><li><strong><a href="#var$image_overlay_color">image_overlay_color</a></strong> if set, will add a colored overlay, value as hexadecimal #FFFFFF (default: null)<br />
-  <pre>$handle->image_overlay_color = '#FF0000';</pre></li><li><strong><a href="#var$image_overlay_percent">image_overlay_percent</a></strong> used when <a href="#var$image_overlay_color">image_overlay_color</a> is set, determines the opacity (default: 50)<br />
-  <pre>$handle->image_overlay_percent = 20;</pre></li><li><strong><a href="#var$image_negative">image_negative</a></strong> inverts the colors in the image (default: false)<br />
-  <pre>$handle->image_negative = true;</pre></li><li><strong><a href="#var$image_greyscale">image_greyscale</a></strong> transforms an image into greyscale (default: false)<br />
-  <pre>$handle->image_greyscale = true;</pre></li><li><strong><a href="#var$image_threshold">image_threshold</a></strong> applies a threshold filter. value between -127 and 127 (default: null)<br />
-  <pre>$handle->image_threshold = 20;</pre></li><li><strong><a href="#var$image_unsharp">image_unsharp</a></strong> applies an unsharp mask, with alpha transparency support (default: false)<br />
-  <pre>$handle->image_unsharp = true;</pre></li><li><strong><a href="#var$image_unsharp_amount">image_unsharp_amount</a></strong> unsharp mask amount, typically 50 - 200 (default: 80)<br />
-  <pre>$handle->image_unsharp_amount = 120;</pre></li><li><strong><a href="#var$image_unsharp_radius">image_unsharp_radius</a></strong> unsharp mask radius, typically 0.5 - 1 (default: 0.5)<br />
-  <pre>$handle->image_unsharp_radius = 0.8;</pre></li><li><strong><a href="#var$image_unsharp_threshold">image_unsharp_threshold</a></strong> unsharp mask threshold, typically 0 - 5 (default: 1)<br />
-  <pre>$handle->image_unsharp_threshold = 0;</pre></li></ul>  <ul><li><strong><a href="#var$image_text">image_text</a></strong> creates a text label on the image, value is a string, with eventual replacement tokens (default: null)<br />
-  <pre>$handle->image_text = 'test';</pre></li><li><strong><a href="#var$image_text_direction">image_text_direction</a></strong> text label direction, either 'h' horizontal or 'v' vertical (default: 'h')<br />
-  <pre>$handle->image_text_direction = 'v';</pre></li><li><strong><a href="#var$image_text_color">image_text_color</a></strong> text color for the text label, in hexadecimal (default: #FFFFFF)<br />
-  <pre>$handle->image_text_color = '#FF0000';</pre></li><li><strong><a href="#var$image_text_percent">image_text_percent</a></strong> text opacity on the text label, integer between 0 and 100 (default: 100)<br />
-  <pre>$handle->image_text_percent = 50;</pre></li><li><strong><a href="#var$image_text_background">image_text_background</a></strong> text label background color, in hexadecimal (default: null)<br />
-  <pre>$handle->image_text_background = '#FFFFFF';</pre></li><li><strong><a href="#var$image_text_background_percent">image_text_background_percent</a></strong> text label background opacity, integer between 0 and 100 (default: 100)<br />
-  <pre>$handle->image_text_background_percent = 50;</pre></li><li><strong><a href="#var$image_text_font">image_text_font</a></strong> built-in font for the text label, from 1 to 5. 1 is the smallest (default: 5)<br />
-  <pre>$handle->image_text_font = 4;</pre></li><li><strong><a href="#var$image_text_x">image_text_x</a></strong> absolute text label position, in pixels from the left border. can be negative (default: null)<br />
-  <pre>$handle->image_text_x = 5;</pre></li><li><strong><a href="#var$image_text_y">image_text_y</a></strong> absolute text label position, in pixels from the top border. can be negative (default: null)<br />
-  <pre>$handle->image_text_y = 5;</pre></li><li><strong><a href="#var$image_text_position">image_text_position</a></strong> text label position withing the image, a combination of one or two from 'TBLR': top, bottom, left, right (default: null)<br />
-  <pre>$handle->image_text_position = 'LR';</pre></li><li><strong><a href="#var$image_text_padding">image_text_padding</a></strong> text label padding, in pixels. can be overridden by <a href="#var$image_text_padding_x">image_text_padding_x</a> and <a href="#var$image_text_padding_y">image_text_padding_y</a> (default: 0)<br />
-  <pre>$handle->image_text_padding = 5;</pre></li><li><strong><a href="#var$image_text_padding_x">image_text_padding_x</a></strong> text label horizontal padding (default: null)<br />
-  <pre>$handle->image_text_padding_x = 2;</pre></li><li><strong><a href="#var$image_text_padding_y">image_text_padding_y</a></strong> text label vertical padding (default: null)<br />
-  <pre>$handle->image_text_padding_y = 10;</pre></li><li><strong><a href="#var$image_text_alignment">image_text_alignment</a></strong> text alignment when text has multiple lines, either 'L', 'C' or 'R' (default: 'C')<br />
-  <pre>$handle->image_text_alignment = 'R';</pre></li><li><strong><a href="#var$image_text_line_spacing">image_text_line_spacing</a></strong> space between lines in pixels, when text has multiple lines (default: 0)<br />
-  <pre>$handle->image_text_line_spacing = 3;</pre></li></ul>  <ul><li><strong><a href="#var$image_flip">image_flip</a></strong> flips image, wither 'h' horizontal or 'v' vertical (default: null)<br />
-  <pre>$handle->image_flip = 'h';</pre></li><li><strong><a href="#var$image_rotate">image_rotate</a></strong> rotates image. possible values are 90, 180 and 270 (default: null)<br />
-  <pre>$handle->image_rotate = 90;</pre></li><li><strong><a href="#var$image_crop">image_crop</a></strong> crops image. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
-  <pre>$handle->image_crop = array(50,40,30,20); OR '-20 20%'...</pre></li><li><strong><a href="#var$image_precrop">image_precrop</a></strong> crops image, before an eventual resizing. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
-  <pre>$handle->image_precrop = array(50,40,30,20); OR '-20 20%'...</pre></li></ul>  <ul><li><strong><a href="#var$image_bevel">image_bevel</a></strong> adds a bevel border to the image. value is thickness in pixels (default: null)<br />
-  <pre>$handle->image_bevel = 20;</pre></li><li><strong><a href="#var$image_bevel_color1">image_bevel_color1</a></strong> top and left bevel color, in hexadecimal (default: #FFFFFF)<br />
-  <pre>$handle->image_bevel_color1 = '#FFFFFF';</pre></li><li><strong><a href="#var$image_bevel_color2">image_bevel_color2</a></strong> bottom and right bevel color, in hexadecimal (default: #000000)<br />
-  <pre>$handle->image_bevel_color2 = '#000000';</pre></li><li><strong><a href="#var$image_border">image_border</a></strong> adds a unicolor border to the image. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
-  <pre>$handle->image_border = '3px'; OR '-20 20%' OR array(3,2)...</pre></li><li><strong><a href="#var$image_border_color">image_border_color</a></strong> border color, in hexadecimal (default: #FFFFFF)<br />
-  <pre>$handle->image_border_color = '#FFFFFF';</pre></li><li><strong><a href="#var$image_frame">image_frame</a></strong> type of frame: 1=flat 2=crossed (default: null)<br />
-  <pre>$handle->image_frame = 2;</pre></li><li><strong><a href="#var$image_frame_colors">image_frame_colors</a></strong> list of hex colors, in an array or a space separated string (default: '#FFFFFF #999999 #666666 #000000')<br />
-  <pre>$handle->image_frame_colors = array('#999999',  '#FF0000', '#666666', '#333333', '#000000');</pre></li></ul>  <ul><li><strong><a href="#var$image_watermark">image_watermark</a></strong> adds a watermark on the image, value is a local filename. accepted files are GIF, JPG, BMP, PNG and PNG alpha (default: null)<br />
-  <pre>$handle->image_watermark = 'watermark.png';</pre></li><li><strong><a href="#var$image_watermark_x">image_watermark_x</a></strong> absolute watermark position, in pixels from the left border. can be negative (default: null)<br />
-  <pre>$handle->image_watermark_x = 5;</pre></li><li><strong><a href="#var$image_watermark_y">image_watermark_y</a></strong> absolute watermark position, in pixels from the top border. can be negative (default: null)<br />
-  <pre>$handle->image_watermark_y = 5;</pre></li><li><strong><a href="#var$image_watermark_position">image_watermark_position</a></strong> watermark position withing the image, a combination of one or two from 'TBLR': top, bottom, left, right (default: null)<br />
-  <pre>$handle->image_watermark_position = 'LR';</pre></li><li><strong><a href="#var$image_watermark_no_zoom_in">image_watermark_no_zoom_in</a></strong> prevents the watermark to be resized up if it is smaller than the image (default: true)<br />
-  <pre>$handle->image_watermark_no_zoom_in = false;</pre></li><li><strong><a href="#var$image_watermark_no_zoom_out">image_watermark_no_zoom_out</a></strong> prevents the watermark to be resized down if it is bigger than the image (default: false)<br />
-  <pre>$handle->image_watermark_no_zoom_out = true;</pre></li></ul>  <ul><li><strong><a href="#var$image_reflection_height">image_reflection_height</a></strong> if set, a reflection will be added. Format is either in pixels or percentage, such as 40, '40', '40px' or '40%' (default: null)<br />
-  <pre>$handle->image_reflection_height = '25%';</pre></li><li><strong><a href="#var$image_reflection_space">image_reflection_space</a></strong> space in pixels between the source image and the reflection, can be negative (default: null)<br />
-  <pre>$handle->image_reflection_space = 3;</pre></li><li><strong><a href="#var$image_reflection_color">image_reflection_color</a></strong> reflection background color, in hexadecimal. Now deprecated in favor of <a href="#var$image_default_color">image_default_color</a> (default: #FFFFFF)<br />
-  <pre>$handle->image_default_color = '#000000';</pre></li><li><strong><a href="#var$image_reflection_opacity">image_reflection_opacity</a></strong> opacity level at which the reflection starts, integer between 0 and 100 (default: 60)<br />
-  <pre>$handle->image_reflection_opacity = 60;</pre></li></ul></p><p><strong>Values that can be read before calling <a href="#methodprocess">process</a>()</strong>  <ul><li><strong><a href="#var$file_src_name">file_src_name</a></strong> Source file name</li><li><strong><a href="#var$file_src_name_body">file_src_name_body</a></strong> Source file name body</li><li><strong><a href="#var$file_src_name_ext">file_src_name_ext</a></strong> Source file extension</li><li><strong><a href="#var$file_src_pathname">file_src_pathname</a></strong> Source file complete path and name</li><li><strong><a href="#var$file_src_mime">file_src_mime</a></strong> Source file mime type</li><li><strong><a href="#var$file_src_size">file_src_size</a></strong> Source file size in bytes</li><li><strong><a href="#var$file_src_error">file_src_error</a></strong> Upload error code</li><li><strong><a href="#var$file_is_image">file_is_image</a></strong> Boolean flag, true if the file is a supported image type</li></ul>  If the file is a supported image type (and <em>open_basedir</em> restrictions allow it)  <ul><li><strong><a href="#var$image_src_x">image_src_x</a></strong> Source file width in pixels</li><li><strong><a href="#var$image_src_y">image_src_y</a></strong> Source file height in pixels</li><li><strong><a href="#var$image_src_pixels">image_src_pixels</a></strong> Source file number of pixels</li><li><strong><a href="#var$image_src_type">image_src_type</a></strong> Source file type (png, jpg, gif or bmp)</li><li><strong><a href="#var$image_src_bits">image_src_bits</a></strong> Source file color depth</li></ul></p><p><strong>Values that can be read after calling <a href="#methodprocess">process</a>()</strong>  <ul><li><strong><a href="#var$file_dst_path">file_dst_path</a></strong> Destination file path</li><li><strong><a href="#var$file_dst_name_body">file_dst_name_body</a></strong> Destination file name body</li><li><strong><a href="#var$file_dst_name_ext">file_dst_name_ext</a></strong> Destination file extension</li><li><strong><a href="#var$file_dst_name">file_dst_name</a></strong> Destination file name</li><li><strong><a href="#var$file_dst_pathname">file_dst_pathname</a></strong> Destination file complete path and name</li></ul>  If the file is a supported image type  <ul><li><strong><a href="#var$image_dst_x">image_dst_x</a></strong> Destination file width</li><li><strong><a href="#var$image_dst_y">image_dst_y</a></strong> Destination file height</li><li><strong><a href="#var$image_convert">image_convert</a></strong> Destination file format</li></ul></p><p><strong>Requirements</strong></p><p>Most of the image operations require GD. GD2 is greatly recommended</p><p>The class is compatible with PHP 4.3+, and compatible with PHP5</p><p><strong>Changelog</strong>  <ul><li><strong>v 0.30</strong> 05/09/2010<br />
+  die();</pre></p><p><strong>Processing parameters</strong> (reset after each process)  <ul><li><strong><a href="#var$file_new_name_body">file_new_name_body</a></strong> replaces the name body (default: null)<br />
+  <pre class="code php">$handle->file_new_name_body = 'new name';</pre></li><li><strong><a href="#var$file_name_body_add">file_name_body_add</a></strong> appends to the name body (default: null)<br />
+  <pre class="code php">$handle->file_name_body_add = '_uploaded';</pre></li><li><strong><a href="#var$file_name_body_pre">file_name_body_pre</a></strong> prepends to the name body (default: null)<br />
+  <pre class="code php">$handle->file_name_body_pre = 'thumb_';</pre></li><li><strong><a href="#var$file_new_name_ext">file_new_name_ext</a></strong> replaces the file extension (default: null)<br />
+  <pre class="code php">$handle->file_new_name_ext = 'txt';</pre></li><li><strong><a href="#var$file_safe_name">file_safe_name</a></strong> formats the filename (spaces changed to _) (default: true)<br />
+  <pre class="code php">$handle->file_safe_name = true;</pre></li><li><strong><a href="#var$file_force_extension">file_force_extension</a></strong> forces an extension if there is't any (default: true)<br />
+  <pre class="code php">$handle->file_force_extension = true;</pre></li><li><strong><a href="#var$file_overwrite">file_overwrite</a></strong> sets behaviour if file already exists (default: false)<br />
+  <pre class="code php">$handle->file_overwrite = true;</pre></li><li><strong><a href="#var$file_auto_rename">file_auto_rename</a></strong> automatically renames file if it already exists (default: true)<br />
+  <pre class="code php">$handle->file_auto_rename = true;</pre></li><li><strong><a href="#var$dir_auto_create">dir_auto_create</a></strong> automatically creates destination directory if missing (default: true)<br />
+  <pre class="code php">$handle->auto_create_dir = true;</pre></li><li><strong><a href="#var$dir_auto_chmod">dir_auto_chmod</a></strong> automatically attempts to chmod the destination directory if not writeable (default: true)<br />
+  <pre class="code php">$handle->dir_auto_chmod = true;</pre></li><li><strong><a href="#var$dir_chmod">dir_chmod</a></strong> chmod used when creating directory or if directory not writeable (default: 0777)<br />
+  <pre class="code php">$handle->dir_chmod = 0777;</pre></li><li><strong><a href="#var$file_max_size">file_max_size</a></strong> sets maximum upload size (default: upload_max_filesize from php.ini)<br />
+  <pre class="code php">$handle->file_max_size = '1024'; // 1KB</pre></li><li><strong><a href="#var$mime_check">mime_check</a></strong> sets if the class check the MIME against the <a href="#var$allowed">allowed</a> list (default: true)<br />
+  <pre class="code php">$handle->mime_check = true;</pre></li><li><strong><a href="#var$no_script">no_script</a></strong> sets if the class turns scripts into text files (default: true)<br />
+  <pre class="code php">$handle->no_script = false;</pre></li><li><strong><a href="#var$allowed">allowed</a></strong> array of allowed mime-types (or one string). wildcard accepted, as in image/* (default: check Init)<br />
+  <pre class="code php">$handle->allowed = array('application/pdf','application/msword', 'image/*');</pre></li><li><strong><a href="#var$forbidden">forbidden</a></strong> array of forbidden mime-types (or one string). wildcard accepted, as in image/*  (default: check Init)<br />
+  <pre class="code php">$handle->forbidden = array('application/*');</pre></li></ul>  <ul><li><strong><a href="#var$image_convert">image_convert</a></strong> if set, image will be converted (possible values : ''|'png'|'jpeg'|'gif'|'bmp'; default: '')<br />
+  <pre class="code php">$handle->image_convert = 'jpg';</pre></li><li><strong><a href="#var$image_background_color">image_background_color</a></strong> if set, will forcibly fill transparent areas with the color, in hexadecimal (default: null)<br />
+  <pre class="code php">$handle->image_background_color = '#FF00FF';</pre></li><li><strong><a href="#var$image_default_color">image_default_color</a></strong> fallback color background color for non alpha-transparent output formats, such as JPEG or BMP, in hexadecimal (default: #FFFFFF)<br />
+  <pre class="code php">$handle->image_default_color = '#FF00FF';</pre></li><li><strong><a href="#var$png_compression">png_compression</a></strong> sets the compression level for PNG images, between 1 (fast but large files) and 9 (slow but smaller files) (default: null (Zlib default))<br />
+  <pre class="code php">$handle->png_compression = 9;</pre></li><li><strong><a href="#var$jpeg_quality">jpeg_quality</a></strong> sets the compression quality for JPEG images (default: 85)<br />
+  <pre class="code php">$handle->jpeg_quality = 50;</pre></li><li><strong><a href="#var$jpeg_size">jpeg_size</a></strong> if set to a size in bytes, will approximate <a href="#var$jpeg_quality">jpeg_quality</a> so the output image fits within the size (default: null)<br />
+  <pre class="code php">$handle->jpeg_size = 3072;</pre></li><li><strong><a href="#var$image_interlace">image_interlace</a></strong> if set to true, the image will be saved interlaced (default: false)<br />
+  <pre class="code php">$handle->image_interlace = true;</pre></li></ul>  The following eight settings can be used to invalidate an upload if the file is an image (note that <em>open_basedir</em> restrictions prevent the use of these settings)  <ul><li><strong><a href="#var$image_max_width">image_max_width</a></strong> if set to a dimension in pixels, the upload will be invalid if the image width is greater (default: null)<br />
+  <pre class="code php">$handle->image_max_width = 200;</pre></li><li><strong><a href="#var$image_max_height">image_max_height</a></strong> if set to a dimension in pixels, the upload will be invalid if the image height is greater (default: null)<br />
+  <pre class="code php">$handle->image_max_height = 100;</pre></li><li><strong><a href="#var$image_max_pixels">image_max_pixels</a></strong> if set to a number of pixels, the upload will be invalid if the image number of pixels is greater (default: null)<br />
+  <pre class="code php">$handle->image_max_pixels = 50000;</pre></li><li><strong><a href="#var$image_max_ratio">image_max_ratio</a></strong> if set to a aspect ratio (width/height), the upload will be invalid if the image apect ratio is greater (default: null)<br />
+  <pre class="code php">$handle->image_max_ratio = 1.5;</pre></li><li><strong><a href="#var$image_min_width">image_min_width</a></strong> if set to a dimension in pixels, the upload will be invalid if the image width is lower (default: null)<br />
+  <pre class="code php">$handle->image_min_width = 100;</pre></li><li><strong><a href="#var$image_min_height">image_min_height</a></strong> if set to a dimension in pixels, the upload will be invalid if the image height is lower (default: null)<br />
+  <pre class="code php">$handle->image_min_height = 500;</pre></li><li><strong><a href="#var$image_min_pixels">image_min_pixels</a></strong> if set to a number of pixels, the upload will be invalid if the image number of pixels is lower (default: null)<br />
+  <pre class="code php">$handle->image_min_pixels = 20000;</pre></li><li><strong><a href="#var$image_min_ratio">image_min_ratio</a></strong> if set to a aspect ratio (width/height), the upload will be invalid if the image apect ratio is lower (default: null)<br />
+  <pre class="code php">$handle->image_min_ratio = 0.5;</pre></li></ul>  <ul><li><strong><a href="#var$image_resize">image_resize</a></strong> determines is an image will be resized (default: false)<br />
+  <pre class="code php">$handle->image_resize = true;</pre></li></ul>   The following variables are used only if <a href="#var$image_resize">image_resize</a> == true  <ul><li><strong><a href="#var$image_x">image_x</a></strong> destination image width (default: 150)<br />
+  <pre class="code php">$handle->image_x = 100;</pre></li><li><strong><a href="#var$image_y">image_y</a></strong> destination image height (default: 150)<br />
+  <pre class="code php">$handle->image_y = 200;</pre></li></ul>   Use either one of the following  <ul><li><strong><a href="#var$image_ratio">image_ratio</a></strong> if true, resize image conserving the original sizes ratio, using <a href="#var$image_x">image_x</a> AND <a href="#var$image_y">image_y</a> as max sizes if true (default: false)<br />
+  <pre class="code php">$handle->image_ratio = true;</pre></li><li><strong><a href="#var$image_ratio_crop">image_ratio_crop</a></strong> if true, resize image conserving the original sizes ratio, using <a href="#var$image_x">image_x</a> AND <a href="#var$image_y">image_y</a> as max sizes, and cropping excedent to fill the space. setting can also be a string, with one or more from 'TBLR', indicating which side of the image will be kept while cropping (default: false)<br />
+  <pre class="code php">$handle->image_ratio_crop = true;</pre></li><li><strong><a href="#var$image_ratio_fill">image_ratio_fill</a></strong> if true, resize image conserving the original sizes ratio, using <a href="#var$image_x">image_x</a> AND <a href="#var$image_y">image_y</a> as max sizes, fitting the image in the space and coloring the remaining space. setting can also be a string, with one or more from 'TBLR', indicating which side of the space the image will be in (default: false)<br />
+  <pre class="code php">$handle->image_ratio_fill = true;</pre></li><li><strong><a href="#var$image_ratio_no_zoom_in">image_ratio_no_zoom_in</a></strong> same as <a href="#var$image_ratio">image_ratio</a>, but won't resize if the source image is smaller than <a href="#var$image_x">image_x</a> x <a href="#var$image_y">image_y</a> (default: false)<br />
+  <pre class="code php">$handle->image_ratio_no_zoom_in = true;</pre></li><li><strong><a href="#var$image_ratio_no_zoom_out">image_ratio_no_zoom_out</a></strong> same as <a href="#var$image_ratio">image_ratio</a>, but won't resize if the source image is bigger than <a href="#var$image_x">image_x</a> x <a href="#var$image_y">image_y</a> (default: false)<br />
+  <pre class="code php">$handle->image_ratio_no_zoom_out = true;</pre></li><li><strong><a href="#var$image_ratio_x">image_ratio_x</a></strong> if true, resize image, calculating <a href="#var$image_x">image_x</a> from <a href="#var$image_y">image_y</a> and conserving the original sizes ratio (default: false)<br />
+  <pre class="code php">$handle->image_ratio_x = true;</pre></li><li><strong><a href="#var$image_ratio_y">image_ratio_y</a></strong> if true, resize image, calculating <a href="#var$image_y">image_y</a> from <a href="#var$image_x">image_x</a> and conserving the original sizes ratio (default: false)<br />
+  <pre class="code php">$handle->image_ratio_y = true;</pre></li><li><strong><a href="#var$image_ratio_pixels">image_ratio_pixels</a></strong> if set to a long integer, resize image, calculating <a href="#var$image_y">image_y</a> and <a href="#var$image_x">image_x</a> to match a the number of pixels (default: false)<br />
+  <pre class="code php">$handle->image_ratio_pixels = 25000;</pre></li></ul>   The following image manipulations require GD2+  <ul><li><strong><a href="#var$image_brightness">image_brightness</a></strong> if set, corrects the brightness. value between -127 and 127 (default: null)<br />
+  <pre class="code php">$handle->image_brightness = 40;</pre></li><li><strong><a href="#var$image_contrast">image_contrast</a></strong> if set, corrects the contrast. value between -127 and 127 (default: null)<br />
+  <pre class="code php">$handle->image_contrast = 50;</pre></li><li><strong><a href="#var$image_opacity">image_opacity</a></strong> if set, changes the image opacity. value between 0 and 100 (default: null)<br />
+  <pre class="code php">$handle->image_opacity = 50;</pre></li><li><strong><a href="#var$image_tint_color">image_tint_color</a></strong> if set, will tint the image with a color, value as hexadecimal #FFFFFF (default: null)<br />
+  <pre class="code php">$handle->image_tint_color = '#FF0000';</pre></li><li><strong><a href="#var$image_overlay_color">image_overlay_color</a></strong> if set, will add a colored overlay, value as hexadecimal #FFFFFF (default: null)<br />
+  <pre class="code php">$handle->image_overlay_color = '#FF0000';</pre></li><li><strong><a href="#var$image_overlay_opacity">image_overlay_opacity</a></strong> used when <a href="#var$image_overlay_color">image_overlay_color</a> is set, determines the opacity (default: 50)<br />
+  <pre class="code php">$handle->image_overlay_opacity = 20;</pre></li><li><strong><a href="#var$image_negative">image_negative</a></strong> inverts the colors in the image (default: false)<br />
+  <pre class="code php">$handle->image_negative = true;</pre></li><li><strong><a href="#var$image_greyscale">image_greyscale</a></strong> transforms an image into greyscale (default: false)<br />
+  <pre class="code php">$handle->image_greyscale = true;</pre></li><li><strong><a href="#var$image_threshold">image_threshold</a></strong> applies a threshold filter. value between -127 and 127 (default: null)<br />
+  <pre class="code php">$handle->image_threshold = 20;</pre></li><li><strong><a href="#var$image_pixelate">image_pixelate</a></strong> pixelate an image, value is block size (default: null)<br />
+  <pre class="code php">$handle->image_pixelate = 10;</pre></li><li><strong><a href="#var$image_unsharp">image_unsharp</a></strong> applies an unsharp mask, with alpha transparency support (default: false)<br />
+  <pre class="code php">$handle->image_unsharp = true;</pre></li><li><strong><a href="#var$image_unsharp_amount">image_unsharp_amount</a></strong> unsharp mask amount, typically 50 - 200 (default: 80)<br />
+  <pre class="code php">$handle->image_unsharp_amount = 120;</pre></li><li><strong><a href="#var$image_unsharp_radius">image_unsharp_radius</a></strong> unsharp mask radius, typically 0.5 - 1 (default: 0.5)<br />
+  <pre class="code php">$handle->image_unsharp_radius = 1;</pre></li><li><strong><a href="#var$image_unsharp_threshold">image_unsharp_threshold</a></strong> unsharp mask threshold, typically 0 - 5 (default: 1)<br />
+  <pre class="code php">$handle->image_unsharp_threshold = 0;</pre></li></ul>  <ul><li><strong><a href="#var$image_text">image_text</a></strong> creates a text label on the image, value is a string, with eventual replacement tokens (default: null)<br />
+  <pre class="code php">$handle->image_text = 'test';</pre></li><li><strong><a href="#var$image_text_direction">image_text_direction</a></strong> text label direction, either 'h' horizontal or 'v' vertical (default: 'h')<br />
+  <pre class="code php">$handle->image_text_direction = 'v';</pre></li><li><strong><a href="#var$image_text_color">image_text_color</a></strong> text color for the text label, in hexadecimal (default: #FFFFFF)<br />
+  <pre class="code php">$handle->image_text_color = '#FF0000';</pre></li><li><strong><a href="#var$image_text_opacity">image_text_opacity</a></strong> text opacity on the text label, integer between 0 and 100 (default: 100)<br />
+  <pre class="code php">$handle->image_text_opacity = 50;</pre></li><li><strong><a href="#var$image_text_background">image_text_background</a></strong> text label background color, in hexadecimal (default: null)<br />
+  <pre class="code php">$handle->image_text_background = '#FFFFFF';</pre></li><li><strong><a href="#var$image_text_background_opacity">image_text_background_opacity</a></strong> text label background opacity, integer between 0 and 100 (default: 100)<br />
+  <pre class="code php">$handle->image_text_background_opacity = 50;</pre></li><li><strong><a href="#var$image_text_font">image_text_font</a></strong> built-in font for the text label, from 1 to 5. 1 is the smallest (default: 5)<br />
+  <pre class="code php">$handle->image_text_font = 4;</pre></li><li><strong><a href="#var$image_text_x">image_text_x</a></strong> absolute text label position, in pixels from the left border. can be negative (default: null)<br />
+  <pre class="code php">$handle->image_text_x = 5;</pre></li><li><strong><a href="#var$image_text_y">image_text_y</a></strong> absolute text label position, in pixels from the top border. can be negative (default: null)<br />
+  <pre class="code php">$handle->image_text_y = 5;</pre></li><li><strong><a href="#var$image_text_position">image_text_position</a></strong> text label position withing the image, a combination of one or two from 'TBLR': top, bottom, left, right (default: null)<br />
+  <pre class="code php">$handle->image_text_position = 'LR';</pre></li><li><strong><a href="#var$image_text_padding">image_text_padding</a></strong> text label padding, in pixels. can be overridden by <a href="#var$image_text_padding_x">image_text_padding_x</a> and <a href="#var$image_text_padding_y">image_text_padding_y</a> (default: 0)<br />
+  <pre class="code php">$handle->image_text_padding = 5;</pre></li><li><strong><a href="#var$image_text_padding_x">image_text_padding_x</a></strong> text label horizontal padding (default: null)<br />
+  <pre class="code php">$handle->image_text_padding_x = 2;</pre></li><li><strong><a href="#var$image_text_padding_y">image_text_padding_y</a></strong> text label vertical padding (default: null)<br />
+  <pre class="code php">$handle->image_text_padding_y = 10;</pre></li><li><strong><a href="#var$image_text_alignment">image_text_alignment</a></strong> text alignment when text has multiple lines, either 'L', 'C' or 'R' (default: 'C')<br />
+  <pre class="code php">$handle->image_text_alignment = 'R';</pre></li><li><strong><a href="#var$image_text_line_spacing">image_text_line_spacing</a></strong> space between lines in pixels, when text has multiple lines (default: 0)<br />
+  <pre class="code php">$handle->image_text_line_spacing = 3;</pre></li></ul>  <ul><li><strong><a href="#var$image_flip">image_flip</a></strong> flips image, wither 'h' horizontal or 'v' vertical (default: null)<br />
+  <pre class="code php">$handle->image_flip = 'h';</pre></li><li><strong><a href="#var$image_rotate">image_rotate</a></strong> rotates image. possible values are 90, 180 and 270 (default: null)<br />
+  <pre class="code php">$handle->image_rotate = 90;</pre></li><li><strong><a href="#var$image_crop">image_crop</a></strong> crops image. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
+  <pre class="code php">$handle->image_crop = array(50,40,30,20); OR '-20 20%'...</pre></li><li><strong><a href="#var$image_precrop">image_precrop</a></strong> crops image, before an eventual resizing. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
+  <pre class="code php">$handle->image_precrop = array(50,40,30,20); OR '-20 20%'...</pre></li></ul>  <ul><li><strong><a href="#var$image_bevel">image_bevel</a></strong> adds a bevel border to the image. value is thickness in pixels (default: null)<br />
+  <pre class="code php">$handle->image_bevel = 20;</pre></li><li><strong><a href="#var$image_bevel_color1">image_bevel_color1</a></strong> top and left bevel color, in hexadecimal (default: #FFFFFF)<br />
+  <pre class="code php">$handle->image_bevel_color1 = '#FFFFFF';</pre></li><li><strong><a href="#var$image_bevel_color2">image_bevel_color2</a></strong> bottom and right bevel color, in hexadecimal (default: #000000)<br />
+  <pre class="code php">$handle->image_bevel_color2 = '#000000';</pre></li><li><strong><a href="#var$image_border">image_border</a></strong> adds a unicolor border to the image. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
+  <pre class="code php">$handle->image_border = '3px'; OR '-20 20%' OR array(3,2)...</pre></li><li><strong><a href="#var$image_border_color">image_border_color</a></strong> border color, in hexadecimal (default: #FFFFFF)<br />
+  <pre class="code php">$handle->image_border_color = '#FFFFFF';</pre></li><li><strong><a href="#var$image_border_opacity">image_border_opacity</a></strong> border opacity, integer between 0 and 100 (default: 100)<br />
+  <pre class="code php">$handle->image_border_opacity = 50;</pre></li><li><strong><a href="#var$image_border_transparent">image_border_transparent</a></strong> adds a fading-to-transparent border to the image. accepts 4, 2 or 1 values as 'T R B L' or 'TB LR' or 'TBLR'. dimension can be 20, or 20px or 20% (default: null)<br />
+  <pre class="code php">$handle->image_border_transparent = '3px'; OR '-20 20%' OR array(3,2)...</pre></li><li><strong><a href="#var$image_frame">image_frame</a></strong> type of frame: 1=flat 2=crossed (default: null)<br />
+  <pre class="code php">$handle->image_frame = 2;</pre></li><li><strong><a href="#var$image_frame_colors">image_frame_colors</a></strong> list of hex colors, in an array or a space separated string (default: '#FFFFFF #999999 #666666 #000000')<br />
+  <pre class="code php">$handle->image_frame_colors = array('#999999',  '#FF0000', '#666666', '#333333', '#000000');</pre></li><li><strong><a href="#var$image_frame_opacity">image_frame_opacity</a></strong> frame opacity, integer between 0 and 100 (default: 100)<br />
+  <pre class="code php">$handle->image_frame_opacity = 50;</pre></li></ul>  <ul><li><strong><a href="#var$image_watermark">image_watermark</a></strong> adds a watermark on the image, value is a local filename. accepted files are GIF, JPG, BMP, PNG and PNG alpha (default: null)<br />
+  <pre class="code php">$handle->image_watermark = 'watermark.png';</pre></li><li><strong><a href="#var$image_watermark_x">image_watermark_x</a></strong> absolute watermark position, in pixels from the left border. can be negative (default: null)<br />
+  <pre class="code php">$handle->image_watermark_x = 5;</pre></li><li><strong><a href="#var$image_watermark_y">image_watermark_y</a></strong> absolute watermark position, in pixels from the top border. can be negative (default: null)<br />
+  <pre class="code php">$handle->image_watermark_y = 5;</pre></li><li><strong><a href="#var$image_watermark_position">image_watermark_position</a></strong> watermark position withing the image, a combination of one or two from 'TBLR': top, bottom, left, right (default: null)<br />
+  <pre class="code php">$handle->image_watermark_position = 'LR';</pre></li><li><strong><a href="#var$image_watermark_no_zoom_in">image_watermark_no_zoom_in</a></strong> prevents the watermark to be resized up if it is smaller than the image (default: true)<br />
+  <pre class="code php">$handle->image_watermark_no_zoom_in = false;</pre></li><li><strong><a href="#var$image_watermark_no_zoom_out">image_watermark_no_zoom_out</a></strong> prevents the watermark to be resized down if it is bigger than the image (default: false)<br />
+  <pre class="code php">$handle->image_watermark_no_zoom_out = true;</pre></li></ul>  <ul><li><strong><a href="#var$image_reflection_height">image_reflection_height</a></strong> if set, a reflection will be added. Format is either in pixels or percentage, such as 40, '40', '40px' or '40%' (default: null)<br />
+  <pre class="code php">$handle->image_reflection_height = '25%';</pre></li><li><strong><a href="#var$image_reflection_space">image_reflection_space</a></strong> space in pixels between the source image and the reflection, can be negative (default: null)<br />
+  <pre class="code php">$handle->image_reflection_space = 3;</pre></li><li><strong><a href="#var$image_reflection_color">image_reflection_color</a></strong> reflection background color, in hexadecimal. Now deprecated in favor of <a href="#var$image_default_color">image_default_color</a> (default: #FFFFFF)<br />
+  <pre class="code php">$handle->image_default_color = '#000000';</pre></li><li><strong><a href="#var$image_reflection_opacity">image_reflection_opacity</a></strong> opacity level at which the reflection starts, integer between 0 and 100 (default: 60)<br />
+  <pre class="code php">$handle->image_reflection_opacity = 60;</pre></li></ul></p><p><strong>Values that can be read before calling <a href="#methodprocess">process</a>()</strong>  <ul><li><strong><a href="#var$file_src_name">file_src_name</a></strong> Source file name</li><li><strong><a href="#var$file_src_name_body">file_src_name_body</a></strong> Source file name body</li><li><strong><a href="#var$file_src_name_ext">file_src_name_ext</a></strong> Source file extension</li><li><strong><a href="#var$file_src_pathname">file_src_pathname</a></strong> Source file complete path and name</li><li><strong><a href="#var$file_src_mime">file_src_mime</a></strong> Source file mime type</li><li><strong><a href="#var$file_src_size">file_src_size</a></strong> Source file size in bytes</li><li><strong><a href="#var$file_src_error">file_src_error</a></strong> Upload error code</li><li><strong><a href="#var$file_is_image">file_is_image</a></strong> Boolean flag, true if the file is a supported image type</li></ul>  If the file is a supported image type (and <em>open_basedir</em> restrictions allow it)  <ul><li><strong><a href="#var$image_src_x">image_src_x</a></strong> Source file width in pixels</li><li><strong><a href="#var$image_src_y">image_src_y</a></strong> Source file height in pixels</li><li><strong><a href="#var$image_src_pixels">image_src_pixels</a></strong> Source file number of pixels</li><li><strong><a href="#var$image_src_type">image_src_type</a></strong> Source file type (png, jpg, gif or bmp)</li><li><strong><a href="#var$image_src_bits">image_src_bits</a></strong> Source file color depth</li></ul></p><p><strong>Values that can be read after calling <a href="#methodprocess">process</a>()</strong>  <ul><li><strong><a href="#var$file_dst_path">file_dst_path</a></strong> Destination file path</li><li><strong><a href="#var$file_dst_name_body">file_dst_name_body</a></strong> Destination file name body</li><li><strong><a href="#var$file_dst_name_ext">file_dst_name_ext</a></strong> Destination file extension</li><li><strong><a href="#var$file_dst_name">file_dst_name</a></strong> Destination file name</li><li><strong><a href="#var$file_dst_pathname">file_dst_pathname</a></strong> Destination file complete path and name</li></ul>  If the file is a supported image type  <ul><li><strong><a href="#var$image_dst_x">image_dst_x</a></strong> Destination file width</li><li><strong><a href="#var$image_dst_y">image_dst_y</a></strong> Destination file height</li><li><strong><a href="#var$image_convert">image_convert</a></strong> Destination file format</li></ul></p><p><strong>Requirements</strong></p><p>Most of the image operations require GD. GD2 is greatly recommended</p><p>The class requires PHP 4.3+, and is compatible with PHP5</p><p><strong>Changelog</strong>  <ul><li><strong>v 0.32</strong> 15/01/2013<br />
+   - add support for XMLHttpRequest uploads<br />
+   - added <a href="#var$image_pixelate">image_pixelate</a><br />
+   - added <a href="#var$image_interlace">image_interlace</a><br />
+   - added <a href="#var$png_compression">png_compression</a> to change PNG compressoin level<br />
+   - deactivate exec() if Suhosin is enabled<br />
+   - add more extension to dangerous scripts detection<br />
+   - imagejpeg takes null as second argument since PHP 5.4<br />
+   - default PECL Fileinfo MAGIC path to null<br />
+   - set gd.jpeg_ignore_warning to true by default<br />
+   - fixed file name normalization</li><li><strong>v 0.31</strong> 11/04/2011<br />
+   - added application/x-rar MIME type<br />
+   - make sure exec() and ini_get_all()function are not disabled if we want to use them<br />
+   - make sure that we don't divide by zero when calculating JPEG size<br />
+   - <a href="#var$allowed">allowed</a> and <a href="#var$forbidden">forbidden</a> can now accept strings<br />
+   - try to guess the file extension from the MIME type if there is no file extension<br />
+   - better class properties when changing the file extension<br />
+   - added <a href="#var$file_force_extension">file_force_extension</a> to allow extension-less files if needed<br />
+   - better file safe conversion of the filename<br />
+   - allow shorthand byte values, such as 1K, 2M, 3G for <a href="#var$file_max_size">file_max_size</a> and <a href="#var$jpeg_size">jpeg_size</a><br />
+   - added <a href="#var$image_opacity">image_opacity</a> to change picture opacity<br />
+   - added <a href="#var$image_border_opacity">image_border_opacity</a> to allow semi-transparent borders<br />
+   - added <a href="#var$image_frame_opacity">image_frame_opacity</a> to allow semi-transparent frames<br />
+   - added <a href="#var$image_border_transparent">image_border_transparent</a> to allow borders fading to transparent<br />
+   - duplicated <a href="#var$image_overlay_percent">image_overlay_percent</a> into <a href="#var$image_overlay_opacity">image_overlay_opacity</a><br />
+   - duplicated <a href="#var$image_text_percent">image_text_percent</a> into <a href="#var$image_text_opacity">image_text_opacity</a><br />
+   - duplicated <a href="#var$image_text_background_percent">image_text_background_percent</a> into <a href="#var$image_text_background_opacity">image_text_background_opacity</a></li><li><strong>v 0.30</strong> 05/09/2010<br />
    - implemented an unsharp mask, with alpha transparency support, activated if <a href="#var$image_unsharp">image_unsharp</a> is true. added <a href="#var$image_unsharp_amount">image_unsharp_amount</a>, <a href="#var$image_unsharp_radius">image_unsharp_radius</a>, and <a href="#var$image_unsharp_threshold">image_unsharp_threshold</a><br />
    - added text/rtf MIME type, and no_script exception<br />
    - corrected bug when <a href="#var$no_script">no_script</a> is activated and several process() are called<br />
@@ -283,7 +317,7 @@
 		</p>
 		
 				
-		<pre></pre>
+		<pre class="code php"></pre>
 	
 			</div>
 </div>
@@ -302,623 +336,673 @@
 								</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">array</span>
 					<a href="#$allowed" title="details" class="var-name">$allowed</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$dir_auto_chmod" title="details" class="var-name">$dir_auto_chmod</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$dir_auto_create" title="details" class="var-name">$dir_auto_create</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$dir_chmod" title="details" class="var-name">$dir_chmod</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$error" title="details" class="var-name">$error</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$file_auto_rename" title="details" class="var-name">$file_auto_rename</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_dst_name" title="details" class="var-name">$file_dst_name</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_dst_name_body" title="details" class="var-name">$file_dst_name_body</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_dst_name_ext" title="details" class="var-name">$file_dst_name_ext</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_dst_path" title="details" class="var-name">$file_dst_path</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_dst_pathname" title="details" class="var-name">$file_dst_pathname</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">boolean</span>
+					<a href="#$file_force_extension" title="details" class="var-name">$file_force_extension</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$file_is_image" title="details" class="var-name">$file_is_image</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">double</span>
 					<a href="#$file_max_size" title="details" class="var-name">$file_max_size</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_name_body_add" title="details" class="var-name">$file_name_body_add</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_name_body_pre" title="details" class="var-name">$file_name_body_pre</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_new_name_body" title="details" class="var-name">$file_new_name_body</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_new_name_ext" title="details" class="var-name">$file_new_name_ext</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$file_overwrite" title="details" class="var-name">$file_overwrite</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$file_safe_name" title="details" class="var-name">$file_safe_name</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_src_error" title="details" class="var-name">$file_src_error</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_src_mime" title="details" class="var-name">$file_src_mime</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_src_name" title="details" class="var-name">$file_src_name</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_src_name_body" title="details" class="var-name">$file_src_name_body</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_src_name_ext" title="details" class="var-name">$file_src_name_ext</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
-					<span class="var-type">string</span>
-					<a href="#$file_src_name_ext_" title="details" class="var-name">$file_src_name_ext_</a>
-				</div>
-																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$file_src_pathname" title="details" class="var-name">$file_src_pathname</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">double</span>
 					<a href="#$file_src_size" title="details" class="var-name">$file_src_size</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">array</span>
 					<a href="#$forbidden" title="details" class="var-name">$forbidden</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$image_background_color" title="details" class="var-name">$image_background_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_bevel" title="details" class="var-name">$image_bevel</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_bevel_color1" title="details" class="var-name">$image_bevel_color1</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_bevel_color2" title="details" class="var-name">$image_bevel_color2</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_border" title="details" class="var-name">$image_border</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_border_color" title="details" class="var-name">$image_border_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_border_opacity" title="details" class="var-name">$image_border_opacity</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_border_transparent" title="details" class="var-name">$image_border_transparent</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_brightness" title="details" class="var-name">$image_brightness</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_contrast" title="details" class="var-name">$image_contrast</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$image_convert" title="details" class="var-name">$image_convert</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$image_crop" title="details" class="var-name">$image_crop</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$image_default_color" title="details" class="var-name">$image_default_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_dst_x" title="details" class="var-name">$image_dst_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_dst_y" title="details" class="var-name">$image_dst_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_flip" title="details" class="var-name">$image_flip</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_frame" title="details" class="var-name">$image_frame</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$image_frame_colors" title="details" class="var-name">$image_frame_colors</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_frame_opacity" title="details" class="var-name">$image_frame_opacity</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean;</span>
 					<a href="#$image_greyscale" title="details" class="var-name">$image_greyscale</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">boolean</span>
+					<a href="#$image_interlace" title="details" class="var-name">$image_interlace</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$image_is_palette" title="details" class="var-name">$image_is_palette</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$image_is_transparent" title="details" class="var-name">$image_is_transparent</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_max_height" title="details" class="var-name">$image_max_height</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">long</span>
 					<a href="#$image_max_pixels" title="details" class="var-name">$image_max_pixels</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">float</span>
 					<a href="#$image_max_ratio" title="details" class="var-name">$image_max_ratio</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_max_width" title="details" class="var-name">$image_max_width</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_min_height" title="details" class="var-name">$image_min_height</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">long</span>
 					<a href="#$image_min_pixels" title="details" class="var-name">$image_min_pixels</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">float</span>
 					<a href="#$image_min_ratio" title="details" class="var-name">$image_min_ratio</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_min_width" title="details" class="var-name">$image_min_width</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean;</span>
 					<a href="#$image_negative" title="details" class="var-name">$image_negative</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_opacity" title="details" class="var-name">$image_opacity</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_overlay_color" title="details" class="var-name">$image_overlay_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_overlay_opacity" title="details" class="var-name">$image_overlay_opacity</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_overlay_percent" title="details" class="var-name">$image_overlay_percent</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer;</span>
+					<a href="#$image_pixelate" title="details" class="var-name">$image_pixelate</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$image_precrop" title="details" class="var-name">$image_precrop</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$image_ratio" title="details" class="var-name">$image_ratio</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">mixed</span>
 					<a href="#$image_ratio_crop" title="details" class="var-name">$image_ratio_crop</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">mixed</span>
 					<a href="#$image_ratio_fill" title="details" class="var-name">$image_ratio_fill</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$image_ratio_no_zoom_in" title="details" class="var-name">$image_ratio_no_zoom_in</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$image_ratio_no_zoom_out" title="details" class="var-name">$image_ratio_no_zoom_out</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">mixed</span>
 					<a href="#$image_ratio_pixels" title="details" class="var-name">$image_ratio_pixels</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$image_ratio_x" title="details" class="var-name">$image_ratio_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$image_ratio_y" title="details" class="var-name">$image_ratio_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_reflection_color" title="details" class="var-name">$image_reflection_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">mixed;</span>
 					<a href="#$image_reflection_height" title="details" class="var-name">$image_reflection_height</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_reflection_opacity" title="details" class="var-name">$image_reflection_opacity</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_reflection_space" title="details" class="var-name">$image_reflection_space</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$image_resize" title="details" class="var-name">$image_resize</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_rotate" title="details" class="var-name">$image_rotate</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_src_bits" title="details" class="var-name">$image_src_bits</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">long</span>
 					<a href="#$image_src_pixels" title="details" class="var-name">$image_src_pixels</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$image_src_type" title="details" class="var-name">$image_src_type</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_src_x" title="details" class="var-name">$image_src_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_src_y" title="details" class="var-name">$image_src_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_text" title="details" class="var-name">$image_text</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_text_alignment" title="details" class="var-name">$image_text_alignment</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_text_background" title="details" class="var-name">$image_text_background</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_text_background_opacity" title="details" class="var-name">$image_text_background_opacity</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_background_percent" title="details" class="var-name">$image_text_background_percent</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_text_color" title="details" class="var-name">$image_text_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_text_direction" title="details" class="var-name">$image_text_direction</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">mixed;</span>
 					<a href="#$image_text_font" title="details" class="var-name">$image_text_font</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_line_spacing" title="details" class="var-name">$image_text_line_spacing</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$image_text_opacity" title="details" class="var-name">$image_text_opacity</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_padding" title="details" class="var-name">$image_text_padding</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_padding_x" title="details" class="var-name">$image_text_padding_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_padding_y" title="details" class="var-name">$image_text_padding_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_percent" title="details" class="var-name">$image_text_percent</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_text_position" title="details" class="var-name">$image_text_position</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_x" title="details" class="var-name">$image_text_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_text_y" title="details" class="var-name">$image_text_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_threshold" title="details" class="var-name">$image_threshold</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_tint_color" title="details" class="var-name">$image_tint_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$image_transparent_color" title="details" class="var-name">$image_transparent_color</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean;</span>
 					<a href="#$image_unsharp" title="details" class="var-name">$image_unsharp</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_unsharp_amount" title="details" class="var-name">$image_unsharp_amount</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_unsharp_radius" title="details" class="var-name">$image_unsharp_radius</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_unsharp_threshold" title="details" class="var-name">$image_unsharp_threshold</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_watermark" title="details" class="var-name">$image_watermark</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_watermark_no_zoom_in" title="details" class="var-name">$image_watermark_no_zoom_in</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_watermark_no_zoom_out" title="details" class="var-name">$image_watermark_no_zoom_out</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string;</span>
 					<a href="#$image_watermark_position" title="details" class="var-name">$image_watermark_position</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_watermark_x" title="details" class="var-name">$image_watermark_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_watermark_y" title="details" class="var-name">$image_watermark_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_x" title="details" class="var-name">$image_x</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$image_y" title="details" class="var-name">$image_y</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$jpeg_quality" title="details" class="var-name">$jpeg_quality</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$jpeg_size" title="details" class="var-name">$jpeg_size</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">array</span>
 					<a href="#$language" title="details" class="var-name">$language</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$log" title="details" class="var-name">$log</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$mime_check" title="details" class="var-name">$mime_check</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$mime_file" title="details" class="var-name">$mime_file</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$mime_fileinfo" title="details" class="var-name">$mime_fileinfo</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$mime_getimagesize" title="details" class="var-name">$mime_getimagesize</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$mime_magic" title="details" class="var-name">$mime_magic</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">boolean</span>
 					<a href="#$no_script" title="details" class="var-name">$no_script</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$no_upload_check" title="details" class="var-name">$no_upload_check</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
+					<span class="var-type">integer</span>
+					<a href="#$png_compression" title="details" class="var-name">$png_compression</a>
+				</div>
+																<div class="var-title">
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">integer</span>
 					<a href="#$preserve_transparency" title="details" class="var-name">$preserve_transparency</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$processed" title="details" class="var-name">$processed</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">array</span>
 					<a href="#$translation" title="details" class="var-name">$translation</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">bool</span>
 					<a href="#$uploaded" title="details" class="var-name">$uploaded</a>
 				</div>
 																<div class="var-title">
-					<img src="phpdoc/Variable.png" alt=" " />
+					<img src="res/phpdoc/Variable.png" alt=" " />
 					<span class="var-type">string</span>
 					<a href="#$version" title="details" class="var-name">$version</a>
 				</div>
@@ -939,31 +1023,31 @@
 		<div class="info-box-body">			
 			<div class="method-summary">
 																																																								<div class="method-definition">
-					<img src="phpdoc/Method.png" alt=" "/>
+					<img src="res/phpdoc/Method.png" alt=" "/>
 											<span class="method-result">void</span>
 										<a href="#clean" title="details" class="method-name">clean</a>
 										()
 									</div>
 																<div class="method-definition">
-					<img src="phpdoc/Method.png" alt=" "/>
+					<img src="res/phpdoc/Method.png" alt=" "/>
 											<span class="method-result">float</span>
 										<a href="#gdversion" title="details" class="method-name">gdversion</a>
 											([<span class="var-type">boolean</span>&nbsp;<span class="var-name">$full</span> = <span class="var-default">false</span>])
 									</div>
 																<div class="method-definition">
-					<img src="phpdoc/Method.png" alt=" "/>
+					<img src="res/phpdoc/Method.png" alt=" "/>
 											<span class="method-result">void</span>
 										<a href="#imagebmp" title="details" class="method-name">imagebmp</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">&$im</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$filename</span> = <span class="var-default">&quot;&quot;</span>])
 									</div>
 																<div class="method-definition">
-					<img src="phpdoc/Method.png" alt=" "/>
+					<img src="res/phpdoc/Method.png" alt=" "/>
 											<span class="method-result">void</span>
 										<a href="#imagecreatefrombmp" title="details" class="method-name">imagecreatefrombmp</a>
 											(<span class="var-type"></span>&nbsp;<span class="var-name">$filename</span>)
 									</div>
 																<div class="method-definition">
-					<img src="phpdoc/Method.png" alt=" "/>
+					<img src="res/phpdoc/Method.png" alt=" "/>
 											<span class="method-result">string</span>
 										<a href="#process" title="details" class="method-name">process</a>
 											([<span class="var-type">string</span>&nbsp;<span class="var-name">$server_path</span> = <span class="var-default">null</span>])
@@ -990,18 +1074,19 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">array</span>
 			<span class="var-name">$allowed</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a2012">2012</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Allowed MIME types</p>
-<p class="description"><p>Default is a selection of safe mime-types, but you might want to change it</p><p>Simple wildcards are allowed, such as image/* or application/*</p></p>
+<p class="description"><p>Default is a selection of safe mime-types, but you might want to change it</p><p>Simple wildcards are allowed, such as image/* or application/*  If there is only one MIME type allowed, then it can be a string instead of an array</p></p>
 	<ul class="tags">
+				<li><span class="field">var:</span> OR string</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -1014,11 +1099,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$dir_auto_chmod</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a951">951</a></span>)
+						
 		</span>
 	</div>
 
@@ -1038,11 +1123,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$dir_auto_create</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a940">940</a></span>)
+						
 		</span>
 	</div>
 
@@ -1062,11 +1147,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$dir_chmod</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a962">962</a></span>)
+						
 		</span>
 	</div>
 
@@ -1086,11 +1171,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$error</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a786">786</a></span>)
+						
 		</span>
 	</div>
 
@@ -1109,11 +1194,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$file_auto_rename</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a929">929</a></span>)
+						
 		</span>
 	</div>
 
@@ -1133,11 +1218,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_dst_name</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a647">647</a></span>)
+						
 		</span>
 	</div>
 
@@ -1156,11 +1241,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_dst_name_body</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a655">655</a></span>)
+						
 		</span>
 	</div>
 
@@ -1179,11 +1264,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_dst_name_ext</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a663">663</a></span>)
+						
 		</span>
 	</div>
 
@@ -1202,11 +1287,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_dst_path</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a639">639</a></span>)
+						
 		</span>
 	</div>
 
@@ -1225,11 +1310,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_dst_pathname</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a671">671</a></span>)
+						
 		</span>
 	</div>
 
@@ -1244,15 +1329,39 @@
 		
 
 </div>
-<a name="var$file_is_image" id="$file_is_image"><!-- --></A>
+<a name="var$file_force_extension" id="$file_force_extension"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$file_force_extension</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Forces an extension if the source file doesn't have one</p>
+<p class="description"><p>If the file is an image, then the correct extension will be added  Otherwise, a .txt extension will be chosen</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$file_is_image" id="$file_is_image"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$file_is_image</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a743">743</a></span>)
+						
 		</span>
 	</div>
 
@@ -1268,20 +1377,20 @@
 
 </div>
 <a name="var$file_max_size" id="$file_max_size"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">double</span>
 			<span class="var-name">$file_max_size</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a982">982</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Set this variable to change the maximum size in bytes for an uploaded file</p>
-<p class="description"><p>Default value is the value <em>upload_max_filesize</em> from php.ini</p></p>
+<p class="description"><p>Default value is the value <em>upload_max_filesize</em> from php.ini</p><p>Value in bytes (integer) or shorthand byte values (string) is allowed.  The available options are K (for Kilobytes), M (for Megabytes) and G (for Gigabytes)</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -1292,14 +1401,14 @@
 
 </div>
 <a name="var$file_name_body_add" id="$file_name_body_add"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_name_body_add</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a814">814</a></span>)
+						
 		</span>
 	</div>
 
@@ -1315,14 +1424,14 @@
 
 </div>
 <a name="var$file_name_body_pre" id="$file_name_body_pre"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_name_body_pre</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a822">822</a></span>)
+						
 		</span>
 	</div>
 
@@ -1338,14 +1447,14 @@
 
 </div>
 <a name="var$file_new_name_body" id="$file_new_name_body"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_new_name_body</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a806">806</a></span>)
+						
 		</span>
 	</div>
 
@@ -1361,14 +1470,14 @@
 
 </div>
 <a name="var$file_new_name_ext" id="$file_new_name_ext"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_new_name_ext</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a830">830</a></span>)
+						
 		</span>
 	</div>
 
@@ -1384,14 +1493,14 @@
 
 </div>
 <a name="var$file_overwrite" id="$file_overwrite"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$file_overwrite</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a972">972</a></span>)
+						
 		</span>
 	</div>
 
@@ -1408,14 +1517,14 @@
 
 </div>
 <a name="var$file_safe_name" id="$file_safe_name"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$file_safe_name</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a838">838</a></span>)
+						
 		</span>
 	</div>
 
@@ -1431,14 +1540,14 @@
 
 </div>
 <a name="var$file_src_error" id="$file_src_error"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_src_error</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a615">615</a></span>)
+						
 		</span>
 	</div>
 
@@ -1454,14 +1563,14 @@
 
 </div>
 <a name="var$file_src_mime" id="$file_src_mime"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_src_mime</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a599">599</a></span>)
+						
 		</span>
 	</div>
 
@@ -1477,14 +1586,14 @@
 
 </div>
 <a name="var$file_src_name" id="$file_src_name"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_src_name</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a567">567</a></span>)
+						
 		</span>
 	</div>
 
@@ -1500,14 +1609,14 @@
 
 </div>
 <a name="var$file_src_name_body" id="$file_src_name_body"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_src_name_body</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a575">575</a></span>)
+						
 		</span>
 	</div>
 
@@ -1523,14 +1632,14 @@
 
 </div>
 <a name="var$file_src_name_ext" id="$file_src_name_ext"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_src_name_ext</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a583">583</a></span>)
+						
 		</span>
 	</div>
 
@@ -1545,38 +1654,15 @@
 		
 
 </div>
-<a name="var$file_src_name_ext_" id="$file_src_name_ext_"><!-- --></A>
-<div class="evenrow">
-
-	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
-		<span class="var-title">
-			<span class="var-type">string</span>
-			<span class="var-name">$file_src_name_ext_</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a591">591</a></span>)
-		</span>
-	</div>
-
-	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Uploaded file name extension, original</p>
-	<ul class="tags">
-				<li><span class="field">access:</span> public</li>
-			</ul>
-	
-	
-		
-		
-
-</div>
 <a name="var$file_src_pathname" id="$file_src_pathname"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$file_src_pathname</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a623">623</a></span>)
+						
 		</span>
 	</div>
 
@@ -1595,11 +1681,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">double</span>
 			<span class="var-name">$file_src_size</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a607">607</a></span>)
+						
 		</span>
 	</div>
 
@@ -1618,18 +1704,19 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">array</span>
 			<span class="var-name">$forbidden</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a2025">2025</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Forbidden MIME types</p>
-<p class="description"><p>Default is a selection of safe mime-types, but you might want to change it  To only check for forbidden MIME types, and allow everything else, set <a href="#var$allowed">allowed</a> to array('* / *') without the spaces</p><p>Simple wildcards are allowed, such as image/* or application/*</p></p>
+<p class="description"><p>Default is a selection of safe mime-types, but you might want to change it  To only check for forbidden MIME types, and allow everything else, set <a href="#var$allowed">allowed</a> to array('* / *') without the spaces</p><p>Simple wildcards are allowed, such as image/* or application/*  If there is only one MIME type forbidden, then it can be a string instead of an array</p></p>
 	<ul class="tags">
+				<li><span class="field">var:</span> OR string</li>
 				<li><span class="field">access:</span> public</li>
 			</ul>
 	
@@ -1642,11 +1729,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$image_background_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1278">1278</a></span>)
+						
 		</span>
 	</div>
 
@@ -1666,11 +1753,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_bevel</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1806">1806</a></span>)
+						
 		</span>
 	</div>
 
@@ -1690,11 +1777,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_bevel_color1</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1819">1819</a></span>)
+						
 		</span>
 	</div>
 
@@ -1714,11 +1801,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_bevel_color2</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1832">1832</a></span>)
+						
 		</span>
 	</div>
 
@@ -1738,11 +1825,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_border</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1852">1852</a></span>)
+						
 		</span>
 	</div>
 
@@ -1762,11 +1849,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_border_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1865">1865</a></span>)
+						
 		</span>
 	</div>
 
@@ -1782,15 +1869,63 @@
 		
 
 </div>
+<a name="var$image_border_opacity" id="$image_border_opacity"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_border_opacity</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the opacity for the borders</p>
+<p class="description"><p>Value is a percentage, as an integer between 0 (transparent) and 100 (opaque)</p><p>Unless used with <a href="#var$image_border">image_border</a>, this setting has no effect</p><p>Default value is 100</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_border_transparent" id="$image_border_transparent"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_border_transparent</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Adds a fading-to-transparent border on the image</p>
+<p class="description"><p>Values are four dimensions, or two, or one (CSS style)  They represent the border thickness top, right, bottom and left.  These values can either be in an array, or a space separated string.  Each value can be in pixels (with or without 'px'), or percentage (of the source image)</p><p>See <a href="#var$image_crop">image_crop</a> for valid formats</p><p>Note that the dimensions of the picture will not be increased by the borders' thickness</p><p>Default value is null (no border)</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
 <a name="var$image_brightness" id="$image_brightness"><!-- --></A>
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_brightness</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1314">1314</a></span>)
+						
 		</span>
 	</div>
 
@@ -1810,11 +1945,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_contrast</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1326">1326</a></span>)
+						
 		</span>
 	</div>
 
@@ -1834,11 +1969,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$image_convert</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1007">1007</a></span>)
+						
 		</span>
 	</div>
 
@@ -1858,17 +1993,17 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$image_crop</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1780">1780</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Crops an image</p>
-<p class="description"><p>Values are four dimensions, or two, or one (CSS style)  They represent the amount cropped top, right, bottom and left.  These values can either be in an array, or a space separated string.  Each value can be in pixels (with or without 'px'), or percentage (of the source image)</p><p>For instance, are valid:  <pre> $foo->image_crop = 20                  OR array(20);
+<p class="description"><p>Values are four dimensions, or two, or one (CSS style)  They represent the amount cropped top, right, bottom and left.  These values can either be in an array, or a space separated string.  Each value can be in pixels (with or without 'px'), or percentage (of the source image)</p><p>For instance, are valid:  <pre class="code php"> $foo->image_crop = 20                  OR array(20);
  $foo->image_crop = '20px'              OR array('20px');
  $foo->image_crop = '20 40'             OR array('20', 40);
  $foo->image_crop = '-20 25%'           OR array(-20, '25%');
@@ -1891,11 +2026,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$image_default_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1294">1294</a></span>)
+						
 		</span>
 	</div>
 
@@ -1915,11 +2050,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_dst_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a719">719</a></span>)
+						
 		</span>
 	</div>
 
@@ -1938,11 +2073,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_dst_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a727">727</a></span>)
+						
 		</span>
 	</div>
 
@@ -1961,11 +2096,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_flip</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1738">1738</a></span>)
+						
 		</span>
 	</div>
 
@@ -1985,11 +2120,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_frame</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1883">1883</a></span>)
+						
 		</span>
 	</div>
 
@@ -2009,17 +2144,17 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$image_frame_colors</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1906">1906</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Sets the colors used to draw a frame</p>
-<p class="description"><p>Values is a list of n colors in hexadecimal format.  These values can either be in an array, or a space separated string.</p><p>The colors are listed in the following order: from the outset of the image to its center</p><p>For instance, are valid:  <pre> $foo->image_frame_colors = '#FFFFFF #999999 #666666 #000000';
+<p class="description"><p>Values is a list of n colors in hexadecimal format.  These values can either be in an array, or a space separated string.</p><p>The colors are listed in the following order: from the outset of the image to its center</p><p>For instance, are valid:  <pre class="code php"> $foo->image_frame_colors = '#FFFFFF #999999 #666666 #000000';
  $foo->image_frame_colors = array('#FFFFFF', '#999999', '#666666', '#000000');</pre></p><p>This setting is used only if <a href="#var$image_frame">image_frame</a> is set</p><p>Default value is '#FFFFFF #999999 #666666 #000000'</p></p>
 	<ul class="tags">
 				<li><span class="field">var:</span> OR array;</li>
@@ -2031,15 +2166,39 @@
 		
 
 </div>
-<a name="var$image_greyscale" id="$image_greyscale"><!-- --></A>
+<a name="var$image_frame_opacity" id="$image_frame_opacity"><!-- --></A>
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_frame_opacity</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the opacity for the frame</p>
+<p class="description"><p>Value is a percentage, as an integer between 0 (transparent) and 100 (opaque)</p><p>Unless used with <a href="#var$image_frame">image_frame</a>, this setting has no effect</p><p>Default value is 100</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_greyscale" id="$image_greyscale"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean;</span>
 			<span class="var-name">$image_greyscale</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1398">1398</a></span>)
+						
 		</span>
 	</div>
 
@@ -2055,15 +2214,39 @@
 		
 
 </div>
+<a name="var$image_interlace" id="$image_interlace"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">boolean</span>
+			<span class="var-name">$image_interlace</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Turns the interlace bit on</p>
+<p class="description"><p>This is actually used only for JPEG images, and defaults to false</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
 <a name="var$image_is_palette" id="$image_is_palette"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$image_is_palette</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1302">1302</a></span>)
+						
 		</span>
 	</div>
 
@@ -2082,11 +2265,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$image_is_transparent</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1253">1253</a></span>)
+						
 		</span>
 	</div>
 
@@ -2106,11 +2289,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_max_height</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1145">1145</a></span>)
+						
 		</span>
 	</div>
 
@@ -2130,11 +2313,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">long</span>
 			<span class="var-name">$image_max_pixels</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1155">1155</a></span>)
+						
 		</span>
 	</div>
 
@@ -2154,11 +2337,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">float</span>
 			<span class="var-name">$image_max_ratio</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1167">1167</a></span>)
+						
 		</span>
 	</div>
 
@@ -2178,11 +2361,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_max_width</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1135">1135</a></span>)
+						
 		</span>
 	</div>
 
@@ -2202,11 +2385,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_min_height</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1187">1187</a></span>)
+						
 		</span>
 	</div>
 
@@ -2226,11 +2409,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">long</span>
 			<span class="var-name">$image_min_pixels</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1197">1197</a></span>)
+						
 		</span>
 	</div>
 
@@ -2250,11 +2433,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">float</span>
 			<span class="var-name">$image_min_ratio</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1209">1209</a></span>)
+						
 		</span>
 	</div>
 
@@ -2274,11 +2457,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_min_width</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1177">1177</a></span>)
+						
 		</span>
 	</div>
 
@@ -2298,11 +2481,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean;</span>
 			<span class="var-name">$image_negative</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1388">1388</a></span>)
+						
 		</span>
 	</div>
 
@@ -2318,21 +2501,69 @@
 		
 
 </div>
-<a name="var$image_overlay_color" id="$image_overlay_color"><!-- --></A>
+<a name="var$image_opacity" id="$image_opacity"><!-- --></A>
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_opacity</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Changes the image opacity</p>
+<p class="description"><p>Value can range between 0 and 100</p><p>Default value is null</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_overlay_color" id="$image_overlay_color"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_overlay_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1364">1364</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Applies a colored overlay on the image</p>
-<p class="description"><p>Value is an hexadecimal color, such as #FFFFFF</p><p>To use with <a href="#var$image_overlay_percent">image_overlay_percent</a></p><p>Default value is null</p></p>
+<p class="description"><p>Value is an hexadecimal color, such as #FFFFFF</p><p>To use with <a href="#var$image_overlay_opacity">image_overlay_opacity</a></p><p>Default value is null</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_overlay_opacity" id="$image_overlay_opacity"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_overlay_opacity</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the opacity for the colored overlay</p>
+<p class="description"><p>Value is a percentage, as an integer between 0 (transparent) and 100 (opaque)</p><p>Unless used with <a href="#var$image_overlay_color">image_overlay_color</a>, this setting has no effect</p><p>Default value is 50</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -2346,17 +2577,40 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_overlay_percent</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1378">1378</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Sets the percentage for the colored overlay</p>
-<p class="description"><p>Value is a percentage, as an integer between 0 and 100</p><p>Unless used with <a href="#var$image_overlay_color">image_overlay_color</a>, this setting has no effect</p><p>Default value is 50</p></p>
+<p class="short-description">Soon to be deprecated old form of <a href="#var$image_overlay_opacity">image_overlay_opacity</a></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_pixelate" id="$image_pixelate"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer;</span>
+			<span class="var-name">$image_pixelate</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Pixelate an image</p>
+<p class="description"><p>Value is integer, represents the block size</p><p>Default value is null</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -2367,14 +2621,14 @@
 
 </div>
 <a name="var$image_precrop" id="$image_precrop"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$image_precrop</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1792">1792</a></span>)
+						
 		</span>
 	</div>
 
@@ -2392,14 +2646,14 @@
 
 </div>
 <a name="var$image_ratio" id="$image_ratio"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$image_ratio</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1037">1037</a></span>)
+						
 		</span>
 	</div>
 
@@ -2416,14 +2670,14 @@
 
 </div>
 <a name="var$image_ratio_crop" id="$image_ratio_crop"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$image_ratio_crop</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1053">1053</a></span>)
+						
 		</span>
 	</div>
 
@@ -2440,14 +2694,14 @@
 
 </div>
 <a name="var$image_ratio_fill" id="$image_ratio_fill"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$image_ratio_fill</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1070">1070</a></span>)
+						
 		</span>
 	</div>
 
@@ -2464,14 +2718,14 @@
 
 </div>
 <a name="var$image_ratio_no_zoom_in" id="$image_ratio_no_zoom_in"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$image_ratio_no_zoom_in</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1094">1094</a></span>)
+						
 		</span>
 	</div>
 
@@ -2488,14 +2742,14 @@
 
 </div>
 <a name="var$image_ratio_no_zoom_out" id="$image_ratio_no_zoom_out"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$image_ratio_no_zoom_out</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1105">1105</a></span>)
+						
 		</span>
 	</div>
 
@@ -2512,14 +2766,14 @@
 
 </div>
 <a name="var$image_ratio_pixels" id="$image_ratio_pixels"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">mixed</span>
 			<span class="var-name">$image_ratio_pixels</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1083">1083</a></span>)
+						
 		</span>
 	</div>
 
@@ -2536,14 +2790,14 @@
 
 </div>
 <a name="var$image_ratio_x" id="$image_ratio_x"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$image_ratio_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1115">1115</a></span>)
+						
 		</span>
 	</div>
 
@@ -2560,14 +2814,14 @@
 
 </div>
 <a name="var$image_ratio_y" id="$image_ratio_y"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$image_ratio_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1125">1125</a></span>)
+						
 		</span>
 	</div>
 
@@ -2584,14 +2838,14 @@
 
 </div>
 <a name="var$image_reflection_color" id="$image_reflection_color"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_reflection_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1711">1711</a></span>)
+						
 		</span>
 	</div>
 
@@ -2608,14 +2862,14 @@
 
 </div>
 <a name="var$image_reflection_height" id="$image_reflection_height"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">mixed;</span>
 			<span class="var-name">$image_reflection_height</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1681">1681</a></span>)
+						
 		</span>
 	</div>
 
@@ -2632,14 +2886,14 @@
 
 </div>
 <a name="var$image_reflection_opacity" id="$image_reflection_opacity"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_reflection_opacity</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1726">1726</a></span>)
+						
 		</span>
 	</div>
 
@@ -2656,14 +2910,14 @@
 
 </div>
 <a name="var$image_reflection_space" id="$image_reflection_space"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_reflection_space</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1695">1695</a></span>)
+						
 		</span>
 	</div>
 
@@ -2680,14 +2934,14 @@
 
 </div>
 <a name="var$image_resize" id="$image_resize"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$image_resize</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a994">994</a></span>)
+						
 		</span>
 	</div>
 
@@ -2704,14 +2958,14 @@
 
 </div>
 <a name="var$image_rotate" id="$image_rotate"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_rotate</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1750">1750</a></span>)
+						
 		</span>
 	</div>
 
@@ -2728,14 +2982,14 @@
 
 </div>
 <a name="var$image_src_bits" id="$image_src_bits"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_src_bits</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a695">695</a></span>)
+						
 		</span>
 	</div>
 
@@ -2751,14 +3005,14 @@
 
 </div>
 <a name="var$image_src_pixels" id="$image_src_pixels"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">long</span>
 			<span class="var-name">$image_src_pixels</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a703">703</a></span>)
+						
 		</span>
 	</div>
 
@@ -2774,14 +3028,14 @@
 
 </div>
 <a name="var$image_src_type" id="$image_src_type"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$image_src_type</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a711">711</a></span>)
+						
 		</span>
 	</div>
 
@@ -2797,14 +3051,14 @@
 
 </div>
 <a name="var$image_src_x" id="$image_src_x"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_src_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a679">679</a></span>)
+						
 		</span>
 	</div>
 
@@ -2820,14 +3074,14 @@
 
 </div>
 <a name="var$image_src_y" id="$image_src_y"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_src_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a687">687</a></span>)
+						
 		</span>
 	</div>
 
@@ -2843,20 +3097,20 @@
 
 </div>
 <a name="var$image_text" id="$image_text"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_text</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1478">1478</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Adds a text label on the image</p>
-<p class="description"><p>Value is a string, any text. Text will not word-wrap, although you can use breaklines in your text &quot;\n&quot;</p><p>If set, this setting allow the use of all other settings starting with image_text_</p><p>Replacement tokens can be used in the string:  <pre> gd_version    src_name       src_name_body src_name_ext
+<p class="description"><p>Value is a string, any text. Text will not word-wrap, although you can use breaklines in your text &quot;\n&quot;</p><p>If set, this setting allow the use of all other settings starting with image_text_</p><p>Replacement tokens can be used in the string:  <pre class="code php"> gd_version    src_name       src_name_body src_name_ext
  src_pathname  src_mime       src_x         src_y
  src_type      src_bits       src_pixels
  src_size      src_size_kb    src_size_mb   src_size_human
@@ -2873,14 +3127,14 @@
 
 </div>
 <a name="var$image_text_alignment" id="$image_text_alignment"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_text_alignment</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1654">1654</a></span>)
+						
 		</span>
 	</div>
 
@@ -2897,14 +3151,14 @@
 
 </div>
 <a name="var$image_text_background" id="$image_text_background"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_text_background</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1526">1526</a></span>)
+						
 		</span>
 	</div>
 
@@ -2920,21 +3174,44 @@
 		
 
 </div>
-<a name="var$image_text_background_percent" id="$image_text_background_percent"><!-- --></A>
-<div class="oddrow">
+<a name="var$image_text_background_opacity" id="$image_text_background_opacity"><!-- --></A>
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
-			<span class="var-name">$image_text_background_percent</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1538">1538</a></span>)
+			<span class="var-name">$image_text_background_opacity</span>
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Sets the text background visibility in the text label</p>
-<p class="description"><p>Value is a percentage, as an integer between 0 and 100</p><p>Default value is 100</p></p>
+<p class="short-description">Sets the text background opacity in the text label</p>
+<p class="description"><p>Value is a percentage, as an integer between 0 (transparent) and 100 (opaque)</p><p>Default value is 100</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_text_background_percent" id="$image_text_background_percent"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_text_background_percent</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Soon to be deprecated old form of <a href="#var$image_text_background_opacity">image_text_background_opacity</a></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -2948,11 +3225,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_text_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1502">1502</a></span>)
+						
 		</span>
 	</div>
 
@@ -2972,11 +3249,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_text_direction</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1490">1490</a></span>)
+						
 		</span>
 	</div>
 
@@ -2996,11 +3273,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">mixed;</span>
 			<span class="var-name">$image_text_font</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1551">1551</a></span>)
+						
 		</span>
 	</div>
 
@@ -3020,11 +3297,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_line_spacing</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1668">1668</a></span>)
+						
 		</span>
 	</div>
 
@@ -3040,15 +3317,39 @@
 		
 
 </div>
-<a name="var$image_text_padding" id="$image_text_padding"><!-- --></A>
+<a name="var$image_text_opacity" id="$image_text_opacity"><!-- --></A>
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$image_text_opacity</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Sets the text opacity in the text label</p>
+<p class="description"><p>Value is a percentage, as an integer between 0 (transparent) and 100 (opaque)</p><p>Default value is 100</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$image_text_padding" id="$image_text_padding"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_padding</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1612">1612</a></span>)
+						
 		</span>
 	</div>
 
@@ -3065,14 +3366,14 @@
 
 </div>
 <a name="var$image_text_padding_x" id="$image_text_padding_x"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_padding_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1626">1626</a></span>)
+						
 		</span>
 	</div>
 
@@ -3089,14 +3390,14 @@
 
 </div>
 <a name="var$image_text_padding_y" id="$image_text_padding_y"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_padding_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1640">1640</a></span>)
+						
 		</span>
 	</div>
 
@@ -3113,20 +3414,19 @@
 
 </div>
 <a name="var$image_text_percent" id="$image_text_percent"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_percent</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1514">1514</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
-<p class="short-description">Sets the text visibility in the text label</p>
-<p class="description"><p>Value is a percentage, as an integer between 0 and 100</p><p>Default value is 100</p></p>
+<p class="short-description">Soon to be deprecated old form of <a href="#var$image_text_opacity">image_text_opacity</a></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -3137,20 +3437,20 @@
 
 </div>
 <a name="var$image_text_position" id="$image_text_position"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_text_position</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1572">1572</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Sets the text label position within the image</p>
-<p class="description"><p>Value is one or two out of 'TBLR' (top, bottom, left, right)</p><p>The positions are as following:  <pre>                        TL  T  TR
+<p class="description"><p>Value is one or two out of 'TBLR' (top, bottom, left, right)</p><p>The positions are as following:  <pre class="code php">                        TL  T  TR
                         L       R
                         BL  B  BR</pre></p><p>Default value is null (centered, horizontal and vertical)</p><p>Note that is <a href="#var$image_text_x">image_text_x</a> and <a href="#var$image_text_y">image_text_y</a> are used, this setting has no effect</p></p>
 	<ul class="tags">
@@ -3163,14 +3463,14 @@
 
 </div>
 <a name="var$image_text_x" id="$image_text_x"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1585">1585</a></span>)
+						
 		</span>
 	</div>
 
@@ -3187,14 +3487,14 @@
 
 </div>
 <a name="var$image_text_y" id="$image_text_y"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_text_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1598">1598</a></span>)
+						
 		</span>
 	</div>
 
@@ -3211,14 +3511,14 @@
 
 </div>
 <a name="var$image_threshold" id="$image_threshold"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_threshold</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1338">1338</a></span>)
+						
 		</span>
 	</div>
 
@@ -3235,14 +3535,14 @@
 
 </div>
 <a name="var$image_tint_color" id="$image_tint_color"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_tint_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1350">1350</a></span>)
+						
 		</span>
 	</div>
 
@@ -3259,14 +3559,14 @@
 
 </div>
 <a name="var$image_transparent_color" id="$image_transparent_color"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$image_transparent_color</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1263">1263</a></span>)
+						
 		</span>
 	</div>
 
@@ -3283,14 +3583,14 @@
 
 </div>
 <a name="var$image_unsharp" id="$image_unsharp"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean;</span>
 			<span class="var-name">$image_unsharp</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1410">1410</a></span>)
+						
 		</span>
 	</div>
 
@@ -3307,14 +3607,14 @@
 
 </div>
 <a name="var$image_unsharp_amount" id="$image_unsharp_amount"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_unsharp_amount</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1424">1424</a></span>)
+						
 		</span>
 	</div>
 
@@ -3331,20 +3631,20 @@
 
 </div>
 <a name="var$image_unsharp_radius" id="$image_unsharp_radius"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_unsharp_radius</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1438">1438</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Sets the unsharp mask radius</p>
-<p class="description"><p>Value is an integer between 0 and 50, typically between 0.5 and 1</p><p>Unless used with <a href="#var$image_unsharp">image_unsharp</a>, this setting has no effect</p><p>Default value is 0.5</p></p>
+<p class="description"><p>Value is an integer between 0 and 50, typically between 0.5 and 1  It is not recommended to change it, the default works best</p><p>Unless used with <a href="#var$image_unsharp">image_unsharp</a>, this setting has no effect</p><p>From PHP 5.1, imageconvolution is used, and this setting has no effect</p><p>Default value is 0.5</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -3355,14 +3655,14 @@
 
 </div>
 <a name="var$image_unsharp_threshold" id="$image_unsharp_threshold"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_unsharp_threshold</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1452">1452</a></span>)
+						
 		</span>
 	</div>
 
@@ -3379,14 +3679,14 @@
 
 </div>
 <a name="var$image_watermark" id="$image_watermark"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_watermark</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1920">1920</a></span>)
+						
 		</span>
 	</div>
 
@@ -3403,14 +3703,14 @@
 
 </div>
 <a name="var$image_watermark_no_zoom_in" id="$image_watermark_no_zoom_in"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_watermark_no_zoom_in</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1982">1982</a></span>)
+						
 		</span>
 	</div>
 
@@ -3427,14 +3727,14 @@
 
 </div>
 <a name="var$image_watermark_no_zoom_out" id="$image_watermark_no_zoom_out"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_watermark_no_zoom_out</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a2000">2000</a></span>)
+						
 		</span>
 	</div>
 
@@ -3451,14 +3751,14 @@
 
 </div>
 <a name="var$image_watermark_position" id="$image_watermark_position"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string;</span>
 			<span class="var-name">$image_watermark_position</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1938">1938</a></span>)
+						
 		</span>
 	</div>
 
@@ -3475,14 +3775,14 @@
 
 </div>
 <a name="var$image_watermark_x" id="$image_watermark_x"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_watermark_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1951">1951</a></span>)
+						
 		</span>
 	</div>
 
@@ -3499,14 +3799,14 @@
 
 </div>
 <a name="var$image_watermark_y" id="$image_watermark_y"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_watermark_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1964">1964</a></span>)
+						
 		</span>
 	</div>
 
@@ -3523,14 +3823,14 @@
 
 </div>
 <a name="var$image_x" id="$image_x"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_x</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1017">1017</a></span>)
+						
 		</span>
 	</div>
 
@@ -3547,14 +3847,14 @@
 
 </div>
 <a name="var$image_y" id="$image_y"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$image_y</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1027">1027</a></span>)
+						
 		</span>
 	</div>
 
@@ -3571,14 +3871,14 @@
 
 </div>
 <a name="var$jpeg_quality" id="$jpeg_quality"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$jpeg_quality</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1219">1219</a></span>)
+						
 		</span>
 	</div>
 
@@ -3595,20 +3895,20 @@
 
 </div>
 <a name="var$jpeg_size" id="$jpeg_size"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$jpeg_size</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1232">1232</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Determines the quality of the JPG image to fit a desired file size</p>
-<p class="description"><p>Value is in bytes. The JPG quality will be set between 1 and 100%  The calculations are approximations.</p><p>Default value is null (no calculations)</p></p>
+<p class="description"><p>The JPG quality will be set between 1 and 100%  The calculations are approximations.</p><p>Value in bytes (integer) or shorthand byte values (string) is allowed.  The available options are K (for Kilobytes), M (for Megabytes) and G (for Gigabytes)</p><p>Default value is null (no calculations)</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -3619,14 +3919,14 @@
 
 </div>
 <a name="var$language" id="$language"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">array</span>
 			<span class="var-name">$language</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a2046">2046</a></span>)
+						
 		</span>
 	</div>
 
@@ -3643,14 +3943,14 @@
 
 </div>
 <a name="var$log" id="$log"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$log</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a794">794</a></span>)
+						
 		</span>
 	</div>
 
@@ -3666,14 +3966,14 @@
 
 </div>
 <a name="var$mime_check" id="$mime_check"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$mime_check</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a848">848</a></span>)
+						
 		</span>
 	</div>
 
@@ -3690,14 +3990,14 @@
 
 </div>
 <a name="var$mime_file" id="$mime_file"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$mime_file</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a876">876</a></span>)
+						
 		</span>
 	</div>
 
@@ -3714,20 +4014,20 @@
 
 </div>
 <a name="var$mime_fileinfo" id="$mime_fileinfo"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$mime_fileinfo</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a865">865</a></span>)
+						
 		</span>
 	</div>
 
 	<!-- ========== Info from phpDoc block ========= -->
 <p class="short-description">Set this variable to false in the init() function if you don't want to check the MIME  with Fileinfo PECL extension. On some systems, Fileinfo is known to be buggy, and you  may want to deactivate it in the class code directly.</p>
-<p class="description"><p>You can also set it with the path of the magic database file.  If set to true, the class will try to read the MAGIC environment variable    and if it is empty, will default to '/usr/share/file/magic'  If set to an empty string, it will call finfo_open without the path argument</p><p>This variable is set to true by default for security reason</p></p>
+<p class="description"><p>You can also set it with the path of the magic database file.  If set to true, the class will try to read the MAGIC environment variable    and if it is empty, will default to the system's default  If set to an empty string, it will call finfo_open without the path argument</p><p>This variable is set to true by default for security reason</p></p>
 	<ul class="tags">
 				<li><span class="field">access:</span> public</li>
 			</ul>
@@ -3738,14 +4038,14 @@
 
 </div>
 <a name="var$mime_getimagesize" id="$mime_getimagesize"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$mime_getimagesize</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a904">904</a></span>)
+						
 		</span>
 	</div>
 
@@ -3762,14 +4062,14 @@
 
 </div>
 <a name="var$mime_magic" id="$mime_magic"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$mime_magic</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a890">890</a></span>)
+						
 		</span>
 	</div>
 
@@ -3786,14 +4086,14 @@
 
 </div>
 <a name="var$no_script" id="$no_script"><!-- --></A>
-<div class="oddrow">
+<div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">boolean</span>
 			<span class="var-name">$no_script</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a912">912</a></span>)
+						
 		</span>
 	</div>
 
@@ -3809,14 +4109,14 @@
 
 </div>
 <a name="var$no_upload_check" id="$no_upload_check"><!-- --></A>
-<div class="evenrow">
+<div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$no_upload_check</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a768">768</a></span>)
+						
 		</span>
 	</div>
 
@@ -3832,15 +4132,39 @@
 		
 
 </div>
+<a name="var$png_compression" id="$png_compression"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<img src="res/phpdoc/Variable.png" />
+		<span class="var-title">
+			<span class="var-type">integer</span>
+			<span class="var-name">$png_compression</span>
+						
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Compression level for PNG images</p>
+<p class="description"><p>Between 1 (fast but large files) and 9 (slow but smaller files)</p><p>Default value is null (Zlib default)</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
 <a name="var$preserve_transparency" id="$preserve_transparency"><!-- --></A>
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">integer</span>
 			<span class="var-name">$preserve_transparency</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a1243">1243</a></span>)
+						
 		</span>
 	</div>
 
@@ -3860,11 +4184,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$processed</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a778">778</a></span>)
+						
 		</span>
 	</div>
 
@@ -3884,11 +4208,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">array</span>
 			<span class="var-name">$translation</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a2036">2036</a></span>)
+						
 		</span>
 	</div>
 
@@ -3908,11 +4232,11 @@
 <div class="evenrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">bool</span>
 			<span class="var-name">$uploaded</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a753">753</a></span>)
+						
 		</span>
 	</div>
 
@@ -3932,11 +4256,11 @@
 <div class="oddrow">
 
 	<div class="var-header">
-		<img src="phpdoc/Variable.png" />
+		<img src="res/phpdoc/Variable.png" />
 		<span class="var-title">
 			<span class="var-type">string</span>
 			<span class="var-name">$version</span>
-						(line <span class="line-number"><a href="class.upload.php.html#a559">559</a></span>)
+						
 		</span>
 	</div>
 
@@ -3970,8 +4294,8 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<img src="phpdoc/Method.png" />
-		<span class="method-title">clean</span> (line <span class="line-number"><a href="class.upload.php.html#a4864">4864</a></span>)
+		<img src="res/phpdoc/Method.png" />
+		<span class="method-title">clean</span> 
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -3996,8 +4320,8 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<img src="phpdoc/Method.png" />
-		<span class="method-title">gdversion</span> (line <span class="line-number"><a href="class.upload.php.html#a2976">2976</a></span>)
+		<img src="res/phpdoc/Method.png" />
+		<span class="method-title">gdversion</span> 
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -4027,8 +4351,8 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<img src="phpdoc/Method.png" />
-		<span class="method-title">imagebmp</span> (line <span class="line-number"><a href="class.upload.php.html#a4953">4953</a></span>)
+		<img src="res/phpdoc/Method.png" />
+		<span class="method-title">imagebmp</span> 
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -4061,8 +4385,8 @@
 <div class="oddrow">
 	
 	<div class="method-header">
-		<img src="phpdoc/Method.png" />
-		<span class="method-title">imagecreatefrombmp</span> (line <span class="line-number"><a href="class.upload.php.html#a4878">4878</a></span>)
+		<img src="res/phpdoc/Method.png" />
+		<span class="method-title">imagecreatefrombmp</span> 
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -4092,8 +4416,8 @@
 <div class="evenrow">
 	
 	<div class="method-header">
-		<img src="phpdoc/Method.png" />
-		<span class="method-title">process</span> (line <span class="line-number"><a href="class.upload.php.html#a3211">3211</a></span>)
+		<img src="res/phpdoc/Method.png" />
+		<span class="method-title">process</span> 
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
