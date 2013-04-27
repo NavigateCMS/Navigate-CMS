@@ -110,23 +110,41 @@ class extension
 
         $ok = false;
 
+        $settings = $this->settings;
+        $settings = json_encode($settings);
+
         if(empty($this->id))    // INSERT
         {
-            $ok = $DB->execute('INSERT INTO nv_extensions (id, website, extension, enabled, settings)
-                          VALUES(
+            $ok = $DB->execute('
+                INSERT INTO nv_extensions (id, website, extension, enabled, settings)
+                    VALUES(
                             0,
-                            '.protect($this->website).',
-                            '.protect($this->code).',
-                            '.protect($this->enabled).',
-                            '.protect(json_encode($this->settings)).'
-                          )');
+                            :website,
+                            :code,
+                            :enabled,
+                            :settings
+                          )',
+                array(
+                    ':website' => $this->website,
+                    ':code' => $this->code,
+                    ':enabled' => $this->enabled,
+                    ':settings' => $settings
+                )
+            );
         }
         else                    // UPDATE
         {
-            $ok = $DB->execute('UPDATE nv_extensions
-                            SET enabled  =  '.protect($this->enabled).',
-                                settings = '.protect(json_encode($this->settings)).'
-                           WHERE id = '.protect($this->id));
+            $ok = $DB->execute('
+                UPDATE nv_extensions
+                   SET enabled = :enabled,
+                       settings = :settings
+                 WHERE id = :id',
+                array(
+                ':enabled' => $this->enabled,
+                ':settings' => $settings,
+                ':id' => $this->id
+                )
+            );
         }
 
         return $ok;
