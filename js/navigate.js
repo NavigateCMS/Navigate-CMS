@@ -427,6 +427,8 @@ function navigate_tabform_language_selector(el)
         $(el).parents(".ui-tabs-panel").find("div[lang]").hide();
         $(el).parents(".ui-tabs-panel").find("div[lang="+code+"]").show();
     }
+
+    $(navigate_codemirror_instances).each(function() { this.refresh(); } );
 }
 
 function navigate_periodic_event()

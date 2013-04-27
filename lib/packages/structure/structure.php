@@ -666,7 +666,7 @@ function structure_form($item)
 		function navigate_structure_select_language(code)
 		{
 			$(".language_fields").css("display", "none");
-			$("#language_fields_" + code).css("display", "block");			
+			$("#language_fields_" + code).css("display", "block");
 		}
 		
 		var active_languages = ["'.implode('", "', $website->languages_list).'"];

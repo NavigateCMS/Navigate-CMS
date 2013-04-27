@@ -737,8 +737,7 @@ function blocks_form($item)
 				$("#trigger-" + $(el).val() + "-" + lang).parent().show();
 				$(navigate_codemirror_instances).each(function() { this.refresh(); } );					
 			}
-		');																																							
-
+		');
 																							
 		$navibars->add_tab_content('</div>');		
 	}
@@ -758,6 +757,8 @@ function blocks_form($item)
 			$("#language_fields_" + code).css("display", "block");
 			
 			$("#language_selector_" + code).attr("checked", "checked");
+
+			$(navigate_codemirror_instances).each(function() { this.refresh(); } );
 		}
 	');
 	
