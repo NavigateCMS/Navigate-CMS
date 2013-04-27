@@ -374,21 +374,27 @@ function comments_form($item)
 		});
 	');																													
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(159, 'Name').'</label>',
-											'<input type="text" name="comment-name" value="'.$item->name.'" size="64" />' ));
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(159, 'Name').'</label>',
+        $naviforms->textfield('comment-name', $item->name))
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',
-											'<input type="text" name="comment-email" value="'.$item->email.'" size="64" />' ));
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(44, 'E-Mail').'</label>',
+        $naviforms->textfield('comment-email', $item->email))
+    );
 									
-	$navibars->add_tab_content_row(array(	'<label>'.t(54, 'Text').'</label>',
-											$naviforms->textarea('comment-message', $item->message, 10),
-										));										
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(54, 'Text').'</label>',
+        $naviforms->textarea('comment-message', $item->message, 10),
+    ));
 									
 	if(!empty($item->ip))
 	{					
-		$navibars->add_tab_content_row(array(	'<label>IP</label>',
-												$item->ip
-											));			
+		$navibars->add_tab_content_row(array(
+            '<label>IP</label>',
+            $item->ip
+        ));
 	}
 	
 	if($item->date_created > 0)

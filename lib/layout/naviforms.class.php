@@ -113,6 +113,7 @@ class naviforms
 	
 	public function textarea($name, $value="", $rows=4, $cols=48, $style="")
 	{
+        $value = htmlspecialchars($value);
 		$out = 	'<textarea name="'.$name.'" id="'.$name.'" rows="'.$rows.'" cols="'.$cols.'" style="'.$style.'">'.$value.'</textarea>';
 		return $out;
 	}

@@ -61,7 +61,7 @@ function settings_form()
 											'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' ));
 											
 	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',
-											'<input type="text" name="user-email" value="'.$user->email.'" size="64" />' ));
+                                            $naviforms->textfield('user-email', $user->email)));
 
 
 	if($user->profile == 1 && false) // Administrator (shown as example, never enabled here) 

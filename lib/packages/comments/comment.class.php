@@ -42,7 +42,7 @@ class comment
 	}
 	
 	public function load_from_post()
-	{		
+	{
 		$this->item			= $_REQUEST['comment-item'];
 		$this->user			= $_REQUEST['comment-user'];
 		$this->name			= $_REQUEST['comment-name'];

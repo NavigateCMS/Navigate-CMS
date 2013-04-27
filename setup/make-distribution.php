@@ -147,7 +147,7 @@ foreach($tables as $table)
 {
     $extra = '';
     if($table=='nv_files')
-        $extra .= ' WHERE (id = 119) OR (id >= 160 AND id <= 172) OR (id=190 OR id=189 OR id=188)';
+        $extra .= ' WHERE (id = 119) OR (id >= 160 AND id <= 172) OR (id = 190 OR id = 189 OR id = 188)';
 
     $DB->query('SELECT * FROM '.$table.$extra, 'array');
     $rs = $DB->result();
@@ -223,9 +223,9 @@ foreach($navigate_files as $file)
     if(substr($file, 0, strlen('private/'))=='private/')
     {
         if(!in_array(basename($file), array(
-            '161',  '162',  '163',  '164',  '165',
-            '166',  '167',  '168',  '169',  '170',
-            '171',  '172',  '119'
+            '119',  '161',  '162',  '163',  '164',  '165',
+            '166',  '167',  '168',  '169',  '170',  '171',
+            '172',  '188',  '189',  '190'
             )
         ))
             continue;
