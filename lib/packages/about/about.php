@@ -68,7 +68,7 @@ function about_layout()
 											'<a href="http://www.jquery.com" target="_blank">jQuery v1.8.3 + jQuery UI v1.9.2</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.trirand.com/blog/" target="_blank">JQGrid v4.4.1</a><br />' ));
+											'<a href="http://www.trirand.com/blog/" target="_blank">jqGrid v4.4.5</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.4</a><br />' ));
