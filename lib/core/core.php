@@ -107,9 +107,8 @@ function core_terminate()
 function core_load_function($fid)
 {
 	global $DB;
+    global $menu_layout;
 	
-	// TO DO: check function access permission
-
     if(is_numeric($fid))
         $where = 'id = '.intval($fid);
     else
@@ -120,7 +119,12 @@ function core_load_function($fid)
 				 WHERE '.$where.'
 				   AND enabled = 1');	
 				  
-	return $DB->first();		
+	$func = $DB->first();
+
+    if(!$menu_layout->function_is_displayed($func->id))
+        $func = false;
+
+    return $func;
 }
 
 

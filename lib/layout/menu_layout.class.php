@@ -8,17 +8,7 @@ class menu_layout
 	{
 		global $DB;
 		global $user;
-		
-		/*
-		
-		if($DB->query('SELECT nm.* 
-						 FROM nv_profile_menus npm, nv_menus nm
-						WHERE npm.profile = '.intval($user->profile).' 
-						  AND npm.menu = nm.id 
-						  AND nm.enabled = 1
-					 ORDER BY npm.position ASC'))
-		*/		
-		
+
 		$profile = new profile();
 		$profile->load($user->profile);
 		
@@ -47,17 +37,7 @@ class menu_layout
 	public function load_items($menu_id, $functions)
 	{
 		global $DB;
-		/*
-		$DB->query('SELECT nmi.*, nf.codename, nf.icon, nf.lid
-					  FROM nv_menu_items nmi, nv_functions nf
-					 WHERE nmi.menu_id = '.intval($menu_id).' 
-					   AND nmi.function_id = nf.id
-					   AND nf.enabled = 1
-				  ORDER BY nmi.position ASC');	
-	
-		return $DB->result();
-		*/
-		
+
 		$menu_functions = implode(",", $functions);
 		$out = array();
 		
@@ -84,10 +64,29 @@ class menu_layout
 		return $out;
 		
 	}
+
+    public function function_is_displayed($id)
+    {
+        $found = false;
+
+        for($m=0; $m < count($this->menus); $m++)
+        {
+            for($mi=0; $mi < count($this->menus[$m]->items); $mi++)
+            {
+                $found = ($this->menus[$m]->items[$mi]->id == $id);
+                if($found)
+                    break;
+            }
+
+            if($found)
+                break;
+        }
+
+        return $found;
+    }
 	
 	public function generate_html()
 	{
-		global $lang;
 		global $layout;
 		
 		$out = array();
