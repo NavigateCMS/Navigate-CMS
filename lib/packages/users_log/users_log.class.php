@@ -124,6 +124,12 @@ class users_log
         $uid = $user->id;
         if(empty($uid))
             $uid = 0;
+
+        if(!is_numeric($function))
+        {
+            $func = core_load_function($function);
+            $function = $func->id;
+        }
 		
 		// prepared statement			
 		$ok = $DB->execute(' INSERT INTO nv_users_log
@@ -163,7 +169,7 @@ class users_log
 					  AND nvul.action = "load"
 					  AND nvul.website = '.protect($website->id).'
 					  AND nvul.item_title <> ""
-					ORDER BY date DESC
+					ORDER BY `date` DESC
 					LIMIT '.$limit);
 
 		$rows = $DB->result();

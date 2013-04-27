@@ -482,7 +482,7 @@ class layout
             foreach($ri as $action)
             {
                 $url = '?fid='.$action->function.'&wid='.$action->website.'&act=load&id='.$action->item;
-                $actions[] = '<li><a href="'.$url.'" title="'.htmlspecialchars($action->item_title).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a></li>';
+                $actions[] = '<li><a href="'.$url.'" title="'.htmlspecialchars($action->item_title).' | '.htmlspecialchars(t($action->function_title, $action->function_title)).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a></li>';
             }
 
             $this->add_content(
