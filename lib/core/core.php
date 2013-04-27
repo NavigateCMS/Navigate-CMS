@@ -275,8 +275,13 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
             $recipients = $website->contact_emails;
         }
 
-        if(!is_array($recipients))	// single recipient
-            $recipients = array($recipients);
+        if(!is_array($recipients))	// single recipient or several emails (multiline)
+        {
+            if(strpos($recipients, "\n")!=false)
+                $recipients = explode("\n", $recipients);
+            else
+                $recipients = array($recipients);
+        }
 
         foreach($recipients as $name => $email)
         {
