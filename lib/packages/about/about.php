@@ -83,7 +83,7 @@ function about_layout()
 											'<a href="http://www.prokvk.com/en/kvatree-jquery-plugin.html" target="_blank">kvaTree v1.0</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.plupload.com/" target="_blank">PLUpload v1.5.4</a><br />' ));
+											'<a href="http://www.plupload.com/" target="_blank">PLUpload v1.5.7</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://player.bitgravity.com" target="_blank">Bitgravity free video player v6</a><br />' ));

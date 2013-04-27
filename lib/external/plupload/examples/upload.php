@@ -57,20 +57,21 @@ if (!file_exists($targetDir))
 	@mkdir($targetDir);
 
 // Remove old temp files	
-if ($cleanupTargetDir && is_dir($targetDir) && ($dir = opendir($targetDir))) {
-	while (($file = readdir($dir)) !== false) {
-		$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+if ($cleanupTargetDir) {
+	if (is_dir($targetDir) && ($dir = opendir($targetDir))) {
+		while (($file = readdir($dir)) !== false) {
+			$tmpfilePath = $targetDir . DIRECTORY_SEPARATOR . $file;
 
-		// Remove temp file if it is older than the max age and is not the current file
-		if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {
-			@unlink($tmpfilePath);
+			// Remove temp file if it is older than the max age and is not the current file
+			if (preg_match('/\.part$/', $file) && (filemtime($tmpfilePath) < time() - $maxFileAge) && ($tmpfilePath != "{$filePath}.part")) {
+				@unlink($tmpfilePath);
+			}
 		}
+		closedir($dir);
+	} else {
+		die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
 	}
-
-	closedir($dir);
-} else
-	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
-	
+}	
 
 // Look for the content type header
 if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
@@ -83,18 +84,18 @@ if (isset($_SERVER["CONTENT_TYPE"]))
 if (strpos($contentType, "multipart") !== false) {
 	if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
 		// Open temp file
-		$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
+		$out = @fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
 		if ($out) {
 			// Read binary input stream and append it to temp file
-			$in = fopen($_FILES['file']['tmp_name'], "rb");
+			$in = @fopen($_FILES['file']['tmp_name'], "rb");
 
 			if ($in) {
 				while ($buff = fread($in, 4096))
 					fwrite($out, $buff);
 			} else
 				die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-			fclose($in);
-			fclose($out);
+			@fclose($in);
+			@fclose($out);
 			@unlink($_FILES['file']['tmp_name']);
 		} else
 			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
@@ -102,10 +103,10 @@ if (strpos($contentType, "multipart") !== false) {
 		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
 } else {
 	// Open temp file
-	$out = fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
+	$out = @fopen("{$filePath}.part", $chunk == 0 ? "wb" : "ab");
 	if ($out) {
 		// Read binary input stream and append it to temp file
-		$in = fopen("php://input", "rb");
+		$in = @fopen("php://input", "rb");
 
 		if ($in) {
 			while ($buff = fread($in, 4096))
@@ -113,8 +114,8 @@ if (strpos($contentType, "multipart") !== false) {
 		} else
 			die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 
-		fclose($in);
-		fclose($out);
+		@fclose($in);
+		@fclose($out);
 	} else
 		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 }
@@ -125,8 +126,4 @@ if (!$chunks || $chunk == $chunks - 1) {
 	rename("{$filePath}.part", $filePath);
 }
 
-
-// Return JSON-RPC response
 die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
-
-?>
