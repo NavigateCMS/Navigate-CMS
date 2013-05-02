@@ -324,7 +324,7 @@
 323		# Jump to an element
 324		# New window
 325		# Branch
-326		# Feeds
+326		# Web feeds
 327		# Extensions
 328		# Favicon
 329		# Backups

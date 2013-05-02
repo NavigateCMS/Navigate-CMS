@@ -324,7 +324,7 @@
 323		# Saltar a un elemento
 324		# Nueva ventana
 325		# Rama
-326		# Fuentes
+326		# Fuentes web
 327		# Extensiones
 328		# Favicon
 329		# Copias de seguridad
