@@ -250,12 +250,11 @@ function nvweb_properties_render($property, $vars)
 			    $out = Encoding::toUTF8(strftime($vars['format'], $property->value));
             else
                 $out = date($website->date_format, $property->value);
-			//$out = substr($out, 0, -6);
 			break;
 			
 		case 'datetime':
             if(!empty($vars['format']))
-			    $out = Encoding::toUTF8(strftime($website->date_format.' H:i', $property->value));
+                $out = Encoding::toUTF8(strftime($vars['format'], $property->value));
             else
                 $out = date($website->date_format.' H:i', $property->value);
 			break;

@@ -1163,7 +1163,7 @@ function items_form($item)
 				$open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
 												
 			$navibars->add_tab_content_row(array(	'<label>'.t(75, 'Path').$open_live_site.'</label>',
-													$naviforms->textfield('path-'.$lang, @$item->paths[$lang], NULL, 'navigate_items_path_check(this);'),
+													$naviforms->textfield('path-'.$lang, @$item->paths[$lang], NULL, 'navigate_items_path_check(this, event);'),
 													'<span>&nbsp;</span>'
 												),
 										   'div_path_'.$lang);

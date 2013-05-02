@@ -399,7 +399,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         'class'		=>	$tag['attributes']['class'],
                         'width'		=>	$tag['attributes']['width'],
                         'height'	=>	$tag['attributes']['height'],
-                        'return'	=>  $tag['attributes']['return']
+                        'return'	=>  $tag['attributes']['return'],
+                        'format'	=>  $tag['attributes']['format'],
+                        'link'	    =>  $tag['attributes']['link'],
+                        'floor'	    =>  $tag['attributes']['floor']
                     ));
 					break;
 
@@ -502,7 +505,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         'class'		=>	$tag['attributes']['class'],
                         'width'		=>	$tag['attributes']['width'],
                         'height'	=>	$tag['attributes']['height'],
-                        'return'	=>  $tag['attributes']['return']
+                        'return'	=>  $tag['attributes']['return'],
+                        'format'	=>  $tag['attributes']['format'],
+                        'link'	    =>  $tag['attributes']['link'],
+                        'floor'	    =>  $tag['attributes']['floor']
                     ));
                     break;
 
@@ -588,7 +594,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 						'class'		=>	$tag['attributes']['class'],
 						'width'		=>	$tag['attributes']['width'],
 						'height'	=>	$tag['attributes']['height'],
-						'return'	=>  $tag['attributes']['return']
+						'return'	=>  $tag['attributes']['return'],
+                        'format'	=>  $tag['attributes']['format'],
+                        'link'	    =>  $tag['attributes']['link'],
+                        'floor'	    =>  $tag['attributes']['floor']
 					));
 					break;
 
