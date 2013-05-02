@@ -861,7 +861,7 @@ function files_item_properties($item)
 					pixlr.overlay.show({
 						service: "editor",
 						loc: "'.$user->language.'",
-						image:"'.$website_root.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed='.core_time().'",
+						image:"'.NAVIGATE_DOWNLOAD.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed='.core_time().'",
 						title: "'.$item->name.'",
 						target: "'.NAVIGATE_URL.'/navigate_upload.php?wid='.$website->id.'&engine=pixlr&id='.$item->id.'&session_id='.session_id().'&seed='.core_time().'",
 						exit: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=92&id='.$item->id.'&ts='.core_time().'",

@@ -35,7 +35,7 @@ if(isset($_REQUEST['debug']) || APP_DEBUG)
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
-define('NAVIGATE_URL', dirname($_SERVER['PHP_SELF']));
+define('NAVIGATE_URL', dirname(nvweb_self_url()));
 
 /* global variables */
 global $DB;
