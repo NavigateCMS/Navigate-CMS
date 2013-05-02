@@ -146,6 +146,9 @@ function about_layout()
                                             '<a href="https://github.com/tzuryby/jquery.hotkeys" target="_blank">jQuery HotKeys v2d51e3a (May 20 2012)</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+                                            '<a href="https://github.com/DrPheltRight/jquery-caret" target="_blank">jQuery Caret v20803a7a16 (Sep 23 2011)</a><br />' ));
+
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.fyneworks.com/jquery/star-rating/" target="_blank">jQuery Star Rating Plugin v3.13</a><br />' ));									
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',

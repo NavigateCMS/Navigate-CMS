@@ -691,6 +691,10 @@ function structure_form($item)
 		
 		function navigate_structure_path_check(el)
 		{
+		    var caret_position = null;
+            if($(el).is("input") && $(el).is(":focus"))
+                caret_position = $(el).caret();
+
 			var path = $(el).val();
 			
 			if(path=="") return;			
@@ -732,7 +736,9 @@ function structure_form($item)
 				  $(el).next().html(free);
 			  }
 			});
-				
+
+            if($(el).is("input") && $(el).is(":focus"))
+            $(el).caret(caret_position)
 		}
 				
 		function navigate_structure_action_change(language, element)
