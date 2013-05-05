@@ -246,9 +246,13 @@ function structure_tree($hierarchy)
         $lang_selector[] = '<li><a href="#" language="'.$lang.'">'.language::name_by_code($lang).'</a></li>';
     }
 
+    $navitree->setLanguages($website->languages_list);
+
     $lang_selector[] = '</ul>';
     $lang_selector = '&nbsp;<span id="structure-language-selector-icon" style="cursor: pointer;">'.
-                        '<img src="img/icons/silk/comment.png" align="absmiddle" />&#9662;'.
+                        '<img src="img/icons/silk/comment.png" align="absmiddle" />'.
+                        '<span class="structure-language-selector-name" style="font-size: 9px; font-weight: normal;">'.language::name_by_code($website->languages_list[0]).'</span>'.
+                        '&#9662;'.
                         '</span>'.
                         implode("\n", $lang_selector);
 
@@ -268,8 +272,9 @@ function structure_tree($hierarchy)
             $(el).on("click", function()
             {
                 var lang = $(this).attr("language");
-                $(".structure-label").hide();
-                $(".structure-label[lang="+lang+"]").show();
+                $(".navitree-text").hide();
+                $(".navitree-text[language="+lang+"]").show();
+                $(".structure-language-selector-name").text($(this).text());
             });
         });
 
@@ -282,8 +287,8 @@ function structure_tree($hierarchy)
     ');
 
 	$columns = array();
-	$columns[] = array(	'name'	=>	'ID',				'property'	=> 'id', 		'type'	=> 'text', 		'width' => '8%', 	'align' => 'left' );
-	$columns[] = array(	'name'	=>	t(67, 'Title').' '.$lang_selector,		'property'	=> 'label',		'type'	=> 'text', 		'width' => '56%', 	'align' => 'left'	);
+	$columns[] = array(	'name'	=>	'ID', 'property'	=> 'id', 		'type'	=> 'text', 		'width' => '8%', 	'align' => 'left' );
+	$columns[] = array(	'name'	=>	t(67, 'Title').' '.$lang_selector,		'property'	=> 'dictionary|title',		'type'	=> 'text', 		'width' => '56%', 	'align' => 'left'	);
 	$columns[] = array(	'name'	=>	t(73, 'Children'),	'property'	=> 'children', 	'type'	=> 'count', 	'width' => '5%', 	'align' => 'center'	);
 	$columns[] = array(	'name'	=>	t(85, 'Date published'), 'property'	=> 'dates', 'type'	=> 'text', 		'width' => '13%', 	'align' => 'center'	);			
 	$columns[] = array(	'name'	=>	'<span title="'.t(283, 'Show in menus').'">'.t(76, 'Visible').'</span>', 'property'	=> 'visible', 'type'	=> 'boolean',	'width' => '5%', 	'align' => 'center'	);			
@@ -322,7 +327,7 @@ function structure_tree($hierarchy)
 	}
 
 	$navitree->setData($hierarchy);
-	
+
 	$navitree->setTreeColumn(1);
 	
 	$navibars->add_content('<div id="navigate-content-safe" class="ui-corner-all">'.$navitree->generate().'</div>');	

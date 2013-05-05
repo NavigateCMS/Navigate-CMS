@@ -8,6 +8,7 @@ class navitree
 	public $hierarchy;
 	public $columns;
 	public $treeColumn;
+    public $showLanguages;
 
 	public function __construct($id)	
 	{
@@ -48,6 +49,11 @@ class navitree
 		$this->columns = $cols;
 	}
 
+    public function setLanguages($languages_array)
+    {
+        $this->showLanguages = $languages_array;
+    }
+
 	public function nodeToRow($node, $parent=-1)
 	{
 		$html = array();
@@ -66,7 +72,7 @@ class navitree
 			if($this->columns[$this->treeColumn]==$col) 
 				$treecolumn = true;
 		
-			if($node->{$col['property']}===NULL)
+			if($node->{$col['property']}===NULL && strpos($col['property'], 'dictionary|')===false)
 			{
 				$html[] = '	<td align="'.$col['align'].'">&nbsp;</td>';	
 				continue;	
@@ -95,22 +101,39 @@ class navitree
 									
 				case 'text':
 				default:
+                    $value = '';
+                    if(strpos($col['property'], 'dictionary|')!==false)
+                    {
+                        $dictionary_value_name = str_replace("dictionary|", "", $col['property']);
+                        foreach($node->dictionary as $lname => $ltexts)
+                        {
+                            if(!in_array($lname, $this->showLanguages)) // hide this language
+                                continue;
+                            else if($this->showLanguages[0]==$lname)    // default language
+                                $value .= '<span class="navitree-text" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                            else
+                                $value .= '<span class="navitree-text" style="display: none;" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                        }
+                    }
+                    else
+                        $value = $node->$col['property'];
+
 					if($treecolumn)
 					{
 						if($node->parent < 0)	// website item
 						{
-							$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$node->$col['property'].'</td>';	
+							$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$value.'</td>';
 						}
 						else
 						{						
 							if(count($node->children) > 0)
-								$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/folder.png" align="absmiddle" /> '.$node->$col['property'].'</td>';	
+								$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/folder.png" align="absmiddle" /> '.$value.'</td>';
 							else
-								$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/page_white.png" align="absmiddle" /> '.$node->$col['property'].'</td>';	
+								$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/page_white.png" align="absmiddle" /> '.$value.'</td>';
 						}
 					}
 					else
-						$html[] = '	<td align="'.$col['align'].'">'.$node->$col['property'].'</td>';	
+						$html[] = '	<td align="'.$col['align'].'">'.$value.'</td>';
 					break;
 			}
 		}
@@ -151,7 +174,7 @@ class navitree
 				
 		foreach($this->hierarchy as $node)
 		{
-			$html[] = $this->nodeToRow($node); //$this->hierarchy[$n]);	
+			$html[] = $this->nodeToRow($node);
 		}
 				
 		$html[] ='	</tbody>
@@ -331,92 +354,4 @@ class navitree
 		return implode("\n", $html);	
 	}
 }
-
-		/* jstree old test 
-		$html[] = '$("#'.$this->id.'").jstree({
-				        plugins : [ "json_data", "cookies", "hotkeys", "search", "ui", "dnd", "languages", "themes" ],
-						core:
-						{
-							strings:  { loading : "'.t(6, 'Loading').'...", new_node : "'.t(38, 'New').'" }
-						},
-						json_data: 
-						{
-							ajax: 
-							{
-								"url" : "'.$this->url.'",
-								"data" : function (n) 
-								{
-									return { id : n.attr ? n.attr("id") : 0 };
-								}
-							},
-							progressive_render: true
-						},
-						themes:					
-						{
-							theme: "default"
-						}
-					});';
-		*/
-		
-		/* hierarchy format
-		Array
-(
-    [0] => stdClass Object
-        (
-            [id] => 2
-            [parent] => 0
-            [position] => 1
-            [restricted] => 0
-            [icon] => 1
-            [metatags] => 
-            [enabled] => 1
-            [test] => about us
-            [children] => Array
-                (
-                )
-
-        )
-
-    [1] => stdClass Object
-        (
-            [id] => 3
-            [parent] => 0
-            [position] => 2
-            [restricted] => 0
-            [icon] => 0
-            [metatags] => 
-            [enabled] => 0
-            [test] => catalog
-            [children] => Array
-                (
-                    [0] => stdClass Object
-                        (
-                            [id] => 4
-                            [parent] => 3
-                            [position] => 1
-                            [restricted] => 0
-                            [icon] => 1
-                            [metatags] => 
-                            [enabled] => 1
-                            [test] => tassimo
-                        )
-
-                    [1] => stdClass Object
-                        (
-                            [id] => 5
-                            [parent] => 3
-                            [position] => 2
-                            [restricted] => 0
-                            [icon] => 1
-                            [metatags] => 
-                            [enabled] => 1
-                            [test] => nespresso
-                        )
-
-                )
-
-        )
-
-)
-*/
 ?>
