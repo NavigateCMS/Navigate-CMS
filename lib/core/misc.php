@@ -6,7 +6,7 @@
  * @copyright All rights reserved to each function author.
  * @author Various (PHP Community)
  * @license GPLv2 License
- * @version 1.0 2012-02-15 19:03
+ * @version 1.1 2013-05-05 08:53
  * @note if you are the creator of one of this functions and your name is not here send an email to info@navigatecms.com to be properly credited :)
  *
  */
@@ -21,10 +21,15 @@
  * @param string UTF-8 or ASCII string to be unserialized
  * @return string
  */
-function mb_unserialize($string) 
+function mb_unserialize($var)
 {
-	$string = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $string);
-	return unserialize($string);
+    if(!is_object($var) && !is_array($var))
+    {
+	    $var = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $var);
+	    $var = unserialize($var);
+    }
+
+    return $var;
 }
 
 

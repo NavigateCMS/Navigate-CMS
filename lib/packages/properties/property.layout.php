@@ -114,21 +114,22 @@ function navigate_property_layout_field($property)
 		
 		case 'option':
             $options = $property->options;
-
-            if(is_object($options))
-                $options = (array)$options;
-
             if(is_string($options))
-			    $options = mb_unserialize($options);
-
+                $options = mb_unserialize($options);
+            else if(is_object($options))
+                $options = (array)$options;
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';			
 			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value);		
 			$field[] = '</div>';			
 			break;
 			
-		case 'moption': 				
-			$options = mb_unserialize($property->options);
+		case 'moption':
+            $options = $property->options;
+            if(is_string($options))
+                $options = mb_unserialize($options);
+            else if(is_object($options))
+                $options = (array)$options;
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';			
 			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), explode(',', $property->value), "", true);		

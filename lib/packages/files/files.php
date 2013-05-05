@@ -345,7 +345,7 @@ function files_browser($parent, $search="")
 			{
 				title: "'.t(142, 'Select files').'",
 				height: 400,
-				width: 600,
+				width: 740,
 				modal: true,
 				close: function()
 				{
