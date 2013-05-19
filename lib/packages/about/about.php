@@ -77,6 +77,9 @@ function about_layout()
                                             '<a href="http://ivaynberg.github.com/select2" target="_blank">Select2 v3.2</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+                                            '<a href="http://www.firephp.org" target="_blank">FirePHPCore Server Library 0.3</a><br />' ));
+
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://mind2soft.com/labs/jquery/multiselect/" target="_blank">jQuery UIx Multiselect v2.0RC</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
@@ -147,6 +150,9 @@ function about_layout()
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="https://github.com/DrPheltRight/jquery-caret" target="_blank">jQuery Caret v20803a7a16 (Sep 23 2011)</a><br />' ));
+
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+                                            '<a href="https://github.com/tbasse/jquery-truncate" target="_blank">jQuery Truncate Text Plugin v18fdc9195c (Apr 03 2013)</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.fyneworks.com/jquery/star-rating/" target="_blank">jQuery Star Rating Plugin v3.13</a><br />' ));									

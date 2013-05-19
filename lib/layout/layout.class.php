@@ -153,6 +153,7 @@ class layout
 
         $this->add_script_tag('lib/external/jquery-hotkeys/jquery.hotkeys.js');
         $this->add_script_tag('lib/external/jquery-caret/jquery.caret.js');
+        $this->add_script_tag('lib/external/jquery-truncate/jquery.truncate.js');
 
 		$this->add_script_tag('lib/external/tinymce/jquery.tinymce.js');
 		
