@@ -1,5 +1,5 @@
 <?php
-/* Navigate MAKE DISTRIBUTION v1.2 */
+/* Navigate MAKE DISTRIBUTION v1.3 */
 /* 		created by: Naviwebs   http://www.naviwebs.com	*/
 /* creates a distribution package for Navigate */
 /* Requirements: installed and functional copy of Navigate */
@@ -126,6 +126,7 @@ foreach($tables as $table)
         nv_notes
         nv_feeds
         nv_files (ids 119, 160..172)
+        nv_websites (removing private data!)
 */
 
 $tables = array(
@@ -134,7 +135,6 @@ $tables = array(
     'nv_comments',
     'nv_blocks',
     'nv_webdictionary',
-    'nv_properties_items',
     'nv_properties_items',
     'nv_paths',
     'nv_notes',
