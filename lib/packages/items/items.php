@@ -143,8 +143,10 @@ function run()
 					$permissions = array(	0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
 											1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(70, 'Private'),
 											2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
-										);												
-					
+										);
+
+                    $hierarchy = structure::hierarchy(0);
+
 					// we need to format the values and retrieve the needed strings from the dictionary
 					$out = array();								
 					for($i=0; $i < count($dataset); $i++)
@@ -161,15 +163,18 @@ function run()
 						else
 							$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
 						
-						// the following should be optimized (cached)
 						if($dataset[$i]['category'] > 0)
-							$dataset[$i]['category'] = $DB->query_single('text', 'nv_webdictionary', 
-																		 ' 	node_type = "structure" AND
-																		 	node_id = "'.$dataset[$i]['category'].'" AND 
-																			subtype = "title" AND
-																			website = '.$website->id.' AND
-																			lang = "'.$website->languages_list[0].'"');
-												
+                        {
+                            $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
+                            $dataset[$i]['category_path'] = implode(' › ', $category_path);
+                        }
+
+                        $category_text = '';
+                        if($dataset[$i]['association']=='free')
+                            $category_text = '[ '.strtolower(t(100, 'Free')).' ]';
+                        else
+                            $category_text = $dataset[$i]['category_path'];
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> $dataset[$i]['title'],
@@ -178,16 +183,16 @@ function run()
 								    '&nbsp;&nbsp;'.
 								    '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
 								    '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>',
-							3	=> (($dataset[$i]['association']=='free')? '[ '.strtolower(t(100, 'Free')).' ]' : $dataset[$i]['category']),
+							3	=> $category_text,
 							4	=> $dataset[$i]['author_username'],
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							6	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
 							7 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
-									
+
 					navitable::jqgridJson($out, $page, $offset, $max, $total);
-					break;
+				    break;
 			}
 			
 			core_terminate();
@@ -606,8 +611,6 @@ function run()
 
 function items_list()
 {
-    global $layout;
-    
 	$navibars = new navibars();
 	$navitable = new navitable("items_list");
 	
@@ -628,15 +631,24 @@ function items_list()
 	$navitable->enableDelete();
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
-	$navitable->addCol(t(67, 'Title'), 'title', "350", "true", "left");	
+	$navitable->addCol(t(67, 'Title'), 'title', "320", "true", "left");
 	$navitable->addCol(t(309, 'Social'), 'comments', "80", "true", "center");
-	$navitable->addCol(t(78, 'Category'), 'category', "150", "true", "center");	
-	$navitable->addCol(t(266, 'Author'), 'author_username', "100", "true", "left");	
+	$navitable->addCol(t(78, 'Category'), 'category', "210", "true", "left");
+	$navitable->addCol(t(266, 'Author'), 'author_username', "80", "true", "left");
 	$navitable->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");
 	$navitable->addCol(t(80, 'Permission'), 'permission', "80", "true", "center");		
 	$navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
-	
-	$navibars->add_content($navitable->generate());	
+
+    $navitable->setLoadCallback('
+        $("td[aria-describedby=\'items_list_category\']").truncate({
+            "width": "auto",
+            "token": "…",
+            "side": "center",
+            "addtitle": true
+        });
+    ');
+
+	$navibars->add_content($navitable->generate());
 
 	return $navibars->generate();
 }
@@ -1319,7 +1331,7 @@ function items_form($item)
 					'.$naviforms->selectfield(	'navigate_items_copy_from_language_selector', 
 												array_keys($ws_languages),
 												array_values($ws_languages),
-												$data[0]->code).'
+												$lang).'
 				</div>
 				<div class="navigate-form-row" style=" display: none; ">
 					<label>'.t(79, 'Template').'</label>

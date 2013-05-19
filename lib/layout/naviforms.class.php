@@ -387,15 +387,15 @@ class naviforms
 
                 content_css: "'.$content_css.'",
                 valid_elements: "*[*]",
-                custom_elements: "nv,code,pre",
-                extended_valid_elements: "nv[*],pre[*],code[*]",
+                custom_elements: "nv,code,pre,nvlist",
+                extended_valid_elements: "nv[*],pre[*],code[*],nvlist[*]",
                 //encoding: "xml",
                 relative_urls: false,
                 convert_urls: true,
                 remove_script_host: false,
                 remove_linebreaks: true,
                 disk_cache: true,
-                valid_children: "+a[div|p|li],+body[style,script]",
+                valid_children: "+a[div|p|li],+body[style|script],+code[nv|nvlist]",
                 width: ($("#'.$name.'").width()) + "px",
                 height: $("#'.$name.'").height() + "px",
                 oninit: function()

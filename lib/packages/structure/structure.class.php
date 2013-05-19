@@ -266,13 +266,15 @@ class structure
 	{
 		global $DB;	
 		global $website;
-		
+
+        // TODO: try to implement a cache to avoid extra database queries
 		$DB->query('  SELECT * FROM nv_structure 
 					   WHERE parent = '.intval($id_parent).'
 					     AND website = '.$website->id.' 
 					ORDER BY position ASC, id DESC');
-		
+
 		$result = $DB->result();
+        $parent_of = array();
 		
 		for($i=0; $i < count($result); $i++)
 		{
@@ -292,10 +294,10 @@ class structure
 		return $result;
 	}
 	
-	public static function hierarchy($id_parent=0, $multi_language=false)
+	public static function hierarchy($id_parent=0)
 	{
 		global $website;
-		
+
 		$flang = $website->languages_list[0];
 		if(empty($flang))
             return array();
@@ -304,67 +306,46 @@ class structure
 		
 		if($id_parent==-1)
 		{
-			/*
-			$tree[] = array(   'id' => '0',
-							   'parent' => -1,
-							   'position' => 0,
-							   'permission' => 0,
-							   'icon' => 0,
-							   'metatags' => '',
-							   'label' => $website->name,
-							   'date_published' => '',
-							   'date_unpublish' => '',
-							   'dates' => 'x - x',
-							   'visible' => 0,
-							   'children' => structure::hierarchy(0)
-							);
-			*/
+            // create the virtual root structure entry (the website)
 			$obj = new structure();
 			$obj->id = 0;
 			$obj->label = $website->name;
+            $obj->_multilanguage_label = $website->name;
 			$obj->parent = -1;
 			$obj->children = structure::hierarchy(0);
-			
+
 			$tree[] = $obj;
-			
 		}
 		else
 		{
 			$tree = structure::loadTree($id_parent);
 
 			for($i=0; $i < count($tree); $i++)
-			{
-				$children = structure::hierarchy($tree[$i]->id);
-                $label = array();
-
-				$tree[$i]->children = $children;
+            {
 				$tree[$i]->dictionary = webdictionary::load_element_strings('structure', $tree[$i]->id);
+                $tree[$i]->label = $tree[$i]->dictionary[$website->languages_list[0]]['title'];
 
-                if($multi_language)
+                for($wl=0; $wl < count($website->languages_list); $wl++)
                 {
-                    for($wl=0; $wl < count($website->languages_list); $wl++)
-                    {
-                        $lang = $website->languages_list[$wl];
+                    $lang = $website->languages_list[$wl];
 
-                        if(empty($tree[$i]->dictionary[$lang]['title']))
-                            $tree[$i]->dictionary[$lang]['title'] = '[ ? ]';
+                    if(empty($tree[$i]->dictionary[$lang]['title']))
+                        $tree[$i]->dictionary[$lang]['title'] = '[ ? ]';
 
-                        $style = '';
-                        if($lang!=$flang)
-                            $style = 'display: none';
+                    $style = '';
+                    if($lang != $flang)
+                        $style = 'display: none';
 
-                        $label[] = '<span class="structure-label" lang="'.$lang.'" style="'.$style.'">'.$tree[$i]->dictionary[$lang]['title'].'</span>';
-                    }
+                    $label[] = '<span class="structure-label" lang="'.$lang.'" style="'.$style.'">'
+                              .$tree[$i]->dictionary[$lang]['title']
+                              .'</span>';
 
-                    $label = implode("", $label);
-                }
-                else
-                {
-                    $label = $tree[$i]->dictionary[$website->languages_list[0]]['title'];
+                    $bc[$tree[$i]->id][$lang] = $tree[$i]->dictionary[$lang]['title'];
                 }
 
-				$tree[$i]->label = $label;
-			}
+                $children = structure::hierarchy($tree[$i]->id);
+                $tree[$i]->children = $children;
+            }
 		}
 		
 		return $tree;
@@ -399,6 +380,27 @@ class structure
 		
 		return implode("\n", $html);
 	}
+
+    public static function hierarchyPath($hierarchy, $category)
+    {
+        if(is_array($hierarchy))
+        {
+            foreach($hierarchy as $node)
+            {
+                if(!empty($node->children))
+                    $val = structure::hierarchyPath($node->children, $category);
+
+                if($node->id == $category || (!empty($val)) )
+                {
+                    if(empty($val))
+                        return array($node->label);
+
+                    return array_merge(array($node->label), $val);
+                }
+            }
+        }
+        return;
+    }
 	
 	public static function reorder($parent, $children)
 	{
