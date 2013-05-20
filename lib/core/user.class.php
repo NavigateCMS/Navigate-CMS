@@ -10,6 +10,7 @@ class user
 	public $timezone;
 	public $date_format;
 	public $decimal_separator;
+    public $skin;
 	public $blocked;
 	public $attempts;
     public $cookie_hash;
@@ -94,6 +95,7 @@ class user
 		$this->timezone			 = $rs->timezone;				
 		$this->decimal_separator = $rs->decimal_separator;
 		$this->date_format		 = $rs->date_format;
+		$this->skin     		 = $rs->skin;
 		$this->blocked			 = $rs->blocked;
 		$this->attempts			 = $rs->attempts;
         $this->cookie_hash		 = $rs->cookie_hash;
@@ -125,6 +127,7 @@ class user
 		$this->timezone			 = $_REQUEST['user-timezone'];			
 		$this->decimal_separator = $_REQUEST['user-decimal_separator'];
 		$this->date_format		 = $_REQUEST['user-date_format'];
+		$this->skin     		 = $_REQUEST['user-skin'];
 		$this->blocked			 = ($_REQUEST['user-blocked']=='1'? '1' : '0');
 		
 		if(!empty($_REQUEST['user-password']))
@@ -207,7 +210,7 @@ class user
 		$ok = $DB->execute(
             'INSERT INTO nv_users
                 (id, username, password, email, language, timezone,
-                profile, date_format, decimal_separator, blocked,
+                profile, date_format, decimal_separator, skin, blocked,
                 attempts, cookie_hash, activation_key)
                 VALUES
                 ( 0,
@@ -219,6 +222,7 @@ class user
                   :profile,
                   :date_format,
                   :decimal_separator,
+                  :skin,
                   :blocked,
                 0,
                 "",
@@ -233,6 +237,7 @@ class user
                 ':profile'           =>  $this->profile,
                 ':date_format'       =>  $this->date_format,
                 ':decimal_separator' =>  $this->decimal_separator,
+                ':skin'              =>  $this->skin,
                 ':blocked'           =>  $this->blocked
             )
         );
@@ -266,6 +271,7 @@ class user
 									  profile  = :profile,
 									  date_format  = :date_format,
 									  decimal_separator = :decimal_separator,
+									  skin = :skin,
 									  blocked  = :blocked,
 									  attempts = :attempts,
 									  cookie_hash = :cookie_hash,
@@ -280,6 +286,7 @@ class user
                                   ':profile' => $this->profile,
                                   ':date_format' => $this->date_format,
                                   ':decimal_separator' => $this->decimal_separator,
+                                  ':skin' => $this->skin,
                                   ':blocked' => $this->blocked,
                                   ':attempts' => $this->attempts,
                                   ':cookie_hash' => $this->cookie_hash,

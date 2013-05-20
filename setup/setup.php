@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.7.0');
+	define('APP_VERSION', '1.7.3');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	session_start();
@@ -28,7 +28,8 @@ if($_REQUEST['step']=='cleaning')
     @unlink('navigate.sql');
     @unlink('package.zip');
     @unlink('setup.php');
-    header('location: '.NAVIGATE_FOLDER.'/navigate.php');
+
+    header('location: '.NAVIGATE_PARENT.NAVIGATE_FOLDER.'/'.NAVIGATE_MAIN);
 }
 
 if(!empty($_REQUEST['process']))
@@ -51,49 +52,49 @@ $lang = navigate_install_load_language();
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo APP_NAME;?> v<?php echo APP_VERSION;?> - <?php echo $lang['install'];?></title>
-<script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
-<script language="javascript" type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css" type="text/css" />
-<link rel="shortcut icon" type="image/x-icon" href="<?php echo navigate_favicon(); ?>">
-<style type="text/css">
-html				
-{
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#60A5E4', endColorstr='#ffffff'); /* for IE */
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#60A5E4), to(#fff)); /* for webkit browsers */
-	background-image: -moz-linear-gradient(top,  #60A5E4,  #fff); /* for firefox 3.6+ */
-	background-repeat: no-repeat;
-	height: 100%;
-	width: 100%;
-	background-color: #fff; /* for non-css3 browsers */
-}
-body  				{ font-size: 12px; font-family: Verdana; }
-a					{ outline: 0px; }
-h2					{ color: #fff;	}
-img					{ border: none; }
-label 				{ display: block;float: left;width: 250px; font-weight: bold; }
-input 				{ width: 500px;font-weight: normal; font-family: Verdana; }
-div.progressbar		{ width: 200px; clear: right; margin-left: 250px;  }
-input[type=submit] 	{ width: auto; font-family: Verdana; }
-#navigate-footer   	{ margin-top: 70px; text-align: center; font-size: 11px;  }
-#tabs 				{ height: 410px; }
-#tabs div > div 	{ margin-bottom: 10px; }
-#install_language	{ background: #AED0EA; border: solid 1px #CCF; color: #33D; font-weight: bold; }
-.help				{ float: right; margin-top: -5px; }
-.navigate-logo a:hover,
-.help:hover			{ opacity: 0.8; }
-.field-help-text	{ margin-left: 250px; margin-bottom: 0px; color: #777; font-size: 10px; }
-.green				{ background-color: #BFB; border: solid 1px #ccc; padding: 3px; height: 14px; font-family: Verdana; }
-.red				{ background-color: #FBB; border: solid 1px #ccc; padding: 3px; height: 14px; font-family: Verdana; }
-.orange				{ background-color: #FC7; border: solid 1px #ccc; padding: 3px; height: 14px; font-family: Verdana; }
-/*.ui-progressbar-value { background-image: url(http://www.preloaders.net/generator.php?image=16&speed=3&fore_color=60A5E4&back_color=FFFFFF&size=200x24&transparency=1&reverse=1&orig_colors=0); }*/
-.ui-progressbar-value { background-image: url(http://tools.navigatecms.com/object?id=132&disposition=inline); }
-.ui-widget 			{ font-family: Verdana; font-size: 11px; }
-.ui-widget input, .ui-widget select, .ui-widget button	{ font-family: Verdana; font-size: 11px; }
-</style>
-</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?php echo APP_NAME;?> v<?php echo APP_VERSION;?> - <?php echo $lang['install'];?></title>
+        <script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+        <script language="javascript" type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css" type="text/css" />
+        <link rel="shortcut icon" type="image/x-icon" href="<?php echo navigate_favicon(); ?>">
+        <style type="text/css">
+            html
+            {
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#60A5E4', endColorstr='#ffffff'); /* for IE */
+                background-image: -webkit-gradient(linear, left top, left bottom, from(#60A5E4), to(#fff)); /* for webkit browsers */
+                background-image: -moz-linear-gradient(top,  #60A5E4,  #fff); /* for firefox 3.6+ */
+                background-repeat: no-repeat;
+                height: 100%;
+                width: 100%;
+                background-color: #fff; /* for non-css3 browsers */
+            }
+            body  				{ font-size: 12px; font-family: Verdana; }
+            a					{ outline: 0px; }
+            h2					{ color: #fff;	}
+            img					{ border: none; }
+            label 				{ display: block;float: left;width: 250px; font-weight: bold; }
+            input 				{ width: 500px;font-weight: normal; font-family: Verdana; }
+            div.progressbar		{ width: 200px; clear: right; margin-left: 250px;  }
+            input[type=submit] 	{ width: auto; font-family: Verdana; }
+            #navigate-footer   	{ margin-top: 70px; text-align: center; font-size: 11px;  }
+            #tabs 				{ height: 410px; }
+            #tabs div > div 	{ margin-bottom: 10px; }
+            #install_language	{ background: #AED0EA; border: solid 1px #CCF; color: #33D; font-weight: bold; }
+            .help				{ float: right; margin-top: -5px; }
+            .navigate-logo a:hover,
+            .help:hover			{ opacity: 0.8; }
+            .field-help-text	{ margin-left: 250px; margin-bottom: 0px; color: #777; font-size: 10px; }
+            .green				{ background-color: #BFB; border: solid 1px #ccc; padding: 3px; height: 14px; font-family: Verdana; }
+            .red				{ background-color: #FBB; border: solid 1px #ccc; padding: 3px; height: 14px; font-family: Verdana; }
+            .orange				{ background-color: #FC7; border: solid 1px #ccc; padding: 3px; height: 14px; font-family: Verdana; }
+            /*.ui-progressbar-value { background-image: url(http://www.preloaders.net/generator.php?image=16&speed=3&fore_color=60A5E4&back_color=FFFFFF&size=200x24&transparency=1&reverse=1&orig_colors=0); }*/
+            .ui-progressbar-value { background-image: url(http://tools.navigatecms.com/object?id=132&disposition=inline); }
+            .ui-widget 			{ font-family: Verdana; font-size: 11px; }
+            .ui-widget input, .ui-widget select, .ui-widget button	{ font-family: Verdana; font-size: 11px; }
+        </style>
+    </head>
 
 <body>
 
@@ -144,7 +145,6 @@ $(window).bind('load', function()
 </html>
 
 <?php
-
 
 function navigate_install_requirements()
 {
@@ -366,7 +366,7 @@ function navigate_install_configuration()
 			$error = !$ok;
 		}		
 	}
-	
+
 	if($error)
 		die($lang['unexpected_error'].' (cfg/globals.php).');
 		
@@ -499,92 +499,96 @@ function navigate_install_configuration()
 	$(window).load(function()
 	{
 		(function( $ ) {
-				$.widget( "ui.combobox", {
-					_create: function() {
-						var self = this,
-							select = this.element.hide(),
-							selected = select.children( ":selected" ),
-							value = selected.val() ? selected.text() : "";
-						var input = this.input = $( "<input>" )
-							.insertAfter( select )
-							.val( value )
-							.autocomplete(
-							{
-								delay: 0,
-								minLength: 0,
-								source: host_databases /*function( request, response ) {
-									var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-									response( select.children( "option" ).map(function() {
-										var text = $( this ).text();
-										if ( this.value && ( !request.term || matcher.test(text) ) )
-											return {
-												label: text.replace(
-													new RegExp(
-														"(?![^&;]+;)(?!<[^<>]*)(" +
-														$.ui.autocomplete.escapeRegex(request.term) +
-														")(?![^<>]*>)(?![^&;]+;)", "gi"
-													), "<strong>$1</strong>" ),
-												value: text,
-												option: this
-											};
-									}) );
-								}*/,
-								select: function( event, ui ) 
-								{
-									$('#ui-autocomplete-input').val(ui.item.value);
-									$('#PDO_DATABASE').append('<option value="'+ui.item.value+'">'+ui.item.value+'</option>');
-									$('#PDO_DATABASE').val(ui.item.value);
-								},
-								change: function( event, ui ) 
-								{
-									var value = $('.ui-autocomplete-input').val();
-									$('#PDO_DATABASE').append('<option value="'+value+'">'+value+'</option>');
-									$('#PDO_DATABASE').val(value);									
-								}
-							})
-							.addClass( "ui-widget" )	// ui-widget-content ui-corner-left" );
-							.css({'position': 'absolute'}); 
-		
-						input.data( "autocomplete" )._renderItem = function( ul, item ) {
-							return $( "<li></li>" )
-								.data( "item.autocomplete", item )
-								.append( "<a>" + item.label + "</a>" )
-								.appendTo( ul );
-						};
-		
-						this.button = $( "<button type='button'>&nbsp;</button>" )
-							.attr( "tabIndex", -1 )
-							.insertAfter( input )
-							.button({
-								icons: {
-									primary: "ui-icon-triangle-1-s"
-								},
-								text: false
-							})
-							.removeClass( "ui-corner-all" )
-							.addClass( "ui-corner-right ui-button-icon" )
-							.click(function() {
-								// close if already visible
-								if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
-									input.autocomplete( "close" );
-									return;
-								}
-		
-								// pass empty string as value to search for, displaying all results
-								input.autocomplete( "search", "" );
-								input.focus();
-							}).
-							css({ 'height': '20px',	'margin-left': '506px', 'width': '16px' });
-					},
-		
-					destroy: function() {
-						this.input.remove();
-						this.button.remove();
-						this.element.show();
-						$.Widget.prototype.destroy.call( this );
-					}
-				});
-			})( jQuery );
+				$.widget(
+                    "ui.combobox",
+                    {
+                        _create: function()
+                        {
+                            var self = this,
+                                select = this.element.hide(),
+                                selected = select.children( ":selected" ),
+                                value = selected.val() ? selected.text() : "";
+                            var input = this.input = $( "<input>" )
+                                .insertAfter( select )
+                                .val( value )
+                                .autocomplete(
+                                {
+                                    delay: 0,
+                                    minLength: 0,
+                                    source: host_databases /*function( request, response ) {
+                                        var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+                                        response( select.children( "option" ).map(function() {
+                                            var text = $( this ).text();
+                                            if ( this.value && ( !request.term || matcher.test(text) ) )
+                                                return {
+                                                    label: text.replace(
+                                                        new RegExp(
+                                                            "(?![^&;]+;)(?!<[^<>]*)(" +
+                                                            $.ui.autocomplete.escapeRegex(request.term) +
+                                                            ")(?![^<>]*>)(?![^&;]+;)", "gi"
+                                                        ), "<strong>$1</strong>" ),
+                                                    value: text,
+                                                    option: this
+                                                };
+                                        }) );
+                                    }*/,
+                                    select: function( event, ui )
+                                    {
+                                        $('#ui-autocomplete-input').val(ui.item.value);
+                                        $('#PDO_DATABASE').append('<option value="'+ui.item.value+'">'+ui.item.value+'</option>');
+                                        $('#PDO_DATABASE').val(ui.item.value);
+                                    },
+                                    change: function( event, ui )
+                                    {
+                                        var value = $('.ui-autocomplete-input').val();
+                                        $('#PDO_DATABASE').append('<option value="'+value+'">'+value+'</option>');
+                                        $('#PDO_DATABASE').val(value);
+                                    }
+                                })
+                                .addClass( "ui-widget" )	// ui-widget-content ui-corner-left" );
+                                .css({'position': 'absolute'});
+
+                            input.data( "autocomplete" )._renderItem = function( ul, item ) {
+                                return $( "<li></li>" )
+                                    .data( "item.autocomplete", item )
+                                    .append( "<a>" + item.label + "</a>" )
+                                    .appendTo( ul );
+                            };
+
+                            this.button = $( "<button type='button'>&nbsp;</button>" )
+                                .attr( "tabIndex", -1 )
+                                .insertAfter( input )
+                                .button({
+                                    icons: {
+                                        primary: "ui-icon-triangle-1-s"
+                                    },
+                                    text: false
+                                })
+                                .removeClass( "ui-corner-all" )
+                                .addClass( "ui-corner-right ui-button-icon" )
+                                .click(function() {
+                                    // close if already visible
+                                    if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+                                        input.autocomplete( "close" );
+                                        return;
+                                    }
+
+                                    // pass empty string as value to search for, displaying all results
+                                    input.autocomplete( "search", "" );
+                                    input.focus();
+                                }).
+                                css({ 'height': '20px',	'margin-left': '506px', 'width': '16px' });
+					    },
+                        destroy: function()
+                        {
+                            this.input.remove();
+                            this.button.remove();
+                            this.element.show();
+                            $.Widget.prototype.destroy.call( this );
+                        }
+                    });
+			    }
+            )( jQuery );
 		
 		verify_database();
 		
@@ -613,44 +617,43 @@ function navigate_install_configuration()
 		  data: $('form').serialize(),
 		  success: function(data)
 		  {
-				$('body').css('cursor', 'default');
-			  	$('#pdo_database_create_allowed').hide();
-			  	$('#pdo_database_create_not_allowed').hide();
-			  	$('#pdo_database_empty_warning').hide();
-				
-				if(!data.error)
-				{					
-					if(data.create_database_privilege)
-						$('#pdo_database_create_allowed').show();
-					else
-						$('#pdo_database_create_not_allowed').show();
-						
-					$('#pdo_database_empty_warning').show();
-					
-					host_databases = data.databases;
-					$('input[type=submit]').show();
-					$('form').attr('onsubmit', '');
-					$('#pdo_database_select').prev().hide();
-					$('#pdo_database_select').css('visibility', 'visible');
-					$('select[name="PDO_DATABASE"]').combobox();
-					return true;
-				}
-				else
-				{
-					$('#navigate-database-check').html(data.error);
-					$('input[type=submit]').hide();
-					$('form').attr('onsubmit', ' return false;');
-					$('#pdo_database_select').prev().show();
-					$('#pdo_database_select').css('visibility', 'hidden');
-					return false;
-				}
+            $('body').css('cursor', 'default');
+            $('#pdo_database_create_allowed').hide();
+            $('#pdo_database_create_not_allowed').hide();
+            $('#pdo_database_empty_warning').hide();
+
+            if(!data.error)
+            {
+                if(data.create_database_privilege)
+                    $('#pdo_database_create_allowed').show();
+                else
+                    $('#pdo_database_create_not_allowed').show();
+
+                $('#pdo_database_empty_warning').show();
+
+                host_databases = data.databases;
+                $('input[type=submit]').show();
+                $('form').attr('onsubmit', '');
+                $('#pdo_database_select').prev().hide();
+                $('#pdo_database_select').css('visibility', 'visible');
+                $('select[name="PDO_DATABASE"]').combobox();
+                return true;
+            }
+            else
+            {
+                $('#navigate-database-check').html(data.error);
+                $('input[type=submit]').hide();
+                $('form').attr('onsubmit', ' return false;');
+                $('#pdo_database_select').prev().show();
+                $('#pdo_database_select').css('visibility', 'hidden');
+                return false;
+            }
 		  }
 		});				
 	}
 	</script>    
 	<?php
 }
-
 
 function navigate_install_decompress()
 {		
@@ -770,7 +773,6 @@ function navigate_install_decompress()
 	</script>
 	<?php                			    
 }
-
 
 function navigate_install_decodesize( $bytes )
 {
@@ -1243,10 +1245,29 @@ function process()
 				if(!$ok) throw new Exception($lang['error']);
 
                 // set default website details
+                $parsed_url = parse_url(NAVIGATE_PARENT);
+
+                if(function_exists('idn_to_utf8'))
+                    $parsed_url['host'] = idn_to_utf8($parsed_url['host']);
+                // implement fallback for PHP 5.2?
+                //    $host = $idn->decode($host);
+
+                // host could be: "www.domain.tld", or "subdomain.domain.tld", or "subdomain1.subdomain2.domain.tld"...
+                $parsed_url['subdomain'] = '';
+                $host = explode('.', $parsed_url['host']);
+                if(count($host) > 1) // at least one subdomain
+                {
+                    $parsed_url['host'] = array_pop($host); // tld
+                    $parsed_url['host'] = array_pop($host) . '.' . $parsed_url['host']; // domain name
+                    $parsed_url['subdomain'] = implode('.', $host);
+                }
+
                 $website = new website();
                 $website->load();
-                $website->domain = parse_url(NAVIGATE_PARENT, PHP_URL_HOST);
-                $website->folder = parse_url(NAVIGATE_PARENT, PHP_URL_PATH);
+                $website->protocol = $parsed_url['scheme'].'://';
+                $website->subdomain = $parsed_url['subdomain'];
+                $website->domain = $parsed_url['host'];
+                $website->folder = $parsed_url['path'];
                 $website->default_timezone = 'UTC';
                 $website->contact_emails = $user->email;
                 $website->save();
@@ -1306,6 +1327,23 @@ function navigate_install_logo()
     return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABGCAYAAAAuP23NAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2RpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpFNTJBMDI2QjA4MDdFMTExQThCRUE5QUE3MDYxNzI4RSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4QjREQjMyNjA3MDgxMUUxQkU0MEZCRTNGQTczMkU5RSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4QjREQjMyNTA3MDgxMUUxQkU0MEZCRTNGQTczMkU5RSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFNTJBMDI2QjA4MDdFMTExQThCRUE5QUE3MDYxNzI4RSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFNTJBMDI2QjA4MDdFMTExQThCRUE5QUE3MDYxNzI4RSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Ppy+npoAACWVSURBVHja7F0HWFTHFr5bYBcWFhaQKiggqNh715io2BKNPcZuLImpamxJjHlqNM2XYoxJbNEkGnvsNWBvWLAiAiLSe9nC9nfmOsMergvRCHkpXL/5FndvmXvnn3P+U+ZckdVq5Wq2mq2qN+m/6F5F0MT0bytqNVsNsP4wmKSokf+boBnpp7kGYDXAelxQOUBzos2R3q+IgskArRSajn7WgKsGWI8MKhdortCcocnodyIqqQiwtNAk0CzQ9DVw+PsAS0ybCHEay58gHQhYFBRUSgowOQWXiKpBHd3PTEFlpH2r2f4KwGrW+42Hvos98AWTGI70U0J/MqJmhmOrfCDh2mIKIGcksVxz8oo8ln6zrde91JxQPx9V0tI5Y7cqnGRmqgYJ6PTQn3+d1ILnVW0Spao7KqIDSwbUHZoHNE/UyP/dyGDCvpJqklZyyqsIuBS3E9P8Rr257L0jJ2PH3UlO73L83I2xU+euGEf3Y82hRs78RYFFQeVIJQUBj0oALA/a3OnvzlUJLiQpGbD4zzkf/TAlM6ewId73VsL9yIvXEr2RRJXQ42u2v6DEEtMBZSqIgcseqBj3caLqq6qu70AlJmny7zceapWUktVeuKPRZHZJuJehopwLt5rtL0jeJXRAnRh5/nFHdMsfdxwboSvVK+sE1IqdNDJyR5c2EcmI0BOeYwJwEY5jrQJgyajUJE12+OSVro94bLUZFCKRfbz+k6MeVQYsqkaYM5KXGvF302t9vX7fW1qdnkgsrrBYEzTrw3XtJ73Q6+MJw3rEIH8Ss8rMVQAsCeuD3mB0zMwuqGf3xqUSjb+PRwG9pqW6rFWxWMwZjUbOYjHDTCoPMIlUWiHoaoD1sMRiTXz0VGwIAxXb4P+1vvv54Nx6dfze6tquUQJnc1LqqwBYHFZnOXnFMlB5cns7ebi5JIDkzKTA5r3wVSAxHwJVUUEeVwjNYrEQ0YXFFefrH8jJnRWc1fLP83KIq+GcZTG40lKjXUtLV2rw+O/qXeMwFyISpgrIM44BWhTOMqNEIjba27FL24hfKZiZxDRVNagK8nO53JxMzmw2l4GJtX968L+qgYXViqVeXb9MsUhkVwolp2Z3Pnjscl3OFmqRPkl/KCgxMK0qNxeDwkmWL9w30M/r1DuvDjtGAaWvQmn5QGxLJFxJUSGXn5sNAJP8Y9XdnwIsqkYsjIwTSRDZrUWyyt0l2d7+oBocDp243IwrHyCWPOG9yDF5P3Hhpn9eQUldAahOfvbehKUgyUqQCjZWlbOWSCqdVsvl52X/KwFVXRzLglRLqaODVNO9Q5OdW/ednmFv5xK1TiUg/EQdGoVcBxkGIgQiUQUWKQOXbMeBsx2AYynYDiC90rd9O+cDmaNDEbk8bRrKsarA+hOD+tdxWRmpvPqrAVbVqkIdMvcd3nt9+OErN++2TkjO6CbcObeguDZyTzDLkLgeDJwtzihG0qzMMKhAupVZpCARnWJv3e2AfwwO8j0JoNJSMBFQqUl/AchVogaJ5ZedmcaZTEZecv2btyq9eyppWNaAhn5qv1449fPQOr7Rwv2TUrK6fbl2TzuOhl7oJwuxEOcpdq562vkbNxU9hpd8Ow6eC8kvKAlBviRz724toil49axv0OcqIe0ESET9GQ2Gfz2oqssqtFAXQplk8K3lnr3927mLRjzbZYlc5liIHISSrftOkXCLirPlTblyNi99RSCqqLnRczgeOHapkwXOz67lrlQkjhzQLZ4TBMKrClRajYYn7DWgqiZgUallpKAqhlZIW/HcaUOO9n+mzSq8f1GJNmjex+tfQFILAwvHGjHQPECN+uTkFfmSBsD0I/4xBC5ZXEJqO3ydiLDAaCDsWto3K1WlDlUVTrJYTFzN+oHq41hl4IIBY1mZRjyY770+7Oj52PguKWk5ZQN/+cbdQRt/PX76hQFdr9A+OVJ16Kg3GOUgfepcvJoYkpyaFVJQpPbW6PRueoPJBQZSzPxDDg5SvZPcsVjp6pwNRoOhWK31Zed3kErUowd1j0Yk34n+Ta6jJeEk7kEazxMgoybMWO3AQuBijkcrAoxs5qSBq2YuXtvIYDS5MNfD6s1Hpg5/tvMsUCVkf/naLUebRJ+51j45NbtJsVrnB/tU3lednoSMuIzsgkbCnxTO8lwAFzESlLQPLAeLGRrkU0fjlTXJflVhIT+p+LaX6GfHVeBIB5VlNrgDsIYdPnFlEt63W/vGG7w93fKjz17vCyourCpvFKzBkuBAn7ND+3XcO6RvpzgGJtq01EIk6rv0ca1EwqvUJcW8m+FRORZ57n4BQf/3kE51JfpVO7Bo5yWUQzFwuYO08ug/fuGHWbmFjf9UUikWG8Lq+p2aOLznL5HdWiRRYGmQT0tNrUVzDbD+WlahPYkl4crnvpuBB5XOeWXIClBR2j/zQYJKdbydlNb9nU82fPra+9+NBoC7U8CzHDHSFNDvf9Oay78XsFBGpwINnIK5Fs5eiqv//7pxkuh3/NyN0c9NXLzw2Nnr9VD/XGlzrgHXX1diSZBvyhVLhomzvprwy56Tb8AAO/8/H0BGdn7zOR+tX/rNj/vbI4nFAOZUTXn5NcB6AmnFsjmJhCpbLQOqyH3Eq5+8EXM1YcATkUORyAxqVOPsJMtSujinQEuD7/4QWdHq9F7fbzz03uLlW56h/XRBk6EqU6dr3A1VoAIdEah45ydIJ7dRbyybFpeY+tRjzwAAkptSkeTv43G1Xh2/243qB6WE1vHN91IpDZ7urtyuI+cbfvLtjkV4fz8fj8uFReogjU7v/XvnN5stchYsf+fVoUc42xpIPhUI7klX1YmANcD647zKhX7y7aXZy8c/LqgUTrKM0Dp+x3t1bR41elD3OOoXM3G2xaXEH+UKfKmNFYVwAIQJ+9bNn5eUkqXYuOt4K+BzPVIz8lpbrFZpZcR+2/7TM9yVCvW0MX3PYGBxtoWt9qWeVl2DpkcAFkuaE6P/P+pKZrxSh4HK5Z1Pfux35UZS38ftYEgd3/MbPn/re85WYwEX8eCzHopKtC4379wvl8nQoF5tksinDQnyKQQJlAN/R23YHtUYpNLQ5NTsTlwFrnKQXI7rt0XNrB8SMLNH52YJnC2/rJRkXVQktf6J6cVVybFEdLAYN2KLToUWnSMl5iI70kpKpQiL/bnsOny+wYFjl0b/kQ4CYPoAIJpwtgxTOWeLJ/ILX3/ZfaJRsVrrV2YxSMT653u1P06BSPxTZNFEIUi8mF9XvbMAPj8ATpZa0TVL9QbV0m+2zSgs1ii58smDNUT+DwCL8SIyaCxdxV5jA0qAIwzisoEvWywKxFj51bo9k0wms9PvdYaQ8S5tG60BQp6HJci6Lb9NJfFBel0+EJ2UkhkABkDIoRNX6h88frkHPo+/t8elyG4tMtB96SnASDC8aObkgdGrPnp1ekiQ77GK+pKTVxTxxoLvR6IJJLZn7JBkPjNIK4NeXy6xrzB+vwiaGJqE/P1vVYV4WTwj26w6C5ulFs5WpYXlM7EYGyuoIeVs6S98W/TV5h7ZeUW/669ykjtmTxjWY+HkkZFxcz9ar98XdfFl9ltuQXH9OUt/GPpMx6ax+6MvdUhOzYooVut89Aaji9ViFQt5k4+XeyrwJQX1gjtwtrANy24w1Q8NMO74bu7iibO+ygSADhf2x1PleiM8JOA6Z6ujZTfNRkS87vl5nNFo4IFFQVS2BI0+WyN8z9ficg/v86/QmSyk48CV9z4rkAoQC4Cl52xLtjScbYULy2BQUomnSsvM8x/68kfLNA9SWioj6Jmzpg6aOzCyPcmXEgEoVH3HLVyckZ3fFEkGi4jw60rIN7YISa599w5Nd5BsCg7lhtG+Szlb0RAXkEwjos9en0iOJXlbndtEbFr89qjDdF9yHEllzgd+pSl3HbK8qzCfy8vJ5NOSKahYQRJWD0LMlU8uLAVwmf8fIR22CgrzxOqMFTKyraKNB9eRk7EhP+6IjszMKahrAnVEQi++tVTJT3dscgo4yjWhBOBsZYAcKS9TzVi0ZigpxFFZB+DExa+N6z97zODuV+hAOtDrhwPhXwJ8x+1JbrBOgPfZ+W8OX9G6Sb1UCqxizlbCiMUvXabMXfGCo6NUt2jmqF1urs5sHx2aQOoWfacbbEDn+PWCPKjgX+GdA5hKKOm5HbnyZZPU9Ppat7De1j8DWGi9gASpczNXfkVVtahC5h5gCxGcAVAtvly7ZxaoGiXeOT0rv/nlG0nP7Tx07tiXCyatCPD1LBCoSBM9n7ygSO16/sqdnr/j5LQ+17PtpwCqWDp4HONuYcF+GrnMoeRJgXUvLbv9mx+sCpwxaeCHz0e2v4UsWx0FGi+Nv13yymrOVoCNSSpmieqD2482mMymB6uZedFp4dTFRbyksmMNM0rhRL9nE8aK3CX6P0lCOSLtw1QzW4HO7s9SXcDCCxUcNu85NVAIqjKzGiRcQnJG97EzvvDt2jbiUKsm9RLatQjP8lIpNZytpqfDxl0nmoClFlDZxSPCAkFVDY+iks/M3BMp6bm1Xpq1fB5YZbXtEHw1APoCEO+rcHyyi8Kp1Gw2SxLvZfrH302PACC1LlHryh0H/w/4eOX2D0DlzuvVtUU8V76iH0clipgOPCshqeVs6w3Nd89uECnr9bJiQ1iQySCsW6Fc9dOeJrsOnmw1qF+34+OG97mOVSI8Rx5YV/b9F6+HtDI1hRfv2nNxoHWUZa4ggYpjapm5fZy58jVYS5H00lficsKuJuvjqEIpnWFlVt+zExctSEnLafuoHnFnZ3mOp7vr/dp+ngkN69VO6NCqwf2PVmwbBQNdYUEOVxen1J++mD4FVFU2nTkOVA27D566dBaAt6NQujUIDdg5eWTvLaCO7yMnqRW5SRzAmnNbturXp4+dvT4CuJ0PPgfwp+Rl702c06pJKEmXyUMSi/E2Mx18Jn05gfFixgQcEXUJZ8s5463W63FJgZEjZi7TaHVeri7O6Wf2fDOltr93Br1uPmcrUylB1zAjPx1TW9hJi7+XIovVijQHO15CQeWOwMU4swG7Yejzx8fhJkL9euQ6F1LUITabdGB97Vu75egjAYssWFBrdL6kgbRocyrmFrd+W5QGeJmsEhVo6de99RoAFXu4zDemWPDfjb2EoCLrAEGNfTx32hDmmzIIgFVWGbmWp1vpktljdoKlF/PeZz9NB/Xdgp2nuEQbcOj45RAKLCl92CKkoqzItcAGAgOLVx8AqFLEJ5kFLcUANRhNFpPJ5MhcJkaTGYNDSkEo48ov1DWj+5KivhmQymI+NSniTVZ0rIE2ZqAwHkmqGrrtOnK+buumYYnNGtYt5Wy1zBzR+eXcw5UYLVz5gsB6QfTjoU2yYMECLMr5zrZvWT/77v2sIpBajcAMc3xc/Wq2WBzL8tHtuxbyXhjQdS+AwAI8ijlkZaSc4+LlW6YbjSYFUn0lU17sPe+NCc+eRZ53Dj1QxhGl+CH7+3honn2mzbkDxy43JKAPDvQ58vr4/ksmj4y8RCeRFKkIJwEPkWJij/bBHEVEf1MKnMf8YPj5eJZqdaVJBoOxePTQyLX9enRIoryNWaWuiIvhpW+M67qg76SIw7FjcGTDXv/Zvvy5YLK3nLVk3fwT528OqBvofbx5REgW48MIpHJBv/C943NLEJitlbkbsIXEUkYUu49cCN20+0Tf1Izc5mptqQ+ATAJWnNrby+2mzMFBl1tQHFyi0QWYHjP1hag1sVhkcHGW53q4u6bUCah1p2nDuonX4u6FR5259iKmdEDuFy+c8eJ+zpaf7oQAxHxLcjR7LUiiOYLk8jl7+bbfq2P7XeQezr/HqgQTWh09F/O8c/RYtvKoiO7LnLYunK1wLusXi2MyB62aqh8jApLQo29G98TOx66LpbvMTvRD2H/m+uH3//S7nU9t2B41m+z4nxkjJw/o2S4R8Us1Pb8UnV8mUIUmgZupbMGvPXDh1GQpCuPgG5fpSg3y67fvuYF4F3uqXLUNQmuztYEOpy/G+Zy8cDMkKSWz3v2M3AZFJdpAjQZAiALCjwM42MpIK5D0M/vWzZ9DB5PcnAdIH49NO4+GgFQT9e/ZMTEwwLs0PTNXte6X/Q1v3blX29lJpu3avtmtFwf3iqcPwojENiPWcjhH8KWr8UFpmTkeDg5SU/3QwNTRQyKvAw/Kow+O7K9av+VAo+ISjdzby6Nw2HPdb1FOUkDBUlahcP/Rs8GJ99LcnJ3k2rHD+tyRSMSWzbuiwrNy8l1q+9XKer5v1zg6GCLOViJcvve3mJBL1xNDwFBx8fP2yOrzVMsbjcKD8m8npXmeuxxfG7hoMdCA63TgWcaI/MSFmwHwe11Q9d5Wq0VEjn2mU7OboObT6ICT+3a/EZ8ScOXm3YALsXcak0lLnvGg3u2/DAsOSAeBIPbzVmX36NyMrQFgdVudfjt9Nejspduh2XlFnjDm+c0aBifAJE/gbOsDimlTc3bq5Atz3qX45Ai5DoKZYUT7OyA1KoOOeIx567/zM7ILniiXnfCwV8b0mT75hcgztPPkGh634pMDnxr0+kqwWp2/+WjGmwl303xX/bx7XFGxBscKjc0i6h3dvmbxCnc3lxwKFNI/z4+//rnjmo37XszMzgsXXlPl5po6bkSf796fMf4kBY6yY/+XZ9+MT37KyUlWuOuHpVPaNG9wl5JvBiyPgqIS75Y9Jn4Kn4F1A31PxxxatVAqkTjU7zRyWVZOQb16dQNOwHfv0n4QKaaEyVj3s+93jkm+n90GT0Lgk4XP9mizFigAB5b1WyDR44/89J9pcE/kGTgdORnb4Is1uyamZuQ1EzqLyWLgTq0bbl723oTNdLCdZy5eO1S4aAVvpEjKnrXvvUvHVAlA9Pvgi01j7iSld8H9IuMRWsf32Cfzxq0EizyDgqoEAcxQWXYDE7vMoSdDBFMk8MBbkM5lfjBXb083PZDVCisQe3kob5DcJ1Ch/pXFD5UuTsljBz99nbMVRuM5m9JVYZJKpToAlmL1z3v6xsTejiQrcMKCa0dLQfKkpGY1A0us1qVr8b0Hjp9nit7+5TLkvLUm3E31AikSBpIpJjjI74YCJEyxWuNx4/bdrgCM2stXb58X4Ftrxksv9uev/WyvjscIsHQ6vfuqn3a3BmCl0XtlEQuH9ZsP1CegIl883bnVIQAV77eCOcv32Woz23myDNImZPaSH+ZrtKXeYFUbgf8dA8mRpNaUqu4kp3fbuu/0W2BhX+EHSCLWAaiYtccVq7UOKem5rVRuLneAQsQoXZ0LSRYuGDxtSHzz6KnYyWC0lAB92EvuG7jmPQDPWXhgnrn5xWTlkxXG6Bo8MzVwYXGgv9c1Km0UV+OSa7/+/vfvFBSp64KkvN84POiQp0qZB1Qo+FZCaiRxM73y7rfum1e8/b7SxdmCDAvd7wGLAacUWQAsLFHmaxFwFZZ7xYMMBlwKKlNekWvitXH9Px/Yq10yWGcBl2/cDYpLTI3Iyi0MhZtuAMe6onjfbbh5VhjNjKQR4We8NUJA5e/rdXnlxzOXgPojZFRy+fod39GvLpqbmp7d5OrNhD6gynaPGdo7lt68/s3Jw37r3K7pZfguid4r76o4d+nm3mGT5y8Fyee/6uc9gwFYfO7XlDEDYr/bsDsNgBNw9uJNUtjkAAUIx7jOnsOnOzxwoTinz3p15DnkqrCgZ8Zn1JIY5ofLt0wmoIL7K3hpRM/5YFDEsokKEmPb9IWr54FEas7oAfIhGfo81SperzdOBuMnHvVfAs986+ApS94H0LU+dvb6UADgbzD4BdNfGhANLebz1bu6gaU/l8Qzp43p+/XAyPZ3kHuCz0gBi3w8ARVM/utfL5zyDlAelgzguPPg2WMffr11SUZ2fouFX26OXDp7zG4Yi1I7bg+7aTNCgBkQUcONeWzVyLnJb8CxpBW5GmQyh8LWTerxYrRX1xY3Z7886PDaT1//BnjU+62b1tsrkGxpXPl6Ww9bl06y/DWfz10EoLpHeU9xi8ZhWS+PHfATSV0mxsbew2daogmkiQivmwmguk1VGfPbiNq1jMjr0KoxcdZyaRk5DUGFEWlq9nBXqps3DjvBRx4ycxsfPh7jx6Hiudm5Ba5xCSmtyO+NwutG+9byUD9khj+gG7z1umrT4WbAi/gY6NMdm35PrdRCql6LgF9lzJo6aLlUKtEJjW3yvMGiLgBQXaf9t7BJD0aVaUjfTjsfSDVd7YPHLgcgIWE2mc1lQkRbqhfTcSum53EEKdkg8V5mB7FYbJz6Yu8vKY9mvisjADGxSYM6h8jxl64l9ty2/3QwV76umbiyfKzKtoo8rzgB0OIkczSB+DbYOwFwgHwQ8SxwXUitK3KDFvGDmVm2uSicSn6vQyFB/ufbt4xgHIqZ8qaRg3omKpzlBGhcZk6+P7pPMzKx+ZcbXLuVFARSrTlwr3a5+YV8sFyvN7iAanSh96UfPTTyOOFtRpPJecOWg+2Rn0dKvOslaq03+R32O8TZqbVltT1rh5Mxt9rQwHvWrKnP/yaIIfJSFUh4mpfKNcnORGeagjmTPUCy+e+Luth4zeYjbW/cSanHoiNpmXkeWGrCJLOdyMIbSOx8fLQFeBgpeSDy8XK7NrRfp3SB05xcy+Gp9o1jecdwiSbwwtWE+tzDpaUqVYWPu1mRSDWDbjbAbNPbBxZf8MzKlX9/DTEUrMJaoTBY7pXlQfGD4ywv5gS56aQBCTeAmtGABekFKsIR8SHet3Pnbqrnfz5b1zMmNq4tSJwQ4sAUCBixwWBk79kxD+rbNXnBJ2tupKRlNYdjusB3O+h1ZQejz/M15H29Pa+CJZqEBguHwZjEEgMP4sNNYFQkATHXIce0gVIKfqKSdZfCaBbyWzkvXr7lqTMX47oCjQhnpQoEvsRHscrLIgdgbNVh0m7gpA/fxUB8EL4SiUphwvFEHLgx3IePYHxE1QEsK3b1k0GtQGJpuIdTnPnB8/PxyCqXaJfPF2VzoM1uxT3gK2I7D0kMQCnz74gfJN+V5Zv9uPVQxPyPV7+ZX8ifn/P2UsV5erjd8/Jwy83Kzg+OT7rfkRwilojLeZy7dWx+DKRVcyD+DbfvO14HwHYv6V66+52kVN6zD+r4ADI0Koo6wOA84JGg0koq0wSARXsVCxXxd9P9p/9n9ev3M3JbPjBynFNI7BTIfDYAzBU4WiTJ/RcJNEAlwOKbRlfKB/sJ97sLrRJr3Uwa8UOiMX8oxFNVwDKXi6UpFTkgiu0AwSrmyr8BouyYts3Ckn7ZfdJICoTwPCczrzkQUWWQv1cJ9+TL1PhZeTvxvte7H30/vbBI7Q/WTsIbk4Yue/2lITfpPcgBcN0JsAT3xscOX5s4+NzWPdGFxDrctONIJwBWBpD8plpdqcrZSZ438+URZwQxRrvPSkJpAkhEBQ78oyiC6MH4lRso9sYN+ewl6yYTUBHi/1zPtl+8PeV5UqWQ9NHx/JX4ulPmfdPT+ug+xDLDQESLEIcE+UZNeTHyR5BKFYdrwIAKq+ufiyTtQ0mQVQmsMnUIpnMKzJyHdjQYjQoBsBg5NHVuE5GuclPcyyso4XmCp8r1DqhDropSOnjLb+UPO1sRUJGc+Pkzxn88dljv68jylQG3sucm4d8QFh4SmF8/NOj8let3el29mUjAtyv61GVeDdYPDTwWWjegkD5kSyXGkEmlVGSAGgnPK1SHgGqRgxSXo7hkWdauTm+zkJmrglSZvns/my//9EynpqvffW3YEZSlIAU1VmF8FktAkDZW4Ri4KuT50C9SKl3Zu1vLFMr3cDxQZMflpEOxQ8sfJe+PxLFIA8smyd6O0Gk3lHQmQlxLB5xC27h+nWgQ6beH9+/87t618+fAedJp541VACzx7cSU4AdqSFbYr0eHNGSu82Q8LTO3VgWA4KXW8326RJP7zckvDAWQRiTfz2xEHIfDBzx9AHFGqx03S5n0axYRfJGqHL+PvtnenbO90MqDxRy3HzgTLqj2zA8q8TNRaWRt1zw8Hqkh/hV+YG2qrPYzbImLxsz4nujBmwykSGUbw4L9rz2gIEURh05cqYMSFIyC6AWH/JzaisbniYFFc4DMKIHNCLMpCTjEQ/XVgV94JKVkuiIz1YpQr5v/xvAde9a8+9q8BwtGi6jlWCJ0vv1RqapwkvO8prTUoDoUfT6Is632UZ44G1s76tTlvuUNuXJuF+PkUc/dBC6WTMj+yvW/Dgc16OHt5X5r6tiBt7nffwkBn0QIpvxpoAq8ON8fffGl1b8cbsuhCoZRZ66FfLFm92tkjaNQZbkpndniRVHMtYQGFJT84hayaGXT7hNDWUgMwGNFx1p8a6lYGE50PT4ljLPVeCUGjXHckGeOkzEjxPyz73a8cTsxLYCzv6hGhWKoOKWGq2pVWG5Wk4dXJ8C7CNRhXFJKVrn0F5I8eComLhD0eCaynEppK/FSKVn2As7gNHG2CnxP0j/TgN5dzhw9eXGEyWx2fP+TNW/fjL+32d/Hs+RCbFzowajzzwPvcSIzGya1xGKjGGVZpU5OMm3rZg1OHIg6FwzSindgdmzT5ABKVTFwtnRkzHjLzuPlocwfO+Tpr1as37cAJLjqq3V7F+04cPaKt5dbWkGRxiM5Nbudk8whHyzGxPzCklAc2O7XvXXc+m1RGSVqnd/hE7ETQFrKGoTWTr17P8s36vS1PrB/CHFaksiG2WLG1X1M7VqE3wO1W0CWth05GTseJKans5NMEx7ifwtAFRsRFpg5oGe7lb/sOTk7M6ewycTZX33arGFwFGiNRDdXZ21uQbHyXmqO3527aQ0nj+z93bM92lwT+LAs1QUsTOQMbZqGnRYCi4jx0xdvNR096KlLKEykR7EmCZIQWsQfyoAFD40QX/kDzsa7Eqx2LFMzgFhGSbIjy1MaNaTX7T2HT689dOz8+Jy8wpDla7bNYecl1uGElwZvWPrVT4ssFpNTSnqWkvYP167Xjxve58TB6POjiK+I1LF/a/Kw45zt7RYm3BfglHI6oWSIMpRMGNbjolzmMBdAMgEGsRmQ8Vak8ek23qoLwJ1Wfvb9zkkEWMj60oP1lzusX+cVG7ZHvQ0Acd91+Pw0aCzGmD9+WI8Ptu47NZkkAqRl5nujsdGFB/tnd2kbsfHwiSsvk2NBMo4hP95Pr7sJgEXGo3TutCG/icVi8+6j58eTLNyTF26OhPbQYN9KuL+LAgur6mqRWFZBkpl+1KDuF3YfvZAnfEkTeshWdBxzlIrRd8aG3aeYb0V964gzJJWuipLn+3ZdWazWOjVtGBKHuA1LbiOxNfXAPl1Ww8C4hgXXTuJseeyiTd8u2PjpN5tuHYw61yk3v8gP+FZBiybhlz9bMC0aZrQVLMfPdaV6aUiQfzbijkamrns/3e4ukP7FAEyVv49XetOI0BwELAMCoXZAZOd1wFncggJ87qN9+Oc1ckC3S9BubNl7KgwMndokHtg8IiQZBiyV+qkU1C1RhPqgfn18/5NhwX5pW/edfiY7r6gO8DdDcKDPjZdG9PwNOGqxWqOTkkSAlo1DryEfGe9b+/Sd8du+Wrcn5cyl2x1LNDoPV4VT9tOdmkYxnkue8eyXBx2ZMOyZC9/+fLDNneSM+mDs+BBa5qKQ55JldS0bh8QBuU9AvMtkTxVWWUU/WktKiVJJVJPmfD0JTOChvETwdIvt2731z6+M6XOBRPBRGKPEXt1Psl6vVKvh4qK/Y+d1R3lPUgRAHT2Xlup9lh8lRYF1HbL+nJHnXCTIgRIh09+Azq2jx5Ut1EW5UjqUo2VEfWXxUw6pdwPKBZNyD78Igfe3ZeUW+g6c9OEXpApOh5b1V6388JU1tB9mrvyaT7EgA5hD18Qrgyxc+fWiUtR/AyLhUpTN6yDwqJsFXFqHeHBpdUksrA5ZXk/piwO77b2Xml2vTbOwfYvfHnUIzVqWjPYoxWTNKPHOKEiMY6tdNCi7VIQGkOPKL7KV0E8H9HAtCFhilB1pROfG5rSeK58jb0B80Ez/Fgv6YEaJf24oWdGAMi/YYgznz1fv6k5ARZycHVo2iEH9Z+/+cRRkzGI/kkRw31okVfSCBEEsjfX0u1L0fOxlteAU6ApfF1OlNUhBapUtiEDJbGKu/FKjUtSpCmt9MomVkZbCFT1Ys+eAGn54vDnsHt6HrDaWCFJoOTTDTMjR6IhmI5ZYEsTz8LlNFZzbjPbhLVc7+zH/jzO1qjy27T/T9NDxy21HPNclqnuHJuksmJyTV+Sy/Ie9Xfb+FjPOCNaZv4/H6f0/vD+HBtgLqIVsRf2XCCYGJ5DmDABWFDi313+8dE8qyLMTcw8v1jBzlawOr2qJxTqqRTfMZgGbFVrEiYyPWkAWBo2pJgOph4DEswUvWScrjMk1KtuHLoSQovgWjjOK0YM00+tWdm4r/Z6rZD9Wz8KF/X9fVEzHmKsJg4EmDHZ3c7nv4izLM1usksJiTYCGhlPclYr4edOGfC6YkCwjVsI9nFZt5spXCBLWrdfR8ugSO/eO70HPlV/giiUWbpU7Dqu6ajKq5MdWe4gFgdZHeoUbllh/17dokUWtxQkHRVT1lb1sHazBFmDNPZeWldeYvlHjQVxTLDaq3BSJ4SEBx+e+MvjXOgHeuVRKFdGmq+o69H+rctyoUnK5dWmP81D+KcByc/fg7sdsdKQUgb1ISpGQnOG15+iF8JT03ACwXr3ImzW8VK5ZzSKC40c82wXXoWeLMDRV9UKpvwWwarZH2oRLt5wFBFwkiLmWIktNiwj432arKTf9JwkvzrZMyowsU1yoA/MdgyAOZ/673XCNxPrzJRc25e2RcGzNmf6uN1oDrP/js0egwoU3KlxdXAOsmq1GNNc8gpqtOrb/CTAAtTUzxowqOmEAAAAASUVORK5CYII=';
 }
 
+function navigate_file_get_contents_curl($url)
+{
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+
+    $data = curl_exec($ch);
+
+    curl_close($ch);
+
+    return $data;
+}
+
 function navigate_install_load_language()
 {
 	$lang = array();
@@ -1318,12 +1356,21 @@ function navigate_install_load_language()
 
 	if($_SESSION['navigate_install_lang']!='en-en_US' && !empty($_SESSION['navigate_install_lang']))
 	{
+        $translation_url = 'http://tools.navigatecms.com/installer/translation/'.$_SESSION['navigate_install_lang'];
+
 		// retrieve language strings from server	
-		//$lang = @file_get_contents('http://tools.navigatecms.com/installer/translation/'.$_SESSION['navigate_install_lang']);
-		$lang_resource = fopen('http://tools.navigatecms.com/installer/translation/'.$_SESSION['navigate_install_lang'], "rb");
-		$lang = stream_get_contents($lang_resource);
-		fclose($lang_resource);
-		
+		$lang_resource = @fopen($translation_url, "rb");
+		$lang = @stream_get_contents($lang_resource);
+		@fclose($lang_resource);
+
+        // try an alternate way for language retrieving
+        if(empty($lang))
+            $lang = @file_get_contents($translation_url);
+
+        // last try
+        if(empty($lang))
+            $lang = navigate_file_get_contents_curl($translation_url);
+
 		$lang = (array)@json_decode($lang);
 	}
 	

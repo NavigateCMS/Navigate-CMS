@@ -141,7 +141,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 	{
         // no 'real' website found using this address
 
-		if($subdomain == 'ng')
+		if($subdomain == 'nv')
 		{
             /*
 			$website->load(); // first available, it doesn't matter

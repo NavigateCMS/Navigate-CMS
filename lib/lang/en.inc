@@ -149,7 +149,7 @@
 148		# Stop current upload
 149		# Start upload queue
 150		# Drag and drop files here
-151		# The selected items will be deleted and could not be recovered.
+151		# The selected items will be permanently deleted.
 152		# Continue
 153		# Embedding link
 154		# Download link
