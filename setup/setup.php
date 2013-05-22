@@ -151,7 +151,7 @@ function navigate_install_requirements()
 	global $lang;
 	$checks = array();
 
-	$checks['diskspace'] = floor(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])) / (1024*1024)) > 30;
+	$checks['diskspace'] = floor(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])) / (1024*1024)) > 50;
 	$checks['server'] = true; //(stripos($_SERVER['SERVER_SOFTWARE'], 'apache')!==false);
 	$checks['php5.2'] = (version_compare(PHP_VERSION, '5.2.0') >= 0);
 	$checks['gd'] = extension_loaded('gd');
@@ -190,7 +190,7 @@ function navigate_install_requirements()
 
                 <div>
                     <label><?php echo $lang['disk_space'];?></label>
-                    <input type="text" value="<?php echo $size;?> (> 30 MB)" class="<?php echo ($checks['diskspace']? 'green' : 'red');?>" />
+                    <input type="text" value="<?php echo $size;?> (> 50 MB)" class="<?php echo ($checks['diskspace']? 'green' : 'red');?>" />
                 </div>
                 <div>
                     <label><?php echo $lang['server'];?></label>
