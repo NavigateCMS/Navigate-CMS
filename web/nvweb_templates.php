@@ -617,6 +617,38 @@ function nvweb_country_language()
 }
 
 /**
+ * Replace "navigate_download.php" paths for base_domain/object uris
+ *
+ * @param $html string HTML content
+ * @return string HTML content without "navigate_download.php" requests
+ */
+function nvweb_template_fix_download_paths($in)
+{
+    $regex = '/https?\:\/\/[^\" ]+/i';
+    preg_match_all($regex, $in, $data);
+
+    $out = $in;
+    $nv_download = basename(NAVIGATE_DOWNLOAD);
+
+    if(is_array($data[0]))
+    {
+        foreach($data[0] as $url)
+        {
+            $url_decoded = html_entity_decode($url, ENT_QUOTES, 'UTF-8');
+            $url_parsed = parse_url($url_decoded);
+
+            if(strpos($url_parsed['path'], $nv_download) !== false)
+            {
+                $new_url = NVWEB_OBJECT.'?'.$url_parsed['query'];
+                $out = str_replace($url, $new_url, $out, $c);
+            }
+        }
+    }
+
+    return $out;
+}
+
+/**
  * Apply some template tweaks to improve Navigate CMS theme developing experience like:
  *
  * <ul>
@@ -633,7 +665,7 @@ function nvweb_template_tweaks($html)
 {
 	global $website;
 	// apply some tweaks to the generated html code
-	
+
 	// tweak 1: try to make absolute all image, css and script paths not starting by http	
 	if(!empty($website->theme))
 		$website_absolute_path = NAVIGATE_URL.'/themes/'.$website->theme;
@@ -667,6 +699,7 @@ function nvweb_template_tweaks($html)
 	
 	// scripts
 	$tags = nvweb_tags_extract($html, 'script', NULL, true, 'UTF-8');
+
 	foreach($tags as $tag)
 	{
 		if(!isset($tag['attributes']['src'])) continue;
@@ -690,8 +723,8 @@ function nvweb_template_tweaks($html)
 	}
 	
 	// images
-	$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');	
-				
+	$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');
+
 	foreach($tags as $tag)
 	{
 		if(!isset($tag['attributes']['src'])) continue;
@@ -714,6 +747,9 @@ function nvweb_template_tweaks($html)
 			$html = str_replace($tag['full_tag'], $tag['new'], $html);
 		}
 	}
+
+    // replace any "navigate_download.php" request for "/object" request
+    $html = nvweb_template_fix_download_paths($html);
 	
 	// tweak 2: convert <a rel="video"> to <video> and <a rel="audio"> to <audio> tags
 	$tags = nvweb_tags_extract($html, 'a', NULL, true, 'UTF-8');
