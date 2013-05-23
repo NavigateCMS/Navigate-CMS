@@ -550,7 +550,7 @@ class file
 		else 
 			$border = 0;		
 
-		// we have the thumbnail already created for this image?
+		// do we have the thumbnail already created for this image?
 		if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id))
 		{
 			// ok, a file exists, but it's older than the image file? (original image file has changed)
@@ -585,7 +585,7 @@ class file
 				$height = round(($width / $size['width']) * $size['height']);
 				return file::thumbnail($item, $width, $height, $border, $ftname);
 			}
-			
+
 			$handle->image_x = $width;
 			$handle->image_y = $height;
 

@@ -31,7 +31,7 @@ function nvweb_contact($vars=array())
                 'contact_request_sent' => t(445, 'Your contact request has been sent. We will contact you shortly.'),
                 'contact_request_failed' => t(446, 'We\'re sorry. Your contact request could not be sent. Please try again or find another way to contact us.')
 		);
-		
+
 		// theme translations 
 		// if the web theme has custom translations for this string subtypes, use it (for the user selected language)
 		/* just add the following translations to your json theme dictionary:
@@ -43,7 +43,7 @@ function nvweb_contact($vars=array())
 		    "contact_request_sent": "Your contact request has been sent. We will contact you shortly."
 
 		*/
-		if(!empty($website->theme) && function_exists($theme->t))
+		if(!empty($website->theme) && method_exists($theme, 't'))
 		{
 			foreach($webgets[$webget]['translations'] as $code => $text)
 			{

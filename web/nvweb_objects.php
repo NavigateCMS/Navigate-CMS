@@ -30,8 +30,8 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 	$enabled = nvweb_object_enabled($item);
 	if(!$enabled && !$ignorePermissions)
 		$type = 'not_allowed';
-	
-	switch($type)
+
+    switch($type)
 	{
 		case 'not_allowed':
 			header("HTTP/1.0 405 Method Not Allowed");
@@ -95,7 +95,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			$resizable = true;
 			if($item->mime == 'image/gif')
 				$resizable = !(file::is_animated_gif($path));
-	
+
 			if((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true'))
 			{
 				$border = ($_REQUEST['border']=='false'? false : true);
@@ -105,7 +105,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 				$item->size = filesize($path);
 				$item->mime = 'image/png';
 			}
-					
+
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add);
 			header('ETag: "'.$etag.'"');
 			header('Content-type: '.$item->mime);
@@ -146,7 +146,6 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
             if(!$cached)
             {
                 $range = 0;
-
                 $size = $item->size;
 
                 if(isset($_SERVER['HTTP_RANGE']))
@@ -166,18 +165,21 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
                     header("Content-Length: ".$size);
                 }
 
-                $fp = fopen($path,"rb");
-                fseek($fp, $range);
-                while(!feof($fp) and (connection_status()==0))
-                {
-                    set_time_limit(0);
-                    print(fread($fp, 1024 * 1024)); // 1 MB per second
-                    flush();
-                    ob_flush();
-                    sleep(1);
-                }
-                fclose($fp);
+                $fp = fopen($path, "rb");
 
+                if(is_resource($fp))
+                {
+                    @fseek($fp, $range);
+                    while(!@feof($fp) && (connection_status()==0))
+                    {
+                        set_time_limit(0);
+                        print(@fread($fp, 1024 * 1024)); // 1 MB per second
+                        flush();
+                        ob_flush();
+                        sleep(1);
+                    }
+                    fclose($fp);
+                }
             }
 			break;
 	}
