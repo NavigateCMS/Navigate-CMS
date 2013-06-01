@@ -511,3 +511,10 @@
 510     # Elementos seleccionados
 511     # Elementos disponibles
 512     # Selección de grupos de usuarios web
+513     # Metatags
+514     # Metatags adicionales
+515     # Las rutas no encontradas
+516     # Muestran una página en blanco
+517     # Redirigen a la página de incio
+518     # Usan la plantilla 404 de un tema (si existe)
+519     # Envían una cabecera de error HTTP 404

@@ -80,12 +80,12 @@ class navibars
 		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = $content;
 	}
 	
-	function add_tab_content_row($content, $id="")
+	function add_tab_content_row($content, $id="", $extra="")
 	{
 		if(is_array($content)) $content = implode("\n", $content);
-		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="navigate-form-row" id="'.$id.'">';
+		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="navigate-form-row" id="'.$id.'" '.$extra.'>';
 		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = $content;
-		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '</div>';		
+		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '</div>';
 	}		
 	
 	function add_tab_content_panel($title, $content, $id="", $width="90%", $height="200px")

@@ -399,6 +399,29 @@ function websites_form($item)
 												));
 	}
 
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(515, 'Not found paths').'...</label>',
+            $naviforms->selectfield(
+                'wrong_path_action',
+                array(
+                    0 => 'blank',
+                    1 => 'homepage',
+                    2 => 'theme_404',
+                    3 => 'http_404'
+                ),
+                array(
+                    0 => t(516, 'Show a blank page'),
+                    1 => t(517, 'Redirect to home page'),
+                    2 => t(518, 'Use the custom 404 template of a theme (if exists)'),
+                    3 => t(519, 'Send a 404 HTTP error header')
+                ),
+                $item->wrong_path_action,
+                '',
+                false
+            )
+        )
+    );
+
 	$navibars->add_tab_content_row(array(
             '<label>'.t(68, 'Status').'</label>',
             $naviforms->selectfield(
@@ -732,8 +755,6 @@ function websites_form($item)
 	$navibars->add_tab_content_row(array(	'<label>'.t(328, 'Favicon').'</label>',
 											$naviforms->dropbox('website-favicon', $item->favicon) ));
 
-	$navibars->add_tab_content_row(array(	'<label>'.'Metatags'.'</label>',
-											$naviforms->scriptarea('metatags', $item->metatags, 'html', ' width: 75%; height: 150px; ' ) ));
 
 	$navibars->add_tab(t(44, "E-Mail"));
 
@@ -804,7 +825,45 @@ function websites_form($item)
 		});
 	');
 
-	$navibars->add_tab(t(178, "Services"));
+    /* METATAGS TAB */
+    $navibars->add_tab(t(513, "Metatags"));
+
+    $website_languages_selector = $website->languages();
+    $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+    $ws_languages = $website->languages();
+
+    $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
+        $naviforms->buttonset('metatags_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+    ));
+
+    foreach($website->languages_list as $lang)
+    {
+        $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(334, 'Description').' '.$language_info.'</label>',
+                $naviforms->textfield('metatag_description-'.$lang, $item->metatag_description[$lang]),
+                '<span class="navigate-form-row-info">150-160</span>'
+            ),
+            '',
+            'lang="'.$lang.'"'
+        );
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(514, "Additional metatags").' '.$language_info.'</label>',
+                $naviforms->scriptarea('metatags-'.$lang, $item->metatags[$lang], 'html', ' width: 75%; height: 150px; ' )
+            ),
+            '',
+            'lang="'.$lang.'"'
+        );
+    }
+
+
+    /* SERVICES TAB */
+
+    $navibars->add_tab(t(178, "Services"));
 
 	$navibars->add_tab_content_row(array(	'<label>'.t(498, 'Statistics script').'</label>',
 											$naviforms->scriptarea('statistics_script', $item->statistics_script, 'js', ' width: 600px; height: 250px; ' ),

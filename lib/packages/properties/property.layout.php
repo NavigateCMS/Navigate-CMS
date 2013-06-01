@@ -31,7 +31,6 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
         $property_rows = implode("\n", $property_rows);
 
         // language selector (only if it's a multilanguage website and we have almost one multilanguage property)
-        // check --> http://192.168.1.30/navigate/navigate.php?fid=10&act=2&id=1
         if(count($website->languages) > 1 && strpos($property_rows, 'lang="') !== false)
         {
             $website_languages_selector = $website->languages();
@@ -268,7 +267,7 @@ function navigate_property_layout_field($property)
 				$field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
 				$field[] = '<label>'.$property->name.' '.$language_info.'</label>';
 				$field[] = $naviforms->textfield("property-".$property->id."-".$lang, $property->value[$lang]);
-				$field[] = '</div>';						
+				$field[] = '</div>';
 			}
 			break;
 			

@@ -511,3 +511,10 @@
 510     # Selected items
 511     # Available items
 512     # Selected web user groups
+513     # Metatags
+514     # Additional metatags
+515     # Not found paths
+516     # Show a blank page
+517     # Redirect to home page
+518     # Use the 404 template of a theme (if exists)
+519     # Send a 404 HTTP error header

@@ -13,13 +13,15 @@ function nvweb_metatags($vars=array())
 	{
 		case 'item':
 		case 'structure':
-			$section = 	$DB->query_single('text',
-										  'nv_webdictionary', 
-										  ' node_type = '.protect($current['type']).' AND
-											  node_id = '.protect($current['object']->id).' AND
-											  subtype = '.protect('title').' AND
-											  website = '.$website->id.' AND 
-												 lang = '.protect($current['lang']));
+			$section = 	$DB->query_single(
+                'text',
+				'nv_webdictionary',
+				' node_type = '.protect($current['type']).' AND
+				    node_id = '.protect($current['object']->id).' AND
+					subtype = '.protect('title').' AND
+					website = '.$website->id.' AND
+					   lang = '.protect($current['lang'])
+            );
 			$section = ' | '.$section;
 			break;	
 
@@ -28,30 +30,41 @@ function nvweb_metatags($vars=array())
 				
 	}
 
+    // global website metatags
+    $metatags = $website->metatags;
+    if(is_array($metatags))
+        $metatags = $metatags[$current['lang']];
+
+    if(!empty($website->metatag_description[$current['lang']]))
+        $metatags .= "\n".'<meta name="description" content="'.$website->metatag_description[$current['lang']].'" />'."\n";
+
 	// retrieve content tags and add it to the global metatags of the website	
 	$tags = webdictionary::load_element_strings($current['type'], $current['object']->id);
 	$tags = @$tags[$current['lang']]['tags'];
 
-	if(strpos($website->metatags, '<meta name="keywords" content="')!==FALSE)
+	if(strpos($metatags, '<meta name="keywords" content="')!==FALSE)
 	{
-		$website->metatags = str_replace('<meta name="keywords" content="', 
-										 '<meta name="keywords" content="'.$tags, $website->metatags);
+        $metatags = str_replace(
+            '<meta name="keywords" content="',
+            '<meta name="keywords" content="'.$tags,
+            $metatags
+        );
 	}
 	else
 	{
-		$website->metatags .= '<meta name="keywords" content="'.$tags.'" />';
+        $metatags .= '<meta name="keywords" content="'.$tags.'" />';
 	}
 	
 	if(@$vars['generator']!='false')
 	{
 		$current_version = update::latest_installed();
-		$website->metatags .= "\n".'<meta name="generator" content="Navigate CMS '.$current_version->version.'" />';
+        $metatags .= "\n".'<meta name="generator" content="Navigate CMS '.$current_version->version.'" />';
 	}
 	
 	if($website->favicon > 0)
 	{
 		$favicon = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$website->favicon.'&amp;disposition=inline';
-		$website->metatags .= "\n".'<link rel="shortcut icon" href="'.$favicon.'" />';
+        $metatags .= "\n".'<link rel="shortcut icon" href="'.$favicon.'" />';
 	}
 	
 	// website public feeds
@@ -73,12 +86,13 @@ function nvweb_metatags($vars=array())
 			$mime = 'application/atom+xml';
 		else
 			$mime = 'text/xml';
-		
-		$website->metatags .= "\n".'<link rel="alternate" type="'.$mime.'" title="'.$feed->dictionary[$current['lang']]['title'].'" href="'.$website->absolute_path().$feed->paths[$current['lang']].'" />';
+
+        $metatags .= "\n".'<link rel="alternate" type="'.$mime.'" title="'.$feed->dictionary[$current['lang']]['title'].
+                              '" href="'.$website->absolute_path().$feed->paths[$current['lang']].'" />';
 	}
 
 	$out = '<title>'.$website->name.$section.'</title>'."\n";
-	$out.= $website->metatags;
+	$out.= $metatags;
 		
 	if(!empty($website->statistics_script) && empty($_SESSION['APP_USER']))
 		nvweb_after_body('html', $website->statistics_script);

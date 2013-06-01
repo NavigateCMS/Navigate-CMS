@@ -9,6 +9,7 @@ class website
 	public $domain; // naviwebs.net
 	public $folder; // usually empty, used when the website is IN a folder, ex. http://www.naviwebs.com/demo/homepage
     public $redirect_to; // if the website is private or closed, redirect anonymous visitors to a real path
+    public $wrong_path_action;
 	public $languages; // array('en' => array( 'language' => 'en', 'variant' => 'US', 'code' => 'en_US' => 'system_locale' => 'ENU_USA'), 'es_ES' => array(...), ...)
 	public $languages_published; // array ('en', 'es_ES')
 	public $date_format;
@@ -21,7 +22,8 @@ class website
 	public $default_timezone;
     public $aliases;
 	//public $server_time_offset;
-	public $metatags;
+	public $metatag_description;  // multilanguage
+    public $metatags; // multilanguage
 	public $mail_server;
 	public $mail_port;
 	public $mail_user;
@@ -73,6 +75,7 @@ class website
 		$this->folder			= $main->folder;		
 
 		$this->redirect_to		= $main->redirect_to;
+        $this->wrong_path_action= $main->wrong_path_action;
 
 		$this->languages		    = mb_unserialize($main->languages);
 		$this->languages_published  = mb_unserialize($main->languages_published);
@@ -85,8 +88,9 @@ class website
 		$this->block_types		= mb_unserialize($main->block_types);
 		$this->homepage			= $main->homepage;	
 		$this->default_timezone = $main->default_timezone;	
-		$this->metatags			= $main->metatags;	
-		$this->favicon			= $main->favicon;	
+		$this->metatag_description	= json_decode($main->metatag_description, true);
+		$this->metatags			    = json_decode($main->metatags, true);
+		$this->favicon			= $main->favicon;
 			
 		$this->mail_server		= $main->mail_server;
 		$this->mail_port		= $main->mail_port;
@@ -122,6 +126,7 @@ class website
 		$this->folder			= $_REQUEST['folder'];				
 
         $this->redirect_to		= $_REQUEST['redirect_to'];
+        $this->wrong_path_action= $_REQUEST['wrong_path_action'];
 
         $this->date_format		= $_REQUEST['date_format'];
 		$this->tinymce_css		= $_REQUEST['tinymce_css'];
@@ -131,7 +136,6 @@ class website
 		$this->homepage			= $_REQUEST['homepage'];		
 		$this->permission		= intval($_REQUEST['permission']);
 		$this->default_timezone	= $_REQUEST['default_timezone'];
-		$this->metatags			= $_REQUEST['metatags'];		
 		
 		$this->mail_server		= $_REQUEST['mail_server'];
 		$this->mail_port		= intval($_REQUEST['mail_port']);
@@ -172,6 +176,17 @@ class website
             );
 
             $this->languages_published[] = ($_REQUEST['language-published'][$li]=='1'? $code : '');
+        }
+
+        // Website metatags
+        $this->metatag_description = array();
+        $this->metatags = array();
+
+        foreach($this->languages as $language)
+        {
+            $lcode = $language['code'];
+            $this->metatag_description[$lcode]	= $_REQUEST['metatag_description-'.$lcode];
+            $this->metatags[$lcode]	= $_REQUEST['metatags-'.$lcode];
         }
 
         $this->languages		    = serialize($this->languages); // already sorted
@@ -299,12 +314,12 @@ class website
 		global $DB;
 			
 		$ok = $DB->execute(' INSERT INTO nv_websites
-								(	id, name, protocol, subdomain, domain, folder, redirect_to,
+								(	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
 									languages, languages_published,
 									aliases, date_format, tinymce_css, resize_uploaded_images,
 									statistics_script, permission,
 									mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
-									homepage, default_timezone, metatags, favicon, theme, theme_options
+									homepage, default_timezone, metatag_description, metatags, favicon, theme, theme_options
 								)
 								VALUES 
 								( 0,
@@ -314,6 +329,7 @@ class website
 								  '.protect($this->domain).',
 								  '.protect($this->folder).',								  
 								  '.protect($this->redirect_to).',
+								  '.protect($this->wrong_path_action).',
 								  '.protect($this->languages).',
 								  '.protect($this->languages_published).',
 								  '.protect(json_encode($this->aliases)).',
@@ -331,7 +347,8 @@ class website
 								  '.protect(serialize($this->contact_emails)).',
 								  '.protect($this->homepage).',			
 								  '.protect($this->default_timezone).',	
-								  '.protect($this->metatags).',
+								  '.protect(serialize($this->metatag_description)).',
+								  '.protect(serialize($this->metatags)).',
 								  '.protect($this->favicon).',
 								  '.protect($this->theme).',
 								  '.protect(json_encode($this->theme_options)).'				  
@@ -394,6 +411,7 @@ class website
                     domain	=   ?,
                     folder	=   ?,
                     redirect_to = ?,
+                    wrong_path_action = ?,
                     languages = ?,
                     languages_published = ?,
                     aliases = ?,
@@ -411,6 +429,7 @@ class website
                     contact_emails = ?,
                     homepage = ?,
                     default_timezone = ?,
+                    metatag_description = ?,
                     metatags = ?,
                     favicon = ?,
                     theme = ?,
@@ -423,6 +442,7 @@ class website
                 $this->domain,
                 $this->folder,
                 $this->redirect_to,
+                $this->wrong_path_action,
                 $this->languages,
                 $this->languages_published,
                 json_encode($this->aliases),
@@ -440,7 +460,8 @@ class website
                 serialize($this->contact_emails),
                 $this->homepage,
                 $this->default_timezone,
-                $this->metatags,
+                json_encode($this->metatag_description),
+                json_encode($this->metatags),
                 $this->favicon,
                 $this->theme,
                 json_encode($this->theme_options)
