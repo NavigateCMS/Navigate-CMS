@@ -250,7 +250,9 @@ function nvweb_route_parse($route="")
 			
 		// redirect to home page of the current website
 		case '':
+        case '/':
 		case 'nvweb.home':
+		case 'nv.home':
 			header('location: '.NVWEB_ABSOLUTE.$website->homepage);
 			nvweb_clean_exit();
 			break;			
@@ -265,10 +267,32 @@ function nvweb_route_parse($route="")
 
     		if(empty($rs))
 			{
-				// no valid route found, redirect to 404
-				//header("HTTP/1.0 404 Not Found");
-				header('location: '.NVWEB_ABSOLUTE.$website->homepage);
-				nvweb_clean_exit();
+				// no valid route found
+                switch($website->wrong_path_action)
+                {
+                    case 'homepage':
+                        header('location: '.NVWEB_ABSOLUTE.$website->homepage);
+                        nvweb_clean_exit();
+                        break;
+
+                    case 'http_404':
+                        header("HTTP/1.0 404 Not Found");
+                        nvweb_clean_exit();
+                        break;
+
+                    case 'theme_404':
+                        $current['template'] = 'not_found';
+                        $current['type']	 = 'structure';
+                        $current['id'] 		 = 0;
+                        $current['object']   = new structure();
+                        return;
+                        break;
+
+                    case 'blank':
+                    default:
+                        nvweb_clean_exit();
+                        break;
+                }
 			}
 			else
 			{

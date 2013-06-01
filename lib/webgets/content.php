@@ -244,7 +244,7 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
     global $DB;
 
     if(!is_array($categories))
-        $categories = array($categories);
+        $categories = array(intval($categories));
 
     $where = ' category IN ('.implode(",", $categories).')
                AND embedding = 1';
