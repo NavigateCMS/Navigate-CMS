@@ -334,6 +334,10 @@
                     "enabled": "1"
                 }
             ]
+        },
+        {
+            "type": "not_found",
+            "file": "templates/not_found.nvt.html"
         }
     ],
 	"blocks": [

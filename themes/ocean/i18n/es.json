@@ -53,5 +53,8 @@
     "ocean_sidebar_text_block": "Ocean | Bloque de texto en barra lateral",
     "ocean_home_slider": "Ocean | Elemento diapositiva en portada",
     "blue": "Azul",
-    "black": "Negro"
+    "black": "Negro",
+    "page_not_found": "Página no encontrada",
+    "sorry_page_not_here": "Lo sentimos, la página que buscas no se ha encontrado.",
+    "try_another_path": "Prueba una ruta distinta o navega usando el menú de este sitio web."
 }

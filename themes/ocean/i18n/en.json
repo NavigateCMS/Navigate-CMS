@@ -53,5 +53,8 @@
     "ocean_sidebar_text_block": "Ocean | Sidebar text block",
     "ocean_home_slider": "Ocean | Home slider item",
     "blue": "Blue",
-    "black": "Black"
+    "black": "Black",
+    "page_not_found": "Page not found",
+    "sorry_page_not_here": "We are sorry, the page you are looking for is not here.",
+    "try_another_path": "Try a different path or navigate using this website's menu."
 }
