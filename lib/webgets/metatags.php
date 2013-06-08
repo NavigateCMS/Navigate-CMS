@@ -1,30 +1,44 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/update/update.class.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/breadcrumbs.php');
 function nvweb_metatags($vars=array())
 {
 	global $website;
 	global $current;
 	global $DB;
+    global $structure;
 
 	// process page title and (to do: get specific metatags)
-	$section = '';	
+	$section = '';
+
+    $separator = ' | ';
+    if(!empty($vars['title_separator']))
+        $separator = $vars['title_separator'];
 		
 	switch($current['type'])
 	{
 		case 'item':
-		case 'structure':
-			$section = 	$DB->query_single(
+            $section = 	$DB->query_single(
                 'text',
-				'nv_webdictionary',
-				' node_type = '.protect($current['type']).' AND
+                'nv_webdictionary',
+                ' node_type = '.protect($current['type']).' AND
 				    node_id = '.protect($current['object']->id).' AND
 					subtype = '.protect('title').' AND
 					website = '.$website->id.' AND
 					   lang = '.protect($current['lang'])
             );
-			$section = ' | '.$section;
-			break;	
+            $section = $separator.$section;
+            break;
 
+		case 'structure':
+            $breadcrumbs = nvweb_breadcrumbs(
+                array(
+                    'separator' => $separator,
+                    'links' => 'false'
+                )
+            );
+            $section = $separator.$breadcrumbs;
+			break;
 					
 		default:
 				
