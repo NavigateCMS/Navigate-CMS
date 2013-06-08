@@ -50,7 +50,11 @@ function nvweb_breadcrumbs($vars=array())
 		
 		for($i = $vars['from']; $i < count($breadcrumbs); $i++)
 		{
-			$out .= '<a '.nvweb_menu_action($breadcrumbs[$i]).'>'.$structure['dictionary'][$breadcrumbs[$i]].'</a>';
+            if($vars['links']=='false')
+                $out .= $structure['dictionary'][$breadcrumbs[$i]];
+            else
+			    $out .= '<a '.nvweb_menu_action($breadcrumbs[$i]).'>'.$structure['dictionary'][$breadcrumbs[$i]].'</a>';
+
 			if($i + 1 < count($breadcrumbs))
 				$out .= $vars['separator'];
 		}
@@ -62,12 +66,11 @@ function nvweb_breadcrumbs($vars=array())
 function nvweb_breadcrumbs_parent($category_id)
 {
 	$parent = 0;
-	
+
 	$category = new structure();
 	$category->load($category_id);
 	$parent = $category->parent;	
 	
 	return $parent;
 }
-
 ?>
