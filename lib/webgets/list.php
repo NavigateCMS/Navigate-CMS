@@ -49,6 +49,15 @@ function nvweb_list($vars=array())
         $categories = $children;
     }
 
+    if(!empty($vars['children']) && intval($vars['children']) > 0)
+    {
+        $children = nvweb_menu_get_children($categories, intval($vars['children']));
+
+        for($c=0; $c < count($categories); $c++)
+            array_shift($children);
+        $categories = $children;
+    }
+
 	if(empty($vars['items']) || $vars['items']=='0')
 		$vars['items'] = 2147483647; // maximum integer
 

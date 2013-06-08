@@ -765,7 +765,9 @@ function items_form($item)
 											$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
 										));
 
-    $navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(364, 'Access').'</label>',
             $naviforms->selectfield('access',
                 array(
                     0 => 0,
@@ -1890,6 +1892,16 @@ function items_form($item)
 				setTimeout(function() { window.open(url); }, 1000);
 			}
 		');
+
+        $events->trigger(
+            'items',
+            'edit',
+            array(
+                'item' => &$item,
+                'navibars' => &$navibars,
+                'naviforms' => &$naviforms
+            )
+        );
     }
 	
 	$layout->add_script('

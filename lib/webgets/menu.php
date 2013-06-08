@@ -356,7 +356,6 @@ function nvweb_menu_load_routes()
 	if(empty($structure['routes']))
 	{
 		$structure['routes'] = array();
-		
 
 		$DB->query('SELECT object_id, path
 					  FROM nv_paths 
@@ -435,28 +434,39 @@ function nvweb_menu_load_structure($parent=0)
 	}
 }
 
-function nvweb_menu_get_children($categories=array())
+function nvweb_menu_get_children($categories=array(), $sublevels=NULL)
 {
 	global $structure;
-	
+
 	// get all elements from all categories that are child of the selected ones
 	$categories_count = count($categories);
-			
+
+    $depth = array();
+
 	for($c=0; $c < $categories_count; $c++)
-	{			
+	{
 		$categories[$c] = trim($categories[$c]);
 		if(empty($categories[$c])) continue;
-		
+        if(!isset($depth[$categories[$c]]))
+            $depth[$categories[$c]] = 0;
+
 		nvweb_menu_load_structure($categories[$c]);
-				
+
 		for($s=0; $s < count($structure['cat-'.$categories[$c]]); $s++)
 		{
-			array_push($categories, $structure['cat-'.$categories[$c]][$s]->id);	
+            $depth[$structure['cat-'.$categories[$c]][$s]->id] = $depth[$categories[$c]] + 1;
+
+            // the current category is beyond the allowed number of sublevels on hierarchy?
+            if(isset($sublevels) && $depth[$structure['cat-'.$categories[$c]][$s]->id] > $sublevels)
+                continue;
+
+			array_push($categories, $structure['cat-'.$categories[$c]][$s]->id);
 		}
-		$categories = array_unique($categories); // remove duplicates			
+
+		$categories = array_unique($categories); // remove duplicates
 		$categories_count = count($categories);	 // recount elements
 	}
-	
+
 	return $categories;		
 }
 
