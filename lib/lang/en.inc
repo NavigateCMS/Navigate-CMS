@@ -512,7 +512,7 @@
 511     # Available items
 512     # Selected web user groups
 513     # Metatags
-514     # Additional metatags
+514     # Additional headers
 515     # Not found paths
 516     # Show a blank page
 517     # Redirect to home page

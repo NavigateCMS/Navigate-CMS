@@ -1,5 +1,4 @@
 <?php
-
 function nvweb_self_url()
 { 
 	if(!isset($_SERVER['REQUEST_URI']))
@@ -247,6 +246,12 @@ function nvweb_route_parse($route="")
 					$current['template'] = $_REQUEST['template'];
 			}
 			break;
+
+        case 'sitemap.xml':
+            nvweb_webget_load('sitemap');
+            echo nvweb_sitemap(array('mode' => 'xml'));
+            nvweb_clean_exit();
+            break;
 			
 		// redirect to home page of the current website
 		case '':
@@ -631,5 +636,4 @@ function nvweb_clean_exit()
 	$DB->disconnect();
 	exit;
 }
-
 ?>
