@@ -105,14 +105,17 @@ class navitree
                     if(strpos($col['property'], 'dictionary|')!==false)
                     {
                         $dictionary_value_name = str_replace("dictionary|", "", $col['property']);
-                        foreach($node->dictionary as $lname => $ltexts)
+                        if(!empty($node->dictionary))
                         {
-                            if(!in_array($lname, $this->showLanguages)) // hide this language
-                                continue;
-                            else if($this->showLanguages[0]==$lname)    // default language
-                                $value .= '<span class="navitree-text" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
-                            else
-                                $value .= '<span class="navitree-text" style="display: none;" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                            foreach($node->dictionary as $lname => $ltexts)
+                            {
+                                if(!in_array($lname, $this->showLanguages)) // hide this language
+                                    continue;
+                                else if($this->showLanguages[0]==$lname)    // default language
+                                    $value .= '<span class="navitree-text" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                                else
+                                    $value .= '<span class="navitree-text" style="display: none;" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                            }
                         }
                     }
                     else
@@ -193,7 +196,7 @@ class navitree
 					$("#'.$this->id.' tr").eq(1).expand();
 				  ';
 		
-		$html[] = '	$("table#'.$this->id.' tbody tr").bind("mouseover", function() 
+		$html[] = '	$("table#'.$this->id.' tbody tr").on("mouseover", function()
 					{
 						if($(this).hasClass("ui-state-highlight")) return true;
 						$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
@@ -210,21 +213,20 @@ class navitree
 						}
 					});';
 
-		$html[] = '	$("table#'.$this->id.' tbody tr").not(":first").bind("dblclick", function() 
+		$html[] = '	$("table#'.$this->id.' tbody tr").not(":first").on("dblclick", function()
 					{
 						if(navitree_mode=="reorder") return true;
 						window.location.href = "'.$this->url.'" + $(this).find("td:first").html();
 					}); ';
-										
-					/*
-		$html[] = '	$("table#'.$this->id.' tbody tr span").bind("mousedown", function() 
-					{
-						$($(this).parents("tr")[0]).trigger("mousedown");
-					});';		*/
+
 		
 		// left arrows adjustment
 		
-		$html[] = ' $(".treeTable").bind("click", function() { $(this).find(".expander").not(":first").css({"margin-left": "-19px", "padding-left": "19px"}); });';			
+		$html[] = ' $(".treeTable").on("click", function()
+                        {
+                            $(this).find(".expander").not(":first").css({"margin-left": "-19px", "padding-left": "19px"});
+                        }
+                    );';
 		
 		// keep open/close branch status via cookie
 		$html[] = '		

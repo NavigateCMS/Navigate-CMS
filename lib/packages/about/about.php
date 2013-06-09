@@ -110,7 +110,7 @@ function about_layout()
 											'<a href="https://github.com/ludo/jquery-treetable" target="_blank">jQuery treeTable plugin v2.3.0</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://www.isocra.com/2008/02/table-drag-and-drop-jquery-plugin/" target="_blank">jQuery Table Drag and Drop plugin v0.5</a><br />' ));																						
+											'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/jquery-dialogextend/" target="_blank">jQuery Dialog Extend plugin v1.0.1</a><br />' ));
