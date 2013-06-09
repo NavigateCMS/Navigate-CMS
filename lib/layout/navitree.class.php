@@ -122,7 +122,7 @@ class navitree
 					{
 						if($node->parent < 0)	// website item
 						{
-							$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$value.'</td>';
+							$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$node->label.'</td>';
 						}
 						else
 						{						
