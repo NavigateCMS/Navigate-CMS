@@ -620,7 +620,7 @@ class layout
 										<img src="'.NAVIGATE_URL.'/img/loader.gif" width="16px" height="16px" align="absmiddle"> '.t(6, 'Loading').'...
 									</div>
 									<div style="float: right; font-weight: normal;">
-										<a href="?fid=18">'.APP_NAME.$version.'</a>, &copy; '.date('Y').' <a href="http://www.naviwebs.com">NaviWebs</a>
+										<a href="?fid=about">'.APP_NAME.$version.'</a>, <a href="http://www.naviwebs.com">&copy; '.date('Y').'</a>
 										<a class="navigate-hidemenu-link" href="#">&#9650;</a>
 									</div>    
 									<div style=" clear: both; "></div>
