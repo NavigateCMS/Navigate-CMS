@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.7.3');
+	define('APP_VERSION', '1.7.4');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	session_start();
@@ -27,6 +27,7 @@ if($_REQUEST['step']=='cleaning')
     // remove installation files
     @unlink('navigate.sql');
     @unlink('package.zip');
+    @unlink(NAVIGATE_PATH.'/cfg/globals.setup.php');
     @unlink('setup.php');
 
     header('location: '.NAVIGATE_PARENT.NAVIGATE_FOLDER.'/'.NAVIGATE_MAIN);
@@ -185,7 +186,7 @@ function navigate_install_requirements()
                 <div>
                     <label><?php echo $lang['app_folder'];?></label>
                     <input type="text" name="NAVIGATE_FOLDER" value="<?php echo NAVIGATE_FOLDER;?>" />
-                    <div class="field-help-text"><?php echo 'http://'.$_SERVER['HTTP_HOST'].substr(dirname($_SERVER['PHP_SELF']), 0, -1);?><strong id="app_folder_example"><?php echo NAVIGATE_FOLDER;?></strong></div>
+                    <div class="field-help-text"><?php echo 'http://'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));?><strong id="app_folder_example"><?php echo NAVIGATE_FOLDER;?></strong></div>
                 </div>
 
                 <div>
@@ -266,19 +267,23 @@ function navigate_install_configuration()
 		die('Setup files missing: cfg/globals.setup.php');
 	*/
 	$error = false;
-	
-	$navigate_parent = str_replace('\\', '/', dirname(realpath(__FILE__)));
-	$document_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);	
-	$navigate_root = str_replace($document_root, '', $navigate_parent);
 
-	$defaults = array(	
+	$navigate_parent_folder = str_replace('\\', '/', dirname(realpath(__FILE__)));
+	$document_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);	
+	$navigate_root = str_replace($document_root, '', $navigate_parent_folder);
+
+    // absolute URL to the folder that contains navigate folder,
+    // f.e. http://www.yourwebsite.com (for www.yourwebsite.com/navigate)
+    $navigate_parent_url = 'http://'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
+
+	$defaults = array(
 		'APP_OWNER' 		=> (empty($_REQUEST['APP_OWNER']))? substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.')) : $_REQUEST['APP_OWNER'],
 		'APP_REALM' 		=> 'NaviWebs-NaviGate',		
 
-		'NAVIGATE_PARENT'	=> (empty($_REQUEST['NAVIGATE_PARENT']))? 'http://'.$_SERVER['HTTP_HOST'].'/'.$navigate_root : $_REQUEST['NAVIGATE_PARENT'],		
-		'NAVIGATE_PATH'		=> (empty($_REQUEST['NAVIGATE_PATH']))? $navigate_parent.$_SESSION['NAVIGATE_FOLDER'] : $_REQUEST['NAVIGATE_PATH'],
+		'NAVIGATE_PARENT'	=> (empty($_REQUEST['NAVIGATE_PARENT']))? $navigate_parent_url : $_REQUEST['NAVIGATE_PARENT'],
+		'NAVIGATE_PATH'		=> (empty($_REQUEST['NAVIGATE_PATH']))? $navigate_root.$_SESSION['NAVIGATE_FOLDER'] : $_REQUEST['NAVIGATE_PATH'],
 		'NAVIGATE_FOLDER'	=> $_SESSION['NAVIGATE_FOLDER'],
-		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_parent.$_SESSION['NAVIGATE_FOLDER'].'/private' : $_REQUEST['NAVIGATE_PRIVATE'],
+		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_root.$_SESSION['NAVIGATE_FOLDER'].'/private' : $_REQUEST['NAVIGATE_PRIVATE'],
 		'NAVIGATE_MAIN'		=> (empty($_REQUEST['NAVIGATE_MAIN']))? 'navigate.php' : $_REQUEST['NAVIGATE_MAIN'],
 		
 		'PDO_HOSTNAME'		=> (empty($_REQUEST['PDO_HOSTNAME']))? 'localhost' : $_REQUEST['PDO_HOSTNAME'],		
@@ -296,8 +301,8 @@ function navigate_install_configuration()
 		'ADMIN_USERNAME'	=> (empty($_REQUEST['ADMIN_USERNAME']))? 'admin' : $_REQUEST['ADMIN_USERNAME'],	
 		'ADMIN_PASSWORD'	=> (empty($_REQUEST['ADMIN_PASSWORD']))? '' : $_REQUEST['ADMIN_PASSWORD'],
         'ADMIN_EMAIL'	    => (empty($_REQUEST['ADMIN_EMAIL']))? '' : $_REQUEST['ADMIN_EMAIL']
-	);	
-	
+	);
+
 	if(!empty($_POST))
 	{
 		// create a configuration file		
@@ -316,7 +321,7 @@ function navigate_install_configuration()
 		{		
 			$globals = str_replace('{APP_OWNER}', 			$defaults['APP_OWNER'], $globals);
 			$globals = str_replace('{APP_REALM}', 			$defaults['APP_REALM'], $globals);
-			
+
 			$globals = str_replace('{NAVIGATE_PARENT}', 	$defaults['NAVIGATE_PARENT'], $globals);
 			$globals = str_replace('{NAVIGATE_PATH}', 		$defaults['NAVIGATE_PATH'], $globals);
 			$globals = str_replace('{NAVIGATE_FOLDER}', 	$defaults['NAVIGATE_FOLDER'], $globals);			
@@ -346,6 +351,8 @@ function navigate_install_configuration()
 			$globals = str_replace('{PDO_DATABASE}', 		$defaults['PDO_DATABASE'], $globals);
 			$globals = str_replace('{PDO_USERNAME}', 		$defaults['PDO_USERNAME'], $globals);				
 			$globals = str_replace('{PDO_PASSWORD}', 		$defaults['PDO_PASSWORD'], $globals);										
+
+			$globals = str_replace('{APP_VERSION}', 		APP_VERSION, $globals);
 
 			$ok = file_put_contents('.'.$defaults['NAVIGATE_FOLDER'].'/cfg/globals.php', $globals);
 			
@@ -432,7 +439,7 @@ function navigate_install_configuration()
                     <input type="text" name="NAVIGATE_PRIVATE" value="<?php echo $defaults['NAVIGATE_PRIVATE'];?>" />
                 </div>        
                 <div>
-                    <label>Absolute URL to application parent</label>
+                    <label>Absolute URL to application parent folder</label>
                     <input type="text" name="NAVIGATE_PARENT" value="<?php echo $defaults['NAVIGATE_PARENT'];?>" disabled="disabled" />
                 </div>    
                 <div>
@@ -811,7 +818,7 @@ function navigate_install_create_database()
 {	
 	global $DB;
 	global $lang;
-	
+
 	?>
     <h2>
     	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
@@ -1244,33 +1251,9 @@ function process()
 		
 				if(!$ok) throw new Exception($lang['error']);
 
-                // set default website details
-                $parsed_url = parse_url(NAVIGATE_PARENT);
-
-                if(function_exists('idn_to_utf8'))
-                    $parsed_url['host'] = idn_to_utf8($parsed_url['host']);
-                // implement fallback for PHP 5.2?
-                //    $host = $idn->decode($host);
-
-                // host could be: "www.domain.tld", or "subdomain.domain.tld", or "subdomain1.subdomain2.domain.tld"...
-                $parsed_url['subdomain'] = '';
-                $host = explode('.', $parsed_url['host']);
-                if(count($host) > 1) // at least one subdomain
-                {
-                    $parsed_url['host'] = array_pop($host); // tld
-                    $parsed_url['host'] = array_pop($host) . '.' . $parsed_url['host']; // domain name
-                    $parsed_url['subdomain'] = implode('.', $host);
-                }
-
+                // create default website details
                 $website = new website();
-                $website->load();
-                $website->protocol = $parsed_url['scheme'].'://';
-                $website->subdomain = $parsed_url['subdomain'];
-                $website->domain = $parsed_url['host'];
-                $website->folder = $parsed_url['path'];
-                $website->default_timezone = 'UTC';
-                $website->contact_emails = $user->email;
-                $website->save();
+                $website->create_default();
 
 				echo json_encode(array('ok' => $lang['done']));	
 			}
@@ -1298,13 +1281,13 @@ function process()
 				$data[] = 'RewriteRule ^(.+) '.$nvweb.'?route=$1 [QSA]';
 				$data[] = 'RewriteRule ^$ '.$nvweb.'?route=nv.home [L]';
 
-				$ok = @file_put_contents($_SERVER['DOCUMENT_ROOT'].'/.htaccess', implode("\n", $data));
+				$ok = @file_put_contents(dirname(NAVIGATE_PATH).'/.htaccess', implode("\n", $data));
 				if(!$ok) throw new Exception($lang['unexpected_error']);
 				echo json_encode('true');
 			}
 			catch(Exception $e)
 			{
-				echo json_encode(array('error' => $e->getMessage()));	
+ 				echo json_encode(array('error' => $e->getMessage()));
 			}			
 			exit;
 			break;

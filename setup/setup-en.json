@@ -32,7 +32,7 @@
 "database_connect_error":"Could not connect to database server",
 "database_driver_error":"Database driver not supported",
 "database_created":"Database created successfully",
-"database_exists":"Database exists",
+"database_exists":"database exists",
 "database_check":"Database check",
 "database_import":"Database import",
 "database_imported":"Database data imported successfully!",

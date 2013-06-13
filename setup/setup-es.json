@@ -32,7 +32,7 @@
 "database_connect_error":"No se pudo conectar al servidor de bases de datos",
 "database_driver_error":"Conector de bases de datos no soportado",
 "database_created":"Base de datos creada correctamente",
-"database_exists":"La base de datos existe",
+"database_exists":"la base de datos existe",
 "database_check":"Comprobar base de datos",
 "database_import":"Importar base de datos",
 "database_imported":"Los datos han sido correctamente importados en la base de datos!",

@@ -32,7 +32,7 @@
 "database_connect_error":"No s'ha pogut connectar al servidor de bases de dades",
 "database_driver_error":"Connector de bases de dades no soportat",
 "database_created":"Base de dades creada correctament",
-"database_exists":"La base de dades existeix",
+"database_exists":"la base de dades existeix",
 "database_check":"Comprovar base de dades",
 "database_import":"Importar base de dades",
 "database_imported":"Les dades han estat correctament importades a la base de dades!",

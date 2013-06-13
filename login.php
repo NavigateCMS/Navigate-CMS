@@ -160,7 +160,7 @@ $current_version = update::latest_installed();
 
         </div>
         <div style="float: right;">
-            <?php echo APP_NAME;?> v<?php echo $current_version->version;?> r<?php echo $current_version->revision;?>, &copy; <?php echo date('Y');?> <a href="http://www.naviwebs.com">NaviWebs</a>
+            <?php echo APP_NAME;?> v<?php echo $current_version->version;?> r<?php echo $current_version->revision;?>, &copy; <?php echo date('Y');?>
         </div>    
         <div style=" clear: both; "></div>
      </div>
