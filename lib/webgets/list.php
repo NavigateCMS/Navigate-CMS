@@ -199,6 +199,8 @@ function nvweb_list($vars=array())
         // reuse structure.access permission
         $access_extra_items = str_replace('s.', 'i.', $access_extra);
 
+        $embedded = ($vars['embedded']=='true'? '1' : '0');
+
 		// default source for retrieving items
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
@@ -207,7 +209,7 @@ function nvweb_list($vars=array())
 			 WHERE i.category IN('.implode(",", $categories).')
 			   AND i.website = '.$website->id.'
 			   AND i.permission <= '.$permission.'
-			   AND i.embedding = 0
+			   AND i.embedding = '.$embedded.'
 			   AND (i.date_published = 0 OR i.date_published < '.core_time().')
 			   AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
 			   AND s.id = i.category
