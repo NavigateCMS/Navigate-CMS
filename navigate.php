@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2013. All rights reserved.                 |
-// | Last modified 21/12/2012                                               |
+// | Last modified 16/06/2013                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -144,11 +144,7 @@ else
 
 // if there are no websites, auto-create the first one
 if(empty($website->id))
-{
     $website->create_default();
-    header('location: '.NAVIGATE_MAIN);
-    core_terminate();
-}
 
 // check allowed websites for this user
 $wa = array_filter(explode(',', $user->permission('websites.allowed')));

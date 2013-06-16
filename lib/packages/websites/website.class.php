@@ -509,13 +509,16 @@ class website
     function create_default()
     {
         global $DB;
+        global $user;
 
         // check if there are really NO websites
         $test = $DB->query_single('id', 'nv_websites');
         if(!empty($test))
         {
-            header('location: '.NAVIGATE_MAIN.'?logout');
-            core_terminate();
+            //header('location: '.NAVIGATE_MAIN.'?logout');
+            //core_terminate();
+            $this->load();
+            return $this;
         }
 
         $url = nvweb_self_url();
@@ -536,17 +539,22 @@ class website
             $subdomain = implode('.', $host);
         }
 
-        $this->name				= "Ocean";
+        $folder = dirname(dirname($url['path']));
+        if($folder=='/')
+            $folder = '';
 
-        $this->protocol			= "http";
+        $this->name				= APP_OWNER;
+
+        $this->protocol			= "http://";
         $this->subdomain		= $subdomain;
         $this->domain			= $domain;
-        $this->folder			= '';
+        $this->folder			= $folder;
         $this->redirect_to      = '';
         $this->date_format		= 'Y/m/d';
         $this->homepage			= '/en/home';
         $this->permission		= 0;
         $this->default_timezone	= 'UTC';
+        $this->contact_emails   = $user->email;
 
         // languages and locales
         $this->languages = array();
@@ -584,9 +592,9 @@ class website
 		if(!empty($this->subdomain))
 			$nvweb_absolute .= $this->subdomain.'.';
 		$nvweb_absolute .= $this->domain;
-		if($folder)
+		if(!empty($folder))
 			$nvweb_absolute .= $this->folder;
-		
+
 		return $nvweb_absolute;
 	}
 	

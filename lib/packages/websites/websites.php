@@ -127,7 +127,18 @@ function run()
 				if($item->delete() > 0)
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
-					$out = websites_list();
+
+                    // if we don't have any websites, tell user a new one will be created
+                    $test = $DB->query_single('id', 'nv_websites');
+
+                    if(empty($test) || !$test)
+                    {
+                        $layout->navigate_notification(t(520, 'No website found; a default one has been created.'), false, true);
+                        $nwebsite = new website();
+                        $nwebsite->create_default();
+                    }
+
+                    $out = websites_list();
 				}
 				else
 				{
