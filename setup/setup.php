@@ -639,6 +639,7 @@ function navigate_install_configuration()
                 $('#pdo_database_empty_warning').show();
 
                 host_databases = data.databases;
+
                 $('input[type=submit]').show();
                 $('form').attr('onsubmit', '');
                 $('#pdo_database_select').prev().hide();
@@ -1128,22 +1129,42 @@ function process()
 						$privileges = $stm->fetchAll(PDO::FETCH_ASSOC);
 						
 						$create_database_privilege = false;
+                        $drop_database_privilege = false;
+
 
 						for($p=0; $p < count($privileges); $p++)
 						{
 							if($privileges[$p]['Privilege'] == 'Create')
 							{
 								if(strpos($privileges[$p]['Context'], 'Databases')!==false)
-								{
 									$create_database_privilege = true;
-									break;
-								}
 							}
-						}
+
+                            if($privileges[$p]['Privilege'] == 'Drop')
+                            {
+                                if(strpos($privileges[$p]['Context'], 'Databases')!==false)
+                                    $drop_database_privilege = true;
+                            }
+                        }
+
+                        if($create_database_privilege && $drop_database_privilege)
+                        {
+                            // check if we are really allowed to create databases
+                            $dbname = 'navigate_test_'.time();
+                            $create_result = $db_test->exec('CREATE DATABASE '.$dbname);
+                            if($create_result)
+                                $db_test->exec('DROP DATABASE '.$dbname);
+
+                            if(!$create_result)
+                                $create_database_privilege = false;
+                        }
 						
 						$db_test = NULL;
 						
-						echo json_encode(array('databases' => array_values($rs), 'create_database_privilege' => $create_database_privilege));
+						echo json_encode(array(
+                            'databases' => array_values($rs),
+                            'create_database_privilege' => $create_database_privilege)
+                        );
 					}
 				}
 				catch(Exception $e)
