@@ -275,7 +275,7 @@ class webuser
 	
 	public function set_password($newpass)
 	{
-		$this->password = md5(mb_strtolower($this->username).':'.APP_REALM.':'.$newpass);	
+		$this->password = md5(mb_strtolower($this->username).':'.APP_REALM.':'.$newpass);
 	}
 	
 	public function set_cookie()

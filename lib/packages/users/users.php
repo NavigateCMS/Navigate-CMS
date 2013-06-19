@@ -404,7 +404,9 @@ function users_form($item)
 
 	$select = $naviforms->select_from_object_array('user-date_format', $data, 'code', 'name', $item->date_format);
 	$navibars->add_tab_content_row(array(	'<label>'.t(50, 'Date format').'</label>',
-											$select ));																					
+											$select ));
+
+    $navibars->add_tab_content($naviforms->hidden('user-skin', 'cupertino'));
 										
 	$navibars->add_tab_content_row(array(	'<label>'.t(47, 'Blocked').'</label>',
 											$naviforms->checkbox('user-blocked', $item->blocked),
