@@ -75,6 +75,15 @@ function run()
             core_terminate();
             break;
 
+        case 'dialog':
+            $extension = new extension();
+            $extension->load($_REQUEST['extension']);
+            $out = extensions_dialog($extension, $_REQUEST['function'], $_REQUEST);
+            echo $out;
+
+            core_terminate();
+            break;
+
         case 'process':
             $extension = trim($_GET['extension']);
             call_user_func("nvweb_".$extension."_plugin", $_REQUEST);
@@ -304,13 +313,33 @@ function extensions_options($extension, $saved=null)
                 $website_languages_selector = $website->languages();
                 $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
 
-                $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-                    $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
-                ));
+                $navibars->add_tab_content_row(
+                    array(
+                        '<label>'.t(63, 'Languages').'</label>',
+                        $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+                    )
+                );
             }
         }
 
-        $navibars->add_tab_content(navigate_property_layout_field($property));
+        if($property->type == 'function')
+        {
+            if(!function_exists($option->value))
+                continue;
+
+            call_user_func(
+                $option->value,
+                array(
+                    'extension' => $extension,
+                    'navibars' => $navibars,
+                    'naviforms' => $naviforms
+                )
+            );
+        }
+        else
+        {
+            $navibars->add_tab_content(navigate_property_layout_field($property));
+        }
     }
 
     $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$navibars->generate().'</div>');
@@ -318,6 +347,21 @@ function extensions_options($extension, $saved=null)
     $layout->add_script('
         $("html").css("background", "transparent");
     ');
+
+    $out = $layout->generate();
+
+    return $out;
+}
+
+function extensions_dialog($extension, $function, $params)
+{
+    global $layout;
+
+    $layout = null;
+    $layout = new layout('navigate');
+
+    if(function_exists($function))
+        call_user_func($function, $params);
 
     $out = $layout->generate();
 
