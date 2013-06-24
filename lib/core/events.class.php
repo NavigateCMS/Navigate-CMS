@@ -48,6 +48,31 @@ class events
         }
     }
 
+    public function add_actions($module, $parameters, $extra=array())
+    {
+        if(is_array($this->events[$module]['actions']))
+        {
+            foreach($this->events[$module]['actions'] as $trigger)
+            {
+                $result = call_user_func($trigger['function'], $parameters);
+                if(!empty($result))
+                    $extra[] = $result;
+            }
+        }
+
+        if(!empty($extra))
+        {
+            array_unshift(
+                $extra,
+                '<a href="#" class="content-actions-submenu-trigger"><img height="16" align="absmiddle" width="16" src="img/icons/silk/plugin.png"> '.t(521, "Extra").' &#9662;</a>'
+            );
+            $navibars = $parameters['navibars'];
+            $navibars->add_actions(
+                array($extra)
+            );
+        }
+    }
+
     /**
      * Automatically binds extension events to Navigate CMS modules
      * It checks the "bindings" section of every extension definition
