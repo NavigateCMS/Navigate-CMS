@@ -24,6 +24,7 @@ global $current;
 global $dictionary;
 global $session;
 global $webgets;
+global $idn;
 
 function nv_plugin_init()
 {
@@ -34,6 +35,7 @@ function nv_plugin_init()
 	global $current;
 	global $dictionary;
 	global $session;
+    global $idn;
 
 	// create database connection
 	$DB = new database();
@@ -45,6 +47,8 @@ function nv_plugin_init()
 	// global exception catcher
 	try
 	{
+        $idn = new idna_convert();
+
         // which website do we have to load?
         $url = nvweb_self_url();
 
