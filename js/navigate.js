@@ -90,6 +90,28 @@ $(window).bind('load', function()
 		$(this).fadeOut('fast');
 	});
 
+
+    // actions bar submenus
+    $('#navigate-content-actions a.content-actions-submenu-trigger').on('mouseenter click', function(ev)
+    {
+        if($(this).next().is(':visible'))
+            $(this).next().hide();
+        else
+        {
+            $(this).next().menu().show();
+            $(this).next().addClass('navi-ui-widget-shadow');
+
+            var height = 0;
+            $(this).next().children().each(function()
+            {
+                height = height + $(this).height();
+            });
+
+            $(this).next().height(height);
+        }
+        return false;
+    });
+
     // favorite extensions
     $('.navigate-favorites-link').on('click', function()
     {

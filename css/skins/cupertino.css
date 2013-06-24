@@ -435,6 +435,23 @@ a.navigate-content-actions-selected
 	font-size: 11px;
 }
 
+#navigate-content-actions ul.content-actions-submenu
+{
+    background-image: none;
+    display: none;
+    position: absolute;
+    max-height: 100px;
+    overflow-y: auto;
+    margin-left: -10px;
+    margin-top: 5px;
+}
+
+#navigate-content-actions ul.content-actions-submenu a
+{
+    display: block;
+    margin-right: 0px;
+}
+
 #navigate-content-top-spacer
 {
 	height: 25px;	

@@ -13,42 +13,62 @@ class navibars
 		$this->elements['title'] = '<div class="ui-corner-all" id="navigate-content-title">'.$text.'</div>';
 	}
 
-	function add_actions($links)
+	function add_actions($actions)
 	{		
-		if(is_array($links)) 
+		if(is_array($actions)) 
 		{
-			$search_form_pos = array_search('search_form', $links);
+			$search_form_pos = array_search('search_form', $actions);
 			
 			if($search_form_pos !== false)
 			{
-				$links[$search_form_pos] = array();
+				$actions[$search_form_pos] = array();
 				
-				// if we are showing a list (act=0), make an ajax call
+				// if we are showing a list (act=0 || act=list), make an ajax call
 				// else redirect browser to the list and make the search after load
 				
-				if(empty($_REQUEST['act']))	// list!				
+				if(empty($_REQUEST['act']) || $_REQUEST['act']=='list')	// list!
 				{
-					$links[$search_form_pos][] = '<img onclick="$(this).next().triggerHandler(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';
-					// $links[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" var search = $(\'#navigate-quicksearch\').val(); $(\'#\' + $(\'.ui-jqgrid\').attr(\'id\').substr(5)).jqGrid(\'setGridParam\', { url: \'?fid='.$_REQUEST['fid'].'&act=1&_search=true&quicksearch=\' + search }).trigger(\'reloadGrid\'); return false;">';
-					$links[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" navitable_quicksearch($(\'#navigate-quicksearch\').val()); return false;">';
+					$actions[$search_form_pos][] = '<img onclick="$(this).next().triggerHandler(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';
+					$actions[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" navitable_quicksearch($(\'#navigate-quicksearch\').val()); return false;">';
 				}
-				else	// other screen
+				else // other screen
 				{
-					$links[$search_form_pos][] = '<img onclick="$(this).next().trigger(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';					
-					$links[$search_form_pos][] = '<form method="POST" action="?fid='.$_REQUEST['fid'].'&act=0&quicksearch=true">';
+					$actions[$search_form_pos][] = '<img onclick="$(this).next().trigger(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';					
+					$actions[$search_form_pos][] = '<form method="POST" action="?fid='.$_REQUEST['fid'].'&act=0&quicksearch=true">';
 				}
 					
-				$links[$search_form_pos][] = '	<input type="hidden" name="fid" value="'.$_REQUEST['fid'].'" />';
-				$links[$search_form_pos][] = '	<input type="hidden" name="act" value="0" />';				
-				$links[$search_form_pos][] = '	<input type="text" id="navigate-quicksearch" name="navigate-quicksearch" size="16" onclick="if(this.value==\''.t(41, 'Search').'...\') this.value=\'\';" value="'.t(41, 'Search').'...">';
-				$links[$search_form_pos][] = '</form>';
+				$actions[$search_form_pos][] = '	<input type="hidden" name="fid" value="'.$_REQUEST['fid'].'" />';
+				$actions[$search_form_pos][] = '	<input type="hidden" name="act" value="0" />';				
+				$actions[$search_form_pos][] = '	<input type="text" id="navigate-quicksearch" name="navigate-quicksearch" size="16" onclick="if(this.value==\''.t(41, 'Search').'...\') this.value=\'\';" value="'.t(41, 'Search').'...">';
+				$actions[$search_form_pos][] = '</form>';
             
-				$links[$search_form_pos] = implode("\n", $links[$search_form_pos]);
+				$actions[$search_form_pos] = implode("\n", $actions[$search_form_pos]);
 			}
-			$links = implode("\n", $links);
+
+            $actions_html = '';
+            foreach($actions as $action)
+            {
+                if(is_array($action))
+                {
+                    // action with submenu
+                    $actions_html .= $action[0]."\n";
+                    $actions_html .= '<ul class="content-actions-submenu">';
+
+                    array_shift($action);
+
+                    foreach($action as $subaction)
+                        $actions_html .= '<li>'.$subaction.'</li>';
+
+                    $actions_html .= '</ul>'."\n";
+                }
+                else
+                    $actions_html .= $action . "\n";
+            }
+
+            $actions = $actions_html;
 		}
 		
-		$this->elements['actions'][] = '<div class="ui-corner-all">'.$links.'</div>';	
+		$this->elements['actions'][] = '<div class="ui-corner-all">'.$actions.'</div>';
 	}
 
 	function form($tag="", $action="")

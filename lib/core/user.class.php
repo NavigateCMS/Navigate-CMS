@@ -35,7 +35,7 @@ class user
 	
 	/**
 	 * Checks the user and password provided and states if they are linked to an application user.
-	 * Nota: usernames in Navigate CMS are always case insensitive (although they are saved as given).
+	 * Note: usernames in Navigate CMS are always case insensitive (although they are saved as given).
 	 *
 	 * @param string $user Username
 	 * @param string $password Password in clear text

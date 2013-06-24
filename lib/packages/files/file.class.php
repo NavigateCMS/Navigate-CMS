@@ -2,7 +2,7 @@
 require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php');
 require_once(NAVIGATE_PATH.'/lib/external/class.upload/class.upload.php');
 
-// note, all files are saved in the private directory using ID as filename: NAVIGATE_PRIVATE
+// remember, all files are saved in the private directory using ID as filename: NAVIGATE_PRIVATE
 
 class file
 {
