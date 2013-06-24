@@ -666,6 +666,8 @@ function items_form($item)
 	$naviforms = new naviforms();
 	$layout->navigate_media_browser();	// we can use media browser in this function
 
+    $extra_actions = array();
+
 	if(empty($item->id))
 		$navibars->title(t(22, 'Items').' / '.t(38, 'Create'));	
 	else
@@ -679,15 +681,6 @@ function items_form($item)
         $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_items_display_notes();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
     }
 
-	if(!empty($item->id))
-    {
-        $events->trigger(
-            'elements',
-            'edit',
-            array()
-        );
-    }
-
 	if(empty($item->id))
 	{
 		$navibars->add_actions(
@@ -698,10 +691,12 @@ function items_form($item)
 	{
 		$navibars->add_actions(
             array(	'<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-                    '<a href="#" onclick="navigate_items_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>',
                     '<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
             )
         );
+
+        $extra_actions[] = '<a href="#" onclick="navigate_items_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>';
+        $extra_actions[] = '<a href="?fid=items&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -729,11 +724,26 @@ function items_form($item)
 									
 		$navibars->add_content(implode("\n", $delete_html));
 	}
+
+    if(!empty($item->id))
+    {
+        $events->add_actions(
+            'items',
+            array(
+                'item' => &$item,
+                'navibars' => &$navibars
+            ),
+            $extra_actions
+        );
+    }
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=items&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-                                    (!empty($item->id)? '<a href="?fid=items&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>' : ''),
-									'<a href="?fid=items&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+        array(
+            (!empty($item->id)? '<a href="?fid=items&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=items&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 
 	// Languages
     $ws_languages = $website->languages();
