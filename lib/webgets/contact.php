@@ -40,7 +40,8 @@ function nvweb_contact($vars=array())
 			"email": "E-Mail",
 			"message": "Message",
 		    "fields_blank": "You left some required fields blank.",
-		    "contact_request_sent": "Your contact request has been sent. We will contact you shortly."
+		    "contact_request_sent": "Your contact request has been sent. We will contact you shortly.",
+		    "contact_request_failed": "We're sorry. Your contact request could not be sent. Please try again or find another way to contact us."
 
 		*/
 		if(!empty($website->theme) && method_exists($theme, 't'))
