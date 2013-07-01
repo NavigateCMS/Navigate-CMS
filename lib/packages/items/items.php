@@ -1325,7 +1325,10 @@ function items_form($item)
 		');
 
 		// script#5
-				
+        // select the first language of the website as the default origin when copying content
+        $default_language = array_keys($ws_languages);
+        $default_language = $default_language[0];
+
 		$layout->add_content('
 			<div id="navigate_items_copy_from" style=" display: none; ">
 				<div class="navigate-form-row">
@@ -1343,7 +1346,7 @@ function items_form($item)
 					'.$naviforms->selectfield(	'navigate_items_copy_from_language_selector', 
 												array_keys($ws_languages),
 												array_values($ws_languages),
-												$lang).'
+												$default_language).'
 				</div>
 				<div class="navigate-form-row" style=" display: none; ">
 					<label>'.t(79, 'Template').'</label>
