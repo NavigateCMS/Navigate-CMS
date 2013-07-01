@@ -160,6 +160,8 @@ function nvweb_blocks($vars=array())
     // render the blocks found
     $shown = 0;
     $position = 1;
+    $block_objects = array();
+
     foreach($blocks as $id)
     {
         if($howmany > 0 && $shown >= $howmany) break;
@@ -188,7 +190,7 @@ function nvweb_blocks($vars=array())
         switch($vars['zone'])
         {
             case 'object':
-                $block_objects[] = $block;
+                $block_objects[] = clone $block;
                 break;
 
             case 'title':
@@ -225,7 +227,7 @@ function nvweb_blocks($vars=array())
 
     if($vars['zone']=='object')
     {
-        $out = array($block_objects, count($blocks));
+        $out = array($block_objects, count($block_objects));
     }
 
 	return $out;

@@ -18,6 +18,17 @@ class block
     public $fixed;
     public $categories;
 
+    public function __clone()
+    {
+        foreach($this as $key => $val)
+        {
+            if(is_object($val))
+                $this->{$key} = clone $val;
+            else if(is_array($val))
+                $this->{$key} = mb_unserialize(serialize($val));
+        }
+    }
+
 	public function load($id)
 	{
 		global $DB;
