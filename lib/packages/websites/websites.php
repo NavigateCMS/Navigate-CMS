@@ -48,7 +48,7 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 
-					$DB->queryLimit('id,name,subdomain,domain,folder,homepage,permission',
+					$DB->queryLimit('id,name,subdomain,domain,folder,homepage,permission,favicon',
 									'nv_websites',
 									$where,
 									$orderby,
@@ -75,11 +75,16 @@ function run()
 							$homepage .= $dataset[$i]['subdomain'].'.';
 						$homepage .= $dataset[$i]['domain'].$dataset[$i]['folder'].$dataset[$i]['homepage'];
 
+                        $favicon = '';
+                        if(!empty($dataset[$i]['favicon']))
+                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'" align="absmiddle" />';
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> $dataset[$i]['name'],
-							2	=> '<a href="'.$homepage.'" target="_blank"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/house_link.png"></a> '.$homepage,
-							3	=> $permissions[$dataset[$i]['permission']]
+							1	=> $favicon,
+							2	=> $dataset[$i]['name'],
+							3	=> '<a href="'.$homepage.'" target="_blank"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/house_link.png"></a> '.$homepage,
+							4	=> $permissions[$dataset[$i]['permission']]
 						);
 					}
 
@@ -225,6 +230,7 @@ function websites_list()
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 
 	$navitable->addCol("ID", 'id', "80", "true", "left");
+    $navitable->addCol(t(328, 'Favicon'), 'favicon', "32", "true", "center");
 	$navitable->addCol(t(159, 'Name'), 'name', "200", "true", "left");
 	$navitable->addCol(t(187, 'Homepage'), 'homepage', "300", "true", "center");
 	$navitable->addCol(t(80, 'Permission'), 'permission', "100", "true", "center");
