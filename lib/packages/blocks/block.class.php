@@ -107,8 +107,21 @@ class block
 		$this->action			= array();
 				
 		$fields_title 	= array ( 'title' );
-		$fields_trigger = array ( 'trigger-type', 'trigger-image', 'trigger-rollover', 'trigger-rollover-active', 'trigger-flash', 'trigger-html', 'trigger-content' );
-		$fields_action	= array ( 'action-type', 'action-web', 'action-file', 'action-image' );
+		$fields_trigger = array (
+            'trigger-type',
+            'trigger-image',
+            'trigger-rollover',
+            'trigger-rollover-active',
+            'trigger-flash',
+            'trigger-html',
+            'trigger-content'
+        );
+		$fields_action	= array (
+            'action-type',
+            'action-web',
+            'action-file',
+            'action-image'
+        );
 		
 		foreach($_REQUEST as $key => $value)
 		{

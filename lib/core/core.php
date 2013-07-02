@@ -702,6 +702,7 @@ function debug_json_error($prepend='')
         firephp_nv::log($prepend.$error);
 }
 
+
 function navigate_compose_email($data)
 {
     $body = array();

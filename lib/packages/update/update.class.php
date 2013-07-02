@@ -348,7 +348,10 @@ class update
 		
 		if($error)
 			file_put_contents($ulog, "execute insert failed:\n".$DB->get_last_error()."\n", FILE_APPEND);
-		
+
+        if(file_exists(NAVIGATE_PATH.'/updates/update/update-post.php'))
+            include_once(NAVIGATE_PATH.'/updates/update/update-post.php');
+
 		file_put_contents($ulog, "update finished!\n", FILE_APPEND);
 		
 		$urow->changelog = file_get_contents($ulog);

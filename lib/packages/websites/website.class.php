@@ -347,8 +347,8 @@ class website
 								  '.protect(serialize($this->contact_emails)).',
 								  '.protect($this->homepage).',			
 								  '.protect($this->default_timezone).',	
-								  '.protect(serialize($this->metatag_description)).',
-								  '.protect(serialize($this->metatags)).',
+								  '.protect(json_encode($this->metatag_description)).',
+								  '.protect(json_encode($this->metatags)).',
 								  '.protect($this->favicon).',
 								  '.protect($this->theme).',
 								  '.protect(json_encode($this->theme_options)).'				  
@@ -576,6 +576,8 @@ class website
         $this->theme_options = array();
 
         $this->insert();
+
+        return true;
     }
 
 	function language_compare($a, $b)
