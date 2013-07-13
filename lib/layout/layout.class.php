@@ -726,7 +726,7 @@ class layout
 		$html[] = '		    </div>
 		                </div>';
 
-        $html[] = ' 	<div id="navigate_media_browser_upload_button" class="uibutton" onclick="navigate_media_browser_files_uploader();" ><img src="img/icons/silk/page_white_get.png" width="16" height="16" /></div>';
+        $html[] = ' 	<div id="navigate_media_browser_upload_button" class="uibutton"><img src="img/icons/silk/page_white_get.png" width="16" height="16" /></div>';
 
 		// resource type selector
 		$html[] = ' 	<div id="navigate_media_browser_buttons" >';
@@ -755,6 +755,7 @@ class layout
 		//$this->add_script($mbrowser);	
 		$this->add_script('
 			$.getScript("js/navigate_media_browser.js");
+			$("#navigate_media_browser_upload_button").on("click", navigate_media_browser_files_uploader);
 		');
 
         $this->add_content('
@@ -826,13 +827,13 @@ class layout
         $this->add_script('
             function navigate_media_browser_files_uploader()
             {
-                $("#navigate-media-browser-files-uploader").plupload(
+                var plupload_instance = $("#navigate-media-browser-files-uploader").plupload(
                 {
                     // General settings
-                    runtimes : "flash,silverlight,html5",
+                    runtimes : "html5,flash,silverlight",
                     url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
-                    max_file_size : "50mb",
-                    chunk_size : "1mb",
+                    max_file_size : "'.NAVIGATE_UPLOAD_MAX_SIZE.'mb",
+                    chunk_size : "384kb",
                     unique_names: false,
                     sortable: false,
                     rename: true,
@@ -853,19 +854,21 @@ class layout
                         $.ajax(
                         {
                             async: true,
-                            url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=1&op=upload&parent=" + parent,
+                            url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=json&op=upload",
                             success: function(data)
                             {
 
                             },
                             type: "post",
                             dataType: "json",
-                            data: File
+                            data: {
+                                tmp_name: "{{BASE64}}",
+                                name: File.name,
+                                parent: parent
+                            }
                         });
                     });
                 }
-
-                $(".plupload_wrapper").removeClass("plupload_scroll");
 
                 $("#navigate-media-browser-files-uploader").dialog(
                 {
@@ -878,7 +881,15 @@ class layout
                        navigate_media_browser_reload();
                     }
                 });
-        }');
+
+                $(".plupload_wrapper").removeClass("plupload_scroll");
+
+                $("#navigate-media-browser-files-uploader").on("mouseenter", function()
+                {
+                    $("div.plupload input").css("z-index","99999");
+                });
+			}
+        ');
 	}
 	
 	function silk_sprite($html)

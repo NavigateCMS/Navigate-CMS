@@ -338,9 +338,7 @@ function files_browser($parent, $search="")
 					});
 				});
 			}								 
-			
-			$(".plupload_wrapper").removeClass("plupload_scroll");
-			
+
 			$("#navigate-files-uploader").dialog(
 			{
 				title: "'.t(142, 'Select files').'",
@@ -351,7 +349,14 @@ function files_browser($parent, $search="")
 				{
 					window.location.reload();
 				}
-			});	
+			});
+
+            $(".plupload_wrapper").removeClass("plupload_scroll");
+
+            $("#navigate-files-uploader").on("mouseenter", function()
+            {
+                $("div.plupload input").css("z-index","99999");
+            });
 	}');
 						 
 	$layout->add_script('
