@@ -158,6 +158,9 @@ function nvweb_list($vars=array())
 	else if(!empty($vars['source']))
 	{
 		// CUSTOM data source
+        if($vars['source']=='comment')
+            $vars['source'] = 'comments';
+
 		$fname = 'nvweb_'.$vars['source'].'_list';
 		nvweb_webget_load($vars['source']);
 		if(function_exists($fname))
@@ -237,7 +240,7 @@ function nvweb_list($vars=array())
 	{
 		if(empty($rs[$i]->id)) break;
 
-		if($vars['source']=='comments')
+		if($vars['source']=='comments' || $vars['source']=='comment')
 		{
 			$item = $rs[$i];
 		}
@@ -443,11 +446,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 			{
 				case 'avatar':
 					$size = '48';
+                    $extra = '';
 					if(!empty($tag['attributes']['size']))
 						$size = intval($tag['attributes']['size']);
 
+                    if(!empty($tag['attributes']['border']))
+						$extra .= '&border='.$tag['attributes']['border'];
+
 					if(!empty($item->avatar))
-						$out = '<img src="'.NVWEB_OBJECT.'?type=image&id='.$item->avatar.'" width="'.$size.'px" height="'.$size.'px"/>';
+						$out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$item->avatar.'" width="'.$size.'px" height="'.$size.'px"/>';
 					else if(!empty($tag['attributes']['default']))
                     {
                         // the comment creator has not an avatar, but the template wants to show a default one
@@ -456,14 +463,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         //  absolute path (http://www...)
                         //  relative path (/img/avatar.png) -> path to the avatar file included in the THEME used
                         if(is_numeric($tag['attributes']['default']))
-                            $out = '<img src="'.NVWEB_OBJECT.'?type=image&id='.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                            $out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                         else if(strpos($tag['attributes']['default'], 'http://')===0)
-                            $out = '<img src="'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                            $out = '<img class="'.$tag['attributes']['class'].'" src="'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                         else
-                            $out = '<img src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                            $out = '<img class="'.$tag['attributes']['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                     }
                     else // empty avatar
-						$out = '<img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+						$out = '<img class="'.$tag['attributes']['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
 					break;
 
 				case 'username':
