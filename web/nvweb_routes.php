@@ -217,6 +217,11 @@ function nvweb_route_parse($route="")
 			nvweb_clean_exit();
 			break;
 
+        case 'nvajax':
+            nvweb_ajax();
+            nvweb_clean_exit();
+            break;
+
         case 'nvsearch':
             $current['template'] = 'search';
             break;
@@ -587,6 +592,18 @@ function nvweb_source_url($type, $id, $lang='')
     $url = nvweb_prepare_link($url);
 
 	return $url;										   
+}
+
+function nvweb_ajax()
+{
+    global $website;
+    global $theme;
+
+    nvweb_webget_load($theme->name);
+    $fname = 'nvweb_'.$theme->name.'_nvajax';
+
+    if(function_exists($fname))
+        $content = $fname();
 }
 
 // the following function checks if a request comes from a search bot

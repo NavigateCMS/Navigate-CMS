@@ -58,6 +58,7 @@ try
 
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
 	define('NVWEB_OBJECT', $nvweb_absolute.'/object');
+	define('NVWEB_AJAX', $nvweb_absolute.'/nvajax');
 
 	if(!isset($_SESSION['nvweb.'.$website->id]))
 	{
