@@ -150,6 +150,7 @@ $(window).bind('load', function()
 function navigate_install_requirements()
 {
 	global $lang;
+
 	$checks = array();
 
 	$checks['diskspace'] = floor(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])) / (1024*1024)) > 50;
@@ -165,6 +166,11 @@ function navigate_install_requirements()
 	$checks['zip'] = extension_loaded('zip');	
 		
 	$size = navigate_install_decodesize(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])));
+
+    /* pre folder path detection (only needed in step 1) */
+    $pre_folder_path = str_replace('//', '/', $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
+    $pre_folder_path = 'http://'.$pre_folder_path;
+    $pre_folder_path = rtrim($pre_folder_path, '/');
 	?>
     <h2>
 	    <a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_requirements" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
@@ -186,9 +192,8 @@ function navigate_install_requirements()
                 <div>
                     <label><?php echo $lang['app_folder'];?></label>
                     <input type="text" name="NAVIGATE_FOLDER" value="<?php echo NAVIGATE_FOLDER;?>" />
-                    <div class="field-help-text"><?php echo 'http://'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));?><strong id="app_folder_example"><?php echo NAVIGATE_FOLDER;?></strong></div>
+                    <div class="field-help-text"><?php echo $pre_folder_path;?><strong id="app_folder_example"><?php echo NAVIGATE_FOLDER;?></strong></div>
                 </div>
-
                 <div>
                     <label><?php echo $lang['disk_space'];?></label>
                     <input type="text" value="<?php echo $size;?> (> 50 MB)" class="<?php echo ($checks['diskspace']? 'green' : 'red');?>" />
@@ -269,21 +274,25 @@ function navigate_install_configuration()
 	$error = false;
 
 	$navigate_parent_folder = str_replace('\\', '/', dirname(realpath(__FILE__)));
-	$document_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);	
-	$navigate_root = str_replace($document_root, '', $navigate_parent_folder);
+	$document_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+	//$navigate_root = str_replace($document_root, '', $navigate_parent_folder);
 
     // absolute URL to the folder that contains navigate folder,
     // f.e. http://www.yourwebsite.com (for www.yourwebsite.com/navigate)
     $navigate_parent_url = 'http://'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
+    $navigate_parent_url = rtrim($navigate_parent_url, '/');
+
+    $app_owner_default = substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.'));
+    $app_owner_default = str_replace('www.', '', $app_owner_default);
 
 	$defaults = array(
-		'APP_OWNER' 		=> (empty($_REQUEST['APP_OWNER']))? substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.')) : $_REQUEST['APP_OWNER'],
+		'APP_OWNER' 		=> (empty($_REQUEST['APP_OWNER']))? $app_owner_default : $_REQUEST['APP_OWNER'],
 		'APP_REALM' 		=> 'NaviWebs-NaviGate',		
 
 		'NAVIGATE_PARENT'	=> (empty($_REQUEST['NAVIGATE_PARENT']))? $navigate_parent_url : $_REQUEST['NAVIGATE_PARENT'],
-		'NAVIGATE_PATH'		=> (empty($_REQUEST['NAVIGATE_PATH']))? $navigate_root.$_SESSION['NAVIGATE_FOLDER'] : $_REQUEST['NAVIGATE_PATH'],
+		'NAVIGATE_PATH'		=> (empty($_REQUEST['NAVIGATE_PATH']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'] : $_REQUEST['NAVIGATE_PATH'],
 		'NAVIGATE_FOLDER'	=> $_SESSION['NAVIGATE_FOLDER'],
-		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_root.$_SESSION['NAVIGATE_FOLDER'].'/private' : $_REQUEST['NAVIGATE_PRIVATE'],
+		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'].'/private' : $_REQUEST['NAVIGATE_PRIVATE'],
 		'NAVIGATE_MAIN'		=> (empty($_REQUEST['NAVIGATE_MAIN']))? 'navigate.php' : $_REQUEST['NAVIGATE_MAIN'],
 		
 		'PDO_HOSTNAME'		=> (empty($_REQUEST['PDO_HOSTNAME']))? 'localhost' : $_REQUEST['PDO_HOSTNAME'],		
@@ -1275,6 +1284,8 @@ function process()
                 // create default website details
                 $website = new website();
                 $website->create_default();
+                $website->theme = 'ocean';
+                $website->update();
 
 				echo json_encode(array('ok' => $lang['done']));	
 			}
