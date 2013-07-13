@@ -49,6 +49,9 @@ function nvweb_content($vars=array())
 			break;
 			
 		case 'summary':
+            $length = 300;
+            if(!empty($vars['length']))
+                $length = intval($vars['length']);
 			$texts = webdictionary::load_element_strings('item', $current['object']->id);				
 			$text = $texts[$current['lang']]['main'];
 			$out = core_string_cut($text, 300, '&hellip;');
@@ -79,6 +82,70 @@ function nvweb_content($vars=array())
 				default:
 			}
 			break;
+
+        case 'tags':
+            $tags = array();
+            $search_url = NVWEB_ABSOLUTE.'/nvtags?';
+            $ids = array();
+            if(empty($vars['separator']))
+                $vars['separator'] = ' ';
+
+            if(!empty($vars['id']))
+            {
+                $itm = new item();
+                $itm->load($vars['id']);
+                $enabled = nvweb_object_enabled($itm);
+                if($enabled)
+                {
+                    $texts = webdictionary::load_element_strings('item', $itm->id);
+                    $itags = explode(',', $texts[$current['lang']]['tags']);
+                    if(!empty($itags))
+                    {
+                        for($i=0; $i < count($itags); $i++)
+                            $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                    }
+                }
+            }
+            else if($current['type']=='item')
+            {
+                // check publishing is enabled
+                $enabled = nvweb_object_enabled($current['object']);
+
+                if($enabled)
+                {
+                    $texts = webdictionary::load_element_strings('item', $current['object']->id);
+                    $itags = explode(',', $texts[$current['lang']]['tags']);
+                    if(!empty($itags))
+                    {
+                        for($i=0; $i < count($itags); $i++)
+                            $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                    }
+                }
+            }
+            else if($current['type']=='structure')
+            {
+                $rs = nvweb_content_items($current['object']->id);
+
+                foreach($rs as $category_item)
+                {
+                    $enabled = nvweb_object_enabled($category_item);
+
+                    if($enabled)
+                    {
+                        $texts = webdictionary::load_element_strings('item', $current['object']->id);
+                        $itags = explode(',', $texts[$current['lang']]['tags']);
+                        if(!empty($itags))
+                        {
+                            for($i=0; $i < count($itags); $i++)
+                            {
+                                $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                            }
+                        }
+                    }
+                }
+            }
+            $out = implode($vars['separator'], $tags);
+            break;
 		
 		case 'section':
 		default:
@@ -164,7 +231,8 @@ function nvweb_content($vars=array())
                                     case 'html':
                                     case 'tinymce':
                                     default:
-                                        $texts[$current['lang']][$section] = $texts[$current['lang']][$section];
+                                        // we don't need to change a thing
+                                        // $texts[$current['lang']][$section] = $texts[$current['lang']][$section];
                                         break;
                                 }
                                 break;

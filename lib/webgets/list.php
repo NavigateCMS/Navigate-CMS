@@ -593,6 +593,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					$out = nvweb_prepare_link($item->paths[$current['lang']]);
 					break;
 
+                case 'tags':
+                    $out = nvweb_content(array(
+                        'mode' => 'tags',
+                        'separator' => $tag['attributes']['separator'],
+                        'id' => $item->id
+                    ));
+                    break;
+
 				case 'score':
                     $out = nvweb_votes_calc($item, $tag['attributes']['round'], $tag['attributes']['half'], $tag['attributes']['min'], $tag['attributes']['max']);
 					break;

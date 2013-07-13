@@ -222,6 +222,7 @@ function nvweb_route_parse($route="")
             nvweb_clean_exit();
             break;
 
+        case 'nvtags':
         case 'nvsearch':
             $current['template'] = 'search';
             break;
