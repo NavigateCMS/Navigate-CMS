@@ -41,7 +41,7 @@ function nvweb_comments($vars=array())
             'new_comment' => t(387, 'New comment'),
             'review_comments' => t(388, 'Review comments')
 		);
-		
+
 		// theme translations 
 		// if the web theme has custom translations for this string subtypes, use it (for the user selected language)
 		/* just add the following translations to your json theme dictionary:
@@ -66,7 +66,7 @@ function nvweb_comments($vars=array())
 			{
 				$theme_translation = $theme->t($code);
 
-				if(!empty($theme_translation))
+				if(!empty($theme_translation) && $theme_translation!=$code)
 					$webgets[$webget]['translations'][$code] = $theme_translation;
 			}	
 		}

@@ -10,8 +10,8 @@ define('APP_REALM', "{APP_REALM}"); // used for password encryption, do not chan
 define('APP_DEBUG', false || isset($_REQUEST['debug']));
 
 /* App installation paths */
-define('NAVIGATE_PARENT', '{NAVIGATE_PARENT}');	// absolute URL to folder which contains the navigate folder
-define('NAVIGATE_FOLDER', "{NAVIGATE_FOLDER}"); // name of the navigate folder (deafault: /navigate)
+define('NAVIGATE_PARENT', '{NAVIGATE_PARENT}');	// absolute URL to folder which contains the navigate folder (without extra /)
+define('NAVIGATE_FOLDER', "{NAVIGATE_FOLDER}"); // name of the navigate folder (default: /navigate)
 define('NAVIGATE_PATH', "{NAVIGATE_PATH}"); // absolute system path to navigate folder
 
 define('NAVIGATE_PRIVATE', "{NAVIGATE_PRIVATE}");
