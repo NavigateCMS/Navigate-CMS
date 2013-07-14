@@ -24,8 +24,9 @@
 				 img
 				 js
 				 lib
-				 plugins (empty folder)
-				 private (empty folder)
+				 plugins
+				 private
+                    sessions (empty folder)
 				 web
 	6/ Repack SQL, logo, setup.php and package.zip as Navigate.zip
 	7/ Remove temporary files
@@ -268,6 +269,7 @@ foreach($navigate_files as $file)
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/.htaccess'), '.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/.htaccess'), 'private/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/plugins/.htaccess'), 'plugins/.htaccess');
+$zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/sessions/.htaccess'), 'private/sessions/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/web/.htaccess.example'), 'web/.htaccess.example');
 $zipfile->addFile('', 'updates/empty.txt');
 
