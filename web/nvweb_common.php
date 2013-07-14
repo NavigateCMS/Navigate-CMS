@@ -43,6 +43,9 @@ if(!preg_match("/^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])".
     if(substr_count($_SERVER['SERVER_NAME'], '.') > 1)
         $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
 
+    session_save_path(NAVIGATE_PRIVATE.'/sessions');
+    session_cache_expire(3600);
+
     ini_set('session.cookie_domain', $session_cookie_domain);
 }
 
