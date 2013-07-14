@@ -1605,14 +1605,15 @@ function items_form($item)
 			
 			// comments list
 			// removed filter: AND nvwu.website = nvc.website ... reason: the webuser could be from another website if sharing webusers is enabled
-			// to do: retrieve in blocks of 30 comments
+			// TODO: retrieve comments by AJAX call to avoid memory issues. right now we just retrieve the first 500 comments
 			$DB->query('SELECT nvc.*, nvwu.username, nvwu.avatar
 						  FROM nv_comments nvc
 						 LEFT OUTER JOIN nv_webusers nvwu 
 						 			  ON nvwu.id = nvc.user
 						 WHERE nvc.website = '.protect($website->id).'
 						   AND nvc.item = '.protect($item->id).'
-						ORDER BY nvc.date_created ASC');
+						ORDER BY nvc.date_created ASC
+						LIMIT 500');
 												
 			$comments = $DB->result();
 						
