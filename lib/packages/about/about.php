@@ -74,7 +74,7 @@ function about_layout()
 											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.4</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="http://ivaynberg.github.com/select2" target="_blank">Select2 v3.2</a><br />' ));
+                                            '<a href="http://ivaynberg.github.com/select2" target="_blank">Select2 v3.4.1</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://www.firephp.org" target="_blank">FirePHPCore Server Library 0.3</a><br />' ));
