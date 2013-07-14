@@ -1949,6 +1949,19 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
     opacity: 0.7;
 }
 
+.select2-container .select2-choice .select2-arrow
+{
+    background: transparent;
+    border-left: 1px solid #CCC;
+}
+
+.select2-drop-active,
+.select2-drop.select2-drop-above.select2-drop-active
+{
+    border-color: #bbc;
+}
+
+
 .navi-ui-widget-shadow
 {
     box-shadow: 5px 5px 4px -5px #3B5881;
@@ -1960,6 +1973,13 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
     font-size: 10px;
     color: #222;
     white-space: nowrap;
+}
+
+.ui-menu .ui-menu-item a
+{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .qtip
@@ -2038,3 +2058,4 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 {
     background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3;
 }
+
