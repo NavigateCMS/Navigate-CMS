@@ -59,7 +59,9 @@ function nvweb_list($vars=array())
     }
 
 	if(empty($vars['items']) || $vars['items']=='0')
-		$vars['items'] = 2147483647; // maximum integer
+		$vars['items'] = 500; //2147483647; // maximum integer
+    // TODO: try to optimize nvlist generation to use less memory and increase the maximum number of items
+    // NOTE: anyway, having >500 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
 
     if(!empty($vars['exclude']))
     {
