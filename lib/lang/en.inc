@@ -520,3 +520,6 @@
 519     # Send a 404 HTTP error header
 520     # No website found; a default one has been created.
 521     # Extra
+522     # Remove Spam
+523     # This function can NOT be undone.
+524     # Items removed successfully

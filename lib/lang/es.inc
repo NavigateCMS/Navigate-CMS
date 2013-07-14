@@ -520,3 +520,6 @@
 519     # Envían una cabecera de error HTTP 404
 520     # Ningún sitio web encontrado; se ha creado uno por defecto.
 521     # Extra
+522     # Borrar Spam
+523     # Esta operación no podrá deshacerse.
+524     # Elementos eliminados correctamente

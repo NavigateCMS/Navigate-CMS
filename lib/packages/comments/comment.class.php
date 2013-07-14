@@ -174,6 +174,22 @@ class comment
 
         return $pending_comments;
     }
+
+    public static function remove_spam()
+    {
+        global $DB;
+        global $website;
+
+        $count = $DB->query_single('count(*) as total', 'nv_comments', 'website = '.protect($website->id).' AND status = 3');
+
+        $ok = $DB->execute('DELETE FROM nv_comments
+                            WHERE website = '.protect($website->id).'
+                            AND status = 3');
+
+        if($ok)
+            return $count;
+
+    }
 }
 
 ?>

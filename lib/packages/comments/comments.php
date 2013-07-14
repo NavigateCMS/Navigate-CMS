@@ -141,6 +141,12 @@ function run()
 				}
 			}
 			break;
+
+        case 'remove_spam':
+            $count = comment::remove_spam();
+            $layout->navigate_notification(t(524, 'Items removed successfully').': <strong>'.$count.'</strong>', false);
+            $out = comments_list();
+            break;
 			
 		case 91: // json search title request (for "item" autocomplete)
 			$DB->query('SELECT DISTINCT node_id as id, text as label, text as value
@@ -192,9 +198,45 @@ function comments_list()
 	
 	$navibars->title(t(250, 'Comments'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+    $navibars->add_actions(	array(
+        '<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/comments_delete.png"> '.t(522, 'Remove Spam').'</a>'
+        )
+    );
+
+    $delete_html = array();
+    $delete_html[] = '<div id="navigate-delete-dialog" class="hidden">';
+    $delete_html[] = t(60, 'Do you really want to delete the selected items?')."<br /><br />";
+    $delete_html[] = t(523, 'This function can NOT be undone.');
+    $delete_html[] = '</div>';
+    $delete_html[] = '<script language="javascript" type="text/javascript">';
+    $delete_html[] = 'function navigate_delete_dialog()';
+    $delete_html[] = '{';
+    $delete_html[] = '$("#navigate-delete-dialog").dialog({
+							resizable: true,
+							height: 150,
+							width: 300,
+							modal: true,
+							title: "'.t(522, 'Remove Spam').'",
+							buttons: {
+								"'.t(35, 'Delete').'": function() {
+									$(this).dialog("close");
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove_spam";
+								},
+								"'.t(58, 'Cancel').'": function() {
+									$(this).dialog("close");
+								}
+							}
+						});';
+    $delete_html[] = '}';
+    $delete_html[] = '</script>';
+
+    $navibars->add_content(implode("\n", $delete_html));
+
+	$navibars->add_actions(	array(
+        '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+		'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+		'search_form' )
+    );
 	
 	if($_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
