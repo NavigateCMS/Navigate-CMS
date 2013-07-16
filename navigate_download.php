@@ -1,4 +1,7 @@
 <?php
+if(!empty($_REQUEST['sid']))
+    session_id($_REQUEST['sid']);
+
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 require_once('lib/packages/files/file.class.php');
@@ -10,12 +13,6 @@ global $config;
 global $website;
 
 if(empty($_REQUEST['id'])) exit;
-
-if(!empty($_REQUEST['sid']))
-{
-	session_id($_REQUEST['sid']);
-	session_start();
-}
 
 // create database connection
 $DB = new database();
