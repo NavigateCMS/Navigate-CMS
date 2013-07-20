@@ -15,7 +15,7 @@ function nvweb_search($vars=array())
     $search_archive = array();
 
     if(!empty($_REQUEST['archive']))
-        $search_archive = explode("-", $_REQUEST['archive']);
+        $search_archive = explode("-", $_REQUEST['archive']);  // YEAR, MONTH, CATEGORIES (separated by commas)
 
 	if(!empty($search_what) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
@@ -42,6 +42,9 @@ function nvweb_search($vars=array())
             $likes[] = ' (i.date_published >= '.$start_date.' OR (i.date_published=0 AND i.date_created >= '.$start_date.'))';
             $likes[] = ' (i.date_published <= '.$end_date.' AND i.date_created <= '.$end_date.')';
         }
+
+        if(!empty($search_archive[2]))
+            $vars['categories'] = $search_archive[2];
 
 		if(isset($vars['categories']))
 		{

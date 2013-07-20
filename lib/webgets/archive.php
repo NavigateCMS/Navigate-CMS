@@ -62,11 +62,11 @@ function nvweb_archive($vars=array())
 	switch(@$vars['mode'])
 	{	
 		case 'month':
-            $out[] = nvweb_archive_render('month', $dataset, $archive_url);
+            $out[] = nvweb_archive_render('month', $dataset, $archive_url, $categories);
 			break;
 			
 		case 'year':
-            $out[] = nvweb_archive_render('year', $dataset, $archive_url);
+            $out[] = nvweb_archive_render('year', $dataset, $archive_url, $categories);
 			break;
 			
 		case 'adaptive':
@@ -74,9 +74,9 @@ function nvweb_archive($vars=array())
             // let the webget decide the render type
             // ---> less or equal than 12 months in the list: month view
             if(count($dataset) <= 12)
-                $out[] = nvweb_archive_render('month', $dataset, $archive_url);
+                $out[] = nvweb_archive_render('month', $dataset, $archive_url, $categories);
             else // year view
-                $out[] = nvweb_archive_render('year', $dataset, $archive_url);
+                $out[] = nvweb_archive_render('year', $dataset, $archive_url, $categories);
             break;
     }
 
@@ -85,7 +85,7 @@ function nvweb_archive($vars=array())
 	return $out;
 }
 
-function nvweb_archive_render($type, $dataset, $archive_url)
+function nvweb_archive_render($type, $dataset, $archive_url, $categories)
 {
     global $website;
     global $session;
@@ -101,7 +101,7 @@ function nvweb_archive_render($type, $dataset, $archive_url)
         {
             $year_months[$row->year][] =
                 '<div>
-                    <a href="'.$archive_url.'?archive='.$row->year.'-'.$row->month.'">'.
+                    <a href="'.$archive_url.'?archive='.$row->year.'-'.$row->month.'-'.implode(',', $categories).'">'.
                         Encoding::toUTF8(ucfirst(strftime('%B', mktime(0,0,0,$row->month,1,2000)))).' ('.$row->total.')
                     </a>
                  </div>';
@@ -128,7 +128,7 @@ function nvweb_archive_render($type, $dataset, $archive_url)
         {
             $out[] =
                 '<div>
-                    <a href="'.$archive_url.'?archive='.$row->year.'-'.$row->month.'">'.
+                    <a href="'.$archive_url.'?archive='.$row->year.'-'.$row->month.'-'.implode(',', $categories).'">'.
                         Encoding::toUTF8(ucfirst(strftime('%B', mktime(0,0,0,$row->month,1,2000)))).' '.$row->year.' ('.$row->total.')
                     </a>
                  </div>';
