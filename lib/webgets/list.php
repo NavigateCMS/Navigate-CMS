@@ -164,6 +164,10 @@ function nvweb_list($vars=array())
             $vars['source'] = 'comments';
 
 		$fname = 'nvweb_'.$vars['source'].'_list';
+
+        if($vars['source']=='website_comments')
+            $vars['source'] = 'comments';
+
 		nvweb_webget_load($vars['source']);
 		if(function_exists($fname))
 			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order);
@@ -444,7 +448,8 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 		// ITEM comments
 		case 'comment':
-			switch($tag['attributes']['value'])
+        case 'comments':
+            switch($tag['attributes']['value'])
 			{
 				case 'avatar':
 					$size = '48';
@@ -480,7 +485,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					break;
 
 				case 'message':
-					$out = nl2br($item->message);
+                    if(!empty($tag['attributes']['length']))
+                        $out = core_string_cut($item->message, $tag['attributes']['length'], '&hellip;');
+                    else
+					    $out = nl2br($item->message);
 					break;
 
 				case 'date':

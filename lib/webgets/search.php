@@ -144,7 +144,7 @@ function nvweb_search($vars=array())
 			
 			$out[] = '<div class="paginator">';
 			
-			if($page > 1) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page - 1).'">&lt;&lt;</a>';
+			if($page > 1) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page - 1).'" rel="prev">&lt;&lt;</a>';
 			
 			if($page == 4) 
 				$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page=1">1</a>';
@@ -168,7 +168,7 @@ function nvweb_search($vars=array())
 			else if($page + 3 < $pages)
 				$out[] = '<span class="paginator-etc">...</span><a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.$pages.'">'.$pages.'</a>';
 			
-			if($page < $pages) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page + 1).'">&gt;&gt;</a>';
+			if($page < $pages) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page + 1).'" rel="next">&gt;&gt;</a>';
 			
 			$out[] = '<div style=" clear: both; "></div>';
 			

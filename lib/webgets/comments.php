@@ -276,19 +276,46 @@ function nvweb_comments_list($offset=0, $limit=2147483647, $permission=NULL, $or
 
     $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
 				  FROM nv_comments nvc
-				 LEFT OUTER JOIN nv_webusers nvwu 
+				 LEFT OUTER JOIN nv_webusers nvwu
 							  ON nvwu.id = nvc.user
 				 WHERE nvc.website = '.protect($website->id).'
 				   AND nvc.item = '.protect($element->id).'
-				   AND status = 0 
+				   AND status = 0
 				ORDER BY '.$orderby.'
 				LIMIT '.$limit.'
-			   OFFSET '.$offset);		
-	
+			   OFFSET '.$offset);
+
 	$rs = $DB->result();
 	$total = $DB->foundRows();
-		
+
 	return array($rs, $total);
+}
+
+function nvweb_website_comments_list($offset=0, $limit=2147483647, $permission=NULL, $order='oldest')
+{
+    global $DB;
+    global $website;
+    global $current;
+
+    if($order=='newest')
+        $orderby = "nvc.date_created DESC";
+    else
+        $orderby = "nvc.date_created ASC";
+
+    $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
+				  FROM nv_comments nvc
+				 LEFT OUTER JOIN nv_webusers nvwu
+							  ON nvwu.id = nvc.user
+				 WHERE nvc.website = '.protect($website->id).'
+				   AND status = 0
+				ORDER BY '.$orderby.'
+				LIMIT '.$limit.'
+			   OFFSET '.$offset);
+
+    $rs = $DB->result();
+    $total = $DB->foundRows();
+
+    return array($rs, $total);
 }
 
 ?>
