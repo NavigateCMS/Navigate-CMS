@@ -46,7 +46,7 @@ function nvweb_languages($vars=array())
                 if($current['lang']==$lang)
                     $out[] = '<a href="?lang='.$lang.'" class="language-selected"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" />'.$extra.'</a>';
                 else
-                    $out[] = '<a href="?lang='.$lang.'"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" />'.$extra.'</a>';
+                    $out[] = '<a href="?lang='.$lang.'"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" alt="'.$flag.'" />'.$extra.'</a>';
 			}
             $out = implode($vars['separator'], $out);
 			break;
