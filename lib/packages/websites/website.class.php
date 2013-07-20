@@ -226,6 +226,7 @@ class website
                 {
                     case 'text':
                     case 'textarea':
+                    case 'rich_textarea':
                         // multilang
                         $value = array();
                         foreach($this->languages_list as $lang)
