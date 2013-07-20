@@ -703,32 +703,32 @@ function debug_json_error($prepend='')
 }
 
 
-function navigate_compose_email($data)
+function navigate_compose_email($data, $style = array('background' => '#E5F1FF', 'title-color' => '#595959', 'content-color' => '#595959'))
 {
     $body = array();
 
-    $body[] = '<div style=" background: #E5F1FF; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
+    $body[] = '<div style=" background: '.$style['background'].'; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
 
     foreach($data as $section)
     {
         if(!empty($section['title']))
         {
             $body[] = '<div style="margin: 25px 0px 10px 0px;">';
-            $body[] = '    <div style="color: #595959; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$section['title'].'</div>';
+            $body[] = '    <div style="color: '.$style['title-color'].'; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$section['title'].'</div>';
             $body[] = '</div>';
         }
 
         if(!empty($section['content']))
         {
             $body[] = '<div style=" background: #fff; border-radius: 6px; padding: 10px; margin-top: 5px; line-height: 25px; text-align: justify; ">';
-            $body[] = '    <div class="text" style="color: #595959; font-size: 16px; font-style: italic; font-family: Verdana;">'.$section['content'].'</div>';
+            $body[] = '    <div class="text" style="color: '.$style['content-color'].'; font-size: 16px; font-style: italic; font-family: Verdana;">'.$section['content'].'</div>';
             $body[] = '</div>';
         }
 
         if(!empty($section['footer']))
         {
             $body[] = '<br /><br />';
-            $body[] = $section['footer'];
+            $body[] = '<div style="color: '.$style['content-color'].';">'.$section['footer'].'</div>';
         }
     }
 
