@@ -49,7 +49,7 @@ function nvweb_contact($vars=array())
 			foreach($webgets[$webget]['translations'] as $code => $text)
 			{
 				$theme_translation = $theme->t($code);
-				if(!empty($theme_translation))
+				if(!empty($theme_translation) && $code!=$theme_translation)
 					$webgets[$webget]['translations'][$code] = $theme_translation;
 			}
 		}
