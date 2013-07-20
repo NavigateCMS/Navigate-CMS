@@ -641,7 +641,7 @@ function nvweb_is_bot()
     return ( true == is_array( $arrstrBotMatches ) && 0 < count( $arrstrBotMatches )) ? 1 : 0;
 }
 
-function nvweb_clean_exit()
+function nvweb_clean_exit($url='')
 {
 	global $session;
 	global $DB;
@@ -652,6 +652,10 @@ function nvweb_clean_exit()
 	
 	session_write_close();
 	$DB->disconnect();
+
+    if(!empty($url))
+        header('Location: '.$url);
+
 	exit;
 }
 ?>
