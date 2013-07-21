@@ -173,6 +173,8 @@ function nvweb_list($vars=array())
 			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order);
     }
 
+    $categories = array_filter($categories);
+
 	// DATA SOURCE not given or ERROR
 	if((empty($vars['source']) || !is_integer($total)) && !empty($categories))
 	{

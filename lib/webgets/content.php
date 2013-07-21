@@ -85,7 +85,7 @@ function nvweb_content($vars=array())
 
         case 'tags':
             $tags = array();
-            $search_url = NVWEB_ABSOLUTE.'/nvtags?';
+            $search_url = NVWEB_ABSOLUTE.'/nvtags?q=';
             $ids = array();
             if(empty($vars['separator']))
                 $vars['separator'] = ' ';
