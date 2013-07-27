@@ -388,7 +388,7 @@ class file
 		return false;
 	}
 	
-	public static function getMime($filename)
+	public static function getMime($filename, $absolute_path='')
 	{
         $mime_types = array(
 
@@ -431,17 +431,27 @@ class file
         );
 
 		$ext = file::getExtension($filename);
-		
-        if(array_key_exists($ext, $mime_types))
-        {
-            return $mime_types[$ext];
-        }
-        else if(function_exists('finfo_open'))
+
+        if(function_exists('finfo_open') && !empty($absolute_path))
         {
             $finfo = finfo_open(FILEINFO_MIME);
-            $mimetype = finfo_file($finfo, $filename);
+            $mimetype = finfo_file($finfo, $absolute_path);
             finfo_close($finfo);
-            return $mimetype;
+
+            $file_type = 'file';
+            foreach($mime_types as $ext => $mime_info)
+            {
+                if(strpos($mimetype, $mime_info[0])!==false)
+                {
+                    $file_type = $mime_info[1];
+                    break;
+                }
+            }
+            return array($mimetype, $file_type);
+        }
+        else if(array_key_exists($ext, $mime_types))
+        {
+            return $mime_types[$ext];
         }
         else
         {
@@ -751,7 +761,7 @@ class file
         if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name))
         {
             if(empty($mime))
-                $mime = file::getMime($target_name);
+                $mime = file::getMime($target_name, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
 
             $file = new file();
             $file->id = 0;
