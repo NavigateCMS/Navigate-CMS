@@ -122,60 +122,65 @@ function navigate_media_browser_refresh()
 
     // images only: .find("div[mediatype='image']") [not needed right now]
 
-    $("#navigate_media_browser_items div").not("#file-more").not(".draggable-folder").on("contextmenu", function(e)
+    $("#navigate_media_browser_items div").not("#file-more").not(".draggable-folder").off("contextmenu").on("contextmenu", function(e)
     {
-        $('#contextmenu-images').menu();
-
-        var xpos = e.clientX;
-
-        if(xpos + $('#contextmenu-images').width() > $(window).width())
-            xpos -= $('#contextmenu-images').width();
-
-        $('#contextmenu-images').css({
-            "top": e.clientY,
-            "left": xpos,
-            "z-index": 100000,
-            "position": "absolute"
-        });
-
-        $('#contextmenu-images').addClass('navi-ui-widget-shadow');
-
-        $('#contextmenu-images').show();
-
+        navigate_hide_context_menus();
         var trigger = $(this);
 
-        $("#contextmenu-images-download_link").unbind('all').on("click", function ()
+        setTimeout(function()
         {
-            var itemId = $(trigger).attr('id').substring(5);
-            var download_link = $(trigger).attr('download-link');
-            //var download_link = NAVIGATE_DOWNLOAD + '?wid=' + navigate_media_browser_website + '&id=' + itemId + '&disposition=attachment';
+            $('#contextmenu-images').menu();
 
-            $('<div><form action="#"><textarea class="navigate-copy-link-textarea" style=" width: 550px; height: 100px; ">'+download_link+'</textarea></form></div>').dialog({
-                modal: true,
-                title: navigate_lang_dictionary[476] + ": Ctrl+C / Cmd+C, Escape",
-                width: 580,
-                height: 150,
-                open: function(event, ui)
-                {
-                    setTimeout(function()
-                    {
-                        $('textarea.navigate-copy-link-textarea:visible').unbind('focus').on('focus', function(){
-                            $(this).select();
-                        });
-                        $('textarea.navigate-copy-link-textarea:visible').focus();
-                    }, 100);
-                },
-                close: function(event, ui)
-                {
-                    $('textarea.navigate-copy-link-textarea:visible').parent().parent().parent().remove();
-                }
+            var xpos = e.clientX;
+            var ypos = e.clientY;
+
+            if(xpos + $('#contextmenu-images').width() > $(window).width())
+                xpos -= $('#contextmenu-images').width();
+
+            $('#contextmenu-images').css({
+                "top": ypos,
+                "left": xpos,
+                "z-index": 100000,
+                "position": "absolute"
             });
-        });
 
-        $("#contextmenu-images-delete").unbind('all').on("click", function ()
-        {
-            navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
-        });
+            $('#contextmenu-images').addClass('navi-ui-widget-shadow');
+
+            $('#contextmenu-images').show();
+
+            $("#contextmenu-images-download_link").off('all').on("click", function ()
+            {
+                var itemId = $(trigger).attr('id').substring(5);
+                var download_link = $(trigger).attr('download-link');
+                //var download_link = NAVIGATE_DOWNLOAD + '?wid=' + navigate_media_browser_website + '&id=' + itemId + '&disposition=attachment';
+
+                $('<div><form action="#"><textarea class="navigate-copy-link-textarea" style=" width: 550px; height: 100px; ">'+download_link+'</textarea></form></div>').dialog({
+                    modal: true,
+                    title: navigate_lang_dictionary[476] + ": Ctrl+C / Cmd+C, Escape",
+                    width: 580,
+                    height: 150,
+                    open: function(event, ui)
+                    {
+                        setTimeout(function()
+                        {
+                            $('textarea.navigate-copy-link-textarea:visible').off('focus').on('focus', function(){
+                                $(this).select();
+                            });
+                            $('textarea.navigate-copy-link-textarea:visible').focus();
+                        }, 100);
+                    },
+                    close: function(event, ui)
+                    {
+                        $('textarea.navigate-copy-link-textarea:visible').parent().parent().parent().remove();
+                    }
+                });
+            });
+
+            $("#contextmenu-images-delete").off('all').on("click", function ()
+            {
+                navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
+            });
+        }, 250);
 
         return false;
     });
@@ -226,13 +231,13 @@ function navigate_media_browser_reload()
 			// drag & drop support and contextmenu!
 			navigate_media_browser_refresh();
 			
-			$("#file-more").bind("click", function()
+			$("#file-more").on("click", function()
 			{
                 navigate_media_browser_offset += navigate_media_browser_limit;
 				navigate_media_browser_reload();
 			});
 			
-			$("#navigate_media_browser_items div.draggable-folder").bind("dblclick", function()
+			$("#navigate_media_browser_items div.draggable-folder").on("dblclick", function()
 			{
 				$("#media_browser_search input").val(navigate_lang_dictionary[41] + "..."); // search
 				navigate_media_browser_parent = $(this).attr("id").substr(5);
@@ -303,7 +308,7 @@ function navigate_media_browser_save_position()
 
 function navigate_website_selector_setup()
 {
-    $("#navigate_media_browser_website").bind('click',
+    $("#navigate_media_browser_website").on('click',
 	function() 
 	{
 		if(navigate_media_browser_website == 0)
@@ -326,8 +331,8 @@ function navigate_website_selector_setup()
 			 
 			 real_height = real_height - viewer_height + 40;
 			 					 
-			  $('#navigate_media_browser_website_list').unbind('mousemove');
-			  $('#navigate_media_browser_website_list').bind('mousemove', function(e)
+			  $('#navigate_media_browser_website_list').off('mousemove');
+			  $('#navigate_media_browser_website_list').on('mousemove', function(e)
 			  {
 				  $("#navigate_media_browser_website").addClass('ui-state-active');
 				  if(real_height > viewer_height)
@@ -340,8 +345,8 @@ function navigate_website_selector_setup()
 				  }
 			  });
 			 
-			 $('#navigate_media_browser_website_list_wrapper div').unbind('click');
-			 $('#navigate_media_browser_website_list_wrapper div').bind('click', function()
+			 $('#navigate_media_browser_website_list_wrapper div').off('click');
+			 $('#navigate_media_browser_website_list_wrapper div').on('click', function()
 			 {
 				 navigate_media_browser_website = $(this).attr('website_id');
 				 $('#navigate_media_browser_website_list').hide();

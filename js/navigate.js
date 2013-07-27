@@ -388,11 +388,17 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 			if(selection_content=='') selection_content = '[file]';
 			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
 	}
-		
+
 	if(selection_active)
+    {
 		tinyMCE.activeEditor.selection.setContent(html);
+        tinyMCE.activeEditor.execCommand('mceCleanup', false);
+    }
 	else
-		inst.execCommand("mceInsertContent", false, html);	
+    {
+        tinyMCE.execInstanceCommand(editor_id, 'mceInsertContent', false, html);
+        tinyMCE.execInstanceCommand(editor_id, 'mceCleanup', false);
+    }
 }
 
 function navigate_tinymce_move_cursor_to_end(editor_id) 
