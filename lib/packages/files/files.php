@@ -828,36 +828,7 @@ function files_item_properties($item)
 		$navibars->add_tab_content_row(array(	'<label>'.t(156, 'Height').' (px)</label>',
 												$naviforms->textfield('height', $item->height),
 											));						
-		
-		if(!empty($website->thumbnail_types))
-		{
-			$thumbnails = $website->thumbnail_types;
-			
-			$tmb_html = '';
-			if(!is_array($thumbnails))
-			{
-				$tmb_html = '<img src="img/empty.png" width="120px" height="80px" />';
-				$thumbnails = array();
-			}
-			
-			foreach($thumbnails as $dimensions)
-			{
-				$dimensions = explode('x', $dimensions);
-				$tmb_html .= '
-					<div class="navigate-files-thumbnail">
-						<div><img src="'.$website_root.'?id='.$item->id.'&disposition=inline&width='.$dimensions[0].'&height='.$dimensions[1].'" align="top" /></div>
-						<a href="'.$website_root.'?id='.$item->id.'&disposition=inline&width='.$dimensions[0].'&height='.$dimensions[1].'" target="_blank">
-							<img src="img/icons/silk/clipboard.png" align="absmiddle"> '.$dimensions[0].' x '.$dimensions[1].' px
-						</a>
-					</div>
-				';
-			}
-																							
-			$navibars->add_tab_content_row(array(	'<label>'.t(179, 'Thumbnails').'</label>',
-													$tmb_html
-												));
-		}
-		
+
 		$navibars->add_tab_content_row(array('<label>'.t(170, 'Edit').'</label>', 
 		'
 			<script language="javascript" type="text/javascript">
@@ -880,8 +851,15 @@ function files_item_properties($item)
 				}
 			</script>
 			<a href="#" class="button" onclick="navigate_pixlr_edit();"><img src="'.NAVIGATE_URL.'/img/logos/pixlr.png" width="100px" height="42px" /></a>
-		'));			
-	}	
+		'));
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(274, 'Preview').'</label>',
+                '<div><img src="'.$website_root.'?id='.$item->id.'&disposition=inline" width="400px" /></div>',
+            )
+        );
+    }
 	else if($item->type=='video')
 	{
 		$navibars->add_tab(t(272, "Video"));
