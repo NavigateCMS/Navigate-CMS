@@ -215,9 +215,9 @@ if(!empty($website->theme))
 
 $layout->add_content('<div id="navigate-menu">'.$menu_html.'</div>');
 
-$layout->navigate_footer();
-
 $content = core_run();
+
+$layout->navigate_footer();
 
 $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$content.'</div>');
 

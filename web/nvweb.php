@@ -76,9 +76,6 @@ try
 	if(isset($_REQUEST['lang']))
 		$session['lang'] = $_REQUEST['lang'];
 		
-	if(empty($session['lang']))
-		$session['lang'] = $website->languages_list[0];
-
 	if(!empty($session['webuser']))
 		$webuser->load($session['webuser']);
 	else if(!empty($_COOKIE["webuser"]))

@@ -39,20 +39,6 @@ $max_post = (int)(ini_get('post_max_size'));
 $memory_limit = (int)(ini_get('memory_limit'));
 define('NAVIGATE_UPLOAD_MAX_SIZE', min($max_upload, $max_post, $memory_limit));
 
-if(!preg_match("/^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])".
-    "(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$/", $_SERVER['SERVER_NAME'])
-    && $_SERVER['SERVER_NAME']!='localhost')
-{
-    $session_cookie_domain = $_SERVER['SERVER_NAME'];
-    if(substr_count($_SERVER['SERVER_NAME'], '.') > 1)
-        $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
-
-    session_save_path(NAVIGATE_PRIVATE.'/sessions');
-    session_cache_expire(3600);
-
-    ini_set('session.cookie_domain', $session_cookie_domain);
-}
-
-session_start();
+include_once(NAVIGATE_PATH.'/cfg/session.php');
 
 ?>
