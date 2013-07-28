@@ -40,6 +40,27 @@ $(function()
         }, ocean_slideshow_pause*1000);
     }
 
+    /* remove unnecessary home separators */
+    if($('.home-samples').length > 0)
+    {
+        if($.trim($('#navigate-content-1-section-main').text())=="")
+        {
+            $('#navigate-content-1-section-main').prev().remove();
+            $('#navigate-content-1-section-main').remove();
+        }
+
+        if($.trim($('#home-blocks').text())=="")
+        {
+            $('#home-blocks').prev().remove();
+            $('#home-blocks').remove();
+        }
+
+        if($.trim($('.block-quote').text())=="")
+        {
+            $('.block-quote').remove();
+        }
+    }
+
     /* home latest works, remove if empty */
     if($('.home-samples').children().length <= 2)
         $('.home-samples').remove();

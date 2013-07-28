@@ -239,7 +239,7 @@ function nvweb_content($vars=array())
                             }
                         }
 
-						$out .= '<div id="navigate-content-'.$category_item->id.'">'.$texts[$current['lang']][$section].'</div>';
+						$out .= '<div id="navigate-content-'.$category_item->id.'-'.$section.'">'.$texts[$current['lang']][$section].'</div>';
 					}
 				}
 			}
