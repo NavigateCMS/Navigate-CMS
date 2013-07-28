@@ -625,6 +625,42 @@ class website
         return $options;
     }
 
+    public function content_stylesheets($format='tinymce')
+    {
+        global $theme;
+
+        // determine stylesheets for content (website > theme + default navigate cms)
+        $content_css = array();
+
+        $content_css[] = NAVIGATE_URL.'/css/tools/tinymce.defaults.css';
+
+        if(!empty($this->tinymce_css))
+            $content_css[] = $this->tinymce_css.'?bogus='.time();
+
+        if(!empty($this->theme) && !empty($theme))
+        {
+            $style = $this->theme_options->style;
+            if(!empty($style) && !empty($theme->styles->$style->content))
+                $content_css[] = NAVIGATE_URL.'/themes/'.$this->theme.'/'.$theme->styles->$style->content.'?bogus='.time();
+        }
+
+        if($format=='link_tag')
+        {
+            $content_html = '';
+            foreach($content_css as $csa)
+            {
+                if(!empty($csa))
+                    $content_html .= '<link rel="stylesheet" type="text/css" href="'.trim($csa).'" />'."\n";
+            }
+
+            $content_css = $content_html;
+        }
+        else
+            $content_css = implode(',', $content_css);
+
+        return $content_css;
+    }
+
     public function backup($type='json')
     {
         global $DB;

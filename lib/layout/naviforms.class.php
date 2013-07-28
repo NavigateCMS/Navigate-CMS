@@ -345,21 +345,7 @@ class naviforms
 		
 		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true).'</textarea>';
 
-        // determine stylesheet for content (website > theme + default navigate cms)
-		$content_css = $website->tinymce_css;
-        if(empty($content_css) && !empty($website->theme))
-        {
-           $style = $website->theme_options->style;
-           if(!empty($style))
-               $content_css = $theme->styles->$style->content;
-
-           if(!empty($content_css))
-               $content_css = NAVIGATE_URL.'/themes/'.$website->theme.'/'.$content_css;
-        }
-		if(!empty($content_css))
-			$content_css = $content_css.'?bogus='.time().',';
-
-		$content_css .= NAVIGATE_URL.'/css/tools/tinymce.defaults.css';
+        $content_css = $website->content_stylesheets();
 
         $layout->add_script('
             $("#'.$name.'").tinymce(

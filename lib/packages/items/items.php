@@ -1373,10 +1373,17 @@ function items_form($item)
 					<a href="#" onclick="navigate_items_copy_from_history_remove();"><img src="img/icons/silk/cancel.png" align="absmiddle"></a>
 				</div>			
 				<div class="navigate-form-row">
-					<div id="navigate_items_copy_from_history_text" 
+					<!--<div id="navigate_items_copy_from_history_text"
 						 name="navigate_items_copy_from_history_text"
 						 style="border: 1px solid #CCCCCC; float: left; height: auto; min-height: 20px; overflow: auto; width: 97%; padding: 3px; background: #f7f7f7;">
 					</div>
+					-->
+					<textarea style="display: none;" id="navigate_items_copy_from_history_stylesheets">'.$website->content_stylesheets('link_tag').'</textarea>
+					<iframe id="navigate_items_copy_from_history_text"
+						 name="navigate_items_copy_from_history_text"
+						 src="about:blank"
+						 style="border: 1px solid #CCCCCC; float: left; height: 300px; min-height: 20px; overflow: auto; width: 97%; padding: 3px; ">
+					</iframe>
 					<div id="navigate_items_copy_from_history_text_raw" style=" display: none; "></div>
 				</div>			
 			</div>
