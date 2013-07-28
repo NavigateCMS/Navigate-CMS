@@ -523,3 +523,4 @@
 522     # Remove Spam
 523     # This function can NOT be undone.
 524     # Items removed successfully
+525     # Remove comment (without confirmation)

@@ -523,3 +523,4 @@
 522     # Borrar Spam
 523     # Esta operación no podrá deshacerse.
 524     # Elementos eliminados correctamente
+525     # Borrar comentario (sin confirmación)

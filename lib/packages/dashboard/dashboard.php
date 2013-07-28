@@ -180,6 +180,10 @@ function dashboard_create()
 		
 			$tmp = array(
 				'<div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-'.$comment_status.'">'.
+                    '<a href="#" action-href="?fid=comments&act=1&oper=del&ids[]='.$comments[$c]->id.'" style="float: right;"
+                        title="'.t(525, "Remove comment (without confirmation)").'" class="navigate-panel-recent-comments-remove">
+                        <span class="ui-icon ui-icon-circle-close"></span>
+                    </a>'.
 					'<a href="?fid=comments&act=2&id='.$comments[$c]->id.'">'.
 						core_ts2date($comments[$c]->date_created, true).' '.
 						'<strong>'.(empty($comments[$c]->username)? $comments[$c]->name : $comments[$c]->username).'</strong>'.
@@ -190,6 +194,25 @@ function dashboard_create()
 			$comments_html .= implode("\n", $tmp);
 		}	
 		$comments_html .= '</div>';
+
+        $layout->add_script('
+            $(".navigate-panel-recent-comments-remove").on("click", function()
+            {
+                var el_comment = $(this).parent();
+
+                $.getJSON(
+                    $(this).attr("action-href"),
+                    function(result)
+                    {
+                        if(result==true)
+                        {
+                            $(el_comment).fadeOut();
+                            $(el_comment).next().fadeOut();
+                        }
+                    }
+                );
+            });
+        ');
 		
 		$navibars->add_tab_content_panel('<img src="img/icons/silk/comment.png" align="absmiddle" /> '.t(276, 'Recent comments'), $comments_html, 'navigate-panel-recent-comments', '385px', '314px');
 	}

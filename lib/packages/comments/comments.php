@@ -14,6 +14,7 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
+        case 'json':
 		case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
