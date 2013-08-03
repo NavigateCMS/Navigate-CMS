@@ -2063,3 +2063,14 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 .ui-front {
     z-index:10000 !important; /* default: 100 */
 }
+
+/* jGrowl backcompat */
+div.jGrowl.center
+{
+    left: 40%;
+}
+
+div.jGrowl div.jGrowl-notification
+{
+    min-height: 16px;
+}

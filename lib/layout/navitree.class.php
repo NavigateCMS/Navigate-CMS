@@ -300,7 +300,7 @@ class navitree
 						    sticky: true,
                             open: function()
                             {
-                                setTimeout(function() { $(".jGrowl-notification").css({"background-repeat": "repeat", "width": "400px"}); }, 50);
+                                //setTimeout(function() { $(".jGrowl-notification").css({"background-repeat": "repeat", "width": "400px"}); }, 50);
                             },
 							close: function()
 							{

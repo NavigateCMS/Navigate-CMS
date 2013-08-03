@@ -123,8 +123,8 @@ class layout
 
         $this->add_script_tag('js/plugins/jquery-ui-timepicker-addon.js');
 
-		$this->add_script_tag('js/jgrowl/jquery.jgrowl_minimized.js');
-		$this->add_style_tag('js/jgrowl/jquery.jgrowl.css');
+		$this->add_script_tag('lib/external/jgrowl/jquery.jgrowl.min.js');
+		$this->add_style_tag('lib/external/jgrowl/jquery.jgrowl.css');
 
         $this->add_script_tag('lib/external/select2/select2.js');
         $this->add_style_tag('lib/external/select2/select2.css');
@@ -689,7 +689,8 @@ class layout
 //		exit;
 		
 		$this->add_script('$.jGrowl.defaults.position = "center";');
-		$this->add_script('$.jGrowl("'.$text.'", { life: 4000, sticky: '.$sticky.', 
+		$this->add_script('$.jGrowl("'.$text.'", { life: 4000,
+		                                           sticky: '.$sticky.',
 												   open: function() { setTimeout(function() { $(".jGrowl-notification").css({"background-repeat": "repeat"}); }, 50);} });');
 		//$this->add_script('$("#jGrowl").css({"top": "36px"});');
 		//$this->add_script('$(".jGrowl-notification").css({"background-color": "#fda700", "background-image": "none", "border-color": "#6c1108"});');
