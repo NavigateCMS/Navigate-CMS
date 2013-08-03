@@ -1,14 +1,23 @@
 <!doctype html>
 
 <!--
-  ~ jquery.mb.components
-  ~ Copyright (c) 2001-2010. Matteo Bicocchi (Pupunzi); Open lab srl, Firenze - Italy
-  ~ email: mbicocchi@open-lab.com
-  ~ site: http://pupunzi.com
+  ~ /*******************************************************************************
+  ~  jquery.mb.components
+  ~  file: demo_top.html
   ~
-  ~ Licences: MIT, GPL
-  ~ http://www.opensource.org/licenses/mit-license.php
-  ~ http://www.gnu.org/licenses/gpl.html
+  ~  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
+  ~  Open lab srl, Firenze - Italy
+  ~  email: matteo@open-lab.com
+  ~  site: 	http://pupunzi.com
+  ~  blog:	http://pupunzi.open-lab.com
+  ~ 	http://open-lab.com
+  ~
+  ~  Licences: MIT, GPL
+  ~  http://www.opensource.org/licenses/mit-license.php
+  ~  http://www.gnu.org/licenses/gpl.html
+  ~
+  ~  last modified: 22/03/13 23.55
+  ~  ******************************************************************************/
   -->
 
 <html>
@@ -58,13 +67,19 @@
       background-color:#000;
     }
 
+		#extruderTop{
+			left:auto !important;
+			right:0 !important;
+			margin-left:0 !important;
+			margin-right:0;
+		}
+
   </style>
 
   <link href="css/mbExtruder.css" media="all" rel="stylesheet" type="text/css">
 
-  <script type="text/javascript" src="http://jquery.com/src/jquery-latest.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
   <script type="text/javascript" src="inc/jquery.hoverIntent.min.js"></script>
-  <script type="text/javascript" src="inc/jquery.metadata.js"></script>
   <script type="text/javascript" src="inc/jquery.mb.flipText.js"></script>
   <script type="text/javascript" src="inc/mbExtruder.js"></script>
   <script type="text/javascript">
@@ -85,6 +100,7 @@
         width:350,
         extruderOpacity:1,
         autoCloseTime:4000,
+				closeOnExternalClick:false,
        // hidePanelsOnClose:false,
         onExtOpen:function(){},
         onExtContentLoad:function(){},
@@ -94,7 +110,7 @@
 
   </script>
 </head>
-<body >
+<body>
 
 
 <div id="extruderTop" class="{title:'extruder top', url:'parts/extruderTop.html'}">

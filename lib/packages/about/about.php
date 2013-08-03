@@ -104,7 +104,7 @@ function about_layout()
 											'<a href="http://plugins.jquery.com/project/query-object" target="_blank">jQuery.query v2.1.8 (22-Jun-2010)</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/" target="_blank">jQuery mb.extruder v2.1</a><br />' ));																									
+											'<a href="http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/" target="_blank">jQuery mb.extruder v2.5</a><br />' ));
 											
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.flotcharts.org" target="_blank">Flot (Attractive Javascript plotting for jQuery) v0.7</a><br />' ));

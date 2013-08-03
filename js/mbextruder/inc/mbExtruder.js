@@ -1,19 +1,37 @@
-/*******************************************************************************
- jquery.mb.components
- Copyright (c) 2001-2010. Matteo Bicocchi (Pupunzi); Open lab srl, Firenze - Italy
- email: mbicocchi@open-lab.com
- site: http://pupunzi.com
+/*
+ * ******************************************************************************
+ *  jquery.mb.components
+ *  file: mbExtruder.js
+ *
+ *  Copyright (c) 2001-2013. Matteo Bicocchi (Pupunzi);
+ *  Open lab srl, Firenze - Italy
+ *  email: matteo@open-lab.com
+ *  site: 	http://pupunzi.com
+ *  blog:	http://pupunzi.open-lab.com
+ * 	http://open-lab.com
+ *
+ *  Licences: MIT, GPL
+ *  http://www.opensource.org/licenses/mit-license.php
+ *  http://www.gnu.org/licenses/gpl.html
+ *
+ *  last modified: 23/03/13 0.01
+ *  *****************************************************************************
+ */
 
- Licences: MIT, GPL
- http://www.opensource.org/licenses/mit-license.php
- http://www.gnu.org/licenses/gpl.html
- ******************************************************************************/
+/*Browser detection patch*/
+(function(){if(!(8>jQuery.fn.jquery.split(".")[1])){jQuery.browser={};jQuery.browser.mozilla=!1;jQuery.browser.webkit=!1;jQuery.browser.opera=!1;jQuery.browser.msie=!1;var a=navigator.userAgent;jQuery.browser.name=navigator.appName;jQuery.browser.fullVersion=""+parseFloat(navigator.appVersion);jQuery.browser.majorVersion=parseInt(navigator.appVersion,10);var c,b;if(-1!=(b=a.indexOf("Opera"))){if(jQuery.browser.opera=!0,jQuery.browser.name="Opera",jQuery.browser.fullVersion=a.substring(b+6),-1!=(b= a.indexOf("Version")))jQuery.browser.fullVersion=a.substring(b+8)}else if(-1!=(b=a.indexOf("MSIE")))jQuery.browser.msie=!0,jQuery.browser.name="Microsoft Internet Explorer",jQuery.browser.fullVersion=a.substring(b+5);else if(-1!=(b=a.indexOf("Chrome")))jQuery.browser.webkit=!0,jQuery.browser.name="Chrome",jQuery.browser.fullVersion=a.substring(b+7);else if(-1!=(b=a.indexOf("Safari"))){if(jQuery.browser.webkit=!0,jQuery.browser.name="Safari",jQuery.browser.fullVersion=a.substring(b+7),-1!=(b=a.indexOf("Version")))jQuery.browser.fullVersion= a.substring(b+8)}else if(-1!=(b=a.indexOf("Firefox")))jQuery.browser.mozilla=!0,jQuery.browser.name="Firefox",jQuery.browser.fullVersion=a.substring(b+8);else if((c=a.lastIndexOf(" ")+1)<(b=a.lastIndexOf("/")))jQuery.browser.name=a.substring(c,b),jQuery.browser.fullVersion=a.substring(b+1),jQuery.browser.name.toLowerCase()==jQuery.browser.name.toUpperCase()&&(jQuery.browser.name=navigator.appName);if(-1!=(a=jQuery.browser.fullVersion.indexOf(";")))jQuery.browser.fullVersion=jQuery.browser.fullVersion.substring(0, a);if(-1!=(a=jQuery.browser.fullVersion.indexOf(" ")))jQuery.browser.fullVersion=jQuery.browser.fullVersion.substring(0,a);jQuery.browser.majorVersion=parseInt(""+jQuery.browser.fullVersion,10);isNaN(jQuery.browser.majorVersion)&&(jQuery.browser.fullVersion=""+parseFloat(navigator.appVersion),jQuery.browser.majorVersion=parseInt(navigator.appVersion,10));jQuery.browser.version=jQuery.browser.majorVersion}})(jQuery);
 
 /*
- * Name:jquery.mb.extruder
- * Version: 2.1
- * dependencies: jquery.metadata.js, jquery.mb.flipText.js, jquery.hoverintent.js
+ * Metadata - jQuery plugin for parsing metadata from elements
+ * Copyright (c) 2006 John Resig, Yehuda Katz, Jörn Zaefferer, Paul McLanahan
+ * Dual licensed under the MIT and GPL licenses:
+ *   http://www.opensource.org/licenses/mit-license.php
+ *   http://www.gnu.org/licenses/gpl.html
  */
+
+(function(c){c.extend({metadata:{defaults:{type:"class",name:"metadata",cre:/({.*})/,single:"metadata"},setType:function(b,c){this.defaults.type=b;this.defaults.name=c},get:function(b,f){var d=c.extend({},this.defaults,f);d.single.length||(d.single="metadata");var a=c.data(b,d.single);if(a)return a;a="{}";if("class"==d.type){var e=d.cre.exec(b.className);e&&(a=e[1])}else if("elem"==d.type){if(!b.getElementsByTagName)return;e=b.getElementsByTagName(d.name);e.length&&(a=c.trim(e[0].innerHTML))}else void 0!= b.getAttribute&&(e=b.getAttribute(d.name))&&(a=e);0>a.indexOf("{")&&(a="{"+a+"}");a=eval("("+a+")");c.data(b,d.single,a);return a}}});c.fn.metadata=function(b){return c.metadata.get(this[0],b)}})(jQuery);
+
+/***************************************************************************************/
 
 
 (function($) {
@@ -27,7 +45,7 @@
 
   $.mbExtruder= {
     author:"Matteo Bicocchi",
-    version:"2.1",
+    version:"2.5",
     defaults:{
       width:350,
       positionFixed:true,
@@ -42,7 +60,10 @@
       onExtContentLoad:function(){},
       onExtClose:function(){},
       hidePanelsOnClose:true,
+      closeOnClick:true,
+      closeOnExternalClick:true,
       autoCloseTime:0,
+      autoOpenTime:0,
       slideTimer:300
     },
 
@@ -53,7 +74,7 @@
         $.extend (this.options, options);
         this.idx=document.extruder.idx;
         document.extruder.idx++;
-        var extruder,extruderContent,wrapper,extruderStyle,wrapperStyle,txt,timer;
+        var extruder,extruderContent,wrapper,extruderStyle,wrapperStyle,txt,closeTimer,openTimer;
         extruder= $(this);
         extruderContent=extruder.html();
 
@@ -72,13 +93,13 @@
         extruder.addClass(this.options.position);
         var isHorizontal = this.options.position=="top" || this.options.position=="bottom";
         extruderStyle=
-                this.options.position=="top"?
-                {position:position,top:0,left:"50%",marginLeft:-this.options.width/2,width:this.options.width}:
-                        this.options.position=="bottom"?
-                        {position:position,bottom:0,left:"50%",marginLeft:-this.options.width/2,width:this.options.width}:
-                                this.options.position=="left"?
-                                {position:position,top:0,left:0,width:1}:
-                                {position:position,top:0,right:0,width:1};
+          this.options.position=="top"?
+          {position:position,top:0,left:"50%",marginLeft:-this.options.width/2,width:this.options.width}:
+            this.options.position=="bottom"?
+            {position:position,bottom:0,left:"50%",marginLeft:-this.options.width/2,width:this.options.width}:
+              this.options.position=="left"?
+              {position:position,top:0,left:0,width:1}:
+              {position:position,top:0,right:0,width:1};
         extruder.css(extruderStyle);
         if(!isIE) extruder.css({opacity:this.options.extruderOpacity});
         extruder.wrapInner("<div class='ext_wrapper'></div>");
@@ -125,12 +146,12 @@
         }
 
         if (extruder.attr("extUrl")){
-            extruder.setMbExtruderContent({
-              url:extruder.attr("extUrl"),
-              data:extruder.attr("extData"),
-              callback: function(){
-                if (extruder.get(0).options.onExtContentLoad) extruder.get(0).options.onExtContentLoad();
-              }
+          extruder.setMbExtruderContent({
+            url:extruder.attr("extUrl"),
+            data:extruder.attr("extData"),
+            callback: function(){
+              if (extruder.get(0).options.onExtContentLoad) extruder.get(0).options.onExtContentLoad();
+            }
           })
         }else{
           var container=$("<div>").addClass("text").css({width:extruder.get(0).options.width-20, height:extruder.height()-20, overflowY:"auto"});
@@ -138,23 +159,41 @@
           extruder.setExtruderVoicesAction();
         }
 
-        flap.bind("click",function(){
-          if (!extruder.attr("open")){
+        flap.on("click",function(){
+          if (!extruder.attr("isOpened")){
             extruder.openMbExtruder();
           }else{
             extruder.closeMbExtruder();
+            extruder.removeAttr("isOpened");
           }
-        });
+        }).on("mouseenter",function(){
+            if(extruder.get(0).options.autoOpenTime>0){
+              openTimer=setTimeout(function(){
+                extruder.openMbExtruder();
+                $(document).one("click.extruder"+extruder.get(0).idx,function(){extruder.closeMbExtruder();});
+              },extruder.get(0).options.autoOpenTime);
+            }
+          }).on("mouseleave",function(){
+            clearTimeout(openTimer);
+          });
 
-        c.bind("mouseleave", function(){
-          $(document).one("click.extruder"+extruder.get(0).idx,function(){extruder.closeMbExtruder();});
-          timer=setTimeout(function(){
+        c.on("mouseleave", function(e){
+          if(extruder.get(0).options.closeOnExternalClick){
+
+            //Chrome bug: FORMELEMENT fire mouseleave event.
+            if(!$(e.target).parents().is(".text"))
+              $(document).one("click.extruder"+extruder.get(0).idx,function(){extruder.closeMbExtruder();});
+          }
+          closeTimer=setTimeout(function(){
 
             if(extruder.get(0).options.autoCloseTime > 0){
               extruder.closeMbExtruder();
             }
           },extruder.get(0).options.autoCloseTime);
-        }).bind("mouseenter", function(){clearTimeout(timer); $(document).unbind("click.extruder"+extruder.get(0).idx);});
+        }).on("mouseenter", function(){
+            clearTimeout(closeTimer);
+            $(document).off("click.extruder"+extruder.get(0).idx);
+          });
 
         if (isVertical){
           c.css({ height:"100%"});
@@ -190,9 +229,11 @@
         container.css({width:$(this).get(0).options.width});
       where.find(".content").wrapInner(container);
       $.ajax({
-        type: "POST",
+        type: "GET",
         url: url,
         data: data,
+        async:true,
+        dataType:"html",
         success: function(html){
           where.find(".container").append(html);
           voice=where.find(".voice");
@@ -207,10 +248,10 @@
 
     openMbExtruder:function(c){
       var extruder= $(this);
-      extruder.attr("open",true);
-      $(document).unbind("click.extruder"+extruder.get(0).idx);
+      extruder.attr("isOpened",true);
+      $(document).off("click.extruder"+extruder.get(0).idx);
       var opt= extruder.get(0).options;
-      extruder.addClass("open");
+      extruder.addClass("isOpened");
       if(!isIE) extruder.css("opacity",1);
       var position= opt.position;
       extruder.mb_bringToFront();
@@ -234,10 +275,10 @@
 
     closeMbExtruder:function(){
       var extruder= $(this);
-      extruder.removeAttr("open");
+      extruder.removeAttr("isOpened");
       var opt= extruder.get(0).options;
-      extruder.removeClass("open");
-      $(document).unbind("click.extruder"+extruder.get(0).idx);
+      extruder.removeClass("isOpened");
+      $(document).off("click.extruder"+extruder.get(0).idx);
       if(!isIE) extruder.css("opacity",opt.extruderOpacity);
       if(opt.hidePanelsOnClose) extruder.hidePanelsOnClose();
       if (opt.position=="top" || opt.position=="bottom"){
@@ -290,45 +331,48 @@
         voice.append("<span class='settingsBtn'/>");
         voice.find(".settingsBtn").css({opacity:.5});
         voice.find(".settingsBtn").hover(
-                function(){
-                  $(this).css({opacity:1});
-                },
-                function(){
-                  $(this).not(".sel").css({opacity:.5});
-                }).click(function(){
-          if ($(this).parents().hasClass("sel")){
-            if(opt.accordionPanels)
-              extruder.hidePanelsOnClose();
-            else
-              $(this).closePanel();
-            return;
-          }
-
-          if(opt.accordionPanels){
-            extruder.find(".optionsPanel").slideUp(400,function(){$(this).remove();});
-            voices.removeClass("sel");
-            voices.find(".settingsBtn").removeClass("sel").css({opacity:.5});
-          }
-          var content=$("<div class='optionsPanel'></div>");
-          voice.after(content);
-          $.ajax({
-            type: "POST",
-            url: voice.attr("panel"),
-            data: voice.attr("data"),
-            success: function(html){
-              var c= $(html);
-              content.html(c);
-              content.children().not(".text")
-                      .addClass("panelVoice")
-                      .click(function(){
-                extruder.closeMbExtruder();
-              });
-              content.slideDown(400);
+          function(){
+            $(this).css({opacity:1});
+          },
+          function(){
+            $(this).not(".sel").css({opacity:.5});
+          }).click(function(){
+            if ($(this).parents().hasClass("sel")){
+              if(opt.accordionPanels)
+                extruder.hidePanelsOnClose();
+              else
+                $(this).closePanel();
+              return;
             }
+
+            if(opt.accordionPanels){
+              extruder.find(".optionsPanel").slideUp(400,function(){$(this).remove();});
+              voices.removeClass("sel");
+              voices.find(".settingsBtn").removeClass("sel").css({opacity:.5});
+            }
+            var content=$("<div class='optionsPanel'></div>");
+            voice.after(content);
+            $.ajax({
+              type: "GET",
+              url: voice.attr("panel"),
+              data: voice.attr("data"),
+              async:true,
+              dataType:"html",
+              success: function(html){
+                var c= $(html);
+                content.html(c);
+                content.children().not(".text")
+                  .addClass("panelVoice")
+                  .click(function(){
+                    if(opt.closeOnClick)
+                      extruder.closeMbExtruder();
+                  });
+                content.slideDown(400);
+              }
+            });
+            voice.addClass("sel");
+            voice.find(".settingsBtn").addClass("sel").css({opacity:1});
           });
-          voice.addClass("sel");
-          voice.find(".settingsBtn").addClass("sel").css({opacity:1});
-        });
       }
 
       if (voice.find("a").length==0 && voice.attr("panel")){
@@ -337,10 +381,11 @@
         });
       }
 
-      if ((!voice.attr("panel") ||voice.attr("panel")=="false" ) && (!voice.attr("setDisabled") || voice.attr("setDisabled")!="true")){
+      if ((!voice.attr("panel") || voice.attr("panel")=="false" ) && (!voice.attr("setDisabled") || voice.attr("setDisabled")!="true")){
         voice.find(".label").click(function(){
           extruder.hidePanelsOnClose();
-          extruder.closeMbExtruder();
+          if(opt.closeOnClick)
+            extruder.closeMbExtruder();
         });
       }
     });
@@ -356,7 +401,7 @@
     voice.hover(function(){$(this).removeClass("hover");},function(){$(this).removeClass("hover");});
     label.addClass("disabled").css("cursor","default");
     voice.find(".settingsBtn").hide();
-    voice.bind("click",function(event){
+    voice.on("click",function(event){
       event.stopPropagation();
       return false;
     });
@@ -367,7 +412,7 @@
     voice.attr("setDisabled",false);
     voice.find(".label").css("opacity",1);
     voice.find(".label").removeClass("disabled").css("cursor","pointer");
-    voice.unbind("click");
+    voice.off("click");
     voice.find(".settingsBtn").show();
   };
 
