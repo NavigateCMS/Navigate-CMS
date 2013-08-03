@@ -335,11 +335,11 @@ class layout
 	{
 		global $user;
 		if(empty($user->skin)) $user->skin = 'cupertino';
-		if(empty($user->language)) $user->language = 'en';		
-		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-1.8.3.min.js"></script>';
+		if(empty($user->language)) $user->language = 'en';
 
-        // temporary fix for jQuery UI 1.8.22, remove when a latter, supported version is released (needed for ???)
-        //$out[] = '<script language="javascript" type="text/javascript">delete $.attrFn;</script>';
+		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-1.10.2.min.js"></script>';
+		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate-1.2.1.js"></script>';
+
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
 
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
