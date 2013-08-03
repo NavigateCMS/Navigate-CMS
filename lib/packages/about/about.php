@@ -71,10 +71,10 @@ function about_layout()
 											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.10.3</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.trirand.com/blog/" target="_blank">jqGrid v4.4.5</a><br />' ));
+											'<a href="http://www.trirand.com/blog/" target="_blank">jqGrid v4.5.2</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.4</a><br />' ));
+											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.12</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://ivaynberg.github.com/select2" target="_blank">Select2 v3.4.1</a><br />' ));
