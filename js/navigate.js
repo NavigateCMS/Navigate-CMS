@@ -32,7 +32,7 @@ $(window).bind('load', function()
 		clearTimeout(navigate_menu_unselect_timer);
 		navigate_menu_unselect_timer = setTimeout(function()
 		{
-			$('#navigate-menu').tabs('select', navigate_menu_current_tab);
+			$('#navigate-menu').tabs('option', 'active', navigate_menu_current_tab);
 			$('#navigate-recent-items').slideUp();
 		},
 		817);
@@ -43,7 +43,7 @@ $(window).bind('load', function()
 		clearTimeout(navigate_menu_unselect_timer);
 	});
 
-	$('#navigate-menu').tabs('select', navigate_menu_current_tab);
+	$('#navigate-menu').tabs('option', 'active', navigate_menu_current_tab);
 
 	// MB EXTRUDER	
 	$("#navigate-website-selector-top").find(".flapLabel").prepend($("#navigate-website-main-link"));	

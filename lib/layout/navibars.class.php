@@ -156,10 +156,6 @@ class navibars
             {
                 $("#navigate-content-tabs").tabs({
                     '.(!empty($_REQUEST['tab'])? 'selected: '.$_REQUEST['tab'].',' : '').'
-                    select: function()  // DEPRECATED AND REMOVED IN jquery ui 1.10
-                    {
-                        $(navigate_codemirror_instances).each(function() { this.refresh(); } );
-                    },
                     beforeActivate: function() // NEW WAY from JQUERY UI 1.10
                     {
                         setTimeout(function() {

@@ -87,7 +87,7 @@ class layout
 
 		$this->add_script_tag('js/navigate.js');
 		
-		$this->add_script_tag('js/jquery-ui-1.9.2.custom.js');
+		$this->add_script_tag('js/jquery-ui-1.10.3.custom.js');
 
     	$this->add_script_tag('js/plugins/jquery.dialogextend.js');
 
@@ -188,6 +188,8 @@ class layout
 
 		//$this->add_style_tag('css/skins/blue.css');	
 		$this->add_style_tag('css/silk-sprite/silk-sprite.css');
+
+        $this->add_script_tag('js/navigate_backcompat.js');
 
 		//$out[] = '<link href="http://fonts.googleapis.com/css?family=".$webfont."&v2' rel="stylesheet" type="text/css" />';
 
@@ -338,9 +340,10 @@ class layout
 
         // temporary fix for jQuery UI 1.8.22, remove when a latter, supported version is released (needed for ???)
         //$out[] = '<script language="javascript" type="text/javascript">delete $.attrFn;</script>';
+        //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
 
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
-		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.9.2.custom.css" />';
+		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';
 
 		return implode("\n", $out);
 	}
