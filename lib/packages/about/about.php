@@ -116,7 +116,7 @@ function about_layout()
 											'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://code.google.com/p/jquery-dialogextend/" target="_blank">jQuery Dialog Extend plugin v1.0.1</a><br />' ));
+											'<a href="http://code.google.com/p/jquery-dialogextend/" target="_blank">jQuery Dialog Extend plugin v2.0.2</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',											
 											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v3.0</a><br />'));

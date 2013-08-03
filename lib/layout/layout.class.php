@@ -341,6 +341,8 @@ class layout
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate-1.2.1.js"></script>';
 
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
+        //$out[] = '<script language="javascript" type="text/javascript">jQuery.migrateMute = true;</script>';
+        $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = false;</script>';
 
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
 		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';

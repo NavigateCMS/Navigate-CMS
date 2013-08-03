@@ -209,10 +209,9 @@ function navigate_property_layout_field($property)
 						resize: property'.$property->id.'resize
 					}).dialogExtend(
 					{
-						maximize: true,
-						minimize: false,
-						"events" : { "maximize" : property'.$property->id.'resize,
-									 "restore" : property'.$property->id.'resize }
+						maximizable: true,
+						"maximize" : property'.$property->id.'resize,
+						"restore" : property'.$property->id.'resize
 					});
 					
 					property'.$property->id.'resize();

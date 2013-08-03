@@ -53,8 +53,7 @@ function navigate_media_browser()
 		}
 	}).dialogExtend(
 	{
-		maximize: true,
-		minimize: false
+		maximizable: true
 	});
 
 	/* search events */

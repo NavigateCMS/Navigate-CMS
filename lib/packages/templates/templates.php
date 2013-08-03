@@ -410,8 +410,7 @@ function templates_form($item)
 				}				
 			}).dialogExtend(
 			{
-				maximize: true,
-				minimize: false
+				maximizable: true
 			}).dialogExtend("maximize");
 		}
 	');
