@@ -209,7 +209,7 @@ if(!empty($website->theme))
     if(!empty($website->theme) && empty($theme->title))
     {
         $layout->navigate_notification(t(439, 'Error loading theme').' '.$website->theme, true);
-        firephp_nv::log($website->theme.': JSON ERROR '.json_last_error());
+        debug_json_error($website->theme.': JSON ERROR ');
     }
 }
 
