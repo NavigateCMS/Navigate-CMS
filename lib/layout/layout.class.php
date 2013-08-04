@@ -93,8 +93,8 @@ class layout
 
 		$this->add_script_tag('js/plugins/browserdetect.js');		
 		// $this->add_script_tag('js/jquery.corner.js');
-		
-		$this->add_script_tag('js/plugins/jquery.disable.text.select.js');
+
+		$this->add_script_tag('lib/external/jquery-noselect/jquery.noselect.js');
 
 		$this->add_script_tag('js/tags-input/jquery.tagsinput.js');		
 		$this->add_style_tag('js/tags-input/jquery.tagsinput.css');
@@ -342,7 +342,7 @@ class layout
 
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
         //$out[] = '<script language="javascript" type="text/javascript">jQuery.migrateMute = true;</script>';
-        $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = false;</script>';
+        $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = true;</script>';
 
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
 		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';

@@ -619,7 +619,7 @@ function websites_form($item)
             $(tr).find("td:first").find("a,div").remove();
             $(tr).find("td").eq(3).find("a,div").remove();
 
-            if(!jQuery.browser.mobile)
+            if(!navigatecms.touch_browser)
             {
                 navigate_selector_upgrade($(tr).find("td:first").find("select"));
                 navigate_selector_upgrade($(tr).find("td").eq(3).find("select"));

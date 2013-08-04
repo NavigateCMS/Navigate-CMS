@@ -409,7 +409,7 @@ class navitable
         },';
 
         $html[] = 'gridComplete: function() {
-			$("td").disableTextSelect(); // requires jQuery disable.text.select plugin
+			$("td").noSelect(); // requires jQuery no-select plugin
             $("#'.$this->id.'").find("tr").not(":first").off().longclick(function()
             {
                 '.$this->id.'_dclick($(this).attr("id"), null, null, null);

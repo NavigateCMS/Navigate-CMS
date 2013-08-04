@@ -115,6 +115,9 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7</a><br />' ));
 
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="https://github.com/mathiasbynens/jquery-noselect" target="_blank">jQuery noSelect plugin v51bac1d397 (2012-01-11)</a><br />' ));
+
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/jquery-dialogextend/" target="_blank">jQuery Dialog Extend plugin v2.0.2</a><br />' ));
 
