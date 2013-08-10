@@ -135,6 +135,7 @@ try
 		throw new Exception('Navigate CMS: no template found!');
 		
 	nvweb_plugins_load();
+    $events->extension_backend_bindings();
 
     // parse the special tag "include"
     // also convert curly brackets tags {{nv object=""}} to <nv object="" /> version
@@ -217,5 +218,4 @@ catch(Exception $e)
 }
 
 $DB->disconnect();
-
 ?>

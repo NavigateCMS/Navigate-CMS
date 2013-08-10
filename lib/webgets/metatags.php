@@ -1,12 +1,14 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/update/update.class.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/breadcrumbs.php');
+
 function nvweb_metatags($vars=array())
 {
 	global $website;
 	global $current;
 	global $DB;
     global $structure;
+    global $events;
 
 	// process page title and (to do: get specific metatags)
 	$section = '';
@@ -110,7 +112,16 @@ function nvweb_metatags($vars=array())
 		
 	if(!empty($website->statistics_script) && empty($_SESSION['APP_USER']))
 		nvweb_after_body('html', $website->statistics_script);
-		
+
+    $events->trigger(
+        'metatags',
+        'render',
+        array(
+            'out' => &$out,
+            'default_title' => $website->name.$section
+        )
+    );
+
 	return $out;
 }
 ?>
