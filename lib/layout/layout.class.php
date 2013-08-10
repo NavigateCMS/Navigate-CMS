@@ -196,9 +196,7 @@ class layout
 		if(APP_DEBUG)
 		{
 			foreach($this->styles as $cssfile)
-			{
 				$out[] = '<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />';
-			}
 		}
 		else
 		{
@@ -341,8 +339,10 @@ class layout
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate-1.2.1.js"></script>';
 
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
-        //$out[] = '<script language="javascript" type="text/javascript">jQuery.migrateMute = true;</script>';
-        $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = true;</script>';
+        if(APP_DEBUG)
+            $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateMute = true;</script>';
+        else
+            $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = false;</script>';
 
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
 		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';
@@ -679,14 +679,16 @@ class layout
         $this->add_script(' navigate["session_id"] = "'.session_id().'";');
     }
 	
-	public function navigate_notification($text, $isError=false, $sticky="false")
+	public function navigate_notification($text, $isError=false, $sticky=false)
 	{
 		$text = str_replace("\n", '', $text);
 		$text = str_replace("\r", '', $text);
 		$text = str_replace('"', '&quot;', $text);		
 		
-//		var_dump('$.jGrowl("'.$text.'", { life: 4000, sticky: '.$sticky.' });');
-//		exit;
+        if($sticky==1 || $sticky=='true')
+            $sticky = 'true';
+        else
+            $sticky = 'false';
 		
 		$this->add_script('$.jGrowl.defaults.position = "center";');
 		$this->add_script('$.jGrowl("'.$text.'", { life: 4000,
