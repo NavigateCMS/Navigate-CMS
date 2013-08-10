@@ -181,7 +181,8 @@ function navigate_install_requirements()
         	<select id="install_language" name="install_language">
             	<option value="en-en_US" <?php echo ($_SESSION['navigate_install_lang']=='en')? 'selected="selected"' : '';?>>English</option>
                 <option value="es-es_ES" <?php echo ($_SESSION['navigate_install_lang']=='es')? 'selected="selected"' : '';?>>Español</option>
-                <option value="ca-ca_ES" <?php echo ($_SESSION['navigate_install_lang']=='ca')? 'selected="selected"' : '';?>>Català</option>                
+                <option value="de-de_DE" <?php echo ($_SESSION['navigate_install_lang']=='de')? 'selected="selected"' : '';?>>German</option>
+                <option value="ca-ca_ES" <?php echo ($_SESSION['navigate_install_lang']=='ca')? 'selected="selected"' : '';?>>Català</option>
             </select>
         </div>
         <div id="tabs">
@@ -508,7 +509,7 @@ function navigate_install_configuration()
             </div>    
         </div>
         <br />
-        <input type="submit" value="<?php echo $lang['proceed_step_4'];?>" style=" display: none; " onclick=" verify_database(); " />
+        <input type="submit" value="<?php echo $lang['proceed_step_4'];?>" style=" display: none; " />
     </form>
 	<script language="javascript" type="text/javascript">
 	var host_databases = [];
@@ -666,7 +667,7 @@ function navigate_install_configuration()
                 return false;
             }
 		  }
-		});				
+		});
 	}
 	</script>    
 	<?php
@@ -1460,6 +1461,5 @@ function navigate_install_load_language()
 	
 	return $lang;
 }
-
 //	$DB->disconnect();
 ?>
