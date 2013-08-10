@@ -11,7 +11,7 @@
 10		# Shop
 11		# Multimedia
 12		# Tools
-13		# phpMyAdmin
+13		# /*/
 14		# Preferences
 15		# Users
 16		# Structure
@@ -35,7 +35,7 @@
 34		# Save
 35		# Delete
 36		# Media
-37		# NaviM+
+37		# /*/
 38		# Create
 39		# List
 40		# History
@@ -122,7 +122,7 @@
 121		# Sep
 122		# Oct
 123		# Nov
-124		# Dic
+124		# Dec
 125		# Monday
 126		# Tuesday
 127		# Wednesday
@@ -167,7 +167,7 @@
 166		# Content is accessed via its own path. Ex. "News"
 167		# Types
 168		# Notes
-169		# You can leave blank a field to keep the size free
+169		# You can leave a field blank to keep the size free
 170		# Edit
 171		# Order
 172		# Action
@@ -189,7 +189,7 @@
 188		# Translate
 189		# Copy from
 190		# Ok
-191		# Origin
+191		# Source
 192		# Double click a row to edit it
 193		# Value
 194		# Option
@@ -206,7 +206,7 @@
 205		# Comment
 206		# Boolean
 207		# Default timezone
-208		# Date with current adjust
+208		# /*/
 209		# Minutes
 210		# Gallery
 211		# Multiple option
@@ -250,7 +250,7 @@
 249		# Newsletter
 250		# Comments
 251		# Private
-252		# Comments enabled to
+252		# Comments enabled for
 253		# Nobody
 254		# Everybody
 255		# Moderator
@@ -282,7 +282,7 @@
 281		# comments to revise
 282		# Untitled
 283		# Show in menus
-284		# Welcome to Navigate CMS! Please, enter your first website details to complete the installation.
+284		# /*/
 285		# Update
 286		# Drag to reorder. Double click to assign image captions.
 287		# Protocol
@@ -400,7 +400,7 @@
 399		# Random
 400		# Enter 0 to display all
 401		# Your browser does not support HTML5
-402		# Please select a fewer number of files
+402		# Please select fewer files
 403		# File too large
 404     # Order by
 405     # Selection
@@ -521,6 +521,6 @@
 520     # No website found; a default one has been created.
 521     # Extra
 522     # Remove Spam
-523     # This function can NOT be undone.
+523     # This action can NOT be undone.
 524     # Items removed successfully
 525     # Remove comment (without confirmation)
