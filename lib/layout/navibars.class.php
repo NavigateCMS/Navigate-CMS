@@ -155,7 +155,7 @@ class navibars
             $(window).on("load", function()
             {
                 $("#navigate-content-tabs").tabs({
-                    '.(!empty($_REQUEST['tab'])? 'selected: '.$_REQUEST['tab'].',' : '').'
+                    '.(!empty($_REQUEST['tab'])? 'active: '.$_REQUEST['tab'].',' : '').'
                     beforeActivate: function() // NEW WAY from JQUERY UI 1.10
                     {
                         setTimeout(function() {
