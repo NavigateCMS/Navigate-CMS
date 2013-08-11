@@ -191,7 +191,7 @@ function feeds_list()
 	$navitable->addCol(t(331, 'Format'), 'format', "80", "true", "center");	
 	$navitable->addCol(t(332, 'Views'), 'views', "80", "true", "center");	
 	
-	$navitable->addCol(t(80, 'Permission'), 'permission', "80", "true", "center");	
+	$navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
 	$navitable->addCol(t(65, 'Enabled'), 'enabled', "80", "true", "center");		
 	
 	$navibars->add_content($navitable->generate());	

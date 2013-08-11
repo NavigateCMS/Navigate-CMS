@@ -636,7 +636,7 @@ function items_list()
 	$navitable->addCol(t(78, 'Category'), 'category', "210", "true", "left");
 	$navitable->addCol(t(266, 'Author'), 'author_username', "80", "true", "left");
 	$navitable->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");
-	$navitable->addCol(t(80, 'Permission'), 'permission', "80", "true", "center");		
+	$navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
 	$navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
 
     $navitable->setLoadCallback('

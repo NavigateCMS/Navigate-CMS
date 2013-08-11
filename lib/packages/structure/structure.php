@@ -293,7 +293,7 @@ function structure_tree($hierarchy)
 	$columns[] = array(	'name'	=>	t(85, 'Date published'), 'property'	=> 'dates', 'type'	=> 'text', 		'width' => '13%', 	'align' => 'center'	);			
 	$columns[] = array(	'name'	=>	'<span title="'.t(283, 'Show in menus').'">'.t(76, 'Visible').'</span>', 'property'	=> 'visible', 'type'	=> 'boolean',	'width' => '5%', 	'align' => 'center'	);			
 	$columns[] = array(	'name'	=>	t(364, 'Access'), 'property'	=> 'access',	'type'	=> 'option', 	'width' => '5%', 	'align' => 'center', 	'options' => $access);
-	$columns[] = array(	'name'	=>	t(17, 'Permission'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '8%', 	'align' => 'center', 	'options' => $permissions);
+	$columns[] = array(	'name'	=>	t(68, 'Status'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '8%', 	'align' => 'center', 	'options' => $permissions);
 	
 	$navitree->setColumns($columns);
 		

@@ -277,9 +277,9 @@
 276		# Comentarios recientes
 277		# Elementos más vistos
 278		# Resumen de la web
-279		# páginas disponibles
-280		# páginas vistas
-281		# comentarios por revisar
+279		# Páginas disponibles
+280		# Páginas vistas
+281		# Comentarios por revisar
 282		# Sin título
 283		# Se muestra en los menús
 284		# Bienvenid@ a Navigate CMS! Por favor, indique los datos de su primer sitio web para completar la instalación.

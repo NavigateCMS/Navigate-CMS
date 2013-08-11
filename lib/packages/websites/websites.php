@@ -233,7 +233,7 @@ function websites_list()
     $navitable->addCol(t(328, 'Favicon'), 'favicon', "32", "true", "center");
 	$navitable->addCol(t(159, 'Name'), 'name', "200", "true", "left");
 	$navitable->addCol(t(187, 'Homepage'), 'homepage', "300", "true", "center");
-	$navitable->addCol(t(80, 'Permission'), 'permission', "100", "true", "center");
+	$navitable->addCol(t(68, 'Status'), 'permission', "100", "true", "center");
 
 	$navibars->add_content($navitable->generate());
 

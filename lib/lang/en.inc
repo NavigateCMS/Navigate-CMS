@@ -277,9 +277,9 @@
 276		# Recent comments
 277		# Most seen elements
 278		# Web summary
-279		# pages available
-280		# page views
-281		# comments to revise
+279		# Pages available
+280		# Page views
+281		# Comments to revise
 282		# Untitled
 283		# Show in menus
 284		# /*/

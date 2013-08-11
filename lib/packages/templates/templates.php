@@ -234,7 +234,7 @@ function templates_list()
 	$navitable->addCol("ID", 'id', "60", "true", "left");	
 	$navitable->addCol(t(67, 'Title'), 'title', "260", "true", "left");		
 	$navitable->addCol(t(368, 'Theme'), 'theme', "180", "false", "left");	
-	$navitable->addCol(t(80, 'Permission'), 'permission', "80", "true", "center");	
+	$navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
 	$navitable->addCol(t(65, 'Enabled'), 'enabled', "60", "true", "center");		
 	
 	$navibars->add_content($navitable->generate());	
