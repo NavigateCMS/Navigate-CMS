@@ -7,11 +7,11 @@ navigatecms.touch_browser = !!('ontouchstart' in window) || !!('msmaxtouchpoints
 
 //var $P = new PHP_JS();
 
-$(window).bind('load', function()
+$(window).on('load', function()
 {
     $("button, input:submit, a.uibutton, div.uibutton").button();
     $(".buttonset").buttonset();
-    $(".buttonset").find('label').bind('click', function()
+    $(".buttonset").find('label').on('click', function()
     {
         // force buttonset to update the state on click
         // jquery doesn't count a click if the curser moves a little
@@ -30,7 +30,7 @@ $(window).bind('load', function()
         });
     }
 
-	$('#navigate-content').bind('mouseover', function()
+	$('#navigate-content').on('mouseover', function()
 	{
 		clearTimeout(navigate_menu_unselect_timer);
 		navigate_menu_unselect_timer = setTimeout(function()
@@ -41,7 +41,7 @@ $(window).bind('load', function()
 		817);
 	});
 	
-	$('#navigate-menu').bind('mouseover', function()
+	$('#navigate-menu').on('mouseover', function()
 	{
 		clearTimeout(navigate_menu_unselect_timer);
 	});
@@ -76,7 +76,7 @@ $(window).bind('load', function()
 	);
 
     // recent items list
-	$('#navigate-recent-items-link').bind('mouseenter', function()
+	$('#navigate-recent-items-link').on('mouseenter', function()
 	{
 		$('#navigate-recent-items').css({
 			top: $('#navigate-recent-items-link').offset().top + 20,
@@ -88,7 +88,7 @@ $(window).bind('load', function()
         $('#navigate-recent-items').menu();
 	});
 	
-	$('#navigate-recent-items').bind('mouseleave', function()
+	$('#navigate-recent-items').on('mouseleave', function()
 	{
 		$(this).fadeOut('fast');
 	});
@@ -126,7 +126,7 @@ $(window).bind('load', function()
         }).show();
     });
 
-    $('#navigate-favorite-extensions').bind('mouseleave', function()
+    $('#navigate-favorite-extensions').on('mouseleave', function()
     {
         $(this).slideUp();
     });
@@ -159,7 +159,7 @@ $(window).bind('load', function()
     $(document.body).on('mousedown', navigate_hide_context_menus);
 
 	$(window).on('resize', navigate_window_resize);
-    $("#navigate-content-tabs").bind("tabsshow", navigate_window_resize);
+    $("#navigate-content-tabs").on("tabsactivate", navigate_window_resize);
 
     setTimeout(function() { $(window).trigger('resize'); }, 30);
 

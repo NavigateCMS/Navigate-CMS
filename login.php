@@ -253,7 +253,7 @@ $(document).ready(function()
 
     $('input[name="login-username"]').focus();
 
-    $('#navigate-lost-password-dialog form').bind('submit', function(e)
+    $('#navigate-lost-password-dialog form').on('submit', function(e)
     {
         $('#forgot-password-problem').html('&nbsp;');
         e.stopPropagation();

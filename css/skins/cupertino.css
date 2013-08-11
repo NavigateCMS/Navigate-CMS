@@ -1928,6 +1928,7 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 {
     background-color: #E8EDFF;
     color: #111166;
+    z-index: 10000 !important;
 }
 .select2-search
 {

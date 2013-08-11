@@ -339,7 +339,7 @@ function themes_sample_content_export_form()
 
 
     $navibars->add_tab(t(23, "Blocks"));
-    // select block types to export
+    // select blocks to export
     $navitable_blocks = new navitable("blocks_list");
     $navitable_blocks->setURL('?fid=blocks&act=1');
     $navitable_blocks->sortBy('id', 'DESC');
@@ -354,8 +354,9 @@ function themes_sample_content_export_form()
     $navibars->add_tab_content($naviforms->hidden('blocks', ''));
     $navibars->add_tab_content($navitable_blocks->generate());
 
+
     $navibars->add_tab(t(250, "Comments"));
-    // select block types to export
+    // select comments to export
     $navitable_comments = new navitable("comments_list");
     $navitable_comments->setURL('?fid=comments&act=1');
     $navitable_comments->sortBy('date_created', 'desc');
