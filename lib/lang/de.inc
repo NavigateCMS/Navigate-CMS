@@ -1,4 +1,4 @@
-0 		# Navigate
+﻿0 		# Navigate
 1 		# Benutzer
 2 		# Passwort
 3		# Enter
@@ -16,13 +16,13 @@
 15		# Benutzer
 16		# Struktur
 17		# Rechte
-18		# Start
+18		# Home
 19		# Struktur
 20		# Templates
 21		# Wörterbuch
 22		# Elemente
 23		# Blöcke
-24		# Registrierte Nutzer
+24		# Registrierte Benutzer
 25		# Produkte
 26		# Bestellungen
 27		# Tarife
@@ -36,12 +36,12 @@
 35		# Löschen
 36		# Medien
 37		# NaviM+
-38		# Erstellen
+38		# Neu
 39		# Liste
 40		# Verlauf
 41		# Suche
 42		# Bereit
-43		# Haupt
+43		# Allgemein
 44		# E-Mail
 45		# Profil
 46		# Sprache
@@ -64,25 +64,25 @@
 63		# Sprachen
 64		# Veröffentlicht
 65		# Aktiviert
-66		# Priorität
+66		# Priorität			
 67		# Titel
 68		# Status
 69		# Veröffentlicht
 70		# Privat
 71		# Geschlossen
 72		# Verschiebe die Reihen um Prioritäten zuzuweisen
-73		# Unterknoten
+73		# Unterkategorie
 74		# Pfade
 75		# Pfad
 76		# Sichtbar
 77		# Eigenschaften
 78		# Kategorie
 79		# Template
-80		# Erlaubnis
+80		# Rechte
 81		# Versteckt
 82		# Datei
 83		# Zum Deaktivieren frei lassen
-84		# übergeordneter Knoten
+84		# Übergeordnete Kategorie
 85		# Veröffentlichungsdatum
 86		# Datum
 87		# Verknüpfung
@@ -138,7 +138,7 @@
 137		# Sa
 138		# So
 139		# Zurück
-140		# Laden
+140		# Hochladen
 141		# Ordner
 142		# Dateien wählen
 143		# Füge Dateien zur Warteschlange hinzu und klicke auf den Button um den Upload zu starten
@@ -159,11 +159,11 @@
 158		# Thumbnail
 159		# Name
 160		# Typ
-161		# Generisch
+161		# Allgemein
 162		# Einbettung
 163		# Eingebettet
 164		# Eigener Pfad
-165		# Der gesamte Inhalt wird in der Kategorienansicht angezeigt. Bsp. "Wer wir sind"
+165		# Der gesamte Inhalt wird in der Kategorienansicht angezeigt. Bsp. "Wer wir sind" 
 166		# Der Inhalt ist über einen eigenen Pfad erreichbar. Bsp. "Neuigkeiten"
 167		# Typen
 168		# Notizen
@@ -176,7 +176,7 @@
 175		# Datei herunterladen
 176		# Bild ansehen
 177		# Website
-178		# Service
+178		# Andere Dienste
 179		# Thumbnails
 180		# Element
 181		# Versteckt
@@ -189,7 +189,7 @@
 188		# Übersetzen
 189		# Kopieren von
 190		# Ok
-191		# Ursprung
+191		# Quelle
 192		# Doppelklicke auf eine Reihe um sie zu bearbeiten
 193		# Wert
 194		# Option
@@ -199,14 +199,14 @@
 198		# Produkt
 199		# Vorgegebener Wert
 200		# Optionen
-201		# Eine Zeile pro Option in diesem Format: Wert#Titel
+201		# Eine Zeile pro Option in diesem Format: Wert#Bezeichnung
 202		# Gib nur den Wert ein
 203		# Der gleiche Wert für alle Sprachen
 204		# Datei-ID
 205		# Kommentar
 206		# Boolean
 207		# Vorgegebene Zeitzone
-208		# Datum mit der aktuellen Einstellung
+208		# Datum mit der aktuellen Einstellung 
 209		# Minuten
 210		# Galerie
 211		# Mehrfachauswahl
@@ -216,7 +216,7 @@
 215		# Credits
 216		# Erstellt von
 217		# Getestet von
-218		# Externe Library
+218		# Externe Bibliotheken
 219		# Copyright
 220		# Version
 221		# Springe zu
@@ -262,7 +262,7 @@
 261		# Lädt hoch
 262		# Fehler beim Hochladen der Datei
 263		# Kontakt-E-Mails
-264		# Ein Eintrag pro Zeile
+264		# Ein Eintrag pro Zeile	
 265		# Label
 266		# Autor
 267		# Editor
@@ -273,9 +273,9 @@
 272		# Video
 273		# Autospeichern
 274		# Vorschau
-275		# Neuste Elemente
+275		# Kürzlich bearbeitet
 276		# Neuste Kommentare
-277		# Meist betrachtete Elemente
+277		# Meist betrachtet
 278		# Web-Übersicht
 279		# Verfügbare Seiten
 280		# Pageviews
@@ -306,15 +306,15 @@
 305		# Männlich
 306		# Weiblich
 307		# Nicht angegeben
-308		# Persönlich
-309		# Sozial
+308		# Persönliche Angaben
+309		# Social Media
 310		# Amerika
 311		# Antarktis
 312		# Arktis
 313		# Asien
 314		# Atlantik
 315		# Europa
-316		# Indisch
+316		# Indien
 317		# Pazifik
 318		# Postleitzahl
 319		# Ort
@@ -325,12 +325,12 @@
 324		# Neues Fenster
 325		# Zweig
 326		# Web-Feeds
-327		# Extensions
+327		# Erweiterungen
 328		# Favicon
 329		# Backups
 330		# Kategorien
 331		# Format
-332		# Views
+332		# Views	
 333		# Empfohlen
 334		# Beschreibung
 335		# Einträge
@@ -392,8 +392,8 @@
 391		# Versuche die E-Mail zu versenden ...
 392		# E-Mail versendet
 393		# Standard Banner-Größen
-394     # Fest
-395     # "Fest" weist eine statische Position zu, wenn die Anordnung zufällig ist
+394     # Fixiert
+395     # "Fixiert" weist eine feste Position zu, wenn die Anordnung zufällig ist
 396		# Alle Kategorien
 397		# Maximum
 398		# Minimum
@@ -431,8 +431,8 @@
 430     # Möchtest du wirklich alle Statistiken dieser Website löschen?
 431     # Stil
 432     # Read-Only-Modus
-433		# Ändere die Größe der hochgeladenen Bilder
-434		# Ursprüngliche Datei behalten
+433		# Größe der hochgeladenen Bilder ändern
+434		# Original-Datei übernehmen
 435		# Maximale Breite oder Höhe
 436     # Als Klasse in HTML-Elementen verwendet
 437     # Block
@@ -446,7 +446,7 @@
 445     # Deine Kontaktanfrage wurde abgeschickt. Wir werden uns in Kürze mit dir in Verbindung setzen.
 446     # Es tut uns leid, aber deine Kontaktanfrage konnte nicht abgeschickt werden. Bitte versuche es noch einmal oder finde einen anderen Weg um mit uns Kontakt aufzunehmen
 447     # Portfolio
-448     # Portfolio Element
+448     # Portfolio-Element
 449     # Gib deinen Navigate CMS Benutzernamen oder deine E-Mail-Adresse ein
 450     # Klicke auf den Link unten um dein Passwort zu ändern
 451     # Dies ist eine automatische E-Mail, die im Zuge einer Passwort-Anforderung versendet wurde. Wenn du diese Nachricht irrtümlicherweise bekommen hast, ignoriere sie einfach.
@@ -465,7 +465,7 @@
 464     # Favorit
 465     # Favoriten
 466     # Spam
-467     # Scope
+467     # Geltungsbereich
 468     # Integer
 469     # String
 470     # System
@@ -512,15 +512,16 @@
 511     # Verfügbare Elemente
 512     # Ausgewählte Web-Usergroups
 513     # Metatags
-514     # Zusätzliche Header
+514     # Zusätzlicher Header
 515     # Wenn der Pfad nicht gefunden wird
-516     # Zeige eine leere Seite
-517     # Leite zur Homepage weiter
-518     # Verwende das 404-Template dieses Themes (wenn es existiert)
-519     # Sende einen 404 HTTP Fehler-Header
+516     # Eine leere Seite zeigen
+517     # Zur Homepage weiterleiten
+518     # 404-Template dieses Themes anzeigen (wenn es existiert)
+519     # 404 HTTP Fehler-Header senden
 520     # Keine Website gefunden; eine Default-Seite wurde erstellt.
 521     # Extra
 522     # Spam löschen
 523     # Diese Aktion kann NICHT rückgängig gemacht werden.
 524     # Elemente erfolgreich gelöscht
 525     # Lösche Kommentar (ohne Bestätigung)
+526     # Übersetzungen

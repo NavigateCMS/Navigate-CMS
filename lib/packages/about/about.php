@@ -183,10 +183,18 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.webdesignerdepot.com/2009/07/200-free-exclusive-vector-icons-primo/" target="_blank">Primo Icons</a><br />' ));
 
-	
-	$navibars->add_tab_content($form);
-	
-	return $navibars->generate();
+    $navibars->add_tab(t(526, 'Translations'));
+
+    $navibars->add_tab_content_row(array(	'<label>English</label>',
+        '<a href="http://www.navigatecms.com">Navigate CMS</a>'));
+
+    $navibars->add_tab_content_row(array(	'<label>Español</label>',
+        '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />' ));
+
+    $navibars->add_tab_content_row(array(	'<label>Deutsch</label>',
+        '<a href="http://www.lingudora.com" target="_blank">Dominik Hlusiak (lingudora.com)</a><br />' ));
+
+    return $navibars->generate();
 }
 
 
