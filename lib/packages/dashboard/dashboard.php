@@ -92,11 +92,19 @@ function dashboard_create()
 
 	$navibars->add_tab_content_panel('<img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(278, 'Web summary'), 
 									 array(	'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['pages_available'].'</h2><br />'.t(279, 'pages available').'</div>',
-									 		'<div class="navigate-panels-summary ui-corner-all""><h2>'.$stats['pages_viewed'].'</h2><br />'.t(280, 'pages viewed').'</div>',
-											'<div class="navigate-panels-summary ui-corner-all""><h2>'.$stats['comments_count'].'</h2><br />'.strtolower(t(250, 'Comments')).'</div>',
+									 		'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['pages_viewed'].'</h2><br />'.t(280, 'pages viewed').'</div>',
+											'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['comments_count'].'</h2><br />'.t(250, 'Comments').'</div>',
 											'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['comments_torevise'].'</h2><br />'.t(281, 'comments to revise').'</div>'
 									 ), 
-									 'navigate-panel-web-summary', '385px', '314px');		
+									 'navigate-panel-web-summary', '385px', '314px');
+
+    $layout->add_script('
+        $(".navigate-panels-summary").each(function()
+        {
+            if($(this).height() > 78)
+                $(this).find("br").remove();
+        });
+    ');
 	
 	/* TOP PAGES */
 	$sql = '	SELECT i.views as page_views, i.id as id_item, i.category as id_category, p.views as path_views, p.path as path
