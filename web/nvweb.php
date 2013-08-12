@@ -54,6 +54,11 @@ try
 	if(!empty($website->theme))
 		$theme->load($website->theme);
 
+    // remove the "folder" part of the route
+    $route = $_REQUEST['route'];
+    if(!empty($website->folder))
+        $route = substr($route, strlen($website->folder));
+
 	$nvweb_absolute = $idn->encode($website->absolute_path());
 
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
@@ -94,7 +99,7 @@ try
 	// global data across webgets
 	$current = array(
 		'lang' 				=> $session['lang'],
-		'route' 			=> $_REQUEST['route'],
+		'route' 			=> $route,
 		'object'			=> '',
 		'template' 			=> '',
 		'category' 			=> '',

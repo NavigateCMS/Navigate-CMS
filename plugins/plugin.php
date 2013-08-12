@@ -99,8 +99,10 @@ function nv_plugin_init()
 
         setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
-		// parse route
-		$route = $_REQUEST['route'];
+        // remove the "folder" part of the route
+        $route = $_REQUEST['route'];
+        if(!empty($website->folder))
+            $route = substr($route, strlen($website->folder));
 
 		// global data across webgets
 		$current = array(
