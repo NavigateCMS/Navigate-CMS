@@ -318,8 +318,6 @@ class theme
             $structure[$old_category_id] = $category;
         }
 
-
-
         // items
         $items = array();
         $items_or = unserialize(file_get_contents($ptf.'/items.serialized'));
@@ -413,11 +411,28 @@ class theme
 
         foreach($comments_or as $comment)
         {
+            if(empty($comment->item))
+                continue;
+
             $comment->id = 0;
             $comment->website = $website->id;
             $comment->item = $items[$comment->item]->id;
             $comment->ip = '';
             $comment->insert();
+        }
+
+        // update structure properties [jump-branch, jump-item] to its new ID values
+        foreach($structure as $old_id => $entry)
+        {
+            foreach($entry->dictionary as $elang => $properties)
+            {
+                if(!empty($properties['action-jump-item']))
+                    $entry->dictionary[$elang]['action-jump-item'] = $items[$properties['action-jump-item']]->id;
+                else if(!empty($properties['action-jump-branch']))
+                    $entry->dictionary[$elang]['action-jump-branch'] = $structure[$properties['action-jump-branch']]->id;
+
+                $entry->save();
+            }
         }
 
         // properties
@@ -490,6 +505,7 @@ class theme
         $properties = array();
         $files = array();
 
+        // structure
         for($c=0; $c < count($a_categories); $c++)
         {
             $tmp = new structure();
@@ -506,6 +522,7 @@ class theme
             }
         }
 
+        // comments
         for($c=0; $c < count($a_comments); $c++)
         {
             $tmp = new comment();
@@ -513,6 +530,7 @@ class theme
             $comments[$tmp->id] = $tmp;
         }
 
+        // items
         for($i=0; $i < count($a_items); $i++)
         {
             $tmp = new item();
@@ -533,17 +551,17 @@ class theme
             $items[$tmp->id] = $tmp;
         }
 
+        // blocks
         for($i=0; $i < count($a_blocks); $i++)
         {
             $tmp = new block();
             $tmp->load($a_blocks[$i]);
 
-            $tmp->trigger['trigger-content'] = theme::import_sample_parse_array($tmp->trigger['trigger-content'], $files);
-            $tmp->trigger['trigger-html'] = theme::import_sample_parse_array($tmp->trigger['trigger-html'], $files);
-
             //$properties['block'][$tmp->id] = property::load_properties_associative('block', $tmp->type, 'block', $tmp->id);
             $properties['block'][$tmp->id] = property::load_properties('block', $tmp->type, 'block', $tmp->id);
             list($tmp->dictionary, $files) = theme::export_sample_parse_dictionary($tmp->dictionary, $files);
+            list($tmp->trigger['trigger-content'], $files) = theme::export_sample_parse_array($tmp->trigger['trigger-content'], $files);
+            list($tmp->trigger['trigger-html'], $files) = theme::export_sample_parse_array($tmp->trigger['trigger-html'], $files);
 
             // add files referenced in properties
             if(is_array($properties['block'][$tmp->id]))
@@ -556,6 +574,8 @@ class theme
             $blocks[$tmp->id] = $tmp;
         }
 
+
+        // folder
         $folders = array();
         if(!empty($folder))
         {
@@ -574,6 +594,7 @@ class theme
             }
         }
 
+        // files
         $files = array_unique($files);
         for($f=0; $f < count($files); $f++)
         {
@@ -626,15 +647,40 @@ class theme
             foreach($dictionary as $entry => $content)
             {
                 // identify all files used
-                preg_match_all('#'.NAVIGATE_DOWNLOAD.'#', $content, $matches, PREG_OFFSET_CAPTURE);
-                for($m=count($matches); $m >= 0; $m--)
+                preg_match_all('!'.NAVIGATE_DOWNLOAD.'!', $content, $matches_nd, PREG_OFFSET_CAPTURE);
+
+                $matches_nd = $matches_nd[0];
+
+                for($m=count($matches_nd); $m >= 0; $m--)
                 {
-                    if(@empty($matches[$m][0][1])) continue;
-                    $offset = $matches[$m][0][1] + strlen(NAVIGATE_DOWNLOAD);
+                    if(@empty($matches_nd[$m][1])) continue;
+                    $offset = $matches_nd[$m][1] + strlen(NAVIGATE_DOWNLOAD);
                     $end = strpos($content, '"', $offset);
                     $file_query = substr($content, $offset + 1, $end - $offset - 1);
 
                     $file_query = str_replace('&amp;', '&', $file_query);
+                    parse_str($file_query, $file_query);
+                    $file_id = intval($file_query['id']);
+                    $files[] = $file_id;
+
+                    $file_query['id'] = '{{NAVIGATE_FILE}'.$file_id.'}';
+                    $file_query = http_build_query($file_query);
+
+                    $content = substr_replace($content, $file_query, $offset + 1, $end - $offset - 1);
+                }
+
+                preg_match_all('!'.NVWEB_OBJECT.'!', $content, $matches_no, PREG_OFFSET_CAPTURE);
+                $matches_no = $matches_no[0];
+
+                for($m=count($matches_no); $m >= 0; $m--)
+                {
+                    if(@empty($matches_no[$m][1])) continue;
+                    $offset = $matches_no[$m][1] + strlen(NVWEB_OBJECT);
+                    $end = strpos($content, '"', $offset);
+                    $file_query = substr($content, $offset + 1, $end - $offset - 1);
+
+                    $file_query = str_replace('&amp;', '&', $file_query);
+
                     parse_str($file_query, $file_query);
                     $file_id = intval($file_query['id']);
                     $files[] = $file_id;
@@ -685,16 +731,18 @@ class theme
 
             // example: %7B%7BNAVIGATE_FILE%7D117%7D  --> {{NAVIGATE_FILE}117}
 
-            preg_match_all('#%7B%7BNAVIGATE_FILE%7D#', $content, $matches, PREG_OFFSET_CAPTURE);
+            preg_match_all('!%7B%7BNAVIGATE_FILE%7D!', $content, $matches, PREG_OFFSET_CAPTURE);
+
+            $matches = $matches[0];
 
             for($m=count($matches); $m >= 0; $m--)
             {
-                if(@empty($matches[$m][0])) continue;
+                if(@empty($matches[$m])) continue;
 
-                $offset = $matches[$m][0][1] + strlen('%7B%7BNAVIGATE_FILE%7D#');
+                $offset = $matches[$m][1] + strlen('%7B%7BNAVIGATE_FILE%7D#');
                 $end = strpos($content, '%7D', $offset);
                 $file_id = substr($content, $offset - 1, $end - $offset + 1);
-                $content = substr_replace($content, $files[$file_id]->id, $matches[$m][0][1], strlen('%7B%7BNAVIGATE_FILE%7D'.$file_id.'%7D'));
+                $content = substr_replace($content, $files[$file_id]->id, $matches[$m][1], strlen('%7B%7BNAVIGATE_FILE%7D'.$file_id.'%7D'));
             }
 
             $content = str_replace('url://{{NAVIGATE_DOWNLOAD}}', NAVIGATE_DOWNLOAD, $content);

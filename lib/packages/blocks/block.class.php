@@ -53,7 +53,8 @@ class block
 		$this->date_published	= (empty($main->date_published)? '' : $main->date_published);
 		$this->date_unpublish	= (empty($main->date_unpublish)? '' : $main->date_unpublish);
 		$this->access			= $main->access;
-		$this->enabled			= $main->enabled;	
+		$this->enabled			= $main->enabled;
+
 		$this->trigger			= mb_unserialize($main->trigger);
 				
 		if(is_array($this->trigger['trigger-html']))
@@ -70,7 +71,7 @@ class block
 			{
 				$this->trigger['trigger-content'][$language] = stripslashes($code);
 			}
-		}		
+		}
 
 		$this->action			= mb_unserialize($main->action);				
 		$this->notes			= $main->notes;		
@@ -224,28 +225,46 @@ class block
         $groups = '';
         if(!empty($this->groups))
             $groups = 'g'.implode(',g', $this->groups);
-					
-		$ok = $DB->execute(' INSERT INTO nv_blocks
-								(id, website, type, date_published, date_unpublish, 
-								 position, fixed, categories,
-								 access, groups, enabled, `trigger`, action, notes)
-								VALUES 
-								( 0,
-								  '.protect($website->id).',
-								  '.protect($this->type).',
-								  '.protect($this->date_published).',
-								  '.protect($this->date_unpublish).',
-								  '.protect($this->position).',
-								  '.protect($this->fixed).',
-								  '.protect(implode(',', $this->categories)).',  
-								  '.protect($this->access).',
-								  '.protect($groups).',
-								  '.protect($this->enabled).',			
-								  '.protect(serialize($this->trigger)).',  
-								  '.protect(serialize($this->action)).',
-								  '.protect($this->notes).'								  
-								)');
-			
+
+        $ok = $DB->execute(
+            'INSERT INTO nv_blocks
+                (id, website, type, date_published, date_unpublish,
+                 position, fixed, categories,
+                 access, groups, enabled, `trigger`, action, notes)
+                VALUES
+                ( 0,
+                  :website,
+                  :type,
+                  :date_published,
+                  :date_unpublish,
+                  :position,
+                  :fixed,
+                  :categories,
+                  :access,
+                  :groups,
+                  :enabled,
+                  :trigger,
+                  :action,
+                  :notes
+                )
+            ',
+            array(
+                ':website'          =>  $website->id,
+                ':type'             =>  $this->type,
+                ':date_published'   =>  $this->date_published,
+                ':date_unpublish'   =>  $this->date_unpublish,
+                ':position'         =>  $this->position,
+                ':fixed'            =>  $this->fixed,
+                ':categories'       =>  implode(',', $this->categories),
+                ':access'           =>  $this->access,
+                ':groups'           =>  $groups,
+                ':enabled'          =>  $this->enabled,
+                ':trigger'          =>  serialize($this->trigger),
+                ':action'           =>  serialize($this->action),
+                ':notes'            =>  $this->notes
+            )
+        );
+
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
@@ -267,23 +286,41 @@ class block
         if(!empty($this->groups))
             $groups = 'g'.implode(',g', $this->groups);
 
-        $ok = $DB->execute(' UPDATE nv_blocks
-								SET 
-									type			= '.protect($this->type).',
-									date_published 	= '.protect($this->date_published).',
-									date_unpublish  = '.protect($this->date_unpublish).',
-									position 		= '.protect($this->position).',
-									fixed	        = '.protect($this->fixed).',
-									categories		= '.protect(implode(',', $this->categories)).',
-									`trigger` 		= '.protect(serialize($this->trigger)).',
-									action	 		= '.protect(serialize($this->action)).',
-									access 			= '.protect($this->access).',
-									groups          = '.protect($groups).',
-									enabled 		= '.protect($this->enabled).',
-									notes	 		= '.protect($this->notes).'									
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id
-						);					
+        $ok = $DB->execute(
+            'UPDATE nv_blocks
+             SET
+                `type`			= :type,
+                date_published 	= :date_published,
+                date_unpublish  = :date_unpublish,
+                `position` 		= :position,
+                fixed	        = :fixed,
+                categories		= :categories,
+                `trigger` 		= :trigger,
+                `action` 		= :action,
+                access 			= :access,
+                groups          = :groups,
+                enabled 		= :enabled,
+                notes	 		= :notes
+             WHERE id = :id
+               AND website = :website
+            ',
+            array(
+                ':id'               =>  $this->id,
+                ':website'          =>  $this->website,
+                ':type'             =>  $this->type,
+                ':date_published'   =>  $this->date_published,
+                ':date_unpublish'   =>  $this->date_unpublish,
+                ':position'         =>  $this->position,
+                ':fixed'            =>  $this->fixed,
+                ':categories'       =>  implode(',', $this->categories),
+                ':access'           =>  $this->access,
+                ':groups'           =>  $groups,
+                ':enabled'          =>  $this->enabled,
+                ':trigger'          =>  serialize($this->trigger),
+                ':action'           =>  serialize($this->action),
+                ':notes'            =>  $this->notes
+            )
+        );
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 
