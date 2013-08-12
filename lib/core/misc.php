@@ -25,8 +25,12 @@ function mb_unserialize($var)
 {
     if(!is_object($var) && !is_array($var))
     {
-	    $var = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $var);
-	    $var = unserialize($var);
+        $var = unserialize($var);
+        if(empty($var) && !is_array($var) && !is_object($var))
+        {
+	        $var = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $var);
+	        $var = unserialize($var);
+        }
     }
 
     return $var;
