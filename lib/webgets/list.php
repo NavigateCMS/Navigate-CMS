@@ -67,11 +67,17 @@ function nvweb_list($vars=array())
     {
         $exclude = str_replace('current', $current['object']->id, $vars['exclude']);
         $exclude = explode(',', $exclude);
+        $exclude = array_filter($exclude);
 
-        if($vars['source']=='structure' || $vars['source']=='category')
-            $exclude = 'AND s.id NOT IN('.implode(',', $exclude).')';
-        else // item
-            $exclude = 'AND i.id NOT IN('.implode(',', $exclude).')';
+        if(!empty($exclude))
+        {
+            if($vars['source']=='structure' || $vars['source']=='category')
+                $exclude = 'AND s.id NOT IN('.implode(',', $exclude).')';
+            else // item
+                $exclude = 'AND i.id NOT IN('.implode(',', $exclude).')';
+        }
+        else
+            $exclude = '';
     }
 
 	// retrieve entries
@@ -336,16 +342,25 @@ function nvweb_list($vars=array())
 		$pages = ceil($total / $vars['items']);
 		$page = $_GET['page'];
 
+        // keep existing URL variables except "page" and "route" (route is an internal navigate variable)
+        $url_suffix = '';
+        if(!is_array($_GET)) $_GET = array();
+        foreach($_GET as $key => $val)
+        {
+            if($key=='page' || $key=='route') continue;
+            $url_suffix .= '&'.$key.'='.$val;
+        }
+
         if($pages > 1)
         {
             $out[] = '<div class="paginator">';
 
-            if($page > 1) $out[] = '<a href="?page='.($page - 1).'" rel="prev">&lt;&lt;</a>';
+            if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">&lt;&lt;</a>';
 
             if($page == 4)
-                $out[] = '<a href="?page=1">1</a>';
+                $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
             else if($page > 3)
-                $out[] = '<a href="?page=1">1</a><span class="paginator-etc">...</span>';
+                $out[] = '<a href="?page=1'.$url_suffix.'">1</a><span class="paginator-etc">...</span>';
 
             for($p = $page - 2; $p < $page + 3; $p++)
             {
@@ -354,17 +369,17 @@ function nvweb_list($vars=array())
                 if($p > $pages) break;
 
                 if($p==$page)
-                    $out[] = '<a href="?page='.$p.'" class="paginator-current">'.$p.'</a>';
+                    $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
                 else
-                    $out[] = '<a href="?page='.$p.'">'.$p.'</a>';
+                    $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
             }
 
             if($page + 3 == $pages)
-                $out[] = '<a href="?page='.$pages.'">'.$pages.'</a>';
+                $out[] = '<a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
             else if($page + 3 < $pages)
-                $out[] = '<span class="paginator-etc">...</span><a href="?page='.$pages.'">'.$pages.'</a>';
+                $out[] = '<span class="paginator-etc">...</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
 
-            if($page < $pages) $out[] = '<a href="?page='.($page + 1).'" rel="next">&gt;&gt;</a>';
+            if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">&gt;&gt;</a>';
 
             $out[] = '<div style=" clear: both; "></div>';
 

@@ -618,7 +618,7 @@ class property
     // moption values (ID => array(x,y,z...)
     // dates => timestamps
     // coordinates (ID => array("latitude" => ..., "longitude" => ...)
-    // change only the properties given, not the other
+    // change only the given properties, not the other existing ones
     public static function save_properties_from_array($item_type, $item_id, $template, $properties_assoc=array())
    	{
    		global $DB;

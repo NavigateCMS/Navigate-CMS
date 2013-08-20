@@ -438,7 +438,7 @@ function nvweb_menu_get_children($categories=array(), $sublevels=NULL)
 {
 	global $structure;
 
-	// get all elements from all categories that are child of the selected ones
+	// get all leafs from all categories that are child of the selected ones
 	$categories_count = count($categories);
 
     $depth = array();
