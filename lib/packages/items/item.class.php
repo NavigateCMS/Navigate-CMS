@@ -162,7 +162,7 @@ class item
 		}
 
 		// image galleries
-		$this->galleries	= array();	
+		$this->galleries = array();
 		
 		$items = explode("#", $_REQUEST['items-gallery-elements-order']);
 		if(!is_array($items)) $items = array();
@@ -351,8 +351,8 @@ class item
 		
 		for($p=0; $p < count($this->properties); $p++)
 		{
-			if($this->properties[$p]->name==$property_name)
-			{			
+			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+			{
 				if($raw)
 					$out = $this->properties[$p]->value;
 				else
