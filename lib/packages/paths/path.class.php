@@ -150,8 +150,11 @@ class path
 		$DB->execute('DELETE FROM nv_paths 
 							WHERE type = '.protect($type).'
 							  AND object_id = '.protect($object_id).'
-							  AND website = '.$website->id);							  
-							  
+							  AND website = '.$website->id);
+
+        if(!is_array($paths))
+            return;
+
 		// and now insert the new values
 		foreach($paths as $lang => $path)
 		{
