@@ -191,13 +191,17 @@ function nvweb_comments($vars=array())
                 if(empty($vars['avatar_size']))
                     $vars['avatar_size'] = 32;
 
+                $avatar_url = NVWEB_OBJECT.'?type=blank';
+                if(!empty($webuser->avatar))
+                    $avatar_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline&width='.$vars['avatar_size'].'&height='.$vars['avatar_size'];
+
 				$out = '
 					<div class="comments-reply">
 						<div><div class="comments-reply-info">'.$webgets[$webget]['translations']['post_a_comment'].'</div></div>
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
-							<div><label style="display: none;">&nbsp;</label> <img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline&width='.$vars['avatar_size'].'&height='.$vars['avatar_size'].'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
+							<div><label style="display: none;">&nbsp;</label> <img src="'.$avatar_url.'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
 							<br/>
 							<div><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
 							<div><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>

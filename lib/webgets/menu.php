@@ -553,7 +553,6 @@ function nvweb_menu_render_arrow($vars=array())
 
             $link = $structure['routes'][$next];
             $title = $structure['dictionary'][$next];
-
         }
         else if($vars['mode']=='previous' && !empty($previous))
         {
