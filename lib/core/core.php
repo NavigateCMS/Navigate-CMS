@@ -731,7 +731,7 @@ function navigate_compose_email($data, $style = array('background' => '#E5F1FF',
         if(!empty($section['footer']))
         {
             $body[] = '<br /><br />';
-            $body[] = '<div style="color: '.$style['content-color'].';">'.$section['footer'].'</div>';
+            $body[] = '<div style="color: '.$style['title-color'].';">'.$section['footer'].'</div>';
         }
     }
 
