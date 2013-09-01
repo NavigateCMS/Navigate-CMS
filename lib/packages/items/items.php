@@ -1273,8 +1273,8 @@ function items_form($item)
                     );
 				}
 			}
-			
-			if($template->tags==1)
+
+			if($template->tags==1 || $template->tags=='true')
 			{
 				$tags_copy_select = '';
 				if(count($website->languages_list) > 1)

@@ -3414,6 +3414,7 @@ class upload {
      * @return string Optional content of the image
      */
     function process($server_path = null) {
+
         $this->error        = '';
         $this->processed    = true;
         $return_mode        = false;

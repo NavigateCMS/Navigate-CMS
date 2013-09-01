@@ -620,7 +620,7 @@ class file
 				$handle->image_resize = true;
 				$handle->image_ratio_fill = true;
 			}
-			
+
 			if($border==0)
 			{
 				$handle->image_border = false;
