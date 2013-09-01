@@ -123,8 +123,10 @@ function nvweb_load_website_by_url($url, $exit=true)
 	{
 		$host = explode('.', $host);
 	
-		$domain = array_pop($host);
-		$domain = array_pop($host) . '.' . $domain;
+        $domain = array_pop($host);
+        if(!empty($host))
+            $domain = array_pop($host) . '.' . $domain;
+
 		$subdomain = implode('.', $host);
 	}
 
