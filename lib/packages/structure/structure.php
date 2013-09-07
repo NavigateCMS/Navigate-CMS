@@ -355,6 +355,7 @@ function structure_form($item)
 	global $DB;
 	global $website;
 	global $layout;
+    global $events;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -995,7 +996,6 @@ function structure_form($item)
 
 		$votes_by_date = webuser_vote::object_votes_by_date('structure', $item->id, 90);
 
-		
 		$layout->add_script('
 								
 				var plot = $.plot(
@@ -1099,7 +1099,17 @@ function structure_form($item)
             }
         ');
     }
-		
-	return $navibars->generate();
+
+    $events->trigger(
+        'structure',
+        'edit',
+        array(
+            'item' => &$item,
+            'navibars' => &$navibars,
+            'naviforms' => &$naviforms
+        )
+    );
+
+    return $navibars->generate();
 }
 ?>
