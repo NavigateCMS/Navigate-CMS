@@ -100,9 +100,13 @@ function nv_plugin_init()
         setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
         // remove the "folder" part of the route
-        $route = $_REQUEST['route'];
-        if(!empty($website->folder))
-            $route = substr($route, strlen($website->folder));
+        $route = '';
+        if(!empty($_REQUEST['route']))
+        {
+            $route = $_REQUEST['route'];
+            if(!empty($website->folder))
+                $route = substr($route, strlen($website->folder));
+        }
 
 		// global data across webgets
 		$current = array(
@@ -111,7 +115,7 @@ function nv_plugin_init()
 			'object'			=> '',
 			'template' 			=> '',
 			'category' 			=> '',
-			'webuser'  			=> $session['webuser'],
+			'webuser'  			=> @$session['webuser'],
 			'navigate_session' 	=> !empty($_SESSION['APP_USER']),
 			'html_after_body'	=> array(),
 			'js_after_body'		=> array()
