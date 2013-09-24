@@ -3,9 +3,9 @@
  * 
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2012 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2013 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPLv3 License
+ * @license GPLv2
  *
  */
 
@@ -138,11 +138,14 @@ class database
 	 * @param string $column Name of the column to retrieve
 	 * @param string $table Table name to get the data from
 	 * @param string $where SQL conditions in the WHERE clause
+	 * @param string $order SQL order conditions in the ORDER BY clause
 	 * @return string|integer Value of the first column of the first row of the resultset
 	 */		
-	public function query_single($column, $table, $where = '1=1')
+	public function query_single($column, $table, $where = '1=1', $order = '')
 	{
-		$stm = $this->db->query('SELECT '.$column.' FROM '.$table.' WHERE '.$where.' LIMIT 1');
+        if(!empty($order))
+            $order = ' ORDER BY '.$order;
+		$stm = $this->db->query('SELECT '.$column.' FROM '.$table.' WHERE '.$where.$order.' LIMIT 1');
 		$stm->setFetchMode(PDO::FETCH_NUM);
 		$rs = $stm->fetchAll();
 		$stm->closeCursor();

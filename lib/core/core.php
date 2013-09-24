@@ -3,10 +3,10 @@
  * 
  * Navigate CMS common core functions
  * 
- * @copyright Copyright (C) 2010-2012 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2013 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPLv3 License
- * @version 1.0 2012-01-12 18:54
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
+ * @version 1.7.7 2013-09-07
  *
  */
 
