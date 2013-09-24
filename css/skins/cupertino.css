@@ -2075,3 +2075,35 @@ div.jGrowl div.jGrowl-notification
 {
     min-height: 16px;
 }
+
+/* jAutochecklist */
+.jAutochecklist_list
+{
+    background: #F2F5F7;
+}
+
+.jAutochecklist_listItem
+{
+    background: transparent;
+    min-height: 20px;
+    text-shadow: none;
+}
+
+.jAutochecklist_listItem:hover
+{
+    text-shadow: none;
+    background: url("../../css/cupertino/images/ui-bg_glass_100_e4f1fb_1x400.png") repeat-x scroll 50% 50% #E4F1FB;
+    border: 1px solid #74B2E2;
+    color: #0070A3;
+    border-radius: 8px;
+    font-weight: normal;
+}
+
+.jAutochecklist_list .selected
+{
+    text-shadow: none;
+    background: url("../../css/cupertino/images/ui-bg_highlight-soft_25_ffef8f_1x100.png") repeat-x scroll 50% top #FFEF8F;
+    border: 1px solid #F9DD34;
+    color: #363636;
+    border-radius: 8px;
+}

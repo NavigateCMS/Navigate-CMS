@@ -1,0 +1,363 @@
+.jAutochecklist_wrapper {
+    color: black;
+    height: 20px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    margin-top: -3px;
+    font-family: sans-serif;
+    font-size: 13px;
+    outline: none;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 0 0 1px;
+    background: rgb(255,255,255); /* Old browsers */
+    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7',GradientType=0 ); /* IE6-9 */
+}
+.jAutochecklist_active {
+    background: rgb(247,247,247); /* Old browsers */
+    background: -webkit-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
+.jAutochecklist_popup {
+    position: absolute;
+    min-height: 25px;
+    bottom: 35px;
+    border: 1px #aaa solid;
+    z-index: 99;
+    display: none;
+    border-radius: 5px;
+    background: white;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 3px #888, inset 0 1px 3px #DDD;
+    padding: 5px;
+}
+.jAutochecklist_popup::before {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: #888 transparent;
+    display: block;
+    width: 0;
+    margin-left: -7px;
+}
+.jAutochecklist_popup::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    border-width: 8px 8px 0;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.95) transparent;
+    display: block;
+    width: 0;
+    margin-left: -5px;
+}
+.jAutochecklist_popup div {
+    border: 1px #888 solid;
+    float:left;
+    margin: 1px;
+    padding: 0 3px;
+    height: 22px;
+    overflow:hidden;
+    border-radius: 3px;
+    background: #f8f8f8;
+    line-height: 22px;
+    text-shadow: 1px 1px white;
+}
+.jAutochecklist_popup div:hover {
+    border: 1px royalblue solid;
+    cursor:pointer;
+    box-shadow: 0 0 1px royalBlue;
+    background: #F4F7FF;
+    color: royalblue
+}
+.jAutochecklist_popup .logo {
+    height: 22px;
+    width:auto;
+    margin-top: -3px;
+}
+.jAutochecklist_popup div.locked {
+    color: #BBB;
+    background: #EEE;
+    border: 1px #BBB solid;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.jAutochecklist_more {
+    cursor:auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: none !important;
+    color: #aaa;
+    font-style: italic;
+    font-size: 10pt;
+    line-height: 17pt;
+}
+.jAutochecklist_dropdown_wrapper {
+    height:100%;
+    border: 1px #aaa solid;
+    z-index: 98;
+    position: relative;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.jAutochecklist_dropdown {
+    height:100%;
+    overflow: hidden;
+}
+.jAutochecklist_result {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding-left: 5px;
+    line-height: 20px;
+    cursor: text;
+}
+.jAutochecklist_placeholder {
+    color: #aaa
+}
+.jAutochecklist_dropdown input {
+    height:100%;
+    width:88%;
+    border:none;
+    outline: none;
+    display: none;
+    padding: 0 0 0 6px;
+    background: transparent;
+    position: absolute;
+    top:0;
+    left:0;
+    font-size: 13px;
+    line-height: normal;
+}
+.jAutochecklist_dropdown input:focus {
+    outline: none;
+}
+.jAutochecklist_list .jAutochecklist_input {
+    z-index: 98;
+}
+.jAutochecklist_list .jAutochecklist_prediction {
+    z-index: 97;
+    opacity: 0.3;
+    filter: alpha(opacity = 30);
+}
+.jAutochecklist_arrow {
+    height: 100%;
+    width:20px;
+    float:right;
+    cursor: pointer;
+    border-top-right-radius: 3px
+}
+.jAutochecklist_arrow:hover {
+    background: rgb(247,247,247); /* Old browsers */
+    background: -webkit-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(247,247,247,1) 0%,rgba(255,255,255,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
+.jAutochecklist_arrow div {
+    border-width: 5px 3px 0;
+    border-color: #888 transparent;
+    border-style: solid;
+    height: 0;
+    width: 0;
+    margin: 8px;
+}
+.jAutochecklist_list {
+    position: relative;
+    top:-1px;
+    clear:both;
+    list-style: none;
+    padding: 0;
+    display: none;
+    border: 1px #aaa solid;
+    margin:0;
+    overflow: auto;
+    max-height: 300px;
+    min-height: 22px;
+    z-index: 99;
+    text-shadow: 1px 1px white;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    background: white; 	/*old browsers*/
+    background: rgba(255, 255, 255, 0.95);
+}
+.jAutochecklist_list::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: #e8e8e8;
+}
+.jAutochecklist_list::-webkit-scrollbar-thumb {
+    background: rgba(200, 200, 200, 0.8)
+}
+.jAutochecklist_list::-webkit-scrollbar-thumb:hover {
+    background: rgba(220, 220, 220, 0.8)
+}
+.jAutochecklist_list::-webkit-scrollbar-track {
+    border-left: 1px #eee dotted;
+    border-top: 1px #eee dotted;
+}
+.jAutochecklist_listItem {
+    border: 1px transparent solid;
+    cursor: pointer;
+    line-height: 22px;
+    min-height:22px;
+    padding: 0 5px;
+    -moz-user-select: none; /*only FF has selection bug*/
+    background: rgb(255,255,255); /* Old browsers */
+    background: -webkit-linear-gradient(left,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* IE10+ */
+    background: linear-gradient(to right,  rgba(255,255,255,1) 0%,rgba(247,247,247,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7',GradientType=1 ); /* IE6-9 */
+}
+.jAutochecklist_list .over {
+    border: 1px black dashed
+}
+.jAutochecklist_list .selected {
+    color:white;
+    text-shadow: 1px 1px #888;
+    background: rgb(85,161,237);	/*old browsers*/
+    background: rgba(85,161,237,0.8);
+    background: -webkit-linear-gradient(left,  rgba(153,204,255,0.8) 0%,rgba(85,161,237,0.8) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left,  rgba(153,204,255,0.8) 0%,rgba(85,161,237,0.8) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left,  rgba(153,204,255,0.8) 0%,rgba(85,161,237,0.8) 100%); /* IE10+ */
+    background: linear-gradient(to right,  rgba(153,204,255,0.8) 0%,rgba(85,161,237,0.8) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc99ccff', endColorstr='#cc55a1ed',GradientType=1 ); /* IE6-9 */
+}
+.jAutochecklist_listItem:hover {
+    color:white;
+    text-shadow: 1px 1px #888;
+    background: rgb(85,161,237);	/*old browsers*/
+    background: rgba(85,161,237,0.8);
+    filter: none;   /*Disable filter for IE6-9*/
+}
+.jAutochecklist_listItem:active {
+    background: rgb(153,204,255);
+    background: rgba(153,204,255,0.8);
+    box-shadow: inset 0px 1px 1px #AAA;
+    text-shadow: -1px -1px #888;
+}
+.jAutochecklist_list .locked {
+    background: #EEE;
+    color: #BBB;
+    text-shadow: none;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+.jAutochecklist_list .locked .jAutochecklist_listItem_input {
+    opacity: 0;
+    filter:alpha(opacity=0); /* For IE8 and earlier */
+}
+.jAutochecklist_list .jAutochecklist_listItem_input {
+    display: none;
+    margin: 0 3px 5px 0;
+    vertical-align: middle;
+}
+.jAutochecklist_listItem_group_empty, .jAutochecklist_checkall {
+    color: #ccc;
+    font-weight: bold;
+    padding-top:5px;
+}
+.jAutochecklist_listItem_child {
+    padding-left: 35px
+}
+.jAutochecklist_noresult {
+    background: white;
+    padding: 5px;
+    color: #AAA;
+}
+.jAutochecklist_listItem .logo {
+    float:left;
+    width: 20px;
+    height: 20px;
+    margin: 1px 3px 1px 0
+}
+.jAutochecklist_listItem .medium {
+    width: 30px;
+    height: 30px;
+    margin: 1px 5px 1px 0
+}
+.jAutochecklist_list .line-medium {
+    line-height: 30px
+}
+.jAutochecklist_listItem .large {
+    width: 40px;
+    height: 40px;
+    margin: 1px 5px 1px 0
+}
+.jAutochecklist_list .line-large {
+    line-height: 40px;
+}
+.jAutochecklist_listItem .clear {
+    clear:both
+}
+.jAutochecklist_listItem .float-left {
+    float: left
+}
+.jAutochecklist_listItem .overflow {
+    overflow: auto;
+}
+.jAutochecklist_disabled {
+    background: #EEE;
+}
+.jAutochecklist_disabled .jAutochecklist_arrow:hover {
+    background: transparent;
+    cursor: not-allowed;
+}
+.jAutochecklist_disabled .jAutochecklist_result {
+    cursor: not-allowed;
+}
+.jAutochecklist_absolute {
+    position: absolute;
+    z-index: 9999;
+    filter:none;
+}
+
+/* Smartphones (portrait and landscape) ----------- */
+/* Disable transparency to improve performace */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+    .jAutochecklist_wrapper, .jAutochecklist_active, .jAutochecklist_popup, .jAutochecklist_list, .jAutochecklist_listItem {
+        background: white;
+        filter:none;
+    }
+    .jAutochecklist_popup {
+        box-shadow: none;
+    }
+    .jAutochecklist_popup::before {
+        bottom: -9px;
+        border-width: 8px 8px 0;
+        margin-left: -5px;
+    }
+    .jAutochecklist_popup::after {
+        border-color: white transparent;
+    }
+    .jAutochecklist_arrow:hover {
+        background: rgb(247,247,247);
+    }
+    .jAutochecklist_list::-webkit-scrollbar-thumb {
+        background: rgb(200, 200, 200);
+    }
+    .jAutochecklist_list::-webkit-scrollbar-thumb:hover {
+        background: rgb(220, 220, 220);
+    }
+    .jAutochecklist_list .selected {
+        background: rgb(153,204,255);
+    }
+    .jAutochecklist_listItem:active {
+        background: rgb(153,204,255);
+    }
+
+}
