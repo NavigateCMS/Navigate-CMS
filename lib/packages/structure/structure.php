@@ -1077,7 +1077,7 @@ function structure_form($item)
             $table->addRow($element->id,
                 array(
                     array('content' => $element->id, 'align' => 'left'),
-                    array('content' => $element->dictionary[$website->languages_list[0]]['title'], 'align' => 'left'),
+                    array('content' => $element->dictionary[$website->languages_list[0]]['title'], 'align' => 'left')
                 )
             );
             $ids[] = $element->id;

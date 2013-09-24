@@ -177,7 +177,7 @@ class file
 			}
 		}
 
-		// remove all old entries
+		// remove the virtual folder/file and its data
 		if(!empty($this->id))
 		{
 			$DB->execute('DELETE 

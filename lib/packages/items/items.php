@@ -7,6 +7,8 @@ require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 
+require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
+
 function run()
 {
 	global $user;	
@@ -70,9 +72,13 @@ function run()
 					{
 						if(isset($_REQUEST['quicksearch']))
 							$where .= $item->quicksearch($_REQUEST['quicksearch']);
-						else if(isset($_REQUEST['filters']))
+                        else if(isset($_REQUEST['filters']))
 						{
-							$filters = json_decode($_REQUEST['filters']);
+                            if(is_array($_REQUEST['filters']))
+                                $filters = json_decode(json_encode($_REQUEST['filters']), FALSE);
+                            else
+							    $filters = json_decode($_REQUEST['filters']);
+
 							for($r=0; $r < count($filters->rules); $r++)
 							{
 								switch($filters->rules[$r]->field)
@@ -98,12 +104,13 @@ function run()
 									default:
 								}								
 							}
+
 							$where .= navitable::jqgridsearch(json_encode($filters));
 						}
 						else	// single search
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
-										
+
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS i.*, d.text as title, d.lang as language,
 					                                    u.username as author_username, COUNT(c.id) as comments
 							   FROM nv_items i
@@ -122,7 +129,7 @@ function run()
 						   GROUP BY i.id 
 						   ORDER BY '.$orderby.' 
 							  LIMIT '.$max.'
-							 OFFSET '.$offset;	
+							 OFFSET '.$offset;
 							 				
 					if(!$DB->query($sql, 'array'))
 					{
@@ -611,6 +618,8 @@ function run()
 
 function items_list()
 {
+    global $layout;
+
 	$navibars = new navibars();
 	$navitable = new navitable("items_list");
 	
@@ -646,6 +655,79 @@ function items_list()
             "side": "center",
             "addtitle": true
         });
+
+        if($("#jqgh_items_list_category button").length < 1)
+        {
+            $("#jqgh_items_list_category").append("<button>");
+            $("#jqgh_items_list_category button").button({
+                icons: { primary: "ui-icon-gear" },
+                text: false
+            }).css({
+                "float": "right",
+                "margin-top": "-15px",
+                "padding": "3px 0px"
+            }).on("click", items_list_choose_categories);
+        }
+    ');
+
+    // add categories filter
+    $hierarchy = structure::hierarchy();
+    $hierarchy = structure::hierarchyListClasses($hierarchy);
+
+    $navibars->add_content('<div id="filter_categories_window" style="display: none;">'.$hierarchy.'</div>');
+    $layout->add_script('$("#filter_categories_window ul").attr("data-name", "filter_categories_field");');
+    $layout->add_script('
+        $("#filter_categories_window ul").jAutochecklist({
+            popup: false,
+            absolutePosition: true,
+            width: 0,
+            listWidth: 400,
+            listMaxHeight: 400,
+            onItemClick: function(nval, li, selected_before, selected_after)
+            {
+                selected_after = selected_after.join(",");
+                var filters = {
+                    "groupOp" : "AND",
+                    "rules": [
+                        {   "field" : "category",
+                            "op" : "in",
+                            "data" : selected_after
+                        },
+                        {   "field" : "title",
+                            "op" : "cn",
+                            "data" : $("#navigate-quicksearch").val()
+                        }
+                    ]
+                };
+
+                $("#items_list").jqGrid("setGridParam", {
+                    search: true,
+                    postData: { "filters": filters }
+                    }
+                ).trigger("reloadGrid");
+            }
+        });');
+
+    $layout->add_script('
+        function items_list_choose_categories()
+        {
+            $("#navigate-quicksearch").parent().on("submit", function(){
+                $("#filter_categories_window ul").jAutochecklist("deselectAll");
+            });
+
+            $("#filter_categories_window ul").jAutochecklist("open");
+            $(".jAutochecklist_list").css({"position": "absolute"});
+            $(".jAutochecklist_list").css($("#jqgh_items_list_category button").offset());
+            $(".jAutochecklist_dropdown_wrapper").hide();
+            $(".jAutochecklist_list").css({
+                "border-radius": "8px",
+                "margin-left": "-373px",
+                "margin-top": "16px"
+            });
+            $(".jAutochecklist_list").addClass("navi-ui-widget-shadow ui-menu ui-widget ui-widget-content ui-corner-all");
+
+            return false;
+        }
     ');
 
 	$navibars->add_content($navitable->generate());

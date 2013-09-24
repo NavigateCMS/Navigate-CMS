@@ -401,6 +401,33 @@ class structure
         }
         return;
     }
+
+    public static function hierarchyListClasses($hierarchy, $level=1)
+    {
+        $html = array();
+
+        if(!is_array($hierarchy))
+            $hierarchy = array();
+
+        foreach($hierarchy as $node)
+        {
+            $post_html = structure::hierarchyListClasses($node->children, $level+1);
+
+            if(empty($html) && $level==1) $html[] = '<ul>';
+
+            $extra = '';
+            if(!empty($post_html))
+                $extra = 'group';
+
+            $html[] = '<li class="level'.$level.' '.$extra.'" data-value="'.$node->id.'"><span>'.$node->label.'</span>';
+
+            $html[] = $post_html;
+            $html[] = '</li>';
+        }
+        if(!empty($html) && $level==1) $html[] = '</ul>';
+
+        return implode("\n", $html);
+    }
 	
 	public static function reorder($parent, $children)
 	{
