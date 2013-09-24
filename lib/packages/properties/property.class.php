@@ -839,6 +839,20 @@ class property
 		
 		return $out;
 	}
+
+    public static function languages()
+	{
+		global $DB;
+
+        $DB->query('SELECT code, name FROM nv_languages');
+        $languages_rs = $DB->result();
+        $out = array();
+
+        foreach($languages_rs as $lang)
+            $out[$lang->code] = $lang->name;
+
+		return $out;
+	}
 	
 	public static function timezones($country=NULL, $lang="")
 	{
