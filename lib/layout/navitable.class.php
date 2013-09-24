@@ -12,6 +12,7 @@ class navitable
 	public $initial_url;
 	public $data_index;
 	public $click_action;
+    public $add_action;
 	public $delete_action;
 	public $search_action;
     public $load_callback;
@@ -26,6 +27,7 @@ class navitable
 		$this->id = $id;
 		$this->data_index = 'id';
 		$this->click_action = 'redirect';
+		$this->add_action = false;
 		$this->delete_action = false;
 		$this->search_action = false;
         $this->disable_select = false;
@@ -58,6 +60,11 @@ class navitable
 	{
 		$this->search_action = true;	
 	}
+
+    public function enableAdd()
+    {
+        $this->add_action = true;
+    }
 
     public function disableSelect()
     {
@@ -233,9 +240,14 @@ class navitable
                 break;
 
             case 'in': // is in
-                $compare = $compareField.' IN ('.$compareField.') ';
-                if($returnResult)
-                    $result = in_array($compareField, explode(',', $compareField));
+                if(!empty($compareValue))
+                {
+                    $compare = $compareField.' IN ('.$compareValue.') ';
+                    if($returnResult)
+                        $result = in_array($compareField, explode(',', $compareValue));
+                }
+                else
+                    $compare = ' 1=1 ';
                 break;
 
             case 'ni': // is not in
@@ -443,7 +455,7 @@ class navitable
 		$html[] = '$("#'.$this->id.'").jqGrid(	"navGrid",
 												"#'.$this->id.'-pager", 
 												{
-													add: '.(!empty($this->edit_url)? 'true' : 'false').',
+													add: '.($this->add_action && !empty($this->edit_url)? 'true' : 'false').',
 													edit: '.(($this->click_action=='redirect')? 'false' : 'true').',
 													del: '.($this->delete_action? 'true' : 'false').',
 													search:'.(!empty($this->search_action)? 'true' : 'false').',
@@ -575,7 +587,7 @@ class navitable
 			        }
 			    });
 
-			    $('.navigate_grid_notes_span').bind('click', function()
+			    $('.navigate_grid_notes_span').on('click', function()
 			    {
 			        $(this).next().trigger('click');
 			    });
@@ -587,7 +599,7 @@ class navitable
 			        {
 			          $(this).css('opacity', 0.5);
 			        
-			          $(this).unbind('mouseenter').unbind('mouseleave').hover(
+			          $(this).off('mouseenter').off('mouseleave').hover(
 			              function()
                           { $(this).css('opacity', 1); },
                           function()
@@ -631,23 +643,26 @@ class navitable
                                     // TO DO: add color picker selector when adding a comment
                                     // $('.grid_note_save').after('<div style=\"float: right;\"></div>');
 
-                                    $(container).find('.grid_note_remove').bind('click', function()
+                                    $(container).find('.grid_note_remove').on('click', function()
                                     {
                                         var grid_note = $(this).parent();
 
-                                        $.get('?fid=".$_REQUEST['fid']."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'), function(result)
-                                        {
-                                            if(result=='true')
+                                        $.get(
+                                            '?fid=".$_REQUEST['fid']."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'),
+                                            function(result)
                                             {
-                                                $(grid_note).fadeOut();
-                                                $('#".$this->id."').trigger('reloadGrid');
+                                                if(result=='true')
+                                                {
+                                                    $(grid_note).fadeOut();
+                                                    $('#".$this->id."').trigger('reloadGrid');
+                                                }
                                             }
-                                        });
+                                        );
                                     });
 
                                     $(container).find('.grid_note_save').button({
                                         icons: { primary: 'ui-icon-disk' }
-                                    }).bind('click', function()
+                                    }).on('click', function()
                                     {
                                         $.post('?fid=".$_REQUEST['fid']."&act=grid_notes_add_comment',
                                         {
@@ -689,7 +704,7 @@ class navitable
 			            top: $(this).offset().top - $('#navigate_grid_color_picker').height() + 3
 			        }).show();
 
-			        $('#navigate_grid_color_picker span').unbind('mouseenter').unbind('mouseleave').hover(
+			        $('#navigate_grid_color_picker span').off('mouseenter').off('mouseleave').hover(
                         function()
                         {
                             var new_background = $(this).css('background-color');
@@ -705,7 +720,7 @@ class navitable
                         }
                     );
 
-			        $('#navigate_grid_color_picker span').unbind('click').bind('click', function(e)
+			        $('#navigate_grid_color_picker span').off('click').on('click', function(e)
 			        {
 			            $('#navigate_grid_color_picker').hide();
 
@@ -746,11 +761,11 @@ class navitable
                           if($(e).target != $('#navigate_grid_color_picker span'))
                           {
                             $('#navigate_grid_color_picker').hide();
-                            $(window).unbind('click', remove_grid_color_picker);
+                            $(window).off('click', remove_grid_color_picker);
                           }
                     };
 
-			        $(window).unbind('click', remove_grid_color_picker).bind('click', remove_grid_color_picker);
+			        $(window).off('click', remove_grid_color_picker).on('click', remove_grid_color_picker);
 
 			    }).css('cursor', 'pointer');
 
@@ -758,7 +773,7 @@ class navitable
 			    $('.grid_color_swatch').parent().parent().each(function(i, row)
 			    {
                       // for each row, clear the custom background color on mouse enter
-                      $(row).unbind('mouseenter').bind('mouseenter', function()
+                      $(row).off('mouseenter').on('mouseenter', function()
                       {
                           $(this).find('td').css('background', 'transparent');
                       });
