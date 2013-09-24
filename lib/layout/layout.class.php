@@ -139,6 +139,9 @@ class layout
 
         $this->add_style_tag('lib/external/qtip2/jquery.qtip.css');
 		$this->add_script_tag('lib/external/qtip2/jquery.qtip.js');
+
+        $this->add_style_tag('lib/external/jautochecklist/css/jAutochecklist.css');
+		$this->add_script_tag('lib/external/jautochecklist/js/jAutochecklist.js');
 		
 		$this->add_script_tag('lib/external/flot/jquery.flot.js');
 		$this->add_script_tag('lib/external/flot/jquery.flot.pie.js');		
