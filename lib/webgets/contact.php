@@ -58,13 +58,21 @@ function nvweb_contact($vars=array())
 	if(empty($vars['notify']))
         $vars['notify'] = 'alert';
 
-	$out = '';	
+	$out = '';
 
 	switch(@$vars['mode'])
 	{	
 		case 'send':
             if(!empty($_POST))  // form sent
             {
+                // a page may have several forms, which one do we have to check?
+                if(!empty($vars['form']))
+                {
+                    list($field_name, $field_value) = explode('=', $vars['form']);
+                    if($_POST[$field_name]!=$field_value)
+                        return;
+                }
+
                 // prepare fields and labels
                 $fields = explode(',', @$vars['fields']);
                 $labels = explode(',', @$vars['labels']);
@@ -112,7 +120,12 @@ function nvweb_contact($vars=array())
                 // create e-mail message and send it
                 $message = nvweb_contact_generate($fields);
 
-                $sent = nvweb_send_email($website->name, $message, $website->contact_emails);
+                $subject = $vars['subject'];
+                if(!empty($subject))
+                    $subject = ' | '.$subject;
+                $subject = $website->name.$subject;
+
+                $sent = nvweb_send_email($subject, $message, $website->contact_emails);
 
                 if($sent)
                     $out = nvweb_contact_notify($vars, false, $webgets[$webget]['translations']['contact_request_sent']);
@@ -143,7 +156,19 @@ function nvweb_contact_notify($vars, $is_error, $message)
             break;
 
         default:
-            nvweb_after_body('js', 'alert("'.$message.'");');
+            // if empty, default is alert
+            if(empty($vars['notify']))
+            {
+                nvweb_after_body('js', 'alert("'.$message.'");');
+            }
+            else
+            {
+                // if not empty, it's a javascript function call
+                if($is_error && !empty($vars['error_callback']))
+                    nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                else
+                    nvweb_after_body('js', $vars['notify'].'("'.$message.'");');
+            }
             break;
     }
 
@@ -158,11 +183,22 @@ function nvweb_contact_generate($fields)
 
     foreach($fields as $field => $label)
     {
+       if(substr($field, -2, 2)=='[]')
+           $field = substr($field, 0, -2);
+
+        $value = nl2br($_REQUEST[$field]);
+        if(is_array($_REQUEST[$field]))
+        {
+            $value = print_r($_REQUEST[$field], true);
+            $value = str_replace("Array\n", '', $value);
+            $value = nl2br($value);
+        }
+
         $out[] = '<div style="margin: 25px 0px 10px 0px;">';
         $out[] = '    <div style="color: #595959; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
         $out[] = '</div>';
         $out[] = '<div style=" background: #fff; border-radius: 6px; padding: 10px; margin-top: 5px; line-height: 25px; text-align: justify; ">';
-        $out[] = '    <div class="text" style="color: #595959; font-size: 16px; font-style: italic; font-family: Verdana;">'.nl2br($_REQUEST[$field]).'</div>';
+        $out[] = '    <div class="text" style="color: #595959; font-size: 16px; font-style: italic; font-family: Verdana;">'.$value.'</div>';
         $out[] = '</div>';
     }
 
