@@ -295,8 +295,8 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         $mail->IsHTML(true);
 
         $mail->Subject = $subject;
-        $mail->AltBody = strip_tags($body);
         $mail->MsgHTML($body);
+        $mail->AltBody = strip_tags($body);
 
         if(is_array($attachments))
         {

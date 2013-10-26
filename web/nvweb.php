@@ -56,7 +56,8 @@ try
 
     // remove the "folder" part of the route
     $route = $_REQUEST['route'];
-    if(!empty($website->folder))
+
+    if(!empty($website->folder) && strpos($route, $website->folder)!==false)
         $route = substr($route, strlen($website->folder));
 
 	$nvweb_absolute = $idn->encode($website->absolute_path());
@@ -138,7 +139,7 @@ try
 
 	if(empty($template)) 
 		throw new Exception('Navigate CMS: no template found!');
-		
+
 	nvweb_plugins_load();
     $events->extension_backend_bindings();
 

@@ -9,8 +9,8 @@ function nvweb_plugins_load()
 	
 	$plugin_list = glob(NAVIGATE_PATH.'/plugins/*', GLOB_ONLYDIR);
 	$plugins = array();
-	
-	if(is_array($plugin_list))
+
+    if(is_array($plugin_list))
 	{
         // read the database to find the disabled plugins
         $DB->query('SELECT extension, enabled
@@ -20,14 +20,14 @@ function nvweb_plugins_load()
 
         $plugins_disabled = $DB->result('extension');
 
-		foreach($plugin_list as $plugin_path)
+        foreach($plugin_list as $plugin_path)
 		{
 			$plugin_name = basename($plugin_path);
 
             if(in_array($plugin_name, $plugins_disabled))
                 continue;
 
-			if(file_exists($plugin_path.'/'.$plugin_name.'.php'))
+            if(file_exists($plugin_path.'/'.$plugin_name.'.php'))
 				@include_once($plugin_path.'/'.$plugin_name.'.php');
 
 			$plugins[] = $plugin_name;

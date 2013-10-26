@@ -647,7 +647,7 @@ function websites_form($item)
 
     $table->addHeaderColumn(t(486, 'Alias'), 160);
     $table->addHeaderColumn('', 24);
-    $table->addHeaderColumn(t(487, 'Dirección real'), 60);
+    $table->addHeaderColumn(t(487, 'Real URL'), 60);
     $table->addHeaderColumn(t(35, 'Remove'), 60);
 
     $table->addRow($lang->code, array(
