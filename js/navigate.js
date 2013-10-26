@@ -473,7 +473,11 @@ function navigate_periodic_event()
 
 function navigate_hide_context_menus()
 {
-    setTimeout(function() { $(".ui-menu").fadeOut('fast'); }, 50);
+    setTimeout(function()
+    {
+        //$('select.select2').select2('close'); // should not be necessary, maybe fixed in 3.4.2?
+        $(".ui-menu").fadeOut('fast');
+    }, 50);
 }
 
 
@@ -847,8 +851,6 @@ function navigate_selector_upgrade(el)
             }
         }
     );
-
-    $(el).prev().find('.select2-choice').css('width', parseInt($(el).css('width')) - 9);
 }
 
 function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
