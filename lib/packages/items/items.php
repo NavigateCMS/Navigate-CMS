@@ -658,13 +658,13 @@ function items_list()
 
         if($("#jqgh_items_list_category button").length < 1)
         {
-            $("#jqgh_items_list_category").append("<button>");
+            $("#jqgh_items_list_category").prepend("<button>");
             $("#jqgh_items_list_category button").button({
                 icons: { primary: "ui-icon-gear" },
                 text: false
             }).css({
                 "float": "right",
-                "margin-top": "-15px",
+                "margin-top": "0px",
                 "padding": "3px 0px"
             }).on("click", items_list_choose_categories);
         }
