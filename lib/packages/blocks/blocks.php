@@ -164,10 +164,12 @@ function run()
 					$item->save();
                     property::save_properties_from_post('block', $item->id);
 					$id = $item->id;
-					// set block order
-					block::reorder($item->type, $_REQUEST['blocks-order'], $_REQUEST['blocks-order-fixed']);
 
-					unset($item);					
+					// set block order
+                    if(!empty($item->type) && !empty($_REQUEST['blocks-order']))
+					    block::reorder($item->type, $_REQUEST['blocks-order'], $_REQUEST['blocks-order-fixed']);
+
+					unset($item);
 					$item = new block();
 					$item->load($id);
 					$layout->navigate_notification(t(53, "Data saved successfully."), false);	

@@ -56,9 +56,11 @@ class naviorderedtable
 		
 		$table = array();
 		$table[] = '<table id="'.$this->id.'" class="box-table" width="'.$this->width.'">';
-		$table[] = '<tr class="nodrop nodrag">';	
+        $table[] = '<thead>';
+        $table[] = '<tr class="nodrop nodrag">';
 		$table[] = implode("\n", $this->headerColumns);
-		$table[] = '</tr>';			
+		$table[] = '</tr>';
+        $table[] = '</thead>';
 		
 		$table[] = '<tbody>';		
 		
