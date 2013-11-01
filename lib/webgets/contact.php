@@ -181,26 +181,32 @@ function nvweb_contact_generate($fields)
 
     $out[] = '<div style=" background: #E5F1FF; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
 
-    foreach($fields as $field => $label)
+    if(is_array($fields))
     {
-       if(substr($field, -2, 2)=='[]')
-           $field = substr($field, 0, -2);
-
-        $value = nl2br($_REQUEST[$field]);
-        if(is_array($_REQUEST[$field]))
+        foreach($fields as $field => $label)
         {
-            $value = print_r($_REQUEST[$field], true);
-            $value = str_replace("Array\n", '', $value);
-            $value = nl2br($value);
-        }
+           if(substr($field, -2, 2)=='[]')
+               $field = substr($field, 0, -2);
 
-        $out[] = '<div style="margin: 25px 0px 10px 0px;">';
-        $out[] = '    <div style="color: #595959; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
-        $out[] = '</div>';
-        $out[] = '<div style=" background: #fff; border-radius: 6px; padding: 10px; margin-top: 5px; line-height: 25px; text-align: justify; ">';
-        $out[] = '    <div class="text" style="color: #595959; font-size: 16px; font-style: italic; font-family: Verdana;">'.$value.'</div>';
-        $out[] = '</div>';
+            if(is_array($_REQUEST[$field]))
+            {
+                $value = print_r($_REQUEST[$field], true);
+                $value = str_replace("Array\n", '', $value);
+                $value = nl2br($value);
+            }
+            else
+                $value = nl2br($_REQUEST[$field]);
+
+            $out[] = '<div style="margin: 25px 0px 10px 0px;">';
+            $out[] = '    <div style="color: #595959; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
+            $out[] = '</div>';
+            $out[] = '<div style=" background: #fff; border-radius: 6px; padding: 10px; margin-top: 5px; line-height: 25px; text-align: justify; ">';
+            $out[] = '    <div class="text" style="color: #595959; font-size: 16px; font-style: italic; font-family: Verdana;">'.$value.'</div>';
+            $out[] = '</div>';
+        }
     }
+    else
+        $out[] = $fields;
 
     $out[] = '</div>';
 
