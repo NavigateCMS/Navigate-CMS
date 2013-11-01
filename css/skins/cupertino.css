@@ -1875,9 +1875,9 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 }
 
 /* select2 styles -- jQuery UI Cupertino */
-
 .select2-container .select2-choice
 {
+    /* to match navigate input fields width */
     width: 398px;
 }
 
@@ -2106,4 +2106,10 @@ div.jGrowl div.jGrowl-notification
     border: 1px solid #F9DD34;
     color: #363636;
     border-radius: 8px;
+}
+
+/* jQuery UI hack */
+.ui-autocomplete
+{
+    z-index: 10001 !important;
 }
