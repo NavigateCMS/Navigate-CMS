@@ -127,21 +127,18 @@ function nvweb_comments($vars=array())
 
                 // reload the element to retrieve the new comments
                 $element = new item();
-                $element->load($element->id);
+                $element->load($comment->item);
 
                 if($current['type']=='item')
                     $current['object'] = $element;
 
-                // trigger the "new_comment" event through the plugin system
-                $events->trigger('comment', 'after_insert', array('comment' => $comment));;
+                // trigger the "new_comment" event through the extensions system
+                $events->trigger('comment', 'after_insert', array('comment' => $comment));
 
 				if(!empty($comment->id) && $status == -1)
 					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
 
-				$title = $DB->query_single('text', 'nv_webdictionary', ' node_type= "item" AND
-																		 node_id = '.protect($element->id).' AND
-																		 subtype = "title" AND 
-																		 lang = '.protect($current['lang']));					
+                $title = $element->dictionary[$current['lang']]['title'];
 
 				if(!empty($element->comments_moderator))
 				{				
