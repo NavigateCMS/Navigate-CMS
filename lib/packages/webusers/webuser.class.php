@@ -163,7 +163,9 @@ class webuser
 		global $DB;	
 		global $website;
 
-        $groups = 'g'.implode(',g', $this->groups);
+        if(is_array($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
         if($groups == 'g')
             $groups = '';
 
@@ -208,7 +210,9 @@ class webuser
 	{
 		global $DB;
 
-        $groups = 'g'.implode(',g', $this->groups);
+        if(is_array($this->groups))
+            $groups = 'g'.implode(',g', $this->groups);
+
         if($groups == 'g')
             $groups = '';
 	    
