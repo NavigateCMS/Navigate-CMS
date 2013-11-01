@@ -26,7 +26,11 @@ $(window).on('load', function()
     {
         $(".select2").each(function(i, el)
         {
+            // if width applied, force Select2 component to it
+            var width = $(el)[0].style.width;
             navigate_selector_upgrade(el);
+            if(width)
+                $(el).prev().find('a:first').css('width', width);
         });
     }
 
