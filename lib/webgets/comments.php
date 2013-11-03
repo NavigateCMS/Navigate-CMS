@@ -138,28 +138,32 @@ function nvweb_comments($vars=array())
 				if(!empty($comment->id) && $status == -1)
 					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
 
-                $title = $element->dictionary[$current['lang']]['title'];
+                $message = navigate_compose_email(array(
+                    array(
+                        'title' => t(9, 'Content'),
+                        'content' => $element->dictionary[$current['lang']]['title']
+                    ),
+                    array(
+                        'title' => $webgets[$webget]['translations']['name'],
+                        'content' => $_REQUEST['reply-name'].@$webuser->username
+                    ),
+                    array(
+                        'title' => $webgets[$webget]['translations']['email'],
+                        'content' => $_REQUEST['reply-email'].@$webuser->email
+                    ),
+                    array(
+                        'title' => $webgets[$webget]['translations']['message'],
+                        'content' => nl2br($_REQUEST['reply-message'])
+                    ),
+                    array(
+                        'footer' => '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&tab=5&id='.$element->id.'">'.$webgets[$webget]['translations']['review_comments'].'</a>'
+                    )
+                ));
 
-				if(!empty($element->comments_moderator))
-				{				
-					$message 	= array();
-					$message[]  = '<h2>'.$website->name.'</h2>';
-					$message[]  = '';				
-					$message[]  = $webgets[$webget]['translations']['new_comment'];
-					$message[]  = '';				
-					$message[]  = '<strong>'.$title.'</strong>';	
-					$message[]  = $webgets[$webget]['translations']['name'].': '.$_REQUEST['reply-name'].@$webuser->username;
-					$message[]  = $webgets[$webget]['translations']['email'].': '.$_REQUEST['reply-email'].@$webuser->email;
-					$message[]  = $webgets[$webget]['translations']['message'].': '.$_REQUEST['reply-message'];																								
-					$message[]  = '';				
-					$message[]  = '';		
-					$message[]  = '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&tab=5&id='.$element->id.'">'.$webgets[$webget]['translations']['review_comments'].'</a>';
-					$message[]  = '';																
-					$message[]  = 'Navigate CMS';												
-					$message 	= implode("<br />", $message);
-						
-					nvweb_send_email($website->name.': '.$webgets[$webget]['translations']['new_comment'], $message, user::email_of($element->comments_moderator));
-				}
+                if(!empty($element->comments_moderator))
+					nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, user::email_of($element->comments_moderator));
+
+                nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message);
 			}
 			break;
 
