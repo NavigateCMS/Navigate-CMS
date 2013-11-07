@@ -70,17 +70,21 @@ class grid_notes
         
         $ids = array_filter($ids);
 
-        $DB->query(
-            'SELECT gn.id, gn.item_id, gn.background, gn.note, gn.date_created, u.username as creator
-               FROM nv_notes gn, nv_users u
-              WHERE gn.website = '.protect($website->id).'
-                AND gn.item_type = '.protect($type).'
-                AND gn.item_id IN ('.implode(",", $ids).')
-                AND u.id = gn.user
-              ORDER BY gn.item_id ASC, gn.date_created DESC'
-        );
+        if(!empty($ids))
+        {
+            $DB->query(
+                'SELECT gn.id, gn.item_id, gn.background, gn.note, gn.date_created, u.username as creator
+                   FROM nv_notes gn, nv_users u
+                  WHERE gn.website = '.protect($website->id).'
+                    AND gn.item_type = '.protect($type).'
+                    AND gn.item_id IN ('.implode(",", $ids).')
+                    AND u.id = gn.user
+                  ORDER BY gn.item_id ASC, gn.date_created DESC'
+            );
 
-        $grid_notes = $DB->result();
+            $grid_notes = $DB->result();
+        }
+
         if(!is_array($grid_notes))
             $grid_notes = array();
 
@@ -116,6 +120,9 @@ class grid_notes
     {
         global $DB;
         global $website;
+
+        if(empty($id) || !is_integer($id))
+            return array();
 
         $DB->query("    SELECT gn.*, u.username as username
                         FROM nv_notes gn, nv_users u

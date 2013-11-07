@@ -69,7 +69,10 @@ class theme
 	public function templates()
 	{		
 		$data = array();
-		
+
+        if(!is_array($this->templates))
+            $this->templates = array();
+
 		foreach($this->templates as $template)
 		{
 			$template->id = $template->type;
