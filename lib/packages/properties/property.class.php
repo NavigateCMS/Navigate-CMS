@@ -350,7 +350,7 @@ class property
 
                 for($p=0; $p < count($template_properties); $p++)
                 {
-                    if($template_properties[$p]->element == $element)
+                    if(empty($element) || $template_properties[$p]->element == $element)
                         $data[] = $template_properties[$p];
                 }
             }

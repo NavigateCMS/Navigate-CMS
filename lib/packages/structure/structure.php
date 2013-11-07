@@ -126,6 +126,9 @@ function run()
 			break;
 			
 		case 'json_find_item':
+            // find items by its title
+            // the items must have its own path (free OR not embedded to a category)
+
 			$DB->query('SELECT nvw.node_id as id, nvw.text as label, nvw.text as value
 						  FROM nv_webdictionary nvw, nv_items nvi
 						 WHERE nvw.node_type = "item"
@@ -141,7 +144,7 @@ function run()
 				      ORDER BY nvw.text ASC
 					     LIMIT 30',
 						'array');
-						
+
 			echo json_encode($DB->result());
 			core_terminate();					
 			break;
