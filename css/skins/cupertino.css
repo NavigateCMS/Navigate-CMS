@@ -1874,6 +1874,7 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 	color: #fff !important;
 }
 
+
 /* select2 styles -- jQuery UI Cupertino */
 .select2-container .select2-choice
 {
@@ -1882,7 +1883,8 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 }
 
 .select2-container .select2-choice,
-.select2-container .select2-choice:focus
+.select2-container .select2-choice:focus,
+.select2-container.select2-drop-above .select2-choice
 {
     background: url("../../img/skins/background_menu_items.png") repeat scroll 0 0 #E8EDFF;
     border: 1px solid #CCCCCC;
@@ -1890,6 +1892,15 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
     box-shadow: none;
     height: 24px;
 }
+
+/*
+.select2-container.select2-drop-above .select2-choice
+{
+    background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3;
+    color: #FFFFFF;
+    font-weight: bold;
+}
+*/
 
 .select2-container .select2-choice span
 {
@@ -1901,12 +1912,6 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
     border-left: 1px solid #ccc;
 }
 
-.select2-container.select2-drop-above .select2-choice
-{
-    background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3;
-    color: #FFFFFF;
-    font-weight: bold;
-}
 
 .select2-results
 {
@@ -1961,6 +1966,7 @@ ul.mcdropdown_autocomplete li.mc_hover_parent {
 {
     border-color: #bbc;
 }
+
 
 
 .navi-ui-widget-shadow

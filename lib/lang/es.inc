@@ -525,3 +525,11 @@
 524     # Elementos eliminados correctamente
 525     # Borrar comentario (sin confirmación)
 526     # Traducciones
+527     # Mercado
+528     # Disponibles
+529     # No ha sido posible descargar el objeto que acabas de comprar en la tienda.
+530     # Tendrás que visitar tu zona privada en la tienda para descargar el fichero, luego usar el botón <strong>Instalar desde fichero</strong> que encontrarás en la barra de acciones de la derecha.
+531     # Disculpa las molestias.
+532     # Tienda de Navigate CMS
+533     # Encontrar elemento por título
+534     # Sólo puedes seleccionar elementos que tengan su propia ruta (no elementos incrustados a una categoría)

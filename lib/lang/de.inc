@@ -525,3 +525,11 @@
 524     # Elemente erfolgreich gelöscht
 525     # Lösche Kommentar (ohne Bestätigung)
 526     # Übersetzungen
+527     # Marktplatz
+528     # Verfügbar
+529     # Es war nicht möglich, den Download der Artikel, den Sie gerade gekauft vom Markt.
+530     # Sie müssen Ihre Marketplace Armaturenbrett besuchen und laden Sie die Datei, dann verwenden Sie die <strong> Install from file </ strong> Sie in der Aktionsleiste auf der rechten Seite zu finden.
+531     # Sorry für die Unannehmlichkeiten.
+532     # Navigate CMS Marketplace
+533     # Finden Element nach Titel
+534     # Sie können nur Elemente, die ihren eigenen Weg haben (keine Kategorie eingebettete Elemente)

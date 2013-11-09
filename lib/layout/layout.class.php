@@ -347,8 +347,11 @@ class layout
         else
             $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = false;</script>';
 
+        // jqgrid translation
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
-		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';
+
+        // jquery ui custom css
+        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';
 
 		return implode("\n", $out);
 	}
@@ -359,7 +362,11 @@ class layout
 		if(empty($user->skin)) $user->skin = 'cupertino';
 		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/skins/'.$user->skin.'.css" />';
 
-		return implode("\n", $out);
+        // select2 translation (if not english)
+        if($user->language != 'en')
+            $out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/select2/select2_locale_'.$user->language.'.js"></script>';
+
+        return implode("\n", $out);
 	}	
 	
 	public function head()
