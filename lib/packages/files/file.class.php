@@ -314,34 +314,37 @@ class file
 		return $files;	
 	}		
 	
-	public static function filesByMedia($media, $offset=0, $limit=-1, $wid=NULL)
+	public static function filesByMedia($media, $offset=0, $limit=-1, $wid=NULL, $text="")
 	{
 		global $DB;
 		global $website;
 		
 		if(empty($wid))
 			$wid = $website->id;		
-		
-		$files = array();
-		
+
 		if($limit < 1)
 			$limit = 2147483647;
+
+        if(!empty($text))
+            $text = ' AND name LIKE '.protect('%'.$text.'%');
 		
-		$DB->query('  SELECT * FROM nv_files
+		$DB->query('  SELECT SQL_CALC_FOUND_ROWS * FROM nv_files
 					   WHERE type = '.protect($media).'
 					     AND enabled = 1
-						 AND website = '.$wid.' 
+						 AND website = '.$wid.'
+						 '.$text.'
 					ORDER BY date_added DESC, name ASC 
 					   LIMIT '.$limit.' 
-					  OFFSET '.$offset);		  
+					  OFFSET '.$offset);
 
-		return $DB->result();			
+        $total = $DB->foundRows();
+        $rows = $DB->result();
+
+		return array($rows, $total);
 	}
 		
 	public static function getFullPathTo($parent)
 	{
-		global $DB;
-		
 		if($parent > 0)
 		{
 			$folder = new file();

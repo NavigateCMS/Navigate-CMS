@@ -9,8 +9,11 @@ class naviorderedtable
 	public $rows;
 	public $dblclick_callback;
 	
-	public function __construct($id)	
+	public function __construct($id=null)
 	{
+        if(empty($id))
+            $id = uniqid('naviorderedtable_');
+
 		$this->id = $id;
 		$this->rows = array();
 	}

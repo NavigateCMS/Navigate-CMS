@@ -933,16 +933,15 @@ function files_media_browser($limit = 50, $offset = 0)
     global $website;
 	
 	//$website = $_REQUEST['website'];
-	
+
 	$media = (empty($_REQUEST['media'])? 'image' : $_REQUEST['media']);
 	$text = $_REQUEST['text'];
-	
+
 	$out = array();
 
-    // TODO: optimize file list loading using REAL offsets and limits
-    //       right now we only increase the limit and reload all files
-        $limit = $offset + $limit;
-        $offset = 0;
+    $limit = $offset + $limit;
+    $offset = 0;
+    $total = 0;
 	
 	if($media=='folder')
 	{
@@ -950,57 +949,73 @@ function files_media_browser($limit = 50, $offset = 0)
 		$files = file::filesOnPath($_REQUEST['parent'], $website->id);
 		if($_REQUEST['parent'] > 0)	// add "back" special folder
 		{
-			$previous = $DB->query_single('parent', 'nv_files', ' id = '.$_REQUEST['parent'].' AND website = '.$website->id);
-			array_unshift($files, json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}')); 			
+			$previous = $DB->query_single(
+                'parent',
+                'nv_files',
+                ' id = '.$_REQUEST['parent'].' AND website = '.$website->id
+            );
+			array_unshift(
+                $files,
+                json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}')
+            );
 		}
+
+        $total = count($files);
+        $files_shown = array();
+        for($i=$offset; $i+$offset < $limit; $i++)
+        {
+            if(empty($files[$i])) break;
+
+            // search by text in a folder
+            if(!empty($text))
+                if(stripos($files[$i]->name, $text)===false) continue;
+
+            $files_shown[] = $files[$i];
+        }
 	}
 	else
-		$files = file::filesByMedia($media, 0, -1, $website->id);
+    {
+		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $website->id, $text);
+    }
 
-	for($i=$offset; $i+$offset < $limit; $i++)
+	foreach($files_shown as $f)
 	{
-		if(empty($files[$i])) break;
-		
-		if(!empty($text))
-			if(stripos($files[$i]->name, $text)===false) continue;
-
         $website_root = $website->absolute_path(true).'/object';
         if(empty($website_root)) $website_root = NVWEB_OBJECT;
-        $download_link = $website_root.'?id='.$files[$i]->id.'&disposition=attachment';
+        $download_link = $website_root.'?id='.$f->id.'&disposition=attachment';
 
-        if($files[$i]->type == 'image')
+        if($f->type == 'image')
 		{
-			$icon = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$files[$i]->id.'&disposition=inline&width=75&height=75';
-			$out[] = '<div class="ui-corner-all draggable-'.$files[$i]->type.'"
-			               mediatype="'.$files[$i]->type.'"
-			               mimetype="'.$files[$i]->mime.'"
-			               image-width="'.$files[$i]->width.'"
-			               image-height="'.$files[$i]->height.'"
+			$icon = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$f->id.'&disposition=inline&width=75&height=75';
+			$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
+			               mediatype="'.$f->type.'"
+			               mimetype="'.$f->mime.'"
+			               image-width="'.$f->width.'"
+			               image-height="'.$f->height.'"
 			               download-link="'.$download_link.'"
-			               id="file-'.$files[$i]->id.'">
-			               <img src="'.$icon.'" title="'.$files[$i]->name.'" />
+			               id="file-'.$f->id.'">
+			               <img src="'.$icon.'" title="'.$f->name.'" />
                       </div>';
 		}
 		else
 		{
-			$icon = navibrowse::mimeIcon($files[$i]->mime, $files[$i]->type);
-			$navipath = file::getFullPathTo($files[$i]->id);
-			$out[] = '<div class="ui-corner-all draggable-'.$files[$i]->type.'"
-			               mediatype="'.$files[$i]->type.'"
-			               mimetype="'.$files[$i]->mime.'"
+			$icon = navibrowse::mimeIcon($f->mime, $f->type);
+			$navipath = file::getFullPathTo($f->id);
+			$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
+			               mediatype="'.$f->type.'"
+			               mimetype="'.$f->mime.'"
 			               navipath="'.$navipath.'"
 			               download-link="'.$download_link.'"
-			               id="file-'.$files[$i]->id.'">
+			               id="file-'.$f->id.'">
 			               <img src="'.$icon.'" width="50" height="50" />
                            <span style="clear: both; display: block; height: 0px;"></span>'.
-                           $files[$i]->name.'
+                           $f->name.'
                        </div>';
 		}
 	}
 	
-	if(count($files) > $limit + $offset)
+	if($total > $limit + $offset)
 	{
-		$icon = navibrowse::mimeIcon($files[$i]->mime, $files[$i]->type);
 		$out[] = '<div class="ui-corner-all" id="file-more">
                     <img src="'.NAVIGATE_URL.'/img/icons/ricebowl/actions/forward.png" width="32" height="32"  style="margin-top: 14px;" />'.
                     t(234, 'More elements').'

@@ -2119,3 +2119,52 @@ div.jGrowl div.jGrowl-notification
 {
     z-index: 10001 !important;
 }
+
+
+/* CSS loader */
+.navigatecms_loader
+{
+    border: 4px solid #eeeeee;
+    font-size: 40px;
+    width: 1em;
+    height: 1em;
+    border-radius: .5em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-animation: navigatecms_loader_spin 1.5s linear infinite;
+    -moz-animation: navigatecms_loader_spin 1.5s linear infinite;
+    animation: navigatecms_loader_spin 1.5s linear infinite;
+    border-top-color: #3BAAE3;
+    margin: 21px 0px 0px 21px;
+}
+
+@-webkit-keyframes navigatecms_loader_spin {
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@-moz-keyframes navigatecms_loader_spin {
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes navigatecms_loader_spin {
+    to {
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+        -ms-transform: rotate(360deg);
+        -o-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

@@ -232,6 +232,7 @@ function navigate_media_browser_reload()
 			
 			$("#file-more").on("click", function()
 			{
+                $(this).html('<figure class="navigatecms_loader"></figure>');
                 navigate_media_browser_offset += navigate_media_browser_limit;
 				navigate_media_browser_reload();
 			});
