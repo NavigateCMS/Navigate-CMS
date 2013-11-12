@@ -931,8 +931,18 @@ function files_media_browser($limit = 50, $offset = 0)
 {
 	global $DB;
     global $website;
-	
-	//$website = $_REQUEST['website'];
+
+    // TODO: check user access permission to different websites
+
+	$wid = $_REQUEST['website'];
+    $ws = new website();
+    if(empty($wid))
+    {
+        $ws = $website;
+        $wid = $website->id;
+    }
+    else
+        $ws->load($wid);
 
 	$media = (empty($_REQUEST['media'])? 'image' : $_REQUEST['media']);
 	$text = $_REQUEST['text'];
@@ -946,13 +956,13 @@ function files_media_browser($limit = 50, $offset = 0)
 	if($media=='folder')
 	{
 		$parent = 0;
-		$files = file::filesOnPath($_REQUEST['parent'], $website->id);
+		$files = file::filesOnPath($_REQUEST['parent'], $wid);
 		if($_REQUEST['parent'] > 0)	// add "back" special folder
 		{
 			$previous = $DB->query_single(
                 'parent',
                 'nv_files',
-                ' id = '.$_REQUEST['parent'].' AND website = '.$website->id
+                ' id = '.$_REQUEST['parent'].' AND website = '.$wid
             );
 			array_unshift(
                 $files,
@@ -975,18 +985,19 @@ function files_media_browser($limit = 50, $offset = 0)
 	}
 	else
     {
-		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $website->id, $text);
+		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text);
     }
 
 	foreach($files_shown as $f)
 	{
-        $website_root = $website->absolute_path(true).'/object';
-        if(empty($website_root)) $website_root = NVWEB_OBJECT;
+        $website_root = $ws->absolute_path(true).'/object';
+        if(empty($website_root))
+            $website_root = NVWEB_OBJECT;
         $download_link = $website_root.'?id='.$f->id.'&disposition=attachment';
 
         if($f->type == 'image')
 		{
-			$icon = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$f->id.'&disposition=inline&width=75&height=75';
+			$icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&width=75&height=75';
 			$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
 			               mediatype="'.$f->type.'"
 			               mimetype="'.$f->mime.'"
