@@ -103,7 +103,9 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 				$etag_add  = '-'.$width.'-'.$height.'-'.$border;
 				$item->name = $width.'x'.$height.'-'.$item->name;
 				$item->size = filesize($path);
-				$item->mime = 'image/png';
+                $item->mime = 'image/png';
+                if(strpos(basename($path), '.jpg')!==false)
+				    $item->mime = 'image/jpeg';
 			}
 
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add);

@@ -554,4 +554,39 @@ function php_date_to_jquery_ui_datepicker_format($dateString)
     return preg_replace($pattern,$replace,$dateString);
 }
 
+
+/**
+ * Determines if a command exists on the current environment
+ *
+ * source: http://stackoverflow.com/questions/12424787/how-to-check-if-a-shell-command-exists-from-php
+ *
+ * @param string $command The command to check
+ * @return bool True if the command has been found ; otherwise, false.
+ */
+function command_exists($command)
+{
+    $whereIsCommand = (PHP_OS == 'WINNT') ? 'where' : 'which';
+
+    $process = proc_open(
+        "$whereIsCommand $command",
+        array(
+            0 => array("pipe", "r"), //STDIN
+            1 => array("pipe", "w"), //STDOUT
+            2 => array("pipe", "w"), //STDERR
+        ),
+        $pipes
+    );
+    if ($process !== false) {
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($process);
+
+        return $stdout != '';
+    }
+
+    return false;
+}
+
 ?>

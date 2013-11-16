@@ -563,7 +563,20 @@ class file
 		else 
 			$border = 0;		
 
-		// do we have the thumbnail already created for this image?
+        // do we have the thumbnail already created for this image?
+
+        // option A) opaque JPEG FILE
+        if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id.'.jpg'))
+        {
+            // ok, a file exists, but it's older than the image file? (original image file has changed)
+            if(filemtime(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id.'.jpg') > filemtime($original))
+            {
+                // the thumbnail already exists and is up to date
+                $thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id.'.jpg';
+            }
+        }
+
+        // option B) transparent PNG FILE
 		if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id))
 		{
 			// ok, a file exists, but it's older than the image file? (original image file has changed)
@@ -574,7 +587,7 @@ class file
 			}
 		}
 
-		if(empty($thumbnail))	// so we have to create a new thumbnail
+		if(empty($thumbnail) || isset($_GET['force']))	// so we have to create a new thumbnail
 		{
 			$thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;		
 
@@ -632,9 +645,50 @@ class file
 				$handle->image_ratio_crop = true;	
 			}
 
+            $handle->png_compression = 9;
             $handle->process(dirname($thumbnail));
-			rename($handle->file_dst_pathname, $thumbnail);
-		}
+            rename($handle->file_dst_pathname, $thumbnail);
+
+            // try to recompress the png thumbnail file to achieve the minimum file size,
+            // only if some extra apps are available
+            if(extension_loaded('imagick'))
+            {
+                $im = new Imagick($thumbnail);
+                $image_alpha_range = $im->getImageChannelRange(Imagick::CHANNEL_ALPHA);
+                //$image_alpha_mean = $im->getImageChannelMean(Imagick::CHANNEL_ALPHA);
+                $image_is_opaque = (    $image_alpha_range['minima']==0 &&
+                                        $image_alpha_range['maxima']==0 );
+
+                if(!$image_is_opaque)
+                {
+                    $im->setImageFormat('PNG32'); // Force a full RGBA image format with full semi-transparency.
+                    $im->setBackgroundColor(new ImagickPixel('transparent'));
+                    $im->setImageCompression(Imagick::COMPRESSION_UNDEFINED);
+                    $im->setImageCompressionQuality(0);
+                    $im->writeimage($thumbnail);
+                }
+                else
+                {
+                    $im->setImageFormat('JPG'); // create an OPAQUE JPG file with 95% quality
+                    $im->setImageCompressionQuality(95);
+                    $im->writeimage($thumbnail.'.jpg');
+                    @unlink($thumbnail);
+                    $thumbnail = $thumbnail.'.jpg';
+                }
+            }
+            /*
+           if(command_exists('pngquant')) // PNG Optimization: 8 bit with transparency
+           {
+               @shell_exec('pngquant -s1 --ext .pngquant '.$thumbnail);
+               if(file_exists($thumbnail.'.pngquant'))
+               {
+                   unlink($thumbnail);
+                   rename($thumbnail.'.pngquant', $thumbnail);
+               }
+           }
+           else*/
+        }
+        clearstatcache(true, $thumbnail);
 		return $thumbnail;
 	}
 	
@@ -817,5 +871,4 @@ class file
         return $out;
     }
 }
-
 ?>
