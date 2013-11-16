@@ -51,7 +51,7 @@ function nvweb_votes_calc($object, $round="", $half=false, $min="", $max="")
             break;
 
         default:
-            if(is_integer($round))
+            if(is_numeric($round))
                 $out = round($score, $round);
             else
                 $out = $score;

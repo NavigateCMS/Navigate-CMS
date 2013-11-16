@@ -182,7 +182,7 @@ function nvweb_list($vars=array())
     $categories = array_filter($categories);
 
 	// DATA SOURCE not given or ERROR
-	if((empty($vars['source']) || !is_integer($total)) && !empty($categories))
+	if((empty($vars['source']) || !is_numeric($total)) && !empty($categories))
 	{
         /*
          * TO DO: design decision ... lists should show items from published categories which has unpublished parent?

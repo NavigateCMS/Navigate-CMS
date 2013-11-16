@@ -121,7 +121,7 @@ class grid_notes
         global $DB;
         global $website;
 
-        if(empty($id) || !is_integer($id))
+        if(empty($id) || !is_numeric($id))
             return array();
 
         $DB->query("    SELECT gn.*, u.username as username
