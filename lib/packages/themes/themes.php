@@ -64,8 +64,64 @@ function run()
             }
             break;
 
+        case 'install_from_hash':
+            $url = base64_decode($_GET['hash']);
+
+            if(!empty($url))
+            {
+                $error = false;
+                parse_str(parse_url($url, PHP_URL_QUERY), $query);
+
+                core_file_curl($url, sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+
+                if(@filesize(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip') > 0)
+                {
+                    // uncompress ZIP and copy it to the themes dir
+                    @mkdir(NAVIGATE_PATH.'/themes/'.$query['code']);
+
+                    $zip = new ZipArchive();
+                    $zip_open_status = $zip->open(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+                    if($zip_open_status === TRUE)
+                    {
+                        $zip->extractTo(NAVIGATE_PATH.'/themes/'.$query['code']);
+                        $zip->close();
+
+                        $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                    }
+                    else // zip extraction failed
+                    {
+                        $layout->navigate_notification('ERROR '.$zip_open_status, true, true);
+                        $error = true;
+                    }
+                }
+                else
+                {
+                    $layout->navigate_notification(t(56, 'Unexpected error'), true, true);
+                    $error = true;
+                }
+
+                if($error)
+                {
+                    $layout->add_content('
+                        <div id="navigate_marketplace_install_from_hash_error">
+                            <p>'.t(529, "It has not been possible to download the item you have just bought from the marketplace.").'</p>
+                            <p>'.t(530, "You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.").'</p>
+                            <p>'.t(531, "Sorry for the inconvenience.").'</p>
+                            <a class="uibutton" href="http://www.navigatecms.com/en/marketplace/dashboard" target="_blank"><span class="ui-icon ui-icon-extlink" style="float: left;"></span> '.t(532, "Navigate CMS Marketplace").'</a>
+                        </div>
+                    ');
+                    $layout->add_script('
+                        $("#navigate_marketplace_install_from_hash_error").dialog({
+                            modal: true,
+                            title: "'.t(56, "Unexpected error").'"
+                        });
+                    ');
+                }
+            }
+            // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
+
         case 'theme_upload':
-            if($_FILES['theme-upload']['error']==0)
+            if(isset($_FILES['theme-upload']) && $_FILES['theme-upload']['error']==0)
             {
                 // uncompress ZIP and copy it to the themes dir
                 $tmp = trim(substr($_FILES['theme-upload']['name'], 0, strpos($_FILES['theme-upload']['name'], '.')));
@@ -129,92 +185,194 @@ function themes_grid($list)
 	$navibars = new navibars();	
 	$navibars->title(t(367, 'Themes'));
 
+    $marketplace = isset($_REQUEST['marketplace']);
+
     $navibars->add_actions(	array(	'<a href="#" id="theme-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'));
-
-    //$navibars->add_actions(	array(	'<a href="?fid=themes&act=export" id="theme-export-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_go.png"> '.t(475, 'Export').'</a>'));
-
     $navibars->add_actions(	array(	'<a href="?fid=themes&act=theme_sample_content_export" id="theme-sample-content-export-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/server_compressed.png"> '.t(480, 'Export sample content').'</a>'));
 
 	$grid = new navigrid('themes');	
-	
+
 	$grid->set_header('
-		<div class="navibrowse-path ui-corner-all">
-			<a href="http://themes.navigatecms.com" target="_blank"><img src="img/icons/silk/world.png" width="16px" height="16px" align="absbottom" /> '.t(369, 'More on').' Navigate CMS</a>
-		</div>
-	');
-	
-	$grid->item_size(220, 220);
-	$grid->thumbnail_size(138, 150);
-    $grid->highlight_on_click = false;
-	
-	$themes = array();
-
-	// current website theme
-	if(!empty($website->theme))
-	{
-        $theme = new theme();
-        $theme->load($website->theme);
-
-		$themes[] = array(
-			'id'	=>  $website->theme,
-			'name'	=>	'<div class="navigrid-themes-title navigrid-themes-installed">'.$theme->title.'</div>',
-			'thumbnail' => NAVIGATE_URL.'/themes/'.$website->theme.'/thumbnail.png',
-			'header' => '
-				<a href="#" class="navigrid-themes-info" theme="'.$website->theme.'" theme-title="'.$theme->title.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>
-			',
-			'footer' => '
-				<a href="?fid=websites&act=edit&id='.$website->id.'&tab=6" class="uibutton navigrid-themes-button navigrid-theme-configure"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wrench_orange.png"> '.t(200, 'Options').'</a>
-            '.(
-                !file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$website->theme.'_sample.zip')?
-                    '' : '<a href="#" class="uibutton navigrid-themes-button navigrid-theme-install-demo"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wand.png"> '.t(484, 'Install demo').'</a>'
-            )
-		);
-	}
-	
-	for($t=0; $t < count($list); $t++)
-	{
-		if($website->theme==$list[$t]['code']) continue;
-
-		$themes[] = array(
-			'id'	=>  $list[$t]['code'],
-			'name'	=>	'<div class="navigrid-themes-title">'.$list[$t]['title'].'</div>',
-			'thumbnail' => NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/thumbnail.png',
-			'header' => '
-			    <a href="#" class="navigrid-themes-remove" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"></a>
-				<a href="#" class="navigrid-themes-info" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>
-			',
-			'footer' => '
-				<a href="'.NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/demo.html'.'" class="uibutton navigrid-themes-button" target="_blank"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>
-                <a href="#" class="uibutton navigrid-themes-button navigrid-themes-install" theme="'.$list[$t]['code'].'" target="_blank" style=" margin-left: 5px; "><img height="16" align="absmiddle" width="16" src="img/icons/silk/world_go.png"> '.t(365, 'Install').'</a>
-            '
-		);
-	}
-		
-	$grid->items($themes);
-	
-	$navibars->add_content($grid->generate());
-
-	$navibars->add_content('
-		<div id="navigrid-themes-install-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
-			'.t(371, 'Installing a new theme removes the settings of the old one.').'<br />
-			'.t(372, 'The list of available block types may also change.').'<br /><br />
-			'.t(373, 'Are you sure you want to continue?').'					
-		</div>
-		
-		<div id="navigrid-themes-information" title="" style=" display: none; "></div>
+        <div class="navibrowse-path ui-corner-all">
+            <input type="checkbox" id="theme-available-button" /><label for="theme-available-button"><img src="img/icons/silk/rainbow.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
+            <input type="checkbox" id="theme-marketplace-button" /><label for="theme-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
+        </div>
 	');
 
-    $navibars->add_content('
-		<div id="navigrid-themes-install-demo-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
-			'.t(483, 'Do you really want to import the default website for the theme selected?').'
-		</div>'
-    );
+    $layout->add_script('
+        $("#theme-available-button").button().on("click", function()
+        {
+            window.location.replace("?fid=themes");
+        });
+        $("#theme-marketplace-button").button();
+        $("#theme-marketplace-button").button().on("click", function()
+        {
+            window.location.replace("?fid=themes&marketplace");
+        });
 
-    $navibars->add_content('
-		<div id="navigrid-themes-remove-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
-			'.t(57, 'Do you really want to delete the item?').'
-		</div>'
-    );
+        $(".navibrowse-path input").removeAttr("checked");
+        $("#theme-'.($marketplace? 'marketplace' : 'available').'-button").attr("checked", "checked");
+        $("#theme-marketplace-button,#theme-available-button").button("refresh");
+    ');
+
+    if(!$marketplace)
+    {
+        $grid->item_size(220, 220);
+        $grid->thumbnail_size(138, 150);
+        $grid->highlight_on_click = false;
+
+        $themes = array();
+
+        // current website theme
+        if(!empty($website->theme))
+        {
+            $theme = new theme();
+            $theme->load($website->theme);
+
+            $update_ver = $_SESSION['themes_updates'][$theme->name];
+
+            if(version_compare($update_ver, $theme->version, '<='))
+                $update_ver = '';
+            else
+                $update_ver = $theme->version.' &raquo; '.$update_ver;
+
+            $themes[] = array(
+                'id'	=>  $website->theme,
+                'name'	=>	'<div class="navigrid-themes-title navigrid-themes-installed">'.$theme->title.'</div>',
+                'thumbnail' => NAVIGATE_URL.'/themes/'.$website->theme.'/thumbnail.png',
+                'header' => '
+                    <a href="#" class="navigrid-themes-info" theme="'.$website->theme.'" theme-title="'.$theme->title.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>
+                '.(empty($update_ver)? '' : '
+                    <a href="#" class="navigrid-themes-update" theme="'.$website->theme.'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>
+                '),
+                'footer' => '
+                    <a href="?fid=websites&act=edit&id='.$website->id.'&tab=6" class="uibutton navigrid-themes-button navigrid-theme-configure"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wrench_orange.png"> '.t(200, 'Options').'</a>
+                '.(
+                    !file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$website->theme.'_sample.zip')?
+                        '' : '<a href="#" class="uibutton navigrid-themes-button navigrid-theme-install-demo"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wand.png"> '.t(484, 'Install demo').'</a>'
+                )
+            );
+        }
+
+        for($t=0; $t < count($list); $t++)
+        {
+            if($website->theme==$list[$t]['code']) continue;
+
+            $update_ver = $_SESSION['themes_updates'][$list[$t]['code']];
+            if(version_compare($update_ver, $list[$t]['version'], '<='))
+                $update_ver = '';
+            else
+                $update_ver = $list[$t]['version'].' &raquo; '.$update_ver;
+
+            $themes[] = array(
+                'id'	=>  $list[$t]['code'],
+                'name'	=>	'<div class="navigrid-themes-title">'.$list[$t]['title'].'</div>',
+                'thumbnail' => NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/thumbnail.png',
+                'header' => '
+                    <a href="#" class="navigrid-themes-remove" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"></a>
+                    <a href="#" class="navigrid-themes-info" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>
+                    '.(empty($update_ver)? '' : '
+                    <a href="#" class="navigrid-themes-update" theme="'.$list[$t]['code'].'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>
+                '),
+                'footer' => '
+                    <a href="'.NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/demo.html'.'" class="uibutton navigrid-themes-button" target="_blank"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>
+                    <a href="#" class="uibutton navigrid-themes-button navigrid-themes-install" theme="'.$list[$t]['code'].'" target="_blank" style=" margin-left: 5px; "><img height="16" align="absmiddle" width="16" src="img/icons/silk/world_go.png"> '.t(365, 'Install').'</a>
+                '
+            );
+        }
+
+        $grid->items($themes);
+
+        $navibars->add_content($grid->generate());
+
+        $navibars->add_content('
+            <div id="navigrid-themes-install-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
+                '.t(371, 'Installing a new theme removes the settings of the old one.').'<br />
+                '.t(372, 'The list of available block types may also change.').'<br /><br />
+                '.t(373, 'Are you sure you want to continue?').'
+            </div>
+
+            <div id="navigrid-themes-information" title="" style=" display: none; "></div>
+        ');
+
+        $navibars->add_content('
+            <div id="navigrid-themes-install-demo-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
+                '.t(483, 'Do you really want to import the default website for the theme selected?').'
+            </div>'
+        );
+
+        $navibars->add_content('
+            <div id="navigrid-themes-remove-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
+                '.t(57, 'Do you really want to delete the item?').'
+            </div>'
+        );
+
+        $navibars->add_content('
+            <div id="navigrid-themes-update" title="'.t(285, 'Update').'" style=" display: none; ">
+                <iframe src="about:blank"
+                    class="ui-corner-all"
+                    border="0" frameborder="0" allowtransparency="true">
+                </iframe>
+            </div>'
+        );
+    }
+    else
+    {
+        $html = '
+            <div class="navibrowse-path ui-corner-all">
+                <input type="checkbox" id="theme-available-button" /><label for="theme-available-button"><img src="img/icons/silk/rainbow.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
+                <input type="checkbox" id="theme-marketplace-button" /><label for="theme-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
+            </div>
+        ';
+        $html .= '
+            <iframe src="http://www.navigatecms.com/en/marketplace/themes"
+                    style="visibility: hidden; width: 1px; height: 1px;"
+                    class="ui-corner-all"
+                    border="0" frameborder="0" allowtransparency="true">
+            </iframe>
+        ';
+
+        $navibars->add_content('<div id="navigate-content-safe" class="ui-corner-all">'.$html.'</div>');
+
+        $layout->add_script('
+            $(window).on("resize focus blur", function()
+            {
+                $("#navigate-content-safe iframe").css({"width": 1, "height": 1});
+
+                $("#navigate-content-safe iframe").css({
+                    padding: "0px 4px",
+                    width: $(".navibrowse-path").width() + parseInt($(".navibrowse-path").css("padding-right")) * 2,
+                    height: $("#navigate-content-safe").height() - $("#navigate-content-safe div:first").height() - 24,
+                    visibility: "visible"
+                });
+            });
+
+            $("#navigate-content-safe iframe").on("focus blur load", function(){ $(window).trigger("resize");});
+        ');
+    }
+
+    $layout->add_script('
+        function navigatecms_marketplace_install_from_hash(hash)
+        {
+            window.location.replace("?fid=themes&act=install_from_hash&hash="+hash);
+        }
+
+        if(typeof(window.postMessage) != "undefined")
+        {
+           if(typeof(window.addEventListener) != "undefined")
+            {
+                window.addEventListener("message", function(event) {
+                    navigatecms_marketplace_install_from_hash(event.data);
+                }, false);
+            }
+            else
+            {
+                window.attachEvent("onmessage", function(e) {
+                    navigatecms_marketplace_install_from_hash(e.data);
+                });
+            }
+        }
+    ');
 
     $out = $navibars->generate();
 

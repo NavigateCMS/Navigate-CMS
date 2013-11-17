@@ -140,7 +140,7 @@ function run()
 					$total = $DB->foundRows();
 
 					$dataset = grid_notes::summary($dataset, 'item', 'id');
-														
+
 					$access = array(		0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
 											1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
 											2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',

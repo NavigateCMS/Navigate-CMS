@@ -860,6 +860,14 @@ table.treeTable
     display: block;
 }
 
+.navigrid-themes-update
+{
+	position: absolute;
+	margin-left: 200px;
+	margin-top: 24px;
+    display: block;
+}
+
 .navigrid-themes-remove
 {
     position: absolute;

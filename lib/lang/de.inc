@@ -527,7 +527,7 @@
 526     # Übersetzungen
 527     # Marktplatz
 528     # Verfügbar
-529     # Es war nicht möglich, den Download der Artikel, den Sie gerade gekauft vom Markt.
+529     # Es war nicht möglich, die Artikel aus dem Markt herunterladen.
 530     # Sie müssen Ihre Marketplace Armaturenbrett besuchen und laden Sie die Datei, dann verwenden Sie die <strong> Install from file </ strong> Sie in der Aktionsleiste auf der rechten Seite zu finden.
 531     # Sorry für die Unannehmlichkeiten.
 532     # Navigate CMS Marketplace

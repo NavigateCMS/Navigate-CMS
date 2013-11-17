@@ -362,7 +362,5 @@ class update
 		return true;
 		
 	}
-		
 }
-
 ?>

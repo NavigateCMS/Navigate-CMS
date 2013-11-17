@@ -7,7 +7,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/external/misc/zipfile.php');
 
-
 class theme
 {
 	public $name;
@@ -226,7 +225,8 @@ class theme
             if(!empty($theme_json))
                 $themes[$t] = array(
                     'code'  =>  $code,
-                    'title' =>  $theme_json->title
+                    'title' =>  $theme_json->title,
+                    'version' => $theme_json->version
                 );
 		}
 
@@ -756,6 +756,32 @@ class theme
         }
 
         return $dictionary;
+    }
+
+    public static function latest_available()
+    {
+        $list = theme::list_available();
+        $post = array();
+
+        if(!is_array($list))
+            return false;
+
+        foreach($list as $theme)
+            $post[$theme['code']] = $theme['version'];
+
+        $latest_update = core_curl_post(
+            'http://update.navigatecms.com/themes',
+            array(
+                'themes' => json_encode($post)
+            )
+        );
+
+        if(empty($latest_update))
+            return false;
+
+        $latest_update = json_decode($latest_update, true);
+
+        return $latest_update;
     }
 }
 ?>

@@ -527,7 +527,7 @@
 526     # Translations
 527     # Marketplace
 528     # Available
-529     # It has not been possible to download the item you have just bought from the marketplace.
+529     # It has not been possible to download the item from the marketplace.
 530     # You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.
 531     # Sorry for the inconvenience.
 532     # Navigate CMS Marketplace

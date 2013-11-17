@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2013. All rights reserved.                 |
-// | Last modified 16/06/2013                                               |
+// | Last modified 17/11/2013                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -110,6 +110,7 @@ if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES
 {
 	$_SESSION['latest_update'] = update::latest_available();
     $_SESSION['extensions_updates'] = extension::latest_available();
+    $_SESSION['themes_updates'] = theme::latest_available();
 }
 
 $idn = new idna_convert();
