@@ -102,8 +102,64 @@ function run()
             }
             break;
 
+        case 'install_from_hash':
+            $url = base64_decode($_GET['hash']);
+
+            if(!empty($url))
+            {
+                $error = false;
+                parse_str(parse_url($url, PHP_URL_QUERY), $query);
+                core_file_curl($url, sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+
+                if(@filesize(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip') > 0)
+                {
+                    // uncompress ZIP and copy it to the extensions dir
+                    @mkdir(NAVIGATE_PATH.'/plugins/'.$query['code']);
+
+                    $zip = new ZipArchive();
+                    $zip_open_status = $zip->open(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+                    if($zip_open_status === TRUE)
+                    {
+                        $zip->extractTo(NAVIGATE_PATH.'/plugins/'.$query['code']);
+                        $zip->close();
+
+                        $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                    }
+                    else // zip extraction failed
+                    {
+                        $layout->navigate_notification('ERROR '.$zip_open_status, true, true);
+                        $error = true;
+                    }
+                }
+                else
+                {
+                    $layout->navigate_notification(t(56, 'Unexpected error'), true, true);
+                    $error = true;
+                }
+
+                if($error)
+                {
+                    $layout->add_content('
+                        <div id="navigate_marketplace_install_from_hash_error">
+                            <p>'.t(529, "It has not been possible to download from the marketplace.").'</p>
+                            <p>'.t(530, "You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.").'</p>
+                            <p>'.t(531, "Sorry for the inconvenience.").'</p>
+                            <a class="uibutton" href="http://www.navigatecms.com/en/marketplace/dashboard" target="_blank"><span class="ui-icon ui-icon-extlink" style="float: left;"></span> '.t(532, "Navigate CMS Marketplace").'</a>
+                        </div>
+                    ');
+                    $layout->add_script('
+                        $("#navigate_marketplace_install_from_hash_error").dialog({
+                            modal: true,
+                            title: "'.t(56, "Unexpected error").'"
+                        });
+                    ');
+                }
+
+            }
+        // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
+
         case 'extension_upload':
-            if($_FILES['extension-upload']['error']==0)
+            if(isset($_FILES['extension-upload']) && $_FILES['extension-upload']['error']==0)
             {
                 // uncompress ZIP and copy it to the extensions dir
                 $tmp = trim(substr($_FILES['extension-upload']['name'], 0, strpos($_FILES['extension-upload']['name'], '.')));
@@ -149,109 +205,200 @@ function extensions_grid($list)
     $navibars = new navibars();
     $navibars->title(t(327, 'Extensions'));
 
+    $marketplace = isset($_REQUEST['marketplace']);
+
     $navibars->add_actions(	array(	'<a href="#" id="extension-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'));
 
-    $navibars->add_actions(	array ( 'search_form' ));
+    if(!$marketplace)
+        $navibars->add_actions(	array ( 'search_form' ));
 
     $grid = new navigrid('extensions');
 
     $grid->set_header('
-		<div class="navibrowse-path ui-corner-all">
-			<a href="http://extensions.navigatecms.com" target="_blank"><img src="img/icons/silk/world.png" width="16px" height="16px" align="absbottom" /> '.t(369, 'More on').' Navigate CMS</a>
-		</div>
+        <div class="navibrowse-path ui-corner-all">
+            <input type="checkbox" id="extension-available-button" /><label for="extension-available-button"><img src="img/icons/silk/rainbow.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
+            <input type="checkbox" id="extension-marketplace-button" /><label for="extension-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
+        </div>
 	');
-
-    $grid->item_size(170, 170);
-    $grid->thumbnail_size(160, 100);
-
-    $extensions = array();
-
-    for($i=0; $i < count($list); $i++)
-    {
-        $extensions[] = array(
-            'id'	=>  $list[$i]['code'],
-            'name'	=>	'<div class="navigrid-item-title">'.$list[$i]['title'].'<br />v'.$list[$i]['version'].'</div>',
-            'thumbnail' => NAVIGATE_URL.'/plugins/'.$list[$i]['code'].'/thumbnail.png',
-            'description' => $list[$i]['description'],
-            'header' => '',
-            'footer' => '
-				<div class="buttonset navigrid-item-buttonset" style=" font-size: 0.6em; margin-top: 5px; visibility: hidden; "
-				     extension="'.$list[$i]['code'].'" extension-title="'.$list[$i]['title'].'"
-				     run="'.$list[$i]['run'].'" enabled="'.$list[$i]['enabled'].'"  favorite="'.$list[$i]['favorite'].'">
-				    <button class="navigrid-extensions-info" title="'.t(457, 'Information').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></button>'.
-                    //(empty($list[$i]['run'])?       '' : '<button class="navigrid-extensions-favorite" title="'.t(464, 'Favorite').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/heart_'.($list[$i]['favorite']=='1'? 'delete' : 'add').'.png"></button>').
-                    (empty($list[$i]['options'])?   '' : '<button class="navigrid-extensions-settings" title="'.t(459, 'Settings').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cog.png"></button>').
-			        (empty($list[$i]['update'])?    '' : '<button class="navigrid-extensions-update" title="'.t(463, 'Update available').': '.$list[$i]['update'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></button>').
-                    '<button '.(($list[$i]['enabled']==='0')? 'style="display: none;"' : '').' class="navigrid-extensions-disable" title="'.t(460, 'Disable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/delete.png"></button>'.
-                    '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-enable" title="'.t(462, 'Enable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"></button>'.
-				    '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-remove" title="'.t(35, 'Delete').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cross.png"></button>
-				</div>
-			'
-        );
-    }
-
-    $grid->items($extensions);
-
-    $navibars->add_content($grid->generate());
-
-    $navibars->add_content('<div id="navigrid-extension-information" title="" style=" display: none; "></div>');
-    $navibars->add_content('<div id="navigrid-extension-options" title="" style=" display: none; "></div>');
-
-	$navibars->add_content('
-		<div id="navigrid-extensions-remove-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
-			'.t(57, 'Do you really want to delete the item?').'
-		</div>'
-    );
-
-    $out = $navibars->generate();
 
     $layout->add_script('
-        $(window).on("load", function()
+        $("#extension-available-button").button().on("click", function()
         {
-            $(".navigrid-item-buttonset").each(function(i, el)
-            {
-                $(el).hide().css("visibility", "visible");
-                $(el).fadeIn();
-                $(".navigrid-extensions-disable").addClass("ui-corner-right");
-            });
+            window.location.replace("?fid=extensions");
+        });
+        $("#extension-marketplace-button").button();
+        $("#extension-marketplace-button").button().on("click", function()
+        {
+            window.location.replace("?fid=extensions&marketplace");
         });
 
-		$.getScript("lib/packages/extensions/extensions.js", function()
-		{
-			navigate_extensions_refresh();
-		});
+        $(".navibrowse-path input").removeAttr("checked");
+        $("#extension-'.($marketplace? 'marketplace' : 'available').'-button").attr("checked", "checked");
+        $("#extension-marketplace-button,#extension-available-button").button("refresh");
+    ');
 
-		function navitable_quicksearch(value)
-		{
-		    $(".navigrid-item").hide();
+    if(!$marketplace)
+    {
+        $grid->item_size(170, 170);
+        $grid->thumbnail_size(160, 100);
 
-		    if(value=="")
-		        $(".navigrid-item").show();
-		    else
-		    {
-	            $(".navigrid-item").each(function(i, el)
-	            {
-	                var item_text = $(el).text().toLowerCase();
-	                if( item_text.indexOf(value.toLowerCase()) >= 0 )
-                        $(el).fadeIn();
-	            });
-		    }
-		}
-		$("#extension-upload-button").bind("click", function()
-		{
-		    $("#extension-upload-button").parent().find("form").remove();
-            $("#extension-upload-button").after(\'<form action="?fid=extensions&act=extension_upload" enctype="multipart/form-data" method="post"><input type="file" name="extension-upload" style=" display: none;" /></form>\');
-            $("#extension-upload-button").next().find("input").bind("change", function()
+        $extensions = array();
+
+        for($i=0; $i < count($list); $i++)
+        {
+            $extensions[] = array(
+                'id'	=>  $list[$i]['code'],
+                'name'	=>	'<div class="navigrid-item-title">'.$list[$i]['title'].'<br />v'.$list[$i]['version'].'</div>',
+                'thumbnail' => NAVIGATE_URL.'/plugins/'.$list[$i]['code'].'/thumbnail.png',
+                'description' => $list[$i]['description'],
+                'header' => '',
+                'footer' => '
+                    <div class="buttonset navigrid-item-buttonset" style=" font-size: 0.6em; margin-top: 5px; visibility: hidden; "
+                         extension="'.$list[$i]['code'].'" extension-title="'.$list[$i]['title'].'"
+                         run="'.$list[$i]['run'].'" enabled="'.$list[$i]['enabled'].'"  favorite="'.$list[$i]['favorite'].'">
+                        <button class="navigrid-extensions-info" title="'.t(457, 'Information').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></button>'.
+                        //(empty($list[$i]['run'])?       '' : '<button class="navigrid-extensions-favorite" title="'.t(464, 'Favorite').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/heart_'.($list[$i]['favorite']=='1'? 'delete' : 'add').'.png"></button>').
+                        (empty($list[$i]['options'])?   '' : '<button class="navigrid-extensions-settings" title="'.t(459, 'Settings').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cog.png"></button>').
+                        (empty($list[$i]['update'])?    '' : '<button class="navigrid-extensions-update" title="'.t(463, 'Update available').': '.$list[$i]['update'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></button>').
+                        '<button '.(($list[$i]['enabled']==='0')? 'style="display: none;"' : '').' class="navigrid-extensions-disable" title="'.t(460, 'Disable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/delete.png"></button>'.
+                        '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-enable" title="'.t(462, 'Enable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"></button>'.
+                        '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-remove" title="'.t(35, 'Delete').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cross.png"></button>
+                    </div>
+                '
+            );
+        }
+
+        $grid->items($extensions);
+
+        $navibars->add_content($grid->generate());
+
+        $navibars->add_content('<div id="navigrid-extension-information" title="" style=" display: none; "></div>');
+        $navibars->add_content('<div id="navigrid-extension-options" title="" style=" display: none; "></div>');
+
+        $navibars->add_content('
+            <div id="navigrid-extensions-remove-confirmation" title="'.t(59, 'Confirmation').'" style=" display: none; ">
+                '.t(57, 'Do you really want to delete the item?').'
+            </div>'
+        );
+
+        $navibars->add_content('
+            <div id="navigrid-extensions-update" title="'.t(285, 'Update').'" style=" display: none; ">
+                <iframe src="about:blank"
+                    class="ui-corner-all"
+                    border="0" frameborder="0" allowtransparency="true">
+                </iframe>
+            </div>'
+        );
+
+        $out = $navibars->generate();
+
+        $layout->add_script('
+            $(window).on("load", function()
             {
-                if($(this).val()!="")
-                    $(this).parent().submit();
+                $(".navigrid-item-buttonset").each(function(i, el)
+                {
+                    $(el).hide().css("visibility", "visible");
+                    $(el).fadeIn();
+                    $(".navigrid-extensions-disable").addClass("ui-corner-right");
+                });
             });
-            $("#extension-upload-button").next().find("input").trigger("click");
 
-	        return false;
-		});
+            $.getScript("lib/packages/extensions/extensions.js", function()
+            {
+                navigate_extensions_refresh();
+            });
 
-	');
+            function navitable_quicksearch(value)
+            {
+                $(".navigrid-item").hide();
+
+                if(value=="")
+                    $(".navigrid-item").show();
+                else
+                {
+                    $(".navigrid-item").each(function(i, el)
+                    {
+                        var item_text = $(el).text().toLowerCase();
+                        if( item_text.indexOf(value.toLowerCase()) >= 0 )
+                            $(el).fadeIn();
+                    });
+                }
+            }
+            $("#extension-upload-button").bind("click", function()
+            {
+                $("#extension-upload-button").parent().find("form").remove();
+                $("#extension-upload-button").after(\'<form action="?fid=extensions&act=extension_upload" enctype="multipart/form-data" method="post"><input type="file" name="extension-upload" style=" display: none;" /></form>\');
+                $("#extension-upload-button").next().find("input").bind("change", function()
+                {
+                    if($(this).val()!="")
+                        $(this).parent().submit();
+                });
+                $("#extension-upload-button").next().find("input").trigger("click");
+
+                return false;
+            });
+
+        ');
+    }
+    else
+    {
+        $html = '
+            <div class="navibrowse-path ui-corner-all">
+                <input type="checkbox" id="extension-available-button" /><label for="extension-available-button"><img src="img/icons/silk/rainbow.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
+                <input type="checkbox" id="extension-marketplace-button" /><label for="extension-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
+            </div>
+        ';
+        $html .= '
+            <iframe src="http://www.navigatecms.com/en/marketplace/extensions"
+                    style="visibility: hidden; width: 1px; height: 1px;"
+                    class="ui-corner-all"
+                    border="0" frameborder="0" allowtransparency="true">
+            </iframe>
+        ';
+
+        $navibars->add_content('<div id="navigate-content-safe" class="ui-corner-all">'.$html.'</div>');
+
+        $layout->add_script('
+            $(window).on("resize focus blur", function()
+            {
+                $("#navigate-content-safe iframe").css({"width": 1, "height": 1});
+
+                $("#navigate-content-safe iframe").css({
+                    padding: "0px 4px",
+                    width: $(".navibrowse-path").width() + parseInt($(".navibrowse-path").css("padding-right")) * 2,
+                    height: $("#navigate-content-safe").height() - $("#navigate-content-safe div:first").height() - 24,
+                    visibility: "visible"
+                });
+            });
+
+            $("#navigate-content-safe iframe").on("focus blur load", function(){ $(window).trigger("resize");});
+        ');
+
+        $out = $navibars->generate();
+    }
+
+    $layout->add_script('
+        function navigatecms_marketplace_install_from_hash(hash)
+        {
+            window.location.replace("?fid=extensions&act=install_from_hash&hash="+hash);
+        }
+
+        if(typeof(window.postMessage) != "undefined")
+        {
+           if(typeof(window.addEventListener) != "undefined")
+            {
+                window.addEventListener("message", function(event) {
+                    navigatecms_marketplace_install_from_hash(event.data);
+                }, false);
+            }
+            else
+            {
+                window.attachEvent("onmessage", function(e) {
+                    navigatecms_marketplace_install_from_hash(e.data);
+                });
+            }
+        }
+    ');
 
     return $out;
 }

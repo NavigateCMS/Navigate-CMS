@@ -287,15 +287,19 @@ class extension
         foreach($list as $extension)
             $post[$extension['code']] = $extension['version'];
 
-        $latest_update = core_curl_post('http://update.navigatecms.com/extensions', $post);
+        $latest_update = core_curl_post(
+            'http://update.navigatecms.com/extensions',
+            array(
+                'extensions' => json_encode($post)
+            )
+        );
 
         if(empty($latest_update))
             return false;
+
         $latest_update = json_decode($latest_update, true);
 
         return $latest_update;
     }
-	
 }
-
 ?>
