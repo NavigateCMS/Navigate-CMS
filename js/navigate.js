@@ -169,7 +169,7 @@ $(window).on('load', function()
 
 	navigate_status(navigate_t(42, "Ready"), "ready");
 	
-	setInterval(navigate_periodic_event, 60000); // each minute
+	setInterval(navigate_periodic_event, 60000); // each 60 seconds
 
     navigate_window_resize();
 });

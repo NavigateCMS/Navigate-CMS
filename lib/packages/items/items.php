@@ -111,12 +111,15 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 
-					$sql = ' SELECT SQL_CALC_FOUND_ROWS i.*, d.text as title, d.lang as language,
-					                                    u.username as author_username, COUNT(c.id) as comments
+					$sql = ' SELECT SQL_CALC_FOUND_ROWS
+					                i.*, d.text as title, d.lang as language,
+                                    u.username as author_username,
+                                    (   SELECT COUNT(*)
+                                        FROM nv_comments cm
+                                        WHERE cm.item = i.id
+                                          AND cm.website = '.$website->id.'
+                                    ) as comments
 							   FROM nv_items i
-						  LEFT JOIN nv_comments c
-						  			 ON i.id = c.item
-								    AND c.website = '.$website->id.'
 						  LEFT JOIN nv_webdictionary d
 						  		 	 ON i.id = d.node_id
 								 	AND d.node_type = "item"
@@ -130,7 +133,7 @@ function run()
 						   ORDER BY '.$orderby.' 
 							  LIMIT '.$max.'
 							 OFFSET '.$offset;
-							 				
+
 					if(!$DB->query($sql, 'array'))
 					{
 						throw new Exception($DB->get_last_error());	
@@ -185,11 +188,11 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> $dataset[$i]['title'],
-							2 	=> '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
-									'<span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>'.
-								    '&nbsp;&nbsp;'.
-								    '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
-								    '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>',
+							2 	=> '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
+                                   '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>'.
+								   '&nbsp;&nbsp;'.
+                                   '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
+                                   '<span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>',
 							3	=> $category_text,
 							4	=> $dataset[$i]['author_username'],
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
