@@ -77,7 +77,7 @@ function run()
 
                         $favicon = '';
                         if(!empty($dataset[$i]['favicon']))
-                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'" align="absmiddle" />';
+                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'&width=16&height=16" align="absmiddle" />';
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
@@ -602,7 +602,8 @@ function websites_form($item)
                 $(this).next().val("").addClass("ui-state-disabled");
         });
 
-        $("#websites-languages-add").on("click", function() {
+        $("#websites-languages-add").on("click", function()
+        {
             var tr = $("#website_languages_table").find("tr").eq(1).clone();
             $(tr).attr("id", new Date().getTime());
 

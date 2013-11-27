@@ -183,9 +183,6 @@ class extension
             $extension_languages = (array)$this->definition->languages;
             $file = '';
 
-            if(!is_array($this->languages))
-                $this->languages = array();
-
             foreach($extension_languages as $lcode => $lfile)
             {
                 if( $lcode==@$user->language ||
