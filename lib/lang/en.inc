@@ -533,3 +533,4 @@
 532     # Navigate CMS Marketplace
 533     # Find element by title
 534     # You can only select elements which have their own path (no category embedded elements)
+535     # Find user by name

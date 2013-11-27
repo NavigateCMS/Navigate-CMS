@@ -442,15 +442,17 @@ function run()
 			core_terminate();
 			break;
 
-		case 97: // json search user request (for "moderator" autocomplete)
-			$DB->query('SELECT id, username as label, username as value
+		case 'json_find_user': // json find user by name request (for "moderator" autocomplete)
+			$DB->query('SELECT id, username
 						  FROM nv_users
 						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').' 
 				      ORDER BY username ASC
 					     LIMIT 30',
 						'array');
 						
-			echo json_encode($DB->result());
+			$rows = $DB->result();
+            $total = $DB->foundRows();
+            echo json_encode(array('rows' => $rows, 'total' => $total));
 							  
 			core_terminate();
 			break;		
@@ -1682,17 +1684,18 @@ function items_form($item)
 													)
 												)
 											);
-															
+
 			if(!empty($item->comments_moderator))
 				$webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->comments_moderator);
 		
-			$navibars->add_tab_content($naviforms->hidden('item-comments_moderator', $item->comments_moderator));
-			
-			$navibars->add_tab_content_row(array(	'<label>'.t(255, 'Moderator').'</label>',
-													$naviforms->textfield('item-comments_moderator-text', $webuser),
-													'<div class="subcomment"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(256, 'Leave blank to accept all comments').'</div>'
-												));		
-			
+			$navibars->add_tab_content_row(array(
+                '<label>'.t(255, 'Moderator').'</label>',
+				$naviforms->textfield('item-comments_moderator-text', $webuser),
+                $naviforms->hidden('item-comments_moderator', $item->comments_moderator),
+                '<span style="display: none;" id="item-comments_moderator-helper">'.t(535, "Find user by name").'</span>',
+				'<div class="subcomment"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(256, 'Leave blank to accept all comments').'</div>'
+			));
+
 			// script#7
 			
 			// comments list

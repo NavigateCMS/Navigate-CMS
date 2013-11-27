@@ -533,3 +533,4 @@
 532     # Tienda de Navigate CMS
 533     # Encontrar elemento por título
 534     # Sólo puedes seleccionar elementos que tengan su propia ruta (no elementos incrustados a una categoría)
+535     # Encontrar usuario por nombre
