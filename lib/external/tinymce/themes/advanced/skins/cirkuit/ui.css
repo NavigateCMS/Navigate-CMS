@@ -979,6 +979,7 @@
 	background-position: 0 -40px !important;
 }
 
+.cirkuitSkin span.mce_spellchecker,
 .cirkuitSkin .mce_spellchecker span.mceAction {
 	background-position: -540px -20px !important;
 }
