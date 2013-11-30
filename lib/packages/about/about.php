@@ -52,6 +52,9 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://github.com/badsyntax/tinymce-custom-inlinepopups" target="_blank">TinyMCE jQuery UI inline popups (2011/06/14)</a><br />' ));
 
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="https://github.com/tinymce-plugins/codemagic" target="_blank">TinyMCE CodeMagic plugin (2013/07/20)</a><br />' ));
+
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/imgmap/" target="_blank">TinyMCE imgmap plugin v1.08</a><br />' ));
 

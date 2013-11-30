@@ -354,10 +354,10 @@ class naviforms
                 script_url : "'.NAVIGATE_URL.'/lib/external/tinymce/tiny_mce_gzip.php",
                 theme : "advanced",
                 skin: "cirkuit",
-                plugins : "pre,jqueryinlinepopups,imgmap,style,table,tableDropdown,advimage,advlink,emotions,media,searchreplace,contextmenu,paste,noneditable,visualchars,xhtmlxtras,advlist,spellchecker,loremipsum",
+                plugins : "pre,jqueryinlinepopups,imgmap,style,table,tableDropdown,advimage,advlink,emotions,media,searchreplace,contextmenu,paste,noneditable,visualchars,xhtmlxtras,advlist,spellchecker,loremipsum,codemagic",
                 language: "'.$user->language.'",
 
-                theme_advanced_buttons1 : "formatselect,fontselect,fontsizeselect,|,forecolor,|,backcolor,|,removeformat,visualaid,|,code",
+                theme_advanced_buttons1 : "formatselect,fontselect,fontsizeselect,|,forecolor,|,backcolor,|,removeformat,visualaid,|,code,codemagic",
                 theme_advanced_buttons2 : "bold,italic,underline,strikethrough|,justifyleft,justifycenter,justifyright,justifyfull,|,outdent,indent,|,bullist,|,sub,sup,|,loremipsum,charmap,|,pre,|,help",
                 theme_advanced_buttons3 : "styleselect,|,styleprops,attribs,|,tableDropdown,|,link,unlink,anchor,|,image,imgmap,media,|,spellchecker,|,undo,redo",
 
