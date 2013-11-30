@@ -152,7 +152,7 @@ function about_layout()
 											'<a href="https://github.com/weixiyen/jquery-filedrop" target="_blank">jQuery FileDrop v0.1.5 (2011/10/03)</a><br />' ));	
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery timepicker addon v1.1.1</a><br />' ));
+											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.4.2</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="https://github.com/tzuryby/jquery.hotkeys" target="_blank">jQuery HotKeys v2d51e3a (May 20 2012)</a><br />' ));

@@ -121,7 +121,9 @@ class layout
 		$this->add_style_tag('js/treetable/src/stylesheets/jquery.treeTable.css');
 		$this->add_script_tag('js/treetable/src/javascripts/jquery.treeTable.min.js');
 
-        $this->add_script_tag('js/plugins/jquery-ui-timepicker-addon.js');
+        $this->add_script_tag('lib/external/jquery-timepicker-addon/jquery-ui-sliderAccess.js');
+        $this->add_script_tag('lib/external/jquery-timepicker-addon/jquery-ui-timepicker-addon.js');
+        $this->add_style_tag('lib/external/jquery-timepicker-addon/jquery-ui-timepicker-addon.css');
 
 		$this->add_script_tag('lib/external/jgrowl/jquery.jgrowl.min.js');
 		$this->add_style_tag('lib/external/jgrowl/jquery.jgrowl.css');
