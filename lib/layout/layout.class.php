@@ -149,8 +149,8 @@ class layout
 		$this->add_script_tag('lib/external/flot/jquery.flot.pie.js');		
 		$this->add_script_tag('lib/external/flot/jquery.flot.navigate.js');				
 
-		$this->add_script_tag('lib/external/plupload/js/plupload.full.js');
-		$this->add_script_tag('lib/external/plupload/js/jquery.ui.plupload/jquery.ui.plupload.js');		
+		$this->add_script_tag('lib/external/plupload/js/plupload.full.min.js');
+		$this->add_script_tag('lib/external/plupload/js/jquery.ui.plupload/jquery.ui.plupload.min.js');
 		$this->add_style_tag('lib/external/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css');
 
 		$this->add_script_tag('js/plugins/pixlr.js');
@@ -858,8 +858,8 @@ class layout
                     sortable: false,
                     rename: true,
                     preinit: attachCallbacks,
-                    flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/plupload.flash.swf",
-                    silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/plupload.silverlight.xap"
+                    flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
+                    silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap"
                 });
 
                 function attachCallbacks(Uploader)

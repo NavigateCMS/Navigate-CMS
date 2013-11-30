@@ -312,8 +312,8 @@ function files_browser($parent, $search="")
 				sortable: false,
 				rename: true,
 				preinit: attachCallbacks,
-				flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/plupload.flash.swf",
-		        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/plupload.silverlight.xap"
+				flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
+		        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap"
 			});
 	
 			function attachCallbacks(Uploader) 
@@ -342,8 +342,8 @@ function files_browser($parent, $search="")
 			$("#navigate-files-uploader").dialog(
 			{
 				title: "'.t(142, 'Select files').'",
-				height: 400,
-				width: 740,
+				height: 355,
+				width: 650,
 				modal: true,
 				close: function()
 				{
@@ -640,10 +640,10 @@ function files_browser($parent, $search="")
 				url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
 		
 				// Flash settings
-				flash_swf_url : "'.NAVIGATE_URL.'/js/plupload/js/plupload.flash.swf",
+				flash_swf_url : "'.NAVIGATE_URL.'/js/plupload/js/Moxie.swf",
 		
 				// Silverlight settings
-				silverlight_xap_url : "'.NAVIGATE_URL.'/js/plupload/js/plupload.silverlight.xap"
+				silverlight_xap_url : "'.NAVIGATE_URL.'/js/plupload/js/Moxie.xap"
 
 			});		 
 		});	

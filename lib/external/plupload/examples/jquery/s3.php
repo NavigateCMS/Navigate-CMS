@@ -69,54 +69,46 @@ $policy = base64_encode(json_encode(array(
 $signature = base64_encode(hash_hmac('sha1', $policy, $secret, true));
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+
 <title>Plupload to Amazon S3 Example</title>
 
-<style type="text/css">
-	body {
-		font-family:Verdana, Geneva, sans-serif;
-		font-size:13px;
-		color:#333;
-		background:url(../bg.jpg);
-	}
-</style>
-
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" />
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
-<script src=" https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 
 <!-- Load plupload and all it's runtimes and finally the UI widget -->
 <link rel="stylesheet" href="../../js/jquery.ui.plupload/css/jquery.ui.plupload.css" type="text/css" />
 
-<script type="text/javascript" src="../../js/plupload.js"></script>
-<script type="text/javascript" src="../../js/plupload.gears.js"></script>
-<script type="text/javascript" src="../../js/plupload.silverlight.js"></script>
-<script type="text/javascript" src="../../js/plupload.flash.js"></script>
-<script type="text/javascript" src="../../js/plupload.browserplus.js"></script>
-<script type="text/javascript" src="../../js/plupload.html4.js"></script>
-<script type="text/javascript" src="../../js/plupload.html5.js"></script>
+
+<!-- production -->
+<script type="text/javascript" src="../../js/plupload.full.min.js"></script>
 <script type="text/javascript" src="../../js/jquery.ui.plupload/jquery.ui.plupload.js"></script>
-<!--<script type="text/javascript" src="http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js"></script>-->
+
+<!-- debug 
+<script type="text/javascript" src="../../js/moxie.js"></script>
+<script type="text/javascript" src="../../js/plupload.dev.js"></script>
+<script type="text/javascript" src="../../js/jquery.ui.plupload/jquery.ui.plupload.js"></script>
+-->
 
 </head>
-<body>
+<body style="font: 13px Verdana; background: #eee; color: #333">
 
 <h1>Plupload to Amazon S3 Example</h1>
 
 <div id="uploader">
-    <p>Your browser doesn't have Flash, Silverlight, Gears, BrowserPlus or HTML5 support.</p>
+    <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
 </div>
 
 <script type="text/javascript">
 // Convert divs to queue widgets when the DOM is ready
 $(function() {
 	$("#uploader").plupload({
-		runtimes : 'flash,silverlight',
+		runtimes : 'html5,flash,silverlight',
 		url : 'http://<?php echo $bucket; ?>.s3.amazonaws.com/',
-		max_file_size : '10mb',
 		
 		multipart: true,
 		multipart_params: {
@@ -136,20 +128,21 @@ $(function() {
 		
 		// optional, but better be specified directly
 		file_data_name: 'file',
-		
-		// re-use widget (not related to S3, but to Plupload UI Widget)
-		multiple_queues: true,
 
-		// Specify what files to browse for
-		filters : [
-			{title : "JPEG files", extensions : "jpg"}
-		],
+		filters : {
+			// Maximum file size
+			max_file_size : '10mb',
+			// Specify what files to browse for
+			mime_types: [
+				{title : "Image files", extensions : "jpg,jpeg"}
+			]
+		},
 
 		// Flash settings
-		flash_swf_url : '../../js/plupload.flash.swf',
+		flash_swf_url : '../../js/Moxie.swf',
 
 		// Silverlight settings
-		silverlight_xap_url : '../../js/plupload.silverlight.xap'
+		silverlight_xap_url : '../../js/Moxie.xap'
 	});
 });
 </script>
