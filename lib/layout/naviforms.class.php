@@ -157,7 +157,7 @@ class naviforms
 				<img src="img/icons/silk/calendar_delete.png" width="16" height="16" align="absmiddle" 
 					 style=" cursor: pointer; " onclick=" $(this).parent().find(\'input\').val(\'\'); " />';
 		
-		$format = $user->date_format;   // PHP date format
+		$format = $user->date_format;   // custom user date format
 
         // format to jquery ui datepicker
         // http://docs.jquery.com/UI/Datepicker/formatDate
@@ -235,7 +235,7 @@ class naviforms
             $layout->add_script('$("#'.$name.'").datepicker(
             {
                 '.$translations.'
-                dateFormat: "'.$format.'"
+                dateFormat: "'.trim($format).'"
             });');
         }
         else
@@ -244,7 +244,7 @@ class naviforms
             $layout->add_script('$("#'.$name.'").datetimepicker(
             {
                 '.$translations.'
-                dateFormat: "'.$format.'",
+                dateFormat: "'.trim($format).'",
                 timeFormat: "HH:mm"
             });');
         }
