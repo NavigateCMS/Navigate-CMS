@@ -18,6 +18,10 @@ function nvweb_self_url()
 	// decode %chars
 	$url = urldecode($url);
 
+    // remove last '/' in url if exists
+    if(substr($url, -1)=='/')
+        $url = substr($url, 0, -1);
+
 	return $url;
 }
 
@@ -173,15 +177,31 @@ function nvweb_load_website_by_url($url, $exit=true)
 	foreach($websites as $web)
 	{
         // there can only be one subdomain.domain.tld without folder
-		if(empty($web->folder) || strpos($path, $web->folder)===0)
+		if(empty($web->folder))
 		{
 			$website->load($web->id);
             break;
 		}
+        else
+        {
+            $path_segments = explode('/', $path);
+            $folder_segments = explode('/', $web->folder);
+
+            $folder_coincidence = true;
+            for($fs=0; $fs < count($folder_segments); $fs++)
+                $folder_coincidence = $folder_coincidence && ($folder_segments[$fs]==$path_segments[$fs]);
+
+            if($folder_coincidence)
+            {
+                $website->load($web->id);
+                break;
+            }
+        }
 	}
-	
+
+	// website could not be identified, just load the first available
 	if(empty($website->id))
-		$website->load(); // load first website, it doesn't really matter
+		$website->load();
 
 	return $website;
 }

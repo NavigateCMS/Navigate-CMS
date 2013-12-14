@@ -54,9 +54,12 @@ try
 	if(!empty($website->theme))
 		$theme->load($website->theme);
 
-    // remove the "folder" part of the route
     $route = $_REQUEST['route'];
+    // remove last '/' in route if exists
+    if(substr($route, -1)=='/')
+        $route = substr($route, 0, -1);
 
+    // remove the "folder" part of the route (only if this url is really under a folder)
     if(!empty($website->folder) && strpos($route, $website->folder)!==false)
         $route = substr($route, strlen($website->folder));
 
