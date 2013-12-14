@@ -283,13 +283,6 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
                 $recipients = array($recipients);
         }
 
-        foreach($recipients as $name => $email)
-        {
-            if(empty($email) && !empty($name))
-                $email = $name;
-            $mail->AddAddress($email, $name);
-        }
-
         $mail->SetFrom($website->mail_address, $website->name);
 
         $mail->IsHTML(true);
@@ -313,7 +306,16 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
             }
         }
 
-        $mail->Send();
+        foreach($recipients as $name => $email)
+        {
+            if(empty($email) && !empty($name))
+                $email = $name;
+
+            $mail->ClearAddresses();
+            $mail->AddAddress($email, $name);
+
+            $mail->Send();
+        }
 
         $ok = true; // no exceptions => mail sent
     }
