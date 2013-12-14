@@ -3,7 +3,6 @@ var navigate_menu_current_tab;
 var navigate_lang_dictionary = Array();
 var navigate_codemirror_instances = Array();
 var navigate_menu_unselect_timer = null;
-navigatecms.touch_browser = !!('ontouchstart' in window) || !!('msmaxtouchpoints' in window.navigator);
 
 //var $P = new PHP_JS();
 
@@ -21,14 +20,10 @@ $(window).on('load', function()
     });
     jQuery.longclick.duration = 1000; // default longlick duration
 
-    // enable select2 for non-mobile browsers
-    if(!navigatecms.touch_browser)
+    $(".select2").each(function(i, el)
     {
-        $(".select2").each(function(i, el)
-        {
-            navigate_selector_upgrade(el);
-        });
-    }
+        navigate_selector_upgrade(el);
+    });
 
 	$('#navigate-content').on('mouseover', function()
 	{

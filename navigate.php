@@ -129,7 +129,7 @@ $menu_layout->load();
 $website = new Website();
 
 if((@$_GET['act']=='0' || @$_GET['quickedit']=='true') && !empty($_GET['wid']))
-	$website->load(intval($_GET['wid']));	// TODO: check if the current user	can edit this website
+	$website->load(intval($_GET['wid']));	// TODO: check if the current user can edit this website
 else if(!empty($_SESSION['website_active']))
 	$website->load($_SESSION['website_active']);
 else	
