@@ -536,7 +536,9 @@ class website
             $host = explode('.', $url['host']);
 
             $domain = array_pop($host);
-            $domain = array_pop($host) . '.' . $domain;
+            if(!empty($host))
+                $domain = array_pop($host) . '.' . $domain;
+
             $subdomain = implode('.', $host);
         }
 
