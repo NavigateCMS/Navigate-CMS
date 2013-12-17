@@ -282,16 +282,23 @@ function nvweb_route_parse($route="")
             break;
 			
 		// redirect to home page of the current website
-		case '':
-        case '/':
 		case 'nvweb.home':
 		case 'nv.home':
 			header('location: '.NVWEB_ABSOLUTE.$website->homepage);
 			nvweb_clean_exit();
-			break;			
-		
-		// no special route, look for the path on navigate routing table
+			break;
+
+        // empty route, we'll just load the homepage defined
+        // for example: www.domain.com => www.domain.com/home (without redirection)
+        case '':
+        case '/':
+            if(empty($route) || $route=='/')
+                $route = substr($website->homepage, 1); // remove first slash
+            // don't break, continue to default case (url has a route)
+
+        // no special route, look for the path on navigate routing table
 		default:
+
 			$DB->query('SELECT * FROM nv_paths 
 						 WHERE path = '.protect('/'.$route).' 
 						   AND website = '.$website->id.'
