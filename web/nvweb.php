@@ -84,7 +84,7 @@ try
 
 	if(isset($_REQUEST['lang']))
 		$session['lang'] = $_REQUEST['lang'];
-		
+
 	if(!empty($session['webuser']))
 		$webuser->load($session['webuser']);
 	else if(!empty($_COOKIE["webuser"]))

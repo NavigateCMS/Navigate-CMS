@@ -1312,7 +1312,7 @@ function process()
 				$data[] = 'RewriteCond %{REQUEST_FILENAME} !-f';
 				$data[] = 'RewriteCond %{REQUEST_FILENAME} !-d';
 				$data[] = 'RewriteRule ^(.+) '.$nvweb.'?route=$1 [QSA]';
-				$data[] = 'RewriteRule ^$ '.$nvweb.'?route=nv.home [L]';
+				$data[] = 'RewriteRule ^$ '.$nvweb.'?route=nv.home [L,QSA]';
 
 				$ok = @file_put_contents(dirname(NAVIGATE_PATH).'/.htaccess', implode("\n", $data));
 				if(!$ok) throw new Exception($lang['unexpected_error']);
