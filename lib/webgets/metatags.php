@@ -52,6 +52,9 @@ function nvweb_metatags($vars=array())
         $metatags = $metatags[$current['lang']];
 
     if(!empty($website->metatag_description[$current['lang']]))
+        $metatags .= "\n".'<meta name="language" content="'.$current['lang'].'" />'."\n";
+
+    if(!empty($website->metatag_description[$current['lang']]))
         $metatags .= "\n".'<meta name="description" content="'.$website->metatag_description[$current['lang']].'" />'."\n";
 
 	// retrieve content tags and add it to the global metatags of the website	
