@@ -241,7 +241,7 @@ function themes_grid($list)
                 'name'	=>	'<div class="navigrid-themes-title navigrid-themes-installed">'.$theme->title.'</div>',
                 'thumbnail' => NAVIGATE_URL.'/themes/'.$website->theme.'/thumbnail.png',
                 'header' => '
-                    <a href="#" class="navigrid-themes-info" theme="'.$website->theme.'" theme-title="'.$theme->title.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>
+                '.(file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$website->theme.'.info.html')? '<a href="#" class="navigrid-themes-info" theme="'.$website->theme.'" theme-title="'.$theme->title.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>' : '').'
                 '.(empty($update_ver)? '' : '
                     <a href="#" class="navigrid-themes-update" theme="'.$website->theme.'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>
                 '),
@@ -270,12 +270,12 @@ function themes_grid($list)
                 'thumbnail' => NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/thumbnail.png',
                 'header' => '
                     <a href="#" class="navigrid-themes-remove" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"></a>
-                    <a href="#" class="navigrid-themes-info" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>
+                    '.(file_exists(NAVIGATE_PATH.'/themes/'.$list[$t]['code'].'/'.$list[$t]['code'].'.info.html')? '<a href="#" class="navigrid-themes-info" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>' : '').'
                     '.(empty($update_ver)? '' : '
                     <a href="#" class="navigrid-themes-update" theme="'.$list[$t]['code'].'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>
                 '),
                 'footer' => '
-                    <a href="'.NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/demo.html'.'" class="uibutton navigrid-themes-button" target="_blank"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>
+                    '.(file_exists(NAVIGATE_PATH.'/themes/'.$list[$t]['code'].'/demo.html')? '<a href="'.NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/demo.html'.'" class="uibutton navigrid-themes-button" target="_blank"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>' : '').'
                     <a href="#" class="uibutton navigrid-themes-button navigrid-themes-install" theme="'.$list[$t]['code'].'" target="_blank" style=" margin-left: 5px; "><img height="16" align="absmiddle" width="16" src="img/icons/silk/world_go.png"> '.t(365, 'Install').'</a>
                 '
             );
