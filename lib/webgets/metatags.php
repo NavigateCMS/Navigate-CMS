@@ -58,8 +58,17 @@ function nvweb_metatags($vars=array())
         $metatags .= "\n".'<meta name="description" content="'.$website->metatag_description[$current['lang']].'" />'."\n";
 
 	// retrieve content tags and add it to the global metatags of the website	
-	$tags = webdictionary::load_element_strings($current['type'], $current['object']->id);
-	$tags = @$tags[$current['lang']]['tags'];
+    $tags_website = str_replace(', ', ',', $website->metatag_keywords[$current['lang']]);
+    $tags_website = explode(',', $tags_website);
+    $tags_website = array_filter($tags_website);
+
+    $tags_content = webdictionary::load_element_strings($current['type'], $current['object']->id);
+    $tags_content = str_replace(', ', ',', @$tags_content[$current['lang']]['tags']);
+    $tags_content = explode(',', $tags_content);
+    $tags_content = array_filter($tags_content);
+
+    $tags = array_merge($tags_website, $tags_content);
+    $tags = implode(',', $tags);
 
 	if(strpos($metatags, '<meta name="keywords" content="')!==FALSE)
 	{
@@ -121,7 +130,8 @@ function nvweb_metatags($vars=array())
         'render',
         array(
             'out' => &$out,
-            'default_title' => $website->name.$section
+            'default_title' => $website->name.$section,
+            'section' => $section
         )
     );
 

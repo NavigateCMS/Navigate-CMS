@@ -23,6 +23,7 @@ class website
     public $aliases;
 	//public $server_time_offset;
 	public $metatag_description;  // multilanguage
+	public $metatag_keywords;  // multilanguage
     public $metatags; // multilanguage
 	public $mail_server;
 	public $mail_port;
@@ -89,6 +90,7 @@ class website
 		$this->homepage			= $main->homepage;	
 		$this->default_timezone = $main->default_timezone;	
 		$this->metatag_description	= json_decode($main->metatag_description, true);
+		$this->metatag_keywords 	= json_decode($main->metatag_keywords, true);
 		$this->metatags			    = json_decode($main->metatags, true);
 		$this->favicon			= $main->favicon;
 			
@@ -180,12 +182,14 @@ class website
 
         // Website metatags
         $this->metatag_description = array();
+        $this->metatag_keywords = array();
         $this->metatags = array();
 
         foreach($this->languages as $language)
         {
             $lcode = $language['code'];
             $this->metatag_description[$lcode]	= $_REQUEST['metatag_description-'.$lcode];
+            $this->metatag_keywords[$lcode]	= $_REQUEST['metatag_keywords-'.$lcode];
             $this->metatags[$lcode]	= $_REQUEST['metatags-'.$lcode];
         }
 
@@ -320,7 +324,8 @@ class website
 									aliases, date_format, tinymce_css, resize_uploaded_images,
 									statistics_script, permission,
 									mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
-									homepage, default_timezone, metatag_description, metatags, favicon, theme, theme_options
+									homepage, default_timezone, metatag_description, metatag_keywords, metatags,
+									favicon, theme, theme_options
 								)
 								VALUES 
 								( 0,
@@ -349,6 +354,7 @@ class website
 								  '.protect($this->homepage).',			
 								  '.protect($this->default_timezone).',	
 								  '.protect(json_encode($this->metatag_description)).',
+								  '.protect(json_encode($this->metatag_keywords)).',
 								  '.protect(json_encode($this->metatags)).',
 								  '.protect($this->favicon).',
 								  '.protect($this->theme).',
@@ -431,6 +437,7 @@ class website
                     homepage = ?,
                     default_timezone = ?,
                     metatag_description = ?,
+                    metatag_keywords = ?,
                     metatags = ?,
                     favicon = ?,
                     theme = ?,
@@ -462,6 +469,7 @@ class website
                 $this->homepage,
                 $this->default_timezone,
                 json_encode($this->metatag_description),
+                json_encode($this->metatag_keywords),
                 json_encode($this->metatags),
                 $this->favicon,
                 $this->theme,
