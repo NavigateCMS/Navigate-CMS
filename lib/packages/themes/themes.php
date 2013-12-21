@@ -8,6 +8,7 @@ function run()
 	global $layout;
 	global $website;
     global $theme;
+    global $DB;
 	
 	$out = '';
 
@@ -19,10 +20,20 @@ function run()
             break;
 
         case 'remove':
-            $theme = new theme();
-            $theme->load($_REQUEST['theme']);
-            $status = $theme->delete();
-            echo json_encode($status);
+            // check the theme is not actually used in any website
+            $usages = $DB->query_single('COUNT(*)', 'nv_websites', ' theme = '.protect($_REQUEST['theme']));
+            if($usages == 0)
+            {
+                $theme = new theme();
+                $theme->load($_REQUEST['theme']);
+                $status = $theme->delete();
+                echo json_encode($status);
+            }
+            else
+            {
+                $status = t(537, "Can't remove the theme because it is currently being used by another website.");
+                echo $status;
+            }
             core_terminate();
             break;
 
