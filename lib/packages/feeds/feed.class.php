@@ -298,7 +298,13 @@ class feed
 													
 						case 'summary':
 						default:
-							$fitem->description = core_string_cut($texts[$current['lang']]['section-main'], 500, '&hellip;');
+                            $fitem->description = $texts[$current['lang']]['section-main'];
+                            $fitem->description = str_replace(
+                                array('</p>', '<br />', '<br/>', '<br>'),
+                                array('</p>'."\n", '<br />'."\n", '<br/>'."\n", '<br>'."\n"),
+                                $fitem->description
+                            );
+							$fitem->description = core_string_cut($fitem->description, 500, '&hellip;');
 							break;
 					}
 	
@@ -309,7 +315,6 @@ class feed
                     // B) first image on properties
 
                     $image = '';
-
 
                     if(!empty($rs[$x]->galleries))
                     {
@@ -322,24 +327,22 @@ class feed
                     if(empty($image))
                     {
                         // no image found on galleries, look for image properties
-                        $DB->query('SELECT npi.value, np.dvalue
-                                      FROM nv_properties np, nv_properties_items npi
-                                     WHERE np.element = "item"
-                                       AND np.type = "image"
-                                       AND np.enabled = 1
-                                       AND np.website = '.$website->id.'
-                                       AND np.template = '.intval($rs[$x]->template).'
-                                       AND npi.property_id = np.id
-                                       AND npi.node_id = '.protect($rs[$x]->id).'
-                                       AND npi.element = "item"
-                                       AND npi.website = '.$website->id);
+                        $properties = property::load_properties("item", $rs[$x]->template, "item", $rs[$x]->id);
 
-                        $row = $DB->result();
+                        for($p=0; $p < count($properties); $p++)
+                        {
+                            if($properties[$p]->type=='image')
+                            {
+                                if(!empty($properties[$p]->value))
+                                    $image = $website->absolute_path(false) . '/object?type=image&id='.$properties[$p]->value;
+                                else if(!empty($properties[$p]->dvalue))
+                                    $image = $website->absolute_path(false) . '/object?type=image&id='.$properties[$p]->dvalue;
+                            }
 
-                        if(!empty($row[0]->value))
-                            $image = $website->absolute_path(false) . '/object?type=image&id='.$row[0]->value;
-                        else if(!empty($row[0]->dvalue))
-                            $image = $website->absolute_path(false) . '/object?type=image&id='.$row[0]->dvalue;
+                            // we only need the first image
+                            if(!empty($image))
+                                break;
+                        }
                     }
 
                     if(!empty($image))
@@ -358,6 +361,7 @@ class feed
 			// MBOX, OPML, ATOM, ATOM10, ATOM0.3, HTML, JS
 			//echo $rss->saveFeed("RSS1.0", "news/feed.xml");
 		}
+
 		return $feed->createFeed($item->format);
 	}	
 
