@@ -63,7 +63,7 @@ function pquotes($text)
 function core_run()
 {
 	global $layout;
-	
+
 	$content = "";
 	$fid = 'dashboard'; // default function
 

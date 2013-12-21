@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2013. All rights reserved.                 |
-// | Last modified 17/11/2013                                               |
+// | Last modified 21/12/2013                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -53,6 +53,15 @@ if(@$_REQUEST['fid']=='keep_alive')
 	session_write_close();
 	echo 'true';
 	exit;
+}
+
+// is a extension run request? (special fid 'ext_extensionname')
+if(substr($_REQUEST['fid'], 0, '4')=='ext_')
+{
+    $_REQUEST['act'] = 'run';
+    $_REQUEST['extension'] = substr($_REQUEST['fid'], 4);
+    $_REQUEST['fid'] = 'extensions';
+    $fid = 'extensions';
 }
 
 // create database connection

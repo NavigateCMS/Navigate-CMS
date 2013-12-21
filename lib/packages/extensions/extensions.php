@@ -12,7 +12,7 @@ function run()
 	
 	$out = '';
 	$item = new extension();
-			
+
 	switch($_REQUEST['act'])
 	{
         case 'extension_info':
@@ -85,13 +85,13 @@ function run()
             break;
 
         case 'process':
-            $extension = trim($_GET['extension']);
+            $extension = trim($_REQUEST['extension']);
             call_user_func("nvweb_".$extension."_plugin", $_REQUEST);
             core_terminate();
             break;
 
         case 'run':
-            $extension = trim($_GET['extension']);
+            $extension = trim($_REQUEST['extension']);
             if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php'))
             {
                 include_once(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php');
