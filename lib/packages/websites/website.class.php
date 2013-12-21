@@ -277,16 +277,57 @@ class website
 			return $this->insert();			
 	}
 	
-	public function delete()
+	public function delete($delete_related_content=true)
 	{
 		global $DB;
 
+        set_time_limit(300);
+
 		if(!empty($this->id))
 		{
-			$DB->execute(' DELETE FROM nv_websites
-							WHERE id = '.intval($this->id).'
-							LIMIT 1
-						 ');
+            if($delete_related_content)
+            {
+                // delete all content related to the website
+                // EXCEPTION: webusers, as they may be shared between websites
+                $tables = array(
+                    'nv_comments',              // comments
+                    'nv_extensions',            // extensions settings
+                    'nv_notes',                 // notes
+                    'nv_paths',                 // paths
+                    'nv_properties',            // custom properties definitions
+                    'nv_properties_items',      // custom properties values
+                    'nv_templates',             //  templates
+                    'nv_webuser_votes',         //  webusers votes
+                    'nv_webuser_favorites',     //  webusers favorites
+                    'nv_blocks',                //  blocks
+                    'nv_items',                 //  elements
+                    'nv_feeds',                 //  feeds
+                    'nv_structure',             //  structure
+                    'nv_webdictionary',         //  web dictionary
+                    'nv_webdictionary_history', // web dictionary history
+                    'nv_backups',               // backups
+                    'nv_files',                 // files & folders
+                );
+
+                foreach($tables as $table)
+                {
+                    $DB->execute('
+                        DELETE FROM '.$table.'
+                         WHERE website = '.intval($this->id).'
+                    ');
+                }
+
+                // finally, remove ALL files associated to the website
+                // including: images, documents, thumbnails, backups, cache, custom templates...
+                core_remove_folder(NAVIGATE_PRIVATE.'/'.$this->id);
+            }
+
+            // finally delete the website entry
+			$DB->execute('
+			    DELETE FROM nv_websites
+				 WHERE id = '.intval($this->id).'
+				 LIMIT 1
+            ');
 		}
 		
 		// send statistics to navigatecms.com
