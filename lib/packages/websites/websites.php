@@ -842,57 +842,60 @@ function websites_form($item)
 	');
 
     /* METATAGS TAB */
-    $navibars->add_tab(t(513, "Metatags"));
-
-    $website_languages_selector = $website->languages();
-    $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
-    $ws_languages = $website->languages();
-
-    $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-        $naviforms->buttonset('metatags_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
-    ));
-
-    foreach($website->languages_list as $lang)
+    if(!empty($item->id) && !empty($item->languages))
     {
-        $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+        $navibars->add_tab(t(513, "Metatags"));
 
-        $navibars->add_tab_content_row(
-            array(
-                '<label>'.t(334, 'Description').' '.$language_info.'</label>',
-                $naviforms->textfield('metatag_description-'.$lang, $item->metatag_description[$lang]),
-                '<span class="navigate-form-row-info">150-160</span>'
-            ),
-            '',
-            'lang="'.$lang.'"'
-        );
+        $website_languages_selector = $website->languages();
+        $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+        $ws_languages = $website->languages();
+
+        $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
+            $naviforms->buttonset('metatags_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+        ));
+
+        foreach($website->languages_list as $lang)
+        {
+            $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(334, 'Description').' '.$language_info.'</label>',
+                    $naviforms->textfield('metatag_description-'.$lang, $item->metatag_description[$lang]),
+                    '<span class="navigate-form-row-info">150-160</span>'
+                ),
+                '',
+                'lang="'.$lang.'"'
+            );
 
 
-        $navibars->add_tab_content_row(
-            array(
-                '<label>'.t(536, 'Keywords').' '.$language_info.'</label>',
-                $naviforms->textfield('metatag_keywords-'.$lang, $item->metatag_keywords[$lang]),
-            ),
-            '',
-            'lang="'.$lang.'"'
-        );
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(536, 'Keywords').' '.$language_info.'</label>',
+                    $naviforms->textfield('metatag_keywords-'.$lang, $item->metatag_keywords[$lang]),
+                ),
+                '',
+                'lang="'.$lang.'"'
+            );
 
-        $layout->add_script('
-            $("#metatag_keywords-'.$lang.'").tagsInput({
-                defaultText: "",
-                width: $("#metatag_keywords-'.$lang.'").width(),
-                height: 100
-            });
-            $("#metatag_keywords-'.$lang.'").parent().find("select").css("width", "auto");
-        ');
+            $layout->add_script('
+                $("#metatag_keywords-'.$lang.'").tagsInput({
+                    defaultText: "",
+                    width: $("#metatag_keywords-'.$lang.'").width(),
+                    height: 100
+                });
+                $("#metatag_keywords-'.$lang.'").parent().find("select").css("width", "auto");
+            ');
 
-        $navibars->add_tab_content_row(
-            array(
-                '<label>'.t(514, "Additional metatags").' '.$language_info.'</label>',
-                $naviforms->scriptarea('metatags-'.$lang, $item->metatags[$lang], 'html', ' width: 75%; height: 100px; ' )
-            ),
-            '',
-            'lang="'.$lang.'"'
-        );
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(514, "Additional metatags").' '.$language_info.'</label>',
+                    $naviforms->scriptarea('metatags-'.$lang, $item->metatags[$lang], 'html', ' width: 75%; height: 100px; ' )
+                ),
+                '',
+                'lang="'.$lang.'"'
+            );
+        }
     }
 
 
@@ -900,10 +903,12 @@ function websites_form($item)
 
     $navibars->add_tab(t(178, "Services"));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(498, 'Statistics script').'</label>',
-											$naviforms->scriptarea('statistics_script', $item->statistics_script, 'js', ' width: 600px; height: 250px; ' ),
-                                            '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript" lang="javascript"&gt;...&lt;/script&gt;</div>'
-                                        )
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(498, 'Statistics script').'</label>',
+            $naviforms->scriptarea('statistics_script', $item->statistics_script, 'js', ' width: 600px; height: 250px; ' ),
+            '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript" lang="javascript"&gt;...&lt;/script&gt;</div>'
+        )
     );
 
 
