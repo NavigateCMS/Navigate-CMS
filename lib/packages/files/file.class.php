@@ -362,8 +362,8 @@ class file
 	
 	public static function cacheHeaders($lastModifiedDate, $etag="")
 	{		
-		// expiry time 5 minutes, then recheck (if no change, 304 Not modified will be issued)
-	    header("Expires: ".gmdate("D, d M Y H:i:s", core_time() + 60*5)." GMT");
+		// expiry time 1 week, then recheck (if no change, 304 Not modified will be issued)
+	    header("Expires: ".gmdate("D, d M Y H:i:s", core_time() + 60*60*24*7)." GMT");
 		header("Pragma: cache");
 		
 		if(!empty($lastModifiedDate)) 
