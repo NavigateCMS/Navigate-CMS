@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.7.6');
+	define('APP_VERSION', '1.7.8');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	session_start();
@@ -1000,7 +1000,7 @@ function navigate_install_completed()
 		<input type="submit" value="<?php echo $lang['goto_navigate'];?>" />
     </form>    
     <script language="javascript" type="application/javascript">
-		$('#htaccess_install').bind('click', htaccess_install);
+		$('#htaccess_install').on('click', htaccess_install);
 		
 		function htaccess_install()
 		{		
@@ -1033,6 +1033,7 @@ function navigate_install_completed()
 									"<?php echo $lang['ok'];?>": function() 
 										{
 											$( this ).dialog( "close" );
+                                            $('#htaccess_install').button("disable");
 										}
 									}
 								});
