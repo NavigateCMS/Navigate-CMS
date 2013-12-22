@@ -360,9 +360,12 @@ function files_browser($parent, $search="")
 	}');
 						 
 	$layout->add_script('
-		function navigate_files_remove()
+		function navigate_files_remove(elements)
 		{
-			if($(".ui-selected img").parent().length > 0)
+		    if(!elements || elements=="" || elements==undefined || $(elements).length == 0)
+		        var elements = $(".ui-selected img").parent();
+
+			if($(elements).length > 0)
 			{
 				$("<div>'.t(151, 'These items will be permanently deleted and cannot be recovered. Are you sure?').'</div>").dialog(
 				{
@@ -378,10 +381,10 @@ function files_browser($parent, $search="")
 						},
 						"'.t(152, 'Continue').'": function() 
 						{
-							$(".ui-selected img").parent().each(function()
+							$(elements).each(function()
 							{
-								var itemId = this.id.substring(5);
-								
+								var itemId = $(this).attr("id").substring(5);
+
 								$.ajax(
 								{
 									async: false,
@@ -391,7 +394,6 @@ function files_browser($parent, $search="")
 										$("#item-"+itemId).remove();
 									}
 								});
-			
 							});
 							$(this).dialog("close");
 						}									
@@ -442,7 +444,6 @@ function files_browser($parent, $search="")
 
         function navigate_files_contextmenu(el, ev)
         {
-
             var html = \'<ul id="navigate-files-contextmenu">\'+
                         \'<li action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>\'+
                         \'<li action="rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, "Rename").'</a></li>\'+
@@ -467,30 +468,40 @@ function files_browser($parent, $search="")
 
             var id = $(el).attr("id").replace(/item-/, "");
 
+            var selected_items = $("div.navibrowse-file.ui-selected,div.navibrowse-folder.ui-selected");
+
             // attach events to type & id
-            $("#navigate-files-contextmenu").find("li[action=\"open\"]").on("click", function()
-            {
-                $(el).trigger("dblclick");
-            });
 
-            $("#navigate-files-contextmenu").find("li[action=\"rename\"]").on("click", function()
+            if(selected_items.length == 1)
             {
-                if(type=="folder")
+                $("#navigate-files-contextmenu").find("li[action=\"open\"]").on("click", function()
                 {
-                    navigate_files_edit_folder(id, $(el).find(".navibrowse-item-name").text(), $(el).attr("mime"));
-                }
-                else
+                    $(el).trigger("dblclick");
+                }).show();
+
+                $("#navigate-files-contextmenu").find("li[action=\"rename\"]").on("click", function()
                 {
-                    navigate_files_rename(id, $(el).find(".navibrowse-item-name").text());
-                }
-            });
-
-            $("#navigate-files-contextmenu").find("li[action=\"delete\"]").on("click", function()
+                    if(type=="folder")
+                    {
+                        navigate_files_edit_folder(id, $(el).find(".navibrowse-item-name").text(), $(el).attr("mime"));
+                    }
+                    else
+                    {
+                        navigate_files_rename(id, $(el).find(".navibrowse-item-name").text());
+                    }
+                }).show();
+            }
+            else
             {
-                $(el).trigger("click");
-                navigate_files_remove();
-            });
-
+                $("#navigate-files-contextmenu").find("li[action=\"open\"]").hide();
+                $("#navigate-files-contextmenu").find("li[action=\"rename\"]").hide();
+                $("#navigate-files-contextmenu").find("li[action=\"delete\"]").on("click", function()
+                {
+                    var elements = $(".ui-selected img").parent();
+                    $(el).trigger("click");
+                    navigate_files_remove(elements);
+                });
+            }
         }
 	');
 	

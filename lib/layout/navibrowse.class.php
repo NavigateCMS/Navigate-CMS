@@ -229,12 +229,12 @@ class navibrowse
 		
 		$html[] = '<script language="javascript" type="text/javascript">';
 
-//		$html[] = '$(".navibrowse-file, .navibrowse-folder").bind("mouseover", function() { $(this).css("opacity", 0.7); });';
-//		$html[] = '$(".navibrowse-file, .navibrowse-folder").bind("mouseout", function() { $(this).css("opacity", 1); });';		
+//		$html[] = '$(".navibrowse-file, .navibrowse-folder").on("mouseover", function() { $(this).css("opacity", 0.7); });';
+//		$html[] = '$(".navibrowse-file, .navibrowse-folder").on("mouseout", function() { $(this).css("opacity", 1); });';
 		
 		$html[] = '$(".navibrowse-path a").button();';
 		
-		$html[] = '$(".navibrowse-items").children().bind("click", function(e)
+		$html[] = '$(".navibrowse-items").children().on("click", function(e)
 				   {
 					   if(e.ctrlKey)
 					   {
@@ -262,18 +262,18 @@ class navibrowse
 				   });';
 				   
 		
-		$html[] = '$(".navibrowse-folder").bind("dblclick", function()
+		$html[] = '$(".navibrowse-folder").on("dblclick", function()
 				   {
 						window.location.href = "'.$this->url.'" + this.id.substring(5);
 				   });';
 
         if(!empty($this->onDblClick))
-		    $html[] = '$(".navibrowse-file").bind("dblclick", function()
+		    $html[] = '$(".navibrowse-file").on("dblclick", function()
 			    	   {
 				    		'.$this->onDblClick.'(this);
 				    });';
 
-		$html[] = '$(".navibrowse-items").bind("click", function()
+		$html[] = '$(".navibrowse-items").on("click", function()
 					{
 						$(".ui-selectee, .ui-selected").removeClass("ui-selectee ui-selected");
 					});';
@@ -286,7 +286,7 @@ class navibrowse
 
                             e.preventDefault();
                             e.stopPropagation();
-                            $(".ui-selectee, .ui-selected").removeClass("ui-selectee ui-selected");
+                            //$(".ui-selectee, .ui-selected").removeClass("ui-selectee ui-selected");
 
 			    		    var ev = e;
 			    		    var trigger = this;

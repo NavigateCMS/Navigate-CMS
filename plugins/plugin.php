@@ -1,7 +1,6 @@
 <?php
 // get the current working directory
 // and find the distance from navigate root directory
-
 $plugins_directory = '';
 $current_directory = getcwd();
 
