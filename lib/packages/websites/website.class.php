@@ -571,7 +571,7 @@ class website
             return $this;
         }
 
-        $url = nvweb_self_url();
+        $url = NAVIGATE_URL;
         $url = parse_url($url);
 
         // do we have a subdomain in the url?
@@ -591,8 +591,13 @@ class website
             $subdomain = implode('.', $host);
         }
 
-        $folder = dirname(dirname($url['path']));
-        if($folder=='/')
+        // navigate url --> default folder
+        // http://localhost/navigate            -->     (empty)
+        // http://www.domain.com/test/navigate  -->     /test
+        // http://192.168.0.1/foo/foo2/navigate -->     /foo/foo2
+
+        $folder = dirname($url['path']);
+        if($folder=='/' || $folder=='\\')
             $folder = '';
 
         $this->name				= APP_OWNER;
