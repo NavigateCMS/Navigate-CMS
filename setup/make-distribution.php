@@ -1,5 +1,5 @@
 <?php
-/* Navigate MAKE DISTRIBUTION v1.3 */
+/* Navigate MAKE DISTRIBUTION v1.4 */
 /* 		created by: Naviwebs   http://www.naviwebs.com	*/
 /* creates a distribution package for Navigate */
 /* Requirements: installed and functional copy of Navigate */
@@ -181,6 +181,9 @@ foreach($tables as $table)
         $rcount++;
     }
 }
+
+// remove development paths
+$sql = str_replace(NAVIGATE_PARENT.NAVIGATE_FOLDER, "{#!NAVIGATE_FOLDER!#}", $sql);
 
 // prepare final SQL file
 $sql = implode("\n\n", $sql);

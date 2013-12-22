@@ -18,8 +18,13 @@ if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 }
 else
 {
+    // save session values, when including common.php a new session will be created
+    $session_values = json_encode($_SESSION);
 	include(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php');
 	include(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/common.php');
+    define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
+    // restore session values
+    $_SESSION = json_decode($session_values, true);
 }
 
 if($_REQUEST['step']=='cleaning')
@@ -1033,7 +1038,7 @@ function navigate_install_completed()
 									"<?php echo $lang['ok'];?>": function() 
 										{
 											$( this ).dialog( "close" );
-                                            $('#htaccess_install').button("disable");
+                                            $('#htaccess_install').button("disable").off("click");
 										}
 									}
 								});
@@ -1229,11 +1234,10 @@ function process()
 			try
 			{
 				$sql = file_get_contents('navigate.sql');
+                $sql = str_replace("{#!NAVIGATE_FOLDER!#}", NAVIGATE_PARENT.NAVIGATE_FOLDER, $sql);
 				$sql = explode("\n\n", $sql);
 				
 				// can't do it in one step => SQLSTATE[HY000]: General error: 2014
-				$lines = count($sql);
-				
 				foreach($sql as $sqlline)
 				{	
 					$sqlline = trim($sqlline);
