@@ -1,5 +1,6 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/webgets/list.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
 
 function nvweb_search($vars=array())
 {
@@ -10,7 +11,7 @@ function nvweb_search($vars=array())
 	global $structure;
 
 	$out = array();
-		
+
 	$search_what = $_REQUEST[$vars['request']];
     $search_archive = array();
 

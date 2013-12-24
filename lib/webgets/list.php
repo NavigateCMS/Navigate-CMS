@@ -617,7 +617,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 				case 'path':
                     // rss -> full url
                     // item -> relative url
-					$out = nvweb_prepare_link($item->paths[$current['lang']]);
+                    // embedded item -> category url
+                    if($item->embedding==1 && $item->association=='category')
+                    {
+                        nvweb_menu_load_routes(); // load menu paths if not already done
+                        $out = nvweb_prepare_link($structure['routes'][$item->category]);
+                    }
+                    else
+                        $out = nvweb_prepare_link($item->paths[$current['lang']]);
 					break;
 
                 case 'tags':
