@@ -87,7 +87,7 @@ function nvweb_list($vars=array())
 	$permission = (!empty($_SESSION['APP_USER'])? 1 : 0);
 
     // public access / webuser based / webuser groups based
-    $access     = 2;
+    $access = 2;
     $access_extra = '';
     if(!empty($current['webuser']))
     {

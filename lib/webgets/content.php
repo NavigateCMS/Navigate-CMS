@@ -310,17 +310,45 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
 {
     global $website;
     global $DB;
+    global $current;
+    global $webuser;
 
     if(!is_array($categories))
         $categories = array(intval($categories));
 
-    $where = ' category IN ('.implode(",", $categories).')
+    $where = ' website = '.$website->id.'
+               AND category IN ('.implode(",", $categories).')
                AND embedding = 1';
 
-    // TODO: add "access" and "permission" checks, add orderby as nvlists
     if($only_published)
         $where .= ' AND (date_published = 0 OR date_published < '.core_time().')
                     AND (date_unpublish = 0 OR date_unpublish > '.core_time().')';
+
+    // status (0 public, 1 private (navigate cms users), 2 hidden)
+    $permission = (!empty($_SESSION['APP_USER'])? 1 : 0);
+    $where .= ' AND permission <= '.$permission;
+
+    // access permission (0 public, 1 web users only, 2 unidentified users, 3 selected web user groups)
+    $access = 2;
+    $access_extra = '';
+    if(!empty($current['webuser']))
+    {
+        $access = 1;
+        if(!empty($webuser->groups))
+        {
+            $access_groups = array();
+            foreach($webuser->groups as $wg)
+            {
+                if(empty($wg))
+                    continue;
+                $access_groups[] = 'groups LIKE "%g'.$wg.'%"';
+            }
+            if(!empty($access_groups))
+                $access_extra = ' OR (access = 3 AND ('.implode(' OR ', $access_groups).'))';
+        }
+    }
+
+    $where .= ' AND (access = 0 OR access = '.$access.$access_extra.')';
 
     if(!empty($max))
         $limit = 'LIMIT '.$max;
