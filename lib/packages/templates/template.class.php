@@ -153,8 +153,6 @@ class template
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 			return $this->update();
 		else
@@ -169,10 +167,28 @@ class template
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute('DELETE FROM nv_templates
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id
-						);
+            // remove associated properties values and definitions
+            $DB->execute("
+                DELETE FROM nv_properties_items
+                 WHERE property_id IN (
+                            SELECT id FROM nv_properties
+                            WHERE template = ".intval($this->id)."
+                            AND website = ".$website->id."
+                       )
+                   AND website = ".$website->id
+            );
+
+            $DB->execute("
+                DELETE FROM nv_properties
+                 WHERE template = ".intval($this->id)."
+                   AND website = ".$website->id
+            );
+
+			$DB->execute("
+			    DELETE FROM nv_templates
+                 WHERE id = ".intval($this->id)."
+                   AND website = ".$website->id
+            );
 		}
 		
 		return $DB->get_affected_rows();		

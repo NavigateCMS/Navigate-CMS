@@ -1,3 +1,5 @@
+#Navigate CMS
+#allow direct requests to a real PHP file path
 RewriteEngine On
 RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
