@@ -307,13 +307,13 @@ function navigate_property_layout_field($property)
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 
-                $style = "";
+                $width = NULL;
                 if(!empty($property->width))
-                    $style = ' width: '.$property->width.'px; ';
+                    $width = $property->width.'px';
 
                 $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
                 $field[] = '<label>'.$property->name.' '.$language_info.'</label>';
-                $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang]);
+                $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang], $width);
                 $field[] = '</div>';
             }
             break;
