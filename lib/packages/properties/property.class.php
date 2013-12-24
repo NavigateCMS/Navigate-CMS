@@ -592,7 +592,9 @@ class property
                 {
                     foreach($website->languages_list as $lang)
                     {
-                        $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].'##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'];
+                        $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].
+                                    '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'].
+                                    '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-target'];
                         $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
                     }
                 }

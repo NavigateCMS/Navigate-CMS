@@ -360,7 +360,8 @@ function navigate_property_layout_field($property)
                 $link = explode('##', $property->value[$lang]);
                 if(is_array($link))
                 {
-                    $title = $link[1];
+                    $target = @$link[2];
+                    $title = @$link[1];
                     $link = $link[0];
                     if(empty($title))
                         $title = $link;
@@ -369,19 +370,36 @@ function navigate_property_layout_field($property)
                 {
                     $title = $property->value[$lang];
                     $link = $property->value[$lang];
+                    $target = '_self';
                 }
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 
-				$field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+				$field[] = '<div class="navigate-form-row" lang="'.$lang.'" style="margin-bottom: 0px;">';
 				$field[] = '<label>'.$property->name.' '.$language_info.'</label>';
                 $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-title", $title);
                 $field[] = '<span class="navigate-form-row-info">'.t(67, 'Title').'</span>';
                 $field[] = '</div>';
-                $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+                $field[] = '<div class="navigate-form-row" lang="'.$lang.'" style="margin-bottom: 0px;">';
                 $field[] = '<label>&nbsp;</label>';
                 $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-link", $link);
-                $field[] = '<span class="navigate-form-row-info">'.t(197, 'Enlace').'</span>';
+                $field[] = '<span class="navigate-form-row-info">'.t(197, 'Link').'</span>';
+                $field[] = '</div>';
+                $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+                $field[] = '<label>&nbsp;</label>';
+                $field[] = $naviforms->selectfield(
+                    "property-".$property->id."-".$lang."-target",
+                    array(
+                        '_self',
+                        '_blank'
+                    ),
+                    array(
+                        t(173, "Follow URL"),
+                        t(174, "Open URL (new window)")
+                    ),
+                    $target
+                );
+                $field[] = '<span class="navigate-form-row-info">'.t(172, 'Action').'</span>';
                 $field[] = '</div>';
 			}		
 			break;

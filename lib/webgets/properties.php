@@ -264,7 +264,8 @@ function nvweb_properties_render($property, $vars)
             $link = explode('##', $property->value[$current['lang']]);
             if(is_array($link))
             {
-                $title = $link[1];
+                $target = @$link[2];
+                $title = @$link[1];
                 $link = $link[0];
                 if(empty($title))
                     $title = $link;
@@ -273,6 +274,7 @@ function nvweb_properties_render($property, $vars)
             {
                 $title = $property->value[$current['lang']];
                 $link = $property->value[$current['lang']];
+                $target = '_self';
             }
 
             if(strpos($link, '://')===false)
@@ -281,7 +283,7 @@ function nvweb_properties_render($property, $vars)
             if($vars['link']==='false')
 				$out = $link;
 			else
-				$out = '<a href="'.$link.'" target="_blank">'.$title.'</a>';
+				$out = '<a href="'.$link.'" target="'.$target.'">'.$title.'</a>';
 			break;
 			
 		case 'image':
