@@ -60,6 +60,26 @@ function run()
                 $ok = $f->save();
                 echo json_encode($ok);
             }
+            else if($_REQUEST['op']=='duplicate_file')
+            {
+                error_reporting(~0);
+                ini_set('display_errors', 1);
+                $f = new file();
+                $f->load(intval($_REQUEST['id']));
+                $f->id = 0;
+                $f->insert();
+                $done = copy(
+                    NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.intval($_REQUEST['id']),
+                    NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$f->id
+                );
+                $status = "true";
+                if(!$done)
+                {
+                    $f->delete();
+                    $status = t(56, "Unexpected error");
+                }
+                echo $status;
+            }
 			else if($_REQUEST['op']=='move')
 			{
 				if(is_array($_REQUEST['item']))
@@ -88,7 +108,7 @@ function run()
 				echo json_encode($item->delete());	
 			}
 			session_write_close();
-			$DB->disconnect;
+			$DB->disconnect();
 			exit;
 			break;
 			
@@ -388,7 +408,7 @@ function files_browser($parent, $search="")
 								$.ajax(
 								{
 									async: false,
-									url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1&op=delete&id=" + itemId,
+									url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id=" + itemId,
 									success: function(data)
 									{									
 										$("#item-"+itemId).remove();
@@ -420,7 +440,7 @@ function files_browser($parent, $search="")
 					item: item_id,
 					folder: folder_id
 				},
-				url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1&op=move",
+				url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=move",
 				success: function(data)
 				{
 					if(data=="true")
@@ -447,6 +467,7 @@ function files_browser($parent, $search="")
             var html = \'<ul id="navigate-files-contextmenu">\'+
                         \'<li action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>\'+
                         \'<li action="rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, "Rename").'</a></li>\'+
+                        \'<li action="duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>\'+
                         \'<li action="delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>\'+
                         \'</ul>\';
 
@@ -490,11 +511,35 @@ function files_browser($parent, $search="")
                         navigate_files_rename(id, $(el).find(".navibrowse-item-name").text());
                     }
                 }).show();
+
+                if(type=="file")
+                {
+                    $("#navigate-files-contextmenu").find("li[action=\"duplicate\"]").on("click", function()
+                    {
+                        $.ajax(
+						{
+							async: false,
+							type: "post",
+							data: {
+								id: id
+							},
+							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=duplicate_file",
+							success: function(data)
+							{
+								if(data=="true")
+								    window.location.reload();
+                                else
+                                    navigate_notification(data, true, true);
+							}
+						});
+                    }).show();
+                }
             }
             else
             {
                 $("#navigate-files-contextmenu").find("li[action=\"open\"]").hide();
                 $("#navigate-files-contextmenu").find("li[action=\"rename\"]").hide();
+                $("#navigate-files-contextmenu").find("li[action=\"duplicate\"]").hide();
                 $("#navigate-files-contextmenu").find("li[action=\"delete\"]").on("click", function()
                 {
                     var elements = $(".ui-selected img").parent();
@@ -581,7 +626,7 @@ function files_browser($parent, $search="")
 								mime: $("#folder-mime").val(),
 								parent: "'.$parent.'"
 							},
-							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1&id=" + id + "&op=" + op,
+							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&id=" + id + "&op=" + op,
 							success: function(data)
 							{
 								$("#navigate-edit-folder").dialog("close");
@@ -621,7 +666,7 @@ function files_browser($parent, $search="")
 								name: $("#file-name").val(),
 								id: id
 							},
-							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1&op=edit_file",
+							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=edit_file",
 							success: function(data)
 							{
 								$("#navigate-edit-file").dialog("close");
@@ -635,6 +680,7 @@ function files_browser($parent, $search="")
 			$("#file-name").val(name);
 		}
 	');
+
 	
 	// trying to allow file upload by drag and drop on full window
 	/*
@@ -706,7 +752,7 @@ function files_item_properties($item)
 									$.ajax(
 									{
 										async: false,
-										url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1&op=delete&id='.$item->id.'",
+										url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id='.$item->id.'",
 										success: function(data)
 										{
 											window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";	

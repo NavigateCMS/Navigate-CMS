@@ -284,18 +284,23 @@ function navigate_status(text, img, status)
 
 }
 
-function navigate_notification(text)
+function navigate_notification(text, sticky)
 {
 	$.jGrowl.defaults.position = "center";
+    if(!sticky || sticky=="" || sticky==null)
+        sticky = false;
 
-	$.jGrowl(text, { life: 4000, sticky: false, 
-					 open: function()
-                     {
-                         setTimeout(function()
-                         {
-                             $(".jGrowl-notification").css({"background-repeat": "repeat"});
-                         }, 50);
-                     }
+	$.jGrowl(text,
+        {
+            life: 4000,
+            sticky: sticky,
+            open: function()
+            {
+                 setTimeout(function()
+                 {
+                     $(".jGrowl-notification").css({"background-repeat": "repeat"});
+                 }, 50);
+            }
 	});	
 	$("#jGrowl").css({"top": "116px"});		
 }
