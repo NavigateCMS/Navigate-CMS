@@ -147,7 +147,7 @@ function navigate_media_browser_refresh()
 
             $('#contextmenu-images').show();
 
-            $("#contextmenu-images-download_link").off('all').on("click", function ()
+            $("#contextmenu-images-download_link").off('click').on("click", function ()
             {
                 var itemId = $(trigger).attr('id').substring(5);
                 var download_link = $(trigger).attr('download-link');
@@ -175,7 +175,23 @@ function navigate_media_browser_refresh()
                 });
             });
 
-            $("#contextmenu-images-delete").off('all').on("click", function ()
+            $("#contextmenu-images-duplicate").off("click").on("click", function()
+            {
+                var itemId = $(trigger).attr('id').substring(5);
+ 
+                $.ajax(
+                    {
+                        async: false,
+                        url: NAVIGATE_APP + '?fid=files&act=json&op=duplicate_file&id=' + itemId,
+                        success: function(data)
+                        {
+                            navigate_media_browser_reload();
+                        }
+                    }
+                );
+            });
+
+            $("#contextmenu-images-delete").off("click").on("click", function ()
             {
                 navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
             });
