@@ -84,11 +84,9 @@ class file
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
-        if(is_array($groups))
-            $this->groups = explode(',', $groups);
-        else
-            $this->groups = array();
-	}	
+        if(is_array($groups))   $this->groups = explode(',', $groups);
+        else                    $this->groups = array($groups);
+	}
 	
 	public function load_from_post()
 	{
@@ -113,7 +111,10 @@ class file
             $this->groups = array();
 
 		$this->permission	= intval($_REQUEST['permission']);
-		$this->enabled		= intval($_REQUEST['enabled']);			
+		$this->enabled		= intval($_REQUEST['enabled']);
+
+        firephp_nv::log($_REQUEST);
+        firephp_nv::log($this);
 	}
 	
 	

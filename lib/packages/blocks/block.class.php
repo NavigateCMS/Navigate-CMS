@@ -83,7 +83,8 @@ class block
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
-        $this->groups	    = explode(',', $groups);
+        if(is_array($groups))   $this->groups = explode(',', $groups);
+        else                    $this->groups = array($groups);
 	}
 	
 	public function load_from_post()
