@@ -657,11 +657,15 @@ class layout
             var navigate_lang_dictionary = {
                 6: "'.t(6, 'Loading').'",
                 11: "'.t(11, 'Multimedia').'",
+                17: "'.t(17, 'Permissions').'",
+                35: "'.t(35, 'Delete').'",
                 40: "'.t(40, 'History').'",
                 41: "'.t(41, 'Search').'",
                 42: "'.t(42, 'Ready').'",
                 56: "'.t(56, 'Unexpected error').'",
+                57: "'.t(57, 'Do you really want to delete this item?').'",
                 58: "'.t(58, 'Cancel').'",
+                59: "'.t(59, 'Confirmation').'",
                 185: "'.t(185, 'Searching elements').'",
                 189: "'.t(189, 'Copy from').'",
                 190: "'.t(190, 'Ok').'",
@@ -721,7 +725,9 @@ class layout
 	
 	public function navigate_media_browser()
 	{	
-		global $DB;	
+		global $DB;
+
+        $naviforms = new naviforms();
 		
 		$DB->query('SELECT *
 					  FROM nv_websites
@@ -781,37 +787,107 @@ class layout
         $this->add_content('
             <ul id="contextmenu-images" style="display: none">
                 <li id="contextmenu-images-download_link"><a href="#"><span class="ui-icon ui-icon-clipboard"></span>'.t(154, "Download link").'</a></li>
+                <li id="contextmenu-images-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
                 <li id="contextmenu-images-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
                 <li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
             </ul>
         ');
 
-        $delete_html = array();
-        $delete_html[] = '<div id="navigate-contextmenu-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-        $delete_html[] = '<script language="javascript" type="text/javascript">';
-        $delete_html[] = 'function navigate_contextmenu_delete_dialog(callback, params)';
-        $delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								},
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									if(callback)
-									    callback(params);
-								}
-							}
-						});';
-        $delete_html[] = '}';
-        $delete_html[] = '</script>';
+        // permissions dialog
+        $permissions_dialog = array();
+        $permissions_dialog[] = '<div class="navigate-form-row">';
+        $permissions_dialog[] = '<label>'.t(364, 'Access').'</label>';
+        $permissions_dialog[] = $naviforms->selectfield(
+                                    'contextmenu-permissions-access',
+                                    array(
+                                        0 => 0,
+                                        1 => 2,
+                                        2 => 1,
+                                        3 => 3
+                                    ),
+                                    array(
+                                        0 => t(254, 'Everybody'),
+                                        1 => t(362, 'Not signed in'),
+                                        2 => t(361, 'Web users only'),
+                                        3 => t(512, 'Selected web user groups')
+                                    ),
+                                    0,
+                                    'navigate_permissions_dialog_webuser_groups_visibility($(this).val());',
+                                    false,
+                                    array(
+                                        1 => t(363, 'Users who have not yet signed in')
+                                    )
+                                );
+        $permissions_dialog[] = '</div>';
 
-        $this->add_content(implode("\n", $delete_html));
+        $webuser_groups = webuser_group::all_in_array();
+
+        $permissions_dialog[] = '<div class="navigate-form-row" id="permissions-dialog-webuser-groups-field">';
+        $permissions_dialog[] = '<label>'.t(506, "Groups").'</label>';
+        $permissions_dialog[] = $naviforms->multiselect(
+            'contextmenu-permissions-groups',
+            array_keys($webuser_groups),
+            array_values($webuser_groups),
+            0
+        );
+        $permissions_dialog[] = '<div style="clear: both; padding-bottom: 16px;"></div>';
+        $permissions_dialog[] = '</div>';
+
+        $this->add_script('
+            function navigate_permissions_dialog_webuser_groups_visibility(access_value)
+            {
+                if(access_value==3)
+                {
+                    $("#permissions-dialog-webuser-groups-field").show();
+                    if($("#contextmenu-permissions-dialog").is(":visible"))
+                    {
+                        $("#contextmenu-permissions-dialog").dialog("option", "width", "962");
+                        $("#contextmenu-permissions-dialog").dialog("option", "height", "424");
+                    }
+                }
+                else
+                {
+                    $("#permissions-dialog-webuser-groups-field").hide();
+                    if($("#contextmenu-permissions-dialog").is(":visible"))
+                    {
+                        $("#contextmenu-permissions-dialog").dialog("option", "width", "610");
+                        $("#contextmenu-permissions-dialog").dialog("option", "height", "200");
+                    }
+                }
+            }
+
+            navigate_permissions_dialog_webuser_groups_visibility(0);
+        ');
+
+        $permissions_dialog[] = '<div class="navigate-form-row">';
+        $permissions_dialog[] = '<label>'.t(80, 'Permission').'</label>';
+        $permissions_dialog[] = $naviforms->selectfield(
+                                    'contextmenu-permissions-permission',
+                                    array(
+                                        0 => 0,
+                                        1 => 1,
+                                        2 => 2
+                                    ),
+                                    array(
+                                        0 => t(69, 'Published'),
+                                        1 => t(70, 'Private'),
+                                        2 => t(81, 'Hidden')
+                                    ),
+                                    0
+                                );
+        $permissions_dialog[] = '</div>';
+
+        $permissions_dialog[] = '<div class="navigate-form-row">';
+        $permissions_dialog[] = '<label>'.t(65, 'Enabled').'</label>';
+        $permissions_dialog[] = $naviforms->checkbox('contextmenu-permissions-enabled', false);
+        $permissions_dialog[] = '</div>';
+
+        $this->add_content('
+            <div id="contextmenu-permissions-dialog" style="display: none;">
+                '.implode("\n", $permissions_dialog).'
+            </div>
+        ');
+
 
         // plupload
         $this->add_content('<div id="navigate-media-browser-files-uploader"></div>');

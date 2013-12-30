@@ -1736,6 +1736,11 @@ input.naviforms-colorpicker-text
     font-weight: normal;
 }
 
+.uix-multiselect .multiselect-selected-list, .uix-multiselect .multiselect-available-list
+{
+    overflow: visible;
+}
+
 /* mediaelement.js styles */
 .mejs-controls div.mejs-time-rail
 {

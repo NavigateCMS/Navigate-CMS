@@ -107,6 +107,31 @@ function run()
 				$item->load($_REQUEST['id']);
 				echo json_encode($item->delete());	
 			}
+            else if($_REQUEST['op']=='permissions')
+			{
+                $item->load($_REQUEST['id']);
+
+                if(!empty($_POST))
+                {
+                    $item->access = intval($_POST['access']);
+                    $item->permission = intval($_POST['permission']);
+                    $item->enabled = intval($_POST['enabled']);
+                    $item->groups = $_POST['groups'];
+                    if($item->access < 3)
+                        $item->groups = array();
+                    $status = $item->save();
+                    echo json_encode($status);
+                }
+                else
+                {
+                    echo json_encode(array(
+                        'access' => $item->access,
+                        'groups' => $item->groups,
+                        'permission' => $item->permission,
+                        'enabled' => $item->enabled
+                    ));
+                }
+			}
 			session_write_close();
 			$DB->disconnect();
 			exit;

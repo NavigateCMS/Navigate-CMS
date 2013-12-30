@@ -178,7 +178,7 @@ function navigate_media_browser_refresh()
             $("#contextmenu-images-duplicate").off("click").on("click", function()
             {
                 var itemId = $(trigger).attr('id').substring(5);
- 
+
                 $.ajax(
                     {
                         async: false,
@@ -191,13 +191,131 @@ function navigate_media_browser_refresh()
                 );
             });
 
-            $("#contextmenu-images-delete").off("click").on("click", function ()
+            $("#contextmenu-images-permissions").off("click").on("click", function()
+            {
+                var itemId = $(trigger).attr('id').substring(5);
+                navigate_contextmenu_permissions_dialog(itemId, trigger);
+            });
+
+            $("#contextmenu-images-delete").off("click").on("click", function()
             {
                 navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
             });
         }, 250);
 
         return false;
+    });
+}
+
+function navigate_contextmenu_permissions_dialog(file_id, trigger)
+{
+    $.ajax(
+        {
+            async: false,
+            dataType: 'json',
+            url: NAVIGATE_APP + '?fid=files&act=json&op=permissions&id=' + file_id,
+            success: function(data)
+            {
+                $('#contextmenu-permissions-access').val(data.access).trigger('change');
+                $('#contextmenu-permissions-permission').val(data.permission).trigger('change');
+                if(data.enabled=='1')
+                    $('#contextmenu-permissions-enabled').attr('checked', 'checked');
+                else
+                    $('#contextmenu-permissions-enabled').removeAttr('checked');
+
+                $('#contextmenu-permissions-groups option').removeAttr("selected");
+                $(data.groups).each(function(i, val)
+                {
+                    $('#contextmenu-permissions-groups option[value="'+val+'"]').attr("selected", "selected");
+                });
+                $('#contextmenu-permissions-groups').multiselect('refresh');
+
+                $('#contextmenu-permissions-dialog').dialog(
+                    {
+                        resizable: true,
+                        width: 610,
+                        height: 200,
+                        modal: true,
+                        title: navigate_lang_dictionary[17], // Permissions
+                        buttons: [
+                            {
+                                text: navigate_lang_dictionary[190], // Ok
+                                click: function()
+                                {
+                                    var data = {
+                                        id: file_id,
+                                        access: $('#contextmenu-permissions-access').val(),
+                                        permission: $('#contextmenu-permissions-permission').val(),
+                                        enabled: ($('#contextmenu-permissions-enabled').is(':checked')? 1:0),
+                                        groups: $('#contextmenu-permissions-groups').val()
+                                    };
+
+                                    $.ajax(
+                                    {
+                                        method: 'post',
+                                        async: false,
+                                        data: data,
+                                        url: NAVIGATE_APP + '?fid=files&act=json&op=permissions&id=' + file_id,
+                                        success: function(data)
+                                        {
+                                            if(data=='true')
+                                            {
+                                                navigate_media_browser_reload();
+                                                $('#contextmenu-permissions-dialog').dialog("close");
+                                            }
+                                        }
+                                    });
+                                }
+                            },
+                            {
+                                text: navigate_lang_dictionary[58], // Cancel
+                                click: function()
+                                {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    }
+                );
+
+                navigate_permissions_dialog_webuser_groups_visibility(data.access);
+            }
+        }
+    );
+}
+
+function navigate_contextmenu_delete_dialog(callback, params)
+{
+    // 57: Do you really want to delete this item?
+    // 59: Confirmation
+    // 58: Cancel
+    // 35: Delete
+
+    $('<div id="navigate-contextmenu-delete-dialog">'+navigate_lang_dictionary[57]+'</div>').dialog(
+    {
+        resizable: true,
+        height: 150,
+        width: 300,
+        modal: true,
+        title: navigate_lang_dictionary[59],
+        buttons: [
+            {
+                text: navigate_lang_dictionary[35],
+                click: function()
+                {
+                    $(this).dialog("close");
+                    if(callback)
+                        callback(params);
+                }
+            },
+            {
+                text: navigate_lang_dictionary[58],
+                click: function()
+                {
+                    $(this).dialog("close");
+                }
+            }
+        ]
     });
 }
 

@@ -112,9 +112,6 @@ class file
 
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
-
-        firephp_nv::log($_REQUEST);
-        firephp_nv::log($this);
 	}
 	
 	
