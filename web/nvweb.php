@@ -60,10 +60,10 @@ try
         $route = substr($route, 0, -1);
 
     // remove the "folder" part of the route (only if this url is really under a folder)
-    if(!empty($website->folder) && strpos($route, $website->folder)!==false)
-        $route = substr($route, strlen($website->folder));
+    if(!empty($website->folder) && strpos('/'.$route, $website->folder)===0)
+        $route = substr('/'.$route, strlen($website->folder)+1);
 
-	$nvweb_absolute = $idn->encode($website->absolute_path());
+    $nvweb_absolute = $idn->encode($website->absolute_path());
 
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
 	define('NVWEB_OBJECT', $nvweb_absolute.'/object');

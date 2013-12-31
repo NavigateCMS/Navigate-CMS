@@ -103,8 +103,9 @@ function nv_plugin_init()
         if(!empty($_REQUEST['route']))
         {
             $route = $_REQUEST['route'];
-            if(!empty($website->folder))
-                $route = substr($route, strlen($website->folder));
+            // remove the "folder" part of the route (only if this url is really under a folder)
+            if(!empty($website->folder) && strpos('/'.$route, $website->folder)===0)
+                $route = substr('/'.$route, strlen($website->folder)+1);
         }
 
 		// global data across webgets
