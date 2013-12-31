@@ -176,7 +176,10 @@ function run()
 						if($dataset[$i]['category'] > 0)
                         {
                             $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
-                            $dataset[$i]['category_path'] = implode(' › ', $category_path);
+                            if(is_array($category_path))
+                                $dataset[$i]['category_path'] = implode(' › ', $category_path);
+                            else
+                                $dataset[$i]['category_path'] = $category_path;
                         }
 
                         $category_text = '';
