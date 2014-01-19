@@ -22,7 +22,7 @@ function nvweb_properties($vars=array())
             break;
 
 		case 'item':
-            if(!isset($properties['item-'.$vars['id']]))
+            if(!isset($properties['item-'.$vars['id']]) && !empty($vars['id']))
 			{
 				// load item template
 				if(empty($vars['template']))
@@ -42,6 +42,13 @@ function nvweb_properties($vars=array())
 
 				$properties['item-'.$vars['id']] = property::load_properties("item", $vars['template'], 'item', $vars['id']);
 			}
+            else if(empty($vars['id']))
+            {
+                $vars['id'] = $current['object']->id;
+                $vars['type'] = $current['object']->template;
+                if(!isset($properties['item-'.$vars['id']]))
+                    $properties['item-'.$current['object']->id] = property::load_properties("item", $vars['type'], 'item', $vars['id']);
+            }
 
 			$current_properties	= $properties['item-'.$vars['id']];
 
@@ -130,6 +137,7 @@ function nvweb_properties($vars=array())
 			break;
 		
 		default:
+            // find the property source by its name
             $current_properties = array();
 
             // get website theme property
