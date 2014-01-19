@@ -204,6 +204,24 @@ function dashboard_create()
 		$comments_html .= '</div>';
 
         $layout->add_script('
+            $(".navigate-panel-recent-comments-username").hover(function()
+            {
+                $(this).addClass("ui-state-highlight");
+            },
+            function()
+            {
+                $(this).removeClass("ui-state-highlight");
+            });
+
+            $(".navigate-panel-recent-comments-remove").hover(function()
+            {
+                $(this).parent().addClass("ui-state-error");
+            },
+            function()
+            {
+                $(this).parent().removeClass("ui-state-error");
+            });
+
             $(".navigate-panel-recent-comments-remove").on("click", function()
             {
                 var el_comment = $(this).parent();

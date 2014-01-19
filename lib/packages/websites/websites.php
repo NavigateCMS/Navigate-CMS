@@ -907,7 +907,7 @@ function websites_form($item)
         array(
             '<label>'.t(498, 'Statistics script').'</label>',
             $naviforms->scriptarea('statistics_script', $item->statistics_script, 'js', ' width: 600px; height: 250px; ' ),
-            '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript" lang="javascript"&gt;...&lt;/script&gt;</div>'
+            '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript"&gt;...&lt;/script&gt;</div>'
         )
     );
 
