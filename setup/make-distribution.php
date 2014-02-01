@@ -170,6 +170,11 @@ foreach($tables as $table)
             $row['contact_emails'] = '';
         }
 
+        if($table=='nv_items') // remove real private data
+        {
+            $row['author'] = '';
+        }
+
         $row = array_values($row);
         $row = array_map(protect, $row);
         $row = implode(',', $row);
