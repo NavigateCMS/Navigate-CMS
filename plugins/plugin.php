@@ -1,13 +1,18 @@
 <?php
 // get the current working directory
 // and find the distance from navigate root directory
-$plugins_directory = '';
-$current_directory = getcwd();
+global $plugins_directory;
 
-while(basename($current_directory)!='plugins')
+if(empty($plugins_directory))
 {
-    $current_directory = dirname(($current_directory));
-    $plugins_directory .= '../';
+    $plugins_directory = '';
+    $current_directory = getcwd();
+
+    while(basename($current_directory)!='plugins')
+    {
+        $current_directory = dirname(($current_directory));
+        $plugins_directory .= '../';
+    }
 }
 
 include_once($plugins_directory.'../cfg/globals.php');
