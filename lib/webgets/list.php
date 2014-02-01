@@ -250,9 +250,14 @@ function nvweb_list($vars=array())
 		$total = $DB->foundRows();
 	}
 
+    // now we have all elements that will be shown in the list
+    // let's apply the nvlist template to each one
+
 	for($i = 0; $i < count($rs); $i++)
 	{
 		if(empty($rs[$i]->id)) break;
+
+        // prepare a standard  $item  with the current element
 
 		if($vars['source']=='comments' || $vars['source']=='comment')
 		{
@@ -283,54 +288,87 @@ function nvweb_list($vars=array())
             $item->_query = $rs[$i];
 		}
 
+        // get the nv list template
 		$item_html = $vars['template'];
 
-		// parse nvlist tags
-        $a = 0;
-        $template_tags = nvweb_tags_extract($vars['template'], 'nvlist', true, true, 'UTF-8');
+        // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
+        $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
+
+        while(!empty($template_tags))
+        {
+            $tag = $template_tags[0];
+
+            if($tag['attributes']['by']=='property')
+            {
+                $property_value = $item->property($tag['attributes']['property_id']);
+                if($property_value == $tag['attributes']['property_value'])
+                {
+                    // parse the contents of this condition on this round
+                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                }
+                else
+                {
+                    // remove this conditional html code on this round
+                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                }
+            }
+            else if($tag['attributes']['by']=='position')
+            {
+                if(isset($tag['attributes']['each']))
+                {
+                    if($i % $tag['attributes']['each'] == 0) // condition applies
+                        $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                    else // remove the full nvlist_conditional tag, doesn't apply here
+                        $item_html = str_replace($tag['full_tag'], '', $item_html);
+                }
+                else if(isset($tag['attributes']['position']))
+                {
+                    switch($tag['attributes']['position'])
+                    {
+                        case 'first':
+                            if($i == 0)
+                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                            else
+                                $item_html = str_replace($tag['full_tag'], '', $item_html);
+                            break;
+
+                        case 'last':
+                            if($i == (count($rs)-1))
+                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                            else
+                                $item_html = str_replace($tag['full_tag'], '', $item_html);
+                            break;
+
+                        default: // position "x"?
+                            if($i == $tag['attributes']['position'])
+                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                            else
+                                $item_html = str_replace($tag['full_tag'], '', $item_html);
+                            break;
+                    }
+                }
+            }
+
+            // html template has changed, the nvlist tags may have changed its positions
+            $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
+        }
+
+        // now, parse the common nvlist tags (selfclosing tags)
+        $template_tags_processed = 0;
+        $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8'); // selfclosing = true
         while(!empty($template_tags))
 		{
             $tag = $template_tags[0];
 
-            $a++;
-            if($a > 100)
-                exit;
+            // protect the "while" loop, maximum 500 nvlist tags parsed!
+            $template_tags_processed++;
+            if($template_tags_processed > 500)
+                break;
 
-            // parse special nvlist tags
-            switch($tag['attributes']['source'])
-            {
-                case 'conditional':
-                    if(intval($tag['attributes']['each']) > 0)
-                    {
-                        $tag_end = strpos($item_html, '</nvlist>', $tag['offset']);
-                        // first element or syntax error, missing </nvlist>
-                        if(!$tag_end || $i <= 0)
-                        {
-                            $item_html = str_replace($tag['full_tag'], '', $item_html);
-                        }
-                        else
-                        {
-                            if($i % $tag['attributes']['each']==0)
-                            {
-                                // remove nvlist tag but leave the tag content
-                                $tag_content = substr($item_html, $tag['offset'] + strlen($tag['full_tag']), $tag_end - $tag['offset'] - strlen($tag['full_tag']));
-                                $item_html = substr($item_html, 0, $tag['offset']) . $tag_content . substr($item_html, $tag_end + 9);
-                            }
-                            else
-                            {
-                                // remove nvlist tag completely
-                                $item_html = substr($item_html, 0, $tag['offset']) . substr($item_html, $tag_end + 9);
-                            }
-                        }
-                    }
-                    break;
+            $content = nvweb_list_parse_tag($tag, $item, $vars['source']);
+            $item_html = str_replace($tag['full_tag'], $content, $item_html);
 
-                default:
-                    $content = nvweb_list_parse_tag($tag, $item, $vars['source']);
-                    $item_html = str_replace($tag['full_tag'], $content, $item_html);
-                    break;
-            }
-            // html template has changed, the nvlist tags changed positions
+            // html template has changed, the nvlist tags may have changed its positions
             $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8');
 		}
 

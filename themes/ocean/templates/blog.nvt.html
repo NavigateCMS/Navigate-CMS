@@ -23,10 +23,11 @@
     <div id="menu">
         <nv object="nvweb" name="menu" mode="ul" />
     </div>
-        
+
     <div class="text-left">
 
         <nv object="list" source="items" children="true" paginator="true" order="newest" items="3">
+
             <div class="blog-entry">
                 <a href="{{nvlist source='item' value='url'}}">
                     <h4>
@@ -49,6 +50,7 @@
                 <a href="{{nvlist source='item' value='url'}}" class="blog-left-entry-button"><nv object="dictionary" id="read_more" default="Read more" /></a>
                 <div style="clear: both;">&nbsp;</div>
             </div>
+
         </nv>
 
     </div>
