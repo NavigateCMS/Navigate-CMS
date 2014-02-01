@@ -40,12 +40,21 @@ class webuser
 	{
 		global $DB;
 		global $session;
+        global $events;
 		
 		if($DB->query('SELECT * FROM nv_webusers WHERE cookie_hash = '.protect($hash)))
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data);
 			$session['webuser'] = $this->id;
+
+            $events->trigger(
+                'webuser',
+                'sign_in',
+                array(
+                    'webuser' => $this
+                )
+            );
 		}
 	}
 
@@ -141,6 +150,7 @@ class webuser
 	public function delete()
 	{
 		global $DB;
+        global $events;
 
 		if(!empty($this->id))
 		{
@@ -154,6 +164,14 @@ class webuser
 							WHERE id = '.intval($this->id).'
               				LIMIT 1 '
 						);
+
+            $events->trigger(
+                'webuser',
+                'delete',
+                array(
+                    'webuser' => $this
+                )
+            );
 		}
 
 		return $DB->get_affected_rows();		
@@ -163,6 +181,7 @@ class webuser
 	{
 		global $DB;	
 		global $website;
+        global $events;
 
         if(is_array($this->groups))
             $groups = 'g'.implode(',g', $this->groups);
@@ -203,6 +222,14 @@ class webuser
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
+
+        $events->trigger(
+            'webuser',
+            'save',
+            array(
+                'webuser' => $this
+            )
+        );
 		
 		return true;
 	}	
@@ -210,6 +237,7 @@ class webuser
 	public function update()
 	{
 		global $DB;
+        global $events;
 
         if(is_array($this->groups))
             $groups = 'g'.implode(',g', $this->groups);
@@ -243,13 +271,22 @@ class webuser
                  				WHERE id = '.protect($this->id));
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
-		
+
+        $events->trigger(
+            'webuser',
+            'save',
+            array(
+                'webuser' => $this
+            )
+        );
+
 		return true;
 	}
 	
 	public function authenticate($website, $username, $password)
 	{
-		global $DB;	
+		global $DB;
+        global $events;
 		
 		$username = trim($username);
 		$username = mb_strtolower($username);
@@ -271,6 +308,15 @@ class webuser
 			if($data[0]->password==$A1) 
 			{
 				$this->load_from_resultset($data);
+
+                $events->trigger(
+                    'webuser',
+                    'sign_in',
+                    array(
+                        'webuser' => $this
+                    )
+                );
+
 				return true;
 			}
 		}

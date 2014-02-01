@@ -817,6 +817,7 @@ function items_form($item)
 
     if(!empty($item->id))
     {
+        // we attach an event to "items" which will be fired by navibars to put an extra button
         $events->add_actions(
             'items',
             array(

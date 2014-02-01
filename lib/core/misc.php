@@ -170,7 +170,7 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 	//The regexp is different for normal and self-closing tags because I can't figure out 
 	//how to make a sufficiently robust unified one.
 	if ( $selfclosing ){
-		$tag_pattern = 
+		$tag_pattern =
 			'@<(?P<tag>'.$tag.')			# <tag
 			(?P<attributes>\s[^>]+)?		# attributes, if any
 			\s*/?>					        # /> or just >, being lenient here
@@ -201,7 +201,7 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 		//Return an empty array if we didn't find anything
 		return array();
 	}
- 
+
 	$tags = array();
 	foreach ($matches as $match){
  

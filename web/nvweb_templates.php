@@ -413,7 +413,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
     }
 
 	// parse special navigate tags (includes, lists, searchs...)
-	$tags = nvweb_tags_extract($html, 'nv', true, true, 'UTF-8');	
+	$tags = nvweb_tags_extract($html, 'nv', true, true, 'UTF-8');
 	
 	foreach($tags as $tag)
 	{

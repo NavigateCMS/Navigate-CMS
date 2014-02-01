@@ -233,15 +233,23 @@ function run()
 
 function webusers_list()
 {
-	$navibars = new navibars();
+    global $events;
+
+    $navibars = new navibars();
 	$navitable = new navitable("webusers_list");
 	
 	$navibars->title(t(24, 'Web users'));
 
-    $navibars->add_actions(
+    $extra_actions = array(
+        '<a href="?fid='.$_REQUEST['fid'].'&act=export"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_save.png"> '.t(475, 'Export').'</a>'
+    );
+
+    $events->add_actions(
+        'webusers',
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=export"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_save.png"> '.t(475, 'Export').'</a>'
-        )
+            'navibars' => &$navibars
+        ),
+        $extra_actions
     );
 
     $navibars->add_actions(		array(	'<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'	));

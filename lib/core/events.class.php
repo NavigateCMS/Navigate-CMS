@@ -64,7 +64,9 @@ class events
         {
             array_unshift(
                 $extra,
-                '<a href="#" class="content-actions-submenu-trigger"><img height="16" align="absmiddle" width="16" src="img/icons/silk/plugin.png"> '.t(521, "Extra").' &#9662;</a>'
+                '<a href="#" class="content-actions-submenu-trigger">
+                    <img height="16" align="absmiddle" width="16" src="img/icons/silk/plugin.png"> '.t(521, "Extra").' &#9662;
+                </a>'
             );
             $navibars = $parameters['navibars'];
             $navibars->add_actions(
