@@ -117,9 +117,9 @@ else
 // new updates check -> only Administrator (profile=1)
 if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES!==false)
 {
-	$_SESSION['latest_update'] = update::latest_available();
-    $_SESSION['extensions_updates'] = extension::latest_available();
-    $_SESSION['themes_updates'] = theme::latest_available();
+	$_SESSION['latest_update'] = @update::latest_available();
+    $_SESSION['extensions_updates'] = @extension::latest_available();
+    $_SESSION['themes_updates'] = @theme::latest_available();
 }
 
 $idn = new idna_convert();

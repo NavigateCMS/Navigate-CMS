@@ -380,6 +380,8 @@ class naviforms
                 convert_urls: true,
                 remove_script_host: false,
                 remove_linebreaks: true,
+                paste_text_sticky: true,
+                paste_text_sticky_default: true,
                 disk_cache: true,
                 valid_children: "+a[div|p|li],+body[style|script],+code[nv|nvlist]",
                 width: ($("#'.$name.'").width()) + "px",
