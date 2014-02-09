@@ -615,6 +615,19 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
 					break;
 
+                case 'author':
+                    if(!empty($current['object']->author))
+                    {
+                        $nu = new user();
+                        $nu->load($current['object']->author);
+                        $out = $nu->username;
+                        unset($nu);
+                    }
+
+                    if(empty($out))
+                        $out = $website->name;
+                    break;
+
 				case 'date':
 					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
 						$out = nvweb_content_date_format($tag['attributes']['format'], $item->date_public);

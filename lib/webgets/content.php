@@ -56,6 +56,20 @@ function nvweb_content($vars=array())
 			$text = $texts[$current['lang']]['main'];
 			$out = core_string_cut($text, 300, '&hellip;');
 			break;
+
+        case 'author':
+            firephp_nv::log($current['object']->author);
+            if(!empty($current['object']->author))
+            {
+                $nu = new user();
+                $nu->load($current['object']->author);
+                $out = $nu->username;
+                unset($nu);
+            }
+
+            if(empty($out))
+                $out = $website->name;
+            break;
 			
 		case 'structure':
 
