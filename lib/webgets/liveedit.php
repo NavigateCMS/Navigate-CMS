@@ -18,7 +18,7 @@ function nvweb_liveedit($vars=array())
 		switch($current['type'])
 		{			
 			case 'item':
-				$url = NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&id='.$current['object']->id.'&tab=2&quickedit=true&wid='.$website->id;
+				$url = NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&id='.$current['object']->id.'&tab=2&tab_language='.$current['lang'].'&quickedit=true&wid='.$website->id;
 				break;
 				
 			case 'structure':
