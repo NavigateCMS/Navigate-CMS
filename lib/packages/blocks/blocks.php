@@ -1108,8 +1108,8 @@ function blocks_type_form($item)
             if($("#code").val()!="")
                 return;
             var title = $("#title").val();
-            title = title.replace(/\s+/g, "_");
-            title = title.replace(/([\'"?:!¿#\\\\])/g, "");
+			title = title.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
+			title = title.replace(/[.\s]+/g, "_");
             $("#code").val(title.toLowerCase());
         }
 

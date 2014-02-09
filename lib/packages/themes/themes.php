@@ -599,8 +599,8 @@ function themes_export_form()
         $("#theme-name").on("keyup", function()
         {
             var title = $(this).val();
-            title = title.replace(/\s+/g, "_");
-            title = title.replace(/([\'"?:¿!#\\\\])/g, \'\');
+			title = title.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
+			title = title.replace(/[.\s]+/g, "_");
             $(this).val(title.toLowerCase());
         });
         $("#theme-name").trigger("keyup");

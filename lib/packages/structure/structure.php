@@ -702,8 +702,8 @@ function structure_form($item)
 			else
 				surl = "/" + language;
 			var title = $("#title-"+language).val();
+			title = title.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
 			title = title.replace(/[.\s]+/g, "_");
-			title = title.replace(/([\'"?:!¿#\\\\])/g, "");
 			surl += "/" + title;
 			$(el).val(surl.toLowerCase());
 			navigate_structure_path_check(el);
@@ -720,7 +720,9 @@ function structure_form($item)
 			if(path=="") return;			
 			if(path==last_check[$(el).id]) return;
 
-			path = path.replace(/&/, "");
+			path = path.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
+			path = path.replace(/[.\s]+/g, "_");
+
 			$(el).val(path);
 			
 			last_check[$(el).id] = path;
