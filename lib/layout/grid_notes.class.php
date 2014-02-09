@@ -116,7 +116,7 @@ class grid_notes
         return $dataset;
     }
 
-    public static function comments($item_type, $id)
+    public static function comments($item_type, $id, $notes_only=true)
     {
         global $DB;
         global $website;
@@ -124,12 +124,17 @@ class grid_notes
         if(empty($id) || !is_numeric($id))
             return array();
 
+        $extra = '';
+        if($notes_only)
+            $extra = ' AND gn.note != "" ';
+
         $DB->query("    SELECT gn.*, u.username as username
                         FROM nv_notes gn, nv_users u
                         WHERE gn.website = ".protect($website->id)."
                           AND gn.item_type = ".protect($item_type)."
                           AND gn.item_id = ".protect($id)."
-                          AND gn.user = u.id
+                          AND gn.user = u.id ".
+                          $extra."
                         ORDER BY gn.date_created DESC"
         );
 

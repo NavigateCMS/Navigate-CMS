@@ -600,7 +600,7 @@ function run()
             break;
 
         case 'grid_notes_comments':
-            $comments = grid_notes::comments('item', $_REQUEST['id']);
+            $comments = grid_notes::comments('item', $_REQUEST['id'], false);
             echo json_encode($comments);
             core_terminate();
             break;
