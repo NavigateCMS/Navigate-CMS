@@ -388,6 +388,12 @@ function webusers_form($item)
 											$naviforms->checkbox('webuser-blocked', $item->blocked),
 										));
 
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(538, 'Private comment').'</label>',
+        $naviforms->textarea('webuser-private_comment', $item->private_comment)
+        )
+    );
+
 
     $navibars->add_tab(t(506, "Groups"));
 

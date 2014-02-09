@@ -18,10 +18,11 @@ class webuser
 	public $address;
 	public $zipcode;
 	public $location;
-	public $phone;	
+	public $phone;
 	public $social_website;
 	public $joindate;
 	public $newsletter;
+    public $private_comment;
 	public $activation_key;
 	public $cookie_hash;
 	public $blocked;
@@ -98,6 +99,7 @@ class webuser
 		$this->social_website   = $main->social_website;
         $this->joindate		= $main->joindate;
 		$this->newsletter	= $main->newsletter;
+		$this->private_comment	= $main->private_comment;
 		$this->activation_key	= $main->activation_key;
 		$this->cookie_hash	= $main->cookie_hash;
 		$this->blocked		= $main->blocked;
@@ -134,6 +136,7 @@ class webuser
 		$this->location		= $_REQUEST['webuser-location'];
 		$this->phone		= $_REQUEST['webuser-phone'];			
 		$this->social_website = $_REQUEST['webuser-social_website'];
+		$this->private_comment = $_REQUEST['webuser-private_comment'];
 
         // social profiles is a navigate cms private field
 	}
@@ -192,7 +195,7 @@ class webuser
 		$ok = $DB->execute(' INSERT INTO nv_webusers
 								(	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
 									language, country, timezone, address, zipcode, location, phone, social_website,
-									joindate, newsletter, activation_key, cookie_hash, blocked)
+									joindate, newsletter, private_comment, activation_key, cookie_hash, blocked)
 								VALUES 
 								( 0,
 								  '.protect($website->id).',
@@ -214,6 +217,7 @@ class webuser
 								  '.protect($this->social_website).',
 								  '.protect(core_time()).',
 								  '.protect($this->newsletter).',
+								  '.protect($this->private_comment).',
 								  '.protect($this->activation_key).',
 								  '.protect($this->cookie_hash).',
 								  '.protect($this->blocked).'				  
@@ -265,6 +269,7 @@ class webuser
 								  phone	= '.protect($this->phone).',
 								  social_website = '.protect($this->social_website).',
 								  newsletter = '.protect($this->newsletter).',
+								  private_comment = '.protect($this->private_comment).',
 								  activation_key = '.protect($this->activation_key).',
 								  cookie_hash = '.protect($this->cookie_hash).',
 								  blocked = '.protect($this->blocked).'
@@ -471,7 +476,7 @@ class webuser
                 '/*avatar,*/.'
                 birthdate, language, country, timezone,
                 address, zipcode, location, phone, social_website,
-                joindate, newsletter, blocked
+                joindate, newsletter, private_comment, blocked
             FROM nv_webusers
             WHERE website = '.protect($website->id), 'array');
 
@@ -496,6 +501,7 @@ class webuser
 
             t(247, 'Date joined'),
             t(249, 'Newsletter'),
+            t(538, 'Private comment'),
             t(47, 'Blocked')
         );
 
