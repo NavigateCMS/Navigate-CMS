@@ -199,7 +199,8 @@ class webdictionary
 		
 		$cols[] = 'node_id' . $like;
 		$cols[] = 'lang' . $like;
-		$cols[] = 'text' . $like;	
+		$cols[] = 'subtype' . $like;
+		$cols[] = 'text' . $like;
 	
 		$where = ' AND ( ';	
 		$where.= implode( ' OR ', $cols); 

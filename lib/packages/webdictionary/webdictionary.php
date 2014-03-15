@@ -347,7 +347,7 @@ function webdictionary_search($where, $orderby, $offset, $max)
 			  );
 			  	
 	$resultset = $DB->result();
-	
+
 	// remove from theme_translations the strings 
 	// customized in Navigate database
 	for($dbrs=0; $dbrs < count($resultset); $dbrs++)
