@@ -1,11 +1,11 @@
-$(document).bind('ready', navigate_liveedit_init);
+$(function(){navigate_liveedit_init();});
 //$(window).bind('resize', navigate_liveedit_init);
 
 function navigate_liveedit_init()
 {
     $('body').append('<div id="navigate_liveedit_bar_spacer">&nbsp;</div>');
 
-    $('#navigate_liveedit_bar_information_button').bind('click', function()
+    $('#navigate_liveedit_bar_information_button').on('click', function()
     {
         if($('#navigate_liveedit_bar').height()==28)
         {
@@ -19,7 +19,7 @@ function navigate_liveedit_init()
         }
     });
 
-    $('#navigate_liveedit_bar_liveedit_button').bind('click', function()
+    $('#navigate_liveedit_bar_liveedit_button').on('click', function()
     {
         if($(this).hasClass('active'))
         {
@@ -41,7 +41,8 @@ function navigate_liveedit_init()
                 }
             )
         }
-
     });
+
+    $('#navigate_liveedit_bar').show();
 }
 

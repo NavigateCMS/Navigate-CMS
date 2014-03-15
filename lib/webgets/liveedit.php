@@ -34,8 +34,7 @@ function nvweb_liveedit($vars=array())
 			
 				$url = NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&id='.$rs->id.'&tab=2&quickedit=true&wid='.$website->id;
 				break;	
-	
-						
+
 			default:
 					
 		}
@@ -46,18 +45,21 @@ function nvweb_liveedit($vars=array())
             $lang->load($current['lang']);
         }
 
-        // add jQuery if not already loaded in the template
+        // add jQuery if has not already been loaded in the template
+        $includes = array();
         if(strpos($vars['nvweb_html'], 'jquery')===false)
-            $out[] = '<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>';
+            $includes[] = '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
 
-        $out[] = '<script language="javascript" type="text/javascript" src="'.NAVIGATE_URL.'/js/navigate_liveedit.js"></script>';
-        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/navigate_liveedit.css" />';
+        $includes[] = '<script language="javascript" type="text/javascript" src="'.NAVIGATE_URL.'/js/navigate_liveedit.js"></script>';
+        $includes[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/navigate_liveedit.css" />';
+
+        nvweb_after_body('html', implode("\n", $includes)."\n");
 
         $comments = comment::pending_count();
 
         // TODO: check user permissions before allowing "Create", "Edit" and other functions
 
-        $out[] = '<div id="navigate_liveedit_bar">';
+        $out[] = '<div id="navigate_liveedit_bar" style="display: none;">';
         $out[] = '  <a href="http://www.navigatecms.com" target="_blank"><img src="'.NAVIGATE_URL.'/img/navigatecms/navigatecms_logo_52x24_white.png" width="52" height="24" /></a>';
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/page_add.png" /> '.t(38, 'Create').'</a>';
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/comments.png" /> '.$comments.'</a>';
