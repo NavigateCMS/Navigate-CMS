@@ -82,9 +82,9 @@ class navitree
 			{
 				case 'boolean':
 					if($node->{$col['property']}=='true' || $node->{$col['property']}==1)
-						$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/accept.png" /></td>';	
+						$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/accept.png" /></td>';
 					else
-						$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/cancel.png" /></td>';						
+						$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/cancel.png" /></td>';
 					break;				
 				
 				case 'count':
@@ -125,14 +125,14 @@ class navitree
 					{
 						if($node->parent < 0)	// website item
 						{
-							$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$node->label.'</td>';
+							$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/world.png" align="absmiddle" /> '.$node->label.'</td>';
 						}
 						else
 						{						
 							if(count($node->children) > 0)
-								$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/folder.png" align="absmiddle" /> '.$value.'</td>';
+								$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/folder.png" align="absmiddle" /> '.$value.'</td>';
 							else
-								$html[] = '	<td align="'.$col['align'].'"><img src="img/icons/silk/page_white.png" align="absmiddle" /> '.$value.'</td>';
+								$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/page_white.png" align="absmiddle" /> '.$value.'</td>';
 						}
 					}
 					else
@@ -205,11 +205,11 @@ class navitree
 						$(this).addClass("ui-state-highlight");	  
 						if(navitree_mode=="reorder") return true;
 											
-						$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" class=\"table_adder\"><img src=\"img/icons/silk/add.png\" /></a>");
+						$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" class=\"table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
 						
 						if($(this).hasClass("parent"))
 						{						
-							$(this).find("td").eq(1).append("<a href=\"#\" class=\"table_reorder\" onclick=\"navitree_reorder($(this).parent());\"><img src=\"img/icons/silk/arrow_switch.png\" /></a>");
+							$(this).find("td").eq(1).append("<a href=\"#\" class=\"table_reorder\" onclick=\"navitree_reorder($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/arrow_switch.png\" /></a>");
 						}
 					});';
 
