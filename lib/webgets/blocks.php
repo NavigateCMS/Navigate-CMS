@@ -179,7 +179,7 @@ function nvweb_blocks($vars=array())
             }
         }
 
-        // SKIP all blocks to a certain position?
+        // SKIP all blocks until a certain position
         if(isset($vars['position']) && $vars['position']!=$position)
         {
             $position++;

@@ -316,7 +316,6 @@ class template
         global $theme;
 
         // retrieve custom templates
-
         $DB->queryLimit('id,title,NULL as theme,permission,enabled',
                         'nv_templates',
                         'website = '.$website->id,
@@ -355,6 +354,7 @@ class template
         // reorder results
         // SQL format: column direction (only ONE column allowed)
         // example: id desc
+        $column = array();
         list($order_column, $order_direction) = explode(' ', $orderby);
         for($d=0; $d < count($dataset); $d++)
             $column[] = $dataset[$d][$order_column];

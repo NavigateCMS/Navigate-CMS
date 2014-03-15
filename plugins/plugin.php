@@ -28,6 +28,7 @@ global $current;
 global $dictionary;
 global $session;
 global $webgets;
+global $events;
 global $idn;
 
 function nv_plugin_init()
@@ -39,6 +40,7 @@ function nv_plugin_init()
 	global $current;
 	global $dictionary;
 	global $session;
+    global $events;
     global $idn;
 
 	// create database connection
@@ -47,6 +49,10 @@ function nv_plugin_init()
 	{
 		die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
 	}
+
+    $events = new events();
+    nvweb_plugins_load();
+    $events->extension_backend_bindings();
 
 	// global exception catcher
 	try
