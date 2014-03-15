@@ -133,7 +133,7 @@ class theme
                           FROM nv_webdictionary
                          WHERE website = '.$website->id.'
                            AND node_type = "theme"
-                           AND lang = '.protect($user->language).'
+                           AND lang = '.protect($current_language).'
                            AND theme = '.protect($this->name));
             $rs = $DB->result();
 
