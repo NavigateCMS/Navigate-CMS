@@ -73,6 +73,10 @@ function nvweb_contact($vars=array())
                         return;
                 }
 
+                // check if this send request really comes from the website and not from a spambot
+                if(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain)
+                    return;
+
                 // prepare fields and labels
                 $fields = explode(',', @$vars['fields']);
                 $labels = explode(',', @$vars['labels']);
