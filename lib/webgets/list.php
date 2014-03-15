@@ -764,6 +764,10 @@ function nvweb_list_get_orderby($order)
             $orderby = ' ORDER BY i.votes DESC ';
             break;
 
+        case 'views':
+            $orderby = ' ORDER BY i.views DESC ';
+            break;
+
         case 'newest':
         case 'latest':
         default:
