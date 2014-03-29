@@ -42,9 +42,13 @@ class theme
 		$this->version = $theme->version;
 		$this->author = $theme->author;
 		$this->website = $theme->website;
-		
+
+        // remove "@" from styles section definition
+        $this->styles = json_encode($theme->styles);
+        $this->styles = str_replace("@", "", $this->styles);
+        $this->styles = json_decode($this->styles);
+
 		$this->languages = $theme->languages;
-		$this->styles = $theme->styles;
 		$this->options = (array)$theme->options;
 		$this->blocks = (array)$theme->blocks;
 		$this->templates = (array)$theme->templates;

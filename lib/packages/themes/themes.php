@@ -257,7 +257,7 @@ function themes_grid($list)
                     <a href="#" class="navigrid-themes-update" theme="'.$website->theme.'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>
                 '),
                 'footer' => '
-                    <a href="?fid=websites&act=edit&id='.$website->id.'&tab=6" class="uibutton navigrid-themes-button navigrid-theme-configure"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wrench_orange.png"> '.t(200, 'Options').'</a>
+                    <a href="?fid=websites&act=edit&id='.$website->id.'&tab=7" class="uibutton navigrid-themes-button navigrid-theme-configure"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wrench_orange.png"> '.t(200, 'Options').'</a>
                 '.(
                     !file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$website->theme.'_sample.zip')?
                         '' : '<a href="#" class="uibutton navigrid-themes-button navigrid-theme-install-demo"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wand.png"> '.t(484, 'Install demo').'</a>'

@@ -944,8 +944,8 @@ function websites_form($item)
             $styles[$sv] = $theme->styles->$sv->name;
             if(empty($styles[$sv]))
                 $styles[$sv] = $sv;
-            if(substr($styles[$sv], 0, 1)=='@')  // get translation from theme dictionary
-                $styles[$sv] = $theme->t(substr($styles[$sv], 1));
+
+            $styles[$sv] = $theme->t($styles[$sv]);
         }
 
         $property = new property();
