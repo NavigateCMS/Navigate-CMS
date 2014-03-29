@@ -31,7 +31,7 @@ class events
     }
 
     /**
-     * Trigger a previously binded event
+     * Trigger a previously bound event
      *
      * @param string $module Navigate CMS application or module
      * @param string $event Codename of the event to fire
@@ -39,13 +39,17 @@ class events
      */
     public function trigger($module, $event, $parameter)
     {
+        $messages = array();
+
         if(!is_array($this->events[$module][$event]))
-            return;
+            return $messages;
 
         foreach($this->events[$module][$event] as $trigger)
         {
-            call_user_func($trigger['function'], $parameter);
+            $messages[$trigger['extension']] = call_user_func($trigger['function'], $parameter);
         }
+
+        return $messages;
     }
 
     public function add_actions($module, $parameters, $extra=array())
