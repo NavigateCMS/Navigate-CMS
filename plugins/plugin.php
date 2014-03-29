@@ -149,7 +149,7 @@ function nv_plugin_init()
 	}
 }
 
-function nv_plugin_end()
+function nv_plugin_end($redirect_to)
 {
 	global $DB;
 	global $session;
@@ -159,6 +159,9 @@ function nv_plugin_end()
 
 	session_write_close();
 	$DB->disconnect();
+
+    if(!empty($redirect_to))
+        header('Location: '.$redirect_to);
 	exit;
 }
 
