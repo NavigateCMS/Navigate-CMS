@@ -132,6 +132,7 @@ function nvweb_template_parse($template)
 	global $current;
 	global $website;
     global $structure;
+    global $theme;
 	global $session;
 	
 	$html = $template;
@@ -200,7 +201,8 @@ function nvweb_template_parse($template)
 
                 $content = nvweb_prepare_link($content);
 				break;
-				
+
+            case 'd':
 			case 'dict':
 			case 'dictionary':
                 if(!empty($tag['attributes']['type']))
@@ -284,6 +286,32 @@ function nvweb_template_parse($template)
 			case 'php':
 				eval('$content = '.$tag['attributes']['code'].';');
 				break;
+
+            case 'theme':
+                switch($tag['attributes']['name'])
+                {
+                    case "style":
+                        switch($tag['attributes']['mode'])
+                        {
+                            case 'name':
+                                $content = $website->theme_options->style;
+                                break;
+
+                            case 'color':
+                            default:
+                                // return theme definition file location for the requested substyle
+                                $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['mode']};
+                                if(empty($content))
+                                {
+                                    // return first available
+                                    $theme_styles = array_keys(get_object_vars($theme->styles));
+                                    $content = $theme->styles->{$theme_styles[0]}->{$tag['attributes']['mode']};
+                                }
+                                break;
+                        }
+                        break;
+                }
+                break;
 				
 			default: 
 				//var_dump($tag['attributes']['object']);
@@ -292,8 +320,8 @@ function nvweb_template_parse($template)
 		
 		$html = str_replace($tag['full_tag'], $content, $html);
 	}
-	
-	return $html;	
+
+    return $html;
 }
 
 /**
