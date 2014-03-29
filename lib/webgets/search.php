@@ -47,13 +47,13 @@ function nvweb_search($vars=array())
         if(!empty($search_archive[2]))
             $vars['categories'] = $search_archive[2];
 
-		if(isset($vars['categories']))
+        if(isset($vars['categories']))
 		{
 			$categories = explode(',', $vars['categories']);
 			$categories = array_filter($categories); // remove empty elements
 			
 			if($vars['children']=='true')
-				$categories = nvweb_menu_get_children($categories);			
+				$categories = nvweb_menu_get_children($categories);
 		}
 
 		// retrieve entries
@@ -97,7 +97,7 @@ function nvweb_search($vars=array())
 		$rs = $DB->result();
 		
 		$total = $DB->foundRows();
-			
+
 		$template_tags = nvweb_tags_extract($vars['template'], 'nvlist', true, true, 'UTF-8');
 					
 		for($i = 0; $i < count($rs); $i++)

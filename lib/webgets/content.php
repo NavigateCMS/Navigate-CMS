@@ -58,7 +58,6 @@ function nvweb_content($vars=array())
 			break;
 
         case 'author':
-            firephp_nv::log($current['object']->author);
             if(!empty($current['object']->author))
             {
                 $nu = new user();

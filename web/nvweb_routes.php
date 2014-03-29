@@ -35,7 +35,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 	$parsed = parse_url($url);
     $scheme = $parsed['scheme']; // http, https...
 	$host = $parsed['host']; // subdomain.domain.tld
-	$path = $parsed['path']; // page
+	$path = $parsed['path']; // [/folder]page
 		
 	//$query = $parsed['query']; // not really needed, already in $_GET
     if(function_exists('idn_to_utf8'))
