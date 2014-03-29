@@ -104,7 +104,7 @@ function nvweb_comments($vars=array())
 				{
 					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['please_dont_leave_any_field_blank'].'");');
 					return;
-				}				
+				}
 
 				$status = -1; // new comment, not approved
 
@@ -123,6 +123,19 @@ function nvweb_comments($vars=array())
                 $comment->date_modified = 0;
                 $comment->status = $status;
                 $comment->message = htmlentities($_REQUEST['reply-message'], ENT_COMPAT, 'UTF-8', true);
+
+                // trigger the "new_comment" event through the extensions system before inserting it!
+                $extensions_messages = $events->trigger('comment', 'before_insert', array('comment' => $comment));
+
+                foreach($extensions_messages as $ext_name => $ext_result)
+                {
+                    if(isset($ext_result['error']))
+                    {
+                        nvweb_after_body("js", $vars['alert_callback'].'("'.$ext_result['error'].'");');
+                        return;
+                    }
+                }
+
                 $comment->insert();
 
                 // reload the element to retrieve the new comments
@@ -177,11 +190,12 @@ function nvweb_comments($vars=array())
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
-							<div><label>'.$webgets[$webget]['translations']['name'].'</label> <input type="text" name="reply-name" value="" /></div>
-							<div><label>'.$webgets[$webget]['translations']['email'].' *</label> <input type="text" name="reply-email" value="" /></div>
-							<div><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
-							<div><label>&nbsp;</label> * '.$webgets[$webget]['translations']['email_will_not_be_published'].'</div>
-							<div><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
+							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['name'].'</label> <input type="text" name="reply-name" value="" /></div>
+							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['email'].' *</label> <input type="text" name="reply-email" value="" /></div>
+							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
+							<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->
+							<div class="comments-reply-field comments-reply-field-info-email"><label>&nbsp;</label> * '.$webgets[$webget]['translations']['email_will_not_be_published'].'</div>
+							<div class="comments-reply-field comments-reply-field-submit"><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
 						</form>
 					</div>
 				';
@@ -202,10 +216,11 @@ function nvweb_comments($vars=array())
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
-							<div><label style="display: none;">&nbsp;</label> <img src="'.$avatar_url.'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
+							<div class="comments-reply-field"><label style="display: none;">&nbsp;</label> <img src="'.$avatar_url.'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
 							<br/>
-							<div><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
-							<div><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
+							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
+							<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->
+							<div class="comments-reply-field-submit"><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
 						</form>
 					</div>
 				';				
