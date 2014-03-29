@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Return the contents of the physical template file from the website private folder or from theme folder.
  *
@@ -232,6 +231,9 @@ function nvweb_template_parse($template)
 				    $content = $_REQUEST[$tag['attributes']['name']];
                 else // deprecated: use "request" as attribute [will be removed on navigate cms 2.0]
                     $content = $_REQUEST[$tag['attributes']['request']];
+
+                if(is_array($content))
+                    $content = implode(',', $content);
 				break;				
 				
 			case 'constant':
