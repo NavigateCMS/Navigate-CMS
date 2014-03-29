@@ -233,9 +233,14 @@ function core_ts2date($timestamp, $time=false)
  * @return integer
  */
 function core_time()
-{	
-	$ts = new DateTime();
-	return $ts->format("U");
+{
+    if(class_exists("DateTime"))
+    {
+        $ts = new DateTime();
+	    return $ts->format("U");
+    }
+    else
+        return time();
 }
 
 /**
