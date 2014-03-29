@@ -312,11 +312,18 @@ function nvweb_properties_render($property, $vars)
 				$extra .= '&border='.$vars['border'];
 			
 			$img_url = NVWEB_OBJECT.'?type=image&id='.$property->value.$extra;
-			
-			if($vars['return']=='url')
-				$out = $img_url;
-			else
-				$out = '<img class="'.$vars['class'].'" src="'.$img_url.'" '.$add.' />';	
+
+            if(empty($property->value))
+            {
+                $out = '';
+            }
+            else
+            {
+                if($vars['return']=='url')
+                    $out = $img_url;
+                else
+                    $out = '<img class="'.$vars['class'].'" src="'.$img_url.'" '.$add.' />';
+            }
 			break;
 			
 		case 'file':

@@ -327,6 +327,10 @@ class theme
 
         foreach($items_or as $item)
         {
+            // error protection
+            if(empty($item->id))
+                continue;
+
             $old_item_id = $item->id;
             $item->id = 0;
             $item->website = $website->id;
@@ -361,6 +365,10 @@ class theme
 
         foreach($blocks_or as $block)
         {
+            // error protection
+            if(empty($block->id))
+                continue;
+
             $old_block_id = $block->id;
             $block->id = 0;
             $block->website = $website->id;

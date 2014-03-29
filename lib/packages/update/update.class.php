@@ -295,7 +295,7 @@ class update
 				// can't do it in one step => SQLSTATE[HY000]: General error: 2014
 				$sql = explode("\n\n", $sql);
 				
-				file_put_contents($ulog, "begin transaction\n", FILE_APPEND);
+				//file_put_contents($ulog, "begin transaction\n", FILE_APPEND);
 				//$DB->beginTransaction();
 				foreach($sql as $sqlline)
 				{	
@@ -305,14 +305,14 @@ class update
 					if(!$DB->execute($sqlline))
 					{
 						file_put_contents($ulog, "execute failed: ".$DB->get_last_error()."\n", FILE_APPEND);
-						throw new Exception($DB->get_last_error());
+						//throw new Exception($DB->get_last_error());
 					}
 					
 					// force commit changes (slower but safer... no --> SQLSTATE[HY000]: General error: 2014)
 					$DB->disconnect();
 					$DB->connect();
 				}		
-				file_put_contents($ulog, "commit transaction\n", FILE_APPEND);
+				//file_put_contents($ulog, "commit transaction\n", FILE_APPEND);
 				//$DB->commit();	
 			} 
 			catch (Exception $e) 

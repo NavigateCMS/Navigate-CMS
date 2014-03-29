@@ -233,6 +233,8 @@ class website
                     case 'rich_textarea':
                         // multilang
                         $value = array();
+                        if(!is_array($this->languages_list))
+                            $this->languages_list = array();
                         foreach($this->languages_list as $lang)
                             $value[$lang] = $_REQUEST['property-'.$theme_option->id.'-'.$lang];
                         break;
