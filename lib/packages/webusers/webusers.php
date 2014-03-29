@@ -171,6 +171,7 @@ function run()
             {
                 $dataset[] = array(
                     'id' => $row->id,
+                    'code' => $row->code,
                     'name' => $row->name
                 );
             }
@@ -316,6 +317,7 @@ function webusers_form($item)
 	global $DB;
 	global $website;
 	global $layout;
+    global $events;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -656,6 +658,16 @@ function webusers_form($item)
             };
         ");
     }
+
+    $events->trigger(
+        'webuser',
+        'edit',
+        array(
+            'webuser' => &$item,
+            'navibars' => &$navibars,
+            'naviforms' => &$naviforms
+        )
+    );
 											
 	return $navibars->generate();
 }
@@ -686,6 +698,7 @@ function webuser_groups_list()
     $navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=webuser_group_edit&id=');
 
     $navitable->addCol("ID", 'id', "80", "true", "left");
+    $navitable->addCol(t(237, 'Code'), 'code', "100", "true", "left");
     $navitable->addCol(t(159, 'Name'), 'name', "300", "true", "left");
 
     $navibars->add_content($navitable->generate());
@@ -775,6 +788,13 @@ function webuser_groups_form($item)
         array(
             '<label>'.t(159, 'Name').'</label>',
             $naviforms->textfield('name', $item->name)
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(237, 'Code').'</label>',
+            $naviforms->textfield('code', $item->code)
         )
     );
 

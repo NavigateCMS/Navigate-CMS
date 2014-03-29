@@ -187,7 +187,11 @@ class webuser
         global $events;
 
         if(is_array($this->groups))
-            $groups = 'g'.implode(',g', $this->groups);
+        {
+            $this->groups = array_filter($this->groups);
+            if(!empty($this->groups))
+                $groups = 'g'.implode(',g', $this->groups);
+        }
 
         if($groups == 'g')
             $groups = '';
@@ -244,11 +248,15 @@ class webuser
         global $events;
 
         if(is_array($this->groups))
-            $groups = 'g'.implode(',g', $this->groups);
+        {
+            $this->groups = array_filter($this->groups);
+            if(!empty($this->groups))
+                $groups = 'g'.implode(',g', $this->groups);
+        }
 
         if($groups == 'g')
             $groups = '';
-	    
+
 		$ok = $DB->execute(' UPDATE nv_webusers
 								SET
 								  website = '.protect($this->website).',
@@ -414,6 +422,7 @@ class webuser
                 // and we don't have any social profile that matches the one used to sign in
                 // Ex. Signed in with Facebook without having a previous webuser account in the current website
                 $wuser->website = $website->id;
+                $wuser->joindate = core_time();
                 $wuser->blocked = 0;
                 $wuser->insert();
 

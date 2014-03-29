@@ -23,12 +23,14 @@ class webuser_group
         $this->id      		= $main->id;
         $this->website      = $main->website;
         $this->name         = $main->name;
+        $this->code         = $main->code;
         $this->description  = $main->description;
     }
 
     public function load_from_post()
     {
         $this->name         = $_REQUEST['name'];
+        $this->code         = $_REQUEST['code'];
         $this->description  = $_REQUEST['description'];
     }
 
@@ -61,11 +63,12 @@ class webuser_group
         global $website;
 
         $ok = $DB->execute(' INSERT INTO nv_webuser_groups
-								( id, website, name, description )
+								( id, website, name, code, description )
 								VALUES
 								( 0,
 								  '.protect($website->id).',
 								  '.protect($this->name).',
+								  '.protect($this->code).',
 								  '.protect($this->description).'
 								)');
 
@@ -84,6 +87,7 @@ class webuser_group
 								SET
 								  website = '.protect($this->website).',
 								  name = '.protect($this->name).',
+								  code = '.protect($this->code).',
 								  description = '.protect($this->description).'
                  				WHERE id = '.protect($this->id));
 
