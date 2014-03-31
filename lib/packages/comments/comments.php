@@ -148,8 +148,23 @@ function run()
             $layout->navigate_notification(t(524, 'Items removed successfully').': <strong>'.$count.'</strong>', false);
             $out = comments_list();
             break;
-			
-		case 91: // json search title request (for "item" autocomplete)
+
+        case 'json_find_webuser': // json find webuser by name (for "user" autocomplete)
+            $DB->query('SELECT id, username
+						  FROM nv_webusers
+						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
+				      ORDER BY username ASC
+					     LIMIT 30',
+                'array');
+
+            $rows = $DB->result();
+            $total = $DB->foundRows();
+            echo json_encode(array('rows' => $rows, 'total' => $total));
+
+            core_terminate();
+            break;
+
+        case 91: // json search title request (for "item" autocomplete)
 			$DB->query('SELECT DISTINCT node_id as id, text as label, text as value
 						  FROM nv_webdictionary
 						 WHERE node_type = "item"
@@ -167,21 +182,6 @@ function run()
 			exit;
 			break;			
 
-		case 92: // json search user request (for "username" autocomplete)
-			$DB->query('SELECT id, username as label, username as value
-						  FROM nv_webusers
-						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').' 
-						   AND website = '.protect($website->id).' 
-				      ORDER BY username ASC
-					     LIMIT 30',
-						'array');
-						
-			echo json_encode($DB->result());
-							  
-			session_write_close();
-			exit;
-			break;			
-					
 					
 		case 0: // list / search result
 		default:			
@@ -329,9 +329,11 @@ function comments_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
-
+	$navibars->add_tab_content_row(array(
+        '<label>ID</label>',
+        '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
 	$navibars->add_tab_content($naviforms->hidden('comment-item', $item->item));
 
@@ -377,45 +379,62 @@ function comments_form($item)
 		});
 	');	
 
-	if(!empty($item->user))
-		$webuser = $DB->query_single('username', 'nv_webusers', ' id = '.$item->user);
+    if(!empty($item->user))
+        $webuser = $DB->query_single('username', 'nv_webusers', ' id = '.$item->user);
 
-	$navibars->add_tab_content($naviforms->hidden('comment-user', $item->user));
-	
-	$navibars->add_tab_content_row(array(	'<label>'.t(1, 'User').'</label>',
-											$naviforms->textfield('comment-user-text', $webuser),
-										));		
-										
-	$layout->add_script('
-		$("#comment-user-text").autocomplete(
-		{
-			source: function(request, response)
-			{
-				var toFind = {	
-					"username": request.term,
-					nd: new Date().getTime()
-				};
-				
-				$.ajax(
-					{
-						url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=92",
-						dataType: "json",
-						method: "GET",
-						data: toFind,
-						success: function( data ) 
-						{
-							response( data );
-						}
-					});
-			},
-			minLength: 1,
-			select: function(event, ui) 
-			{
-				$("#comment-user").val(ui.item.id);
-				//$("#comment-user-text").val(ui.item.label);
-			}
-		});
-	');																													
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(1, 'User').'</label>',
+        $naviforms->textfield('comment-user-text', $webuser),
+        $naviforms->hidden('comment-user', $item->user),
+        '<span style="display: none;" id="comment-user-helper">'.t(535, "Find user by name").'</span>'
+    ));
+
+    $layout->add_script('
+        $("#comment-user-text").select2(
+        {
+            placeholder: $("#comment-user-helper").text(),
+            minimumInputLength: 1,
+            ajax: {
+                url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'" + "&act=json_find_webuser",
+                dataType: "json",
+                quietMillis: 100,
+                data: function (term, page)
+                {   // page is the one-based page number tracked by Select2
+                    return {
+                        username: term,
+                        nd: new Date().getTime(),
+                        page_limit: 30, // page size
+                        page: page // page number
+                    };
+                },
+                results: function (data, page)
+                {
+                    var more = (page * 5) < data.total; // whether or not there are more results available
+                    // notice we return the value of more so Select2 knows if more results can be loaded
+                    return {results: data.rows, more: more};
+                }
+            },
+            formatResult: function(row) { return row.username; },
+            formatSelection: function(row) { return row.username + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
+            triggerChange: true,
+            allowClear: true,
+            initSelection : function (element, callback)
+            {
+                var data = {
+                    id: $("#comment-user").val(),
+                    username: element.val()
+                };
+
+                callback(data);
+            }
+        });
+
+        $("#comment-user-text").on("change", function(e)
+        {
+            $("#comment-user").val(e.val);
+        });
+
+    ');
 
 	$navibars->add_tab_content_row(array(
         '<label>'.t(159, 'Name').'</label>',
