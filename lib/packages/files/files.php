@@ -809,6 +809,49 @@ function files_item_properties($item)
 	$navibars->add_tab_content_row(array(	'<label>'.t(145, 'Size').'</label>',
 											'<span>'.core_bytes($item->size).'</span>'));
 
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(160, 'Type').'</label>',
+            $naviforms->selectfield('type',
+                array(
+                    0 => 'image',
+                    1 => 'video',
+                    2 => 'audio',
+                    3 => 'document',
+                    4 => 'flash',
+                    5 => 'file'
+                ),
+                array(
+                    0 => t(157, 'Image'),
+                    1 => t(272, 'Video'),
+                    2 => t(31, 'Audio'),
+                    3 => t(539, 'Document'),
+                    4 => 'Flash',
+                    5 => t(82, 'File')
+                ),
+                $item->type,
+                false
+            )
+        )
+    );
+
+    // retrieve a full list of mimetypes by extension
+    $mimetypes = array_values(file::mimetypes());
+    // remove duplicate entries
+    $mimetypes = array_unique($mimetypes);
+    sort($mimetypes);
+    $mimetypes = array_filter($mimetypes);
+
+    $navibars->add_tab_content_row(array(
+            '<label>MIME</label>',
+            $naviforms->selectfield('mime',
+                $mimetypes,
+                $mimetypes,
+                $item->mime,
+                false
+            )
+        )
+    );
+
     $navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
             $naviforms->selectfield('access',
                 array(
@@ -860,26 +903,29 @@ function files_item_properties($item)
         navigate_webuser_groups_visibility('.$item->access.');
     ');
 																														
-	$navibars->add_tab_content_row(array(	'<label>'.t(80, 'Permission').'</label>',
-											$naviforms->selectfield('permission', 
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-													),
-												array(
-														0 => t(69, 'Published'),
-														1 => t(70, 'Private'),
-														2 => t(81, 'Hidden')
-													),
-												$item->permission
-											)
-										)
-									);										
+	$navibars->add_tab_content_row(array(
+            '<label>'.t(80, 'Permission').'</label>',
+            $naviforms->selectfield('permission',
+                array(
+                        0 => 0,
+                        1 => 1,
+                        2 => 2
+                    ),
+                array(
+                        0 => t(69, 'Published'),
+                        1 => t(70, 'Private'),
+                        2 => t(81, 'Hidden')
+                    ),
+                $item->permission
+            )
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(65, 'Enabled').'</label>',
-											$naviforms->checkbox('enabled', $item->enabled),
-										));	
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(65, 'Enabled').'</label>',
+		$naviforms->checkbox('enabled', $item->enabled),
+        )
+    );
 																				
 /*										
 	$navibars->add_tab_content_row(array(	'<label>'.t(153, 'Embed link').'</label>',
@@ -892,12 +938,17 @@ function files_item_properties($item)
 	$website_root = $website->absolute_path(true).'/object';
 	if(empty($website_root)) $website_root = NVWEB_OBJECT;
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(153, 'Embed link').'</label>',
-											'<a href="'.$website_root.'?id='.$item->id.'&disposition=inline" target="_blank">'.$website_root.'?id='.$item->id.'&disposition=inline</a>'));
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(153, 'Embed link').'</label>',
+		'<a href="'.$website_root.'?id='.$item->id.'&disposition=inline" target="_blank">'.$website_root.'?id='.$item->id.'&disposition=inline</a>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(154, 'Download link').'</label>',
-											'<a href="'.$website_root.'?id='.$item->id.'&disposition=attachment">'.$website_root.'?id='.$item->id.'&disposition=attachment</a>'));
-										
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(154, 'Download link').'</label>',
+        '<a href="'.$website_root.'?id='.$item->id.'&disposition=attachment">'.$website_root.'?id='.$item->id.'&disposition=attachment</a>'
+        )
+    );
 										
 	if($item->type == 'image')
 	{
