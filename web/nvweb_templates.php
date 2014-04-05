@@ -837,7 +837,7 @@ function nvweb_template_tweaks($html)
 	}
 
     // tweak 4: add Navigate CMS content default styles
-    $default_css = file_get_contents(NAVIGATE_URL.'/css/tools/tinymce.defaults.css');
+    $default_css = file_get_contents(NAVIGATE_PATH.'/css/tools/tinymce.defaults.css');
     $default_css = str_replace(array("\n", "\r", "\s\s", "  "), " ", $default_css);
     $default_css = substr($default_css, strpos($default_css, '/* nvweb */')+11);
     $default_css = '<style type="text/css">'.$default_css.'</style>';
