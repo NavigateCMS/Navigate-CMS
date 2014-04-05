@@ -70,8 +70,8 @@ class structure
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
-        if(is_array($groups))   $this->groups = explode(',', $groups);
-        else                    $this->groups = array($groups);
+        $this->groups = explode(',', $groups);
+        if(!is_array($this->groups))  $this->groups = array($groups);
     }
 	
 	public function load_from_post()
@@ -166,8 +166,16 @@ class structure
         }
 
         $groups = '';
-        if(!empty($this->groups))
-            $groups = 'g'.implode(',g', $this->groups);
+        if(is_array($this->groups))
+        {
+            $this->groups = array_unique($this->groups); // remove duplicates
+            $this->groups = array_filter($this->groups); // remove empty
+            if(!empty($this->groups))
+                $groups = 'g'.implode(',g', $this->groups);
+        }
+
+        if($groups == 'g')
+            $groups = '';
 
         $ok = $DB->execute(' INSERT INTO nv_structure
 								(id, website, parent, position, access, groups, permission,
@@ -208,8 +216,16 @@ class structure
 		global $website;
 
         $groups = '';
-        if(!empty($this->groups))
-            $groups = 'g'.implode(',g', $this->groups);
+        if(is_array($this->groups))
+        {
+            $this->groups = array_unique($this->groups); // remove duplicates
+            $this->groups = array_filter($this->groups); // remove empty
+            if(!empty($this->groups))
+                $groups = 'g'.implode(',g', $this->groups);
+        }
+
+        if($groups == 'g')
+            $groups = '';
 
 		$ok = $DB->execute(' UPDATE nv_structure
 								SET 

@@ -106,8 +106,8 @@ class webuser
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
-        if(is_array($groups))   $this->groups = explode(',', $groups);
-        else                    $this->groups = array($groups);
+        $this->groups = explode(',', $groups);
+        if(!is_array($this->groups))  $this->groups = array($groups);
 	}
 	
 	public function load_from_post()
@@ -186,9 +186,11 @@ class webuser
 		global $website;
         global $events;
 
+        $groups = '';
         if(is_array($this->groups))
         {
-            $this->groups = array_filter($this->groups);
+            $this->groups = array_unique($this->groups); // remove duplicates
+            $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
                 $groups = 'g'.implode(',g', $this->groups);
         }
@@ -247,9 +249,11 @@ class webuser
 		global $DB;
         global $events;
 
+        $groups = '';
         if(is_array($this->groups))
         {
-            $this->groups = array_filter($this->groups);
+            $this->groups = array_unique($this->groups); // remove duplicates
+            $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
                 $groups = 'g'.implode(',g', $this->groups);
         }
