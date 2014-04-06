@@ -1413,11 +1413,12 @@ div.tagsinput input
 	border: solid 1px #ccc;
 	color: #116;
 	margin-left:0;
-	padding:1px 0 0;
-	padding: 3px;
+	/*padding: 1px 0 0;*/
+	/*padding: 3px;*/
 	display: block;
 	float: left;			
 }
+
 
 .cirkuitSkin td.mceToolbar 
 {
