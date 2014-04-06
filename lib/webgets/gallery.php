@@ -1,7 +1,4 @@
 <?php
-
-// TO DO: add gallery cache (for image)
-
 function nvweb_gallery($vars=array())
 {
 	global $website;

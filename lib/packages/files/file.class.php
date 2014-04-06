@@ -1880,6 +1880,18 @@ class file
         return $mime_types_map;
     }
 
+    // examples:
+    //  file::file_url(45, 'attachment')
+    //  file::file_url('theme_images_folder/myimage001.png', 'inline')
+    public static function file_url($id, $disposition="")
+    {
+        if(!empty($disposition))
+            $disposition = '&amp;disposition=' . $disposition;
+
+        $url = NVWEB_OBJECT.'?id='.$id.$disposition;
+        return $url;
+    }
+
     public function backup($type='json')
     {
         global $DB;
