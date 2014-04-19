@@ -300,7 +300,10 @@ function nvweb_list($vars=array())
 
             if($tag['attributes']['by']=='property')
             {
-                $property_value = $item->property($tag['attributes']['property_id']);
+                if(empty($tag['attributes']['property_id']))
+                    $property_value = $item->property($tag['attributes']['property_name']);
+                else
+                    $property_value = $item->property($tag['attributes']['property_id']);
                 if($property_value == $tag['attributes']['property_value'])
                 {
                     // parse the contents of this condition on this round
