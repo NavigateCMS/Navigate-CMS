@@ -518,7 +518,7 @@ function files_browser($parent, $search="")
 
             // attach events to type & id
 
-            if(selected_items.length == 1)
+            if(selected_items.length == 1 || selected_items.length == 0)
             {
                 $("#navigate-files-contextmenu").find("li[action=\"open\"]").on("click", function()
                 {
@@ -559,6 +559,13 @@ function files_browser($parent, $search="")
 						});
                     }).show();
                 }
+
+                $("#navigate-files-contextmenu").find("li[action=\"delete\"]").on("click", function()
+                {
+                    var elements = $(".ui-selected img").parent();
+                    $(el).trigger("click");
+                    navigate_files_remove(elements);
+                });
             }
             else
             {
