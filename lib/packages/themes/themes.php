@@ -166,7 +166,10 @@ function run()
         default:
             if(@$_REQUEST['opt']=='install')
             {
-                $website->theme = $_REQUEST['theme'];
+                $ntheme = new theme();
+                $ntheme->load($_REQUEST['name']);
+                $website->theme = $ntheme->name;
+                $website->theme_options->style = array_shift(array_keys(get_object_vars($ntheme->styles)));
                 try
                 {
                     $website->update();
