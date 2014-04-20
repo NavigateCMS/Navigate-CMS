@@ -300,7 +300,8 @@ function nvweb_template_parse($template)
                             case 'color':
                             default:
                                 // return theme definition file location for the requested substyle
-                                $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['mode']};
+                                if(!empty($website->theme_options->style))
+                                    $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['mode']};
                                 if(empty($content))
                                 {
                                     // return first available
