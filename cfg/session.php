@@ -3,7 +3,8 @@
 
 $session_name = 'NVSID_'.substr(md5(NAVIGATE_PATH), 0, 8);
 
-if(isset($_COOKIE[$session_name]))
+// retrieve session id via cookie except if a "session_id" parameter has been given when calling navigate_upload.php
+if(isset($_COOKIE[$session_name]) && empty($_REQUEST['session_id']))
 {
     if(session_id() != $_COOKIE[$session_name])
     {
