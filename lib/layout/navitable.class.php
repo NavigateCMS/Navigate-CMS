@@ -280,16 +280,14 @@ class navitable
                     $result = (substr_compare($compareField, $compareValue, -strlen($compareValue), strlen($compareValue), true)!=0);
 				break;
 
-			case 'nc':
-			case 'ni': // NOT contains
+			case 'nc': // NOT contains
 				$compare = $compareField.' NOT LIKE '.protect('%'.$compareValue.'%');
                 if($returnResult)
                     $result = (strpos($compareField, $compareValue)===false);
                 break;
 							
 			default:
-			case 'cn':
-			case 'in': // contains
+			case 'cn': // contains
 				$compare = $compareField.' LIKE '.protect('%'.$compareValue.'%');
                 if($returnResult)
                     $result = (strpos($compareField, $compareValue)!==false);
@@ -513,11 +511,76 @@ class navitable
 												{}, 
 												{}, 
 												{ multipleSearch: true });';
-		
+
 		$html[] = '$("#'.$this->id.'").jqGrid("setGridParam", 
 		{ 
-			url: "'.$this->url.'",
-			beforeSelectRow: function() { return '.($this->disable_select? 'false' : 'true').'; }
+			url: "'.$this->url.'"
+		});';
+
+        // enable multiple row selection with shift key
+        // the following code is adapted from:
+        // http://stackoverflow.com/questions/11174499/shift-click-jqgrid-multiselect-missing-last-row
+        $html[] = '$("#'.$this->id.'").jqGrid("setGridParam",
+		{
+			beforeSelectRow: function(rowid, e) {
+			    if('.($this->disable_select? 'true' : 'false').')
+			        return false;
+
+                var $this = $(this), rows = this.rows,
+                // get id of the previous selected row
+                startId = $this.jqGrid("getGridParam", "selrow"),
+                startRow, endRow, iStart, iEnd, i, rowidIndex;
+
+                if (!e.ctrlKey && !e.shiftKey)
+                {
+                    //  intentionally left here to show differences with
+                    //  Oleg\'s solution. Just have normal behavior instead.
+                    //  $this.jqGrid("resetSelection");
+                }
+                else if (startId && e.shiftKey)
+                {
+                    // Do not clear existing selections
+                    // get DOM elements of the previous selected and
+                    // the currect selected rows
+                    startRow = rows.namedItem(startId);
+                    endRow = rows.namedItem(rowid);
+
+                    if (startRow && endRow)
+                    {
+                        // get min and max from the indexes of the previous selected
+                        // and the currect selected rows
+                        iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+                        rowidIndex = endRow.rowIndex;
+                        iEnd = Math.max(startRow.rowIndex, rowidIndex);
+
+                        // get the rowids of selected rows
+                        var selected = $this.jqGrid("getGridParam","selarrrow");
+
+                        for (i = iStart; i <= iEnd; i++)
+                        {
+                            // if this row isn\'t selected, then toggle it.
+                            // jqgrid will select the clicked on row, so just ignore it.
+                            // note that we still go <= iEnd because we don\'t know which is start or end.
+                            if(selected.indexOf(rows[i].id) < 0 && i != rowidIndex)
+                            {
+                                // true is to trigger onSelectRow event, which you may not need
+                                $this.jqGrid("setSelection", rows[i].id, true);
+                            }
+                        }
+                    }
+
+                    // clear text selection (needed in IE)
+                    if(document.selection && document.selection.empty)
+                    {
+                        document.selection.empty();
+                    }
+                    else if(window.getSelection)
+                    {
+                        window.getSelection().removeAllRanges();
+                    }
+                }
+                return true;
+            }
 		});';
 
 		// enable keyboard navigation

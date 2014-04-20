@@ -230,6 +230,7 @@ function templates_list()
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=load&id=');
+    $navitable->disableSelect();
 	
 	$navitable->addCol("ID", 'id', "60", "true", "left");	
 	$navitable->addCol(t(67, 'Title'), 'title', "260", "true", "left");		
