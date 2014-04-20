@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.7.8');
+	define('APP_VERSION', '1.7.9');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	session_start();
@@ -1291,6 +1291,68 @@ function process()
                 $website = new website();
                 $website->create_default();
                 $website->theme = 'ocean';
+
+                $website->languages = array(
+                    'en' => array('language' => 'en', 'variant' => '', 'code' => 'en', 'system_locale' => 'ENU_USA'),
+                    'es' => array('language' => 'es', 'variant' => '', 'code' => 'es', 'system_locale' => 'ESN_ESP')
+                );
+                $website->languages_published = array('en', 'es');
+                $website->homepage = '/en/home';
+                $website->metatag_description = array(
+                    'en' => 'Ocean theme - Free with every Navigate CMS installation package',
+                    'es' => 'Tema Ocean - Incluido gratis en cada instalación de Navigate CMS'
+                );
+
+                $website->metatag_keywords = array(
+                    'en' => 'keyword 1,keyword 2,keyword 3',
+                    'es' => 'palabra 1,palabra2'
+                );
+
+                $website->metatags = array(
+                    'en' => '<meta name="author" content="Naviwebs" />',
+                    'es' => '<meta name="author" content="Naviwebs" />'
+                );
+
+                $website->theme_options = array(
+                    'style' => 'blue',
+                    'facebook_page' => 'http://www.facebook.com/Naviwebs',
+                    'twitter_page' => 'https://twitter.com/#NavigateCMS',
+                    'feed_url' => array(
+                        'en' => '/en/rss',
+                        'es' => '/es/rss'
+                    ),
+                    'logo' => 'img/logo-ocean.png',
+                    'home_portfolio_category' => 4,
+                    'footer_latest_entries' => 6,
+                    'footer_card_name' => 'Ocean Company',
+                    'footer_card_logo' => 'img/logo-ocean.png',
+                    'footer_card_text' => array(
+                        'en' => "Naviwebs Road,
+25864 Navigate
+555 333 212
+info@navigatecms.com",
+                        'es' => "Plaza Naviwebs,
+25864 Navigate
+555 333 212
+info@navigatecms.com"
+                    ),
+                    'footer_link_1' => array(
+                        'en' => 'http://www.naviwebs.com##Naviwebs',
+                        'es' => 'http://www.naviwebs.com##Naviwebs',
+                    ),
+                    'footer_link_2' => array(
+                        'en' => 'http://www.navigatecms.com##Navigate CMS',
+                        'es' => 'http://www.navigatecms.com##Navigate CMS'
+                    ),
+                    'footer_link_3' => array(
+                        'en' => '##',
+                        'es' => '##'
+                    ),
+                    'footer_link_4' => array(
+                        'en' => '##',
+                        'es' => '##'
+                    )
+                );
                 $website->update();
 
 				echo json_encode(array('ok' => $lang['done']));	
@@ -1300,7 +1362,7 @@ function process()
 				echo json_encode(array('error' => $e->getMessage()));	
 			}
 			exit;
-			
+
 			break;
 			
 		case 'apache_htaccess':

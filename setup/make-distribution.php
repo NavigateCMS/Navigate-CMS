@@ -140,8 +140,7 @@ $tables = array(
     'nv_paths',
     'nv_notes',
     'nv_feeds',
-    'nv_files',
-    'nv_websites'
+    'nv_files'
 );
 
 foreach($tables as $table)
@@ -176,7 +175,17 @@ foreach($tables as $table)
         }
 
         $row = array_values($row);
-        $row = array_map(protect, $row);
+        //$row = array_map(protect, $row);
+        $row = array_map(function($in) {
+            if(substr($in, 0, 1)=='{') // json encoding
+            {
+                $out = "'".str_replace('"', '\\"', $in)."'";
+                $out = str_replace('\u', '\\\u', $out);
+            }
+            else
+                $out = protect($in);
+            return $out;
+        }, $row);
         $row = implode(',', $row);
         if($rcount % 500 == 0)
             $sql[] = 'INSERT INTO '.$table.' VALUES ('.$row.');';

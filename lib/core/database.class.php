@@ -364,7 +364,7 @@ class database
 	 * Prepare a string to be sent to the database with security
 	 *
 	 * @param string $str String to protect
-	 * @param string $wrapper_by Surround the input string with "double" or 'single' quotes (default is "double")
+	 * @param string $wrapped_by Surround the input string with "double" or 'single' quotes (default is "double")
 	 * @return string Database protected string
 	 */		
 	public function protect($str, $wrapped_by="") 

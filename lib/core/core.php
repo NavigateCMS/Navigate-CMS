@@ -35,12 +35,13 @@ function t($id, $default='', $replace=array())
  * Protects a string before inserting it into the database
  *
  * @param string $text
+ * @param string $wrapped_by Surround the input string with "double" or 'single' quotes (default is "double")
  * @return string
  */
-function protect($text)
+function protect($text, $wrapped_by="")
 {
 	global $DB;
-	return $DB->protect($text);	
+	return $DB->protect($text, $wrapped_by="");
 }
 
 /**
