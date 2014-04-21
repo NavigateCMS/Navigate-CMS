@@ -1,7 +1,7 @@
 <?php
 @ini_set('magic_quotes_runtime', 0);
-
-session_start();
+error_reporting(E_ALL ^ E_NOTICE);
+@session_start();
 
 if(!empty($_POST['NAVIGATE_FOLDER']))
     $_SESSION['NAVIGATE_FOLDER'] = $_POST['NAVIGATE_FOLDER'];
@@ -14,7 +14,7 @@ if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 	define('APP_VERSION', '1.7.9');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
-	session_start();
+	@session_start();
 }
 else
 {
@@ -85,7 +85,7 @@ $lang = navigate_install_load_language();
             div.progressbar		{ width: 200px; clear: right; margin-left: 250px;  }
             input[type=submit] 	{ width: auto; font-family: Verdana; }
             #navigate-footer   	{ margin-top: 70px; text-align: center; font-size: 11px;  }
-            #tabs 				{ height: 410px; }
+            #tabs 				{ height: 440px; }
             #tabs div > div 	{ margin-bottom: 10px; }
             #install_language	{ background: #AED0EA; border: solid 1px #CCF; color: #33D; font-weight: bold; }
             .help				{ float: right; margin-top: -5px; }
@@ -169,7 +169,8 @@ function navigate_install_requirements()
 	$checks['pdo_mysql'] = extension_loaded('pdo_mysql');	
 	$checks['simplexml'] = extension_loaded('simplexml');	
 	$checks['zip'] = extension_loaded('zip');	
-		
+	$checks['safemode'] = ini_get('safe_mode'); // must be disabled! (0)
+
 	$size = navigate_install_decodesize(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])));
 
     /* pre folder path detection (only needed in step 1) */
@@ -210,7 +211,7 @@ function navigate_install_requirements()
                 </div>                 
                 <div>
                     <label>PHP &ge; 5.2</label>
-                    <input type="text" value="<?php echo ($checks['php5.2']? $lang['found'] : $lang['not_found']);?>" class="<?php echo ($checks['php5.2']? 'green' : 'red');?>" />
+                    <input type="text" value="<?php echo ($checks['php5.2']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php5.2']? 'green' : 'red');?>" />
                 </div>                    
                 <div>
                     <label>&raquo; GD</label>
@@ -245,6 +246,10 @@ function navigate_install_requirements()
                 <div>
                     <label>&raquo; ZIP</label>
                     <input type="text" value="<?php echo ($checks['zip']? $lang['found'] : $lang['not_found']);?>" class="<?php echo ($checks['zip']? 'green' : 'red');?>" />
+                </div>
+                <div>
+                    <label>&raquo; Safe mode</label>
+                    <input type="text" value="<?php echo ($checks['safemode'] > 0? $lang['enabled'].' '.$lang['must_be_disabled'] : $lang['disabled']);?>" class="<?php echo ($checks['safemode'] > 0? 'red' : 'green');?>" />
                 </div>
             </div>
         </div>
@@ -333,9 +338,13 @@ function navigate_install_configuration()
 			!empty($defaults['ADMIN_PASSWORD'])  &&						
 			!empty($defaults['PDO_DRIVER'])																		
 		)
-		{		
+		{
+            $app_unique = substr(md5($_SERVER["HTTP_USER_AGENT"]), 2, 10);
+            $app_unique = uniqid('nv_'.$app_unique, true);
+
 			$globals = str_replace('{APP_OWNER}', 			$defaults['APP_OWNER'], $globals);
 			$globals = str_replace('{APP_REALM}', 			$defaults['APP_REALM'], $globals);
+			$globals = str_replace('{APP_UNIQUE}', 			$app_unique,            $globals);
 
 			$globals = str_replace('{NAVIGATE_PARENT}', 	$defaults['NAVIGATE_PARENT'], $globals);
 			$globals = str_replace('{NAVIGATE_PATH}', 		$defaults['NAVIGATE_PATH'], $globals);
@@ -1470,6 +1479,9 @@ function navigate_install_load_language()
 			'disk_space'	        	=>	'Disk space',
 			'found'						=>	'found',
 			'not_found'					=>	'NOT FOUND!',
+			'enabled'					=>	'enabled',
+			'disabled'					=>	'disabled',
+			'must_be_disabled'			=>	'(must be disabled)',
 			'proceed_step_2'			=>	'Proceed to step 2: Decompress',
 			'unexpected_error'			=>	'Unexpected error',
 			'configuration'				=>	'Configuration',
