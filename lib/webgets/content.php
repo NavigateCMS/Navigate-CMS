@@ -338,7 +338,7 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
                     AND (date_unpublish = 0 OR date_unpublish > '.core_time().')';
 
     // status (0 public, 1 private (navigate cms users), 2 hidden)
-    $permission = (!empty($_SESSION['APP_USER'])? 1 : 0);
+    $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
     $where .= ' AND permission <= '.$permission;
 
     // access permission (0 public, 1 web users only, 2 unidentified users, 3 selected web user groups)

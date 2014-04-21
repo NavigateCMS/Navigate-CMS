@@ -18,7 +18,7 @@ if(empty($_REQUEST['id'])) exit;
 $DB = new database();
 if(!$DB->connect())	exit;
 
-if(empty($_SESSION['APP_USER']))
+if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
     exit;
 
 $item = new file();

@@ -57,7 +57,7 @@ function nvweb_search($vars=array())
 		}
 
 		// retrieve entries
-		$permission = (!empty($_SESSION['APP_USER'])? 1 : 0);
+		$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
         $access     = (!empty($current['webuser'])? 1 : 2);
 
 		if(empty($_GET['page'])) $_GET['page'] = 1;

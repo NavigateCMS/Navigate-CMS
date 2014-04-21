@@ -3,6 +3,8 @@ require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
 define('NAVIGATE_URL', dirname($_SERVER['PHP_SELF']));
+if(!defined(APP_UNIQUE))
+    define('APP_UNIQUE', 'nv_default');
 
 // create database connection
 $DB = new database();
@@ -11,7 +13,7 @@ if(!$DB->connect())
 	die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());	
 }
 
-if(!empty($_SESSION['APP_USER']))
+if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 {
 	session_write_close();
 	header('location: '.NAVIGATE_MAIN);
@@ -28,7 +30,7 @@ if(!empty($_COOKIE['navigate-user']))
     if(!empty($nuid))
     {
         $user->load($nuid);
-        $_SESSION['APP_USER'] = $nuid;
+        $_SESSION['APP_USER#'.APP_UNIQUE] = $nuid;
 	    session_write_close();
 	    header('location: '.NAVIGATE_MAIN);
 	    exit;
@@ -41,7 +43,7 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 
 	if(!$error)
 	{
-		$_SESSION['APP_USER'] = $user->id;
+		$_SESSION['APP_USER#'.APP_UNIQUE] = $user->id;
 
         if($_REQUEST['login-remember']=='1')
             $user->set_cookie();

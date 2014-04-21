@@ -71,7 +71,7 @@ function nv_plugin_init()
             $website = nvweb_load_website_by_url($url);
 
         if(	($website->permission == 2) ||
-            ($website->permission == 1 && empty($_SESSION['APP_USER'])))
+            ($website->permission == 1 && empty($_SESSION['APP_USER#'.APP_UNIQUE])))
             nvweb_clean_exit();
 
         // global helper variables
@@ -127,7 +127,7 @@ function nv_plugin_init()
 			'template' 			=> '',
 			'category' 			=> '',
 			'webuser'  			=> @$session['webuser'],
-			'navigate_session' 	=> !empty($_SESSION['APP_USER']),
+			'navigate_session' 	=> !empty($_SESSION['APP_USER#'.APP_UNIQUE]),
 			'html_after_body'	=> array(),
 			'js_after_body'		=> array()
 		);

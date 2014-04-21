@@ -7,6 +7,7 @@ define('APP_NAME', 'Navigate CMS');
 define('APP_VERSION', '{APP_VERSION}');
 define('APP_OWNER', "{APP_OWNER}");
 define('APP_REALM', "{APP_REALM}"); // used for password encryption, do not change!
+define('APP_UNIQUE', "{APP_UNIQUE}"); // unique id for this installation
 define('APP_DEBUG', false || isset($_REQUEST['debug']));
 
 /* App installation paths */

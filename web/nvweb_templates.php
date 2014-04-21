@@ -24,7 +24,7 @@ function nvweb_template_load()
 			
 		if($template->permission == 2) 
 			nvweb_clean_exit();
-		else if($template->permission == 1 && empty($_SESSION['APP_USER']))	
+		else if($template->permission == 1 && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 			nvweb_clean_exit();
 			
 		if(file_exists($template->file))

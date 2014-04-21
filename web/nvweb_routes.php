@@ -442,7 +442,7 @@ function nvweb_check_permission()
 			break;
 			
 		case 1:	// hidden to ANYBODY except NAVIGATE users
-			$permission = (!empty($_SESSION['APP_USER']));
+			$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE]));
 			break;
 			
 		case 0:	// visible to EVERYBODY if publishing dates allow it
@@ -502,7 +502,7 @@ function nvweb_object_enabled($object)
 			break;
 			
 		case 1:
-			$enabled = (!empty($_SESSION['APP_USER']));
+			$enabled = (!empty($_SESSION['APP_USER#'.APP_UNIQUE]));
 			break;
 			
 		case 0:

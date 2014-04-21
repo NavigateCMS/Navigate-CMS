@@ -28,7 +28,7 @@ if(!$DB->connect())
 }
 
 // session checking
-if(empty($_SESSION['APP_USER']))
+if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 {
 	$DB->disconnect();
 	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "No user logged in."}, "id" : "id"}');
@@ -36,7 +36,7 @@ if(empty($_SESSION['APP_USER']))
 else
 {
 	$user = new user();
-	$user->load($_SESSION['APP_USER']);
+	$user->load($_SESSION['APP_USER#'.APP_UNIQUE]);
 }
 
 // load the working website

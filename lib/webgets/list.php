@@ -84,7 +84,7 @@ function nvweb_list($vars=array())
 	if(empty($_GET['page'])) $_GET['page'] = 1;
 	$offset = intval($_GET['page'] - 1) * $vars['items'];
 
-	$permission = (!empty($_SESSION['APP_USER'])? 1 : 0);
+	$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
 
     // public access / webuser based / webuser groups based
     $access = 2;

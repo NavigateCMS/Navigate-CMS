@@ -13,7 +13,7 @@ function nvweb_liveedit($vars=array())
 	$out = array();
 	$url = '';
 
-	if(!empty($_SESSION['APP_USER']))
+	if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 	{
 		switch($current['type'])
 		{			

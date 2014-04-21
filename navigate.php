@@ -81,12 +81,12 @@ if(ini_get("session.use_cookies") && !empty($_COOKIE['navigate-session-id']))
     }
 }
 
-if(empty($_SESSION['APP_USER']) || isset($_GET['logout']))
+if(empty($_SESSION['APP_USER#'.APP_UNIQUE]) || isset($_GET['logout']))
 {	
-    if(!empty($_SESSION['APP_USER']))
+    if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
     {
         $user = new user();
-        $user->load($_SESSION['APP_USER']);
+        $user->load($_SESSION['APP_USER#'.APP_UNIQUE]);
         $user->remove_cookie();
     }
 
@@ -108,7 +108,7 @@ if(empty($_SESSION['APP_USER']) || isset($_GET['logout']))
 else
 {
 	$user = new user();
-	$user->load($_SESSION['APP_USER']);
+	$user->load($_SESSION['APP_USER#'.APP_UNIQUE]);
 
 	if(empty($user->id))
 		header('location: '.NAVIGATE_MAIN.'?logout');
@@ -125,6 +125,8 @@ if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES
 $idn = new idna_convert();
 $lang = new language();
 $lang->load($user->language);
+
+firephp_nv::log($_SESSION);
 
 if(@$_COOKIE['navigate-language'] != $user->language)
 	setcookie('navigate-language', $user->language, time() + 86400 * 30);

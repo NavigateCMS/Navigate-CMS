@@ -38,7 +38,7 @@ try
 		$website = nvweb_load_website_by_url($url);
 
 	if(	($website->permission == 2) || 
-		($website->permission == 1 && empty($_SESSION['APP_USER'])))
+		($website->permission == 1 && empty($_SESSION['APP_USER#'.APP_UNIQUE])))
     {
         if(!empty($website->redirect_to))
             header('location: '.$website->redirect_to);
@@ -112,7 +112,7 @@ try
         'plugins_called'    => '',
         'delayed_nvlists'   => array(),
         'delayed_nvsearches'=> array(),
-		'navigate_session' 	=> !empty($_SESSION['APP_USER']),
+		'navigate_session' 	=> !empty($_SESSION['APP_USER#'.APP_UNIQUE]),
 		'html_after_body'	=> array(),
 		'js_after_body'		=> array()
 	);
