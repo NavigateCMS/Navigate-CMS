@@ -1113,7 +1113,8 @@ label.ui-state-active #navigate_media_browser_folder_path
 	background: #FFEF8F;
 }
 
-.navigate-droppable-cancel
+.navigate-droppable-cancel,
+.navigate-droppable-create
 {
 	cursor: pointer;
 	margin-bottom:72px;
@@ -1121,6 +1122,13 @@ label.ui-state-active #navigate_media_browser_folder_path
 	margin-top:-93px;
     width: 16px;
     height: 16px;
+    display: none;
+}
+
+.navigate-droppable-create-contextmenu,
+.navigate-droppable-create-default_value
+{
+    display: none;
 }
 
 #navigate_jquery_translation

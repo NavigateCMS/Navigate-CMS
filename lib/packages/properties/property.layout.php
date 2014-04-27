@@ -61,7 +61,7 @@ function navigate_property_layout_field($property)
 	$langs = $website->languages_list;
 
 	$field = array();
-		
+
 	if(!isset($property->value))
         $property->value = $property->dvalue;
 
@@ -406,8 +406,8 @@ function navigate_property_layout_field($property)
 			
 		case 'image':
 			$field[] = '<div class="navigate-form-row">';
-			$field[] = '<label>'.$property->name.'</label>';		
-			$field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image");
+			$field[] = '<label>'.$property->name.'</label>';
+			$field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue);
 			$field[] = '</div>';				
 			break;
 

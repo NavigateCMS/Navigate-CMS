@@ -495,7 +495,7 @@ class naviforms
 		return $out;
 	}
 	
-	public function dropbox($name, $value=0, $media="", $disabled=false)
+	public function dropbox($name, $value=0, $media="", $disabled=false, $default_value=null)
 	{
 		global $layout;
 		global $website;
@@ -523,12 +523,51 @@ class naviforms
 		if(!$disabled)
 		{
 			$out[] = '<div class="navigate-droppable-cancel"><img src="img/icons/silk/cancel.png" /></div>';
+            if(!empty($default_value))
+            {
+                $default_value_html = '<img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$default_value.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
+                $out[] = '<div class="navigate-droppable-create">
+                            <img src="img/icons/silk/add.png" />
+                            <ul class="navigate-droppable-create-contextmenu">
+                                <li action="default"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(199, "Default value").'</a></li>
+                            </ul>
+                            <div class="navigate-droppable-create-default_value">'.$default_value_html.'</div>
+                          </div>';
+
+                // context menu actions
+                $layout->add_script('
+                    $(".navigate-droppable-create-contextmenu li[action=default]").on("click", function()
+                    {
+						$("#'.$name.'").val("'.$default_value.'");
+						$("#'.$name.'-droppable").html($("#'.$name.'-droppable").parent().find(".navigate-droppable-create-default_value").html());
+						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
+					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                    });
+                ');
+            }
 			
 			$layout->add_script('
-				$("#'.$name.'-droppable").next().bind("click", function()
+				$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").on("click", function()
 				{
 					$("#'.$name.'").val("0");
 					$("#'.$name.'-droppable").html(\'<img src="img/icons/misc/dropbox.png" vspace="18" />\');
+					$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").hide();
+					$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").show();
+				});
+
+				$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").on("click", function(ev)
+				{
+                    navigate_hide_context_menus();
+                    setTimeout(function()
+                    {
+                        var menu_el = $("#'.$name.'-droppable").parent().find(".navigate-droppable-create-contextmenu");
+                        menu_el.menu();
+
+                        menu_el.css({
+                            "z-index": 100000,
+                            "position": "absolute"
+                        }).addClass("navi-ui-widget-shadow").show();
+                    }, 100);
 				});
 			');
 			
@@ -545,9 +584,27 @@ class naviforms
 						var file_id = $(ui.draggable).attr("id").substring(5);
 						$("#'.$name.'").val(file_id);
 						$(this).html($(ui.draggable).html());
+						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
+					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
 					}
 				});
-			');	
+			');
+
+            if(empty($value) && !empty($default_value))
+            {
+                $layout->add_script('
+                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").show();
+                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").hide();
+                ');
+            }
+            else if(!empty($value))
+            {
+                $layout->add_script('
+                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
+                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                ');
+            }
+
 		}
 				
 		return implode("\n", $out);

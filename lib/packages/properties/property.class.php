@@ -169,7 +169,7 @@ class property
         if(!isset($value) && isset($website->theme_options->{$this->id}))
             $this->value = $website->theme_options->{$this->id};
 
-        if(empty($this->value))
+        if(empty($this->value) && empty($this->id))
             $this->value = $this->dvalue;
 
         if(is_object($this->value))
@@ -196,7 +196,7 @@ class property
 
         $this->value = $value;
 
-        if(empty($this->value))
+        if(empty($this->value) && empty($this->id))
             $this->value = $this->dvalue;
 
         if(is_object($this->value))
