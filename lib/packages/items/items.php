@@ -1283,7 +1283,7 @@ function items_form($item)
 												),
 										   'div_path_'.$lang);
 									   
-			if(empty($template->sections)) 
+			if(!isset($template->sections))
 				$template->sections[] = array(
                     0 => array(
                         'code' => 'main',
@@ -1292,11 +1292,15 @@ function items_form($item)
                         'width' => '960px'
                     )
                 );
-				
+
 			foreach($template->sections as $section)
 			{								
 				if(is_object($section))
 					$section = (array)$section;
+
+                // ignore empty sections
+                if(empty($section))
+                    continue;
 
 				if($section['editor']=='tinymce')
 				{

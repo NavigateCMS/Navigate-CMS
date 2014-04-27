@@ -126,8 +126,6 @@ $idn = new idna_convert();
 $lang = new language();
 $lang->load($user->language);
 
-firephp_nv::log($_SESSION);
-
 if(@$_COOKIE['navigate-language'] != $user->language)
 	setcookie('navigate-language', $user->language, time() + 86400 * 30);
 

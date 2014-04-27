@@ -284,7 +284,8 @@ function nvweb_template_parse($template)
 				break;
 				
 			case 'php':
-				eval('$content = '.$tag['attributes']['code'].';');
+                if(!empty($tag['attributes']['code']))
+				    eval('$content = '.$tag['attributes']['code'].';');
 				break;
 
             case 'theme':
