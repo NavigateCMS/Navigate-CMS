@@ -260,17 +260,17 @@ class block
             array(
                 ':website'          =>  $website->id,
                 ':type'             =>  $this->type,
-                ':date_published'   =>  $this->date_published,
-                ':date_unpublish'   =>  $this->date_unpublish,
+                ':date_published'   =>  intval($this->date_published),
+                ':date_unpublish'   =>  intval($this->date_unpublish),
                 ':position'         =>  intval($this->position),
                 ':fixed'            =>  intval($this->fixed),
                 ':categories'       =>  implode(',', $this->categories),
-                ':access'           =>  $this->access,
+                ':access'           =>  intval($this->access),
                 ':groups'           =>  $groups,
-                ':enabled'          =>  $this->enabled,
+                ':enabled'          =>  intval($this->enabled),
                 ':trigger'          =>  serialize($this->trigger),
                 ':action'           =>  serialize($this->action),
-                ':notes'            =>  $this->notes
+                ':notes'            =>  (is_null($this->notes)? '' : $this->notes)
             )
         );
 
