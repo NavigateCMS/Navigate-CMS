@@ -515,7 +515,7 @@
 514     # Cabeceras adicionales
 515     # Las rutas no encontradas
 516     # Muestran una página en blanco
-517     # Redirigen a la página de incio
+517     # Redirigen a la página de inicio
 518     # Usan la plantilla 404 de un tema (si existe)
 519     # Envían una cabecera de error HTTP 404
 520     # Ningún sitio web encontrado; se ha creado uno por defecto.
