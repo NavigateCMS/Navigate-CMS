@@ -144,6 +144,8 @@ function nvweb_contact($vars=array())
 
 function nvweb_contact_notify($vars, $is_error, $message)
 {
+    global $events;
+
     $out = '';
 
     switch($vars['notify'])
@@ -175,6 +177,15 @@ function nvweb_contact_notify($vars, $is_error, $message)
             }
             break;
     }
+
+    $events->trigger(
+        'contact',
+        'after_sending',
+        array(
+            'sent' => !$is_error,
+            'message' => $message
+        )
+    );
 
     return $out;
 }
