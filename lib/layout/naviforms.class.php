@@ -120,6 +120,10 @@ class naviforms
 	
 	public function textfield($name, $value="", $width="400px", $action="")
 	{
+        // may happen when converting a property type from (multilanguage) text to a (single) value
+        if(is_array($value))
+            $value = array_pop($value);
+
 		$value = htmlspecialchars($value);
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" style=" width: '.$width.';" onkeyup="'.$action.'" />';
 		return $out;	
