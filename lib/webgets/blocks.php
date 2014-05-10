@@ -45,6 +45,15 @@ function nvweb_blocks($vars=array())
     if(empty($vars['zone']))
         $vars['zone'] = 'block';
 
+    $categories = array();
+    if(!empty($vars['categories']))
+    {
+        $categories = explode(',', $vars['categories']);
+        $categories = array_filter($categories);
+    }
+    $categories[] = $current['category'];
+
+
     $blocks = array();
 
 	switch($order_mode)
@@ -58,7 +67,7 @@ function nvweb_blocks($vars=array())
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
-                           AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
+                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
                            AND id = '.protect($vars['id'])
             );
             $row = $DB->first();
@@ -76,9 +85,9 @@ function nvweb_blocks($vars=array())
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
-                           AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
+                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
 					  ORDER BY position ASC');
-		
+
 			$rows = $DB->result();
 
 			foreach($rows as $row)
@@ -102,7 +111,7 @@ function nvweb_blocks($vars=array())
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
                            AND fixed = 1
-                           AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
+                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
 					  ORDER BY position ASC');
 
 			$fixed_rows = $DB->result();
@@ -121,7 +130,7 @@ function nvweb_blocks($vars=array())
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
                            AND id NOT IN('.implode(",", $fixed_rows_ids).')
-                           AND (categories = "" OR FIND_IN_SET("'.$current['category'].'", categories) > 0)
+                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
 						 ORDER BY RAND()');
 		
 			$random_rows = $DB->result();
