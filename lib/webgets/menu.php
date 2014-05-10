@@ -95,7 +95,12 @@ function nvweb_menu($vars=array())
                     if($(option).attr("target") == "_blank")
                         window.open($(option).attr("href"));
                     else
-                        window.location.replace($(option).attr("href"));
+                    {
+                        if($(option).attr("href")=="#")
+                            window.location.replace($(option).attr("href") + "sid_" + $(option).attr("value"));
+                        else
+                            window.location.replace($(option).attr("href"));
+                    }
                 });
             ');
         }
@@ -178,12 +183,14 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                         $aclass = ' class="menu_option_active" selected="selected"';
 
                     $target = '';
-                    $act = nvweb_menu_action($mid);
+                    $act = nvweb_menu_action($mid, NULL, false, false);
                     if(strpos($act, 'target="_blank"')!==false)
                         $target = 'target="_blank"';
                     if(strpos($act, 'onclick')!==false)
                         $act = '#';
+
                     $act = str_replace('target="_blank"', '', $act);
+                    $act = str_replace('data-sid', 'data_sid', $act);
                     $act = str_replace('href="', '', $act);
                     $act = str_replace('"', '', $act);
                     $act = trim($act);
@@ -258,7 +265,7 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 	
 }
 
-function nvweb_menu_action($id, $force_type=NULL)
+function nvweb_menu_action($id, $force_type=NULL, $use_javascript=true, $include_datasid=true)
 {
 	global $structure; 
 	global $current;
@@ -273,10 +280,18 @@ function nvweb_menu_action($id, $force_type=NULL)
 		case 'url':
 			$url = $structure['routes'][$id];
 			if(empty($url))
-				$url = ' href="javascript: return false;" ';
+            {
+                if($use_javascript)
+				    $url = 'javascript: return false;';
+                else
+                    $url = '#';
+            }
             else
                 $url = nvweb_prepare_link($url);
-			$action = 'href="'.$url.'"';
+
+			$action = ' href="'.$url.'" ';
+            if($include_datasid)
+                $action.= ' data-sid="'.$id.'" ';
 			break;
 			
 		case 'jump-branch':
@@ -287,14 +302,23 @@ function nvweb_menu_action($id, $force_type=NULL)
 		case 'jump-item':
 			$url = nvweb_source_url('item', $structure['actions'][$id]['action-jump-item'], $current['lang']);
 			if(empty($url))
-				$url = ' href="javascript: return false;" ';
+            {
+                if($use_javascript)
+                    $url = 'javascript: return false;';
+                else
+                    $url = '#';
+            }
 			else
                 $url = nvweb_prepare_link($url);
-			$action = 'href="'.$url.'"';
+			$action = ' href="'.$url.'" ';
+            if($include_datasid)
+                $action.= ' data-sid="'.$id.'" ';
 			break;
 			
 		case 'do-nothing':
 			$action = ' href="#" onclick="javascript: return false;" ';
+            if($include_datasid)
+                $action.= ' data-sid="'.$id.'" ';
 			break;
 			
 		default:
@@ -302,11 +326,26 @@ function nvweb_menu_action($id, $force_type=NULL)
             // will be removed by 1.7
 			$url = $structure['routes'][$id];
 			if(substr($url, 0, 7)=='http://' || substr($url, 0, 7)=='https://')
-				return ' href="'.$url.'" target="_blank"'; // ;)
+            {
+                $action = ' href="'.$url.'" target="_blank" ';
+                if($include_datasid)
+                    $action.= ' data-sid="'.$id.'" ';
+				return $action; // ;)
+            }
 			else if(empty($url))
-				return ' href="#" onclick="return false;"';
+            {
+                $action = ' href="#" onclick="return false;" ';
+                if($include_datasid)
+                    $action.= ' data-sid="'.$id.'" ';
+				return $action;
+            }
 			else
-				return ' href="'.NVWEB_ABSOLUTE.$url.'"';		
+            {
+                $action = ' href="'.NVWEB_ABSOLUTE.$url.'"';
+                if($include_datasid)
+                    $action.= ' data-sid="'.$id.'" ';
+				return $action;
+            }
 			break;	
 	}
 	
