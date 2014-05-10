@@ -291,7 +291,7 @@ function webusers_list()
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
-	$navitable->sortBy('id');
+    $navitable->sortBy('id', 'DESC');
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
     $navitable->enableDelete();
@@ -472,10 +472,16 @@ function webusers_form($item)
 										));		
 
 	$countries = property::countries();
-	
-	$navibars->add_tab_content_row(array(	'<label>'.t(224, 'Country').'</label>',
-											$naviforms->selectfield("webuser-country", array_keys($countries), array_values($countries), strtoupper($item->country))
-										));		
+    $country_names = array_values($countries);
+    $country_codes = array_keys($countries);
+    // include "country not defined" item
+    array_unshift($country_codes, '');
+    array_unshift($country_names, '('.t(307, "Unspecified").')');
+
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(224, 'Country').'</label>',
+        $naviforms->selectfield("webuser-country", $country_codes, $country_names, strtoupper($item->country))
+    ));
 										
 	$timezones = property::timezones();
 	

@@ -260,7 +260,7 @@ function users_list()
 		$navitable->setInitialURL("?fid=users&act=1&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
 	
 	$navitable->setURL('?fid=users&act=1');
-	$navitable->sortBy('id');
+    $navitable->sortBy('id', 'DESC');
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid=users&act=2&id=');
     $navitable->enableDelete();
