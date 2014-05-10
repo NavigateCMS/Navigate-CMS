@@ -41,18 +41,24 @@ function nvweb_archive($vars=array())
     if(strpos($vars['nvweb_html'], 'jquery')===false)
 		$out[] = '<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>';
 
-    // retrieve posts number by year and month
+    // retrieve posts number by year, month, and check if there are available in the current language
     $DB->query('
-        SELECT COUNT(id) AS total,
-               MONTH(FROM_UNIXTIME(GREATEST(date_published, date_created))) as month,
-               YEAR(FROM_UNIXTIME(GREATEST(date_published, date_created))) as year
-          FROM nv_items
-         WHERE website = '.$website->id.'
-           AND permission <= '.$permission.'
-           AND (date_published = 0 OR date_published < '.core_time().')
-           AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-           AND category IN('.implode(",", $categories).')
-           AND (access = 0 OR access = '.$access.')
+        SELECT COUNT(i.id) AS total,
+               MONTH(FROM_UNIXTIME(GREATEST(i.date_published, i.date_created))) as month,
+               YEAR(FROM_UNIXTIME(GREATEST(i.date_published, i.date_created))) as year
+          FROM nv_items i
+         WHERE i.website = '.$website->id.'
+           AND i.permission <= '.$permission.'
+           AND (i.date_published = 0 OR i.date_published < '.core_time().')
+           AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
+           AND i.category IN('.implode(",", $categories).')
+           AND (i.access = 0 OR i.access = '.$access.')
+           AND 0 < ( SELECT COUNT(p.id)
+                       FROM nv_paths p
+                      WHERE p.website = '.$website->id.'
+                        AND p.type = "item"
+                        AND p.object_id = i.id
+                        AND p.lang = "'.$current['lang'].'" )
          GROUP BY year, month
          ORDER BY year DESC, month DESC
     ');
