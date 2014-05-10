@@ -3,8 +3,6 @@ require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
 define('NAVIGATE_URL', dirname($_SERVER['PHP_SELF']));
-if(!defined(APP_UNIQUE))
-    define('APP_UNIQUE', 'nv_default');
 
 // create database connection
 $DB = new database();

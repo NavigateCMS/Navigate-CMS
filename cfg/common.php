@@ -43,4 +43,7 @@ define('NAVIGATE_UPLOAD_MAX_SIZE', min($max_upload, $max_post, $memory_limit));
 
 include_once(NAVIGATE_PATH.'/cfg/session.php');
 
+if(!defined(APP_UNIQUE))
+    define('APP_UNIQUE', 'nv_default');
+
 ?>
