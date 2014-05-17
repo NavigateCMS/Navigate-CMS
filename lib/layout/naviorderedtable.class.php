@@ -84,7 +84,7 @@ class naviorderedtable
 				}
 			});
 			
-			$("#'.$this->id.' img.silk-zoom").css({cursor: "pointer"}).bind("click", function()
+			$("#'.$this->id.' img.silk-zoom").css({cursor: "pointer"}).on("click", function()
 			{
                 var column = $(this).parent().parent().prevAll().length;
 				$(this).parent().hide();
@@ -98,6 +98,8 @@ class naviorderedtable
 			
 			function navigate_naviorderedtable_'.$this->id.'_reorder()
 			{
+			    console.log("eo");
+
 				var trs = $("#'.$this->id.'").find("tr");
 				var ids = [];
 				for(i in trs)

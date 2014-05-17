@@ -362,7 +362,7 @@ class naviforms
                 language: "'.$user->language.'",
 
                 theme_advanced_buttons1 : "formatselect,fontselect,fontsizeselect,|,forecolor,|,backcolor,|,removeformat,visualaid,|,code,codemagic",
-                theme_advanced_buttons2 : "bold,italic,underline,strikethrough|,justifyleft,justifycenter,justifyright,justifyfull,|,outdent,indent,|,bullist,|,sub,sup,|,loremipsum,charmap,|,pre,|,help",
+                theme_advanced_buttons2 : "bold,italic,underline,strikethrough|,justifyleft,justifycenter,justifyright,justifyfull,|,outdent,indent,blockquote,|,bullist,|,sub,sup,|,loremipsum,charmap,|,pre,|,help",
                 theme_advanced_buttons3 : "styleselect,|,styleprops,attribs,|,tableDropdown,|,link,unlink,anchor,|,image,imgmap,media,|,spellchecker,|,undo,redo",
 
                 theme_advanced_toolbar_location : "top", // could be external
