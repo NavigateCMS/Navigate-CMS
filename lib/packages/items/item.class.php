@@ -92,6 +92,9 @@ class item
         $groups = str_replace('g', '', $main->groups);
         $this->groups = explode(',', $groups);
         if(!is_array($this->groups))  $this->groups = array($groups);
+
+        if($this->association == 'free')
+            $this->category = '';
     }
 	
 	public function load_from_post()
