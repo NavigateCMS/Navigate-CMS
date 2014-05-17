@@ -84,12 +84,15 @@ function nvweb_gallery($vars=array())
             if(empty($image_selected))
                 return '';
 
-            $out[] = '<div class="nv_gallery_item">
-                        <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
-                            <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'"
-                                 alt="" title="" />
-                        </a>
-                    </div>';
+            if(!empty($vars['return']) && $vars['return']=='url')
+                $out[] = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline';
+            else
+                $out[] = '<div class="nv_gallery_item">
+                            <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
+                                <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'"
+                                     alt="" title="" />
+                            </a>
+                        </div>';
             break;
 
 		case 'greybox':
