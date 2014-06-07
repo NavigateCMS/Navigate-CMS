@@ -458,7 +458,35 @@ function run()
             echo json_encode(array('rows' => $rows, 'total' => $total));
 							  
 			core_terminate();
-			break;		
+			break;
+
+        case 'json_find_item':
+            // find items by its title
+            // any language
+
+            $template_filter = '';
+            if(!empty($_REQUEST['template']))
+                $template_filter = ' AND nvi.template = "'.$_REQUEST['template'].'" ';
+
+            $DB->query('SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as label, nvw.text as value
+						  FROM nv_webdictionary nvw, nv_items nvi
+						 WHERE nvw.node_type = "item"
+						   AND nvw.node_id = nvi.id
+						   '.$template_filter.'
+						   AND nvw.subtype = "title"
+						   AND nvw.website = '.$website->id.'
+						   AND nvw.website = nvi.website
+						   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+				      ORDER BY nvw.text ASC
+					     LIMIT '.intval($_REQUEST['page_limit']).'
+					     OFFSET '.(intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
+                'array');
+
+            $rows = $DB->result();
+            $total = $DB->foundRows();
+            echo json_encode(array('rows' => $rows, 'total' => $total));
+            core_terminate();
+            break;
 			
 		case 98: // change comment status
 			if(empty($_REQUEST['id']))
