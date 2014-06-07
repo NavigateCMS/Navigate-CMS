@@ -53,12 +53,15 @@ function nvweb_blocks($vars=array())
     }
     $categories[] = $current['category'];
 
-
     $blocks = array();
 
 	switch($order_mode)
 	{
         case 'single':
+            $categories_query = implode(',', $categories);
+            if(!empty($categories_query))
+                $categories_query = ' OR categories IN ('.$categories_query.') ';
+
             $DB->query('SELECT id
                           FROM nv_blocks
                          WHERE type = '.protect($vars['type']).'
@@ -67,7 +70,7 @@ function nvweb_blocks($vars=array())
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
-                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
+                           AND (categories = "" '.$categories_query.')
                            AND id = '.protect($vars['id'])
             );
             $row = $DB->first();
@@ -77,6 +80,11 @@ function nvweb_blocks($vars=array())
 
         case 'priority':
 		case 'ordered':
+
+            $categories_query = implode(',', $categories);
+            if(!empty($categories_query))
+                $categories_query = ' OR categories IN ('.$categories_query.') ';
+
 			$DB->query('SELECT *
 			 			  FROM nv_blocks
 						 WHERE type = '.protect($vars['type']).'
@@ -85,7 +93,7 @@ function nvweb_blocks($vars=array())
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
-                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
+                           AND (categories = "" '.$categories_query.')
 					  ORDER BY position ASC');
 
 			$rows = $DB->result();
@@ -102,17 +110,22 @@ function nvweb_blocks($vars=array())
 		case 'random':
             // "random" gets priority blocks first
             // retrieve fixed blocks
+            $categories_query = implode(',', $categories);
+            if(!empty($categories_query))
+                $categories_query = ' OR categories IN ('.$categories_query.') ';
+
+
             $DB->query('SELECT *
-			 			  FROM nv_blocks
-						 WHERE type = '.protect($vars['type']).'
-						   AND enabled = 1
-						   AND website = '.$website->id.'
-                           AND (date_published = 0 OR date_published < '.core_time().')
-                           AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-                           AND access IN('.implode(',', $access).')
-                           AND fixed = 1
-                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
-					  ORDER BY position ASC');
+                              FROM nv_blocks
+                             WHERE type = '.protect($vars['type']).'
+                               AND enabled = 1
+                               AND website = '.$website->id.'
+                               AND (date_published = 0 OR date_published < '.core_time().')
+                               AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
+                               AND access IN('.implode(',', $access).')
+                               AND fixed = 1
+                               AND (categories = "" '.$categories_query.')
+                          ORDER BY position ASC');
 
 			$fixed_rows = $DB->result();
 			$fixed_rows_ids = $DB->result('id');
@@ -130,7 +143,7 @@ function nvweb_blocks($vars=array())
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
                            AND id NOT IN('.implode(",", $fixed_rows_ids).')
-                           AND (categories = "" OR categories IN ('.implode(',', $categories).') > 0)
+                           AND (categories = "" '.$categories_query.')
 						 ORDER BY RAND()');
 		
 			$random_rows = $DB->result();
