@@ -1556,7 +1556,7 @@ function items_form($item)
 			$gallery_elements_order = implode('#', array_keys($item->galleries[0]));
 			
 			$navibars->add_tab_content(
-					$naviforms->hidden('items-gallery-elements-order', $gallery_elements_order)
+                $naviforms->hidden('items-gallery-elements-order', $gallery_elements_order)
 			);
 					
 			$gallery = '<ul id="items-gallery-elements" class="items-gallery">';
@@ -1570,7 +1570,7 @@ function items_form($item)
 								<div id="items-gallery-item-'.$ids[$g].'-droppable" class="navigate-droppable ui-corner-all">
 									<img title="'.$ids[$g].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$ids[$g].'&amp;disposition=inline&amp;width=75&amp;height=75" />
 								</div>
-								<div class="navigate-droppable-cancel"><img src="img/icons/silk/cancel.png" /></div>
+								<div class="navigate-droppable-cancel" style="display: block;"><img src="img/icons/silk/cancel.png" /></div>
 							</li>';
 			}
 		
