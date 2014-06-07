@@ -55,7 +55,7 @@ class property
 	public function load_from_resultset($rs)
 	{
 		$main = $rs[0];
-		
+
 		$this->id			= $main->id;
 		$this->element 		= $main->element;
 		$this->template		= $main->template;		
@@ -84,6 +84,12 @@ class property
 		
 		if($this->type == 'date' || $this->type == 'datetime')
 			$this->dvalue	= 	core_date2ts($this->dvalue);
+
+        if(empty($this->type))
+            $this->type = 'value';
+
+        if(empty($this->element))
+            $this->element = 'item';
 		
 		if(isset($_REQUEST['property-position']))
 			$this->position		= $_REQUEST['property-position'];
@@ -124,6 +130,8 @@ class property
                         break;
                     }
                 }
+
+                $theme_option->element = 'website';
             }
             else if($source=='template')
             {
@@ -147,12 +155,15 @@ class property
                         }
                     }
                 }
+
+                if(empty($theme_option->element))
+                    $theme_option->element = 'item';
             }
         }
 
         $this->id = $theme_option->id;
         $this->website = $website->id;
-       	$this->element = 'website';
+       	$this->element = $theme_option->element;
        	$this->template = '';
        	$this->name = $theme_option->name;
        	$this->type = $theme_option->type;
@@ -382,6 +393,7 @@ class property
             'coordinates'	=>	t(297, 'Coordinates'),
             'product'		=>	t(198, 'Product'),
             'category'		=>	t(78, 'Category'),
+            'item'		    =>	t(180, 'Item'),
             'source_code'   =>  t(489, 'Source code'),
             'webuser_groups'=>  t(512, 'Selected web user groups')
         );

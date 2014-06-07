@@ -718,10 +718,10 @@ function templates_form($item)
 					   {
 						   $("#property-id-span").html(data.id);
 						   $("#property-id").val(data.id);
-						   $("#property-element").val(data.element);
+						   $("#property-element").select2("val", data.element);
 						   $("#property-template").val(data.template);
 						   $("#property-name").val(data.name);
-						   $("#property-type").val(data.type);
+						   $("#property-type").select2("val", data.type);
 						   $("#property-options").val(data.options);
 						   $("#property-dvalue").val(data.dvalue);
 						   if(data.enabled=="1")
@@ -809,7 +809,6 @@ function templates_form($item)
                                        {
                                            // insert
                                            var checked = "";
-
                                            if(data.enabled) checked = \' checked="checked" \';
                                            var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td>\'+navigate_templates_element_types[data.element]+\'</td><td align="center"><input name="property-enabled[]" type="checkbox" value="\'+data.id+\'" \'+checked+\' /></td></tr>\';
                                            $("#template_properties_table").find("tbody:last").append(tr);

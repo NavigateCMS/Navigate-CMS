@@ -56,6 +56,7 @@ function navigate_property_layout_field($property)
 {
 	global $website;
 	global $layout;
+    global $DB;
 
 	$naviforms = new naviforms();
 	$langs = $website->languages_list;
@@ -82,7 +83,7 @@ function navigate_property_layout_field($property)
 			$field[] = $naviforms->textfield("property-".$property->id, $property->value);
 			$field[] = '</div>';			
 			break;
-			
+
 		case 'rating':
 			$default = explode('#', $property->dvalue);
 			$stars = $default[1];
@@ -443,6 +444,78 @@ function navigate_property_layout_field($property)
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->dropdown_tree("property-".$property->id, $categories_list, $property->value);
             $field[] = '</div>';
+            break;
+
+        case 'item':
+
+            $item_title = '';
+            if(!empty($property->value))
+            {
+                $item_title = $DB->query_single(
+                    'text',
+                    'nv_webdictionary',
+                    '   node_type = "item" AND
+                        website = "'.$website->id.'" AND
+                        node_id = "'.$property->value.'" AND
+                        subtype = "title" AND
+                        lang = "'.$website->languages_published[0].'"'
+                );
+            }
+
+            $field[] = '<div class="navigate-form-row">';
+            $field[] = '<label>'.$property->name.'</label>';
+            $field[] = $naviforms->textfield("property-selector-".$property->id, $item_title);
+            $field[] = $naviforms->hidden("property-".$property->id, $property->value);
+            $field[] = '</div>';
+
+            $layout->add_script('
+                $("#property-selector-'.$property->id.'").select2(
+                {
+                    placeholder: "'.t(533, "Find element by title").'",
+                    minimumInputLength: 1,
+                    ajax: {
+                        url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item",
+                        dataType: "json",
+                        quietMillis: 100,
+                        data: function (term, page)
+                        {   // page is the one-based page number tracked by Select2
+                            return {
+                                "title": term,
+                                nd: new Date().getTime(),
+                                template: "'.$property->item_template.'",
+                                page_limit: 30, // page size
+                                page: page // page number
+						    };
+                        },
+                        results: function (data, page)
+                        {
+                            // data = { rows: [], total: 45 }
+                            var more = (page * 5) < data.total; // whether or not there are more results available
+                            // notice we return the value of more so Select2 knows if more results can be loaded
+                            return {results: data.rows, more: more};
+                        }
+                    },
+                    formatResult: function(row) { return row.label; },
+                    formatSelection: function(row) { return row.label + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
+                    triggerChange: true,
+                    allowClear: true,
+                    initSelection : function (element, callback)
+                    {
+                        var data = {
+                            id: $("#property-'.$property->id.'").val(),
+                            label: element.val(),
+                            value: element.val()
+                        };
+                        callback(data);
+                    }
+                });
+
+                $("#property-selector-'.$property->id.'").on("change", function(e)
+                {
+					$("#property-'.$property->id.'").val(e.val);
+                });
+            ');
+
             break;
 
         case 'webuser_groups':
