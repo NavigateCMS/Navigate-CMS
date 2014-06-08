@@ -207,7 +207,10 @@ function nvweb_properties_render($property, $vars)
 	if(!isset($property->value)) $property->value = $property->dvalue;
 	if(in_array($property->type, array("text", "textarea", "link")))
 	{
-		if(!isset($property->value[$current['lang']]))
+        if(is_object($property->value))
+            $property->value = (array)$property->value;
+
+		if(!isset($property->value) || !isset($property->value[$current['lang']]))
 			$property->value[$current['lang']] = $property->dvalue;
 	}
 	

@@ -107,7 +107,8 @@ foreach($tables as $table)
 		$row = array_values($row);
 		$row = array_map(protect, $row);
 		$row = implode(',', $row);
-		if($rcount % 500 == 0)
+        // every 100 rows, a new sentence
+		if($rcount % 100 == 0)
 			$sql[] = 'INSERT INTO '.$table.' VALUES ('.$row.');';
 		else
 			$sql[count($sql)-1] = rtrim($sql[count($sql)-1], ';').', ('.$row.');';

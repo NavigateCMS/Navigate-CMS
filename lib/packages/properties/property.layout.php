@@ -68,6 +68,9 @@ function navigate_property_layout_field($property)
 
 	if(in_array($property->type, array("text", "textarea", "link")))
 	{
+        if(is_object($property->value))
+            $property->value = (array)$property->value;
+
 		foreach($langs as $lang)
 		{
 			if(!isset($property->value[$lang]))

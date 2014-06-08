@@ -127,11 +127,10 @@ class property
                     if($to->id==$theme_option || $to->name==$theme_option)
                     {
                         $theme_option = $to;
+                        @$theme_option->element = 'website';
                         break;
                     }
                 }
-
-                $theme_option->element = 'website';
             }
             else if($source=='template')
             {
