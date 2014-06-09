@@ -149,7 +149,7 @@ function nv_plugin_init()
 	}
 }
 
-function nv_plugin_end($redirect_to)
+function nv_plugin_end($redirect_to="")
 {
 	global $DB;
 	global $session;

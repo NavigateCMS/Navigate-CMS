@@ -49,13 +49,17 @@ class webuser
 			$this->load_from_resultset($data);
 			$session['webuser'] = $this->id;
 
-            $events->trigger(
-                'webuser',
-                'sign_in',
-                array(
-                    'webuser' => $this
-                )
-            );
+            // maybe this functions is called without initializing $events
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'webuser',
+                    'sign_in',
+                    array(
+                        'webuser' => $this
+                    )
+                );
+            }
 		}
 	}
 
