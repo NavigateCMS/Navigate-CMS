@@ -393,6 +393,29 @@ function nvweb_properties_render($property, $vars)
 			// use "return" attribute to determine what to return of a category (title, ID...)
             $out = $property->value;
             break;
+
+        case 'item':
+            $return = @$vars['return'];
+
+            switch($return)
+            {
+                case 'title':
+                    $item = new item();
+                    $item->load($property->value);
+                    $out = $item->dictionary[$current['lang']]['title'];
+                    break;
+
+                case 'url':
+                case 'path':
+                    $out = nvweb_source_url('item', $property->value, $current['lang']);
+                    break;
+
+                case 'id':
+                default:
+                    $out = $property->value;
+                    break;
+            }
+            break;
 			
 		default:	
 	}
