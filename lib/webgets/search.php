@@ -95,19 +95,110 @@ function nvweb_search($vars=array())
 		);
 
 		$rs = $DB->result();
-		
 		$total = $DB->foundRows();
 
-		$template_tags = nvweb_tags_extract($vars['template'], 'nvlist', true, true, 'UTF-8');
-					
 		for($i = 0; $i < count($rs); $i++)
 		{
 			if(empty($rs[$i]->id)) break;
 			$item = new item();
 			$item->load($rs[$i]->id);
 			$item->date_public = $rs[$i]->pdate;
+
+            // get the nv list template
+            $item_html = $vars['template'];
+
+            // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
+            $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
+
+            while(!empty($template_tags))
+            {
+                $tag = $template_tags[0];
+
+                if($tag['attributes']['by']=='property')
+                {
+                    if(empty($tag['attributes']['property_id']))
+                        $property_value = $item->property($tag['attributes']['property_name']);
+                    else
+                        $property_value = $item->property($tag['attributes']['property_id']);
+                    if($property_value == $tag['attributes']['property_value'])
+                    {
+                        // parse the contents of this condition on this round
+                        $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                    }
+                    else
+                    {
+                        // remove this conditional html code on this round
+                        $item_html = str_replace($tag['full_tag'], '', $item_html);
+                    }
+                }
+                else if($tag['attributes']['by']=='template' || $tag['attributes']['by']=='templates')
+                {
+                    $templates = array();
+                    if(isset($tag['attributes']['templates']))
+                        $templates = explode(",", $tag['attributes']['templates']);
+                    else if(isset($tag['attributes']['template']))
+                        $templates = array($tag['attributes']['template']);
+
+                    if(in_array($item->template, $templates))
+                    {
+                        // the template matches the condition, apply
+                        $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                    }
+                    else
+                    {
+                        // remove this conditional html code on this round
+                        $item_html = str_replace($tag['full_tag'], '', $item_html);
+                    }
+                }
+                else if($tag['attributes']['by']=='position')
+                {
+                    if(isset($tag['attributes']['each']))
+                    {
+                        if($i % $tag['attributes']['each'] == 0) // condition applies
+                            $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                        else // remove the full nvlist_conditional tag, doesn't apply here
+                            $item_html = str_replace($tag['full_tag'], '', $item_html);
+                    }
+                    else if(isset($tag['attributes']['position']))
+                    {
+                        switch($tag['attributes']['position'])
+                        {
+                            case 'first':
+                                if($i == 0)
+                                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                                else
+                                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                                break;
+
+                            case 'last':
+                                if($i == (count($rs)-1))
+                                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                                else
+                                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                                break;
+
+                            default: // position "x"?
+                                if($i == $tag['attributes']['position'])
+                                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                                else
+                                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                                break;
+                        }
+                    }
+                }
+                else // unknown nvlist_conditional, discard
+                {
+                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                }
+
+                // html template has changed, the nvlist tags may have changed its positions
+                $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
+            }
+
+            // now parse the common nvlist tags
+            $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8'); // selfclosing = true
 		
-			if(empty($template_tags))
+			if(empty($item_html)) // apply a default template if no one is defined
 			{		
 				$item_html = array();
 				$item_html[] = '<div class="search-result-item">';
@@ -121,8 +212,6 @@ function nvweb_search($vars=array())
 			}
 			else
 			{
-				$item_html = $vars['template'];
-		
 				// parse special template tags
 				foreach($template_tags as $tag)
 				{
