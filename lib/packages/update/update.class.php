@@ -248,7 +248,7 @@ class update
 			
 			$file = str_replace('\\', '/', $change[1]);
 
-			if(substr($file, 0, strlen('plugins/'))=='plugins/') continue;	
+			//if(substr($file, 0, strlen('plugins/'))=='plugins/') continue;
 			if(substr($file, 0, strlen('setup/'))=='setup/') continue;	
 			
 			switch($change[0])
