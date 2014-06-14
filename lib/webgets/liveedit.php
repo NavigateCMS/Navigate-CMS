@@ -60,7 +60,7 @@ function nvweb_liveedit($vars=array())
         // TODO: check user permissions before allowing "Create", "Edit" and other functions
 
         $out[] = '<div id="navigate_liveedit_bar" style="display: none;">';
-        $out[] = '  <a href="http://www.navigatecms.com" target="_blank"><img src="'.NAVIGATE_URL.'/img/navigatecms/navigatecms_logo_52x24_white.png" width="52" height="24" /></a>';
+        $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'" target="_blank"><img src="'.NAVIGATE_URL.'/img/navigatecms/navigatecms_logo_52x24_white.png" width="52" height="24" /></a>';
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/page_add.png" /> '.t(38, 'Create').'</a>';
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/comments.png" /> '.$comments.'</a>';
         //$out[] = '  <div id="navigate_liveedit_bar_liveedit_button"><img src="'.NAVIGATE_URL.'/img/icons/silk/shape_square_select.png" /> '.t(458, 'Edit in place').'</div>';
