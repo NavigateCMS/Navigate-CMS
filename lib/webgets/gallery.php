@@ -18,8 +18,15 @@ function nvweb_gallery($vars=array())
 	
 	if(!empty($vars['item']))
 	{
-		$item = new item();
-		$item->load($vars['item']);	
+        if(is_object($vars['item']))
+        {
+            $item = $vars['item'];
+        }
+        else if(is_numeric($vars['item']))
+        {
+            $item = new item();
+            $item->load($vars['item']);
+        }
 	}
 	else if($current['type']=='item')
 	{
@@ -158,7 +165,8 @@ function nvweb_gallery($vars=array())
                 $gallery = $gallery[0];
             }
 
-            $images = array_keys($gallery);
+            if(is_array($gallery))
+                $images = array_keys($gallery);
 
             if(empty($images))
                 return '';
@@ -216,5 +224,4 @@ function nvweb_gallery($vars=array())
 	
 	return $out;
 }
-
 ?>
