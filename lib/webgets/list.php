@@ -315,6 +315,25 @@ function nvweb_list($vars=array())
                     $item_html = str_replace($tag['full_tag'], '', $item_html);
                 }
             }
+            else if($tag['attributes']['by']=='template' || $tag['attributes']['by']=='templates')
+            {
+                $templates = array();
+                if(isset($tag['attributes']['templates']))
+                    $templates = explode(",", $tag['attributes']['templates']);
+                else if(isset($tag['attributes']['template']))
+                    $templates = array($tag['attributes']['template']);
+
+                if(in_array($item->template, $templates))
+                {
+                    // the template matches the condition, apply
+                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                }
+                else
+                {
+                    // remove this conditional html code on this round
+                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                }
+            }
             else if($tag['attributes']['by']=='position')
             {
                 if(isset($tag['attributes']['each']))
@@ -350,6 +369,10 @@ function nvweb_list($vars=array())
                             break;
                     }
                 }
+            }
+            else // unknown nvlist_conditional, discard
+            {
+                $item_html = str_replace($tag['full_tag'], '', $item_html);
             }
 
             // html template has changed, the nvlist tags may have changed its positions
