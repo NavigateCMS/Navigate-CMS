@@ -829,12 +829,20 @@ class file
 	}
 
     // precondition: the file must exist in the website "files" folder
-    public static function register_upload($tmp_name, $target_name, $parent, $mime=NULL)
+    // if not, you must set "move_uploaded_file" paramter to true and give the full path on tmp_name
+    public static function register_upload($tmp_name, $target_name, $parent, $mime=NULL, $move_uploaded_file=false)
     {
         global $website;
         global $user;
 
         $file = NULL;
+
+        if($move_uploaded_file)
+        {
+            $uploaded_file_temp = uniqid('upload-');
+            move_uploaded_file($tmp_name, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$uploaded_file_temp);
+            $tmp_name = $uploaded_file_temp;
+        }
 
         if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name))
         {
