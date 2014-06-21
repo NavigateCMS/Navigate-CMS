@@ -47,7 +47,7 @@ class naviorderedtable
 		
 		foreach($columns as $col)
 		{
-			$this->rows[] = '<td align="'.$col['align'].'">'.$col['content'].'</td>';	
+			@$this->rows[] = '<td align="'.$col['align'].'">'.$col['content'].'</td>';
 		}
 		
 		$this->rows[] = '</tr>';				
@@ -98,8 +98,6 @@ class naviorderedtable
 			
 			function navigate_naviorderedtable_'.$this->id.'_reorder()
 			{
-			    console.log("eo");
-
 				var trs = $("#'.$this->id.'").find("tr");
 				var ids = [];
 				for(i in trs)

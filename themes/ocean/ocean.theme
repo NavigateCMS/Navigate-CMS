@@ -283,6 +283,7 @@
                     "type": "coordinates",
                     "name": "@placemark",
                     "element": "item",
+                    "dvalue": "45.438175#12.335849",
                     "position": "2",
                     "enabled": "1"
                 }

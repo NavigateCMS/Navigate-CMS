@@ -190,7 +190,7 @@
 189		# Copy from
 190		# Ok
 191		# Source
-192		# Double click a row to edit it
+192		# Double click on a row to edit it
 193		# Value
 194		# Option
 195		# Text area
@@ -299,7 +299,7 @@
 298		# Latitude
 299		# Longitude
 300		# Map
-301		# Double click a place to set the coordinates
+301		# Double click on a place to set the coordinates
 302		# Help
 303		# Manual update
 304		# Gender
