@@ -789,6 +789,7 @@ class layout
                 <li id="contextmenu-images-download_link"><a href="#"><span class="ui-icon ui-icon-clipboard"></span>'.t(154, "Download link").'</a></li>
                 <li id="contextmenu-images-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
                 <li id="contextmenu-images-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
+                <li id="contextmenu-images-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
                 <li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
             </ul>
         ');
@@ -798,26 +799,26 @@ class layout
         $permissions_dialog[] = '<div class="navigate-form-row">';
         $permissions_dialog[] = '<label>'.t(364, 'Access').'</label>';
         $permissions_dialog[] = $naviforms->selectfield(
-                                    'contextmenu-permissions-access',
-                                    array(
-                                        0 => 0,
-                                        1 => 2,
-                                        2 => 1,
-                                        3 => 3
-                                    ),
-                                    array(
-                                        0 => t(254, 'Everybody'),
-                                        1 => t(362, 'Not signed in'),
-                                        2 => t(361, 'Web users only'),
-                                        3 => t(512, 'Selected web user groups')
-                                    ),
-                                    0,
-                                    'navigate_permissions_dialog_webuser_groups_visibility($(this).val());',
-                                    false,
-                                    array(
-                                        1 => t(363, 'Users who have not yet signed in')
-                                    )
-                                );
+            'contextmenu-permissions-access',
+            array(
+                0 => 0,
+                1 => 2,
+                2 => 1,
+                3 => 3
+            ),
+            array(
+                0 => t(254, 'Everybody'),
+                1 => t(362, 'Not signed in'),
+                2 => t(361, 'Web users only'),
+                3 => t(512, 'Selected web user groups')
+            ),
+            0,
+            'navigate_permissions_dialog_webuser_groups_visibility($(this).val());',
+            false,
+            array(
+                1 => t(363, 'Users who have not yet signed in')
+            )
+        );
         $permissions_dialog[] = '</div>';
 
         $webuser_groups = webuser_group::all_in_array();
@@ -862,19 +863,19 @@ class layout
         $permissions_dialog[] = '<div class="navigate-form-row">';
         $permissions_dialog[] = '<label>'.t(80, 'Permission').'</label>';
         $permissions_dialog[] = $naviforms->selectfield(
-                                    'contextmenu-permissions-permission',
-                                    array(
-                                        0 => 0,
-                                        1 => 1,
-                                        2 => 2
-                                    ),
-                                    array(
-                                        0 => t(69, 'Published'),
-                                        1 => t(70, 'Private'),
-                                        2 => t(81, 'Hidden')
-                                    ),
-                                    0
-                                );
+            'contextmenu-permissions-permission',
+            array(
+                0 => 0,
+                1 => 1,
+                2 => 2
+            ),
+            array(
+                0 => t(69, 'Published'),
+                1 => t(70, 'Private'),
+                2 => t(81, 'Hidden')
+            ),
+            0
+        );
         $permissions_dialog[] = '</div>';
 
         $permissions_dialog[] = '<div class="navigate-form-row">';

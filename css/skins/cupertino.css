@@ -1872,3 +1872,19 @@ div.jGrowl div.jGrowl-notification
         transform: rotate(360deg);
     }
 }
+
+
+.focalpoint_select
+{
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+    background: #F2F5F7;
+    background: rgba(242, 245, 247, 0.23);
+    border: solid 3px #174570;
+    position: absolute;
+    cursor: move;
+    color: #000;
+    opacity: .75;
+    box-shadow: 0px 0px 3px #eef inset;
+}

@@ -15,6 +15,7 @@ class file
 	public $mime;
 	public $width;
 	public $height;
+    public $focalpoint; // 50.00#50.00 (image center by top%, left%)
 	public $date_added;
 	public $uploaded_by;	
 	public $access; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
@@ -42,6 +43,7 @@ class file
 			$dimensions = $this->image_dimensions($this->absolute_path());
 			$this->width = $dimensions['width'];
 			$this->height = $dimensions['height'];
+			$this->focalpoint = '50#50';
 			$this->date_added = core_time();
 			$this->uploaded_by = 'system';
 			$this->permission = 0;
@@ -75,6 +77,7 @@ class file
 		$this->mime			= $main->mime;
 		$this->width		= $main->width;
 		$this->height		= $main->height;				
+		$this->focalpoint	= $main->focalpoint;
 		$this->date_added	= $main->date_added;
 		$this->uploaded_by	= $main->uploaded_by;	
 	
@@ -217,7 +220,7 @@ class file
 
         $ok = $DB->execute(' INSERT INTO nv_files
 								(   id, website, type, parent, name, size, mime,
-								    width, height, date_added, uploaded_by,
+								    width, height, focalpoint, date_added, uploaded_by,
 								    permission, access, groups, enabled)
 								VALUES 
 								( 0,
@@ -229,6 +232,7 @@ class file
 								  '.protect($this->mime).',
 								  '.protect($this->width).',
 								  '.protect($this->height).',								  								  
+								  '.protect($this->focalpoint).',
 								  '.protect($this->date_added).',
 								  '.protect($this->uploaded_by).',								  											  
 								  '.protect($this->permission).',
@@ -261,23 +265,25 @@ class file
         if($groups == 'g')
             $groups = '';
 
-        $ok = $DB->execute(' UPDATE nv_files
-								SET 
-									type		=	'.protect($this->type).',
-									parent		=	'.protect($this->parent).',
-									name		=	'.protect($this->name).',
-									size		=	'.protect($this->size).',
-									mime		=	'.protect($this->mime).',
-									width		=	'.protect($this->width).',
-									height		=	'.protect($this->height).',	
-									date_added	=	'.protect($this->date_added).',
-									uploaded_by	=	'.protect($this->uploaded_by).',
-									access		=	'.protect($this->access).',
-									groups      =   '.protect($groups).',
-									permission	=	'.protect($this->permission).',
-									enabled		=	'.protect($this->enabled).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+        $ok = $DB->execute('
+            UPDATE nv_files
+               SET
+                type		=	'.protect($this->type).',
+                parent		=	'.protect($this->parent).',
+                name		=	'.protect($this->name).',
+                size		=	'.protect($this->size).',
+                mime		=	'.protect($this->mime).',
+                width		=	'.protect($this->width).',
+                height		=	'.protect($this->height).',
+                focalpoint  =	'.protect($this->focalpoint).',
+                date_added	=	'.protect($this->date_added).',
+                uploaded_by	=	'.protect($this->uploaded_by).',
+                access		=	'.protect($this->access).',
+                groups      =   '.protect($groups).',
+                permission	=	'.protect($this->permission).',
+                enabled		=	'.protect($this->enabled).'
+            WHERE id = '.$this->id.'
+              AND website = '.$website->id);
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -322,18 +328,14 @@ class file
 
 		if(empty($wid))
 			$wid = $website->id;
-		
-		$files = array();
-		
+
 		$DB->query('  SELECT * FROM nv_files
 					   WHERE name LIKE '.protect('%'.$text.'%').'
 					     AND website = '.$wid.'
 					ORDER BY name ASC');
 					
 		return $DB->result();		
-		
-		return $files;	
-	}		
+	}
 	
 	public static function filesByMedia($media, $offset=0, $limit=-1, $wid=NULL, $text="")
 	{
@@ -366,6 +368,8 @@ class file
 		
 	public static function getFullPathTo($parent)
 	{
+        $path = "";
+
 		if($parent > 0)
 		{
 			$folder = new file();
@@ -545,8 +549,10 @@ class file
 	public static function image_dimensions($path)
 	{
 		$handle = new upload($path);
-		$dimensions = array(	'width' => $handle->image_src_x,
-								'height' => $handle->image_src_y);
+		$dimensions = array(
+            'width' => $handle->image_src_x,
+            'height' => $handle->image_src_y
+        );
 		return $dimensions;
 	}
 
@@ -566,7 +572,6 @@ class file
 		
 		return ($frames > 1);
 	}
-	
 	
 	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='')
 	{	
@@ -660,10 +665,38 @@ class file
 
 			if($border==0)
 			{
-				$handle->image_border = false;
-				$handle->image_ratio_no_zoom_in = false;
-				$handle->image_ratio_fill = true;						
-				$handle->image_ratio_crop = true;	
+                $handle->image_border = false;
+                $handle->image_ratio_no_zoom_in = false;
+
+                if(!empty($item->focalpoint))
+                {
+                    $focalpoint = explode('#', $item->focalpoint);
+
+                    $crop = array( 'top' => 0, 'right' => 0, 'bottom' => 0, 'left' => 0 );
+
+                    // calculate how the file will be scaled, by width or by height
+                    if(($handle->image_src_x / $handle->image_x) > ($handle->image_src_y / $handle->image_y))
+                    {
+                        // Y is ok, now crop extra space on X
+                        $ratio = $handle->image_y / $handle->image_src_y;
+                        $image_scaled_x = intval($handle->image_src_x*($ratio));
+                        $crop['left'] = max(0, round(($image_scaled_x * ($focalpoint[1]/100) - ($handle->image_x / 2)) / $ratio));
+                        $crop['right'] = max(0, round(($image_scaled_x * ((100-$focalpoint[1])/100) - ($handle->image_x / 2)) / $ratio));
+                    }
+                    else
+                    {
+                        // X is ok, now crop extra space on Y
+                        $ratio = $handle->image_x / $handle->image_src_x;
+                        $image_scaled_y = intval($handle->image_src_y*($ratio));
+                        $crop['top'] = max(0, round(($image_scaled_y * ($focalpoint[0]/100) - ($handle->image_y / 2)) / $ratio));
+                        $crop['bottom'] = max(0, round(($image_scaled_y * ((100-$focalpoint[0])/100) - ($handle->image_y / 2)) / $ratio));
+                    }
+
+                    $handle->image_precrop = array($crop['top'], $crop['right'], $crop['bottom'], $crop['left']);
+                }
+
+                $handle->image_ratio_crop = true;
+                $handle->image_ratio_fill = true;
 			}
 
             $handle->png_compression = 9;
@@ -712,6 +745,15 @@ class file
         clearstatcache(true, $thumbnail);
 		return $thumbnail;
 	}
+
+    public static function thumbnails_remove($id)
+    {
+        $f = new file();
+        $f->load($id);
+        $thumbnails = glob(NAVIGATE_PRIVATE.'/'.$f->website.'/thumbnails/*x*-*-'.$id);
+        for($t=0; $t < count($thumbnails); $t++)
+            @unlink($thumbnails[$t]);
+    }
 	
 	public static function loadTree($id_parent=0)
 	{

@@ -147,6 +147,10 @@ function navigate_media_browser_refresh()
 
             $('#contextmenu-images').show();
 
+            $("#contextmenu-images-focalpoint").hide();
+            if($(trigger).hasClass('draggable-image'))
+                $("#contextmenu-images-focalpoint").show();
+
             $("#contextmenu-images-download_link").off('click').on("click", function ()
             {
                 var itemId = $(trigger).attr('id').substring(5);
@@ -195,6 +199,12 @@ function navigate_media_browser_refresh()
             {
                 var itemId = $(trigger).attr('id').substring(5);
                 navigate_contextmenu_permissions_dialog(itemId, trigger);
+            });
+
+            $("#contextmenu-images-focalpoint").off('click').on("click", function ()
+            {
+                var itemId = $(trigger).attr('id').substring(5);
+                navigate_media_browser_focalpoint(itemId);
             });
 
             $("#contextmenu-images-delete").off("click").on("click", function()
@@ -493,4 +503,74 @@ function navigate_website_selector_setup()
 			$("#navigate_media_browser_website").removeClass('ui-state-active');			 
 		 }
  	});
+}
+
+function navigate_media_browser_focalpoint(file_id)
+{
+    $(".focalpoint_select").next().remove();
+    $(".focalpoint_select").remove();
+    $.get(
+        NAVIGATE_APP + '?fid=files&act=json&op=focalpoint&id=' + file_id,
+        function(focalpoint)
+        {
+            if(!focalpoint || focalpoint=="")
+                focalpoint = "50#50"; // default image center
+
+            focalpoint = focalpoint.split('#');
+
+            var focalpoint_top = parseFloat(focalpoint[0]);
+            var focalpoint_left = parseFloat(focalpoint[1]);
+
+            var image_url = NAVIGATE_DOWNLOAD + '?id=' + file_id + '&disposition=inline&width=700';
+            var html = '<div><div class="focalpoint_select"></div><img src="'+image_url+'" width="100%" /></div>';
+            $(html).dialog(
+                {
+                    modal: true,
+                    title: "Focal point",
+                    width: 700,
+                    height: 500,
+                    resizable: false
+                }
+            );
+
+            var img = $(".focalpoint_select").parent().find("img");
+
+            focalpoint_top = ((focalpoint_top/100) * $(img).height()) - ($(".focalpoint_select").height() / 2);
+            focalpoint_left = ((focalpoint_left/100) * $(img).width()) - ($(".focalpoint_select").width() / 2);
+
+            if(focalpoint_top < 0)
+                focalpoint_top = ($(img).height() / 2) - ($(".focalpoint_select").height() / 2);
+
+            if(focalpoint_left < 0)
+                focalpoint_left = ($(img).width() / 2) - ($(".focalpoint_select").width() / 2);
+
+            $(".focalpoint_select")
+                .css({
+                    top: focalpoint_top,
+                    left: focalpoint_left
+                })
+                .draggable(
+                {
+                    containment: img,
+                    stop: function(event, ui)
+                    {
+                        var percentage_top = ((ui.position.top + ($(ui.helper).height() / 2)) / $(img).height()) * 100;
+                        var percentage_left = ((ui.position.left + ($(ui.helper).width() / 2)) / $(img).width()) * 100;
+
+                        $.post(
+                            NAVIGATE_APP + '?fid=files&act=json&op=focalpoint&id=' + file_id,
+                            {
+                                top: percentage_top,
+                                left: percentage_left
+                            },
+                            function(result)
+                            {
+                                if(result=='true')
+                                    $(ui.helper).effect("highlight", 'slow');
+                            }
+                        );
+                    }
+                });
+        }
+    );
 }

@@ -39,9 +39,10 @@ function nvweb_archive($vars=array())
         $archive_url = nvweb_source_url($vars['search_page_type'], $vars['search_page_id']);
 
     if(strpos($vars['nvweb_html'], 'jquery')===false)
-		$out[] = '<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>';
+		$out[] = '<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>';
 
-    // retrieve posts number by year, month, and check if there are available in the current language
+    // retrieve posts number by year, month, and...
+    // checking if there are available in the current language (items must have custom paths assigned)
     $DB->query('
         SELECT COUNT(i.id) AS total,
                MONTH(FROM_UNIXTIME(GREATEST(i.date_published, i.date_created))) as month,

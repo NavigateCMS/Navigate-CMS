@@ -132,6 +132,29 @@ function run()
                     ));
                 }
 			}
+            else if($_REQUEST['op']=='focalpoint')
+            {
+                $item->load($_REQUEST['id']);
+                if(!empty($_POST))
+                {
+                    $item->focalpoint = $_REQUEST['top'].'#'.$_REQUEST['left'];
+                    $status = $item->save();
+                    // remove cached thumbnails
+                    file::thumbnails_remove($item->id);
+                    echo json_encode($status);
+                }
+                else
+                {
+                    if(empty($item->focalpoint))
+                    {
+                        $item->focalpoint = '50#50';
+                        $item->save();
+                        // remove cached thumbnails
+                        file::thumbnails_remove($item->id);
+                    }
+                    echo $item->focalpoint;
+                }
+            }
 			session_write_close();
 			$DB->disconnect();
 			exit;
@@ -748,11 +771,13 @@ function files_item_properties($item)
 	global $DB;
 	global $website;
 	global $layout;
-	
+
 	$navibars = new navibars();
 	$naviforms = new naviforms();
 	
 	$navibars->title(t(89, 'Files'));
+
+    $layout->navigate_media_browser();	// we can use media browser in this function
 
 	//$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/clipboard.png"> NaviM+</a>'));
 								
@@ -959,7 +984,7 @@ function files_item_properties($item)
 										
 	if($item->type == 'image')
 	{
-		$navibars->add_tab(t(157, "Image"));	
+		$navibars->add_tab(t(157, "Image"));
 		
 		$navibars->add_tab_content_row(array(	'<label>'.t(155, 'Width').' (px)</label>',
 												$naviforms->textfield('width', $item->width),
@@ -996,7 +1021,14 @@ function files_item_properties($item)
         $navibars->add_tab_content_row(
             array(
                 '<label>'.t(274, 'Preview').'</label>',
-                '<div><img src="'.$website_root.'?id='.$item->id.'&disposition=inline" width="400px" /></div>',
+                '<div><img src="'.$website_root.'?id='.$item->id.'&disposition=inline" width="400px" /></div>'
+            )
+        );
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>&nbsp;</label>'.
+                '<button onclick="navigate_media_browser_focalpoint('.$item->id.'); return false;"><img src="img/icons/silk/picture-measurement.png" align="absmiddle"> '.t(540, 'Focal point').'</button>'
             )
         );
     }
