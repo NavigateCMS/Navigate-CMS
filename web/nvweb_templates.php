@@ -133,6 +133,7 @@ function nvweb_template_parse($template)
 	global $website;
     global $structure;
     global $theme;
+    global $idn;
 	global $session;
 	
 	$html = $template;
@@ -273,6 +274,10 @@ function nvweb_template_parse($template)
                     case "website_name":
                         $content = $website->name;
                         break;
+
+                    case "website_description":
+                        $content = $website->metatag_description[$current['lang']];
+                        break;
 						
 					case "lang_code":
 						$content = $current['lang'];
@@ -311,6 +316,11 @@ function nvweb_template_parse($template)
                                 }
                                 break;
                         }
+                        break;
+
+                    case "url":
+                        $content = $idn->encode($website->absolute_path(false));
+                        $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
                         break;
                 }
                 break;
