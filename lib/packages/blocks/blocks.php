@@ -618,29 +618,32 @@ function blocks_form($item)
 												''
 											));		
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(180, 'Item').'</label>',
-												$naviforms->selectfield('trigger-type-'.$lang,
-													array(
-															0 => '',
-															1 => 'image',
-															2 => 'rollover',
-															3 => 'flash',
-															4 => 'html',
-															5 => 'content'
-														),
-													array(
-															0 => t(181, 'Hidden'),
-															1 => t(157, 'Image'),
-															2 => t(182, 'Rollover'),
-															3 => 'Flash',
-															4 => 'HTML',
-															5 => t(9, 'Content'),
-														),
-													$item->trigger['trigger-type'][$lang],
-													"navigate_blocks_trigger_change('".$lang."', this);"
-												)
-											)
-										);
+		$navibars->add_tab_content_row(array(
+                '<label>'.t(160, 'Type').'</label>',
+                $naviforms->selectfield('trigger-type-'.$lang,
+                    array(
+                            0 => '',
+                            1 => 'title',
+                            2 => 'image',
+                            3 => 'rollover',
+                            4 => 'flash',
+                            5 => 'html',
+                            6 => 'content'
+                        ),
+                    array(
+                            0 => t(181, 'Hidden'),
+                            1 => t(67, 'Title'),
+                            2 => t(157, 'Image'),
+                            3 => t(182, 'Rollover'),
+                            4 => 'Flash',
+                            5 => 'HTML',
+                            6 => t(9, 'Content')
+                        ),
+                    $item->trigger['trigger-type'][$lang],
+                    "navigate_blocks_trigger_change('".$lang."', this);"
+                )
+            )
+        );
 										
 		$navibars->add_tab_content_row(array(	'<label>'.t(157, 'Image').'</label>',
 												$naviforms->dropbox('trigger-image-'.$lang, @$item->trigger['trigger-image'][$lang], 'image')

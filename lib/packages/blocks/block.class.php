@@ -111,6 +111,7 @@ class block
 		$fields_title 	= array ( 'title' );
 		$fields_trigger = array (
             'trigger-type',
+            'trigger-title',
             'trigger-image',
             'trigger-rollover',
             'trigger-rollover-active',

@@ -233,7 +233,7 @@ function nvweb_blocks($vars=array())
                 else
                 {
                     $out.= '<div class="block-'.$vars['type'].'" ng-block-id="'.$block->id.'">';
-                    $out.= nvweb_blocks_render($vars['type'], $block->trigger, $block->action, $vars['zone']);
+                    $out.= nvweb_blocks_render($vars['type'], $block->trigger, $block->action, $vars['zone'], $block);
                     $out.= '</div>'."\n";
                 }
                 break;
@@ -255,7 +255,7 @@ function nvweb_blocks($vars=array())
 	return $out;
 }
 
-function nvweb_blocks_render($type, $trigger, $action, $zone)
+function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL)
 {
 	global $current;
 	global $website;
@@ -323,6 +323,10 @@ function nvweb_blocks_render($type, $trigger, $action, $zone)
             $trigger_html = str_replace('\"', '', $trigger_html);
             break;
 
+        case 'title':
+            $trigger_html = $block->dictionary[$current['lang']]['title'];
+            break;
+
 		default:
 		case '':	// hidden
 			break;
@@ -342,12 +346,12 @@ function nvweb_blocks_render_action($action, $trigger_html, $lang, $return_url=f
 	switch(@$action['action-type'][$lang])
     {
         case 'web':
-            $url = $action['action-web'][$lang];
+            $url = nvweb_prepare_link($action['action-web'][$lang]);
             $action = '<a href="'.$url.'">'.$trigger_html.'</a>';
             break;
 
         case 'web-n':
-            $url = $action['action-web'][$lang];
+            $url = nvweb_prepare_link($action['action-web'][$lang]);
             $action = '<a href="'.$url.'" target="_blank">'.$trigger_html.'</a>';
             break;
 
