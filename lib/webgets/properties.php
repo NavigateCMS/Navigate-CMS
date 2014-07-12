@@ -205,7 +205,7 @@ function nvweb_properties_render($property, $vars)
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
 	if(!isset($property->value)) $property->value = $property->dvalue;
-	if(in_array($property->type, array("text", "textarea", "link")))
+	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")))
 	{
         if(is_object($property->value))
             $property->value = (array)$property->value;

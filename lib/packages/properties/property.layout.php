@@ -66,7 +66,7 @@ function navigate_property_layout_field($property)
 	if(!isset($property->value))
         $property->value = $property->dvalue;
 
-	if(in_array($property->type, array("text", "textarea", "link")))
+	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")))
 	{
         if(is_object($property->value))
             $property->value = (array)$property->value;
