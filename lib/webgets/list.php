@@ -33,8 +33,16 @@ function nvweb_list($vars=array())
 
 	if(isset($vars['categories']))
 	{
-        $categories = explode(',', $vars['categories']);
-        $categories = array_filter($categories); // remove empty elements
+        if($vars['categories']=='all')
+        {
+            $categories = array(0);
+            $vars['children'] = 'true';
+        }
+        else
+        {
+            $categories = explode(',', $vars['categories']);
+            $categories = array_filter($categories); // remove empty elements
+        }
 	}
 
 	if($vars['children']=='true')
@@ -573,7 +581,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					break;
 
 				case 'date':
-                    // Navigate CMS 1.6.6 compatability
+                    // Navigate CMS 1.6.6 compatibility
                     if(empty($tag['attributes']['format']) && !empty($tag['attributes']['date_format']))
                         $tag['attributes']['format'] = $tag['attributes']['date_format'];
 
@@ -582,6 +590,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     else
                         $out = date($website->date_format.' H:i', $item->date_created);
 					break;
+
+                case 'item_url':
+                    $out = nvweb_source_url('item', $item->item, $current['lang']);
+                    break;
+
+                case 'item_title':
+                    $out = $item->item_title;
+                    break;
 			}
 			break;
 
