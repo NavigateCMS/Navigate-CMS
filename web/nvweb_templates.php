@@ -424,6 +424,7 @@ function nvweb_template_parse_special($html)
  * <ul>
  * <li>&lt;nv object="list"&gt;&lt;/nv&gt;</li>
  * <li>&lt;nv object="search"&gt;&lt;/nv&gt;</li>
+ * <li>&lt;nv object="conditional"&gt;&lt;/nv&gt;</li>
  * </ul>
  *
  * Generate the final HTML code for these special tags or convert them
@@ -509,6 +510,20 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 				$html = substr_replace($html, $content, $tag['offset'], $tag['length']);
 				$changed = true;
 				break;
+
+            case 'conditional':
+                $template_end = strpos($html, '</nv>', $tag['offset']);
+                $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
+                $conditional = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
+
+                @include_once(NAVIGATE_PATH.'/lib/webgets/conditional.php');
+                $vars = array_merge($tag['attributes'], array('template' => $conditional));
+
+                $content = nvweb_conditional($vars);
+
+                $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
+                $changed = true;
+                break;
 		}
 		
 		if($changed)
@@ -857,6 +872,87 @@ function nvweb_template_tweaks($html)
 
 	return $html;
 }
+
+function nvweb_template_oembed_parse($html)
+{
+    $reg_exUrl = '/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i';
+
+    foreach(array('div', 'p', 'span', 'strong') as $tag_name)
+    {
+        $tags = nvweb_tags_extract($html, $tag_name, false, true);
+
+        foreach($tags as $tag)
+        {
+            $text = $tag['contents'];
+
+            if(strpos(@$tag['attributes']['class'], 'nv_oembedded')!==false)
+                continue;
+
+            // find all plain text urls
+            if(preg_match_all($reg_exUrl, $text, $url))
+            {
+                $matches = array_unique($url[0]);
+                foreach($matches as $match)
+                {
+                    $replacement = nvweb_template_oembed_url($match);
+                    if($replacement!=$match)
+                        $text = str_replace($match, '<div class="nv_oembedded">'.$replacement.'</div>', $text);
+                }
+            }
+
+            if($text!=$tag['contents'])
+            {
+                $fragment = str_replace($tag['contents'], $text, $tag['full_tag']);
+                $html = str_replace($tag['full_tag'], $fragment, $html);
+            }
+        }
+    }
+
+    return $html;
+}
+
+function nvweb_template_oembed_url($url)
+{
+    global $current;
+
+    // TODO: implement more oembed services
+    $out = $url;
+
+    // Twitter: https://twitter.com/username/status/status_id
+    if(strpos($url, 'twitter.com/')!==false && strpos($url, '/status')!==false)
+    {
+        $oembed_url = 'https://api.twitter.com/1/statuses/oembed.json?lang='.$current['lang'].'&url='.urlencode($url); // &omit_script=true
+        $response = nvweb_template_oembed_cache('twitter', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+
+    return $out;
+}
+
+function nvweb_template_oembed_cache($provider, $oembed_url)
+{
+    $file = NAVIGATE_PRIVATE.'/oembed/'.$provider.'.'.md5($oembed_url).'.json';
+
+    if(file_exists($file) && filemtime($file) > (time() - (30 * 24 * 60 * 60)))
+    {
+        // a previous request has been posted in the last 30 days
+        $response = file_get_contents($file);
+    }
+    else
+    {
+        // request has not been cached or it has expired
+        $response = core_curl_post($oembed_url, NULL, NULL, 60, "get");
+        if(!empty($response))
+            $response = file_put_contents($file, $response);
+    }
+
+    if(!empty($response))
+        $response = json_decode($response);
+
+    return $response;
+}
+
 
 /**
  * Autoload a webget when needed, the source can be:

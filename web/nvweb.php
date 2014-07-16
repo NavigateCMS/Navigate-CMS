@@ -166,6 +166,8 @@ try
         $html = nvweb_template_parse($html);
     }
 
+    $html = nvweb_template_oembed_parse($html);
+
 	$end = nvweb_after_body('html');
 	$end.= nvweb_after_body('js');
 	$end.= "\n\n";
