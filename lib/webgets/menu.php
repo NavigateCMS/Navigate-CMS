@@ -485,7 +485,7 @@ function nvweb_menu_get_children($categories=array(), $sublevels=NULL)
 	for($c=0; $c < $categories_count; $c++)
 	{
 		$categories[$c] = trim($categories[$c]);
-		if(empty($categories[$c])) continue;
+		if(empty($categories[$c]) && $categories[$c]!='0') continue;
         if(!isset($depth[$categories[$c]]))
             $depth[$categories[$c]] = 0;
 
