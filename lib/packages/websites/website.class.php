@@ -699,7 +699,16 @@ class website
         {
             $style = $this->theme_options->style;
             if(!empty($style) && !empty($theme->styles->$style->content))
-                $content_css[] = NAVIGATE_URL.'/themes/'.$this->theme.'/'.$theme->styles->$style->content.'?bogus='.time();
+            {
+                $style_content_css = explode(',', $theme->styles->$style->content);
+                foreach($style_content_css as $scc)
+                {
+                    if(strpos($scc, 'http')===false)
+                        $content_css[] = NAVIGATE_URL.'/themes/'.$this->theme.'/'.$scc.'?bogus='.time();
+                    else
+                        $content_css[] = $scc;
+                }
+            }
         }
 
         if($format=='link_tag')

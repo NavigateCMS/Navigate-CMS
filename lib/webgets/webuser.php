@@ -135,6 +135,7 @@ function nvweb_webuser($vars=array())
                     $wu->website = $website->id;
                     $wu->email = $email;
                     $wu->newsletter = 1;
+                    $wu->language = $current['lang']; // infer the webuser language by the active website language
                     $wu->username = substr($email, 0, strpos($email, '@'));
                     $ok = $wu->save();
                 }
