@@ -322,10 +322,16 @@ function nvweb_website_comments_list($offset=0, $limit=2147483647, $permission=N
     else
         $orderby = "nvc.date_created ASC";
 
-    $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
+    $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar, nvwd.text as item_title
 				  FROM nv_comments nvc
 				 LEFT OUTER JOIN nv_webusers nvwu
 							  ON nvwu.id = nvc.user
+				 LEFT OUTER JOIN nv_webdictionary nvwd
+				              ON nvwd.node_id = nvc.item AND
+                                 nvwd.website = nvc.website AND
+                                 nvwd.node_type = "item" AND
+                                 nvwd.subtype = "title" AND
+                                 nvwd.lang = '.protect($current['lang']).'
 				 WHERE nvc.website = '.protect($website->id).'
 				   AND status = 0
 				ORDER BY '.$orderby.'
