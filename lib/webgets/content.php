@@ -47,6 +47,10 @@ function nvweb_content($vars=array())
 			// display published comments number for the current item
 			$out = nvweb_content_comments_count();
 			break;
+
+        case 'views':
+            $out = $current['object']->views;
+            break;
 			
 		case 'summary':
             $length = 300;
