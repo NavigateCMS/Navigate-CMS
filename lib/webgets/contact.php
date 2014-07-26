@@ -8,6 +8,7 @@ function nvweb_contact($vars=array())
 	global $dictionary;
 	global $webuser;
 	global $theme;
+    global $events;
 	
 	$webget = 'contact';
 
@@ -132,7 +133,19 @@ function nvweb_contact($vars=array())
                 $sent = nvweb_send_email($subject, $message, $website->contact_emails);
 
                 if($sent)
+                {
+                    $events->trigger(
+                        'contact',
+                        'sent',
+                        array(
+                            'subject' => $subject,
+                            'message' => $message,
+                            'form' => @$vars['form'],
+                            'emails' => $website->contact_emails
+                        )
+                    );
                     $out = nvweb_contact_notify($vars, false, $webgets[$webget]['translations']['contact_request_sent']);
+                }
                 else
                     $out = nvweb_contact_notify($vars, true, $webgets[$webget]['translations']['contact_request_failed']);
             }
