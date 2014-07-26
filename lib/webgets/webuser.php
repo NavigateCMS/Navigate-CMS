@@ -160,6 +160,9 @@ function nvweb_webuser($vars=array())
                             $out = '<div class="nvweb-newsletter-form-error">'.$message.'</div>';
                         break;
 
+                    case 'false':
+                        break;
+
                     // javascript callback
                     default:
                         if($ok)
