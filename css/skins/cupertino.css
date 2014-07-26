@@ -120,7 +120,7 @@ img
 	text-align: right;
 	font-size: 11px;
 	line-height: 15px;
-	z-index: 500;	
+	z-index: 150;
 	text-shadow: 0 0 12px #2779AA;
 }
 
@@ -440,7 +440,7 @@ a.navigate-content-actions-selected
     background-image: none;
     display: none;
     position: absolute;
-    max-height: 100px;
+    max-height: 180px;
     overflow-y: auto;
     margin-left: -10px;
     margin-top: 5px;
@@ -450,6 +450,16 @@ a.navigate-content-actions-selected
 {
     display: block;
     margin-right: 0px;
+}
+
+#navigate-content-actions ul.content-actions-submenu li
+{
+    margin: 1px;
+}
+
+#navigate-content-actions ul.content-actions-submenu li:hover
+{
+    margin: 0;
 }
 
 #navigate-content-top-spacer
@@ -1693,6 +1703,7 @@ input.naviforms-colorpicker-text
     font-size: 10px;
     color: #222;
     white-space: nowrap;
+    border-radius: 8px;
 }
 
 .ui-menu .ui-menu-item a
@@ -1700,6 +1711,13 @@ input.naviforms-colorpicker-text
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    text-decoration: none;
+}
+
+.ui-menu-item.ui-state-focus
+{
+    font-weight: normal;
+    border-radius: 4px;
 }
 
 .qtip
@@ -1772,8 +1790,10 @@ input.naviforms-colorpicker-text
 
 /* jQuery UI dialog backcompat */
 .ui-front {
-    z-index:10000 !important; /* default: 100 */
+    /*z-index:10000 !important; /* default: 100 */
+    z-index: 200;
 }
+
 
 /* jGrowl backcompat */
 div.jGrowl.center

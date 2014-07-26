@@ -99,13 +99,14 @@ $(window).on('load', function()
             $(this).next().menu().show();
             $(this).next().addClass('navi-ui-widget-shadow');
 
-            var height = 0;
+            // deprecated code
+            /*
+            //var height = 0;
             $(this).next().children().each(function()
-            {
-                height = height + $(this).height();
+            { //height = height + $(this).height();
             });
-
-            $(this).next().height(height);
+            //$(this).next().height(height);
+            */
         }
         return false;
     });

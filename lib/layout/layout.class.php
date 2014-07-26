@@ -87,7 +87,7 @@ class layout
 
 		$this->add_script_tag('js/navigate.js');
 		
-		$this->add_script_tag('js/jquery-ui-1.10.3.custom.js');
+		$this->add_script_tag('js/jquery-ui.js');
 
     	$this->add_script_tag('js/plugins/jquery.dialogextend.js');
 
@@ -340,7 +340,7 @@ class layout
 		if(empty($user->skin)) $user->skin = 'cupertino';
 		if(empty($user->language)) $user->language = 'en';
 
-		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-1.10.2.min.js"></script>';
+		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery.min.js"></script>';
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate-1.2.1.js"></script>';
 
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
@@ -353,7 +353,7 @@ class layout
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js"></script>';
 
         // jquery ui custom css
-        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui-1.10.3.custom.css" />';
+        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui.css" />';
 
 		return implode("\n", $out);
 	}
@@ -785,7 +785,7 @@ class layout
 		');
 
         $this->add_content('
-            <ul id="contextmenu-images" style="display: none">
+            <ul id="contextmenu-images" style="display: none" class="ui-corner-all">
                 <li id="contextmenu-images-download_link"><a href="#"><span class="ui-icon ui-icon-clipboard"></span>'.t(154, "Download link").'</a></li>
                 <li id="contextmenu-images-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
                 <li id="contextmenu-images-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
