@@ -756,14 +756,15 @@ class layout
 
 		// resource type selector
 		$html[] = ' 	<div id="navigate_media_browser_buttons" >';
-        $html[] = '		<div>';
-        $html[]	= '			<input type="radio" value="image" name="media_browser_type" id="nvmb-image" checked="checked" /><label for="nvmb-image"><img src="img/icons/silk/image.png" align="absmiddle" title="'.t(29, 'Images').'" /></label>';
-        $html[] = '			<input type="radio" value="audio" name="media_browser_type" id="nvmb-audio" /><label for="nvmb-audio"><img src="img/icons/silk/music.png" align="absmiddle" title="'.t(31, 'Audio').'" /></label>';
-        $html[] = '			<input type="radio" value="video" name="media_browser_type" id="nvmb-film" /><label for="nvmb-film"><img src="img/icons/silk/film.png" align="absmiddle" title="'.t(30, 'Video').'" /></label>';
-        $html[] = '			<input type="radio" value="flash" name="media_browser_type" id="nvmb-flash" /><label for="nvmb-flash"><img src="img/icons/misc/flash.png" align="absmiddle" title="'.t(186, 'Adobe Flash').'" /></label>';
-        $html[] = '			<input type="radio" value="document" name="media_browser_type" id="nvmb-doc" /><label for="nvmb-doc"><img src="img/icons/silk/page_white_office.png" align="absmiddle" title="'.t(32, 'Documents').'" /></label>';
-        $html[] = '			<input type="radio" value="folder" name="media_browser_type" id="nvmb-folder" /><label for="nvmb-folder"><img src="img/icons/silk/folder.png" style=" display: inline; " align="absmiddle" title="'.t(16, 'Structure').'" /> <input type="text" id="navigate_media_browser_folder_path" value="" readonly="readonly"></label>';
-        $html[] = '		</div> ';
+
+        $html[] = '         <select id="media_browser_type" name="media_browser_type">';
+        $html[] = '             <option value="image" selected="selected" data-class="ui-icon-image" id="nvmb-image">'.t(29, 'Images').'</option>';
+        $html[] = '             <option value="audio" data-class="ui-icon-volume-off" id="nvmb-audio">'.t(31, 'Audio').'</option>';
+        $html[] = '             <option value="video" data-class="ui-icon-video" id="nvmb-film">'.t(30, 'Video').'</option>';
+        $html[] = '             <option value="flash" data-class="ui-icon-script" id="nvmb-flash">'.t(186, 'Adobe Flash').'</option>';
+        $html[] = '             <option value="document" data-class="ui-icon-document" id="nvmb-doc">'.t(32, 'Documents').'</option>';
+        $html[] = '             <option value="folder" data-class="ui-icon-folder-collapsed" id="nvmb-folder" prefix="'.t(75, 'Path').'">'.t(75, 'Path').'</option>';
+        $html[] = '         </select>';
 
 		// search box
 		$html[] = '		    <div id="media_browser_search"><input type="text" value="'.t(41, 'Search').'..." name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
@@ -944,7 +945,7 @@ class layout
                 {
                     Uploader.bind("FileUploaded", function(Up, File, Response)
                     {
-                        var media = $("input[name=media_browser_type]:checked").val();
+                        var media = $("select[name=media_browser_type]").val();
                         var parent = 0;
                         if(media=="folder")
                             parent = navigate_media_browser_parent;
