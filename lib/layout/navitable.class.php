@@ -440,11 +440,11 @@ class navitable
 			$html[] = 'sortorder: "'.$this->sortorder.'",';		
 		}
 		
-		if(!empty($this->edit_url))
+		if(!empty($this->click_action))
 			$html[] = ' ondblClickRow: '.$this->id.'_dclick, ';
 		
 		if(!empty($this->title))
-			$html[] = 'caption: "'.$this->title.'",';						
+			$html[] = 'caption: "'.$this->title.'",';
 
 		$html[] = 'colModel: ['.implode(",\n", $this->cols).']';	
 				
@@ -615,6 +615,14 @@ class navitable
 			$html[] = '		navigate_unselect_text();	';			
 			$html[] = '		$("'.$this->id.'").jqGrid("editGridRow", rowid, {height:280,reloadAfterSubmit:false}); ';
 			$html[] = '}';			
+		}
+        else if(!empty($this->click_action))
+		{
+			$html[] = 'function '.$this->id.'_dclick(rowid, iRow, iCol, e)';
+			$html[] = '{';
+			$html[] = '		navigate_unselect_text();	';
+			$html[] = '		if('.$this->click_action.') '.$this->click_action.'(rowid); ';
+			$html[] = '}';
 		}
 		
 		$html[] = 'function navitable_quicksearch(text)';
