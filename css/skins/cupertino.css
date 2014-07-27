@@ -1099,7 +1099,16 @@ label.ui-state-active #navigate_media_browser_folder_path
     padding: 1px 2px;
 }
 
-#media_browser_type-button i
+#media_browser_order-button
+{
+    float: left;
+    width: auto !important;
+    margin-right: 4px;
+    padding: 0px 2px;
+}
+
+#media_browser_type-button i,
+#media_browser_order-button i
 {
     float: left;
     margin-top: -2px;
@@ -1107,7 +1116,8 @@ label.ui-state-active #navigate_media_browser_folder_path
     margin-left: -6px;
 }
 
-#media_browser_type-menu[aria-hidden="false"]
+#media_browser_type-menu[aria-hidden="false"],
+#media_browser_order-menu[aria-hidden="false"]
 {
     display: block !important;
 }
@@ -1117,6 +1127,15 @@ label.ui-state-active #navigate_media_browser_folder_path
     border-radius: 0 4px 4px 4px;
 }
 
+#navigate_media_browser_items div
+{
+    opacity: 1;
+}
+
+#navigate_media_browser_items div:hover
+{
+    opacity: 0.75;
+}
 
 .navigate_media_browser_clone
 {

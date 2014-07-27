@@ -2,6 +2,7 @@ var navigate_media_browser_limit = 50;
 var navigate_media_browser_offset = 0;
 var navigate_media_browser_parent = 0;
 var navigate_media_browser_website = 0;
+var navigate_media_browser_order = 'date_added_DESC';
 var navigate_media_browser_folderpath = 0;
 
 function navigate_media_browser() 
@@ -14,9 +15,12 @@ function navigate_media_browser()
         .iconselectmenu( "menuWidget" )
         .addClass( "ui-menu-icons" );
 
-	$("#navigate_media_browser_items").find("div").live("mouseenter", function() { $(this).css('opacity', 0.7); });
-	$("#navigate_media_browser_items").find("div").live("mouseleave", function() { $(this).css('opacity', 1); });	
-	
+    $('select#media_browser_order')
+        .imageselectmenu({
+        appendTo: '#navigate_media_browser_buttons',
+        select: navigate_media_browser_select_order
+    });
+
 	$("#navigate_media_browser_buttons").find("div").eq(0).buttonset().css("float", "left");
 	$("#media_browser_search img").button().removeClass('ui-corner-all');
 
@@ -40,6 +44,8 @@ function navigate_media_browser()
 			var pos = $.cookie("navigate-mediabrowser");
 			if(pos)
 			{
+                navigate_media_browser_order = pos.order;
+
 				$("#navigate-media-browser").parent().css({top: pos.top, left: pos.left, width: pos.width, height: pos.height});
 				$("#navigate-media-browser").parent().addClass("navi-ui-widget-shadow");
 				$("#navigate-media-browser").css({height: pos.height - 50});
@@ -47,6 +53,9 @@ function navigate_media_browser()
 
                 if(pos.type)
 				    $('select[name="media_browser_type"]').val(pos.type);
+
+                if(pos.order)
+				    $('select[name="media_browser_order"]').val(pos.order);
 
 				if(pos.folder_id > 0)
 				{
@@ -56,6 +65,9 @@ function navigate_media_browser()
 			}
 
             $('select[name="media_browser_type"]').iconselectmenu( "refresh" );
+            $('select[name="media_browser_order"]').imageselectmenu( "refresh" );
+            $('select[name="media_browser_order"]').imageselectmenu( "updateIcon" );
+
             navigate_media_browser_reload();
 			
 			navigate_file_drop(
@@ -376,6 +388,7 @@ function navigate_media_browser_reload()
             "&offset=" + navigate_media_browser_offset +
             "&limit=" + navigate_media_browser_limit +
             "&parent=" + navigate_media_browser_parent +
+            "&order=" + navigate_media_browser_order +
             "&text=" + text,
 		function() 
 		{ 
@@ -410,6 +423,9 @@ function navigate_media_browser_reload()
 
 function navigate_media_browser_set_folder(folder_id, path)
 {
+    if(path==0)
+        path = "";
+
     $('#media_browser_type-button').find('.ui-selectmenu-text').html(
         '<i class="ui-icon ui-icon-folder-collapsed" />' + $("#nvmb-folder").attr("prefix") + "&nbsp;&nbsp;" + path
     );
@@ -436,7 +452,8 @@ function navigate_media_browser_save_position()
 	var folder_id = parseInt($("#navigate_media_browser_folder_id").val());
 	var folder_path = navigate_media_browser_folderpath;
 	var type = $('select[name="media_browser_type"]').val();
-	
+	var order = $('select[name="media_browser_order"]').val();
+
 	if(type!='folder')
 	{
 		folder_id = 0;
@@ -450,6 +467,7 @@ function navigate_media_browser_save_position()
 		width: width, 
 		height: height,
 		type: type,
+		order: order,
 		folder_id: folder_id,
 		folder_path: folder_path
 	}); 				
@@ -594,5 +612,13 @@ function navigate_media_browser_select_type( event, ui )
     navigate_media_browser_offset = 0;
     navigate_media_browser_reload();
     navigate_media_browser_save_position();
+}
 
+function navigate_media_browser_select_order(event, ui)
+{
+    navigate_media_browser_order = $('select#media_browser_order').val();
+    $('select[name="media_browser_order"]').imageselectmenu( "updateIcon" );
+
+    navigate_media_browser_reload();
+    navigate_media_browser_save_position();
 }

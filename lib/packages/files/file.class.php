@@ -290,7 +290,7 @@ class file
 		return true;
 	}		
 	
-	public static function filesOnPath($parent, $wid=NULL)
+	public static function filesOnPath($parent, $wid=NULL, $orderby="date_added DESC, name ASC")
 	{
 		global $DB;
 		global $website;
@@ -299,7 +299,8 @@ class file
 			$wid = $website->id;
 		
 		$files = array();
-		
+
+        // folders are always ordered alphabetically
 		$DB->query('  SELECT * FROM nv_files
 					   WHERE parent = '.intval($parent).'
 					     AND website = '.$wid.'
@@ -313,7 +314,7 @@ class file
 					   WHERE parent = '.intval($parent).'
 					     AND website = '.$wid.'
 						 AND type != "folder"
-						ORDER BY date_added DESC, name ASC
+						ORDER BY '.$orderby.'
 					');
 					
 		$files = array_merge($files, $DB->result());		
@@ -321,7 +322,7 @@ class file
 		return $files;	
 	}	
 	
-	public static function filesBySearch($text, $wid=NULL)
+	public static function filesBySearch($text, $wid=NULL, $orderby="name ASC")
 	{
 		global $DB;
 		global $website;
@@ -332,12 +333,12 @@ class file
 		$DB->query('  SELECT * FROM nv_files
 					   WHERE name LIKE '.protect('%'.$text.'%').'
 					     AND website = '.$wid.'
-					ORDER BY name ASC');
+					ORDER BY '.$orderby);
 					
 		return $DB->result();		
 	}
 	
-	public static function filesByMedia($media, $offset=0, $limit=-1, $wid=NULL, $text="")
+	public static function filesByMedia($media, $offset=0, $limit=-1, $wid=NULL, $text="", $orderby="date_added DESC, name ASC")
 	{
 		global $DB;
 		global $website;
@@ -356,7 +357,7 @@ class file
 					     AND enabled = 1
 						 AND website = '.$wid.'
 						 '.$text.'
-					ORDER BY date_added DESC, name ASC 
+					ORDER BY '.$orderby.'
 					   LIMIT '.$limit.' 
 					  OFFSET '.$offset);
 

@@ -1124,11 +1124,31 @@ function files_media_browser($limit = 50, $offset = 0)
     $limit = $offset + $limit;
     $offset = 0;
     $total = 0;
+
+    $order = $_REQUEST['order'];
+    switch($order)
+    {
+        case 'name_ASC':
+            $order = ' name ASC';
+            break;
+
+        case 'name_DESC':
+            $order = ' name DESC';
+            break;
+
+        case 'date_added_ASC':
+            $order = ' date_added ASC';
+            break;
+
+        case 'date_added_DESC':
+        default:
+            $order = ' date_added DESC';
+    }
 	
 	if($media=='folder')
 	{
 		$parent = 0;
-		$files = file::filesOnPath($_REQUEST['parent'], $wid);
+		$files = file::filesOnPath($_REQUEST['parent'], $wid, $order);
 		if($_REQUEST['parent'] > 0)	// add "back" special folder
 		{
 			$previous = $DB->query_single(
@@ -1157,7 +1177,7 @@ function files_media_browser($limit = 50, $offset = 0)
 	}
 	else
     {
-		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text);
+		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text, $order);
     }
 
 	foreach($files_shown as $f)

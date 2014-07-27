@@ -766,6 +766,13 @@ class layout
         $html[] = '             <option value="folder" data-class="ui-icon-folder-collapsed" id="nvmb-folder" prefix="'.t(75, 'Path').'">'.t(75, 'Path').'</option>';
         $html[] = '         </select>';
 
+        $html[] = '         <select id="media_browser_order" name="media_browser_order">';
+        $html[] = '             <option value="date_added_DESC" selected="selected" data-class="silk-sprite silk-time_go" id="nvmb-date_added_DESC">'.t(504, 'Time').'</option>';
+        $html[] = '             <option value="date_added_ASC" selected="selected" data-class="silk-sprite silk-time_go_inv" id="nvmb-date_added_ASC">'.t(504, 'Time').'</option>';
+        $html[] = '             <option value="name_ASC" data-class="silk-sprite silk-sort_ascending" id="nvmb-name_ASC">'.t(159, 'Name').'</option>';
+        $html[] = '             <option value="name_DESC" data-class="silk-sprite silk-sort_descending" id="nvmb-name_DESC">'.t(159, 'Name').'</option>';
+        $html[] = '         </select>';
+
 		// search box
 		$html[] = '		    <div id="media_browser_search"><input type="text" value="'.t(41, 'Search').'..." name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
 		$html[] = 		'</div>';
