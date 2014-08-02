@@ -27,6 +27,7 @@
 				 plugins
 				 private
                     sessions (empty folder)
+                    oembed (empty folder
 				 web
 	6/ Repack SQL, logo, setup.php and package.zip as Navigate.zip
 	7/ Remove temporary files
@@ -288,6 +289,7 @@ $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/.htaccess'), '.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/.htaccess'), 'private/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/plugins/.htaccess'), 'plugins/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/sessions/.htaccess'), 'private/sessions/.htaccess');
+$zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/oembed/.htaccess'), 'private/oembed/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/web/.htaccess.example'), 'web/.htaccess.example');
 $zipfile->addFile('', 'updates/empty.txt');
 

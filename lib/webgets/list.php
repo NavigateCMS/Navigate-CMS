@@ -752,6 +752,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 						'class'		=>	$tag['attributes']['class'],
 						'width'		=>	$tag['attributes']['width'],
 						'height'	=>	$tag['attributes']['height'],
+						'quality'	=>	$tag['attributes']['quality'],
 						'return'	=>  $tag['attributes']['return'],
                         'format'	=>  $tag['attributes']['format'],
                         'link'	    =>  $tag['attributes']['link'],

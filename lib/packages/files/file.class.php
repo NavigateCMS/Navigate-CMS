@@ -574,7 +574,7 @@ class file
 		return ($frames > 1);
 	}
 	
-	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='')
+	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95)
 	{	
 		$original  = $item->absolute_path();
 		$thumbnail = '';
@@ -593,13 +593,13 @@ class file
         // do we have the thumbnail already created for this image?
 
         // option A) opaque JPEG FILE
-        if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id.'.jpg'))
+        if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg'))
         {
             // ok, a file exists, but it's older than the image file? (original image file has changed)
-            if(filemtime(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id.'.jpg') > filemtime($original))
+            if(filemtime(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg') > filemtime($original))
             {
                 // the thumbnail already exists and is up to date
-                $thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id.'.jpg';
+                $thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg';
             }
         }
 
@@ -724,8 +724,8 @@ class file
                 }
                 else
                 {
-                    $im->setImageFormat('JPG'); // create an OPAQUE JPG file with 95% quality
-                    $im->setImageCompressionQuality(95);
+                    $im->setImageFormat('JPG'); // create an OPAQUE JPG file with the given quality (default 95%)
+                    $im->setImageCompressionQuality($quality);
                     $im->writeimage($thumbnail.'.jpg');
                     @unlink($thumbnail);
                     $thumbnail = $thumbnail.'.jpg';

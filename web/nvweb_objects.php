@@ -90,7 +90,12 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 		
 			// calculate aspect ratio if width or height are given...
 			$width = intval(@$_REQUEST['width']) + 0;
-			$height = intval(@$_REQUEST['height']) + 0;	
+			$height = intval(@$_REQUEST['height']) + 0;
+
+            // get target quality (only for jpeg thumbnails!)
+            $quality = $_REQUEST['quality'];
+            if(empty($quality))
+                $quality = 95;
 			
 			$resizable = true;
 			if($item->mime == 'image/gif')
@@ -99,7 +104,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			if((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true'))
 			{
 				$border = ($_REQUEST['border']=='false'? false : true);
-				$path = file::thumbnail($item, $width, $height, $border);
+				$path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
 				$etag_add  = '-'.$width.'-'.$height.'-'.$border;
 				$item->name = $width.'x'.$height.'-'.$item->name;
 				$item->size = filesize($path);

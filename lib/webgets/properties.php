@@ -313,6 +313,9 @@ function nvweb_properties_render($property, $vars)
             }
 			if(isset($vars['border']))
 				$extra .= '&border='.$vars['border'];
+
+            if(isset($vars['quality']))
+                $extra .= '&quality='.$vars['quality'];
 			
 			$img_url = NVWEB_OBJECT.'?type=image&id='.$property->value.$extra;
 
