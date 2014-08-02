@@ -1095,13 +1095,13 @@ function items_form($item)
 									'div_category_tree');
 
     /*
-	$navibars->add_tab_content($naviforms->hidden('category', $item->category));		
+	$navibars->add_tab_content($naviforms->hidden('category', $item->category));
 
 	$navibars->add_tab_content_row(array(	'<label>'.t(78, 'Category').'</label>',
 											'<div class="category_tree"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
 										),
-									'div_category_tree');		
-	
+									'div_category_tree');
+
 	$layout->add_script('
 		$(".category_tree ul:first").kvaTree({
 					imgFolder: "js/kvatree/img/",
@@ -1117,7 +1117,7 @@ function items_form($item)
 							return false;
 						}
 						else
-						{						
+						{
 							$("input[name=category]").val($(node).attr("value"));
                             navigate_item_category_change($(node).attr("value"));
 						}
@@ -1305,11 +1305,14 @@ function items_form($item)
 			if(!empty($item->paths[$lang]))
 				$open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
 												
-			$navibars->add_tab_content_row(array(	'<label>'.t(75, 'Path').$open_live_site.'</label>',
-													$naviforms->textfield('path-'.$lang, @$item->paths[$lang], NULL, 'navigate_items_path_check(this, event);'),
-													'<span>&nbsp;</span>'
-												),
-										   'div_path_'.$lang);
+			$navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(75, 'Path').$open_live_site.'</label>',
+                    $naviforms->textfield('path-'.$lang, @$item->paths[$lang], NULL, 'navigate_items_path_check(this, event);'),
+                    '<span>&nbsp;</span>'
+                ),
+               'div_path_'.$lang
+            );
 									   
 			if(!isset($template->sections))
 				$template->sections[] = array(

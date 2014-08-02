@@ -612,10 +612,13 @@ function structure_form($item)
 			$open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang_code].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
 											
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(75, 'Path').$open_live_site.'</label>',
-												$naviforms->textfield('path-'.$lang_code, @$item->paths[$lang_code], NULL, 'navigate_structure_path_check(this);'),
-												'<span>&nbsp;</span>'
-											));	
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(75, 'Path').$open_live_site.'</label>',
+				$naviforms->textfield('path-'.$lang_code, @$item->paths[$lang_code], NULL, 'navigate_structure_path_check(this);'),
+				'<span>&nbsp;</span>'
+            )
+        );
 		/*									
 		$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 												'<div class="subcomment"><sup>*</sup> '.t(83, 'Leave blank to disable this item').'</div>',
@@ -755,7 +758,14 @@ function structure_form($item)
 				  if(free)	free = "<img src=\"'.NAVIGATE_URL.'/img/icons/silk/tick.png\" align=\"absmiddle\" />";
 				  else		free = "<img src=\"'.NAVIGATE_URL.'/img/icons/silk/cancel.png\" align=\"absmiddle\" />";
 
-				  $(el).next().html(free);
+                  free += "<img class=\"erase_path\" src=\"" + NAVIGATE_URL + "/img/icons/silk/erase.png\" align=\"absmiddle\" />";
+                  $(el).next().find(".erase_path").off();
+                  $(el).next().html(free);
+                  $(el).next().find(".erase_path").on("click", function()
+                  {
+                    $(el).focus();
+                    $(el).val("");
+                  }).css("cursor", "pointer");
 			  }
 			});
 

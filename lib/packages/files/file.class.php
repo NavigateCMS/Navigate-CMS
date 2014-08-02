@@ -669,7 +669,7 @@ class file
                 $handle->image_border = false;
                 $handle->image_ratio_no_zoom_in = false;
 
-                if(!empty($item->focalpoint))
+                if(!empty($item->focalpoint) && $handle->image_src_x > 0)
                 {
                     $focalpoint = explode('#', $item->focalpoint);
 
