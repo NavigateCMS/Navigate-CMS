@@ -383,9 +383,7 @@ function structure_form($item)
 											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
 										)
 									);		
-								
 
-		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
 		$delete_html[] = '<script language="javascript" type="text/javascript">';
@@ -412,6 +410,53 @@ function structure_form($item)
 									
 		$navibars->add_content(implode("\n", $delete_html));
 	}
+
+    $extra_actions = array();
+
+    if(!empty($item->id))
+    {
+        $DB->query('
+            SELECT s.id, wd.text as title, s.position
+              FROM nv_structure s, nv_webdictionary wd
+             WHERE s.website = '.$item->website.'
+               AND s.parent = '.$item->parent.'
+               AND wd.website  = '.$item->website.'
+               AND wd.node_type = "structure"
+               AND wd.lang = "'.$website->languages_list[0].'"
+               AND wd.subtype = "title"
+               AND wd.node_id = s.id
+          ORDER BY s.position ASC, s.id ASC
+        ');
+
+        $brothers = $DB->result();
+
+        $previous_brother = NULL;
+        $next_brother = NULL;
+        for($b=0; $b < count($brothers); $b++)
+        {
+            if($brothers[$b]->id == $item->id)
+            {
+                $previous_brother = @$brothers[$b-1]->id;
+                $previous_brother_title = @$brothers[$b-1]->title;
+                $next_brother = @$brothers[$b+1]->id;
+                $next_brother_title = @$brothers[$b+1]->title;
+            }
+        }
+
+        if(!empty($previous_brother))
+            $extra_actions[] = '<a href="?fid=structure&act=edit&id='.$previous_brother.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_previous.png"> '.t(501, 'Previous').': '.$previous_brother_title.'</a>';
+        if(!empty($next_brother))
+        $extra_actions[] = '<a href="?fid=structure&act=edit&id='.$next_brother.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_next.png"> '.t(502, 'Next').': '.$next_brother_title.'</a>';
+    }
+
+    $events->add_actions(
+        'structure',
+        array(
+            'item' => &$item,
+            'navibars' => &$navibars
+        ),
+        $extra_actions
+    );
 	
 	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=structure&act=edit&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 									'<a href="?fid=structure&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/sitemap_color.png"> '.t(61, 'Tree').'</a>',
