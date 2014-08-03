@@ -100,6 +100,8 @@ function run()
 
                     for($i=0; $i < count($block_types); $i++)
                         $block_types_list[$block_types[$i]['code']] = $block_types[$i]['title'];
+
+                    $dataset = grid_notes::summary($dataset, 'block', 'id');
 									
 					// we need to format the values and retrieve the needed strings from the dictionary
 					$out = array();								
@@ -136,7 +138,8 @@ function run()
 							2	=> $dataset[$i]['title'],
 							3	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							4	=> $access[$dataset[$i]['access']],
-							5	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />')
+							5	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
+                            6 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
 									
@@ -386,6 +389,27 @@ function run()
             session_write_close();
             exit;
             break;
+
+        case 'grid_note_background':
+            grid_notes::background('block', $_REQUEST['id'], $_REQUEST['background']);
+            core_terminate();
+            break;
+
+        case 'grid_notes_comments':
+            $comments = grid_notes::comments('block', $_REQUEST['id'], false);
+            echo json_encode($comments);
+            core_terminate();
+            break;
+
+        case 'grid_notes_add_comment':
+            echo grid_notes::add_comment('block', $_REQUEST['id'], $_REQUEST['comment'], $_REQUEST['background']);
+            core_terminate();
+            break;
+
+        case 'grid_note_remove':
+            echo grid_notes::remove($_REQUEST['id']);
+            core_terminate();
+            break;
 		
 		case 0: // list / search result
 		default:			
@@ -424,7 +448,8 @@ function blocks_list()
 	$navitable->addCol(t(67, 'Title'), 'title', "400", "true", "left");	
 	$navitable->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");	
 	$navitable->addCol(t(364, 'Access'), 'access', "40", "true", "center");	
-	$navitable->addCol(t(65, 'Enabled'), 'enabled', "40", "true", "center");		
+	$navitable->addCol(t(65, 'Enabled'), 'enabled', "40", "true", "center");
+    $navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
 	
 	$navibars->add_content($navitable->generate());	
 	
@@ -448,6 +473,12 @@ function blocks_form($item)
 		$navibars->title(t(23, 'Blocks').' / '.t(170, 'Edit').' ['.$item->id.']');			
 
 	$navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+
+    if(!empty($item->id))
+    {
+        $notes = grid_notes::comments('block', $item->id);
+        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_display_notes_dialog();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
+    }
 
 	if(empty($item->id))
 	{
@@ -494,6 +525,9 @@ function blocks_form($item)
 	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 									'search_form' ));
+
+    if(!empty($item->id))
+        $layout->navigate_notes_dialog('block', $item->id);
 
 	$navibars->form();
 

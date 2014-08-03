@@ -796,7 +796,7 @@ function items_form($item)
     if(!empty($item->id))
     {
         $notes = grid_notes::comments('item', $item->id);
-        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_items_display_notes();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
+        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_display_notes_dialog();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
     }
 
 	if(empty($item->id))
@@ -855,6 +855,9 @@ function items_form($item)
             $extra_actions
         );
     }
+
+    if(!empty($item->id))
+        $layout->navigate_notes_dialog('item', $item->id);
 	
 	$navibars->add_actions(
         array(
@@ -995,80 +998,6 @@ function items_form($item)
 											));	
 	}
 
-    if(!empty($item->id))
-    {
-        $layout->add_script("
-            function navigate_items_display_notes()
-            {
-                var row_id = ".$item->id.";
-                // open item notes dialog
-                $('<div><img src=\"".NAVIGATE_URL."/img/loader.gif\" style=\" top: 162px; left: 292px; position: absolute; \" /></div>').dialog({
-                    modal: true,
-                    width: 600,
-                    height: 400,
-                    title: '".t(168, "Notes")."',
-                    open: function(event, ui)
-                    {
-                        var container = this;
-                        $.getJSON('?fid=".$_REQUEST['fid']."&act=grid_notes_comments&id=' + row_id, function(data)
-                        {
-                            $(container).html('".
-                                '<div><form action="#" onsubmit="return false;" method="post"><span class=\"grid_note_username\">'.$user->username.'</span><button class="grid_note_save">'.t(34, 'Save').'</button><br /><textarea id="grid_note_comment" class="grid_note_comment"></textarea></form></div>'
-                            ."');
-
-                            for(d in data)
-                            {
-                                var note = '<div class=\"grid_note ui-corner-all\" grid-note-id=\"'+data[d].id+'\" style=\" background: '+data[d].background+'; \">';
-                                note += '<span class=\"grid_note_username\">'+data[d].username+'</span>';
-                                note += '<span class=\"grid_note_remove\"><img src=\"".NAVIGATE_URL."img/icons/silk/decline.png\" /></span>';
-                                note += '<span class=\"grid_note_date\">'+data[d].date+'</span>';
-                                note += '<span class=\"grid_note_text\">'+data[d].note+'</span>';
-                                note += '</div>';
-
-                                $(container).append(note);
-                            }
-
-                            $(container).find('.grid_note_remove').bind('click', function()
-                            {
-                                var grid_note = $(this).parent();
-
-                                $.get('?fid=".$_REQUEST['fid']."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'), function(result)
-                                {
-                                    if(result=='true')
-                                    {
-                                        $(grid_note).fadeOut();
-                                        $('.navigate_grid_notes_span').html(parseInt($('.navigate_grid_notes_span').text()) - 1);
-                                    }
-                                });
-                            });
-
-                            $(container).find('.grid_note_save').button(
-                            {
-                                icons: { primary: 'ui-icon-disk' }
-                            }).bind('click', function()
-                            {
-                                $.post('?fid=".$_REQUEST['fid']."&act=grid_notes_add_comment',
-                                {
-                                    comment: $(container).find('.grid_note_comment').val(),
-                                    id: row_id,
-                                    background: $('#' + row_id).find('.grid_color_swatch').attr('ng-background')
-                                },
-                                function(result)
-                                {
-                                    if(result=='true') // reload dialog and table
-                                    {
-                                        $(container).parent().remove();
-                                        $('.navigate_grid_notes_span').html(parseInt($('.navigate_grid_notes_span').text()) + 1);
-                                    }
-                                });
-                            });
-                        });
-                    }
-                });
-            };
-        ");
-    }
-	
 	$navibars->add_tab(t(87, "Association")); // tab #1
 
 	$navibars->add_tab_content_row(array(	'<label>'.t(87, "Association").'</label>',
