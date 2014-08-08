@@ -410,11 +410,12 @@ function websites_form($item)
 	');
 
 
-	if(!empty($website->theme))
+	if(!empty($item->theme))
 	{
-		$navibars->add_tab_content_row(array(	'<label>'.t(368, 'Theme').' <a href="?fid=8&act=themes"><img height="16" align="absmiddle" width="16" src="img/icons/silk/rainbow.png" /></a></label>',
-												'<strong>'.$theme->title.'</strong>'
-												));
+		$navibars->add_tab_content_row(array(
+            '<label>'.t(368, 'Theme').' <a href="?fid=8&act=themes"><img height="16" align="absmiddle" width="16" src="img/icons/silk/rainbow.png" /></a></label>',
+			'<strong>'.$theme->title.'</strong>'
+		));
 	}
 
     $navibars->add_tab_content_row(array(
@@ -489,11 +490,11 @@ function websites_form($item)
 	$navibars->add_tab(t(63, "Languages"));
 
     // system locales
-    $locales = $website->unix_locales();
+    $locales = $item->unix_locales();
     $system = 'UNIX';
     if(empty($locales)) // seems like a MS Windows Server (c)
     {
-        $locales = $website->windows_locales();
+        $locales = $item->windows_locales();
         $system = 'MS Windows';
     }
 
@@ -846,15 +847,14 @@ function websites_form($item)
     {
         $navibars->add_tab(t(513, "Metatags"));
 
-        $website_languages_selector = $website->languages();
+        $website_languages_selector = $item->languages();
         $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
-        $ws_languages = $website->languages();
 
         $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
             $naviforms->buttonset('metatags_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
         ));
 
-        foreach($website->languages_list as $lang)
+        foreach($item->languages_list as $lang)
         {
             $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 
@@ -922,7 +922,7 @@ function websites_form($item)
         // show a language selector (only if it's a multilanguage website and has properties)
         if(!empty($theme->options) && count($item->languages) > 1)
         {
-            $website_languages_selector = $website->languages();
+            $website_languages_selector = $item->languages();
             $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
 
             $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
