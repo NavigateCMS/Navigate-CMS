@@ -1135,7 +1135,7 @@ function blocks_type_form($item)
 								},
 								"'.t(35, 'Delete').'": function() {
 									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=84&id='.$item['id'].'";
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=block_type_delete&id='.$item['id'].'";
 								}
 							}
 						});';		
@@ -1581,7 +1581,6 @@ function block_groups_list()
         '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
     ));
 
-
     $navitable->setURL('?fid='.$_REQUEST['fid'].'&act=block_groups_json');
     $navitable->sortBy('id');
     $navitable->setDataIndex('id');
@@ -1599,10 +1598,10 @@ function block_groups_list()
 
 function block_group_form($item)
 {
-    global $user;
     global $DB;
     global $website;
     global $layout;
+    global $theme;
 
     $navibars = new navibars();
     $naviforms = new naviforms();
@@ -1644,7 +1643,7 @@ function block_group_form($item)
 								},
 								"'.t(35, 'Delete').'": function() {
 									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=84&id='.$item->id.'";
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=block_group_delete&id='.$item->id.'";
 								}
 							}
 						});';
@@ -1683,9 +1682,13 @@ function block_group_form($item)
         $naviforms->textfield('title', $item->title)
     ));
 
+    $blgroups = array();
+    for($blg=0; $blg < count($theme->block_groups); $blg++)
+        $blgroups[$theme->block_groups[$blg]->code] = $theme->t($theme->block_groups[$blg]->code);
+
     $navibars->add_tab_content_row(array(
         '<label>'.t(237, 'Code').'</label>',
-        $naviforms->textfield('code', $item->code)
+        $naviforms->autocomplete('code', $item->code, array_keys($blgroups))
     ));
 
     $navibars->add_tab_content_row(array(
@@ -1731,7 +1734,7 @@ function block_group_form($item)
             ));
 
         }
-        else
+        else if(!empty($item->blocks[$p]))
         {
             for($bt=0; $bt < count($block_types); $bt++)
             {

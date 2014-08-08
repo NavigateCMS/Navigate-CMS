@@ -2,6 +2,7 @@
 require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/blocks/block_group.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
@@ -51,6 +52,7 @@ class theme
 		$this->languages = $theme->languages;
 		$this->options = (array)$theme->options;
 		$this->blocks = (array)$theme->blocks;
+		$this->block_groups = (array)$theme->block_groups;
 		$this->templates = (array)$theme->templates;
         $this->content_samples = (array)$theme->content_samples;
 
@@ -420,6 +422,36 @@ class theme
             $blocks[$old_block_id] = $block;
         }
 
+        // block_groups
+        $block_groups = array();
+        $block_groups_or = unserialize(file_get_contents($ptf.'/block_groups.serialized'));
+
+        foreach($block_groups_or as $block_group)
+        {
+            // error protection
+            if(empty($block_group->id))
+                continue;
+
+            $old_block_group_id = $block_group->id;
+            $block_group->id = 0;
+            $block_group->website = $website->id;
+
+            // fix block IDs in group
+            $new_selection = array();
+            for($bi=0; $bi < count($block_group->blocks); $bi++)
+            {
+                if(is_numeric($block_group->blocks[$bi]))
+                    $new_selection[] = $blocks[$block_group->blocks[$bi]]->id;
+                else if(!empty($block_groups->blocks[$bi]))
+                    $new_selection[] = $block_group->blocks[$bi];
+            }
+            $block_group->blocks = $new_selection;
+
+            $block_group->insert();
+
+            $block_groups[$old_block_group_id] = $block_group;
+        }
+
 
         // comments
         $comments_or = unserialize(file_get_contents($ptf.'/comments.serialized'));
@@ -506,7 +538,7 @@ class theme
         core_remove_folder($ptf);
     }
 
-    public static function export_sample($a_categories, $a_items, $a_blocks, $a_comments, $folder)
+    public static function export_sample($a_categories, $a_items, $a_block_groups, $a_blocks, $a_comments, $folder)
     {
         global $website;
         global $theme;
@@ -516,6 +548,7 @@ class theme
         $categories = array();
         $items = array();
         $blocks = array();
+        $block_groups = array();
         $comments = array();
         $properties = array();
         $files = array();
@@ -565,6 +598,17 @@ class theme
 
             $items[$tmp->id] = $tmp;
         }
+
+        // block_groups
+        for($i=0; $i < count($a_block_groups); $i++)
+        {
+            $tmp = new block_group();
+            $tmp->load($a_block_groups[$i]);
+            $block_groups[$tmp->id] = $tmp;
+            // note: maybe not all blocks in the group have been selected in the "blocks" tab
+            // here we only export the block group definition, not adding anything else to export
+        }
+
 
         // blocks
         for($i=0; $i < count($a_blocks); $i++)
@@ -623,6 +667,7 @@ class theme
         $zip->addFile(serialize($theme->options), 'theme_options.serialized');
         $zip->addFile(serialize($categories), 'structure.serialized');
         $zip->addFile(serialize($items), 'items.serialized');
+        $zip->addFile(serialize($block_groups), 'block_groups.serialized');
         $zip->addFile(serialize($blocks), 'blocks.serialized');
         $zip->addFile(serialize($comments), 'comments.serialized');
         $zip->addFile(serialize($files), 'files.serialized');
@@ -634,6 +679,7 @@ class theme
         $contents = $zip->file();
 
         header('Content-Disposition: attachment; filename="'.$website->theme.'_sample.zip"');
+        header("Content-type: application/octet-stream");
         header('Content-Length: '.strlen($contents));
 
         echo $contents;

@@ -129,18 +129,23 @@ class naviforms
 		return $out;	
 	}
 	
-	public function autocomplete($name, $value="", $url, $callback='""', $width="400px")
+	public function autocomplete($name, $value="", $source, $callback='""', $width="400px")
 	{
 		global $layout;
 		
 		$value = htmlspecialchars($value);
 		
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" style=" width: '.$width.';" />';
-		
+
+        if(is_array($source))
+            $source = '["'.implode('","', $source).'"]';
+        else
+            $source = '"'.$source.'"';
+
 		$layout->add_script('
 			$("#'.$name.'").autocomplete(
 			{
-				source: "'.$url.'",
+				source: '.$source.',
 				minLength: 1,
 				select: '.$callback.'
 			});

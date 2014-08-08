@@ -66,10 +66,11 @@ function run()
                 $categories = explode(',', $_POST['categories']);
                 $folder = $_POST['folder'];
                 $items = explode(',', $_POST['elements']);
+                $block_groups = explode(',', $_POST['block_groups']);
                 $blocks = explode(',', $_POST['blocks']);
                 $comments = explode(',', $_POST['comments']);
 
-                theme::export_sample($categories, $items, $blocks, $comments, $folder);
+                theme::export_sample($categories, $items, $block_groups, $blocks, $comments, $folder);
 
                 core_terminate();
             }
@@ -509,6 +510,21 @@ function themes_sample_content_export_form()
     $navitable_items->after_select_callback = ' $("#elements").val(navitable_items_list_selected_rows); ';
     $navibars->add_tab_content($naviforms->hidden('elements', ''));
     $navibars->add_tab_content($navitable_items->generate());
+
+
+    $navibars->add_tab(t(544, "Block groups"));
+    // select blocks to export
+    $navitable_block_groups = new navitable("block_groups_list");
+    $navitable_block_groups->setURL('?fid=blocks&act=block_groups_json');
+    $navitable_block_groups->sortBy('id', 'DESC');
+    $navitable_block_groups->setDataIndex('id');
+    $navitable_block_groups->addCol("ID", 'id', "80", "true", "left");
+    $navitable_block_groups->addCol(t(237, 'Code'), 'code', "120", "true", "left");
+    $navitable_block_groups->addCol(t(67, 'Title'), 'title', "200", "true", "left");
+    $navitable_block_groups->addCol(t(23, 'Blocks'), 'blocks', "80", "true", "left");
+    $navitable_block_groups->after_select_callback = ' $("#block_groups").val(navitable_block_groups_list_selected_rows); ';
+    $navibars->add_tab_content($naviforms->hidden('block_groups', ''));
+    $navibars->add_tab_content($navitable_block_groups->generate());
 
 
     $navibars->add_tab(t(23, "Blocks"));
