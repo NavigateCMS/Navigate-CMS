@@ -28,13 +28,20 @@ function nvweb_blocks($vars=array())
 
 	$block_types = $webgets[$webget]['block_types'];
 
-    // get the index for the block type requested
-    $bti = array_multidimensional_search($block_types, array('code' => $vars['type']));
+    if($vars['mode']=='single')
+    {
+        $order_mode = 'single';
+    }
+    else
+    {
+        // get the index for the block type requested
+        $bti = array_multidimensional_search($block_types, array('code' => $vars['type']));
 
-    // how must we process this block type
-	$order_mode = @$block_types[$bti]['order'];
-	if(empty($order_mode) || $order_mode=='theme')
-    	$order_mode = @$vars['mode'];
+        // how must we process this block type
+        $order_mode = @$block_types[$bti]['order'];
+        if(empty($order_mode) || $order_mode=='theme')
+            $order_mode = @$vars['mode'];
+    }
 
     // how many blocks of this type we have to show
     $howmany = @intval($block_types[$bti]['maximum']);
@@ -58,14 +65,25 @@ function nvweb_blocks($vars=array())
 	switch($order_mode)
 	{
         case 'single':
-            $categories_query = implode(',', $categories);
-            if(!empty($categories_query))
-                $categories_query = ' OR categories IN ('.$categories_query.') ';
+            $categories_query = '';
+            if(is_array($categories))
+            {
+                foreach($categories as $cq)
+                {
+                    // example: 2,3,4   =>  "3,"
+                    $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
+                    // example: 2,3,4   =>  "4"
+                    $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
+                }
+            }
 
-            $DB->query('SELECT id
+            if(!empty($vars['type']))
+                $query_type = ' AND type = '.protect($vars['type']);
+
+            $DB->query('SELECT id, type
                           FROM nv_blocks
-                         WHERE type = '.protect($vars['type']).'
-                           AND enabled = 1
+                         WHERE enabled = 1
+                           '.$query_type.'
                            AND website = '.$website->id.'
                            AND (date_published = 0 OR date_published < '.core_time().')
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
@@ -74,18 +92,31 @@ function nvweb_blocks($vars=array())
                            AND id = '.protect($vars['id'])
             );
             $row = $DB->first();
+
             if(!empty($row))
-                $blocks[] = $row['id'];
+            {
+                $blocks[] = $row->id;
+                $vars['type'] = $row->type;
+            }
             break;
 
         case 'priority':
 		case 'ordered':
 
-            $categories_query = implode(',', $categories);
-            if(!empty($categories_query))
-                $categories_query = ' OR categories IN ('.$categories_query.') ';
+            $categories_query = '';
+            if(is_array($categories))
+            {
+                foreach($categories as $cq)
+                {
+                    // example: 2,3,4   =>  "3,"
+                    $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
+                    // example: 2,3,4   =>  "4"
+                    $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
+                }
+            }
 
-			$DB->query('SELECT *
+
+            $DB->query('SELECT *
 			 			  FROM nv_blocks
 						 WHERE type = '.protect($vars['type']).'
 						   AND enabled = 1
@@ -110,22 +141,29 @@ function nvweb_blocks($vars=array())
 		case 'random':
             // "random" gets priority blocks first
             // retrieve fixed blocks
-            $categories_query = implode(',', $categories);
-            if(!empty($categories_query))
-                $categories_query = ' OR categories IN ('.$categories_query.') ';
-
+            $categories_query = '';
+            if(is_array($categories))
+            {
+                foreach($categories as $cq)
+                {
+                    // example: 2,3,4   =>  "3,"
+                    $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
+                    // example: 2,3,4   =>  "4"
+                    $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
+                }
+            }
 
             $DB->query('SELECT *
-                              FROM nv_blocks
-                             WHERE type = '.protect($vars['type']).'
-                               AND enabled = 1
-                               AND website = '.$website->id.'
-                               AND (date_published = 0 OR date_published < '.core_time().')
-                               AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
-                               AND access IN('.implode(',', $access).')
-                               AND fixed = 1
-                               AND (categories = "" '.$categories_query.')
-                          ORDER BY position ASC');
+                          FROM nv_blocks
+                         WHERE type = '.protect($vars['type']).'
+                           AND enabled = 1
+                           AND website = '.$website->id.'
+                           AND (date_published = 0 OR date_published < '.core_time().')
+                           AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
+                           AND access IN('.implode(',', $access).')
+                           AND fixed = 1
+                           AND (categories = "" '.$categories_query.')
+                      ORDER BY position ASC');
 
 			$fixed_rows = $DB->result();
 			$fixed_rows_ids = $DB->result('id');

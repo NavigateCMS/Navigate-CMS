@@ -1,5 +1,6 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/blocks/block_group.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
@@ -223,6 +224,83 @@ function run()
 			core_terminate();		
 			break;
 
+        case 'block_groups_list':
+            $out = block_groups_list();
+            break;
+
+        case 'block_groups_json':	// block groups: json data retrieval
+			$page = intval($_REQUEST['page']);
+			$max	= intval($_REQUEST['rows']);
+			$offset = ($page - 1) * $max;
+
+			list($rs, $total) = block_group::paginated_list($offset, $max, $_REQUEST['sidx'], $_REQUEST['sord']);
+
+            // translate $rs to an array of ordered fields
+            foreach($rs as $row)
+            {
+                $row['blocks'] = mb_unserialize($row['blocks']);
+                $dataset[] = array(
+                    'id' => $row['id'],
+                    'code' => $row['code'],
+                    'title' => $row['title'],
+                    'blocks' => count($row['blocks'])
+                );
+            }
+
+			navitable::jqgridJson($dataset, $page, $offset, $max, $total, 'id');
+
+			session_write_close();
+			exit;
+			break;
+
+        case 'block_group_edit':
+            $item = new block_group();
+
+            if(!empty($_REQUEST['id']))
+            {
+                $item->load(intval($_REQUEST['id']));
+            }
+
+            if(isset($_REQUEST['form-sent']))
+            {
+                $item->load_from_post();
+                try
+                {
+                    $item->save();
+                    $id = $item->id;
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false);
+                }
+                catch(Exception $e)
+                {
+                    $layout->navigate_notification($e->getMessage(), true, true);
+                }
+                users_log::action($_REQUEST['fid'], $item->id, 'save', $item->title, json_encode($_REQUEST));
+            }
+            else if(!empty($_REQUEST['id']))
+                users_log::action($_REQUEST['fid'], $item->id, 'edit', $item->title);
+
+			$out = block_group_form($item);
+			break;
+
+        case 'block_group_delete':
+            $item = new block_group();
+            if(!empty($_REQUEST['id']))
+            {
+                $item->load(intval($_REQUEST['id']));
+                if($item->delete() > 0)
+                {
+                    $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
+                    $out = block_groups_list();
+                }
+                else
+                {
+                    $layout->navigate_notification(t(56, 'Unexpected error.'), false);
+                    $out = block_group_form($item);
+                }
+                users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->title);
+            }
+			break;
+
         case 'block_types_list':
 			$out = blocks_types_list();
 			break;
@@ -427,7 +505,12 @@ function blocks_list()
 	
 	$navibars->title(t(23, 'Blocks'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wrench_orange.png"> '.t(167, 'Types').'</a>' ) );
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>',
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+        )
+    );
 
 	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
 									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
@@ -520,7 +603,12 @@ function blocks_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/wrench_orange.png"> '.t(167, 'Types').'</a>' ) );
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>',
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+        )
+    );
 	
 	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
@@ -964,7 +1052,12 @@ function blocks_types_list()
 	
 	$navibars->title(t(23, 'Blocks').' / '.t(167, 'Types'));
 	
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>' ) );		
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'
+        )
+    );
 	
 	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=82"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
 									'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
@@ -1018,12 +1111,12 @@ function blocks_type_form($item)
     }
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="$(\'#navigate-content\').find(\'form\').eq(0).submit();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
-
+		$navibars->add_actions(
+            array(
+                '<a href="#" onclick="$(\'#navigate-content\').find(\'form\').eq(0).submit();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -1051,9 +1144,14 @@ function blocks_type_form($item)
 									
 		$navibars->add_content(implode("\n", $delete_html));
 	}
-	
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>' ) );	
-	
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'
+        )
+    );
+
 	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=82"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 									'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
 									));
@@ -1458,5 +1556,392 @@ function blocks_type_form($item)
     }
 
 	return $navibars->generate();
+}
+
+function block_groups_list()
+{
+    global $user;
+    global $DB;
+    global $website;
+
+    $navibars = new navibars();
+    $navitable = new navitable('block_groups_list');
+
+    $navibars->title(t(23, 'Blocks').' / '.t(506, 'Groups'));
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+        )
+    );
+
+    $navibars->add_actions(	array(
+        '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+        '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+    ));
+
+
+    $navitable->setURL('?fid='.$_REQUEST['fid'].'&act=block_groups_json');
+    $navitable->sortBy('id');
+    $navitable->setDataIndex('id');
+    $navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=block_group_edit&id=');
+
+    $navitable->addCol("ID", 'id', "80", "true", "left");
+    $navitable->addCol(t(237, 'Code'), 'code', "120", "true", "left");
+    $navitable->addCol(t(67, 'Title'), 'title', "200", "true", "left");
+    $navitable->addCol(t(23, 'Blocks'), 'blocks', "80", "true", "left");
+
+    $navibars->add_content($navitable->generate());
+
+    return $navibars->generate();
+}
+
+function block_group_form($item)
+{
+    global $user;
+    global $DB;
+    global $website;
+    global $layout;
+
+    $navibars = new navibars();
+    $naviforms = new naviforms();
+
+    if(empty($item->id))
+        $navibars->title(t(23, 'Blocks').' / '.t(506, 'Groups').' / '.t(38, 'Create'));
+    else
+        $navibars->title(t(23, 'Blocks').' / '.t(506, 'Groups').' / '.t(170, 'Edit').' ['.$item->id.']');
+
+    if(empty($item->id))
+    {
+        $navibars->add_actions(
+            array(	'<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
+        );
+    }
+    else
+    {
+        $navibars->add_actions(
+            array(
+                '<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+                '<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
+
+        $delete_html = array();
+        $delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
+        $delete_html[] = '<script language="javascript" type="text/javascript">';
+        $delete_html[] = 'function navigate_delete_dialog()';
+        $delete_html[] = '{';
+        $delete_html[] = '$("#navigate-delete-dialog").dialog({
+							resizable: true,
+							height: 150,
+							width: 300,
+							modal: true,
+							title: "'.t(59, 'Confirmation').'",
+							buttons: {
+								"'.t(58, 'Cancel').'": function() {
+									$(this).dialog("close");
+								},
+								"'.t(35, 'Delete').'": function() {
+									$(this).dialog("close");
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=84&id='.$item->id.'";
+								}
+							}
+						});';
+        $delete_html[] = '}';
+        $delete_html[] = '</script>';
+
+        $navibars->add_content(implode("\n", $delete_html));
+    }
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+        )
+    );
+
+    $navibars->add_actions(
+        array(
+        (!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+        '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+    ));
+
+    $navibars->form();
+
+    $navibars->add_tab(t(43, "Main"));
+
+    $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->hidden('id', $item->id));
+
+    $navibars->add_tab_content_row(array(
+        '<label>ID</label>',
+        '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' )
+    );
+
+    $navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
+        $naviforms->textfield('title', $item->title)
+    ));
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(237, 'Code').'</label>',
+        $naviforms->textfield('code', $item->code)
+    ));
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(168, 'Notes').'</label>',
+        $naviforms->textarea('notes', $item->notes)
+    ));
+
+    $navibars->add_tab(t(23, "Blocks"));
+
+    // blocks by ID
+    // block types
+
+    $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', implode('#', $item->blocks)));
+
+    $table = new naviorderedtable("blocks_group_table");
+    $table->setWidth("700px");
+    $table->setHiddenInput("blocks-order");
+    $table->setReorderCallback("blocks_selection_update");
+
+    $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
+
+    $table->addHeaderColumn('ID', 200);
+    $table->addHeaderColumn(t(160, 'Type'), 200);
+    $table->addHeaderColumn(t(67, 'Title'), 250);
+    $table->addHeaderColumn(t(35, 'Remove'), 50);
+
+    $block_types = block::types();
+    $lang = $website->languages_published[0];
+
+    for($p=0; $p < count($item->blocks); $p++)
+    {
+        unset($block);
+        if(is_numeric($item->blocks[$p]))
+        {
+            $block = new block();
+            $block->load($item->blocks[$p]);
+
+            $table->addRow($p, array(
+                array('content' => '<span>'.$item->blocks[$p].'</span>', 'align' => 'left'),
+                array('content' => '<span>'.$block->type.'</span>', 'align' => 'left'),
+                array('content' => '<span>'.$block->dictionary[$lang]['title'].'</span>', 'align' => 'left'),
+                array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
+            ));
+
+        }
+        else
+        {
+            for($bt=0; $bt < count($block_types); $bt++)
+            {
+                if($block_types[$bt]['id']==$item->blocks[$p])
+                {
+                    $block = $block_types[$bt];
+                    break;
+                }
+            }
+
+            $table->addRow($p, array(
+                array('content' => '<span>'.$block['code'].'</span>', 'align' => 'left'),
+                array('content' => '<span>'.$block['type'].'</span>', 'align' => 'left'),
+                array('content' => '<span>'.$block['title'].'</span>', 'align' => 'left'),
+                array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
+            ));
+        }
+    }
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(405, 'Selection').'</label>',
+        '<div>'.$table->generate().'</div>',
+        '<div class="subcomment">
+            <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').
+        '</div>'
+    ));
+
+    $navibars->add_tab_content_row(array(
+        '<label>&nbsp;</label>',
+        '<button id="block-selection-add-block"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').': '.t(437, 'Block').'</button>',
+        '<button id="block-selection-add-block_type"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').': '.t(543, 'Block type').'</button>'
+        )
+    );
+
+    $block_types_assoc = array();
+    $block_types_titles = array();
+    for($i=0; $i < count($block_types); $i++)
+    {
+        $block_types_titles[$block_types[$i]['code']] = $block_types[$i]['title'];
+        $block_types_assoc[$block_types[$i]['code']] = $block_types[$i];
+    }
+
+    $layout->add_script('var blocks_selection_block_types = '.json_encode($block_types_assoc));
+
+    $layout->add_content('
+        <div id="block-selection-add-block_type-dialog" style="display: none;">
+            <form action="#" method="post" onsubmit="return false;">
+                '.$naviforms->selectfield('block-selection-add-block_type-dialog-type', array_keys($block_types_titles), array_values($block_types_titles)).'
+            </form>
+        </div>
+    ');
+
+    $layout->add_script('
+        $("#block-selection-add-block_type").on("click", function()
+        {
+            $("#block-selection-add-block_type-dialog").dialog(
+            {
+                title: "'.t(472, 'Add').': '.t(543, 'Block type').'",
+                modal: true,
+                width: 430,
+                height: 130,
+                buttons:
+                {
+                    "'.t(190, 'Ok').'": function()
+                    {
+                        var bts = $("#block-selection-add-block_type-dialog-type").val();
+
+                        var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
+                        tr += \'<td>\'+bts+\'</td>\';
+                        tr += \'<td>\'+blocks_selection_block_types[bts].type+\'</td>\';
+                        tr += \'<td>\'+blocks_selection_block_types[bts].title+\'</td>\';
+                        tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
+                        tr += \'</tr>\';
+
+                        $("#blocks_group_table").find("tbody:last").append(tr);
+                        $("#blocks_group_table").tableDnD(
+                        {
+                            onDrop: function(table, row)
+                            {
+                                navigate_naviorderedtable_blocks_group_table_reorder();
+                            }
+                        });
+
+                        // force a table refresh
+                        navigate_naviorderedtable_blocks_group_table_reorder();
+
+                        $("#block-selection-add-block_type-dialog").dialog("close");
+                    },
+                    "'.t(58, 'Cancel').'": function()
+                    {
+                        $("#block-selection-add-block_type-dialog").dialog("close");
+                    }
+                }
+            });
+
+            return false;
+        });
+    ');
+
+    $sql = '
+         SELECT b.type, b.id, d.text as title
+           FROM nv_blocks b
+      LEFT JOIN nv_webdictionary d
+                 ON b.id = d.node_id
+                AND d.node_type = "block"
+                AND d.subtype = "title"
+                AND d.lang = "'.$website->languages_list[0].'"
+                AND d.website = '.$website->id.'
+          WHERE b.website = '.$website->id.'
+       ORDER BY b.id DESC';
+
+    $DB->query($sql);
+    $blocks = $DB->result();
+
+    $block_elements = array();
+    $block_elements_titles = array();
+    for($i=0; $i < count($blocks); $i++)
+    {
+        $block_elements[$blocks[$i]->id] = $blocks[$i];
+        $block_elements_titles[$blocks[$i]->id] = $blocks[$i]->title.' ('.$blocks[$i]->type.')';
+    }
+
+    $layout->add_script('var blocks_selection_block_elements = '.json_encode($block_elements));
+
+    $layout->add_content('
+        <div id="block-selection-add-block-dialog" style="display: none;">
+            <form action="#" method="post" onsubmit="return false;">
+                '.$naviforms->selectfield('block-selection-add-block-dialog-type', array_keys($block_elements_titles), array_values($block_elements_titles)).'
+            </form>
+        </div>
+    ');
+
+    $layout->add_script('
+        $("#block-selection-add-block").on("click", function()
+        {
+            $("#block-selection-add-block-dialog").dialog(
+            {
+                title: "'.t(472, 'Add').': '.t(437, 'Block').'",
+                modal: true,
+                width: 430,
+                height: 130,
+                buttons:
+                {
+                    "'.t(190, 'Ok').'": function()
+                    {
+                        var bs = $("#block-selection-add-block-dialog-type").val();
+
+                        var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
+                        tr += \'<td>\'+bs+\'</td>\';
+                        tr += \'<td>\'+blocks_selection_block_elements[bs].type+\'</td>\';
+                        tr += \'<td>\'+blocks_selection_block_elements[bs].title+\'</td>\';
+                        tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
+                        tr += \'</tr>\';
+
+                        $("#blocks_group_table").find("tbody:last").append(tr);
+                        $("#blocks_group_table").tableDnD(
+                        {
+                            onDrop: function(table, row)
+                            {
+                                navigate_naviorderedtable_blocks_group_table_reorder();
+                            }
+                        });
+
+                        // force a table refresh
+                        navigate_naviorderedtable_blocks_group_table_reorder();
+
+                        $("#block-selection-add-block-dialog").dialog("close");
+                    },
+                    "'.t(58, 'Cancel').'": function()
+                    {
+                        $("#block-selection-add-block-dialog").dialog("close");
+                    }
+                }
+            });
+
+            return false;
+        });
+    ');
+
+    $layout->add_script('
+        function blocks_selection_update()
+        {
+            $("#blocks_group_selection").val("");
+            var blocks_id_ordered = [];
+            var blocks_ts_ordered = $("#blocks-order").val().split("#");
+            for(bto in blocks_ts_ordered)
+            {
+                if(!blocks_ts_ordered[bto])
+                    continue;
+                var id = $("tr#"+blocks_ts_ordered[bto]).find("td:first").text();
+                if(id && id!="")
+                {
+                    blocks_id_ordered.push(id);
+                    $("#blocks_group_selection").val(blocks_id_ordered.join(","));
+                }
+            }
+        }
+
+        function navigate_blocks_selection_remove(el)
+        {
+            $(el).parent().parent().remove();
+            navigate_naviorderedtable_blocks_group_table_reorder();
+            blocks_selection_update();
+        }
+
+        // update table result onload
+        navigate_naviorderedtable_blocks_group_table_reorder();
+        blocks_selection_update();
+    ');
+
+    return $navibars->generate();
 }
 ?>

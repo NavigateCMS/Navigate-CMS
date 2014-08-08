@@ -541,3 +541,4 @@
 540     # Punto focal
 541     # Tu correo electrónico ha sido correctamente suscrito al boletín.
 542     # Ha ocurrido un problema suscribiendo tu correo electrónico al boletín.
+543     # Tipo de bloque

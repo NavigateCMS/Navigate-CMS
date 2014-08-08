@@ -8,6 +8,7 @@ class naviorderedtable
 	public $headerColumns;
 	public $rows;
 	public $dblclick_callback;
+    public $reorder_callback;
 	
 	public function __construct($id=null)
 	{
@@ -31,7 +32,12 @@ class naviorderedtable
 	public function setDblclickCallback($cback)
 	{
 		$this->dblclick_callback = $cback;
-	}	
+	}
+
+    public function setReorderCallback($cback)
+	{
+		$this->reorder_callback = $cback;
+	}
 	
 	public function addHeaderColumn($text, $width, $searchable=false)
 	{
@@ -91,7 +97,7 @@ class naviorderedtable
 				$(this).parent().parent().append(\'<input type="text" name="naviorderedtable-filter" value="" />\');
 				$(this).parent().parent().find("input").css({width: $(this).parent().parent().attr("width") - 50 }).bind("keyup", function()
 				{
-					navigate_naviorderedtable_search($(this), column);
+					navigate_naviorderedtable_'.$this->id.'_search($(this), column);
 				});
 				$(this).parent().parent().find("input").focus();
 			});
@@ -107,10 +113,11 @@ class naviorderedtable
 				}		
 				
 				$("#'.$this->input_id.'").val(phpjs_implode("#", ids));
+				'.(empty($this->reorder_callback)? '' : $this->reorder_callback.'(ids);').'
 			}
 			
 			
-			function navigate_naviorderedtable_search(element, column)
+			function navigate_naviorderedtable_'.$this->id.'_search(element, column)
 			{
 				var text = $(element).val().toLowerCase();
 
@@ -125,8 +132,7 @@ class naviorderedtable
 				});
 			}
 		');
-		
-		
+
 		if(!empty($this->dblclick_callback))
 		{
 			$layout->add_script('$("#'.$this->id.'").find("tr").bind("dblclick", function()
