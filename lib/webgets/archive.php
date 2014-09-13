@@ -73,7 +73,10 @@ function nvweb_archive($vars=array())
 			break;
 			
 		case 'year':
-            $out[] = nvweb_archive_render('year', $dataset, $archive_url, $categories);
+            $type = 'year';
+            if($vars['collapsed']=='true')
+                $type = 'year-collapsed';
+            $out[] = nvweb_archive_render($type, $dataset, $archive_url, $categories);
 			break;
 			
 		case 'adaptive':
@@ -100,7 +103,7 @@ function nvweb_archive_render($type, $dataset, $archive_url, $categories)
 
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
-    if($type=='year')
+    if($type=='year' || $type=='year-collapsed')
     {
         $year_months = array();
         $year_stats = array();
@@ -115,7 +118,10 @@ function nvweb_archive_render($type, $dataset, $archive_url, $categories)
             $year_stats[$row->year]['total'] += $row->total;
         }
 
-        $first = '';
+        $first = ''; // default: show months of the first year in the list
+        if($type=='year-collapsed') // alternative: hide months for the first year, too
+            $first = 'display: none;';
+
         foreach($year_months as $year => $months)
         {
             $out[] = '<div class="nv-year"><a href="#" style=" display: block;" onclick=" return false; ">&raquo; '.$year.' ('.$year_stats[$year]['total'].')</a></div>';
