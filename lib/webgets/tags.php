@@ -12,14 +12,19 @@ function nvweb_tags($vars=array())
 		case 'top':
             $tags = nvweb_tags_retrieve($vars['items']);
             $out = array();
+
+            $extra = '';
+            if(!empty($vars['class']))
+                $extra = ' class="'.$vars['class'].'" ';
+
             foreach($tags as $tag => $times)
             {
                 if($vars['tag']=='li')
-                    $out[] = '<a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'">'.$tag.'</a>';
+                    $out[] = '<li><a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a></li>';
                 else if($vars['tag']=='span')
-                    $out[] = '<span count="'.$times.'">'.$tag.'</span>'.$vars['separator'];
+                    $out[] = '<span count="'.$times.'" '.$extra.'>'.$tag.'</span>'.$vars['separator'];
                 else
-                    $out[] = '<a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'">'.$tag.'</a>'.$vars['separator'];
+                    $out[] = '<a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a>'.$vars['separator'];
             }
             $out = implode("\n", $out);
 			break;
