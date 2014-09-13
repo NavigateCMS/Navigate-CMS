@@ -179,7 +179,7 @@ function navigate_install_requirements()
     $pre_folder_path = rtrim($pre_folder_path, '/');
 	?>
     <h2>
-	    <a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_requirements" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+	    <a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_requirements" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [1/5]: <?php echo $lang['requirements'];?>
     </h2>
 	<form action="?step=2" method="post">
@@ -403,7 +403,7 @@ function navigate_install_configuration()
 		
 	?>
     <h2>
-        <a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+        <a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [3/5]: <?php echo $lang['configuration'];?>
     </h2>
 	<form action="?step=3" method="post" onsubmit=" return false; ">
@@ -692,7 +692,7 @@ function navigate_install_decompress()
 	global $lang;
 	?>
     <h2>
-    	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_decompress" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+    	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_decompress" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [2/5]: <?php echo $lang['decompress'];?>
     </h2>
 	<form action="?step=3" method="post">
@@ -846,7 +846,7 @@ function navigate_install_create_database()
 
 	?>
     <h2>
-    	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+    	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [4/5]: <?php echo $lang['database_import'];?>
     </h2>
 	<form action="?step=5" method="post">
@@ -963,7 +963,7 @@ function navigate_install_completed()
 	global $lang;
 	?>
     <h2>
-    	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_completion" target="_blank" class="help"><img src="<? echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+    	<a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_completion" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [5/5]: <?php echo $lang['install_completed'];?>
     </h2>
 	<form action="setup.php?step=cleaning" method="post">
