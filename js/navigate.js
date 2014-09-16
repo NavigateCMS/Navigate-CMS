@@ -344,7 +344,24 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             if(max_width==0 || max_width > image_width)
                 max_width = image_width;
             var scaled_height = Math.ceil((max_width * image_height) / image_width);
-			html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'" width="'+max_width+'" height="'+scaled_height+'" '+or_styles+' />';
+
+            var title = $.base64.decode($(element).attr('image-title'));
+            var alt = $.base64.decode($(element).attr('image-description'));
+
+            var active_editor_lang = editor_id;
+            if(active_editor_lang.indexOf("-") > 0)
+                active_editor_lang = active_editor_lang.split("-").pop();
+
+            title = $.parseJSON(title);
+            title = title[active_editor_lang];
+
+            alt = $.parseJSON(alt);
+            alt = alt[active_editor_lang];
+
+			html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
+                    (!title?    '' : ' title="' + title + '" ') +
+                    (!alt?      '' : ' alt="' + alt + '" ' ) +
+                    ' width="' + max_width + '" height="' + scaled_height + '" ' + or_styles + ' />';
 			break;
 		
 		case 'video':
