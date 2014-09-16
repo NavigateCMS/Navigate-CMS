@@ -884,7 +884,8 @@ function files_item_properties($item)
         )
     );
 
-    $navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(364, 'Access').'</label>',
             $naviforms->selectfield('access',
                 array(
                     0 => 0,
@@ -986,16 +987,18 @@ function files_item_properties($item)
 	{
 		$navibars->add_tab(t(157, "Image"));
 		
-		$navibars->add_tab_content_row(array(	'<label>'.t(155, 'Width').' (px)</label>',
-												$naviforms->textfield('width', $item->width),
-											));			
-											
-		$navibars->add_tab_content_row(array(	'<label>'.t(156, 'Height').' (px)</label>',
-												$naviforms->textfield('height', $item->height),
-											));						
+		$navibars->add_tab_content_row(array(
+            '<label>'.t(155, 'Width').' / '.t(156, 'Height').'</label>',
+			$naviforms->textfield('width', $item->width, '50px'),
+            'x',
+            $naviforms->textfield('height', $item->height, '50px'),
+            'px'
+		));
 
-		$navibars->add_tab_content_row(array('<label>'.t(170, 'Edit').'</label>', 
-		'
+
+		$navibars->add_tab_content_row(array(
+            '<label>'.t(170, 'Edit').'</label>',
+		    '
 			<script language="javascript" type="text/javascript">
 				function navigate_pixlr_edit()
 				{
@@ -1031,6 +1034,45 @@ function files_item_properties($item)
                 '<button onclick="navigate_media_browser_focalpoint('.$item->id.'); return false;"><img src="img/icons/silk/picture-measurement.png" align="absmiddle"> '.t(540, 'Focal point').'</button>'
             )
         );
+
+        $navibars->add_tab(t(334, 'Description'));
+
+        $website_languages_selector = $website->languages();
+        $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+        $navibars->add_tab_content_row(array(
+            '<label>'.t(63, 'Languages').'</label>',
+            $naviforms->buttonset(
+                'files_texts_language_selector',
+                $website_languages_selector,
+                '',
+                "navigate_tabform_language_selector(this);"
+            )
+        ));
+
+        foreach($website->languages_list as $lang)
+        {
+            $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(67, 'Title').' '.$language_info.'</label>',
+                    $naviforms->textfield('title-'.$lang, @$item->title[$lang]),
+                ),
+                '',
+                'lang="'.$lang.'"'
+            );
+
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(334, 'Description').' '.$language_info.'</label>',
+                    $naviforms->textfield('description-'.$lang, @$item->description[$lang])
+                ),
+                '',
+                'lang="'.$lang.'"'
+            );
+        }
+
     }
 	else if($item->type=='video')
 	{
@@ -1189,12 +1231,17 @@ function files_media_browser($limit = 50, $offset = 0)
 
         if($f->type == 'image')
 		{
+            $f->title = json_decode($f->title, true);
+            $f->description = json_decode($f->description, true);
+
 			$icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&width=75&height=75';
 			$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
 			               mediatype="'.$f->type.'"
 			               mimetype="'.$f->mime.'"
 			               image-width="'.$f->width.'"
 			               image-height="'.$f->height.'"
+			               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+			               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 			               download-link="'.$download_link.'"
 			               id="file-'.$f->id.'">
 			               <img src="'.$icon.'" title="'.$f->name.'" />

@@ -16,6 +16,8 @@ class file
 	public $width;
 	public $height;
     public $focalpoint; // 50.00#50.00 (image center by top%, left%)
+    public $title;
+    public $description; // image ALT
 	public $date_added;
 	public $uploaded_by;	
 	public $access; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
@@ -44,6 +46,8 @@ class file
 			$this->width = $dimensions['width'];
 			$this->height = $dimensions['height'];
 			$this->focalpoint = '50#50';
+            $this->title = "";
+            $this->description = "";
 			$this->date_added = core_time();
 			$this->uploaded_by = 'system';
 			$this->permission = 0;
@@ -76,9 +80,13 @@ class file
 		$this->size			= $main->size;
 		$this->mime			= $main->mime;
 		$this->width		= $main->width;
-		$this->height		= $main->height;				
+		$this->height		= $main->height;
+
 		$this->focalpoint	= $main->focalpoint;
-		$this->date_added	= $main->date_added;
+        $this->title        = json_decode($main->title, true);
+        $this->description  = json_decode($main->description, true);
+
+        $this->date_added	= $main->date_added;
 		$this->uploaded_by	= $main->uploaded_by;	
 	
 		$this->access		= $main->access;			
@@ -94,6 +102,7 @@ class file
 	public function load_from_post()
 	{
 		global $DB;
+        global $website;
 		
 		// ? ==> should be changed?
 	
@@ -119,6 +128,13 @@ class file
 
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
+
+        foreach($website->languages as $language)
+        {
+            $lcode = $language['code'];
+            $this->title[$lcode]	= $_REQUEST['title-'.$lcode];
+            $this->description[$lcode]	= $_REQUEST['description-'.$lcode];
+        }
 	}
 	
 	
@@ -218,28 +234,40 @@ class file
         if($groups == 'g')
             $groups = '';
 
-        $ok = $DB->execute(' INSERT INTO nv_files
-								(   id, website, type, parent, name, size, mime,
-								    width, height, focalpoint, date_added, uploaded_by,
-								    permission, access, groups, enabled)
-								VALUES 
-								( 0,
-								  '.protect($website->id).',
-								  '.protect($this->type).',
-								  '.protect($this->parent).',
-								  '.protect($this->name).',
-								  '.protect($this->size).',
-								  '.protect($this->mime).',
-								  '.protect($this->width).',
-								  '.protect($this->height).',								  								  
-								  '.protect($this->focalpoint).',
-								  '.protect($this->date_added).',
-								  '.protect($this->uploaded_by).',								  											  
-								  '.protect($this->permission).',
-								  '.protect($this->access).',
-								  '.protect($groups).',
-								  '.protect($this->enabled).'						  
-								)');
+        $ok = $DB->execute('
+            INSERT INTO nv_files
+            (   id, website, type, parent, name, size, mime,
+                width, height, focalpoint, title, description,
+                date_added, uploaded_by,
+                permission, access, groups, enabled)
+            VALUES
+            ( 0,
+              :website_id, :type, :parent, :fname, :size, :mime,
+              :width, :height, :focalpoint,
+              :title, :description,
+              :date_added, :uploaded_by,
+              :permission, :access, :groups, :enabled
+            )',
+            array(
+                  ":website_id" => $website->id,
+                  ":type" => $this->type,
+                  ":parent" => $this->parent,
+                  ":fname" => $this->name,
+                  ":size" => $this->size,
+                  ":mime" => $this->mime,
+                  ":width" => $this->width,
+                  ":height" => $this->height,
+                  ":focalpoint" => $this->focalpoint,
+                  ":title" => json_encode($this->title),
+                  ":description" => json_encode($this->description),
+                  ":date_added" => $this->date_added,
+                  ":uploaded_by" => $this->uploaded_by,
+                  ":permission" => $this->permission,
+                  ":access" => $this->access,
+                  ":groups" => $groups,
+                  ":enabled" => $this->enabled	
+            )
+        );
 			
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -268,23 +296,47 @@ class file
         $ok = $DB->execute('
             UPDATE nv_files
                SET
-                type		=	'.protect($this->type).',
-                parent		=	'.protect($this->parent).',
-                name		=	'.protect($this->name).',
-                size		=	'.protect($this->size).',
-                mime		=	'.protect($this->mime).',
-                width		=	'.protect($this->width).',
-                height		=	'.protect($this->height).',
-                focalpoint  =	'.protect($this->focalpoint).',
-                date_added	=	'.protect($this->date_added).',
-                uploaded_by	=	'.protect($this->uploaded_by).',
-                access		=	'.protect($this->access).',
-                groups      =   '.protect($groups).',
-                permission	=	'.protect($this->permission).',
-                enabled		=	'.protect($this->enabled).'
-            WHERE id = '.$this->id.'
-              AND website = '.$website->id);
-		
+                type		=	:type,
+                parent		=	:parent,
+                name		=	:fname,
+                size		=	:size,
+                mime		=	:mime,
+                width		=	:width,
+                height		=	:height,
+                focalpoint  =	:focalpoint,
+                title       =   :title,
+                description =   :description,
+                date_added	=	:date_added,
+                uploaded_by	=	:uploaded_by,
+                permission	=	:permission,
+                access		=	:access,
+                groups      =   :groups,
+                enabled		=	:enabled
+            WHERE id = :id
+              AND website = :website_id
+          ',
+          array(
+                ":id" => $this->id,
+                ":website_id" => $website->id,
+                ":type" => $this->type,
+                ":parent" => $this->parent,
+                ":fname" => $this->name,
+                ":size" => $this->size,
+                ":mime" => $this->mime,
+                ":width" => $this->width,
+                ":height" => $this->height,
+                ":focalpoint" => $this->focalpoint,
+                ":title" => json_encode($this->title),
+                ":description" => json_encode($this->description),
+                ":date_added" => $this->date_added,
+                ":uploaded_by" => $this->uploaded_by,
+                ":permission" => $this->permission,
+                ":access" => $this->access,
+                ":groups" => $groups,
+                ":enabled" => $this->enabled
+            )
+        );
+
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
 		return true;
@@ -557,8 +609,7 @@ class file
 		return $dimensions;
 	}
 
-	
-	public static function is_animated_gif($path)
+    public static function is_animated_gif($path)
 	{
 		$handle = fopen($path, 'rb');
 		$line = fread($handle, filesize($path));
@@ -713,6 +764,29 @@ class file
                 //$image_alpha_mean = $im->getImageChannelMean(Imagick::CHANNEL_ALPHA);
                 $image_is_opaque = (    $image_alpha_range['minima']==0 &&
                                         $image_alpha_range['maxima']==0 );
+
+                // autorotate image based on EXIF data
+                $im_original = new Imagick($original);
+                $orientation = $im_original->getImageOrientation();
+                $im_original->clear();
+
+                switch($orientation)
+                {
+                    case imagick::ORIENTATION_BOTTOMRIGHT:
+                        $im->rotateimage(new ImagickPixel('transparent'), 180); // rotate 180 degrees
+                        break;
+
+                    case imagick::ORIENTATION_RIGHTTOP:
+                        $im->rotateimage(new ImagickPixel('transparent'), 90); // rotate 90 degrees CW
+                        break;
+
+                    case imagick::ORIENTATION_LEFTBOTTOM:
+                        $im->rotateimage(new ImagickPixel('transparent'), -90); // rotate 90 degrees CCW
+                        break;
+                }
+
+                // Now that it's auto-rotated, make sure the EXIF data is correct in case the EXIF gets saved with the image!
+                $im->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 
                 if(!$image_is_opaque)
                 {
