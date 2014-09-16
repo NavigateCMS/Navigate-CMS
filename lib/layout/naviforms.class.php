@@ -118,14 +118,20 @@ class naviforms
 		return $out;
 	}
 	
-	public function textfield($name, $value="", $width="400px", $action="")
+	public function textfield($name, $value="", $width="400px", $action="", $extra="")
 	{
         // may happen when converting a property type from (multilanguage) text to a (single) value
         if(is_array($value))
             $value = array_pop($value);
-
 		$value = htmlspecialchars($value);
-		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" style=" width: '.$width.';" onkeyup="'.$action.'" />';
+
+        if(!empty($width))
+            $extra .= ' style=" width: '.$width.';"';
+
+        if(!empty($action))
+            $extra .= ' onkeyup="'.$action.'"';
+
+		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
 		return $out;	
 	}
 	

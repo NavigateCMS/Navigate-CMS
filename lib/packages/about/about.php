@@ -169,6 +169,9 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.fyneworks.com/jquery/star-rating/" target="_blank">jQuery Star Rating Plugin v3.13</a><br />' ));									
 
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="https://github.com/yatt/jquery.base64/" target="_blank">jQuery.base64 v2013.03.26</a><br />' ));
+
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.eyecon.ro/colorpicker/#about" target="_blank">jQuery Color Picker v23.05.2009</a><br />' ));
 
