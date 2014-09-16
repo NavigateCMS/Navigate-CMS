@@ -170,7 +170,10 @@ function run()
                 $ntheme = new theme();
                 $ntheme->load($_REQUEST['theme']);
                 $website->theme = $ntheme->name;
-                $website->theme_options->style = array_shift(array_keys(get_object_vars($ntheme->styles)));
+                if(!empty($ntheme->styles))
+                    $website->theme_options->style = array_shift(array_keys(get_object_vars($ntheme->styles)));
+                else
+                    $website->theme_options->style = "";
 
                 try
                 {
