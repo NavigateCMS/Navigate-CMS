@@ -458,6 +458,7 @@ function navigate_tabform_submit(formNum)
 
 function navigate_tabform_language_selector(el)
 {
+    // identify language selected
     var code = $("#"+$(el).attr("for")).val();
 
     if(!code || code=="")
@@ -466,8 +467,17 @@ function navigate_tabform_language_selector(el)
     }
     else
     {
-        $(el).parents(".ui-tabs-panel").find("div[lang]").hide();
-        $(el).parents(".ui-tabs-panel").find("div[lang="+code+"]").show();
+        if($(el).parents(".ui-tabs-panel").length > 0)
+        {
+            $(el).parents(".ui-tabs-panel").find("div[lang]").hide();
+            $(el).parents(".ui-tabs-panel").find("div[lang="+code+"]").show();
+        }
+        else
+        {
+            // no tabs, try to find the nearest fields to show/hide
+            $(el).parent().parent().parent().find('div.navigate-form-row[lang]').hide();
+            $(el).parent().parent().parent().find('div.navigate-form-row[lang="'+code+'"]').show();
+        }
     }
 
     $(navigate_codemirror_instances).each(function() { this.refresh(); } );

@@ -129,9 +129,15 @@ class file
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
 
+        $this->title = array();
+        $this->description = array();
         foreach($website->languages as $language)
         {
             $lcode = $language['code'];
+
+            if(!isset($_REQUEST['title-'.$lcode]))
+                break;
+
             $this->title[$lcode]	= $_REQUEST['title-'.$lcode];
             $this->description[$lcode]	= $_REQUEST['description-'.$lcode];
         }
@@ -255,17 +261,17 @@ class file
                   ":fname" => $this->name,
                   ":size" => $this->size,
                   ":mime" => $this->mime,
-                  ":width" => $this->width,
-                  ":height" => $this->height,
-                  ":focalpoint" => $this->focalpoint,
+                  ":width" => intval($this->width),
+                  ":height" => intval($this->height),
+                  ":focalpoint" => (empty($this->focalpoint)? '' : $this->focalpoint),
                   ":title" => json_encode($this->title),
                   ":description" => json_encode($this->description),
                   ":date_added" => $this->date_added,
                   ":uploaded_by" => $this->uploaded_by,
-                  ":permission" => $this->permission,
-                  ":access" => $this->access,
+                  ":permission" => intval($this->permission),
+                  ":access" => intval($this->access),
                   ":groups" => $groups,
-                  ":enabled" => $this->enabled	
+                  ":enabled" => intval($this->enabled)
             )
         );
 			
@@ -471,9 +477,12 @@ class file
 	
 	public static function getMime($filename, $absolute_path='')
 	{
+        // basic mimetypes
         $mime_types = array(
 
+            // documents
             'txt' => array('text/plain', 'document'),
+            'epub' => array('application/epub+zip', 'document'),
 
             // images
             'png' => array('image/png', 'image'),
@@ -519,8 +528,11 @@ class file
             $mimetype = finfo_file($finfo, $absolute_path);
             finfo_close($finfo);
 
+            if(strpos($mimetype, ';')!==false)
+                $mimetype = substr($mimetype, 0, strpos($mimetype, ';'));
+
             $file_type = 'file';
-            foreach($mime_types as $ext => $mime_info)
+            foreach($mime_types as $extension => $mime_info)
             {
                 if(strpos($mimetype, $mime_info[0])!==false)
                 {

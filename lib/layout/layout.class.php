@@ -157,6 +157,7 @@ class layout
 
         $this->add_script_tag('lib/external/jquery-hotkeys/jquery.hotkeys.js');
         $this->add_script_tag('lib/external/jquery-caret/jquery.caret.js');
+        $this->add_script_tag('lib/external/jquery.base64/jquery.base64.js');
         $this->add_script_tag('lib/external/jquery-truncate/jquery.truncate.js');
 
 		$this->add_script_tag('lib/external/tinymce/jquery.tinymce.js');
@@ -675,6 +676,7 @@ class layout
                 270: "'.t(270, 'Auto-save in progress').'",
                 271: "'.t(271, 'Auto-save completed').'",
                 286: "'.t(286, 'Drag to reorder. Double click a item to set a caption.').'",
+                334: "'.t(334, 'Description').'",
                 368: "'.t(368, 'Theme').'",
                 389: "'.t(389, 'Backspace key protection').'",
                 401: "'.t(401, 'Your browser does not support HTML5').'",
@@ -810,6 +812,7 @@ class layout
 	public function navigate_media_browser()
 	{	
 		global $DB;
+        global $website;
 
         $naviforms = new naviforms();
 		
@@ -882,6 +885,7 @@ class layout
                 <li id="contextmenu-images-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
                 <li id="contextmenu-images-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
                 <li id="contextmenu-images-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
+                <li id="contextmenu-images-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
                 <li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
             </ul>
         ');
@@ -978,6 +982,45 @@ class layout
         $this->add_content('
             <div id="contextmenu-permissions-dialog" style="display: none;">
                 '.implode("\n", $permissions_dialog).'
+            </div>
+        ');
+
+
+
+        // title/description(alt) dialog
+        $description_dialog = array();
+
+        $website_languages_selector = $website->languages();
+        $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+        $description_dialog[] = '<div class="navigate-form-row">';
+        $description_dialog[] = '<label>'.t(63, 'Languages').'</label>';
+        $description_dialog[] = $naviforms->buttonset(
+                'files_texts_language_selector',
+                $website_languages_selector,
+                '',
+                "navigate_tabform_language_selector(this);"
+            );
+        $description_dialog[] = '</div>';
+
+        foreach($website->languages_list as $lang)
+        {
+            $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+
+            $description_dialog[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+            $description_dialog[] = '<label>'.t(67, 'Title').' '.$language_info.'</label>';
+            $description_dialog[] = $naviforms->textfield('contextmenu-description-dialog-title-'.$lang, "");
+            $description_dialog[] = '</div>';
+
+            $description_dialog[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+            $description_dialog[] = '<label>'.t(334, 'Description').' '.$language_info.'</label>';
+            $description_dialog[] = $naviforms->textfield('contextmenu-description-dialog-description-'.$lang, "");
+            $description_dialog[] = '</div>';
+        }
+
+        $this->add_content('
+            <div id="contextmenu-description-dialog" style="display: none;">
+                '.implode("\n", $description_dialog).'
             </div>
         ');
 

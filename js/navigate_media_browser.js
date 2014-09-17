@@ -162,8 +162,12 @@ function navigate_media_browser_refresh()
             $('#contextmenu-images').show();
 
             $("#contextmenu-images-focalpoint").hide();
+            $("#contextmenu-images-description").hide();
             if($(trigger).hasClass('draggable-image'))
+            {
                 $("#contextmenu-images-focalpoint").show();
+                $("#contextmenu-images-description").show();
+            }
 
             $("#contextmenu-images-download_link").off('click').on("click", function ()
             {
@@ -213,6 +217,12 @@ function navigate_media_browser_refresh()
             {
                 var itemId = $(trigger).attr('id').substring(5);
                 navigate_contextmenu_permissions_dialog(itemId, trigger);
+            });
+
+            $("#contextmenu-images-description").off("click").on("click", function()
+            {
+                var itemId = $(trigger).attr('id').substring(5);
+                navigate_contextmenu_description_dialog(itemId, trigger);
             });
 
             $("#contextmenu-images-focalpoint").off('click').on("click", function ()
@@ -304,6 +314,83 @@ function navigate_contextmenu_permissions_dialog(file_id, trigger)
 
                 navigate_permissions_dialog_webuser_groups_visibility(data.access);
             }
+        }
+    );
+}
+
+function navigate_contextmenu_description_dialog(file_id, trigger)
+{
+    var title = $.base64.decode($('#file-' + file_id).attr('image-title'));
+    var alt = $.base64.decode($('#file-' + file_id).attr('image-description'));
+    title = $.parseJSON(title);
+    alt = $.parseJSON(alt);
+
+    // empty current values
+    $('[id^=contextmenu-description-dialog-title-]').val('');
+    $('[id^=contextmenu-description-dialog-description-]').val('');
+
+    for(attr_lang in title)
+        $('#contextmenu-description-dialog-title-' + attr_lang).val(title[attr_lang]);
+
+    for(attr_lang in alt)
+        $('#contextmenu-description-dialog-description-' + attr_lang).val(alt[attr_lang]);
+
+    $('#contextmenu-description-dialog').dialog(
+        {
+            resizable: true,
+            width: 620,
+            height: 400,
+            modal: true,
+            title: navigate_lang_dictionary[334], // Description
+            buttons: [
+                {
+                    text: navigate_lang_dictionary[190], // Ok
+                    click: function()
+                    {
+                        var titles = {};
+                        var descriptions = {};
+
+                        $('[id^=contextmenu-description-dialog-title-]').each(function()
+                        {
+                            var flang = $(this).attr('id').replace('contextmenu-description-dialog-title-', '');
+                            titles[flang] = $(this).val();
+                        });
+
+                        $('[id^=contextmenu-description-dialog-description-]').each(function()
+                        {
+                            var flang = $(this).attr('id').replace('contextmenu-description-dialog-description-', '');
+                            descriptions[flang] = $(this).val();
+                        });
+
+                        $.ajax(
+                            {
+                                method: 'post',
+                                async: false,
+                                data: {
+                                    id: file_id,
+                                    titles: titles,
+                                    descriptions: descriptions
+                                },
+                                url: NAVIGATE_APP + '?fid=files&act=json&op=description&id=' + file_id,
+                                success: function(data)
+                                {
+                                    if(data=='true')
+                                    {
+                                        navigate_media_browser_reload();
+                                        $('#contextmenu-description-dialog').dialog("close");
+                                    }
+                                }
+                            });
+                    }
+                },
+                {
+                    text: navigate_lang_dictionary[58], // Cancel
+                    click: function()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
         }
     );
 }

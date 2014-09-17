@@ -132,6 +132,34 @@ function run()
                     ));
                 }
 			}
+            else if($_REQUEST['op']=='description')
+			{
+                $item->load($_REQUEST['id']);
+
+                if(!empty($_POST))
+                {
+                    $item->title = array();
+                    $item->description = array();
+
+                    foreach($website->languages as $language)
+                    {
+                        $lcode = $language['code'];
+
+                        if(!isset($_REQUEST['titles'][$lcode]))
+                            break;
+
+                        $item->title[$lcode]	= $_REQUEST['titles'][$lcode];
+                        $item->description[$lcode]	= $_REQUEST['descriptions'][$lcode];
+                    }
+
+                    $status = $item->save();
+                    echo json_encode($status);
+                }
+                else
+                {
+                    // do nothing
+                }
+			}
             else if($_REQUEST['op']=='focalpoint')
             {
                 $item->load($_REQUEST['id']);
@@ -1043,7 +1071,7 @@ function files_item_properties($item)
         $navibars->add_tab_content_row(array(
             '<label>'.t(63, 'Languages').'</label>',
             $naviforms->buttonset(
-                'files_texts_language_selector',
+                'files_description_language_selector',
                 $website_languages_selector,
                 '',
                 "navigate_tabform_language_selector(this);"
