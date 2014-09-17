@@ -119,7 +119,13 @@ function nvweb_webuser($vars=array())
             if(!empty($vars['email_field']) && !empty($email))
             {
                 $ok = false;
-                $wu_id = $DB->query_single('id', 'nv_webusers', ' email = '.protect($email));
+                $wu_id = $DB->query_single(
+                    'id',
+                    'nv_webusers',
+                    ' email = '.protect($email).'
+                      AND website = '.$website->id
+                );
+
                 if(!empty($wu_id))
                 {
                     $wu = new webuser();
