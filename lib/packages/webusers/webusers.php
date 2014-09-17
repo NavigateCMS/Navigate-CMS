@@ -396,11 +396,11 @@ function webusers_form($item)
 										));																				
 
 	$navibars->add_tab_content_row(array(	'<label>'.t(1, 'User').'</label>',
-											$naviforms->textfield('webuser-username', $item->username),
+											$naviforms->textfield('webuser-username', $item->username, false, false, 'autocomplete="off"'),
 										));																	
 
 	$navibars->add_tab_content_row(array(	'<label>'.t(2, 'Password').'</label>',
-											'<input type="password" name="webuser-password" value="" size="32" />',
+											'<input type="password" name="webuser-password" autocomplete="off" value="" size="32" />',
 											'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' ));
 											
 	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',

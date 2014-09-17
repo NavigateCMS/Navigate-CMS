@@ -333,8 +333,11 @@ function nvweb_properties_render($property, $vars)
 			break;
 			
 		case 'file':
-			$file = $DB->query_single('name', 'nv_files', ' id = '.protect($property->value).' AND website = '.$website->id);
-			$out = '<a href="'.NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment">'.$file.'</a>';	
+            if(!empty($property->value))
+            {
+			    $file = $DB->query_single('name', 'nv_files', ' id = '.protect($property->value).' AND website = '.$website->id);
+			    $out = '<a href="'.NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment">'.$file.'</a>';
+            }
 			break;
 			
 		case 'comment':
