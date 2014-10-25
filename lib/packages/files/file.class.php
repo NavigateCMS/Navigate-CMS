@@ -677,7 +677,8 @@ class file
 			}
 		}
 
-		if(empty($thumbnail) || isset($_GET['force']))	// so we have to create a new thumbnail
+        // do we have to create a new thumbnail
+		if(empty($thumbnail) || isset($_GET['force']) || !(file_exists($thumbnail) && filesize($thumbnail) > 0))
 		{
 			$thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;		
 
