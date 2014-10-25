@@ -467,7 +467,7 @@ class property
 		$e_properties = property::elements($template, $item_type);
 
 		// load multilanguage strings
-		$dictionary = webdictionary::load_element_strings('property-'.$element, $item_id);
+		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id);
 		
 		// load properties values
 		$DB->query('SELECT * FROM nv_properties_items 
