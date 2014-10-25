@@ -328,7 +328,25 @@ function nvweb_properties_render($property, $vars)
                 if($vars['return']=='url')
                     $out = $img_url;
                 else
+                {
+                    // retrieve additional info (title/alt), if available
+                    if(is_numeric($property->value))
+                    {
+                        $f = new file();
+                        $f->load($property->value);
+
+                        $ftitle = $f->title[$current['lang']];
+                        $falt = $f->description[$current['lang']];
+
+                        if(!empty($ftitle))
+                            $add .= ' title="'.$ftitle.'" ';
+
+                        if(!empty($falt))
+                            $add .= ' alt="'.$falt.'" ';
+                    }
+
                     $out = '<img class="'.$vars['class'].'" src="'.$img_url.'" '.$add.' />';
+                }
             }
 			break;
 			
