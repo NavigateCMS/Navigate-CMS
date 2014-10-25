@@ -221,7 +221,7 @@ function core_ts2date($timestamp, $time=false)
 	}
 	else
 	{
-		$date->setTimestamp($timestamp);
+		$date->setTimestamp(intval($timestamp));
 		$date->setTimezone(new DateTimeZone($user->timezone));
 	}
 	

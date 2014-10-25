@@ -1748,7 +1748,7 @@ input.naviforms-colorpicker-text
 .ui-menu
 {
     font-size: 10px;
-    color: #222;
+    color: #362b36;
     white-space: nowrap;
     border-radius: 8px;
 }
@@ -1759,13 +1759,28 @@ input.naviforms-colorpicker-text
     white-space: nowrap;
     text-overflow: ellipsis;
     text-decoration: none;
+    color: #362b36;
+    font-weight: normal;
 }
+
+.ui-menu .ui-menu-item.ui-state-focus > a
+{
+    color: #362b36;
+}
+
+.ui-menu .ui-menu-item.ui-state-active > a
+{
+    color: #fff;
+}
+
 
 .ui-menu-item.ui-state-focus
 {
     font-weight: normal;
     border-radius: 4px;
 }
+
+
 
 .qtip
 {

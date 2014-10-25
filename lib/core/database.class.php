@@ -111,7 +111,7 @@ class database
 				$fetch = PDO::FETCH_OBJ;		
 				break;	
 		}
-		
+
 		try
 		{
 			$statement = $this->db->query($sql);
@@ -145,7 +145,9 @@ class database
 	{
         if(!empty($order))
             $order = ' ORDER BY '.$order;
+
 		$stm = $this->db->query('SELECT '.$column.' FROM '.$table.' WHERE '.$where.$order.' LIMIT 1');
+
 		$stm->setFetchMode(PDO::FETCH_NUM);
 		$rs = $stm->fetchAll();
 		$stm->closeCursor();
