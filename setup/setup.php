@@ -1219,7 +1219,7 @@ function process()
                             $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8";
 
 						$db_test = new PDO($dsn, PDO_USERNAME, PDO_PASSWORD);
-						$db_test->exec('CREATE DATABASE `'.PDO_DATABASE.'` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
+						$db_test->exec('CREATE DATABASE IF NOT EXISTS `'.PDO_DATABASE.'` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
 						$db_test = NULL;
 					}
 				
