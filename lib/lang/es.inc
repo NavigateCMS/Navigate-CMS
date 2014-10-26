@@ -543,3 +543,4 @@
 542     # Ha ocurrido un problema suscribiendo tu correo electrónico al boletín.
 543     # Tipo de bloque
 544     # Grupos de bloques
+545     # Autor del contenido

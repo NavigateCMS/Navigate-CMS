@@ -13,8 +13,10 @@ class website
 	public $languages; // array('en' => array( 'language' => 'en', 'variant' => 'US', 'code' => 'en_US' => 'system_locale' => 'ENU_USA'), 'es_ES' => array(...), ...)
 	public $languages_published; // array ('en', 'es_ES')
 	public $date_format;
-	public $resize_uploaded_images;	// what to do with the uploaded images, 0 => keep original files, "yy" px => autoresize to yy pixels
-	public $tinymce_css;
+    public $tinymce_css;
+    public $resize_uploaded_images;	// what to do with the uploaded images, 0 => keep original files, "yy" px => autoresize to yy pixels
+    public $comments_enabled_for;
+    public $comments_default_moderator;
 	public $additional_scripts;
 	public $permission;	//  0 => public | 1 => private | 2 => only navigate users
 	public $block_types;
@@ -80,11 +82,13 @@ class website
 
 		$this->languages		    = mb_unserialize($main->languages);
 		$this->languages_published  = mb_unserialize($main->languages_published);
-		$this->date_format		= $main->date_format;
-		$this->tinymce_css		= $main->tinymce_css;
-		$this->resize_uploaded_images = $main->resize_uploaded_images;
+		$this->date_format		    = $main->date_format;
+		$this->tinymce_css		    = $main->tinymce_css;
+		$this->resize_uploaded_images       = $main->resize_uploaded_images;
+        $this->comments_enabled_for         = $main->comments_enabled_for;
+        $this->comments_default_moderator   = $main->comments_default_moderator;
 
-		$this->additional_scripts     = $main->additional_scripts;
+		$this->additional_scripts           = $main->additional_scripts;
 		$this->permission		= $main->permission;
 		$this->block_types		= mb_unserialize($main->block_types);
 		$this->homepage			= $main->homepage;	
@@ -133,6 +137,9 @@ class website
         $this->date_format		= $_REQUEST['date_format'];
 		$this->tinymce_css		= $_REQUEST['tinymce_css'];
 		$this->resize_uploaded_images = intval($_REQUEST['resize_uploaded_images']);
+
+        $this->comments_enabled_for         =   intval($_REQUEST['comments_enabled_for']);
+        $this->comments_default_moderator   =   $_REQUEST['comments_default_moderator'];
 
 		$this->additional_scripts     = $_REQUEST['additional_scripts'];
 		$this->homepage			= $_REQUEST['homepage'];		
@@ -336,22 +343,24 @@ class website
 		if(NAVIGATECMS_STATS)
 		{
 			global $user;
-			@core_curl_post('http://statistics.navigatecms.com/website/remove',
-							array(
-								'name' => $this->name,
-								'ip' => $_SERVER['SERVER_ADDR'],
-								'website_id' => $this->id,
-								'url' => $this->absolute_path(),
-								'folder' => $this->folder,
-								'homepage' => $this->homepage,
-								'theme' => $this->theme,								
-								'emails' => serialize($this->contact_emails),
-								'languages' => $this->languages_published,
-								'permission' => $this->permission,
-								'author_name' => $user->username,
-								'author_email' => $user->email,
-								'author_language' => $user->language
-							));
+			@core_curl_post(
+                'http://statistics.navigatecms.com/website/remove',
+                array(
+                    'name' => $this->name,
+                    'ip' => $_SERVER['SERVER_ADDR'],
+                    'website_id' => $this->id,
+                    'url' => $this->absolute_path(),
+                    'folder' => $this->folder,
+                    'homepage' => $this->homepage,
+                    'theme' => $this->theme,
+                    'emails' => serialize($this->contact_emails),
+                    'languages' => $this->languages_published,
+                    'permission' => $this->permission,
+                    'author_name' => $user->username,
+                    'author_email' => $user->email,
+                    'author_language' => $user->language
+                )
+            );
 		}		
 		
 		return $DB->get_affected_rows();		
@@ -361,48 +370,53 @@ class website
 	{
 		global $DB;
 			
-		$ok = $DB->execute(' INSERT INTO nv_websites
-								(	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
-									languages, languages_published,
-									aliases, date_format, tinymce_css, resize_uploaded_images,
-									additional_scripts, permission,
-									mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
-									homepage, default_timezone, metatag_description, metatag_keywords, metatags,
-									favicon, theme, theme_options
-								)
-								VALUES 
-								( 0,
-								  '.protect($this->name).',
-								  '.protect($this->protocol).',								  
-								  '.protect($this->subdomain).',
-								  '.protect($this->domain).',
-								  '.protect($this->folder).',								  
-								  '.protect($this->redirect_to).',
-								  '.protect($this->wrong_path_action).',
-								  '.protect($this->languages).',
-								  '.protect($this->languages_published).',
-								  '.protect(json_encode($this->aliases)).',
-								  '.protect($this->date_format).',
-								  '.protect($this->tinymce_css).',
-								  '.protect($this->resize_uploaded_images).',
-								  '.protect($this->additional_scripts).',
-								  '.protect($this->permission).',
-								  '.protect($this->mail_server).',
-								  '.protect($this->mail_port).',
-								  '.protect($this->mail_security).',
-								  '.protect($this->mail_user).',			
-								  '.protect($this->mail_address).',			
-								  '.protect($this->mail_password).',				
-								  '.protect(serialize($this->contact_emails)).',
-								  '.protect($this->homepage).',			
-								  '.protect($this->default_timezone).',	
-								  '.protect(json_encode($this->metatag_description)).',
-								  '.protect(json_encode($this->metatag_keywords)).',
-								  '.protect(json_encode($this->metatags)).',
-								  '.protect($this->favicon).',
-								  '.protect($this->theme).',
-								  '.protect(json_encode($this->theme_options)).'				  
-								)');
+		$ok = $DB->execute('
+		    INSERT INTO nv_websites
+            (	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
+                languages, languages_published,
+                aliases, date_format, tinymce_css, resize_uploaded_images,
+                comments_enabled_for, comments_default_moderator,
+                additional_scripts, permission,
+                mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
+                homepage, default_timezone, metatag_description, metatag_keywords, metatags,
+                favicon, theme, theme_options
+            )
+            VALUES
+            ( 0,
+              '.protect($this->name).',
+              '.protect($this->protocol).',
+              '.protect($this->subdomain).',
+              '.protect($this->domain).',
+              '.protect($this->folder).',
+              '.protect($this->redirect_to).',
+              '.protect($this->wrong_path_action).',
+              '.protect($this->languages).',
+              '.protect($this->languages_published).',
+              '.protect(json_encode($this->aliases)).',
+              '.protect($this->date_format).',
+              '.protect($this->tinymce_css).',
+              '.protect($this->resize_uploaded_images).',
+              '.protect($this->comments_enabled_for).',
+              '.protect($this->comments_default_moderator).',
+              '.protect($this->additional_scripts).',
+              '.protect($this->permission).',
+              '.protect($this->mail_server).',
+              '.protect($this->mail_port).',
+              '.protect($this->mail_security).',
+              '.protect($this->mail_user).',
+              '.protect($this->mail_address).',
+              '.protect($this->mail_password).',
+              '.protect(serialize($this->contact_emails)).',
+              '.protect($this->homepage).',
+              '.protect($this->default_timezone).',
+              '.protect(json_encode($this->metatag_description)).',
+              '.protect(json_encode($this->metatag_keywords)).',
+              '.protect(json_encode($this->metatags)).',
+              '.protect($this->favicon).',
+              '.protect($this->theme).',
+              '.protect(json_encode($this->theme_options)).'
+            )'
+        );
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -421,22 +435,24 @@ class website
 		if(NAVIGATECMS_STATS)
 		{
 			global $user;
-			@core_curl_post('http://statistics.navigatecms.com/website/new',
-							array(
-								'name' => $this->name,
-								'ip' => $_SERVER['SERVER_ADDR'],
-								'website_id' => $this->id,
-								'url' => $this->absolute_path(),
-								'folder' => $this->folder,
-								'homepage' => $this->homepage,
-								'theme' => $this->theme,
-								'emails' => serialize($this->contact_emails),
-								'languages' => $this->languages_published,
-								'permission' => $this->permission,
-								'author_name' => $user->username,
-								'author_email' => $user->email,
-								'author_language' => $user->language
-							));
+			@core_curl_post(
+                'http://statistics.navigatecms.com/website/new',
+                array(
+                    'name' => $this->name,
+                    'ip' => $_SERVER['SERVER_ADDR'],
+                    'website_id' => $this->id,
+                    'url' => $this->absolute_path(),
+                    'folder' => $this->folder,
+                    'homepage' => $this->homepage,
+                    'theme' => $this->theme,
+                    'emails' => serialize($this->contact_emails),
+                    'languages' => $this->languages_published,
+                    'permission' => $this->permission,
+                    'author_name' => $user->username,
+                    'author_email' => $user->email,
+                    'author_language' => $user->language
+                )
+            );
 		}
 		
 		return true;
@@ -468,6 +484,8 @@ class website
                     date_format = ?,
                     tinymce_css = ?,
                     resize_uploaded_images = ?,
+                    comments_enabled_for = ?,
+					comments_default_moderator = ?,
                     additional_scripts = ?,
                     permission = ?,
                     mail_server = ?,
@@ -485,7 +503,7 @@ class website
                     favicon = ?,
                     theme = ?,
                     theme_options = ?
-            WHERE id = '.$this->id,
+                WHERE id = '.$this->id,
             array(
                 $this->name,
                 $this->protocol,
@@ -500,6 +518,8 @@ class website
                 $this->date_format,
                 $this->tinymce_css,
                 $this->resize_uploaded_images,
+                $this->comments_enabled_for,
+                $this->comments_default_moderator,
                 $this->additional_scripts,
                 $this->permission,
                 $this->mail_server,
@@ -537,22 +557,24 @@ class website
 		if(NAVIGATECMS_STATS)
 		{
 			global $user;
-			@core_curl_post('http://statistics.navigatecms.com/website/update',
-							array(
-								'ip' => $_SERVER['SERVER_ADDR'],
-								'website_id' => $this->id,
-								'name' => $this->name,
-								'url' => $this->absolute_path(),
-								'folder' => $this->folder,
-								'homepage' => $this->homepage,
-								'theme' => $this->theme,
-								'emails' => serialize($this->contact_emails),
-								'languages' => $this->languages_published,
-								'permission' => $this->permission,
-								'author_name' => $user->username,
-								'author_email' => $user->email,
-								'author_language' => $user->language
-							));
+			@core_curl_post(
+                'http://statistics.navigatecms.com/website/update',
+                array(
+                    'ip' => $_SERVER['SERVER_ADDR'],
+                    'website_id' => $this->id,
+                    'name' => $this->name,
+                    'url' => $this->absolute_path(),
+                    'folder' => $this->folder,
+                    'homepage' => $this->homepage,
+                    'theme' => $this->theme,
+                    'emails' => serialize($this->contact_emails),
+                    'languages' => $this->languages_published,
+                    'permission' => $this->permission,
+                    'author_name' => $user->username,
+                    'author_email' => $user->email,
+                    'author_language' => $user->language
+                )
+            );
 		}		
 		
 		return true;

@@ -117,10 +117,14 @@ class item
 
 		$this->permission		= intval($_REQUEST['permission']);	
 
-		$this->comments_enabled_to 	= intval($_REQUEST['item-comments_enabled_to']);
-		$this->comments_moderator 	= intval($_REQUEST['item-comments_moderator']);
-        if(empty($_REQUEST['item-comments_moderator-text']))
-            $this->comments_moderator   =   0;
+        // if comment settings were not visible, keep the original values
+        if(isset($_REQUEST['item-comments_enabled_to']))
+        {
+            $this->comments_enabled_to 	= intval($_REQUEST['item-comments_enabled_to']);
+            $this->comments_moderator 	= intval($_REQUEST['item-comments_moderator']);
+            if(empty($_REQUEST['item-comments_moderator-text']))
+                $this->comments_moderator   =   0;
+        }
 
 		// language strings and options
 		$this->dictionary = array();
@@ -236,6 +240,15 @@ class item
 		
 		$this->date_created  = core_time();		
 		$this->date_modified = core_time();
+
+        if(empty($this->comments_enabled_to))
+        {
+            // apply default comment settings from website properties
+            $this->comments_enabled_to = $website->comments_enabled_for;
+            $this->comments_moderator = $website->comments_default_moderator;
+            if($this->comments_moderator == 'c_author')
+                $this->comments_moderator = $this->author;
+        }
 
         $groups = '';
         if(is_array($this->groups))

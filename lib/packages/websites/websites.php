@@ -706,110 +706,240 @@ function websites_form($item)
 
 	$navibars->add_tab(t(9, "Content"));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(50, 'Date format').'</label>',
-											$naviforms->selectfield('date_format',
-												array(
-														0 => 'd/m/Y',
-														1 => 'd-m-Y',
-														2 => 'm/d/Y',
-														3 => 'm-d-Y',
-														4 => 'Y-m-d',
-														5 => 'Y/m/d'
-													),
-												array(
-														0 => date('d/m/Y'),
-														1 => date('d-m-Y'),
-														2 => date('m/d/Y'),
-														3 => date('m-d-Y'),
-														4 => date('Y-m-d'),
-														5 => date('Y/m/d')
-													),
-												$item->date_format
-											)
-										)
-									);
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(50, 'Date format').'</label>',
+			$naviforms->selectfield(
+                'date_format',
+                array(
+                    0 => 'd/m/Y',
+                    1 => 'd-m-Y',
+                    2 => 'm/d/Y',
+                    3 => 'm-d-Y',
+                    4 => 'Y-m-d',
+                    5 => 'Y/m/d'
+                ),
+                array(
+                    0 => date('d/m/Y'),
+                    1 => date('d-m-Y'),
+                    2 => date('m/d/Y'),
+                    3 => date('m-d-Y'),
+                    4 => date('Y-m-d'),
+                    5 => date('Y/m/d')
+                ),
+                $item->date_format
+            )
+        )
+    );
 
 	$timezones = property::timezones();
 
 	if(empty($item->default_timezone))
 		$item->default_timezone = date_default_timezone_get();
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(207, 'Default timezone').'</label>',
-											$naviforms->selectfield("default_timezone", array_keys($timezones), array_values($timezones), $item->default_timezone)
-										)
-								   );
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(207, 'Default timezone').'</label>',
+			$naviforms->selectfield("default_timezone", array_keys($timezones), array_values($timezones), $item->default_timezone)
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(433, 'Resize uploaded images').'</label>',
-											$naviforms->selectfield('resize_uploaded_images',
-												array(
-														0 => 0,
-														1 => 600,
-														2 => 800,
-														3 => 960,
-														4 => 1200,
-														5 => 1600,
-														6 => 2000
-													),
-												array(
-														0 => t(434, 'Keep original file'),
-														1 => '600 px',
-														2 => '800 px',
-														3 => '960 px',
-														4 => '1200 px',
-														5 => '1600 px',
-														6 => '2000 px'
-													),
-												$item->resize_uploaded_images
-											),
-											'<span class="navigate-form-row-info">'.t(435, 'Maximum width or height').'</span>'
-										)
-									);	
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(433, 'Resize uploaded images').'</label>',
+			$naviforms->selectfield('resize_uploaded_images',
+                array(
+                    0 => 0,
+                    1 => 600,
+                    2 => 800,
+                    3 => 960,
+                    4 => 1200,
+                    5 => 1600,
+                    6 => 2000
+                ),
+                array(
+                    0 => t(434, 'Keep original file'),
+                    1 => '600 px',
+                    2 => '800 px',
+                    3 => '960 px',
+                    4 => '1200 px',
+                    5 => '1600 px',
+                    6 => '2000 px'
+                ),
+                $item->resize_uploaded_images
+            ),
+            '<span class="navigate-form-row-info">'.t(435, 'Maximum width or height').'</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>tinyMCE CSS</label>',
-											$naviforms->textfield('tinymce_css', $item->tinymce_css),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /css/style.content.css</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>tinyMCE CSS</label>',
+			$naviforms->textfield('tinymce_css', $item->tinymce_css),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /css/style.content.css</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(328, 'Favicon').'</label>',
-											$naviforms->dropbox('website-favicon', $item->favicon) ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(328, 'Favicon').'</label>',
+			$naviforms->dropbox('website-favicon', $item->favicon)
+        )
+    );
 
+    // default comment options for elements
+
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(252, 'Comments enabled for').'</label>',
+            $naviforms->selectfield('comments_enabled_for',
+                array(
+                    0 => 0,
+                    1 => 1,
+                    2 => 2
+                ),
+                array(
+                    0 => t(253, 'Nobody'),
+                    1 => t(24, 'Registered users'),
+                    2 => t(254, 'Everyone')
+                ),
+                $item->comments_enabled_for
+            )
+        )
+    );
+
+    $webuser_name = '';
+    if($item->comments_default_moderator=="c_author")
+        $webuser_name = t(545, 'Content author');
+    else if(!empty($item->comments_default_moderator))
+        $webuser_name = $DB->query_single('username', 'nv_users', ' id = '.intval($item->comments_default_moderator));
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(255, 'Moderator').'</label>',
+            $naviforms->textfield('comments_default_moderator-text', $webuser_name),
+            $naviforms->hidden('comments_default_moderator', $item->comments_default_moderator),
+            '<span style="display: none;" id="comments_default_moderator-helper">'.t(535, "Find user by name").'</span>',
+            '<div class="subcomment"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(256, 'Leave blank to accept all comments').'</div>'
+        )
+    );
+
+    $layout->add_script('
+        // comments moderator autocomplete
+        $("#comments_default_moderator-text").select2(
+        {
+            placeholder: $("#comments_default_moderator-helper").text(),
+            minimumInputLength: 0,
+            ajax: {
+                url: "?fid=items&act=json_find_user",
+                dataType: "json",
+                quietMillis: 100,
+                data: function (term, page)
+                {   // page is the one-based page number tracked by Select2
+                    return {
+                        username: term,
+                        nd: new Date().getTime(),
+                        page_limit: 30, // page size
+                        page: page // page number
+                    };
+                },
+                results: function (data, page)
+                {
+                    data.rows.unshift({id: "c_author", username: "{'.t(545, 'Content author').'}" });
+                    var more = (page * 5) < data.total; // whether or not there are more results available
+                    // notice we return the value of more so Select2 knows if more results can be loaded
+                    return {results: data.rows, more: more};
+                }
+            },
+            formatResult: function(row) { return row.username; },
+            formatSelection: function(row) { return row.username + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
+            triggerChange: true,
+            allowClear: true,
+            initSelection : function (element, callback)
+            {
+                var data = {
+                    id: $("#comments_default_moderator").val(),
+                    username: element.val()
+                };
+
+                callback(data);
+            }
+        });
+
+        $("#comments_default_moderator-text").on("change", function(e)
+        {
+            $("#comments_default_moderator").val(e.val);
+        });
+    ');
+
+
+    /* TAB EMAIL */
 
 	$navibars->add_tab(t(44, "E-Mail"));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(231, 'Server').'</label>',
-											$naviforms->textfield('mail_server', $item->mail_server),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' localhost, mail.yourdomain.com</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(231, 'Server').'</label>',
+			$naviforms->textfield('mail_server', $item->mail_server),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' localhost, mail.yourdomain.com</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(232, 'Port').'</label>',
-											$naviforms->textfield('mail_port', $item->mail_port),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' 25</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(232, 'Port').'</label>',
+			$naviforms->textfield('mail_port', $item->mail_port),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' 25</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(427, 'TLS/SSL required').'</label>',
-											$naviforms->checkbox('mail_security', $item->mail_security)
-                                        )
-                                   );
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(427, 'TLS/SSL required').'</label>',
+			$naviforms->checkbox('mail_security', $item->mail_security)
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(1, 'User').'</label>',
-											$naviforms->textfield('mail_user', $item->mail_user),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' web@yourdomain.com</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(1, 'User').'</label>',
+			$naviforms->textfield('mail_user', $item->mail_user),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' web@yourdomain.com</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(233, 'Address').'</label>',
-											$naviforms->textfield('mail_address', $item->mail_address),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' web@yourdomain.com</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(233, 'Address').'</label>',
+			$naviforms->textfield('mail_address', $item->mail_address),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' web@yourdomain.com</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(2, 'Password').'</label>',
-											'<input type="password" name="mail_password" id="mail_password"  value="" size="32" />',
-											'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(2, 'Password').'</label>',
+			'<input type="password" name="mail_password" id="mail_password"  value="" size="32" />',
+			'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>'
+        )
+    );
 
 
 	if(empty($item->contact_emails))	$item->contact_emails = array();
-	$navibars->add_tab_content_row(array(	'<label>'.t(263, 'Support E-Mails').'</label>',
-											$naviforms->textarea('contact_emails', implode("\n", $item->contact_emails)),
-											'<span class="navigate-form-row-info">'.t(264, "One entry per line").'</span>'
-										)
-								   );
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<button id="mail_test"><img src="'.NAVIGATE_URL.'/img/icons/silk/email_go.png" align="absmiddle" /> '.t(390, "Test").'</button>'));
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(263, 'Support E-Mails').'</label>',
+			$naviforms->textarea('contact_emails', implode("\n", $item->contact_emails)),
+			'<span class="navigate-form-row-info">'.t(264, "One entry per line").'</span>'
+        )
+    );
+
+	$navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+			'<button id="mail_test"><img src="'.NAVIGATE_URL.'/img/icons/silk/email_go.png" align="absmiddle" /> '.t(390, "Test").'</button>'
+        )
+    );
 
 	$layout->add_script('
 		$("#mail_test").bind("click", function()
@@ -925,9 +1055,12 @@ function websites_form($item)
             $website_languages_selector = $item->languages();
             $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
 
-            $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-                $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
-            ));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(63, 'Languages').'</label>',
+                    $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+                )
+            );
         }
 
         // common property: style
