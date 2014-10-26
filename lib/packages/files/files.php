@@ -1176,6 +1176,20 @@ function files_media_browser($limit = 50, $offset = 0)
 
     // TODO: check user access permission to different websites
 
+    // access & permissions string helpers
+    $access = array(
+        0 => '', //<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
+        1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
+        2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
+        3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
+    );
+
+    $permissions = array(
+        0 => '', //'<img src="img/icons/silk/world.png" align="absmiddle" title="'.t(69, 'Published').'" />',
+        1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" title="'.t(70, 'Private').'" />',
+        2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" title="'.t(81, 'Hidden').'" />'
+    );
+
 	$wid = $_REQUEST['website'];
     $ws = new website();
     if(empty($wid))
@@ -1272,6 +1286,7 @@ function files_media_browser($limit = 50, $offset = 0)
 			               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 			               download-link="'.$download_link.'"
 			               id="file-'.$f->id.'">
+			               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 			               <img src="'.$icon.'" title="'.$f->name.'" />
                       </div>';
 		}

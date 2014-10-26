@@ -118,7 +118,7 @@ function navigate_media_browser()
 function navigate_media_browser_refresh()
 {
 	// drag & drop support
-	$("#navigate_media_browser_items div").not("#file-more").not("#file-0").draggable(
+	$("#navigate_media_browser_items > div").not("#file-more").not("#file-0").draggable(
 	{ 
 		revert: true,  
 		scroll: true, 
@@ -129,8 +129,13 @@ function navigate_media_browser_refresh()
 		iframeFix: true,
 		start: function(event, ui)
 		{
+            $(ui.helper).find('div.file-access-icons').hide();
 			$(ui.helper).addClass("navigate_media_browser_clone");
-		}
+		},
+        stop: function(event, ui)
+        {
+            $(ui.helper).find('div.file-access-icons').show();
+        }
 	});
 
     // images only: .find("div[mediatype='image']") [not needed right now]

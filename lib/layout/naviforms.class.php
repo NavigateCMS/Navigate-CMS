@@ -599,6 +599,7 @@ class naviforms
 						var file_id = $(ui.draggable).attr("id").substring(5);
 						$("#'.$name.'").val(file_id);
 						$(this).html($(ui.draggable).html());
+						$(this).find("div.file-access-icons").remove();
 						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
 					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
 					}

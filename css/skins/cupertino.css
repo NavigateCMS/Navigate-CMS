@@ -968,11 +968,11 @@ table.treeTable
 	width: 100%;
 	margin-top: 3px;
 	height: 82px;
-	overflow: auto;
+	overflow: visible;
 	clear: both;
 }
 
-#navigate_media_browser_items div
+#navigate_media_browser_items > div
 {
 	height: 80px;
 	width: 80px;
@@ -986,7 +986,7 @@ table.treeTable
     cursor: default;
 }
 
-#navigate_media_browser_items div img
+#navigate_media_browser_items > div > img
 {
 	clear: both;
 	margin-left: auto;
@@ -994,6 +994,24 @@ table.treeTable
 	margin-top: 2px;	
 	display: block;
 }
+
+#navigate_media_browser_items div.file-access-icons
+{
+    position: absolute;
+    margin-top: 0px;
+    margin-left: 0px;
+    width: 78px;
+    height: 24px;
+    text-align: right;
+}
+
+#navigate_media_browser_items div.file-access-icons img
+{
+    /*float: right;*/
+    opacity: .75;
+    margin: 1px;
+}
+
 
 #navigate_media_browser_folder_path
 {
@@ -1127,12 +1145,12 @@ label.ui-state-active #navigate_media_browser_folder_path
     border-radius: 0 4px 4px 4px;
 }
 
-#navigate_media_browser_items div
+#navigate_media_browser_items > div
 {
     opacity: 1;
 }
 
-#navigate_media_browser_items div:hover
+#navigate_media_browser_items > div:hover
 {
     opacity: 0.75;
 }
