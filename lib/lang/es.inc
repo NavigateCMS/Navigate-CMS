@@ -496,7 +496,7 @@
 495     # Por favor introduzca un mínimo de {number} caracteres
 496     # Sólo puede seleccionar {number} elementos
 497     # ¿Realmente desea eliminar los datos?
-498     # Script de estadísticas
+498     # Scripts adicionales
 499     # Abrir
 500     # Renombrar
 501     # Anterior

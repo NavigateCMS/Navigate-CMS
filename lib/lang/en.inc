@@ -496,7 +496,7 @@
 495     # Please enter at least {number} characters
 496     # You can only select {number} items
 497     # Do you really want to erase this data?
-498     # Statistics script
+498     # Additional scripts
 499     # Open
 500     # Rename
 501     # Previous

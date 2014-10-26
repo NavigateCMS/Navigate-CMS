@@ -15,7 +15,7 @@ class website
 	public $date_format;
 	public $resize_uploaded_images;	// what to do with the uploaded images, 0 => keep original files, "yy" px => autoresize to yy pixels
 	public $tinymce_css;
-	public $statistics_script;
+	public $additional_scripts;
 	public $permission;	//  0 => public | 1 => private | 2 => only navigate users
 	public $block_types;
 	public $homepage;
@@ -84,7 +84,7 @@ class website
 		$this->tinymce_css		= $main->tinymce_css;
 		$this->resize_uploaded_images = $main->resize_uploaded_images;
 
-		$this->statistics_script= $main->statistics_script;
+		$this->additional_scripts     = $main->additional_scripts;
 		$this->permission		= $main->permission;
 		$this->block_types		= mb_unserialize($main->block_types);
 		$this->homepage			= $main->homepage;	
@@ -134,7 +134,7 @@ class website
 		$this->tinymce_css		= $_REQUEST['tinymce_css'];
 		$this->resize_uploaded_images = intval($_REQUEST['resize_uploaded_images']);
 
-		$this->statistics_script= $_REQUEST['statistics_script'];
+		$this->additional_scripts     = $_REQUEST['additional_scripts'];
 		$this->homepage			= $_REQUEST['homepage'];		
 		$this->permission		= intval($_REQUEST['permission']);
 		$this->default_timezone	= $_REQUEST['default_timezone'];
@@ -365,7 +365,7 @@ class website
 								(	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
 									languages, languages_published,
 									aliases, date_format, tinymce_css, resize_uploaded_images,
-									statistics_script, permission,
+									additional_scripts, permission,
 									mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
 									homepage, default_timezone, metatag_description, metatag_keywords, metatags,
 									favicon, theme, theme_options
@@ -385,7 +385,7 @@ class website
 								  '.protect($this->date_format).',
 								  '.protect($this->tinymce_css).',
 								  '.protect($this->resize_uploaded_images).',
-								  '.protect($this->statistics_script).',
+								  '.protect($this->additional_scripts).',
 								  '.protect($this->permission).',
 								  '.protect($this->mail_server).',
 								  '.protect($this->mail_port).',
@@ -468,7 +468,7 @@ class website
                     date_format = ?,
                     tinymce_css = ?,
                     resize_uploaded_images = ?,
-                    statistics_script = ?,
+                    additional_scripts = ?,
                     permission = ?,
                     mail_server = ?,
                     mail_port = ?,
@@ -500,7 +500,7 @@ class website
                 $this->date_format,
                 $this->tinymce_css,
                 $this->resize_uploaded_images,
-                $this->statistics_script,
+                $this->additional_scripts,
                 $this->permission,
                 $this->mail_server,
                 $this->mail_port,

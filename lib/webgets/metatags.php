@@ -122,8 +122,8 @@ function nvweb_metatags($vars=array())
 	$out = '<title>'.$website->name.$section.'</title>'."\n";
 	$out.= $metatags;
 		
-	if(!empty($website->statistics_script) && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
-		nvweb_after_body('html', $website->statistics_script);
+	if(!empty($website->additional_scripts) && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+		nvweb_after_body('html', $website->additional_scripts);
 
     $events->trigger(
         'metatags',

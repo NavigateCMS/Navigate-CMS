@@ -496,7 +496,7 @@
 495     # Bitte gib mindestens {number} Zeichen ein
 496     # Du kannst nur {number} Elemente auswählen
 497     # Willst du diese Daten wirklich löschen?
-498     # Statistik-Script
+498     # Zusätzliche Script
 499     # Öffnen
 500     # Umbenennen
 501     # Vorheriges

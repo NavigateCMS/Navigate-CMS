@@ -905,8 +905,8 @@ function websites_form($item)
 
     $navibars->add_tab_content_row(
         array(
-            '<label>'.t(498, 'Statistics script').'</label>',
-            $naviforms->scriptarea('statistics_script', $item->statistics_script, 'js', ' width: 600px; height: 250px; ' ),
+            '<label>'.t(498, 'Additional scripts').'</label>',
+            $naviforms->scriptarea('additional_scripts', $item->additional_scripts, 'js', ' width: 600px; height: 250px; ' ),
             '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript"&gt;...&lt;/script&gt;</div>'
         )
     );
