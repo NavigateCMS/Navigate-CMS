@@ -56,6 +56,7 @@
 #navigate_liveedit_bar img
 {
     vertical-align: middle;
+    display: inline-block;
 }
 
 #navigate_liveedit_bar div#navigate_liveedit_bar_information
