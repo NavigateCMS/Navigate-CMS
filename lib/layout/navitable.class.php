@@ -19,6 +19,7 @@ class navitable
     public $disable_select;
     public $after_select_callback;
     public $after_right_click_col;
+    public $default_fid;
 
 	public function __construct($id="")	
 	{
@@ -34,6 +35,7 @@ class navitable
         $this->load_callback = '';
         $this->after_select_callback = '';
         $this->after_right_click_col = '';
+        $this->default_fid = $_REQUEST['fid'];
 	}
 	
 	public function setURL($url)
@@ -75,6 +77,11 @@ class navitable
 	{
         $this->data_index = $name;
 
+    }
+
+    public function setDefaultFID($fid)
+    {
+        $this->default_fid = $fid;
     }
 
 	public function sortBy($name, $order = 'asc')
@@ -359,7 +366,7 @@ class navitable
 	{
 		global $layout;
 		global $user;
-		
+
 		$html = array();
 
 		$html[] = '<table id="'.$this->id.'"></table>';
@@ -460,7 +467,7 @@ class navitable
 													searchtext:"'.t(41, 'Search').' ",											
 													addfunc: function()
 													{
-														window.location.href="?fid='.$_REQUEST['fid'].'&act=2";
+														window.location.href="?fid='.$this->default_fid.'&act=2";
 													},
 													delfunc: function(rownums)
 													{
@@ -500,7 +507,7 @@ class navitable
                                                                                 $("#'.$this->id.'").trigger("reloadGrid");
                                                                             },
                                                                             type: "post",
-                                                                            url: "?fid='.$_REQUEST['fid'].'&act=1&oper=del"
+                                                                            url: "?fid='.$this->default_fid.'&act=1&oper=del"
                                                                         });
 																	}
 																}
@@ -627,7 +634,7 @@ class navitable
 		
 		$html[] = 'function navitable_quicksearch(text)';
 		$html[] = '{';
-		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "?fid='.$_REQUEST['fid'].'&act=1&_search=true&quicksearch=" + text });';
+		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=" + text });';
 		$html[] = '		$("#'.$this->id.'").trigger("reloadGrid");';
 		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$this->url.'" });';	
 		$html[] = '}';
@@ -692,7 +699,7 @@ class navitable
                             open: function(event, ui)
                             {
                                 var container = this;
-                                $.getJSON('?fid=".$_REQUEST['fid']."&act=grid_notes_comments&id=' + row_id, function(data)
+                                $.getJSON('?fid=".$this->default_fid."&act=grid_notes_comments&id=' + row_id, function(data)
                                 {
                                     $(container).html('".
                                         '<div><form action="#" onsubmit="return false;" method="post"><span class=\"grid_note_username\">'.$user->username.'</span><button class="grid_note_save">'.t(34, 'Save').'</button><br /><textarea id="grid_note_comment" class="grid_note_comment"></textarea></form></div>'
@@ -719,7 +726,7 @@ class navitable
                                         var grid_note = $(this).parent();
 
                                         $.get(
-                                            '?fid=".$_REQUEST['fid']."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'),
+                                            '?fid=".$this->default_fid."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'),
                                             function(result)
                                             {
                                                 if(result=='true')
@@ -735,7 +742,7 @@ class navitable
                                         icons: { primary: 'ui-icon-disk' }
                                     }).on('click', function()
                                     {
-                                        $.post('?fid=".$_REQUEST['fid']."&act=grid_notes_add_comment',
+                                        $.post('?fid=".$this->default_fid."&act=grid_notes_add_comment',
                                         {
                                             comment: $(container).find('.grid_note_comment').val(),
                                             id: row_id,
@@ -806,7 +813,7 @@ class navitable
 			            // now save this preference
 			            $.ajax({
 			               type: 'POST',
-			               url: NAVIGATE_APP + '?fid=' + navigate_query_parameter('fid') + '&act=grid_note_background',
+			               url: NAVIGATE_APP + '?fid=".$this->default_fid."&act=grid_note_background',
 			               data: {
 			                   id: $(this).attr('data-item-id'),
 			                   background: new_background
