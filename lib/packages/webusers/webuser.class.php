@@ -42,10 +42,14 @@ class webuser
 		global $DB;
 		global $session;
         global $events;
-		
-		if($DB->query('SELECT * FROM nv_webusers WHERE cookie_hash = '.protect($hash)))
+
+        $ok = $DB->query('SELECT * FROM nv_webusers WHERE cookie_hash = '.protect($hash));
+        if($ok)
+            $data = $DB->result();
+
+        if(!empty($data))
 		{
-			$data = $DB->result();
+
 			$this->load_from_resultset($data);
 			$session['webuser'] = $this->id;
 
@@ -61,6 +65,7 @@ class webuser
                 );
             }
 		}
+
 	}
 
     public function load_by_profile($network, $network_user_id)
