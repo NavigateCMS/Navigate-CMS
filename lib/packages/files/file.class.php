@@ -767,10 +767,11 @@ class file
             $handle->png_compression = 9;
             $handle->process(dirname($thumbnail));
             rename($handle->file_dst_pathname, $thumbnail);
+            clearstatcache(true, $thumbnail);
 
             // try to recompress the png thumbnail file to achieve the minimum file size,
             // only if some extra apps are available
-            if(extension_loaded('imagick'))
+            if(extension_loaded('imagick') && file_exists($thumbnail))
             {
                 $im = new Imagick($thumbnail);
                 $image_alpha_range = $im->getImageChannelRange(Imagick::CHANNEL_ALPHA);
