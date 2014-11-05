@@ -91,11 +91,21 @@ try
 	else if(!empty($_COOKIE["webuser"]))
 		$webuser->load_by_hash($_COOKIE['webuser']);
 
+    // if the webuser was removed, it doesn't exist anymore,
+    //  $session/$_COOKIE may have obsolete data, force a log out
+    if(empty($webuser->id)  && (!empty($session['webuser']) || !empty($_COOKIE['webuser'])))
+    {
+        $webuser->unset_cookie();
+        unset($webuser);
+        $webuser = new webuser();
+    }
+
     // check if the webuser wants to sign out
     if(isset($_REQUEST['webuser_signout']))
     {
         $webuser->unset_cookie();
         unset($webuser);
+        $webuser = new webuser();
     }
 
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
