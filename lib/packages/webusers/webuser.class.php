@@ -399,10 +399,11 @@ class webuser
             $extra = serialize($extra);
 
         // the profile exists?
-        $swuser = $DB->query_single(    'webuser',
-                                        'nv_webuser_profiles',
-                                        ' network = '.protect($network).' AND '.
-                                        ' network_user_id = '.protect($network_user_id)
+        $swuser = $DB->query_single(
+            'webuser',
+            'nv_webuser_profiles',
+            ' network = '.protect($network).' AND '.
+            ' network_user_id = '.protect($network_user_id)
         );
 
         // the webuser already exists/is logged in?

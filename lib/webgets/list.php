@@ -89,8 +89,16 @@ function nvweb_list($vars=array())
     }
 
 	// retrieve entries
-	if(empty($_GET['page'])) $_GET['page'] = 1;
+
+    // calculate the offset of the first element to retrieve
+    // Warning: the paginator applies on all paginated lists on a page
+	if(empty($_GET['page']))
+        $_GET['page'] = 1;
 	$offset = intval($_GET['page'] - 1) * $vars['items'];
+
+    // this list does not use paginator, so offset must be always zero
+    if(!isset($vars['paginator']) || $vars['paginator']=='false')
+        $offset = 0;
 
 	$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
 
@@ -604,6 +612,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
         case 'block':
             switch($tag['attributes']['value'])
             {
+                case 'id':
+                    $out = $item->id;
+                    break;
+
                 case 'title':
                     $out = $item->dictionary[$current['lang']]['title'];
 
@@ -617,7 +629,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
                 case 'url':
                 case 'path':
-                    $out = nvweb_prepare_link(nvweb_blocks_render_action($item->action, '', $current['lang'], true));
+                    $out = nvweb_blocks_render_action($item->action, '', $current['lang'], true);
+                    if(empty($out))
+                        $out = '#';
+                    else
+                        $out = nvweb_prepare_link($out);
                     break;
 
                 case 'property':
