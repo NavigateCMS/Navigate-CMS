@@ -1988,3 +1988,40 @@ div.jGrowl div.jGrowl-notification
     opacity: .75;
     box-shadow: 0px 0px 3px #eef inset;
 }
+
+/* Allow Font Awesome Icons in lieu of jQuery UI and only apply when using a FA icon */
+.ui-icon[class*=" fa-"] {
+    /* Remove the jQuery UI Icon */
+    background: none repeat scroll 0 0 transparent;
+    /* Remove the jQuery UI Text Indent */
+    text-indent: 0;
+    /* Bump it up - jQuery UI is -8px */
+    /*margin-top: -0.5em;*/
+    font-size: 12px;
+    margin-left: 2px;
+    margin-top: 2px;
+    color: #78ABD1;
+}
+
+.ui-state-focus .ui-icon[class*=" fa-"]
+{
+    color: #0070a3;
+}
+
+
+/* Allow use of icon-large to be properly aligned */
+.ui-icon.icon-large {
+    margin-top: -0.75em;
+}
+
+.ui-button-icon-only .ui-icon[class*=" fa-"] {
+    /* Bump it - jQuery UI is -8px */
+    margin-left: -7px;
+}
+
+#media_browser_type-button i.fa
+{
+    margin-bottom: -2px;
+    margin-right: 0;
+    padding-top: 2px;
+}

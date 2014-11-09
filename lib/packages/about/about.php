@@ -71,7 +71,10 @@ function about_layout()
 											'<a href="http://www.jquery.com" target="_blank">jQuery v1.11.1 + jQuery Migrate v1.2.1</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.0</a><br />' ));
+											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />' ));
+
+    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.20</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.trirand.com/blog/" target="_blank">jqGrid v4.6</a><br />' ));
@@ -191,6 +194,9 @@ function about_layout()
 	
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.webdesignerdepot.com/2009/07/200-free-exclusive-vector-icons-primo/" target="_blank">Primo Icons</a><br />' ));
+
+	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="http://fontawesome.io" target="_blank">Font Awesome by Dave Gandy - http://fontawesome.io</a><br />' ));
 
     $navibars->add_tab(t(526, 'Translations'));
 
