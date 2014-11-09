@@ -239,7 +239,7 @@ class layout
 
 				file_put_contents('cache/styles.css', $tmp);
 
-                $tmp = CssMin::minify($tmp);
+                $tmp = CssMin::minify($tmp, array("RemoveLastDelarationSemiColon" => false));
                 file_put_contents('cache/styles.min.css', $tmp);
 
                 if(file_exists('cache/styles.min.css') && filesize('cache/styles.min.css') > 0)
@@ -362,12 +362,16 @@ class layout
 	public function after_includes()
 	{
 		global $user;
+        $out = array();
+
 		if(empty($user->skin)) $user->skin = 'cupertino';
 		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/skins/'.$user->skin.'.css" />';
 
         // select2 translation (if not english)
         if($user->language != 'en')
             $out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/select2/select2_locale_'.$user->language.'.js"></script>';
+
+        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/font-awesome/css/font-awesome.min.css" />';
 
         return implode("\n", $out);
 	}	
