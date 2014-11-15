@@ -300,6 +300,11 @@ function nvweb_properties_render($property, $vars)
 		case 'image':
 			$add = '';
 			$extra = '';
+
+            if(@$property->multilanguage=='true')
+                $image_id = $property->value[$session['lang']];
+            else
+                $image_id = $property->value;
 			
 			if(isset($vars['width']))
             {
@@ -317,9 +322,9 @@ function nvweb_properties_render($property, $vars)
             if(isset($vars['quality']))
                 $extra .= '&quality='.$vars['quality'];
 
-			$img_url = NVWEB_OBJECT.'?type=image&id='.$property->value.$extra;
+			$img_url = NVWEB_OBJECT.'?type=image&id='.$image_id.$extra;
 
-            if(empty($property->value))
+            if(empty($image_id))
             {
                 $out = '';
             }
@@ -330,10 +335,10 @@ function nvweb_properties_render($property, $vars)
                 else
                 {
                     // retrieve additional info (title/alt), if available
-                    if(is_numeric($property->value))
+                    if(is_numeric($image_id))
                     {
                         $f = new file();
-                        $f->load($property->value);
+                        $f->load($image_id);
 
                         $ftitle = $f->title[$current['lang']];
                         $falt = $f->description[$current['lang']];

@@ -66,14 +66,19 @@ function navigate_property_layout_field($property)
 	if(!isset($property->value))
         $property->value = $property->dvalue;
 
-	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")))
+    if(!isset($property->multilanguage))
+        $property->multilanguage = 'false';
+
+	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")) || $property->multilanguage=='true')
 	{
+        $property->multilanguage = 'true';
+
         if(is_object($property->value))
             $property->value = (array)$property->value;
 
 		foreach($langs as $lang)
 		{
-			if(!isset($property->value[$lang]))
+			if(!isset($property->value[$lang]) && isset($property->dvalue))
 				$property->value[$lang] = $property->dvalue;
 		}
 	}
@@ -409,10 +414,33 @@ function navigate_property_layout_field($property)
 			break;
 			
 		case 'image':
-			$field[] = '<div class="navigate-form-row">';
-			$field[] = '<label>'.$property->name.'</label>';
-			$field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue);
-			$field[] = '</div>';				
+            if($property->multilanguage!='true')
+            {
+                $field[] = '<div class="navigate-form-row">';
+                $field[] = '<label>'.$property->name.'</label>';
+                $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue);
+                $field[] = '</div>';
+            }
+            else
+            {
+                foreach($langs as $lang)
+                {
+                    if(!is_array($property->value))
+                    {
+                        $ovalue = $property->value;
+                        $property->value = array();
+                        foreach($langs as $lang_value)
+                            $property->value[$lang_value] = $ovalue;
+                    }
+
+                    $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+
+                    $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+                    $field[] = '<label>'.$property->name.' '.$language_info.'</label>';
+                    $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "image", false, @$property->dvalue);
+                    $field[] = '</div>';
+                }
+            }
 			break;
 
         case 'video':

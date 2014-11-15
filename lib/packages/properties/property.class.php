@@ -12,6 +12,7 @@ class property
 	public $type;
 	public $options;
 	public $dvalue;	// default value
+    public $multilanguage; // "true", "false" or empty
 	public $position;
 	public $enabled;
 	
@@ -63,7 +64,8 @@ class property
 		$this->type			= $main->type;
 		$this->options		= mb_unserialize($main->options);
 		$this->dvalue		= $main->dvalue;		
-		$this->position		= $main->position;						
+		$this->multilanguage= $main->multilanguage;
+		$this->position		= $main->position;
 		$this->enabled		= $main->enabled;	
 		
 		if($this->type == 'date')
@@ -74,13 +76,12 @@ class property
 	
 	public function load_from_post()
 	{
-		global $DB;
-				
 		$this->element  	= $_REQUEST['property-element'];
 		$this->template  	= $_REQUEST['property-template'];		
 		$this->name			= $_REQUEST['property-name'];
 		$this->type			= $_REQUEST['property-type'];
 		$this->dvalue		= $_REQUEST['property-dvalue'];
+        $this->multilanguage= ($_REQUEST['property-multilanguage']=='1'? 'true' : '');
 		
 		if($this->type == 'date' || $this->type == 'datetime')
 			$this->dvalue	= 	core_date2ts($this->dvalue);
@@ -168,6 +169,7 @@ class property
        	$this->type = $theme_option->type;
        	$this->options = (array)$theme_option->options;
        	$this->dvalue = $theme_option->dvalue;	// default value
+       	$this->multilanguage = $theme_option->multilanguage;
        	$this->position = 0;
        	$this->enabled = 1;
 
@@ -198,6 +200,7 @@ class property
        	$this->type = $object->type;
        	$this->options = (array)$object->options;
        	$this->dvalue = $object->dvalue;	// default value
+       	$this->multilanguage = $object->multilanguage;
        	$this->position = 0;
        	$this->enabled = 1;
 
@@ -260,20 +263,36 @@ class property
 		global $DB;
 		global $website;
 				
-		$ok = $DB->execute(' INSERT INTO nv_properties
-								(id, website, element, template, name, type, options, dvalue, position, enabled)
-								VALUES 
-								( 0,
-								  '.$website->id.',
-								  '.protect($this->element).',
-								  '.protect($this->template).',								  
-								  '.protect($this->name).',
-								  '.protect($this->type).',
-								  '.protect(serialize($this->options)).',
-								  '.protect($this->dvalue).',
-								  '.protect($this->position).',								  								  								  
-								  '.protect($this->enabled).'						  
-								)');
+		$ok = $DB->execute('
+          INSERT INTO nv_properties
+		    (id, website, element, template, name, type,
+			    options, dvalue, multilanguage, position, enabled)
+            VALUES
+            ( 0,
+              :website,
+              :element,
+              :template,
+              :name,
+              :type,
+              :options,
+              :dvalue,
+              :multilanguage,
+              :position,
+              :enabled
+            )',
+          array(
+            ':website' => $website->id,
+            ':element' => $this->element,
+            ':template' => $this->template,
+            ':name' => $this->name,
+            ':type' => $this->type,
+            ':options' => serialize($this->options),
+            ':dvalue' => $this->dvalue,
+            ':multilanguage' => $this->multilanguage,
+            ':position' => intval($this->position),
+            ':enabled' => $this->enabled
+          )
+        );
 			
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -287,18 +306,34 @@ class property
 		global $DB;
 		global $website;
 			
-		$ok = $DB->execute(' UPDATE nv_properties
-								SET 
-									element	= '.protect($this->element).',
-									template	= '.protect($this->template).',									
-									name =   '.protect($this->name).',
-									type =   '.protect($this->type).',
-									options =   '.protect(serialize($this->options)).',
-									dvalue =   '.protect($this->dvalue).',
-									position =   '.protect($this->position).',		
-									enabled =  '.protect($this->enabled).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+		$ok = $DB->execute('
+		    UPDATE nv_properties
+                SET
+                    element	= :element,
+                    template = :template,
+                    name = :name,
+                    type = :type,
+                    options = :options,
+                    dvalue = :dvalue,
+                    multilanguage = :multilanguage,
+                    position = :position,
+                    enabled = :enabled
+            WHERE id = :id
+              AND website = :website',
+            array(
+                ':element' => $this->element,
+                ':template' => $this->template,
+                ':name' => $this->name,
+                ':type' => $this->type,
+                ':options' => serialize($this->options),
+                ':dvalue' => $this->dvalue,
+                ':multilanguage' => $this->multilanguage,
+                ':position' => intval($this->position),
+                ':enabled' => $this->enabled,
+                ':id' => $this->id,
+                ':website' => $website->id
+            )
+        );
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -553,7 +588,7 @@ class property
 //			if(!$property_empty)
 //			{		
 				// multilanguage property?
-				if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
+				if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true')
 					$_REQUEST['property-'.$property->id] = '[dictionary]';
 				
 				// date/datetime property?
@@ -577,22 +612,30 @@ class property
 								  AND website = '.$website->id);
 
 				// now we insert a new row
-				$DB->execute('INSERT INTO nv_properties_items 
-								(id, website, property_id, element, node_id, name, value)
-								VALUES
-								(0,
-								 '.$website->id.',
-								 '.protect($property->id).',
-								 '.protect($item_type).',
-								 '.protect($item_id).',
-								 '.protect($property->name).',
-								 '.protect($_REQUEST['property-'.$property->id]).'
-								)');
-								
-				$pid = $DB->get_last_id();
+				$DB->execute('
+				    INSERT INTO nv_properties_items
+					    (id, website, property_id, element, node_id, name, value)
+					VALUES
+					    (   0,
+							:website,
+							:property_id,
+							:type,
+							:item_id,
+							:name,
+							:value
+                        )',
+                    array(
+                        ':website' => $website->id,
+                        ':property_id' => $property->id,
+                        ':type' => $item_type,
+                        ':item_id' => $item_id,
+                        ':name' => $property->name,
+                        ':value' => $_REQUEST['property-'.$property->id]
+                    )
+                );
 
 				// set the dictionary for the multilanguage properties
-				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')))
+				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true')
 				{
 					foreach($website->languages_list as $lang)
 					{
@@ -659,7 +702,7 @@ class property
                 $value = $properties_assoc[$property->id];
 
             // multilanguage property?
-            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
+            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true')
             {
                 $values_dict = $properties_assoc[$property->name];
                 if(empty($values_dict))
@@ -685,22 +728,30 @@ class property
                               AND website = '.$website->id);
 
             // now we insert a new row
-            $DB->execute('INSERT INTO nv_properties_items
-                            (id, website, property_id, element, node_id, name, value)
-                            VALUES
-                            (0,
-                             '.$website->id.',
-                             '.protect($property->id).',
-                             '.protect($item_type).',
-                             '.protect($item_id).',
-                             '.protect($property->name).',
-                             '.protect($value).'
-                            )');
-
-            $pid = $DB->get_last_id();
+            $DB->execute('
+				    INSERT INTO nv_properties_items
+					    (id, website, property_id, element, node_id, name, value)
+					VALUES
+					    (   0,
+							:website,
+							:property_id,
+							:type,
+							:item_id,
+							:name,
+							:value
+                        )',
+                array(
+                    ':website' => $website->id,
+                    ':property_id' => $property->id,
+                    ':type' => $item_type,
+                    ':item_id' => $item_id,
+                    ':name' => $property->name,
+                    ':value' => $value
+                )
+            );
 
             // set the dictionary for the multilanguage properties
-            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
+            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true')
             {
                 foreach($website->languages_list as $lang)
                 {

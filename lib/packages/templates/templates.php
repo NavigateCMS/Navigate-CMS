@@ -664,6 +664,10 @@ function templates_form($item)
 				</div>				
 			</div>
 			<div class="navigate-form-row">
+				<label>'.t(547, 'Multilanguage').'</label>
+				'.$naviforms->checkbox('property-multilanguage', false).'
+			</div>
+			<div class="navigate-form-row">
 				<label>'.t(199, 'Default value').'</label>
 				'.$naviforms->textfield('property-dvalue', '').'	
 				<div class="subcomment">
@@ -705,6 +709,7 @@ function templates_form($item)
 					$("#property-type").val("value");
 					$("#property-options").val("");
 					$("#property-dvalue").val("");
+					$("#property-multilanguage").removeAttr("checked");
 				    $("#property-enabled").attr("checked", "checked");
 				}
 				else
@@ -724,6 +729,12 @@ function templates_form($item)
 						   $("#property-type").select2("val", data.type);
 						   $("#property-options").val(data.options);
 						   $("#property-dvalue").val(data.dvalue);
+
+						   if(data.multilanguage=="true")
+							   $("#property-multilanguage").attr("checked", "checked");
+							else
+							   $("#property-multilanguage").removeAttr("checked");
+
 						   if(data.enabled=="1")
 							   $("#property-enabled").attr("checked", "checked");
 							else
@@ -745,7 +756,7 @@ function templates_form($item)
 				var navigate_templates_element_types = new Array();
 				navigate_templates_element_types["item"] = "'.t(180, 'Item').'";
 				navigate_templates_element_types["structure"] = "'.t(16, 'Structure').'";
-				navigate_templates_element_types["product"] = "'.t(214, 'Product').'";											
+				//navigate_templates_element_types["product"] = "'.t(214, 'Product').'";
 
 				if('.($readonly? 'true' : 'false').')
 				{
@@ -832,7 +843,8 @@ function templates_form($item)
 			function navigate_templates_property_type_change()
 			{
 				$("#property-options").parent().hide();
-				$("#property-dvalue").next().find("span").hide();						
+				$("#property-multilanguage").parent().hide();
+				$("#property-dvalue").next().find("span").hide();
 				
 				switch($("#property-type").val())
 				{						
@@ -862,6 +874,7 @@ function templates_form($item)
 					case "image":
 					case "file":
 						$("#property-comment-file").show();
+						$("#property-multilanguage").parent().show();
 						break;
 
                     case "video":
