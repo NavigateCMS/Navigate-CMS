@@ -149,7 +149,7 @@ function about_layout()
 											'<a href="http://code.google.com/p/cssmin/" target="_blank">CssMin v3.0.1</a><br />'));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.verot.net/php_class_upload.htm" target="_blank">class.upload v0.32</a><br />' ));
+											'<a href="http://www.verot.net/php_class_upload.htm" target="_blank">class.upload v0.33dev</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://www.framework2.com.ar/dzone/forceUTF8-es/" target="_blank">Encoding UTF8 Class (by Sebastián Grignoli)</a><br />' ));
