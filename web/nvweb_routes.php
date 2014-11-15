@@ -209,7 +209,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 function nvweb_prepare_link($path)
 {
     $url = '#';
-    if(substr($path, 0, 7)=='http://' || substr($path, 0, 7)=='https://')
+    if(substr($path, 0, 7)=='http://' || substr($path, 0, 8)=='https://')
         $url = $path;
     else
         $url = NVWEB_ABSOLUTE.$path;
