@@ -353,10 +353,16 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                 active_editor_lang = active_editor_lang.split("-").pop();
 
             title = $.parseJSON(title);
-            title = title[active_editor_lang];
+            if(title && title[active_editor_lang])
+                title = title[active_editor_lang];
+            else
+                title = "";
 
             alt = $.parseJSON(alt);
-            alt = alt[active_editor_lang];
+            if(alt && alt[active_editor_lang])
+                alt = alt[active_editor_lang];
+            else
+                alt = "";
 
 			html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
                     (!title?    '' : ' title="' + title + '" ') +
