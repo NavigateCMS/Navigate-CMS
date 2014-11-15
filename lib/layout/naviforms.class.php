@@ -551,13 +551,17 @@ class naviforms
 
                 // context menu actions
                 $layout->add_script('
-                    $(".navigate-droppable-create-contextmenu li[action=default]").on("click", function()
-                    {
-						$("#'.$name.'").val("'.$default_value.'");
-						$("#'.$name.'-droppable").html($("#'.$name.'-droppable").parent().find(".navigate-droppable-create-default_value").html());
-						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
-					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
-                    });
+                    $("#'.$name.'-droppable").parent()
+                        .find(".navigate-droppable-create")
+                        .find(".navigate-droppable-create-contextmenu li[action=default]")
+                        .on("click", function()
+                        {
+                            $("#'.$name.'").val("'.$default_value.'");
+                            $("#'.$name.'-droppable").html($("#'.$name.'-droppable").parent().find(".navigate-droppable-create-default_value").html());
+                            $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
+                            $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                        }
+                    );
                 ');
             }
 			
