@@ -656,31 +656,34 @@ class file
         // do we have the thumbnail already created for this image?
 
         // option A) opaque JPEG FILE
-        if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg'))
+        $thumbnail_path_jpg = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg';
+
+        if(file_exists($thumbnail_path_jpg))
         {
             // ok, a file exists, but it's older than the image file? (original image file has changed)
-            if(filemtime(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg') > filemtime($original))
+            if(filemtime($thumbnail_path_jpg) > filemtime($original))
             {
                 // the thumbnail already exists and is up to date
-                $thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg';
+                $thumbnail = $thumbnail_path_jpg;
             }
         }
 
         // option B) transparent PNG FILE
-		if(file_exists(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id))
+        $thumbnail_path_png = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;
+		if(file_exists($thumbnail_path_png))
 		{
 			// ok, a file exists, but it's older than the image file? (original image file has changed)
-			if(filemtime(NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id) > filemtime($original))
+			if(filemtime($thumbnail_path_png) > filemtime($original))
 			{
 				// the thumbnail already exists and is up to date	
-				$thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;
+				$thumbnail = $thumbnail_path_png;
 			}
 		}
 
         // do we have to create a new thumbnail
 		if(empty($thumbnail) || isset($_GET['force']) || !(file_exists($thumbnail) && filesize($thumbnail) > 0))
 		{
-			$thumbnail = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;		
+			$thumbnail = $thumbnail_path_png;
 
 			$handle = new upload($original);
 			$size = array(
@@ -814,9 +817,9 @@ class file
                 {
                     $im->setImageFormat('JPG'); // create an OPAQUE JPG file with the given quality (default 95%)
                     $im->setImageCompressionQuality($quality);
-                    $im->writeimage($thumbnail.'.jpg');
+                    $im->writeimage($thumbnail_path_jpg);
                     @unlink($thumbnail);
-                    $thumbnail = $thumbnail.'.jpg';
+                    $thumbnail = $thumbnail_path_jpg;
                 }
             }
             /*
