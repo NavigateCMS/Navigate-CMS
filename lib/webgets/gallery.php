@@ -176,6 +176,33 @@ function nvweb_gallery($vars=array())
                 $out[] = '<img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />';
             }
             break;
+
+        case 'image_links':
+            // IMG wrapped by a link
+            // TO DO: add alt and title to the image
+            if(is_array($item->galleries))
+                $gallery = $item->galleries[0];
+
+            if(is_string($item->galleries))
+            {
+                $gallery = mb_unserialize($item->galleries);
+                $gallery = $gallery[0];
+            }
+
+            if(is_array($gallery))
+                $images = array_keys($gallery);
+
+            if(empty($images))
+                return '';
+
+            foreach($images as $img)
+            {
+                $out[] = '
+                    <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline">
+                        <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />
+                    </a>';
+            }
+            break;
 			
 		case 'prettyphoto':
 		case 'prettyPhoto':
