@@ -137,6 +137,10 @@ function nvweb_list($vars=array())
 	{
         $orderby = str_replace('i.', 's.', $orderby);
 
+        $visible = '';
+        if($vars['filter']=='menu')
+            $visible = ' AND s.visible = 1 ';
+
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
 			            s.date_published, s.date_unpublish, s.date_published as pdate,
@@ -153,6 +157,7 @@ function nvweb_list($vars=array())
 			   AND d.subtype = "title"
 			   AND d.node_id = s.id
 			   AND d.lang = '.protect($current['lang']).'
+			 '.$visible.'
 			 '.$exclude.'
 			 '.$orderby.'
 			 LIMIT '.$vars['items'].'
