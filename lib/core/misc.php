@@ -6,7 +6,7 @@
  * @copyright All rights reserved to each function author.
  * @author Various (PHP Community)
  * @license GPLv2 License
- * @version 1.1 2013-05-05 08:53
+ * @version 1.2 2014-11-29 10:18
  * @note if you are the creator of one of this functions and your name is not here send an email to info@navigatecms.com to be properly credited :)
  *
  */
@@ -17,23 +17,37 @@
  * Multi-byte Unserialize
  *
  * UTF-8 will screw up a serialized string, this function tries to fix the string before unserializing
+ * (this happens when serialize puts the wrong length for a utf-8 string), for example here:
+ * 'a:2:{i:0;s:5:"héllö";i:1;s:5:"wörld";}'
  *
  * @param string UTF-8 or ASCII string to be unserialized
  * @return string
+ *
  */
+
 function mb_unserialize($var)
 {
+    $out = $var;
     if(!is_object($var) && !is_array($var))
     {
-        $var = unserialize($var);
-        if(empty($var) && !is_array($var) && !is_object($var))
+        $out = unserialize($var);
+
+        if(empty($out) && !is_array($out) && !is_object($out))
         {
-	        $var = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $var);
-	        $var = unserialize($var);
+            $out = preg_replace_callback(
+                '!s:(\d+):"(.*?)";!s',
+                function($matches)
+                {
+                    return 's:'.strlen($matches[2]).':"'.$matches[2].'";';
+                },
+                $var
+            );
+
+	        $out = unserialize($out);
         }
     }
 
-    return $var;
+    return $out;
 }
 
 
