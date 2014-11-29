@@ -19,7 +19,7 @@ function nvweb_template_load()
 		$template = new template();
 		$template->load($current['template']);
 
-		if(!$template->enabled) 
+		if(!$template->enabled)
 			nvweb_clean_exit();
 			
 		if($template->permission == 2) 
@@ -29,8 +29,10 @@ function nvweb_template_load()
 			
 		if(file_exists($template->file))
 			$template->file_contents = @file_get_contents($template->file);	// from theme
-		else		
+		else if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$template->file))
 			$template->file_contents = @file_get_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$template->file);
+        else
+            $template->file_contents = 'NV error: template file not found! ('.$template->file.')';
 	}
 	
 	return $template;
