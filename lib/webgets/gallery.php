@@ -32,7 +32,7 @@ function nvweb_gallery($vars=array())
 	{
 		// check publishing is enabled
 		$enabled = nvweb_object_enabled($current['object']);				
-		if($enabled)
+		if($enabled || (($_REQUEST['preview']=='true' && $current['navigate_session']==1)))
 			$item = $current['object'];
 	}
 	else if($current['type']=='structure')
@@ -43,8 +43,9 @@ function nvweb_gallery($vars=array())
 						   AND website = '.$website->id.'
 				   ');
 		$rs = $DB->first();
-		$enabled = nvweb_object_enabled($rs);								
-		if($enabled)
+		$enabled = nvweb_object_enabled($rs);
+
+		if($enabled || (($_REQUEST['preview']=='true' && $current['navigate_session']==1)))
 		{	
 			$item = new item();
 			$item->load($rs->id);
