@@ -2,7 +2,7 @@
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
-define('NAVIGATE_URL', dirname($_SERVER['PHP_SELF']));
+define('NAVIGATE_URL', !empty($_ENV['SCRIPT_URI'])? dirname($_ENV['SCRIPT_URI']) : dirname($_SERVER['PHP_SELF']));
 
 // create database connection
 $DB = new database();
