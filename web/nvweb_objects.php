@@ -105,7 +105,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			{
 				$border = ($_REQUEST['border']=='false'? false : true);
 				$path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
-				$etag_add  = '-'.$width.'-'.$height.'-'.$border;
+				$etag_add  = '-'.$width.'-'.$height.'-'.$border.'-'.$quality;
 				$item->name = $width.'x'.$height.'-'.$item->name;
 				$item->size = filesize($path);
                 $item->mime = 'image/png';
