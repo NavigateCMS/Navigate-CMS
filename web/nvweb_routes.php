@@ -4,16 +4,18 @@ function nvweb_self_url()
 	if(!isset($_SERVER['REQUEST_URI']))
 		$serverrequri = $_SERVER['PHP_SELF']; 
 	else
-		$serverrequri = $_SERVER['REQUEST_URI']; 
-		
+		$serverrequri = $_SERVER['REQUEST_URI'];
+
 	$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""; 
 	$s1 = strtolower($_SERVER["SERVER_PROTOCOL"]);
 	
 	$protocol = substr($s1, 0, strpos($s1, "/")).$s; 
 
 	$port = ($_SERVER["SERVER_PORT"] == "80") ? "" : (":".$_SERVER["SERVER_PORT"]); 
-	
-	$url = $protocol."://".$_SERVER['SERVER_NAME'].$port.$serverrequri; 
+
+    // some shared hostings need $_SERVER['HTTP_HOST']
+    // but $_SERVER['SERVER_NAME'] should work if the server is configured properly
+	$url = $protocol."://".$_SERVER['HTTP_HOST'].$port.$serverrequri;
 	
 	// decode %chars
 	$url = urldecode($url);
