@@ -385,7 +385,7 @@ class item
 		if(empty($this->properties))
         {
             // check if this is an embedded item or it is a free element
-            if($this->embedding == 1)
+            if($this->embedding == 1 && $this->association == 'category')
             {
                 // properties are given in structure definition
                 $structure_template = @$DB->query_single('template', 'nv_structure', 'id = '.intval($this->category));
