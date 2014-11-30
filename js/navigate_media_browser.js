@@ -472,8 +472,17 @@ function navigate_media_browser_reload()
         $('#media_browser_type-button').find('.ui-selectmenu-text').html(
             '<i class="ui-icon ui-icon-folder-collapsed" />' + $("#nvmb-folder").attr("prefix") + "&nbsp;&nbsp;" + navigate_media_browser_folderpath
         );
-	
-	$("#navigate_media_browser_items").load(
+
+    $('#navigate_media_browser_website').button("enable");
+    $('#navigate_media_browser_upload_button').button("enable");
+    if(media=='youtube')
+    {
+        $('#navigate_media_browser_website').button("disable");
+        $('#navigate_media_browser_upload_button').button("disable");
+    }
+
+
+    $("#navigate_media_browser_items").load(
 		"?fid=files&act=media_browser&website=" +
             navigate_media_browser_website +
             "&media=" + media +
@@ -692,7 +701,8 @@ function navigate_media_browser_focalpoint(file_id)
 
 function navigate_media_browser_select_type( event, ui )
 {
-    var icon = $('select#media_browser_type option[value="'+$('select#media_browser_type').val()+'"]').attr('data-class');
+    var type = $('select#media_browser_type').val();
+    var icon = $('select#media_browser_type option[value="'+type+'"]').attr('data-class');
     $('#media_browser_type-button i').remove();
     //$('#media_browser_type-button').prepend('<i class="ui-icon '+icon+'" />');
     $('#media_browser_type-button')

@@ -1055,6 +1055,78 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 	});
 }
 
+function navigate_file_video_info(provider, reference, callback)
+{
+    if(provider=="parse")
+    {
+        provider = reference.split('#')[0];
+        reference = reference.split('#')[1];
+    }
+
+    $.get(
+        NAVIGATE_APP + '?fid=files&act=json&op=video_info&provider=' + provider + '&reference=' + reference,
+        function(data)
+        {
+            if(typeof(callback)=='function')
+                callback($.parseJSON(data));
+        }
+    );
+}
+
+function navigate_dropbox_load_video(name, value)
+{
+    $("#" + name).val(value);
+    $("#" + name).html("");
+    $("#" + name).parent().find(".navigate-droppable-cancel").show();
+    $("#" + name).parent().find(".navigate-droppable-create").hide();
+
+    navigate_file_video_info(
+        "parse",
+        value,
+        function(data)
+        {
+            var play = '';
+            if(data.mime=='video/youtube' || data.mime=='video/vimeo')
+                play = '<br /><a href="'+data.extra.link+'" target="_blank"><i class="fa fa-2x fa-play-circle"></i></a> ';
+            $("#" + name + "-droppable-info").find(".navigate-droppable-info-title").html(data.name);
+            $("#" + name + "-droppable-info").find(".navigate-droppable-info-extra").html(data.uploaded_by);
+            $("#" + name + "-droppable-info").find(".navigate-droppable-info-provider").html(data.mime+play);
+            $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_url+"\" />");
+            $("#" + name + "-droppable").find("img").css({
+                "width": "80px",
+                "height": "60px",
+                "margin-top": "8px"
+            });
+        }
+    );
+}
+
+/**
+ * Get YouTube ID from various YouTube URL
+ * @author: takien
+ * @url: http://takien.com
+ * For PHP YouTube parser, go here http://takien.com/864
+ */
+function navigate_youtube_reference_from_url(url)
+{
+    var ID = '';
+    url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+    if(url[2] !== undefined) {
+        ID = url[2].split(/[^0-9a-z_]/i);
+        ID = ID[0];
+    }
+    else {
+        ID = url;
+    }
+    return ID;
+}
+
+function navigate_vimeo_reference_from_url(url)
+{
+    var m = url.match(/^.+vimeo.com\/(.*\/)?([^#\?]*)/);
+    return m ? m[2] || m[1] : null;
+}
+
 /**
  * https://gist.github.com/1255491
  *

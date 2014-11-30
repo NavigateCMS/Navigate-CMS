@@ -518,53 +518,151 @@ class naviforms
 		$out = array();
 		
 		$out[] = '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$value.'" />';		
-		
+
 		$out[] = '<div id="'.$name.'-droppable" class="navigate-droppable ui-corner-all">';
-				
+
 		if(!empty($value))
-		{		
-			$f = new file();
-			$f->load($value);
-						
-			if($f->type=='image')
-				$out[] = '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$f->id.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
+		{
+			if($media=='image')
+            {
+                $f = new file();
+                $f->load($value);
+                $out[] = '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$f->id.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
+            }
+            else if($media=='video')
+            {
+                $layout->add_script('
+                    $(window).load(function() { navigate_dropbox_load_video("'.$name.'", "'.$value.'"); });
+                ');
+
+                $out[] = '<figure class="navigatecms_loader"></figure>';
+            }
 			else
+            {
+                $f = new file();
+                $f->load($value);
 				$out[] = '<img title="'.$f->name.'" src="'.(navibrowse::mimeIcon($f->mime, $f->type)).'" width="50" height="50" /><br />'.$f->name;
+            }
 		}
 		else
 			$out[] = '	<img src="img/icons/misc/dropbox.png" vspace="18" />';
 		$out[] = '</div>';
-		
+
+        $contextmenu = false;
+
 		if(!$disabled)
 		{
 			$out[] = '<div class="navigate-droppable-cancel"><img src="img/icons/silk/cancel.png" /></div>';
-            if(!empty($default_value))
+            if($media=='image')
             {
-                $default_value_html = '<img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$default_value.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
-                $out[] = '<div class="navigate-droppable-create">
-                            <img src="img/icons/silk/add.png" />
-                            <ul class="navigate-droppable-create-contextmenu">
-                                <li action="default"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(199, "Default value").'</a></li>
-                            </ul>
-                            <div class="navigate-droppable-create-default_value">'.$default_value_html.'</div>
-                          </div>';
+                if(!empty($default_value))
+                {
+                    $default_value_html = '<img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$default_value.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
+                    $out[] = '<div class="navigate-droppable-create">
+                                <img src="img/icons/silk/add.png" />
+                                <ul class="navigate-droppable-create-contextmenu">
+                                    <li action="default"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(199, "Default value").'</a></li>
+                                </ul>
+                                <div class="navigate-droppable-create-default_value">'.$default_value_html.'</div>
+                              </div>';
+
+                    // context menu actions
+                    $layout->add_script('
+                        $("#'.$name.'-droppable").parent()
+                            .find(".navigate-droppable-create")
+                            .find(".navigate-droppable-create-contextmenu li[action=default]")
+                            .on("click", function()
+                            {
+                                $("#'.$name.'").val("'.$default_value.'");
+                                $("#'.$name.'-droppable").html($("#'.$name.'-droppable").parent().find(".navigate-droppable-create-default_value").html());
+                                $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
+                                $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                            }
+                        );
+                    ');
+
+                    $contextmenu = true;
+                }
+            }
+            else if($media=='video')
+            {
+                $out[] = '
+                    <div class="navigate-droppable-create">
+                        <img src="img/icons/silk/add.png" />
+                        <ul class="navigate-droppable-create-contextmenu">
+                            <li action="default" value="'.$default_value.'"><a href="#"><span class="fa fa-lg fa-eraser"></span> '.t(199, "Default value").'</a></li>
+                            <li action="youtube_url"><a href="#"><span class="fa fa-lg fa-youtube-square fa-align-center"></span> Youtube URL</a></li>
+                            <li action="vimeo_url"><a href="#"><span class="fa fa-lg fa-vimeo-square fa-align-center"></span> Vimeo URL</a></li>
+                        </ul>
+                    </div>
+                ';
 
                 // context menu actions
                 $layout->add_script('
+                    if('.(empty($default_value)? 'true' : 'false').')
+                        $("#'.$name.'-droppable").parent().find(".navigate-droppable-create-contextmenu li[action=default]").remove();
+
                     $("#'.$name.'-droppable").parent()
                         .find(".navigate-droppable-create")
-                        .find(".navigate-droppable-create-contextmenu li[action=default]")
+                        .find(".navigate-droppable-create-contextmenu li")
                         .on("click", function()
                         {
-                            $("#'.$name.'").val("'.$default_value.'");
-                            $("#'.$name.'-droppable").html($("#'.$name.'-droppable").parent().find(".navigate-droppable-create-default_value").html());
-                            $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
-                            $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                            switch($(this).attr("action"))
+                            {
+                                case "default":
+                                    $("#'.$name.'-droppable").html(\'<figure class="navigatecms_loader"></figure>\');
+                                    navigate_dropbox_load_video("'.$name.'", "'.$default_value.'");
+                                    break;
+
+                                case "youtube_url":
+                                    $("<div><form action=\"#\" onsubmit=\"return false;\"><input type=\"text\" name=\"url\" value=\"\" style=\"width: 100%;\" /></form></div>").dialog({
+                                        "title": "Youtube URL",
+                                        "modal": true,
+                                        "width": 500,
+                                        "height": 120,
+                                        "buttons": {
+                                            "'.t(190, "Ok").'": function(e, ui)
+                                            {
+                                                var reference = navigate_youtube_reference_from_url($(this).find("input").val());
+                                                if(reference && reference!="")
+                                                {
+                                                    navigate_dropbox_load_video("'.$name.'", "youtube#" + reference);
+                                                }
+                                                $(this).dialog("close");
+                                            },
+                                            Cancel: function() { $(this).dialog("close"); }
+                                        }
+                                    });
+                                    break;
+
+                                case "vimeo_url":
+                                    $("<div><form action=\"#\" onsubmit=\"return false;\"><input type=\"text\" name=\"url\" value=\"\" style=\"width: 100%;\" /></form></div>").dialog({
+                                        "title": "Vimeo URL",
+                                        "modal": true,
+                                        "width": 500,
+                                        "height": 120,
+                                        "buttons": {
+                                            "'.t(190, "Ok").'": function(e, ui)
+                                            {
+                                                var reference = navigate_vimeo_reference_from_url($(this).find("input").val());
+                                                if(reference && reference!="")
+                                                {
+                                                    navigate_dropbox_load_video("'.$name.'", "vimeo#" + reference);
+                                                }
+                                                $(this).dialog("close");
+                                            },
+                                            Cancel: function() { $(this).dialog("close"); }
+                                        }
+                                    });
+                                    break;
+                            }
                         }
                     );
                 ');
+
+                $contextmenu = true;
             }
-			
+
 			$layout->add_script('
 				$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").on("click", function()
 				{
@@ -572,6 +670,7 @@ class naviforms
 					$("#'.$name.'-droppable").html(\'<img src="img/icons/misc/dropbox.png" vspace="18" />\');
 					$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").hide();
 					$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").show();
+					$("#'.$name.'-droppable-info").children().html("");
 				});
 
 				$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").on("click", function(ev)
@@ -610,7 +709,7 @@ class naviforms
 				});
 			');
 
-            if(empty($value) && !empty($default_value))
+            if(empty($value) && $contextmenu)
             {
                 $layout->add_script('
                     $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").show();
@@ -626,6 +725,12 @@ class naviforms
             }
 
 		}
+
+        $out[] = '<div id="'.$name.'-droppable-info" class="navigate-droppable-info">';
+        $out[] = '  <div class="navigate-droppable-info-title"></div>';
+        $out[] = '  <div class="navigate-droppable-info-extra"></div>';
+        $out[] = '  <div class="navigate-droppable-info-provider"></div>';
+        $out[] = '</div>';
 				
 		return implode("\n", $out);
 	}

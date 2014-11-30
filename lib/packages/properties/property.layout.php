@@ -446,7 +446,7 @@ function navigate_property_layout_field($property)
         case 'video':
             $field[] = '<div class="navigate-form-row">';
             $field[] = '<label>'.$property->name.'</label>';
-            $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video");
+            $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video", false, $property->dvalue);
             $field[] = '</div>';
             break;
 

@@ -1181,6 +1181,7 @@ label.ui-state-active #navigate_media_browser_folder_path
 	overflow: hidden;
 	margin-bottom: 10px;	
 	padding-top: 2px;
+    float: left;
 }
 
 .navigate-droppable-hover
@@ -1192,12 +1193,13 @@ label.ui-state-active #navigate_media_browser_folder_path
 .navigate-droppable-create
 {
 	cursor: pointer;
-	margin-bottom:72px;
-	margin-left:253px;
-	margin-top:-93px;
+    margin-left: 253px;
+    margin-top: -7px;
+    position: absolute;
     width: 16px;
     height: 16px;
     display: none;
+    float: left;
 }
 
 .navigate-droppable-create-contextmenu,
@@ -1205,6 +1207,31 @@ label.ui-state-active #navigate_media_browser_folder_path
 {
     display: none;
 }
+
+.navigate-droppable-info
+{
+    float: left;
+}
+
+.navigate-droppable-info-title
+{
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+.navigate-droppable-info-extra
+{
+    font-weight: normal;
+    font-size: 10px;
+    margin-bottom: 4px;
+}
+
+.navigate-droppable-info-provider
+{
+    font-size: 10px;
+    font-style: italic;
+}
+
 
 #navigate_jquery_translation
 {
