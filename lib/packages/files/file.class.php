@@ -56,15 +56,36 @@ class file
 			$this->access = 0;
 		}
 		else
-		{		
-			// we MUST load any valid id without website attached
-			if($DB->query('SELECT * 
-							 FROM nv_files 
-							WHERE id = '.intval($id)))
-			{
-				$data = $DB->result();
-				$this->load_from_resultset($data); // there will be as many entries as languages enabled
-			}
+		{
+            if(strpos($id, '#')!==false)
+            {
+                // decompose provider#reference value, f.e. youtube#3MteSlpxCpo
+                list($provider, $reference) = explode('#', $id);
+
+                switch($provider)
+                {
+                    case 'youtube':
+                        $this->load_from_youtube($reference);
+                        break;
+
+                    case 'vimeo':
+                        $this->load_from_vimeo($reference);
+                        break;
+
+                    default:
+                }
+            }
+
+            // if we still haven't found the requested file...
+            if(empty($this->id))
+            {
+                // we MUST try to load any valid id without website attached
+                if($DB->query('SELECT * FROM nv_files WHERE id = '.intval($id)))
+                {
+                    $data = $DB->result();
+                    $this->load_from_resultset($data); // there will be as many entries as languages enabled
+                }
+            }
 		}
 	}
 	
@@ -142,6 +163,70 @@ class file
             $this->description[$lcode]	= $_REQUEST['description-'.$lcode];
         }
 	}
+
+    public function load_from_youtube($reference)
+    {
+        $info = file_get_contents('https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v='.$reference.'&format=json');
+        $info = json_decode($info);
+
+        if(empty($info))
+            return false;
+
+        $this->id			= 'youtube#'.$reference;
+        $this->type			= 'video';
+        $this->name			= $info->title;
+        $this->size			= NULL;
+        $this->mime			= 'video/youtube';
+        $this->width		= $info->width;
+        $this->height		= $info->height;
+
+        $this->uploaded_by	= $info->author_name;
+
+        $this->access		= 0;
+        $this->permission	= 0;
+        $this->enabled		= 1;
+
+        $this->extra        = array(
+            'refrence'  =>  $reference,
+            'link'      =>  'https://www.youtube.com/watch?v='.$reference,
+            'thumbnail' =>  'https://img.youtube.com/vi/'.$reference.'/default.jpg',
+            'thumbnail_big' => 'https://img.youtube.com/vi/'.$reference.'/0.jpg',
+            'thumbnail_url' => str_replace('http://', 'https://', $info->thumbnail_url),
+            'duration' => '',
+            'embed_code'  => '<iframe src="https://www.youtube.com/embed/'.$reference.'?feature=oembed&rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>'
+        );
+    }
+
+    public function load_from_vimeo($reference)
+    {
+        $info = file_get_contents('http://vimeo.com/api/oembed.json?url=http://vimeo.com/'.$reference.'&format=json');
+        $info = json_decode($info);
+
+        if(empty($info))
+            return false;
+
+        $this->id			= 'vimeo#'.$reference;
+        $this->type			= 'video';
+        $this->name			= $info->title;
+        $this->size			= NULL;
+        $this->mime			= 'video/vimeo';
+        $this->width		= $info->width;
+        $this->height		= $info->height;
+
+        $this->uploaded_by	= $info->author_name;
+
+        $this->access		= 0;
+        $this->permission	= 0;
+        $this->enabled		= 1;
+
+        $this->extra        = array(
+            'refrence'  =>  $info->video_id,
+            'link'      =>  'https://www.vimeo.com/'.$reference,
+            'thumbnail_url' => str_replace('http://', 'https://', $info->thumbnail_url),
+            'duration' => '',
+            'embed_code'  => '<iframe src="https://player.vimeo.com/video/'.$reference.'?" frameborder="0" allowfullscreen></iframe>'
+        );
+    }
 	
 	
 	public function save()

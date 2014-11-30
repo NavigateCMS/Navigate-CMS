@@ -38,150 +38,166 @@ function run()
 				}
 			}
 
-            if($_REQUEST['op']=='create_folder')
-			{
-                file::create_folder($_REQUEST['name'], $_REQUEST['mime'], $_REQUEST['parent']);
-				echo json_encode(true);
-			}
-            else if($_REQUEST['op']=='edit_folder')
+            switch($_REQUEST['op'])
             {
-                $f = new file();
-                $f->load(intval($_REQUEST['id']));
-                $f->name = $_REQUEST['name'];
-                $f->mime = $_REQUEST['mime'];
-                $ok = $f->save();
-                echo json_encode($ok);
-            }
-            else if($_REQUEST['op']=='edit_file')
-            {
-                $f = new file();
-                $f->load(intval($_REQUEST['id']));
-                $f->name = $_REQUEST['name'];
-                $ok = $f->save();
-                echo json_encode($ok);
-            }
-            else if($_REQUEST['op']=='duplicate_file')
-            {
-                error_reporting(~0);
-                ini_set('display_errors', 1);
-                $f = new file();
-                $f->load(intval($_REQUEST['id']));
-                $f->id = 0;
-                $f->insert();
-                $done = copy(
-                    NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.intval($_REQUEST['id']),
-                    NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$f->id
-                );
-                $status = "true";
-                if(!$done)
-                {
-                    $f->delete();
-                    $status = t(56, "Unexpected error");
-                }
-                echo $status;
-            }
-			else if($_REQUEST['op']=='move')
-			{
-				if(is_array($_REQUEST['item']))
-				{
-					$ok = true;
-					for($i=0; $i < count($_REQUEST['item']); $i++)
-					{
-						unset($item);
-						$item = new file();
-						$item->load($_REQUEST['item'][$i]);
-						$item->parent = $_REQUEST['folder'];
-						$ok = $ok & $item->update();
-					}
-					echo json_encode(($ok)? true : false);						
-				}
-				else
-				{			
-					$item->load($_REQUEST['item']);
-					$item->parent = $_REQUEST['folder'];
-					echo json_encode($item->update());	
-				}
-			}
-			else if($_REQUEST['op']=='delete')
-			{
-				$item->load($_REQUEST['id']);
-				echo json_encode($item->delete());	
-			}
-            else if($_REQUEST['op']=='permissions')
-			{
-                $item->load($_REQUEST['id']);
+                case 'create_folder':
+                    file::create_folder($_REQUEST['name'], $_REQUEST['mime'], $_REQUEST['parent']);
+				    echo json_encode(true);
+                    break;
 
-                if(!empty($_POST))
-                {
-                    $item->access = intval($_POST['access']);
-                    $item->permission = intval($_POST['permission']);
-                    $item->enabled = intval($_POST['enabled']);
-                    $item->groups = $_POST['groups'];
-                    if($item->access < 3)
-                        $item->groups = array();
-                    $status = $item->save();
-                    echo json_encode($status);
-                }
-                else
-                {
-                    echo json_encode(array(
-                        'access' => $item->access,
-                        'groups' => $item->groups,
-                        'permission' => $item->permission,
-                        'enabled' => $item->enabled
-                    ));
-                }
-			}
-            else if($_REQUEST['op']=='description')
-			{
-                $item->load($_REQUEST['id']);
+			    case 'edit_folder':
+                    $f = new file();
+                    $f->load(intval($_REQUEST['id']));
+                    $f->name = $_REQUEST['name'];
+                    $f->mime = $_REQUEST['mime'];
+                    $ok = $f->save();
+                    echo json_encode($ok);
+                    break;
 
-                if(!empty($_POST))
-                {
-                    $item->title = array();
-                    $item->description = array();
+                case 'edit_file':
+                    $f = new file();
+                    $f->load(intval($_REQUEST['id']));
+                    $f->name = $_REQUEST['name'];
+                    $ok = $f->save();
+                    echo json_encode($ok);
+                    break;
 
-                    foreach($website->languages as $language)
+                case 'duplicate_file':
+                    error_reporting(~0);
+                    ini_set('display_errors', 1);
+                    $f = new file();
+                    $f->load(intval($_REQUEST['id']));
+                    $f->id = 0;
+                    $f->insert();
+                    $done = copy(
+                        NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.intval($_REQUEST['id']),
+                        NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$f->id
+                    );
+                    $status = "true";
+                    if(!$done)
                     {
-                        $lcode = $language['code'];
-
-                        if(!isset($_REQUEST['titles'][$lcode]))
-                            break;
-
-                        $item->title[$lcode]	= $_REQUEST['titles'][$lcode];
-                        $item->description[$lcode]	= $_REQUEST['descriptions'][$lcode];
+                        $f->delete();
+                        $status = t(56, "Unexpected error");
                     }
+                    echo $status;
+                    break;
 
-                    $status = $item->save();
-                    echo json_encode($status);
-                }
-                else
-                {
-                    // do nothing
-                }
-			}
-            else if($_REQUEST['op']=='focalpoint')
-            {
-                $item->load($_REQUEST['id']);
-                if(!empty($_POST))
-                {
-                    $item->focalpoint = $_REQUEST['top'].'#'.$_REQUEST['left'];
-                    $status = $item->save();
-                    // remove cached thumbnails
-                    file::thumbnails_remove($item->id);
-                    echo json_encode($status);
-                }
-                else
-                {
-                    if(empty($item->focalpoint))
+                case 'move':
+                    if(is_array($_REQUEST['item']))
                     {
-                        $item->focalpoint = '50#50';
-                        $item->save();
+                        $ok = true;
+                        for($i=0; $i < count($_REQUEST['item']); $i++)
+                        {
+                            unset($item);
+                            $item = new file();
+                            $item->load($_REQUEST['item'][$i]);
+                            $item->parent = $_REQUEST['folder'];
+                            $ok = $ok & $item->update();
+                        }
+                        echo json_encode(($ok)? true : false);
+                    }
+                    else
+                    {
+                        $item->load($_REQUEST['item']);
+                        $item->parent = $_REQUEST['folder'];
+                        echo json_encode($item->update());
+                    }
+                case 'delete':
+                    $item->load($_REQUEST['id']);
+                    echo json_encode($item->delete());
+                    break;
+
+                case 'permissions':
+                    $item->load($_REQUEST['id']);
+
+                    if(!empty($_POST))
+                    {
+                        $item->access = intval($_POST['access']);
+                        $item->permission = intval($_POST['permission']);
+                        $item->enabled = intval($_POST['enabled']);
+                        $item->groups = $_POST['groups'];
+                        if($item->access < 3)
+                            $item->groups = array();
+                        $status = $item->save();
+                        echo json_encode($status);
+                    }
+                    else
+                    {
+                        echo json_encode(array(
+                            'access' => $item->access,
+                            'groups' => $item->groups,
+                            'permission' => $item->permission,
+                            'enabled' => $item->enabled
+                        ));
+                    }
+                    break;
+
+                case 'description':
+                    $item->load($_REQUEST['id']);
+
+                    if(!empty($_POST))
+                    {
+                        $item->title = array();
+                        $item->description = array();
+
+                        foreach($website->languages as $language)
+                        {
+                            $lcode = $language['code'];
+
+                            if(!isset($_REQUEST['titles'][$lcode]))
+                                break;
+
+                            $item->title[$lcode]	= $_REQUEST['titles'][$lcode];
+                            $item->description[$lcode]	= $_REQUEST['descriptions'][$lcode];
+                        }
+
+                        $status = $item->save();
+                        echo json_encode($status);
+                    }
+                    else
+                    {
+                        // do nothing
+                    }
+                    break;
+
+                case 'focalpoint':
+                    $item->load($_REQUEST['id']);
+                    if(!empty($_POST))
+                    {
+                        $item->focalpoint = $_REQUEST['top'].'#'.$_REQUEST['left'];
+                        $status = $item->save();
                         // remove cached thumbnails
                         file::thumbnails_remove($item->id);
+                        echo json_encode($status);
                     }
-                    echo $item->focalpoint;
-                }
+                    else
+                    {
+                        if(empty($item->focalpoint))
+                        {
+                            $item->focalpoint = '50#50';
+                            $item->save();
+                            // remove cached thumbnails
+                            file::thumbnails_remove($item->id);
+                        }
+                        echo $item->focalpoint;
+                    }
+                    break;
+
+                case 'video_info':
+                    if($_REQUEST['provider']=='youtube')
+                    {
+                        $item->load_from_youtube($_REQUEST['reference']);
+                    }
+                    else if($_REQUEST['provider']=='vimeo')
+                    {
+                        $item->load_from_vimeo($_REQUEST['reference']);
+                    }
+                    else    // uploaded video
+                    {
+                        $item->load($_REQUEST['reference']);
+                    }
+                    echo json_encode($item);
+                    break;
             }
 			session_write_close();
 			$DB->disconnect();
@@ -1259,6 +1275,10 @@ function files_media_browser($limit = 50, $offset = 0)
             $files_shown[] = $files[$i];
         }
 	}
+    else if($media=='youtube')
+    {
+        //list($files_shown, $total) = files_youtube_search($offset, $limit, $text, $order);
+    }
 	else
     {
 		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text, $order);
@@ -1290,6 +1310,21 @@ function files_media_browser($limit = 50, $offset = 0)
 			               <img src="'.$icon.'" title="'.$f->name.'" />
                       </div>';
 		}
+        else if($f->type == 'youtube')
+        {
+            $out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
+			               mediatype="'.$f->type.'"
+			               mimetype="'.$f->mime.'"
+			               image-width="'.$f->width.'"
+			               image-height="'.$f->height.'"
+			               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+			               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+			               download-link="'.$download_link.'"
+			               id="file-youtube#'.$f->id.'">
+			               <img src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
+			               <span>'.$f->title.'</span>
+                      </div>';
+        }
 		else
 		{
 			$icon = navibrowse::mimeIcon($f->mime, $f->type);
