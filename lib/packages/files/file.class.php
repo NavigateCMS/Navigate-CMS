@@ -187,7 +187,7 @@ class file
         $this->enabled		= 1;
 
         $this->extra        = array(
-            'refrence'  =>  $reference,
+            'reference'  =>  $reference,
             'link'      =>  'https://www.youtube.com/watch?v='.$reference,
             'thumbnail' =>  'https://img.youtube.com/vi/'.$reference.'/default.jpg',
             'thumbnail_big' => 'https://img.youtube.com/vi/'.$reference.'/0.jpg',
@@ -220,7 +220,7 @@ class file
         $this->enabled		= 1;
 
         $this->extra        = array(
-            'refrence'  =>  $info->video_id,
+            'reference'  =>  $info->video_id,
             'link'      =>  'https://www.vimeo.com/'.$reference,
             'thumbnail_url' => str_replace('http://', 'https://', $info->thumbnail_url),
             'duration' => '',

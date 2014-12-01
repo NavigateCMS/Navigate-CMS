@@ -1057,10 +1057,18 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 
 function navigate_file_video_info(provider, reference, callback)
 {
+    var ref = reference;
+
     if(provider=="parse")
     {
-        provider = reference.split('#')[0];
-        reference = reference.split('#')[1];
+        provider = ref.split('#')[0];
+        ref = ref.split('#')[1];
+
+        if(!provider || provider=="")
+        {
+            provider = "file";
+            ref = reference;
+        }
     }
 
     $.get(
@@ -1086,17 +1094,31 @@ function navigate_dropbox_load_video(name, value)
         function(data)
         {
             var play = '';
-            if(data.mime=='video/youtube' || data.mime=='video/vimeo')
-                play = '<br /><a href="'+data.extra.link+'" target="_blank"><i class="fa fa-2x fa-play-circle"></i></a> ';
-            $("#" + name + "-droppable-info").find(".navigate-droppable-info-title").html(data.name);
-            $("#" + name + "-droppable-info").find(".navigate-droppable-info-extra").html(data.uploaded_by);
-            $("#" + name + "-droppable-info").find(".navigate-droppable-info-provider").html(data.mime+play);
             $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_url+"\" />");
-            $("#" + name + "-droppable").find("img").css({
-                "width": "80px",
-                "height": "60px",
-                "margin-top": "8px"
-            });
+
+            if(data.mime=='video/youtube' || data.mime=='video/vimeo')
+            {
+                play = '<br /><a href="'+data.extra.link+'" target="_blank"><i class="fa fa-2x fa-play-circle"></i></a>';
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-title").html(data.name);
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-provider").html(data.mime+play);
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-extra").show();
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-extra").html(data.uploaded_by);
+                $("#" + name + "-droppable").find("img").css({
+                    "width": "80px",
+                    "height": "60px",
+                    "margin-top": "8px"
+                });
+            }
+            else
+            {
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-title").html(data.name);
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-provider").html(data.mime);
+                $("#" + name + "-droppable-info").find(".navigate-droppable-info-extra").hide();
+                $("#" + name + "-droppable").find("img").css({
+                    "width": "64px",
+                    "margin-top": "6px"
+                });
+            }
         }
     );
 }

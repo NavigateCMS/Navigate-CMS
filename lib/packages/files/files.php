@@ -192,9 +192,25 @@ function run()
                     {
                         $item->load_from_vimeo($_REQUEST['reference']);
                     }
-                    else    // uploaded video
+                    else // uploaded video (file) (may also be provider="file")
                     {
-                        $item->load($_REQUEST['reference']);
+                        if(!empty($_REQUEST['reference']) && is_numeric($_REQUEST['reference']))
+                            $item->load($_REQUEST['reference']);
+                        else if(is_numeric($_REQUEST['provider']))
+                            $item->load($_REQUEST['provider']); // needed in some case
+                        else
+                            return false;
+
+                        // add some extra data
+                        $item->extra        = array(
+                            'reference'  =>  $item->id,
+                            'link'      =>  '',
+                            'thumbnail' =>  'img/icons/ricebowl/mimetypes/video.png',
+                            'thumbnail_big' => 'img/icons/ricebowl/mimetypes/video.png',
+                            'thumbnail_url' => 'img/icons/ricebowl/mimetypes/video.png',
+                            'duration' => '',
+                            'embed_code'  => '<video src="'.file::file_url($item->id, 'inline').'></video>'
+                        );
                     }
                     echo json_encode($item);
                     break;
