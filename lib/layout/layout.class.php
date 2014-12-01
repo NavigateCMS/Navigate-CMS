@@ -855,6 +855,7 @@ class layout
         $html[] = '             <option value="flash" data-class="ui-icon-script" id="nvmb-flash">'.t(186, 'Adobe Flash').'</option>';
         $html[] = '             <option value="document" data-class="ui-icon-document" id="nvmb-doc">'.t(32, 'Documents').'</option>';
         $html[] = '             <option value="folder" data-class="ui-icon-folder-collapsed" id="nvmb-folder" prefix="'.t(75, 'Path').'">'.t(75, 'Path').'</option>';
+//        $html[] = '             <option value="youtube" data-class="fa fa-youtube fa-align-center" id="nvmb-youtube">Youtube</option>';
         $html[] = '         </select>';
 
         $html[] = '         <select id="media_browser_order" name="media_browser_order">';

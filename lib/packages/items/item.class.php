@@ -413,6 +413,13 @@ class item
 		return $out;
 	}
 
+    public function link($lang)
+    {
+        $url = $this->paths[$lang];
+        $url = nvweb_prepare_link($url);
+        return $url;
+    }
+
     public static function convert_from_rss($articles = array())
     {
         global $website;
