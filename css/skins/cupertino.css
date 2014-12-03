@@ -995,7 +995,8 @@ table.treeTable
 	display: block;
 }
 
-#navigate_media_browser_items div.file-access-icons
+#navigate_media_browser_items div.file-access-icons,
+#items-gallery-elements div.file-access-icons
 {
     position: absolute;
     margin-top: 0px;
@@ -1005,7 +1006,8 @@ table.treeTable
     text-align: right;
 }
 
-#navigate_media_browser_items div.file-access-icons img
+#navigate_media_browser_items div.file-access-icons img,
+#items-gallery-elements div.file-access-icons img
 {
     /*float: right;*/
     opacity: .75;

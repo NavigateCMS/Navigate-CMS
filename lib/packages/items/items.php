@@ -1483,8 +1483,21 @@ function items_form($item)
 		if($template->gallery > 0 || $template->gallery==='true')
 		{
 			$navibars->add_tab(t(210, "Gallery")); // tab #3
-				
-			if(!is_array($item->galleries[0])) $item->galleries[0] = array();
+
+            $access = array(
+                0 => '', //<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
+                1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
+                2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
+                3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
+            );
+
+            $permissions = array(
+                0 => '', //'<img src="img/icons/silk/world.png" align="absmiddle" title="'.t(69, 'Published').'" />',
+                1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" title="'.t(70, 'Private').'" />',
+                2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" title="'.t(81, 'Hidden').'" />'
+            );
+
+            if(!is_array($item->galleries[0])) $item->galleries[0] = array();
 			$gallery_elements_order = implode('#', array_keys($item->galleries[0]));
 			
 			$navibars->add_tab_content(
@@ -1497,21 +1510,27 @@ function items_form($item)
 			
 			for($g=0; $g < count($ids); $g++)
 			{
-				// $naviforms->dropbox("items-gallery-item-".$p, '', "image")
-				$gallery .= '<li>
-								<div id="items-gallery-item-'.$ids[$g].'-droppable" class="navigate-droppable ui-corner-all">
-									<img title="'.$ids[$g].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$ids[$g].'&amp;disposition=inline&amp;width=75&amp;height=75" />
-								</div>
-								<div class="navigate-droppable-cancel" style="display: block;"><img src="img/icons/silk/cancel.png" /></div>
-							</li>';
+				$f = new file();
+                $f->load($ids[$g]);
+				$gallery .= '
+				    <li>
+                        <div id="items-gallery-item-'.$ids[$g].'-droppable" class="navigate-droppable ui-corner-all">
+                            <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
+                            <img title="'.$ids[$g].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$ids[$g].'&amp;disposition=inline&amp;width=75&amp;height=75" />
+                        </div>
+                        <div class="navigate-droppable-cancel" style="display: block;"><img src="img/icons/silk/cancel.png" /></div>
+                    </li>
+                ';
 			}
 		
 			// empty element
-			$gallery .= '<li>
-							<div id="items-gallery-item-empty-droppable" class="navigate-droppable ui-corner-all">
-								<img src="img/icons/misc/dropbox.png" vspace="18" />
-							</div>
-						 </li>';	
+			$gallery .= '
+                <li>
+                    <div id="items-gallery-item-empty-droppable" class="navigate-droppable ui-corner-all">
+                        <img src="img/icons/misc/dropbox.png" vspace="18" />
+                    </div>
+                </li>
+            ';
 			
 			$gallery.= '</ul>';
 			
@@ -1525,12 +1544,17 @@ function items_form($item)
 				}
 			}	
 			
-			$navibars->add_tab_content_row(array(	'<label>'.t(210, 'Gallery').'</label>',
-																	 '<div>'.$gallery.'</div>'));		
+			$navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(210, 'Gallery').'</label>',
+				    '<div>'.$gallery.'</div>'
+                )
+            );
+
 			// script#6
 			
-			$layout->add_script('	
-			
+			$layout->add_script('
+
 				$("#items-gallery-elements .navigate-droppable").live("dblclick", function()
 				{
 					var id = $(this).attr("id");
