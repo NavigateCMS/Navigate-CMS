@@ -282,7 +282,7 @@
 281		# Comments to revise
 282		# Untitled
 283		# Show in menus
-284		# /*/
+284		# Africa
 285		# Update
 286		# Drag to reorder. Double click to assign image captions.
 287		# Protocol

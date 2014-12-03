@@ -945,6 +945,10 @@ class property
 
 				switch($continent)
 				{
+					case 'Africa':
+						$continent = t(284, 'Africa');
+						break;
+
 					case 'America':
 						$continent = t(310, 'America');
 						break;

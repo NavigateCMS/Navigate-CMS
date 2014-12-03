@@ -282,7 +282,7 @@
 281		# Comentarios por revisar
 282		# Sin título
 283		# Se muestra en los menús
-284		# Bienvenid@ a Navigate CMS! Por favor, indique los datos de su primer sitio web para completar la instalación.
+284		# África
 285		# Actualizar
 286		# Arrastre para reordenar. Haga doble clic para asignar títulos a la imagen.
 287		# Protocolo

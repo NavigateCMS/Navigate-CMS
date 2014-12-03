@@ -282,7 +282,7 @@
 281		# Kommentare zur Überarbeitung
 282		# Ohne Titel
 283		# In Menüs anzeigen
-284		# Herzlich willkommen bei Navigate CMS! Bitte gib die Details deiner ersten Website ein um die Installation abzuschließen.
+284		# Afrika
 285		# Update
 286		# Verschieben um die Reihenfolge zu ändern. Doppelklicken um die Bildunterschrift einzugeben
 287		# Protokoll
