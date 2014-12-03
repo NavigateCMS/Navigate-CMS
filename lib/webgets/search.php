@@ -72,10 +72,20 @@ function nvweb_search($vars=array())
 
         $orderby = nvweb_list_get_orderby($order);
 
+        if(empty($vars['items']) || $vars['items']=='0')
+            $vars['items'] = 500; //2147483647; // maximum integer
+        // TODO: try to optimize nvlist generation to use less memory and increase the maximum number of items
+        // NOTE: anyway, having >500 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
+
 		$DB->query('	
-			SELECT SQL_CALC_FOUND_ROWS DISTINCT(i.id), i.permission, i.date_published, i.date_unpublish,
-			        GREATEST(i.date_published, i.date_created) as pdate, i.position as position
+			SELECT SQL_CALC_FOUND_ROWS i.id as id, i.permission, i.date_published, i.date_unpublish,
+			        GREATEST(i.date_published, i.date_created) as pdate, i.position as position, wd.text as title
 			  FROM nv_items i, nv_webdictionary d
+			  LEFT JOIN nv_webdictionary wd
+			    ON wd.node_id = d.node_id
+			   AND wd.lang =  '.protect($current['lang']).'
+			   AND wd.node_type = "item"
+			   AND wd.website = '.protect($website->id).'
 			 WHERE i.website = '.$website->id.'
 			   AND i.permission <= '.$permission.'
 			   AND (i.date_published = 0 OR i.date_published < '.core_time().')
@@ -89,6 +99,7 @@ function nvweb_search($vars=array())
 			   	'.implode(' AND ', $likes).'
 			   )
 			   '.(empty($categories)? '' : 'AND category IN('.implode(",", $categories).')').'
+          GROUP BY i.id
 			 '.$orderby.'
 			 LIMIT '.$vars['items'].'
 			OFFSET '.$offset
@@ -227,7 +238,7 @@ function nvweb_search($vars=array())
         if(!empty($archive))
            $archive = 'archive='.$archive.'&';
 		
-		if($vars['paginator']==true)
+		if($vars['paginator']=='true')
 		{
 			$pages = ceil($total / $vars['items']);
 			$page = $_GET['page'];
