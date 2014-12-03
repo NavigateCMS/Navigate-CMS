@@ -203,6 +203,9 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>English</label>',
         '<a href="http://www.navigatecms.com">Navigate CMS</a>'));
 
+    $navibars->add_tab_content_row(array(	'<label>Català</label>',
+        '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />' ));
+
     $navibars->add_tab_content_row(array(	'<label>Español</label>',
         '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />' ));
 

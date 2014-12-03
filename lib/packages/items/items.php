@@ -1148,7 +1148,7 @@ function items_form($item)
 
 		$("#embedding_info").qtip(
 		{
-		    content: \'<div><strong>'.t(163, 'Embedded').'</strong>: '.t(165, 'Full content is shown on category page. Ex. "Who we are?"').'<br /><br /><strong>'.t(164, 'Own path').'</strong>: '.t(166, 'The content is accessed through its own url. Ex. "News"').'</div>\',
+		    content: "<div><strong>'.t(163, 'Embedded').'</strong>: '.t(165, 'Full content is shown on category page. Ex. "Who we are?"', false, true).'<br /><br /><strong>'.t(164, 'Own path').'</strong>: '.t(166, 'The content is accessed through its own url. Ex. "News"', false, true).'</div>",
 		    show:
 		    {
 		        event: "mouseover"
@@ -1172,7 +1172,7 @@ function items_form($item)
 
 		$("#order_info").qtip(
 		{
-		    content: \'<div>'.t(425, 'Order elements of a category (unless the template forces other sorting)').'</div>\',
+		    content: \'<div>'.t(425, 'Order elements of a category (unless the template forces other sorting)', false, true).'</div>\',
 		    show:
             {
                 event: "mouseover"
