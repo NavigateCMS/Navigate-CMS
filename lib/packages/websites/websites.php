@@ -942,7 +942,7 @@ function websites_form($item)
     );
 
 	$layout->add_script('
-		$("#mail_test").bind("click", function()
+		$("#mail_test").on("click", function()
 		{
 			navigate_status("'.t(391, "Trying to send a test e-mail...").'", "loader", true);
 			$.ajax({
@@ -965,6 +965,15 @@ function websites_form($item)
 				  	navigate_notification("'.t(56, "Unexpected error.").'");
 				  else
 				  	navigate_notification("'.t(392, "E-Mail sent").'");
+			  },
+			  error: function(data)
+			  {
+			        navigate_status(navigate_lang_dictionary[42], "ready");
+			        var error_message = (data.responseText).split("<br />")[0];
+			        if(error_message!="")
+			            error_message = ": " + error_message;
+
+			        navigate_notification("'.t(56, "Unexpected error.").'" + error_message, true);
 			  },
 			  dataType: "json"
 			});

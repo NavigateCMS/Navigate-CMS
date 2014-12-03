@@ -262,7 +262,7 @@
 261		# Carregant
 262		# Error carregant fitxer
 263		# Correus electrònics de contacte
-264		# Una entrada por línia
+264		# Una entrada per línia
 265		# Etiquetes
 266		# Autor/a
 267		# Editor
@@ -294,7 +294,7 @@
 293		# Actualitzat correctament.
 294		# Error actualitzant.
 295		# Expandir tot
-296		# Pàgines más vistes
+296		# Pàgines més vistes
 297		# Coordenades
 298		# Latitut
 299		# Longitut
