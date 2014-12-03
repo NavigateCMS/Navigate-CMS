@@ -50,9 +50,10 @@ class language
 	 *
 	 * @param string $id Codename of the string to get the translation
 	 * @param string $default Text that will be shown if the current language does not have a translation for this word.
-	 * @param array Replace a variable in the translated text for the given value.
+	 * @param array Replace variables in the translated text for the given values.
+     * @param boolean $encodeChars Encode some special characters as HTML entities
 	 */			
-	public function t($id, $default="", $replace=array())
+	public function t($id, $default="", $replace=array(), $encodeChars=false)
 	{
 		if(empty($this->lang[$id])) $out = $default;
 		else						$out = $this->lang[$id];
@@ -62,6 +63,9 @@ class language
             foreach($replace as $key => $val)
                 $out = str_replace($key, $val, $out);
         }
+
+        if($encodeChars)
+            $out = htmlspecialchars($out, ENT_QUOTES, 'UTF-8', false);
 		
 		return $out;
 	}

@@ -19,16 +19,17 @@
  * @param integer $id The ID of the string on Navigate CMS dictionary
  * @param string $default The default string to be returned if no translation found
  * @param array $replace Array of substitutions; example: "Your name is {your_name}" [ 'your_name' => 'Navigate' ]
+ * @param boolean $encodeChars Encode some special characters as HTML entities
  * @return string
  */
-function t($id, $default='', $replace=array())
+function t($id, $default='', $replace=array(), $encodeChars=false)
 {
 	global $lang;
 
 	if(!method_exists($lang, 't'))	
 		return $default;
 	
-	return $lang->t($id, $default, $replace);	
+	return $lang->t($id, $default, $replace, $encodeChars);
 }
 
 /**
