@@ -272,15 +272,15 @@ $(document).ready(function()
                     //$('#navigate-lost-password-dialog').dialog('close');
                     $('#navigate-lost-password-dialog').html('');
                     $('#navigate-lost-password-dialog').append('<div style="text-align: center; "><img src="img/icons/primo/email_accept.png" /></div>');
-                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(454, 'An e-mail with a confirmation link has been sent to your e-mail account.'); ?></div>');
+                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(454, 'An e-mail with a confirmation link has been sent to your e-mail account.', false, true); ?></div>');
                 }
                 else if(data=='not_found')
                 {
-                    $('#forgot-password-problem').html("<?php echo t(453, "Couldn't find this username or e-mail address");?>");
+                    $('#forgot-password-problem').html("<?php echo t(453, "Couldn't find this username or e-mail address", false, true);?>");
                 }
                 else if(data=='not_sent')
                 {
-                    $('#forgot-password-problem').html("<?php echo t(452, "E-mail could not be sent; please contact the administrator");?>");
+                    $('#forgot-password-problem').html("<?php echo t(452, "E-mail could not be sent; please contact the administrator", false, true);?>");
                 }
             }
         );
@@ -290,7 +290,7 @@ $(document).ready(function()
     $('#login-button a').on('click', function()
     {
         $('#navigate-lost-password-dialog').dialog({
-            title: "<?php echo t(407, 'Forgot password?');?>",
+            title: "<?php echo t(407, 'Forgot password?', false, true);?>",
             modal: true,
             width: 350,
             height: 220
