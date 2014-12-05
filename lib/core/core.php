@@ -261,7 +261,13 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
 
     $mail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
     $mail->CharSet = 'UTF-8';
-    $mail->IsSMTP(); // telling the class to use SMTP
+
+    if($website->mail_mailer=='sendmail')
+        $mail->IsSendmail(); // telling the class to use Sendmail
+    else if($website->mail_mailer=='mail')
+        $mail->IsMail(); // telling the class to use PHP Mail
+    else
+        $mail->IsSMTP(); // telling the class to use SMTP
 
     try
     {

@@ -168,6 +168,7 @@ function run()
 			break;
 			
 		case 'email_test':
+			$website->mail_mailer = $_REQUEST['mail_mailer'];
 			$website->mail_server = $_REQUEST['mail_server'];
 			$website->mail_port = $_REQUEST['mail_port'];
 			$website->mail_address = $_REQUEST['mail_address'];
@@ -876,6 +877,48 @@ function websites_form($item)
 
 	$navibars->add_tab(t(44, "E-Mail"));
 
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(548, "Method").'</label>',
+            $naviforms->buttonset(
+                'mail_mailer',
+                array(
+                    'smtp' => 'SMTP',
+                    'sendmail' => 'Sendmail',
+                    'mail' => 'PHP mail'
+                ),
+                (empty($item->mail_mailer)? 'smtp' : $item->mail_mailer),
+                "navigate_change_mail_transport(this);"
+            )
+        )
+    );
+
+    $layout->add_script('
+        function navigate_change_mail_transport(el)
+        {
+            var mail_mailer = "";
+            if(el=="smtp" || el=="sendmail" || el=="mail")
+                mail_mailer = el;
+            else
+                mail_mailer = $("input#" + $(el).attr("for")).val();
+
+            $("#mail_server").parent().show();
+            $("#mail_port").parent().show();
+            $("#mail_security").parent().show();
+            $("#mail_user").parent().show();
+            $("#mail_password").parent().show();
+            if(mail_mailer=="sendmail" || mail_mailer=="mail")
+            {
+                $("#mail_server").parent().hide();
+                $("#mail_port").parent().hide();
+                $("#mail_security").parent().hide();
+                $("#mail_user").parent().hide();
+                $("#mail_password").parent().hide();
+            }
+        }
+
+        navigate_change_mail_transport("'.(empty($item->mail_mailer)? 'smtp' : $item->mail_mailer).'");
+    ');
+
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(231, 'Server').'</label>',
@@ -949,6 +992,7 @@ function websites_form($item)
 			  type: "POST",
 			  url: "?fid='.$_GET['fid'].'&act=email_test",
 			  data: {
+				 mail_mailer: $("input[name=\"mail_mailer[]\"]:checked").val(),
 				 mail_server: $("#mail_server").val(),
 				 mail_port: $("#mail_port").val(),
 				 mail_security: $("#mail_security").is(":checked"),

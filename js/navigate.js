@@ -13,7 +13,7 @@ $(window).on('load', function()
     $(".buttonset").find('label').on('click', function()
     {
         // force buttonset to update the state on click
-        // jquery doesn't count a click if the curser moves a little
+        // jquery doesn't count a click if the cursor moves a little
         $(this).parents('.buttonset').find('input[checked]').removeAttr('checked');
         $(this).prev().attr('checked', 'checked');
         $(this).parents('.buttonset').buttonset('refresh');

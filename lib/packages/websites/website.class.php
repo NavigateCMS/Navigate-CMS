@@ -27,6 +27,7 @@ class website
 	public $metatag_description;  // multilanguage
 	public $metatag_keywords;  // multilanguage
     public $metatags; // multilanguage
+    public $mail_mailer; // smtp or sendmail
 	public $mail_server;
 	public $mail_port;
 	public $mail_user;
@@ -98,6 +99,7 @@ class website
 		$this->metatags			    = json_decode($main->metatags, true);
 		$this->favicon			= $main->favicon;
 			
+		$this->mail_mailer		= $main->mail_mailer;
 		$this->mail_server		= $main->mail_server;
 		$this->mail_port		= $main->mail_port;
         $this->mail_security	= $main->mail_security;
@@ -146,6 +148,7 @@ class website
 		$this->permission		= intval($_REQUEST['permission']);
 		$this->default_timezone	= $_REQUEST['default_timezone'];
 		
+		$this->mail_mailer		= $_REQUEST['mail_mailer'][0];
 		$this->mail_server		= $_REQUEST['mail_server'];
 		$this->mail_port		= intval($_REQUEST['mail_port']);
         $this->mail_security	= intval($_REQUEST['mail_security']);
@@ -377,7 +380,7 @@ class website
                 aliases, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator,
                 additional_scripts, permission,
-                mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
+                mail_mailer, mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
                 homepage, default_timezone, metatag_description, metatag_keywords, metatags,
                 favicon, theme, theme_options
             )
@@ -400,6 +403,7 @@ class website
               '.protect($this->comments_default_moderator).',
               '.protect($this->additional_scripts).',
               '.protect($this->permission).',
+              '.protect($this->mail_mailer).',
               '.protect($this->mail_server).',
               '.protect($this->mail_port).',
               '.protect($this->mail_security).',
@@ -488,6 +492,7 @@ class website
 					comments_default_moderator = ?,
                     additional_scripts = ?,
                     permission = ?,
+                    mail_mailer = ?,
                     mail_server = ?,
                     mail_port = ?,
                     mail_security = ?,
@@ -522,6 +527,7 @@ class website
                 $this->comments_default_moderator,
                 $this->additional_scripts,
                 $this->permission,
+                $this->mail_mailer,
                 $this->mail_server,
                 $this->mail_port,
                 $this->mail_security,
