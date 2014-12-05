@@ -48,7 +48,7 @@ function nvweb_liveedit($vars=array())
         // add jQuery if has not already been loaded in the template
         $includes = array();
         if(strpos($vars['nvweb_html'], 'jquery')===false)
-            $includes[] = '<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
+            $includes[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
 
         $includes[] = '<script language="javascript" type="text/javascript" src="'.NAVIGATE_URL.'/js/navigate_liveedit.js"></script>';
         $includes[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/navigate_liveedit.css" />';
