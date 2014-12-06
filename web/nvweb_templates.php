@@ -928,6 +928,22 @@ function nvweb_template_oembed_url($url)
         if(!empty($response->html))
             $out = $response->html;
     }
+    // Youtube: http://www.youtube.com?watch=3MteSlpxCpo
+    else if(strpos($url, 'www.youtube.com/watch'))
+    {
+        $oembed_url = 'http://www.youtube.com/oembed?url='.urlencode($url).'&format=json';
+        $response = nvweb_template_oembed_cache('youtube', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+    // Vimeo: http://vimeo.com/channels/staffpicks/113397445
+    else if(strpos($url, 'www.vimeo.com/') || strpos($url, 'vimeo.com/'))
+    {
+        $oembed_url = 'http://vimeo.com/api/oembed.json?url='.urlencode($url);
+        $response = nvweb_template_oembed_cache('vimeo', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
 
     return $out;
 }

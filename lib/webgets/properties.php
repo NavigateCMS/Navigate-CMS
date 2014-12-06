@@ -430,7 +430,7 @@ function nvweb_properties_render($property, $vars)
                     $file->load_from_vimeo($reference);
             }
 
-            switch(@$vars['part'])
+            switch(@$vars['return'])
             {
                 case 'title':
                     $out = $file->title;
@@ -447,7 +447,8 @@ function nvweb_properties_render($property, $vars)
                         $out = $file->uploaded_by;
                     break;
 
-                case 'link':
+                case 'path':
+                case 'url':
                     $out = $file->extra['link'];
                     break;
 
