@@ -1190,7 +1190,7 @@ function navigate_file_video_info(provider, reference, callback)
     }
 
     $.get(
-        NAVIGATE_APP + '?fid=files&act=json&op=video_info&provider=' + provider + '&reference=' + reference,
+        NAVIGATE_APP + '?fid=files&act=json&op=video_info&provider=' + provider + '&reference=' + ref,
         function(data)
         {
             if(typeof(callback)=='function')
@@ -1212,6 +1212,9 @@ function navigate_dropbox_load_video(name, value)
         function(data)
         {
             var play = '';
+            if(!data.id)
+                return false;
+
             $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_url+"\" />");
 
             if(data.mime=='video/youtube' || data.mime=='video/vimeo')

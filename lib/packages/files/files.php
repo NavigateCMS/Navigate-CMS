@@ -186,11 +186,11 @@ function run()
                 case 'video_info':
                     if($_REQUEST['provider']=='youtube')
                     {
-                        $item->load_from_youtube($_REQUEST['reference']);
+                        $item->load_from_youtube($_REQUEST['reference'], false); // force cache reload
                     }
                     else if($_REQUEST['provider']=='vimeo')
                     {
-                        $item->load_from_vimeo($_REQUEST['reference']);
+                        $item->load_from_vimeo($_REQUEST['reference'], false); // force cache reload
                     }
                     else // uploaded video (file) (may also be provider="file")
                     {

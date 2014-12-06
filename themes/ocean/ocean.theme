@@ -157,7 +157,8 @@
                     "editor": "tinymce",
                     "width": "610"
                 }
-			]
+			],
+            "properties": []
 		},
         {
             "type": "content_right",

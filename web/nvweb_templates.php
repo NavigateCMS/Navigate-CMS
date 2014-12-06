@@ -932,21 +932,23 @@ function nvweb_template_oembed_url($url)
     return $out;
 }
 
-function nvweb_template_oembed_cache($provider, $oembed_url)
+// default cache 43200 minutes (30 days)
+function nvweb_template_oembed_cache($provider, $oembed_url, $minutes=43200)
 {
     $file = NAVIGATE_PRIVATE.'/oembed/'.$provider.'.'.md5($oembed_url).'.json';
 
-    if(file_exists($file) && filemtime($file) > (time() - (30 * 24 * 60 * 60)))
+    if(file_exists($file) && filemtime($file) > (time() - ($minutes * 60)))
     {
-        // a previous request has been posted in the last 30 days
+        // a previous request has already been posted in the last xx minutes
         $response = file_get_contents($file);
     }
     else
     {
         // request has not been cached or it has expired
         $response = core_curl_post($oembed_url, NULL, NULL, 60, "get");
+
         if(!empty($response))
-            $response = file_put_contents($file, $response);
+            file_put_contents($file, $response);
     }
 
     if(!empty($response))

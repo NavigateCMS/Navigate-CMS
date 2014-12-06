@@ -607,6 +607,7 @@ class naviforms
                         .find(".navigate-droppable-create-contextmenu li")
                         .on("click", function()
                         {
+                            navigate_hide_context_menus();
                             switch($(this).attr("action"))
                             {
                                 case "default":

@@ -385,8 +385,11 @@ function nvweb_properties_render($property, $vars)
             break;
 
         case 'video':
-            // TODO: value may be a numeric file ID, a Youtube/Vimeo code (not URL), or a full URL
+            // value may be a numeric file ID or a provider#id structure, f.e. youtube#3MteSlpxCpo
+            // compatible providers: file,youtube,vimeo
             $video_id = $property->value;
+            $provider = '';
+            $reference = '';
 
             $add = '';
             if(isset($vars['width']))
@@ -394,23 +397,71 @@ function nvweb_properties_render($property, $vars)
             if(isset($vars['height']))
                 $add .= ' height="'.$vars['height'].'" ';
 
+            if(strpos($video_id, '#')!==false)
+                list($provider, $reference) = explode("#", $video_id);
+
+            if($provider=='file')
+                $video_id = $reference;
+
+            $file = new file();
             if(is_numeric($video_id))
             {
-                $file = new file();
-                $file->load($property->value);
+                $file->load($video_id);
 
                 $vsrc = NVWEB_OBJECT.'?type=file&id='.$file->id.'&disposition=inline';
 
-                $out = '
+                $embed = '
                     <video id="video-file-'.$video_id.'" '.$add.' controls="controls" preload="metadata" poster="">
                         <source src="'.$vsrc.'" type="'.$file->mime.'" />
                         <p>Error loading video</p>
                     </video>
                 ';
             }
-            else
+            else if($provider == 'youtube')
             {
+                $embed = '<iframe '.$add.' src="https://www.youtube.com/embed/'.$reference.'?feature=oembed&rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>';
+                if(!empty($vars['part']) || $vars['part']!='embed')
+                    $file->load_from_youtube($reference);
+            }
+            else if($provider == 'vimeo')
+            {
+                $embed = '<iframe '.$add.' src="https://player.vimeo.com/video/'.$reference.'?" frameborder="0" allowfullscreen></iframe>';
+                if(!empty($vars['part']) || $vars['part']!='embed')
+                    $file->load_from_vimeo($reference);
+            }
 
+            switch(@$vars['part'])
+            {
+                case 'title':
+                    $out = $file->title;
+                    break;
+
+                case 'mime':
+                    $out = $file->mime;
+                    break;
+
+                case 'author':
+                    if(is_numeric($file->uploaded_by))
+                        $out = $website->name;
+                    else
+                        $out = $file->uploaded_by;
+                    break;
+
+                case 'link':
+                    $out = $file->extra['link'];
+                    break;
+
+                case 'thumbnail_url':
+                    $out = $file->extra['thumbnail_url'];
+                    break;
+
+                case 'thumbnail':
+                    $out = '<img src="'.$file->extra['thumbnail_url'].'" '.$add.' />';
+                    break;
+
+                case 'embed':
+                default:
+                    $out = $embed;
             }
             break;
 			

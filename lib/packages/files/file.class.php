@@ -1,6 +1,7 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php');
 require_once(NAVIGATE_PATH.'/lib/external/class.upload/class.upload.php');
+require_once(NAVIGATE_PATH.'/web/nvweb_templates.php');
 
 // remember, all files are saved in the private directory using ID as filename: NAVIGATE_PRIVATE
 
@@ -30,9 +31,9 @@ class file
 		global $DB;
 		global $website;
 		
-		if(!is_numeric($id))
+		if(!is_numeric($id) && strpos($id, '#')===false)
 		{
-			// is it a path?, then create a virtual file object
+			// then it may be a http/https path?, so create a virtual file object
 			$id = urldecode($id);
 			$this->id = $id;
             $this->website = $website->id;
@@ -118,6 +119,19 @@ class file
         $groups = str_replace('g', '', $main->groups);
         $this->groups = explode(',', $groups);
         if(!is_array($this->groups))  $this->groups = array($groups);
+
+        if($this->type=='video')
+        {
+            // set extra information
+            $vsrc = NVWEB_OBJECT.'?type=file&id='.$this->id.'&disposition=inline';
+            $this->extra        = array(
+                'reference'  =>  $this->id,
+                'link'      =>  $vsrc,
+                'thumbnail_url' => NVWEB_OBJECT.'?type=blank',
+                'duration' => '',
+                'embed_code'  => '<video id="video-file-'.$this->id.'" controls="controls" preload="metadata" poster=""><source src="'.$vsrc.'" type="'.$this->mime.'" /><p>Error loading video</p></video>'
+            );
+        }
 	}
 	
 	public function load_from_post()
@@ -164,10 +178,17 @@ class file
         }
 	}
 
-    public function load_from_youtube($reference)
+    public function load_from_youtube($reference, $cache=true)
     {
-        $info = file_get_contents('https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v='.$reference.'&format=json');
-        $info = json_decode($info);
+        // check cache before trying to download oembed info
+        if($cache)  $cache = 30 * 24 * 60; // 30 days
+        else        $cache = 0;
+
+        $info = nvweb_template_oembed_cache(
+            'youtube',
+            'https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v='.$reference.'&format=json',
+            $cache
+        );
 
         if(empty($info))
             return false;
@@ -197,10 +218,16 @@ class file
         );
     }
 
-    public function load_from_vimeo($reference)
+    public function load_from_vimeo($reference, $cache=true)
     {
-        $info = file_get_contents('http://vimeo.com/api/oembed.json?url=http://vimeo.com/'.$reference.'&format=json');
-        $info = json_decode($info);
+        if($cache)  $cache = 30 * 24 * 60; // 30 days
+        else        $cache = 0;
+
+        $info = nvweb_template_oembed_cache(
+            'vimeo',
+            'http://vimeo.com/api/oembed.json?url=http://vimeo.com/'.$reference.'&format=json',
+            $cache
+        );
 
         if(empty($info))
             return false;
