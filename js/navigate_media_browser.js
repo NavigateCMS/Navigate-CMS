@@ -323,12 +323,29 @@ function navigate_contextmenu_permissions_dialog(file_id, trigger)
     );
 }
 
-function navigate_contextmenu_description_dialog(file_id, trigger)
+function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
 {
-    var title = $.base64.decode($('#file-' + file_id).attr('image-title'));
-    var alt = $.base64.decode($('#file-' + file_id).attr('image-description'));
-    title = $.parseJSON(title);
-    alt = $.parseJSON(alt);
+    if(!title)
+    {
+        var title = [];
+        if($('#file-' + file_id).length > 0)
+        {
+            title = $('#file-' + file_id).attr('image-title');
+            title = $.base64.decode(title);
+            title = $.parseJSON(title);
+        }
+    }
+
+    if(!alt)
+    {
+        var alt = [];
+        if($('#file-' + file_id).length > 0)
+        {
+            alt = $('#file-' + file_id).attr('image-description');
+            alt = $.base64.decode(alt)
+            alt = $.parseJSON(alt);
+        }
+    }
 
     // empty current values
     $('[id^=contextmenu-description-dialog-title-]').val('');

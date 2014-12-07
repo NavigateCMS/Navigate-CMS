@@ -156,7 +156,12 @@ function run()
                     }
                     else
                     {
-                        // do nothing
+                        // return file title and description (alt)
+                        $data = array(
+                            'title' => $item->title,
+                            'description' => $item->description
+                        );
+                        echo json_encode($data);
                     }
                     break;
 

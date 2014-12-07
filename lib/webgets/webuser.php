@@ -170,11 +170,17 @@ function nvweb_webuser($vars=array())
                         break;
 
                     // javascript callback
+                    case 'callback':
                     default:
                         if($ok)
                             nvweb_after_body('js', $vars['callback'].'("'.$message.'");');
                         else
-                            nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                        {
+                            if(!empty($vars['error_callback']))
+                                nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                            else
+                                nvweb_after_body('js', $vars['callback'].'("'.$message.'");');
+                        }
                         break;
                 }
 

@@ -566,7 +566,7 @@ class naviforms
                                 <div class="navigate-droppable-create-default_value">'.$default_value_html.'</div>
                               </div>';
 
-                    // context menu actions
+                    // "create" context menu actions
                     $layout->add_script('
                         $("#'.$name.'-droppable").parent()
                             .find(".navigate-droppable-create")
@@ -583,6 +583,67 @@ class naviforms
 
                     $contextmenu = true;
                 }
+
+                // images: add context menu over the image itself to define focal point, description and title...
+                $out[] = '
+                    <ul class="navigate-droppable-edit-contextmenu" style="display: none;">
+                        <li action="permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
+                        <li action="focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
+                        <li action="description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
+                    </ul>
+                ';
+
+                $layout->add_script('
+                    $("#'.$name.'-droppable").on("contextmenu", function(ev)
+                    {
+                        ev.preventDefault();
+                        navigate_hide_context_menus();
+                        var file_id = $("#'.$name.'").val();
+                        if(!file_id || file_id=="") return;
+
+                        setTimeout(function()
+                        {
+                            var menu_el = $("#'.$name.'-droppable").parent().find(".navigate-droppable-edit-contextmenu");
+
+                            menu_el.menu();
+
+                            menu_el.css({
+                                "z-index": 100000,
+                                "position": "absolute",
+                                "left": "240px",
+                                "top": "80px"
+                            }).addClass("navi-ui-widget-shadow").show();
+                        }, 100);
+                    });
+
+                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-edit-contextmenu a").on("click", function(ev)
+                    {
+                        ev.preventDefault();
+                        var action = $(this).parent().attr("action");
+                        var file_id = $("#'.$name.'").val();
+                        switch(action)
+                        {
+                            case "permissions":
+                            navigate_contextmenu_permissions_dialog(file_id);
+                            break;
+
+                            case "focalpoint":
+                            navigate_media_browser_focalpoint(file_id);
+                            break;
+
+                            case "description":
+                            $.get(
+                                NAVIGATE_APP + "?fid=files&act=json&op=description&id=" + file_id,
+                                function(data)
+                                {
+                                    data = $.parseJSON(data);
+                                    navigate_contextmenu_description_dialog(file_id, $("#'.$name.'-droppable"), data.title, data.description);
+                                }
+                            );
+                            break;
+                        }
+                    });
+                ');
             }
             else if($media=='video')
             {
@@ -631,7 +692,7 @@ class naviforms
                                                 }
                                                 $(this).dialog("close");
                                             },
-                                            Cancel: function() { $(this).dialog("close"); }
+                                            "'.t(58, "Cancel").'": function() { $(this).dialog("close"); }
                                         }
                                     });
                                     break;
@@ -652,7 +713,7 @@ class naviforms
                                                 }
                                                 $(this).dialog("close");
                                             },
-                                            Cancel: function() { $(this).dialog("close"); }
+                                            "'.t(58, "Cancel").'": function() { $(this).dialog("close"); }
                                         }
                                     });
                                     break;
