@@ -492,8 +492,8 @@ function websites_form($item)
 
     // system locales
     $locales = $item->unix_locales();
-    $system = 'UNIX';
-    if(empty($locales)) // seems like a MS Windows Server (c)
+    $system = PHP_OS;
+    if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' && empty($locales)) // seems like a MS Windows Server (c)
     {
         $locales = $item->windows_locales();
         $system = 'MS Windows';
@@ -533,7 +533,7 @@ function websites_form($item)
                 'language' => 'en',
                 'variant' => '',
                 'code' => 'en',
-                'system_locale' => ($system=='MS Windows'? 'ENU_USA' : 'en_US.utf8')
+                'system_locale' => (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN'? 'ENU_USA' : 'en_US.utf8')
             )
         );
     }
@@ -549,7 +549,11 @@ function websites_form($item)
         $variant = !empty($ldef['variant']);
 
         $select_language = $naviforms->select_from_object_array('language-id[]', $languages_rs, 'code', 'name', $ldef['language'], ' width: 150px; ');
-        $select_locale   = $naviforms->selectfield('language-locale[]', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
+
+        if(empty($locales))
+            $select_locale   = $naviforms->textfield('language-locale[]', $ldef['system_locale'], '300px');
+        else
+            $select_locale   = $naviforms->selectfield('language-locale[]', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
 
         $table->addRow($p, array(
             array('content' => $select_language, 'align' => 'left'),
@@ -624,7 +628,9 @@ function websites_form($item)
             $(tr).find("td").eq(3).find("a,div").remove();
 
             navigate_selector_upgrade($(tr).find("td:first").find("select"));
-            navigate_selector_upgrade($(tr).find("td").eq(3).find("select"));
+
+            if($(tr).find("td").eq(3).find("select").length > 0)
+                navigate_selector_upgrade($(tr).find("td").eq(3).find("select"));
 
             return false;
         });
