@@ -698,6 +698,17 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 						$out = date($website->date_format, $item->date_public);
 					break;
 
+                case 'date_post':
+                    $date_post = $item->date_published;
+                    if(empty($date_post))
+                        $date_post = $item->date_public;
+
+					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
+						$out = nvweb_content_date_format($tag['attributes']['format'], $date_post);
+					else
+						$out = date($website->date_format, $date_post);
+					break;
+
 				case 'content':
 				case 'section':
 					$section = $tag['attributes']['section'];
