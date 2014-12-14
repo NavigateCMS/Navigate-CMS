@@ -890,8 +890,8 @@ function nvweb_template_oembed_parse($html)
             if(strpos(@$tag['attributes']['class'], 'nv_oembedded')!==false)
                 continue;
 
-            // find all plain text urls
-            if(preg_match_all($reg_exUrl, $text, $url))
+            // find all urls in content as PLAIN TEXT urls
+            if(preg_match_all($reg_exUrl, strip_tags($text), $url))
             {
                 $matches = array_unique($url[0]);
                 foreach($matches as $match)

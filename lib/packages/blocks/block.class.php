@@ -117,8 +117,10 @@ class block
             'trigger-image',
             'trigger-rollover',
             'trigger-rollover-active',
+            'trigger-video',
             'trigger-flash',
             'trigger-html',
+            'trigger-links',
             'trigger-content'
         );
 		$fields_action	= array (
@@ -127,7 +129,7 @@ class block
             'action-file',
             'action-image'
         );
-		
+
 		foreach($_REQUEST as $key => $value)
 		{
 			if(empty($value)) continue;
@@ -137,17 +139,39 @@ class block
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
 					$this->dictionary[substr($key, strlen($field.'-'))]['title'] = $value;
 			}
-			
+
 			foreach($fields_trigger as $field)
 			{
+                // f.e., Does this REQUEST field begins with "trigger-content-"?
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
 				{
-					if($field == 'trigger-html')
-						$this->trigger[$field][substr($key, strlen($field.'-'))] = htmlspecialchars($value);
-					else if($field=='trigger-content')
-						$this->trigger[$field][substr($key, strlen($field.'-'))] = $value;
-					else
-						$this->trigger[$field][substr($key, strlen($field.'-'))] = pquotes($value);
+                    switch($field)
+                    {
+                        case 'trigger-html':
+                            $this->trigger[$field][substr($key, strlen($field.'-'))] = htmlspecialchars($value);
+                            break;
+
+                        case 'trigger-content':
+                            $this->trigger[$field][substr($key, strlen($field.'-'))] = $value;
+                            break;
+
+                        case 'trigger-links':
+                            $key_parts = explode("-", $key);
+                            $key_lang = array_pop($key_parts);
+                            $key_name = array_pop($key_parts);
+                            $value = array_filter($value);
+
+                            // ignore links without a title or without a link
+                            if(empty($value))
+                                continue;
+
+                            $this->trigger[$field][$key_lang][$key_name] = $value;
+                            break;
+
+                        default:
+                            $this->trigger[$field][substr($key, strlen($field.'-'))] = pquotes($value);
+                            break;
+                    }
 				}
 			}
 			
@@ -156,7 +180,7 @@ class block
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
 					$this->action[$field][substr($key, strlen($field.'-'))] = $value;
 			}						
-		}	
+		}
 
 		$this->categories 	= '';
 		if(!empty($_REQUEST['categories']))

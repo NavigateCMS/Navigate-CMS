@@ -1205,6 +1205,9 @@ function navigate_dropbox_load_video(name, value)
     $("#" + name).html("");
     $("#" + name).parent().find(".navigate-droppable-cancel").show();
     $("#" + name).parent().find(".navigate-droppable-create").hide();
+    $("#" + name + "-droppable-info").find(".navigate-droppable-info-title").html("");
+    $("#" + name + "-droppable-info").find(".navigate-droppable-info-provider").html("");
+    $("#" + name + "-droppable-info").find(".navigate-droppable-info-extra").html("");
 
     navigate_file_video_info(
         "parse",

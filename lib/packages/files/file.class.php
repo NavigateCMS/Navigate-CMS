@@ -2146,6 +2146,40 @@ class file
         return $url;
     }
 
+    public static function embed($provider, $reference, $extra="")
+    {
+        $out = '';
+
+        if(($provider=='file' || empty($provider)) && is_numeric($reference))
+        {
+            $file = new file();
+            $file->load($reference);
+            $reference = $file;
+        }
+
+        if(is_object($reference))   // "file" object
+        {
+            $vsrc = NVWEB_OBJECT.'?type=file&id='.$reference->id.'&disposition=inline';
+
+            $out = '
+                <video id="video-file-'.$reference->id.'" '.$extra.' controls="controls" preload="metadata" poster="">
+                    <source src="'.$vsrc.'" type="'.$reference->mime.'" />
+                    <p>Error loading video</p>
+                </video>
+            ';
+        }
+        else if($provider=='youtube')
+        {
+            $out = '<iframe src="https://www.youtube.com/embed/'.$reference.'?feature=oembed&rel=0&modestbranding=1" frameborder="0" allowfullscreen '.$extra.'></iframe>';
+        }
+        else if($provider=='vimeo')
+        {
+            $out = '<iframe src="https://player.vimeo.com/video/'.$reference.'?" frameborder="0" allowfullscreen '.$extra.'></iframe>';
+        }
+
+        return $out;
+    }
+
     public function backup($type='json')
     {
         global $DB;

@@ -407,25 +407,17 @@ function nvweb_properties_render($property, $vars)
             if(is_numeric($video_id))
             {
                 $file->load($video_id);
-
-                $vsrc = NVWEB_OBJECT.'?type=file&id='.$file->id.'&disposition=inline';
-
-                $embed = '
-                    <video id="video-file-'.$video_id.'" '.$add.' controls="controls" preload="metadata" poster="">
-                        <source src="'.$vsrc.'" type="'.$file->mime.'" />
-                        <p>Error loading video</p>
-                    </video>
-                ';
+                $embed = file::embed('file', $file, $add);
             }
             else if($provider == 'youtube')
             {
-                $embed = '<iframe '.$add.' src="https://www.youtube.com/embed/'.$reference.'?feature=oembed&rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>';
+                $embed = file::embed('youtube', $reference);
                 if(!empty($vars['part']) || $vars['part']!='embed')
                     $file->load_from_youtube($reference);
             }
             else if($provider == 'vimeo')
             {
-                $embed = '<iframe '.$add.' src="https://player.vimeo.com/video/'.$reference.'?" frameborder="0" allowfullscreen></iframe>';
+                $embed = file::embed('vimeo', $reference);
                 if(!empty($vars['part']) || $vars['part']!='embed')
                     $file->load_from_vimeo($reference);
             }

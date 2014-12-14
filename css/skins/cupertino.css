@@ -2048,9 +2048,15 @@ div.jGrowl div.jGrowl-notification
     margin-left: -7px;
 }
 
+.fa
+{
+    cursor: default;
+}
+
 #media_browser_type-button i.fa
 {
     margin-bottom: -2px;
     margin-right: 0;
     padding-top: 2px;
 }
+

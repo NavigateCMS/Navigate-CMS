@@ -555,26 +555,38 @@ function blocks_form($item)
 	else
 		$navibars->title(t(23, 'Blocks').' / '.t(170, 'Edit').' ['.$item->id.']');			
 
-	$navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+	$navibars->add_actions(
+        array(
+            '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
+        )
+    );
 
     if(!empty($item->id))
     {
         $notes = grid_notes::comments('block', $item->id);
-        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_display_notes_dialog();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
+        $navibars->add_actions(
+            array(
+                '<a href="#" onclick="javascript: navigate_display_notes_dialog();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'
+            )
+        );
     }
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+            array(
+                '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+            )
+        );
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
+		$navibars->add_actions(
+            array(
+                '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
 
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -619,13 +631,19 @@ function blocks_form($item)
 
 	$navibars->form();
 
+    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js"></script>');
+
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
 
 	$block_types = block::types();
@@ -644,25 +662,39 @@ function blocks_form($item)
 		$block_types_info[] = $block_types[$i]['title'].' ('.$block_types[$i]['width'].' x '.$block_types[$i]['height'].' px)';
 	}
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(160, 'Type').'</label>',
-											$naviforms->selectfield('type', $block_types_keys, $block_types_info, $item->type)
-										)
-									);				
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(160, 'Type').'</label>',
+			$naviforms->selectfield('type', $block_types_keys, $block_types_info, $item->type)
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(85, 'Date published').'</label>',
-											$naviforms->datefield('date_published', $item->date_published, true),
-										));		
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(85, 'Date published').'</label>',
+			$naviforms->datefield('date_published', $item->date_published, true),
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(90, 'Date unpublished').'</label>',
-											$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
-										));												
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(90, 'Date unpublished').'</label>',
+			$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(168, 'Notes').'</label>',
-											$naviforms->textarea('notes', $item->notes)
-										));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(168, 'Notes').'</label>',
+			$naviforms->textarea('notes', $item->notes)
+        )
+    );
 
-    $navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
-            $naviforms->selectfield('access',
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(364, 'Access').'</label>',
+            $naviforms->selectfield(
+                'access',
                 array(
                     0 => 0,
                     1 => 2,
@@ -727,18 +759,24 @@ function blocks_form($item)
 	foreach($website->languages_list as $lang)
         $options[$lang] = language::name_by_code($lang);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-											$naviforms->buttonset('language_selector', $options, $website->languages_list[0], "navigate_items_select_language(this);")
-										));	
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(63, 'Languages').'</label>',
+			$naviforms->buttonset('language_selector', $options, $website->languages_list[0], "navigate_items_select_language(this);")
+        )
+    );
 										
 	foreach($website->languages_list as $lang)
 	{		
 		$navibars->add_tab_content('<div class="language_fields" id="language_fields_'.$lang.'" style=" display: none; ">');
 		
-		$navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-												$naviforms->textfield('title-'.$lang, @$item->dictionary[$lang]['title']),
-												''
-											));		
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(67, 'Title').'</label>',
+				$naviforms->textfield('title-'.$lang, @$item->dictionary[$lang]['title']),
+				''
+            )
+        );
 											
 		$navibars->add_tab_content_row(array(
                 '<label>'.t(160, 'Type').'</label>',
@@ -748,18 +786,22 @@ function blocks_form($item)
                             1 => 'title',
                             2 => 'image',
                             3 => 'rollover',
-                            4 => 'flash',
-                            5 => 'html',
-                            6 => 'content'
+                            4 => 'video',
+                            5 => 'flash',
+                            6 => 'html',
+                            7 => 'links',
+                            8 => 'content'
                         ),
                     array(
                             0 => t(181, 'Hidden'),
                             1 => t(67, 'Title'),
                             2 => t(157, 'Image'),
                             3 => t(182, 'Rollover'),
-                            4 => 'Flash',
-                            5 => 'HTML',
-                            6 => t(9, 'Content')
+                            4 => t(272, 'Video'),
+                            5 => 'Flash',
+                            6 => 'HTML',
+                            7 => t(549, 'Links'),
+                            8 => t(9, 'Content')
                         ),
                     $item->trigger['trigger-type'][$lang],
                     "navigate_blocks_trigger_change('".$lang."', this);"
@@ -767,134 +809,182 @@ function blocks_form($item)
             )
         );
 										
-		$navibars->add_tab_content_row(array(	'<label>'.t(157, 'Image').'</label>',
-												$naviforms->dropbox('trigger-image-'.$lang, @$item->trigger['trigger-image'][$lang], 'image')
-											));			
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(157, 'Image').'</label>',
+				$naviforms->dropbox('trigger-image-'.$lang, @$item->trigger['trigger-image'][$lang], 'image')
+            )
+        );
 																									
 
-		$navibars->add_tab_content_row(array(	'<label>'.t(182, 'Rollover').'</label>',
-												$naviforms->dropbox('trigger-rollover-'.$lang, @$item->trigger['trigger-rollover'][$lang], 'image'),
-												'<br />',
-												'<label>&nbsp;</label>',
-												$naviforms->dropbox('trigger-rollover-active-'.$lang, @$item->trigger['trigger-rollover-active'][$lang], 'image'),
-												''
-											));											
-											
-		$navibars->add_tab_content_row(array(	'<label>Adobe Flash</label>',
-												$naviforms->dropbox('trigger-flash-'.$lang, @$item->trigger['trigger-flash'][$lang], 'flash'),
-												''
-											));										
-											
-		$navibars->add_tab_content_row(array(	'<label>HTML</label>',
-												$naviforms->scriptarea('trigger-html-'.$lang, @$item->trigger['trigger-html'][$lang]),
-												''
-											));
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(182, 'Rollover').' (off / on)</label>',
+                $naviforms->dropbox('trigger-rollover-'.$lang, @$item->trigger['trigger-rollover'][$lang], 'image'),
+                $naviforms->dropbox('trigger-rollover-active-'.$lang, @$item->trigger['trigger-rollover-active'][$lang], 'image'),
+                ''
+            )
+        );
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(272, 'Video').'</label>',
+                $naviforms->dropbox('trigger-video-'.$lang, @$item->trigger['trigger-video'][$lang], 'video')
+            )
+        );
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>Flash (SWF)</label>',
+				$naviforms->dropbox('trigger-flash-'.$lang, @$item->trigger['trigger-flash'][$lang], 'flash'),
+				''
+            )
+        );
+
+        /* links list */
+        $table = new naviorderedtable("trigger_links_table_".$lang);
+        $table->setWidth("600px");
+        $table->setHiddenInput("trigger-links-table-order-".$lang);
+        $navibars->add_tab_content( $naviforms->hidden("trigger-links-table-order-".$lang, "") );
+
+        $table->addHeaderColumn(t(67, 'Title'), 200);
+        $table->addHeaderColumn(t(197, 'Link'), 200);
+        $table->addHeaderColumn('<i class="fa fa-external-link" title="'.t(324, 'New window').'"></i>', 16);
+        $table->addHeaderColumn(t(35, 'Remove'), 50);
+
+        if(!empty($item->trigger['trigger-links'][$lang]))
+        {
+            $tlinks = $item->trigger['trigger-links'][$lang];
+
+            foreach($tlinks['title'] as $key => $title)
+            {
+                $uid = uniqid();
+                $table->addRow(
+                    uniqid('"trigger-links-table-row-'),
+                    array(
+                        array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$title.'" style="width: 200px;" />', 'align' => 'left'),
+                        array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" style="width: 200px;" />', 'align' => 'left'),
+                        array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />', 'align' => 'left'),
+                        array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
+                    )
+                );
+            }
+        }
+
+        $uid = uniqid();
+        $table->addRow(
+            "trigger-links-table-row-model-".$lang,
+            array(
+                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
+                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
+                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />', 'align' => 'left'),
+                array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
+            )
+        );
+
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(549, "Links").'</label>',
+				'<div id="trigger-links-'.$lang.'">'.$table->generate().'</div>',
+                '<label>&nbsp;</label>',
+                '<button id="trigger-links-table-add-'.$lang.'" data-lang="'.$lang.'"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').'</button>'
+            )
+        );
+
+		$navibars->add_tab_content_row(
+            array(
+                '<label>HTML</label>',
+				$naviforms->scriptarea('trigger-html-'.$lang, @$item->trigger['trigger-html'][$lang]),
+				''
+            )
+        );
 
         if(!empty($block_type_width))
             $block_type_width .= 'px';
 
-		$navibars->add_tab_content_row(array(	'<label>'.t(9, 'Content').'</label>',
-												$naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $block_type_width, $lang),
-												''
-											));																														
-																				
-																			
-		$navibars->add_tab_content_row(array(	'<label>'.t(172, 'Action').'</label>',
-												$naviforms->selectfield('action-type-'.$lang,
-													array(
-															0 => '',
-															1 => 'web',
-															2 => 'web-n',
-															3 => 'file',
-															4 => 'image'
-														),
-													array(
-															0 => t(183, 'Do nothing'),
-															1 => t(173, 'Open URL'),
-															2 => t(174, 'Open URL (new window)'),
-															3 => t(175, 'Download file'),
-															4 => t(176, 'View image')
-														),
-													$item->action['action-type'][$lang],
-													"navigate_blocks_action_change('".$lang."', this);"
-												)
-											)
-										);			
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(9, "Content").'</label>',
+				$naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $block_type_width, $lang),
+				''
+            )
+        );
+
+
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(172, 'Action').'</label>',
+				$naviforms->selectfield('action-type-'.$lang,
+                    array(
+                            0 => '',
+                            1 => 'web',
+                            2 => 'web-n',
+                            3 => 'file',
+                            4 => 'image'
+                    ),
+                    array(
+                            0 => t(183, 'Do nothing'),
+                            1 => t(173, 'Open URL'),
+                            2 => t(174, 'Open URL (new window)'),
+                            3 => t(175, 'Download file'),
+                            4 => t(176, 'View image')
+                    ),
+                    $item->action['action-type'][$lang],
+                    "navigate_blocks_action_change('".$lang."', this);"
+                )
+            )
+        );
 										
 		/* show/hide appropiate row type by action */
 
-		$navibars->add_tab_content_row(array(	'<label>'.t(184, 'Webpage').'</label>',
-												$naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=5'),
-												''
-											));	
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(184, 'Webpage').'</label>',
+				$naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=5'),
+				''
+            )
+        );
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(82, 'File').'</label>',
-												$naviforms->dropbox('action-file-'.$lang, @$item->action['action-file'][$lang]),
-												''
-											));	
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(82, 'File').'</label>',
+				$naviforms->dropbox('action-file-'.$lang, @$item->action['action-file'][$lang]),
+				''
+            )
+        );
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(157, 'Image').'</label>',
-												$naviforms->dropbox('action-image-'.$lang, @$item->action['action-image'][$lang], 'image'),
-												''
-											));		
-											
-		$layout->add_script('
-			function navigate_blocks_action_change(lang, el)
-			{
-				$("#action-web-"+lang).parent().hide();
-				$("#action-file-"+lang).parent().hide();
-				$("#action-image-"+lang).parent().hide();
-				
-				var action_type = $(el).val();
-				
-				if(action_type == "web" || action_type == "web-n")
-					$("#action-web-" + lang).parent().show();
-				else
-					$("#action-" + action_type + "-" + lang).parent().show();
-			}
-			
-			function navigate_blocks_trigger_change(lang, el)
-			{
-				$("#trigger-image-"+lang).parent().hide();
-				$("#trigger-rollover-"+lang).parent().hide();
-				$("#trigger-flash-"+lang).parent().hide();
-				$("#trigger-html-"+lang).parent().hide();
-				$("#trigger-content-"+lang).parent().hide();
-				
-				$("#trigger-" + $(el).val() + "-" + lang).parent().show();
-				$(navigate_codemirror_instances).each(function() { this.refresh(); } );					
-			}
-		');
-																							
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(157, 'Image').'</label>',
+				$naviforms->dropbox('action-image-'.$lang, @$item->action['action-image'][$lang], 'image'),
+				''
+            )
+        );
+
 		$navibars->add_tab_content('</div>');		
 	}
 	
 	$layout->add_script('
 		var active_languages = ["'.implode('", "', array_keys($options)).'"];
-	
-		function navigate_items_select_language(el)
-		{
-			var code;
-			if(typeof(el)=="string") 
-				code = el;
-			else 
-				code = $("#"+$(el).attr("for")).val();	
-				
-			$(".language_fields").css("display", "none");
-			$("#language_fields_" + code).css("display", "block");
-			
-			$("#language_selector_" + code).attr("checked", "checked");
+	    navigate_items_select_language("'.$website->languages_list[0].'");
+    ');
 
-			$(navigate_codemirror_instances).each(function() { this.refresh(); } );
-		}
-	');
-	
-	$layout->add_script('navigate_items_select_language("'.$website->languages_list[0].'");');
-	
 	foreach($website->languages_list as $alang)
 	{
-		$layout->add_script('navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"text\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));');
-		$layout->add_script('navigate_blocks_action_change("'.$alang.'", $("<input type=\"text\" value=\"'.$item->action['action-type'][$alang].'\" />"));');
+		$layout->add_script('
+		    $(window).on("load", function()
+		    {
+		        $("#trigger-type-'.$alang.'").select2("val", "'.$item->trigger['trigger-type'][$alang].'");
+		        $("#action-type-'.$alang.'").select2("val", "'.$item->action['action-type'][$alang].'");
+		        navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));
+                navigate_blocks_action_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->action['action-type'][$alang].'\" />"));
+
+                links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
+                if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
+                    $("#trigger-links-table-row-model-'.$alang.'").hide();
+
+            });
+        ');
 	}
 
     if(!empty($item->type))

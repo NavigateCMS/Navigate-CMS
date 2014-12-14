@@ -271,7 +271,7 @@ function nvweb_blocks($vars=array())
                 else
                 {
                     $out.= '<div class="block-'.$vars['type'].'" ng-block-id="'.$block->id.'">';
-                    $out.= nvweb_blocks_render($vars['type'], $block->trigger, $block->action, $vars['zone'], $block);
+                    $out.= nvweb_blocks_render($vars['type'], $block->trigger, $block->action, $vars['zone'], $block, $vars);
                     $out.= '</div>'."\n";
                 }
                 break;
@@ -293,7 +293,7 @@ function nvweb_blocks($vars=array())
 	return $out;
 }
 
-function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL)
+function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $vars=array())
 {
 	global $current;
 	global $website;
@@ -351,6 +351,35 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL)
 			// disable any action, flash do not allow being wrapped by <a>
 			$action = array();
 			break;
+
+        case 'video':
+            if(strpos($trigger['trigger-video'][$lang], '#')!==false)
+            {
+                list($provider, $reference) = explode('#', $trigger['trigger-video'][$lang]);
+            }
+            else
+            {
+                $provider = 'file';
+                $reference = $trigger['trigger-video'][$lang];
+            }
+            $trigger_html = file::embed($provider, $reference);
+            break;
+
+        case 'links':
+            $tl = $trigger['trigger-links'][$lang];
+            $trigger_html = array();
+            foreach($tl['title'] as $key => $title)
+            {
+                $new_window = '';
+                if($tl['new_window'][$key]=='1')
+                    $new_window = ' target="_blank" ';
+                $trigger_html[] = '<a href="'.$tl['link'][$key].'"'.$new_window.'>'.$title.'</a>';
+            }
+            $glue = '';
+            if(!empty($vars['separator']))
+                $glue = $vars['separator'];
+            $trigger_html = implode($glue, $trigger_html);
+            break;
 			
 		case 'html':
 			$trigger_html = htmlspecialchars_decode($trigger['trigger-html'][$lang]);

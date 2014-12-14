@@ -688,6 +688,7 @@ class naviforms
                                                 var reference = navigate_youtube_reference_from_url($(this).find("input").val());
                                                 if(reference && reference!="")
                                                 {
+                                                    $("#'.$name.'-droppable").html(\'<figure class="navigatecms_loader"></figure>\');
                                                     navigate_dropbox_load_video("'.$name.'", "youtube#" + reference);
                                                 }
                                                 $(this).dialog("close");
@@ -709,6 +710,7 @@ class naviforms
                                                 var reference = navigate_vimeo_reference_from_url($(this).find("input").val());
                                                 if(reference && reference!="")
                                                 {
+                                                    $("#'.$name.'-droppable").html(\'<figure class="navigatecms_loader"></figure>\');
                                                     navigate_dropbox_load_video("'.$name.'", "vimeo#" + reference);
                                                 }
                                                 $(this).dialog("close");
@@ -767,6 +769,9 @@ class naviforms
 						$(this).find("div.file-access-icons").remove();
 						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
 					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                        $("#'.$name.'-droppable-info").find(".navigate-droppable-info-title").html("");
+                        $("#'.$name.'-droppable-info").find(".navigate-droppable-info-provider").html("");
+                        $("#'.$name.'-droppable-info").find(".navigate-droppable-info-extra").html("");
 					}
 				});
 			');
