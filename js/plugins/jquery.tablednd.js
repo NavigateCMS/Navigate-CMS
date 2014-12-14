@@ -81,9 +81,9 @@
 !function ($, window, document, undefined) {
 // Determine if this is a touch device
     var hasTouch   = 'ontouchstart' in document.documentElement,
-        startEvent = hasTouch ? 'touchstart' : 'mousedown',
-        moveEvent  = hasTouch ? 'touchmove'  : 'mousemove',
-        endEvent   = hasTouch ? 'touchend'   : 'mouseup';
+        startEvent = 'touchstart mousedown',
+        moveEvent  = 'touchmove mousemove',
+        endEvent   = 'touchend mouseup';
 
 // If we're on a touch device, then wire up the events
 // see http://stackoverflow.com/a/8456194/1316086
@@ -128,7 +128,7 @@
         });
     });
 
-    window.jQuery.tableDnD = {
+    jQuery.tableDnD = {
         /** Keep hold of the current table being dragged */
         currentTable: null,
         /** Keep hold of the current drag object if any */
@@ -283,6 +283,12 @@
         },
         /** Get the mouse coordinates from the event (allowing for browser differences) */
         mouseCoords: function(e) {
+            if (e.changedTouches)
+                return {
+                    x: event.changedTouches[0].clientX,
+                    y: event.changedTouches[0].clientY
+                };
+
             if(e.pageX || e.pageY)
                 return {
                     x: e.pageX,
@@ -481,7 +487,7 @@
                 if (y > (rowY - rowHeight) && y < (rowY + rowHeight))
                 // that's the row we're over
                 // If it's the same as the current row, ignore it
-                    if (row == draggedRow
+                    if (draggedRow.is(row)
                         || (config.onAllowDrop
                         && !config.onAllowDrop(draggedRow, row))
                         // If a row has nodrop class, then don't allow dropping (inspired by John Tarr and Famic)
@@ -493,6 +499,9 @@
             return null;
         },
         processMouseup: function() {
+            if(!this.currentTable)
+                return;
+
             var config      = this.currentTable.tableDnDConfig,
                 droppedRow  = this.dragObject,
                 parentLevel = 0,
@@ -651,7 +660,7 @@
         }
     };
 
-    window.jQuery.fn.extend(
+    jQuery.fn.extend(
         {
             tableDnD             : $.tableDnD.build,
             tableDnDUpdate       : $.tableDnD.updateTables,
@@ -661,4 +670,4 @@
         }
     );
 
-}(window.jQuery, window, window.document);
+}(jQuery, window, window.document);
