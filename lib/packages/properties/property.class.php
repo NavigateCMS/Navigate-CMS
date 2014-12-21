@@ -13,6 +13,7 @@ class property
 	public $options;
 	public $dvalue;	// default value
     public $multilanguage; // "true", "false" or empty
+    public $helper;
 	public $position;
 	public $enabled;
 	
@@ -65,6 +66,7 @@ class property
 		$this->options		= mb_unserialize($main->options);
 		$this->dvalue		= $main->dvalue;		
 		$this->multilanguage= $main->multilanguage;
+		$this->helper       = $main->helper;
 		$this->position		= $main->position;
 		$this->enabled		= $main->enabled;	
 		
@@ -82,7 +84,8 @@ class property
 		$this->type			= $_REQUEST['property-type'];
 		$this->dvalue		= $_REQUEST['property-dvalue'];
         $this->multilanguage= ($_REQUEST['property-multilanguage']=='1'? 'true' : '');
-		
+        $this->helper       = $_REQUEST['property-helper'];
+
 		if($this->type == 'date' || $this->type == 'datetime')
 			$this->dvalue	= 	core_date2ts($this->dvalue);
 
@@ -170,11 +173,15 @@ class property
        	$this->options = (array)$theme_option->options;
        	$this->dvalue = $theme_option->dvalue;	// default value
        	$this->multilanguage = $theme_option->multilanguage;
+       	$this->helper = $theme_option->helper;
        	$this->position = 0;
        	$this->enabled = 1;
 
         if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
             $this->name = $theme->t(substr($this->name, 1));
+
+        if(substr($this->helper, 0, 1)=='@')
+            $this->helper = $theme->t(substr($this->helper, 1));
 
         $this->value = $value;
 
@@ -201,6 +208,7 @@ class property
        	$this->options = (array)$object->options;
        	$this->dvalue = $object->dvalue;	// default value
        	$this->multilanguage = $object->multilanguage;
+       	$this->helper = $object->helper;
        	$this->position = 0;
        	$this->enabled = 1;
 
@@ -266,7 +274,7 @@ class property
 		$ok = $DB->execute('
           INSERT INTO nv_properties
 		    (id, website, element, template, name, type,
-			    options, dvalue, multilanguage, position, enabled)
+			    options, dvalue, multilanguage, helper, position, enabled)
             VALUES
             ( 0,
               :website,
@@ -277,6 +285,7 @@ class property
               :options,
               :dvalue,
               :multilanguage,
+              :helper,
               :position,
               :enabled
             )',
@@ -289,6 +298,7 @@ class property
             ':options' => serialize($this->options),
             ':dvalue' => $this->dvalue,
             ':multilanguage' => $this->multilanguage,
+            ':helper' => $this->helper,
             ':position' => intval($this->position),
             ':enabled' => $this->enabled
           )
@@ -316,6 +326,7 @@ class property
                     options = :options,
                     dvalue = :dvalue,
                     multilanguage = :multilanguage,
+                    helper = :helper,
                     position = :position,
                     enabled = :enabled
             WHERE id = :id
@@ -328,6 +339,7 @@ class property
                 ':options' => serialize($this->options),
                 ':dvalue' => $this->dvalue,
                 ':multilanguage' => $this->multilanguage,
+                ':helper' => $this->helper,
                 ':position' => intval($this->position),
                 ':enabled' => $this->enabled,
                 ':id' => $this->id,

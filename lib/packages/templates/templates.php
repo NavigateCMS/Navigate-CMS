@@ -687,7 +687,11 @@ function templates_form($item)
 			<div class="navigate-form-row">
 				<label>'.t(65, 'Enabled').'</label>
 				'.$naviforms->checkbox('property-enabled', 1).'
-			</div>												
+			</div>
+            <div class="navigate-form-row">
+				<label>'.t(550, 'Help text').'</label>
+				'.$naviforms->textfield('property-helper', '').'
+			</div>
 		</form>');
 
 		$layout->add_script('
@@ -709,6 +713,7 @@ function templates_form($item)
 					$("#property-type").val("value");
 					$("#property-options").val("");
 					$("#property-dvalue").val("");
+					$("#property-helper").val("");
 					$("#property-multilanguage").removeAttr("checked");
 				    $("#property-enabled").attr("checked", "checked");
 				}
@@ -729,6 +734,7 @@ function templates_form($item)
 						   $("#property-type").select2("val", data.type);
 						   $("#property-options").val(data.options);
 						   $("#property-dvalue").val(data.dvalue);
+						   $("#property-helper").val(data.helper);
 
 						   if(data.multilanguage=="true")
 							   $("#property-multilanguage").attr("checked", "checked");

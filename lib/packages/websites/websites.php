@@ -388,8 +388,9 @@ function websites_form($item)
 											$naviforms->autocomplete('homepage', @$item->homepage, '?fid='.$_REQUEST['fid'].'&wid='.$item->id.'&act=5'),
 											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /en/home</span>' ));
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<div class="subcomment"><img src="img/icons/silk/house.png" align="absmiddle" /> <span id="navigate-website-home-url"></span></div>' ));
+	$navibars->add_tab_content_row(array(
+        '<div class="subcomment"><img src="img/icons/silk/house.png" align="absmiddle" /> <span id="navigate-website-home-url"></span></div>'
+    ));
 
 	$layout->add_script('
 		$("#subdomain,#domain,#folder,#homepage").bind("keyup", navigate_website_update_home_url);

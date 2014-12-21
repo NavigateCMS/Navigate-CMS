@@ -89,6 +89,8 @@ function navigate_property_layout_field($property)
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';		
 			$field[] = $naviforms->textfield("property-".$property->id, $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;
 
@@ -110,6 +112,8 @@ function navigate_property_layout_field($property)
                     $checked = ' checked="checked" ';
 				$field[] = '<input type="radio" name="property-'.$property->id.'" class="star {split:2}" value="'.$i.'" '.$checked.' />';
 			}
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;			
 
@@ -117,6 +121,8 @@ function navigate_property_layout_field($property)
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';		
 			$field[] = $naviforms->checkbox("property-".$property->id, ($property->value=='1'));
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;
 		
@@ -128,7 +134,9 @@ function navigate_property_layout_field($property)
                 $options = (array)$options;
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';			
-			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value);		
+			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;
 			
@@ -140,7 +148,9 @@ function navigate_property_layout_field($property)
                 $options = (array)$options;
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';			
-			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), explode(',', $property->value), "", true);		
+			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), explode(',', $property->value), "", true);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;			
 			
@@ -148,7 +158,9 @@ function navigate_property_layout_field($property)
 			$options = property::countries();
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';			
-			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), strtoupper($property->value));		
+			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), strtoupper($property->value));
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;	
 			
@@ -167,7 +179,9 @@ function navigate_property_layout_field($property)
 			$field[] = '		<img class="ui-widget ui-button ui-state-default ui-corner-all" sprite="false" style=" cursor: pointer; padding: 3px; " src="'.NAVIGATE_URL.'/img/icons/silk/zoom.png" align="right" />';			
 			$field[] = '	</div>';
 			$field[] = '	<div id="property-'.$property->id.'-map" style=" width: 400px; height: 200px; "></div>';
-			$field[] = '</div>';		
+			$field[] = '</div>';
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';		
 			$field[] = '<script language="javascript" type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>';
 
@@ -275,6 +289,8 @@ function navigate_property_layout_field($property)
 				$field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
 				$field[] = '<label>'.$property->name.' '.$language_info.'</label>';
 				$field[] = $naviforms->textfield("property-".$property->id."-".$lang, $property->value[$lang]);
+                if(!empty($property->helper))
+                    $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 				$field[] = '</div>';
 			}
 			break;
@@ -299,6 +315,8 @@ function navigate_property_layout_field($property)
 				$field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
 				$field[] = '<label>'.$property->name.' '.$language_info.'</label>';
 				$field[] = $naviforms->textarea("property-".$property->id."-".$lang, $property->value[$lang], 4, 48, $style);
+                if(!empty($property->helper))
+                    $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 				$field[] = '</div>';			
 			}		
 			break;
@@ -323,6 +341,8 @@ function navigate_property_layout_field($property)
                 $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
                 $field[] = '<label>'.$property->name.' '.$language_info.'</label>';
                 $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang], $width);
+                if(!empty($property->helper))
+                    $field[] = '<div class="subcomment">'.$property->helper.'</div>';
                 $field[] = '</div>';
             }
             break;
@@ -331,6 +351,8 @@ function navigate_property_layout_field($property)
             $field[] = '<div class="navigate-form-row">';
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->colorfield("property-".$property->id, $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
             $field[] = '</div>';
             break;
 
@@ -338,6 +360,8 @@ function navigate_property_layout_field($property)
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';		
 			$field[] = $naviforms->datefield("property-".$property->id, $property->value, false);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';			
 			break;
 			
@@ -345,6 +369,8 @@ function navigate_property_layout_field($property)
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';		
 			$field[] = $naviforms->datefield("property-".$property->id, $property->value, true);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';					
 			break;
 
@@ -352,6 +378,8 @@ function navigate_property_layout_field($property)
             $field[] = '<div class="navigate-form-row">';
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->scriptarea("property-".$property->id, $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
             $field[] = '</div>';
             break;
 		
@@ -409,6 +437,8 @@ function navigate_property_layout_field($property)
                     $target
                 );
                 $field[] = '<span class="navigate-form-row-info">'.t(172, 'Action').'</span>';
+                if(!empty($property->helper))
+                    $field[] = '<div class="subcomment">'.$property->helper.'</div>';
                 $field[] = '</div>';
 			}		
 			break;
@@ -419,6 +449,8 @@ function navigate_property_layout_field($property)
                 $field[] = '<div class="navigate-form-row">';
                 $field[] = '<label>'.$property->name.'</label>';
                 $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue);
+                if(!empty($property->helper))
+                    $field[] = '<div class="subcomment">'.$property->helper.'</div>';
                 $field[] = '</div>';
             }
             else
@@ -438,6 +470,8 @@ function navigate_property_layout_field($property)
                     $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
                     $field[] = '<label>'.$property->name.' '.$language_info.'</label>';
                     $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "image", false, @$property->dvalue);
+                    if(!empty($property->helper))
+                        $field[] = '<div class="subcomment">'.$property->helper.'</div>';
                     $field[] = '</div>';
                 }
             }
@@ -447,6 +481,8 @@ function navigate_property_layout_field($property)
             $field[] = '<div class="navigate-form-row">';
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video", false, $property->dvalue);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
             $field[] = '</div>';
             break;
 
@@ -454,13 +490,15 @@ function navigate_property_layout_field($property)
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';		
 			$field[] = $naviforms->dropbox("property-".$property->id, $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
 			$field[] = '</div>';						
 			break;
 			
 		case 'comment':
 			$field[] = '<div class="navigate-form-row">';
 			$field[] = '<label>'.$property->name.'</label>';		
-			$field[] = '<div class="subcomment">'.$property->value.'</div>';
+			$field[] = '<div class="subcomment" style="clear: none;">'.$property->value.'</div>';
 			$field[] = '</div>';								
 			break;
 			
@@ -474,6 +512,8 @@ function navigate_property_layout_field($property)
             $field[] = '<div class="navigate-form-row">';
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->dropdown_tree("property-".$property->id, $categories_list, $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
             $field[] = '</div>';
             break;
 
@@ -497,6 +537,8 @@ function navigate_property_layout_field($property)
             $field[] = '<label>'.$property->name.'</label>';
             $field[] = $naviforms->textfield("property-selector-".$property->id, $item_title);
             $field[] = $naviforms->hidden("property-".$property->id, $property->value);
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
             $field[] = '</div>';
 
             $layout->add_script('
@@ -564,6 +606,8 @@ function navigate_property_layout_field($property)
                 array_values($webuser_groups),
                 $property->value
             );
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
             $field[] = '</div>';
             break;
 

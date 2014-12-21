@@ -548,3 +548,4 @@
 547     # Multi-idioma
 548     # Mètode
 549     # Enllaços
+550     # Text d'ajuda
