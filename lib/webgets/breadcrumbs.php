@@ -16,6 +16,9 @@ function nvweb_breadcrumbs($vars=array())
 
     if($vars['separator']=='image')
         $vars['separator'] = '<img src="'.$vars['image'].'" />';
+
+    if($vars['separator']=='base64')
+        $vars['separator'] = base64_decode($vars['base64']);
 	
 	if(empty($vars['from']))
 		$vars['from'] = 0;
