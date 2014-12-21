@@ -853,10 +853,10 @@ function nvweb_template_tweaks($html)
 			if($name!='src')
                 $tag['new'] .= $name.'="'.$value.'" ';
 			
-			if($name=='width' && strpos($src, '?')!==false)
+			if($name=='width' && strpos($src, '?')!==false && strpos($value, "%")===false)
 				$src .= '&width='.$value;
 				
-			if($name=='height' && strpos($src, '?')!==false)
+			if($name=='height' && strpos($src, '?')!==false && strpos($value, "%")===false)
 				$src .= '&height='.$value;	
 		}
 		
