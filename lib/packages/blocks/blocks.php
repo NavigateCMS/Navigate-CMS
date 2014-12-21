@@ -977,7 +977,6 @@ function blocks_form($item)
 		        $("#trigger-type-'.$alang.'").select2("val", "'.$item->trigger['trigger-type'][$alang].'");
 		        $("#action-type-'.$alang.'").select2("val", "'.$item->action['action-type'][$alang].'");
 		        navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));
-                navigate_blocks_action_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->action['action-type'][$alang].'\" />"));
 
                 links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
                 if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
