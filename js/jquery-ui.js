@@ -5612,6 +5612,7 @@ $.extend(Datepicker.prototype, {
 		}
 
 		html += this._get(inst, "yearSuffix");
+
 		if (showMonthAfterYear) {
 			html += (secondary || !(changeMonth && changeYear) ? "&#xa0;" : "") + monthHtml;
 		}

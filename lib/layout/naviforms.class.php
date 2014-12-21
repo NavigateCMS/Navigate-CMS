@@ -250,7 +250,9 @@ class naviforms
             $layout->add_script('$("#'.$name.'").datepicker(
             {
                 '.$translations.'
-                dateFormat: "'.trim($format).'"
+                dateFormat: "'.trim($format).'",
+                changeMonth: true,
+                changeYear: true
             });');
         }
         else
@@ -260,7 +262,9 @@ class naviforms
             {
                 '.$translations.'
                 dateFormat: "'.trim($format).'",
-                timeFormat: "HH:mm"
+                timeFormat: "HH:mm",
+                changeMonth: true,
+                changeYear: true
             });');
         }
 
