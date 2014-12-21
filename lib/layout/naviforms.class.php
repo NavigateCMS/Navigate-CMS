@@ -516,7 +516,8 @@ class naviforms
 		global $website;
 		
 		$out = array();
-		
+        $out[] = '<div id="'.$name.'-droppable-wrapper">';
+
 		$out[] = '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$value.'" />';		
 
 		$out[] = '<div id="'.$name.'-droppable" class="navigate-droppable ui-corner-all">';
@@ -798,6 +799,8 @@ class naviforms
         $out[] = '  <div class="navigate-droppable-info-extra"></div>';
         $out[] = '  <div class="navigate-droppable-info-provider"></div>';
         $out[] = '</div>';
+
+        $out[] = '</div>'; // close droppable wrapper
 				
 		return implode("\n", $out);
 	}

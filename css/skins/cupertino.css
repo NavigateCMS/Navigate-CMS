@@ -470,6 +470,7 @@ a.navigate-content-actions-selected
 #navigate-content-tabs > div
 {
 	overflow: auto;
+    position: relative; /* solves some inner "position: absolute" problems */
 }
 
 #navigate-content-safe
@@ -658,7 +659,8 @@ div.subcomment
 	font-size: 10px; 
 	font-style: italic;	
 	padding-left:3px;
-	padding-top:2px;	
+	padding-top:2px;
+    clear: both;
 }
 
 table.treeTable
@@ -1181,7 +1183,6 @@ label.ui-state-active #navigate_media_browser_folder_path
 	font-size: 9px;
 	text-align: center;
 	overflow: hidden;
-	margin-bottom: 10px;	
 	padding-top: 2px;
     float: left;
 }
