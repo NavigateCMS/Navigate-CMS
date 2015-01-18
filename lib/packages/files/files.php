@@ -94,7 +94,7 @@ function run()
                             $item->parent = $_REQUEST['folder'];
                             $ok = $ok & $item->update();
                         }
-                        echo json_encode(($ok)? true : false);
+                        echo json_encode(($ok? true : false));
                     }
                     else
                     {
@@ -102,6 +102,8 @@ function run()
                         $item->parent = $_REQUEST['folder'];
                         echo json_encode($item->update());
                     }
+                    break;
+
                 case 'delete':
                     $item->load($_REQUEST['id']);
                     echo json_encode($item->delete());

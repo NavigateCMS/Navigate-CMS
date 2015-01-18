@@ -132,6 +132,16 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                 else if($current['type']=='item')
                     $out = $structure['dictionary'][$current['object']->category];
 				break;
+
+            case 'category_link':
+            case 'category_url':
+                if($current['type']=='structure')
+                    $out = nvweb_source_url('structure', $current['category']);
+                else if($current['type']=='item')
+                    $out = nvweb_source_url('structure', $current['object']->category);
+                else
+                    $out = '#';
+                break;
 			
 			case 'a':
 				$out[] = '<div class="menu_level_'.$level.' '.$class.'">';	
