@@ -379,21 +379,107 @@ function core_string_clean($text="")
  * @param string $text
  * @param string $maxlen Maximum character length
  * @param string $morechar Append string if the original text is cutted somewhere
+ * @param array $allowedtags List of tags which have to be kept (for example 'a')
  * @return string
  */
-function core_string_cut($text, $maxlen, $morechar='&hellip;')
+function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=array())
 {
-	$text = strip_tags($text);
-	$text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-	$olen = strlen($text);
-	
-	if($olen < $maxlen) return $text;
-	
-	$pos = strrpos( substr( $text , 0 , $maxlen), ' ') ;
-	$text = substr( $text , 0 , $pos );
-	if($olen > $maxlen) $text.= $morechar;
-		
+    if(!empty($allowedtags))
+    {
+        $text = strip_tags($text, '<'.implode('><', $allowedtags).'>');
+        $text = core_truncate_html($text, $maxlen, $morechar);
+    }
+    else
+    {
+        // truncate by plain text
+        $text = strip_tags($text);
+        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+        $olen = strlen($text);
+
+        if($olen < $maxlen) return $text;
+
+        $pos = strrpos( substr( $text , 0 , $maxlen), ' ') ;
+        $text = substr( $text , 0 , $pos );
+        if($olen > $maxlen) $text.= $morechar;
+    }
 	return $text;
+}
+
+/**
+ *  function to truncate and then clean up end of the HTML,
+ *  truncates by counting characters outside of HTML tags
+ *
+ *  @author alex lockwood, alex dot lockwood at websightdesign
+ *
+ *  @param string $str the string to truncate
+ *  @param int $len the number of characters
+ *  @param string $end the end string for truncation
+ *  @return string $truncated_html
+ *
+ *  **/
+function core_truncate_html($str, $len, $end = '&hellip;')
+{
+    $closeTagString = '';
+    //find all tags
+    $tagPattern = '/(<\/?)([\w]*)(\s*[^>]*)>?|&[\w#]+;/i';  //match html tags and entities
+    preg_match_all($tagPattern, $str, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER );
+
+    $i =0;
+    //loop through each found tag that is within the $len, add those characters to the len,
+    //also track open and closed tags
+    // $matches[$i][0] = the whole tag string  --the only applicable field for html enitities
+    // IF its not matching an &htmlentity; the following apply
+    // $matches[$i][1] = the start of the tag either '<' or '</'
+    // $matches[$i][2] = the tag name
+    // $matches[$i][3] = the end of the tag
+    //$matces[$i][$j][0] = the string
+    //$matces[$i][$j][1] = the str offest
+
+    while($matches[$i][0][1] < $len && !empty($matches[$i]))
+    {
+        $len = $len + strlen($matches[$i][0][0]);
+        if(substr($matches[$i][0][0],0,1) == '&' )
+            $len = $len-1;
+
+        //if $matches[$i][2] is undefined then its an html entity, want to ignore those for tag counting
+        //ignore empty/singleton tags for tag counting
+        if(!empty($matches[$i][2][0]) && !in_array($matches[$i][2][0],array('br','img','hr', 'input', 'param', 'link')))
+        {
+            //double check
+            if(substr($matches[$i][3][0],-1) !='/' && substr($matches[$i][1][0],-1) !='/')
+                $openTags[] = $matches[$i][2][0];
+            elseif(end($openTags) == $matches[$i][2][0])
+                array_pop($openTags);
+            else
+                $warnings[] = "html has some tags mismatched in it:  $str";
+        }
+        $i++;
+    }
+
+    $closeTags = '';
+
+    if (!empty($openTags))
+    {
+        $openTags = array_reverse($openTags);
+        foreach ($openTags as $t)
+        {
+            $closeTagString .="</".$t . ">";
+        }
+    }
+
+    if(strlen($str) > $len)
+    {
+        //truncate with new len
+        $truncated_html = substr($str, 0, $len);
+        //add the end text
+        $truncated_html .= $end ;
+        //restore any open tags
+        $truncated_html .= $closeTagString;
+    }
+    else
+        $truncated_html = $str;
+
+    return $truncated_html;
 }
 
 /**

@@ -623,7 +623,6 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
                 case 'title':
                     $out = $item->dictionary[$current['lang']]['title'];
-
                     if(!empty($tag['attributes']['length']))
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
                     break;
@@ -673,9 +672,8 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 				case 'title':
 					$out = $item->dictionary[$current['lang']]['title'];
-
                     if(!empty($tag['attributes']['length']))
-                        $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
+                        $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $tag['attributes']['length']);
 					break;
 
                 case 'author':
@@ -714,7 +712,12 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					$out = $item->dictionary[$current['lang']]['section-'.$section];
 
 					if(!empty($tag['attributes']['length']))
-						$out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
+                    {
+                        $allowed_tags = '';
+                        if(!empty($tag['attributes']['allowed_tags']))
+                            $allowed_tags = explode(',', $tag['attributes']['allowed_tags']);
+						$out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $allowed_tags);
+                    }
 					break;
 
 				case 'comments':

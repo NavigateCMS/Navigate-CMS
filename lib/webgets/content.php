@@ -53,11 +53,14 @@ function nvweb_content($vars=array())
 			
 		case 'summary':
             $length = 300;
+            $allowed_tags = array();
             if(!empty($vars['length']))
                 $length = intval($vars['length']);
 			$texts = webdictionary::load_element_strings('item', $current['object']->id);				
 			$text = $texts[$current['lang']]['main'];
-			$out = core_string_cut($text, 300, '&hellip;');
+            if(!empty($vars['allowed_tags']))
+                $allowed_tags = explode(',', $vars['allowed_tags']);
+			$out = core_string_cut($text, 300, '&hellip;', $allowed_tags);
 			break;
 
         case 'author':
@@ -316,7 +319,8 @@ function nvweb_content_date_format($format="", $ts)
     }
     else
     {
-        $out = Encoding::toUTF8(strftime($format, $ts));
+        if(!empty($ts))
+            $out = Encoding::toUTF8(strftime($format, intval($ts)));
     }
 
 	return $out;
