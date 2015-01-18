@@ -16,11 +16,11 @@ td,th
 .navigatecms-image-left
 {
     float: left;
-    margin: 5px 5px 5px 0px;
+    margin: 10px 10px 10px 0px;
 }
 
 .navigatecms-image-right
 {
     float: right;
-    margin: 5px 0px 5px 5px;
+    margin: 10px 0px 10px 10px;
 }
