@@ -140,7 +140,7 @@ class layout
 
 		$this->add_style_tag('lib/external/jqgrid/css/ui.jqgrid.css');	
 		//$this->add_script_tag('lib/external/jqgrid/js/i18n/grid.locale-'.$user->language.'.js', true);	// must be loaded after jquery, see before_includes
-		$this->add_script_tag('lib/external/jqgrid/js/jquery.jqGrid.min.js');
+		$this->add_script_tag('lib/external/jqgrid/js/minified/jquery.jqGrid.min.js');
 
         $this->add_style_tag('lib/external/qtip2/jquery.qtip.css');
 		$this->add_script_tag('lib/external/qtip2/jquery.qtip.js');
