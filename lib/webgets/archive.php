@@ -45,8 +45,8 @@ function nvweb_archive($vars=array())
     // checking if there are available in the current language (items must have custom paths assigned)
     $DB->query('
         SELECT COUNT(i.id) AS total,
-               MONTH(FROM_UNIXTIME(GREATEST(i.date_published, i.date_created))) as month,
-               YEAR(FROM_UNIXTIME(GREATEST(i.date_published, i.date_created))) as year
+               MONTH(FROM_UNIXTIME(COALESCE(NULLIF(i.date_to_display, 0), i.date_created))) as month,
+               YEAR(FROM_UNIXTIME(COALESCE(NULLIF(i.date_to_display, 0), i.date_created))) as year
           FROM nv_items i
          WHERE i.website = '.$website->id.'
            AND i.permission <= '.$permission.'

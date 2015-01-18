@@ -30,11 +30,10 @@ function nvweb_content($vars=array())
 
         case 'date':
 		case 'date_post':
-			$ts = $current['object']->date_created;
-			// if date_created < date_published, choose the latest
-			if($current['object']->date_published > $ts) 
-				$ts = $current['object']->date_published;
-			$out = nvweb_content_date_format(@$vars['format'], $ts);
+            $ts = $current['object']->date_to_display;
+            // if no date, return nothing
+            if(!empty($ts))
+    			$out = nvweb_content_date_format(@$vars['format'], $ts);
 			break;
 			
 		case 'date_created':
@@ -371,10 +370,10 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
         $limit = 'LIMIT '.$max;
 
     $DB->query('
-            SELECT *
+            SELECT *, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate
             FROM nv_items
             WHERE '.$where.'
-            ORDER BY date_created ASC
+            ORDER BY pdate ASC
             '.$limit
     );
     $rs = $DB->result();

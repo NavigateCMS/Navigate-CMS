@@ -250,7 +250,7 @@ class feed
 			if($limit <= 0)	$limit = 10;
 
             $DB->query(' SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
-                                GREATEST(i.date_published, i.date_created) as date_shown, d.text as title, i.position as position,
+                                i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate, d.text as title, i.position as position,
                                 i.galleries as galleries, i.template as template
                           FROM nv_items i, nv_structure s, nv_webdictionary d
                          WHERE i.category IN('.implode(",", $item->categories).')
@@ -269,7 +269,7 @@ class feed
                            AND d.subtype = "title"
                            AND d.node_id = i.id
                            AND d.lang = '.protect($current['lang']).'
-                         ORDER BY date_shown DESC
+                         ORDER BY pdate DESC
                          LIMIT '.$limit.'
                         OFFSET 0');
 								
@@ -308,7 +308,7 @@ class feed
 							break;
 					}
 	
-					$fitem->date = $rs[$x]->date_shown;
+					$fitem->date = $rs[$x]->date_to_display;
 
                     // find an image to attach to the item
                     // A) first enabled image in item gallery

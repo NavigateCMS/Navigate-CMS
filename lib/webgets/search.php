@@ -79,7 +79,8 @@ function nvweb_search($vars=array())
 
 		$DB->query('	
 			SELECT SQL_CALC_FOUND_ROWS i.id as id, i.permission, i.date_published, i.date_unpublish,
-			        GREATEST(i.date_published, i.date_created) as pdate, i.position as position, wd.text as title
+			        i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+			        i.position as position, wd.text as title
 			  FROM nv_items i, nv_webdictionary d
 			  LEFT JOIN nv_webdictionary wd
 			    ON wd.node_id = d.node_id
@@ -113,7 +114,6 @@ function nvweb_search($vars=array())
 			if(empty($rs[$i]->id)) break;
 			$item = new item();
 			$item->load($rs[$i]->id);
-			$item->date_public = $rs[$i]->pdate;
 
             // get the nv list template
             $item_html = $vars['template'];

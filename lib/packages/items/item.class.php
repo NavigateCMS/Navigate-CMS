@@ -12,6 +12,7 @@ class item
 	public $category;
 	public $embedding;
 	public $template;
+    public $date_to_display;
 	public $date_published;
 	public $date_unpublish;
 	public $galleries;
@@ -70,6 +71,7 @@ class item
 		$this->category			= $main->category;
 		$this->embedding		= $main->embedding;		
 		$this->template			= $main->template;
+		$this->date_to_display	= (empty($main->date_to_display)? '' : $main->date_to_display);
 		$this->date_published	= (empty($main->date_published)? '' : $main->date_published);
 		$this->date_unpublish	= (empty($main->date_unpublish)? '' : $main->date_unpublish);
 		$this->date_created		= $main->date_created;
@@ -107,8 +109,9 @@ class item
 		$this->template			= ($this->embedding=='0' || $this->association=='free')? $_REQUEST['template'] : '';
 		$this->author			= intval($_REQUEST['item-author']);
 		
-		$this->date_published	= (empty($_REQUEST['date_published'])? '' : core_date2ts($_REQUEST['date_published']));	
-		$this->date_unpublish	= (empty($_REQUEST['date_unpublish'])? '' : core_date2ts($_REQUEST['date_unpublish']));	
+		$this->date_to_display	= (empty($_REQUEST['date_to_display'])? '' : core_date2ts($_REQUEST['date_to_display']));
+		$this->date_published	= (empty($_REQUEST['date_published'])? '' : core_date2ts($_REQUEST['date_published']));
+		$this->date_unpublish	= (empty($_REQUEST['date_unpublish'])? '' : core_date2ts($_REQUEST['date_unpublish']));
 		$this->access			= intval($_REQUEST['access']);
 
         $this->groups	        = $_REQUEST['groups'];
@@ -264,7 +267,7 @@ class item
 
         $ok = $DB->execute(' INSERT INTO nv_items
 								(id, website, association, category, embedding, template, 
-								 date_published, date_unpublish, date_created, date_modified, author,
+								 date_to_display, date_published, date_unpublish, date_created, date_modified, author,
 								 galleries, comments_enabled_to, comments_moderator, 
 								 access, groups, permission,
 								 views, votes, score)
@@ -275,6 +278,7 @@ class item
 								  '.protect($this->category).',
 								  '.protect($this->embedding).',
 								  '.protect($this->template).',
+								  '.protect($this->date_to_display).',
 								  '.protect($this->date_published).',
 								  '.protect($this->date_unpublish).',
 								  '.protect($this->date_created).',
@@ -327,8 +331,9 @@ class item
 									category	=   '.protect($this->category).',
 									embedding	= 	'.protect($this->embedding).',
 									template	=   '.protect($this->template).',
+									date_to_display	=   '.protect($this->date_to_display).',
 									date_published	=   '.protect($this->date_published).',
-									date_unpublish	=   '.protect($this->date_unpublish).',	
+									date_unpublish	=   '.protect($this->date_unpublish).',
 									date_modified	=   '.protect($this->date_modified).',
 									author		=   '.protect($this->author).',									
 									galleries	=  '.protect(serialize($this->galleries)).',
@@ -437,7 +442,8 @@ class item
             $item->category = 0;
             $item->embedding = 0;
             $item->template = 0;
-            $item->date_published = $article['timestamp'];
+            $item->date_to_display = $article['timestamp'];
+            $item->date_published = 0;
             $item->date_unpublish = 0;
             $item->galleries = 0;
             $item->date_created = $article['timestamp'];

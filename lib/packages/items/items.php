@@ -172,6 +172,11 @@ function run()
 							$dataset[$i]['date_unpublish'] = '&infin;';	
 						else
 							$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+
+                        if(empty($dataset[$i]['date_to_display']))
+                            $dataset[$i]['date_to_display'] = '';
+                        else
+                            $dataset[$i]['date_to_display'] = core_ts2date($dataset[$i]['date_to_display'], false);
 						
 						if($dataset[$i]['category'] > 0)
                         {
@@ -188,16 +193,19 @@ function run()
                         else
                             $category_text = $dataset[$i]['category_path'];
 
+                        $social_rating = '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
+                            '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>';
+
+                        $social_comments = '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
+                            '<span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>';
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> $dataset[$i]['title'],
-							2 	=> '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
-                                   '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>'.
-								   '&nbsp;&nbsp;'.
-                                   '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
-                                   '<span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>',
+							2 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
 							3	=> $category_text,
-							4	=> $dataset[$i]['author_username'],
+							//4	=> $dataset[$i]['author_username'],
+							4	=> $dataset[$i]['date_to_display'],
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							6	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
 							7 	=> $dataset[$i]['_grid_notes_html']
@@ -677,9 +685,10 @@ function items_list()
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
 	$navitable->addCol(t(67, 'Title'), 'title', "320", "true", "left");
-	$navitable->addCol(t(309, 'Social'), 'comments', "80", "true", "center");
+	$navitable->addCol(t(309, 'Social'), 'comments', "50", "true", "center");
 	$navitable->addCol(t(78, 'Category'), 'category', "210", "true", "left");
-	$navitable->addCol(t(266, 'Author'), 'author_username', "80", "true", "left");
+	//$navitable->addCol(t(266, 'Author'), 'author_username', "80", "true", "left");
+	$navitable->addCol(t(551, 'Date to display'), 'date_to_display', "60", "true", "center");
 	$navitable->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");
 	$navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
 	$navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
@@ -886,16 +895,33 @@ function items_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(85, 'Date published').'</label>',
-											$naviforms->datefield('date_published', $item->date_published, true),
-										));		
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(551, 'Date to display').'</label>',
+			$naviforms->datefield('date_to_display', $item->date_to_display, true),
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(85, 'Date published').'</label>',
+			$naviforms->datefield('date_published', $item->date_published, true),
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(90, 'Date unpublished').'</label>',
-											$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
-										));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(90, 'Date unpublished').'</label>',
+			$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
+        )
+    );
 
     $navibars->add_tab_content_row(
         array(

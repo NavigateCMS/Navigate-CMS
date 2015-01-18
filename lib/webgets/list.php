@@ -242,7 +242,8 @@ function nvweb_list($vars=array())
 		// default source for retrieving items
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
-			       GREATEST(i.date_published, i.date_created) as pdate, d.text as title, i.position as position
+                    i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+                    d.text as title, i.position as position
 			  FROM nv_items i, nv_structure s, nv_webdictionary d
 			 WHERE i.category IN('.implode(",", $categories).')
 			   AND i.website = '.$website->id.'
@@ -288,7 +289,7 @@ function nvweb_list($vars=array())
 		{
 			$item = new structure();
 			$item->load($rs[$i]->id);
-			$item->date_public = $rs[$i]->pdate;
+			$item->date_to_display = $rs[$i]->pdate;
 		}
         else if($vars['source']=='rss' || $vars['source']=='twitter')
         {
@@ -303,7 +304,6 @@ function nvweb_list($vars=array())
 		{
 			$item = new item();
 			$item->load($rs[$i]->id);
-			$item->date_public = $rs[$i]->pdate;
             // if the item comes from a custom source, save the original query result
             // this allows getting a special field without extra work ;)
             $item->_query = $rs[$i];
@@ -693,15 +693,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 				case 'date':
 					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
-						$out = nvweb_content_date_format($tag['attributes']['format'], $item->date_public);
+						$out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
 					else
-						$out = date($website->date_format, $item->date_public);
+						$out = date($website->date_format, $item->date_to_display);
 					break;
 
                 case 'date_post':
-                    $date_post = $item->date_published;
-                    if(empty($date_post))
-                        $date_post = $item->date_public;
+                    $date_post = $item->date_to_display;
 
 					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
 						$out = nvweb_content_date_format($tag['attributes']['format'], $date_post);
@@ -828,7 +826,7 @@ function nvweb_list_get_orderby($order)
 
         case 'future':
         case 'from_today':
-            $orderby = ' AND GREATEST(i.date_published, i.date_created) > '.gmmktime(0,0,0,gmdate('m',$website->current_time()),gmdate('d',$website->current_time()),gmdate('Y',$website->current_time())).'
+            $orderby = ' AND i.date_to_display > '.gmmktime(0,0,0,gmdate('m',$website->current_time()),gmdate('d',$website->current_time()),gmdate('Y',$website->current_time())).'
                          ORDER BY pdate ASC ';
             break;
 

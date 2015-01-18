@@ -78,7 +78,8 @@ function nvweb_conditional($vars=array())
         // default source for retrieving items
         $DB->query('
             SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
-                   GREATEST(i.date_published, i.date_created) as pdate, d.text as title, i.position as position
+                   i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+                   d.text as title, i.position as position
               FROM nv_items i, nv_structure s, nv_webdictionary d
              WHERE i.category IN('.implode(",", $categories).')
                AND i.website = '.$website->id.'
@@ -107,7 +108,6 @@ function nvweb_conditional($vars=array())
         $i = 0;
 
         $item->load($rs[$i]->id);
-        $item->date_public = $rs[$i]->pdate;
     }
 
     // get the template
