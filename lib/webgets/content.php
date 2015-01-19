@@ -374,7 +374,7 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
         $limit = 'LIMIT '.$max;
 
     $DB->query('
-            SELECT *, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate
+            SELECT *, COALESCE(NULLIF(date_to_display, 0), date_created) as pdate
             FROM nv_items
             WHERE '.$where.'
             ORDER BY pdate ASC
