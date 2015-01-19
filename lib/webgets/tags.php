@@ -1,4 +1,6 @@
 <?php	
+nvweb_webget_load('menu');
+
 function nvweb_tags($vars=array())
 {
 	global $website;
@@ -10,7 +12,16 @@ function nvweb_tags($vars=array())
 	switch($vars['mode'])
 	{
 		case 'top':
-            $tags = nvweb_tags_retrieve($vars['items']);
+
+            $categories = array();
+            if(!empty($vars['categories']))
+            {
+                $categories = preg_split('/[,\s]+/', $vars['categories']);
+                $categories = array_merge($categories, nvweb_menu_get_children($categories));
+                $categories = array_filter($categories);
+            }
+
+            $tags = nvweb_tags_retrieve($vars['items'], $categories);
             $out = array();
 
             $extra = '';
@@ -33,7 +44,7 @@ function nvweb_tags($vars=array())
 	return $out;
 }
 
-function nvweb_tags_retrieve($maxtags="")
+function nvweb_tags_retrieve($maxtags="", $categories=array())
 {
     // TODO: implement a tags cache system to improve website render time
 
@@ -42,12 +53,22 @@ function nvweb_tags_retrieve($maxtags="")
     global $current;
 
     $tags = array();
+    $extra = '';
+
+    if(!empty($categories))
+        $extra = ' AND
+            (
+                ( node_type = "structure" AND node_id IN('.implode(',', $categories).') ) OR
+                ( node_type = "item" AND node_id IN('.implode(',', $categories).') )
+            )
+        ';
 
     $DB->query(
         'SELECT text FROM nv_webdictionary
           WHERE website = '.$website->id.'
             AND subtype = "tags"
             AND lang = "'.$current['lang'].'"
+            '.$extra.'
         ',
         'array'
     );
