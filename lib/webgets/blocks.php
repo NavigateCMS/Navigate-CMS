@@ -62,21 +62,26 @@ function nvweb_blocks($vars=array())
 
     $blocks = array();
 
+    $categories_query = '';
+    $exclusions_query = '';
+    if(is_array($categories))
+    {
+        foreach($categories as $cq)
+        {
+            // example: 2,3,4   =>  "3,"
+            $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
+            // example: 2,3,4   =>  "4"
+            $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
+
+            $exclusions_query .= ' AND exclusions NOT LIKE '.protect(intval($cq).',%').' ';
+            $exclusions_query .= ' AND exclusions NOT LIKE '.protect('%'.intval($cq)).' ';
+        }
+    }
+
 	switch($order_mode)
 	{
         case 'single':
-            $categories_query = '';
-            if(is_array($categories))
-            {
-                foreach($categories as $cq)
-                {
-                    // example: 2,3,4   =>  "3,"
-                    $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
-                    // example: 2,3,4   =>  "4"
-                    $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
-                }
-            }
-
+            $query_type = '';
             if(!empty($vars['type']))
                 $query_type = ' AND type = '.protect($vars['type']);
 
@@ -89,6 +94,7 @@ function nvweb_blocks($vars=array())
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
                            AND (categories = "" '.$categories_query.')
+                           '.$exclusions_query.'
                            AND id = '.protect($vars['id'])
             );
             $row = $DB->first();
@@ -102,20 +108,6 @@ function nvweb_blocks($vars=array())
 
         case 'priority':
 		case 'ordered':
-
-            $categories_query = '';
-            if(is_array($categories))
-            {
-                foreach($categories as $cq)
-                {
-                    // example: 2,3,4   =>  "3,"
-                    $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
-                    // example: 2,3,4   =>  "4"
-                    $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
-                }
-            }
-
-
             $DB->query('SELECT *
 			 			  FROM nv_blocks
 						 WHERE type = '.protect($vars['type']).'
@@ -125,6 +117,7 @@ function nvweb_blocks($vars=array())
                            AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                            AND access IN('.implode(',', $access).')
                            AND (categories = "" '.$categories_query.')
+                           '.$exclusions_query.'
 					  ORDER BY position ASC');
 
 			$rows = $DB->result();
@@ -141,17 +134,6 @@ function nvweb_blocks($vars=array())
 		case 'random':
             // "random" gets priority blocks first
             // retrieve fixed blocks
-            $categories_query = '';
-            if(is_array($categories))
-            {
-                foreach($categories as $cq)
-                {
-                    // example: 2,3,4   =>  "3,"
-                    $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
-                    // example: 2,3,4   =>  "4"
-                    $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
-                }
-            }
 
             $DB->query('SELECT *
                           FROM nv_blocks
@@ -163,6 +145,7 @@ function nvweb_blocks($vars=array())
                            AND access IN('.implode(',', $access).')
                            AND fixed = 1
                            AND (categories = "" '.$categories_query.')
+                           '.$exclusions_query.'
                       ORDER BY position ASC');
 
 			$fixed_rows = $DB->result();
@@ -182,6 +165,7 @@ function nvweb_blocks($vars=array())
                            AND access IN('.implode(',', $access).')
                            AND id NOT IN('.implode(",", $fixed_rows_ids).')
                            AND (categories = "" '.$categories_query.')
+                           '.$exclusions_query.'
 						 ORDER BY RAND()');
 		
 			$random_rows = $DB->result();
@@ -271,7 +255,14 @@ function nvweb_blocks($vars=array())
                 else
                 {
                     $out.= '<div class="block-'.$vars['type'].'" ng-block-id="'.$block->id.'">';
-                    $out.= nvweb_blocks_render($vars['type'], $block->trigger, $block->action, $vars['zone'], $block, $vars);
+                    $out.= nvweb_blocks_render(
+                        $vars['type'],
+                        $block->trigger,
+                        $block->action,
+                        $vars['zone'],
+                        $block,
+                        $vars
+                    );
                     $out.= '</div>'."\n";
                 }
                 break;

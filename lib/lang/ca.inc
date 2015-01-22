@@ -550,3 +550,4 @@
 549     # Enllaços
 550     # Text d'ajuda
 551     # Data a mostrar
+552     # Exclusions

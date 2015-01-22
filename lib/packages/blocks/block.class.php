@@ -17,6 +17,7 @@ class block
 	public $position;
     public $fixed;
     public $categories;
+    public $exclusions;
 
     public $properties;
 
@@ -82,6 +83,7 @@ class block
         $this->position			= $main->position;
         $this->fixed	        = $main->fixed;
         $this->categories		= array_filter(explode(',', $main->categories));
+        $this->exclusions		= array_filter(explode(',', $main->exclusions));
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
@@ -186,8 +188,15 @@ class block
 		if(!empty($_REQUEST['categories']))
 			$this->categories	= explode(',', $_REQUEST['categories']);	
 			
+		$this->exclusions 	= '';
+		if(!empty($_REQUEST['exclusions']))
+			$this->exclusions	= explode(',', $_REQUEST['exclusions']);
+
 		if($_REQUEST['all_categories']=='1')
+        {
 			$this->categories 	= array();
+			$this->exclusions 	= array();
+        }
 	}
 	
 	public static function reorder($type, $order, $fixed)
@@ -250,6 +259,9 @@ class block
         if(!is_array($this->categories))
             $this->categories = array();
 
+        if(!is_array($this->exclusions))
+            $this->exclusions = array();
+
         $groups = '';
         if(is_array($this->groups))
         {
@@ -265,7 +277,7 @@ class block
         $ok = $DB->execute(
             'INSERT INTO nv_blocks
                 (id, website, type, date_published, date_unpublish,
-                 position, fixed, categories,
+                 position, fixed, categories, exclusions,
                  access, groups, enabled, `trigger`, action, notes)
                 VALUES
                 ( 0,
@@ -276,6 +288,7 @@ class block
                   :position,
                   :fixed,
                   :categories,
+                  :exclusions,
                   :access,
                   :groups,
                   :enabled,
@@ -292,6 +305,7 @@ class block
                 ':position'         =>  intval($this->position),
                 ':fixed'            =>  intval($this->fixed),
                 ':categories'       =>  implode(',', $this->categories),
+                ':exclusions'       =>  implode(',', $this->exclusions),
                 ':access'           =>  intval($this->access),
                 ':groups'           =>  $groups,
                 ':enabled'          =>  intval($this->enabled),
@@ -318,6 +332,9 @@ class block
         if(!is_array($this->categories))
             $this->categories = array();
 
+        if(!is_array($this->exclusions))
+            $this->exclusions = array();
+
         $groups = '';
         if(is_array($this->groups))
         {
@@ -339,6 +356,7 @@ class block
                 `position` 		= :position,
                 fixed	        = :fixed,
                 categories		= :categories,
+                exclusions		= :exclusions,
                 `trigger` 		= :trigger,
                 `action` 		= :action,
                 access 			= :access,
@@ -357,6 +375,7 @@ class block
                 ':position'         =>  $this->position,
                 ':fixed'            =>  $this->fixed,
                 ':categories'       =>  implode(',', $this->categories),
+                ':exclusions'       =>  implode(',', $this->exclusions),
                 ':access'           =>  $this->access,
                 ':groups'           =>  $groups,
                 ':enabled'          =>  $this->enabled,

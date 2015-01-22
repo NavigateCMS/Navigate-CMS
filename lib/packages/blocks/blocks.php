@@ -1009,15 +1009,22 @@ function blocks_form($item)
 
     $navibars->add_tab(t(330, "Categories"));
 
+    $default_value = 1;
+    if(!empty($item->categories))
+        $default_value = 0;
+    else if(!empty($item->exclusions))
+        $default_value = 2;
+
     $navibars->add_tab_content_row(array(
         '<label>'.t(330, 'Categories').'</label>',
         $naviforms->buttonset(
             'all_categories',
             array(
                 '1' => t(396, 'All categories'),
-                '0' => t(405, 'Selection')
+                '0' => t(405, 'Selection'),
+                '2' => t(552, 'Exclusions')
             ),
-            (empty($item->categories)? '1' : '0')
+            $default_value
         )
     ));
 /*
@@ -1027,27 +1034,46 @@ function blocks_form($item)
 */
 	$hierarchy = structure::hierarchy(0);
 	$categories_list = structure::hierarchyList($hierarchy, $item->categories);
+	$exclusions_list = structure::hierarchyList($hierarchy, $item->exclusions);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<div class="category_tree" id="category-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
-										));		
+	$navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+		    '<div class="category_tree" id="category-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
+        )
+    );
+
+	$navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+		    '<div class="category_tree" id="exclusions-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$exclusions_list.'</div>'
+        )
+    );
 										
 	if(!is_array($item->categories))
 		$item->categories = array();
-		
-	$navibars->add_tab_content($naviforms->hidden('categories', implode(',', $item->categories)));		
+
+    if(!is_array($item->exclusions))
+        $item->exclusions = array();
+
+    $navibars->add_tab_content($naviforms->hidden('categories', implode(',', $item->categories)));
+
+    $navibars->add_tab_content($naviforms->hidden('exclusions', implode(',', $item->exclusions)));
 										
 	$layout->add_script('
 
 	    function navigate_blocks_all_categories_switch()
 	    {
-            if($("#all_categories_1").is(":checked"))
-	            $("#category-tree-parent").parent().slideUp();
-	         else
-	            $("#category-tree-parent").parent().slideDown();
+	        $("#category-tree-parent").parent().hide();
+	        $("#exclusions-tree-parent").parent().hide();
+
+            if($("#all_categories_2").is(":checked"))
+	            $("#exclusions-tree-parent").parent().show();
+	         else if($("#all_categories_0").is(":checked"))
+	            $("#category-tree-parent").parent().show();
 	    }
 
-	    $("#all_categories_0,#all_categories_1").bind("click", navigate_blocks_all_categories_switch);
+	    $("#all_categories_0,#all_categories_1,#all_categories_2").on("click", navigate_blocks_all_categories_switch);
 
 		$("#category-tree-parent ul:first").kvaTree(
 		{
@@ -1077,6 +1103,35 @@ function blocks_form($item)
 		});
 		
 		$("#category-tree-parent li").find("span:first").css("cursor", "pointer");
+
+		$("#exclusions-tree-parent ul:first").kvaTree(
+		{
+	        imgFolder: "js/kvatree/img/",
+			dragdrop: false,
+			background: "#f2f5f7",
+			overrideEvents: true,
+			onClick: function(event, node)
+			{
+				if($(node).find("span:first").hasClass("active"))
+					$(node).find("span:first").removeClass("active");
+				else
+					$(node).find("span:first").addClass("active");
+
+				var categories = new Array();
+
+				$("#exclusions-tree-parent span.active").parent().each(function()
+				{
+					categories.push($(this).attr("value"));
+				});
+
+				if(categories.length > 0)
+					$("#exclusions").val(categories);
+				else
+					$("#exclusions").val("");
+			}
+		});
+
+		$("#exclusions-tree-parent li").find("span:first").css("cursor", "pointer");
 
 		navigate_blocks_all_categories_switch();
 		
