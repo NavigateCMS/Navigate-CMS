@@ -365,9 +365,12 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                 alt = "";
 
 			html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
-                    (!title?    '' : ' title="' + title + '" ') +
-                    (!alt?      '' : ' alt="' + alt + '" ' ) +
-                    ' width="' + max_width + '" height="' + scaled_height + '" ' + or_styles + ' />';
+                    (!title?            '' : ' title="' + title + '" ') +
+                    (!alt?              '' : ' alt="' + alt + '" ' ) +
+                    (!max_width?        '' : ' width="' + max_width + '" ') +
+                    (!scaled_height?    '' : ' height="' + scaled_height + '" ') +
+                    '" ' + or_styles +
+                ' />';
 			break;
 		
 		case 'video':
