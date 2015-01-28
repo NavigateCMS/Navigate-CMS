@@ -66,6 +66,7 @@ function nvweb_tags_retrieve($maxtags="", $categories=array())
     $DB->query(
         'SELECT text FROM nv_webdictionary
           WHERE website = '.$website->id.'
+            AND node_type IN("item")
             AND subtype = "tags"
             AND lang = "'.$current['lang'].'"
             '.$extra.'
