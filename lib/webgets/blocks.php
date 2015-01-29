@@ -68,13 +68,8 @@ function nvweb_blocks($vars=array())
     {
         foreach($categories as $cq)
         {
-            // example: 2,3,4   =>  "3,"
-            $categories_query .= ' OR categories LIKE '.protect(intval($cq).',%').' ';
-            // example: 2,3,4   =>  "4"
-            $categories_query .= ' OR categories LIKE '.protect('%'.intval($cq)).' ';
-
-            $exclusions_query .= ' AND exclusions NOT LIKE '.protect(intval($cq).',%').' ';
-            $exclusions_query .= ' AND exclusions NOT LIKE '.protect('%'.intval($cq)).' ';
+            $categories_query .= " OR instr(concat(',', categories, ','), ',".intval($cq).",') <> 0 ";
+            $exclusions_query .= " AND instr(concat(',', exclusions, ','), ',".intval($cq).",') = 0 ";
         }
     }
 
