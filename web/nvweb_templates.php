@@ -817,8 +817,12 @@ function nvweb_template_tweaks($html)
 	{
 		if($tag['attributes']['rel']=='video' && $tag['attributes']['navigate']=='navigate')
 		{
+            $preload = 'metadata';
+            if(!empty($tag['attributes']['preload']))
+                $preload = $tag['attributes']['preload'];
+
 			$content = array();
-			$content[] = '<video controls="controls">';
+			$content[] = '<video controls="controls" preload="'.$preload.'">';
 			$content[] = '	<source src="'.$tag['attributes']['href'].'" />';
 			$content[] = '	'.$tag['full_tag'];
 			$content[] = '</video>';
@@ -828,8 +832,12 @@ function nvweb_template_tweaks($html)
 		
 		if($tag['attributes']['rel']=='audio' && $tag['attributes']['navigate']=='navigate')
 		{
+            $preload = 'metadata';
+            if(!empty($tag['attributes']['preload']))
+                $preload = $tag['attributes']['preload'];
+
 			$content = array();
-			$content[] = '<audio controls="controls">';
+			$content[] = '<audio controls="controls" preload="'.$preload.'">';
 			$content[] = '	<source src="'.$tag['attributes']['href'].'" type="'.$tag['attributes']['type'].'" />';
 			$content[] = '	'.$tag['full_tag'];
 			$content[] = '</audio>';			
