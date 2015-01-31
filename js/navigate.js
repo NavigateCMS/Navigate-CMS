@@ -255,9 +255,12 @@ function navigate_window_resize()
 		//$("table.ui-jqgrid-btable").setGridWidth($('#navigate-content').width());		
 	}
 
-    if($('.navibrowse').length > 0)
+    if($('.navibrowse,.navigrid').length > 0)
     {
-        $('.navibrowse').height($('.navibrowse').parent().height() - 10);
+        $('.navibrowse,.navigrid').height($('.navibrowse,.navigrid').parent().height() - 10);
+
+        if( $('.navibrowse-items,.navigrid-items').height() < $('.navibrowse,.navigrid').height() )
+            $('.navibrowse-items,.navigrid-items').height( $('.navibrowse,.navigrid').height() - $('.navibrowse-path').height()  - 10 );
     }
 }
 
@@ -438,6 +441,77 @@ function navigate_tinymce_move_cursor_to_end(editor_id)
         sel.collapseToEnd();
     }
 }
+
+// Thanks to Ben for the following tinyMCE get/set cursor functions
+// http://blog.squadedit.com/tinymce-and-cursor-position/
+
+function navigate_tinymce_get_cursor_position(editor_id)
+{
+    var editor = tinyMCE.getInstanceById(editor_id);
+
+    //set a bookmark so we can return to the current position after we reset the content later
+    var bm = editor.selection.getBookmark(0);
+
+    //select the bookmark element
+    var selector = "[data-mce-type=bookmark]";
+    var bmElements = editor.dom.select(selector);
+
+    //put the cursor in front of that element
+    editor.selection.select(bmElements[0]);
+    editor.selection.collapse();
+
+    //add in my special span to get the index...
+    //we won't be able to use the bookmark element for this because each browser will put id and class attributes in different orders.
+    var elementID = "######cursor######";
+    var positionString = '<span id="'+elementID+'"></span>';
+    editor.selection.setContent(positionString);
+
+    //get the content with the special span but without the bookmark meta tag
+    var content = editor.getContent({format: "html"});
+    //find the index of the span we placed earlier
+    var index = content.indexOf(positionString);
+
+    //remove my special span from the content
+    editor.dom.remove(elementID, false);
+
+    //move back to the bookmark
+    editor.selection.moveToBookmark(bm);
+
+    return index;
+}
+
+function navigate_tinymce_set_cursor_position(editor_id, index)
+{
+    var editor = tinyMCE.getInstanceById(editor_id);
+
+    //get the content in the editor before we add the bookmark...
+    //use the format: html to strip out any existing meta tags
+    var content = editor.getContent({format: "html"});
+
+    //split the content at the given index
+    var part1 = content.substr(0, index);
+    var part2 = content.substr(index);
+
+    //create a bookmark... bookmark is an object with the id of the bookmark
+    var bookmark = editor.selection.getBookmark(0);
+
+    //this is a meta span tag that looks like the one the bookmark added... just make sure the ID is the same
+    var positionString = '<span id="'+bookmark.id+'_start" data-mce-type="bookmark" data-mce-style="overflow:hidden;line-height:0px"></span>';
+    //cram the position string inbetween the two parts of the content we got earlier
+    var contentWithString = part1 + positionString + part2;
+
+    //replace the content of the editor with the content with the special span
+    //use format: raw so that the bookmark meta tag will remain in the content
+    editor.setContent(contentWithString, ({format: "raw"}));
+
+    //move the cursor back to the bookmark
+    //this will also strip out the bookmark metatag from the html
+    editor.selection.moveToBookmark(bookmark);
+
+    //return the bookmark just because
+    return bookmark;
+}
+
 
 function navigate_unselect_text() 
 {	
