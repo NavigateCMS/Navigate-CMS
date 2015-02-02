@@ -40,8 +40,8 @@ function nvweb_search($vars=array())
             $start_date = gmmktime(0, 0, 0, $search_archive[1], 1, $search_archive[0]);
             $end_date   = gmmktime(0, 0, 0, $search_archive[1]+1, 1, $search_archive[0]);
 
-            $likes[] = ' (i.date_published >= '.$start_date.' OR (i.date_published=0 AND i.date_created >= '.$start_date.'))';
-            $likes[] = ' (i.date_published <= '.$end_date.' AND i.date_created <= '.$end_date.')';
+            $likes[] = ' (i.date_to_display >= '.$start_date.')';
+            $likes[] = ' (i.date_to_display <= '.$end_date.')';
         }
 
         if(!empty($search_archive[2]))
