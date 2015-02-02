@@ -1292,8 +1292,14 @@ function navigate_dropbox_load_video(name, value)
         function(data)
         {
             var play = '';
-            if(!data.id)
+            if(!data.id || data.id==null)
+            {
+                $("#" + name + "-droppable").html("<img src=\"img/icons/misc/dropbox.png\" vspace=\"18\" />");
+                $("#" + name + "-droppable-wrapper").find(".navigate-droppable-cancel").hide();
+                $("#" + name + "-droppable-wrapper").find(".navigate-droppable-create").show();
+                navigate_notification(navigate_lang_dictionary[56]); // Unexpected error
                 return false;
+            }
 
             $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_url+"\" />");
 

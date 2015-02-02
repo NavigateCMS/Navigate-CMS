@@ -206,20 +206,26 @@ function run()
                         else if(is_numeric($_REQUEST['provider']))
                             $item->load($_REQUEST['provider']); // needed in some case
                         else
-                            return false;
+                            unset($item);
 
-                        // add some extra data
-                        $item->extra        = array(
-                            'reference'  =>  $item->id,
-                            'link'      =>  '',
-                            'thumbnail' =>  'img/icons/ricebowl/mimetypes/video.png',
-                            'thumbnail_big' => 'img/icons/ricebowl/mimetypes/video.png',
-                            'thumbnail_url' => 'img/icons/ricebowl/mimetypes/video.png',
-                            'duration' => '',
-                            'embed_code'  => '<video src="'.file::file_url($item->id, 'inline').'></video>'
-                        );
+                        if(!empty($item))
+                        {
+                            // add some extra data
+                            $item->extra        = array(
+                                'reference'  =>  $item->id,
+                                'link'      =>  '',
+                                'thumbnail' =>  'img/icons/ricebowl/mimetypes/video.png',
+                                'thumbnail_big' => 'img/icons/ricebowl/mimetypes/video.png',
+                                'thumbnail_url' => 'img/icons/ricebowl/mimetypes/video.png',
+                                'duration' => '',
+                                'embed_code'  => '<video src="'.file::file_url($item->id, 'inline').'></video>'
+                            );
+                        }
                     }
-                    echo json_encode($item);
+                    if(!empty($item))
+                        echo json_encode($item);
+                    else
+                        echo false;
                     break;
             }
 			session_write_close();

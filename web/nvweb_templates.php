@@ -975,6 +975,9 @@ function nvweb_template_oembed_cache($provider, $oembed_url, $minutes=43200)
             file_put_contents($file, $response);
     }
 
+    if($response=='Not found')
+        $response = '';
+
     if(!empty($response))
         $response = json_decode($response);
 
