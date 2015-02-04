@@ -1845,6 +1845,9 @@ function block_group_form($item)
     // blocks by ID
     // block types
 
+    if(!is_array($item->blocks))
+        $item->blocks = array();
+    
     $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', implode('#', $item->blocks)));
 
     $table = new naviorderedtable("blocks_group_table");
