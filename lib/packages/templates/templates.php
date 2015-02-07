@@ -329,11 +329,14 @@ function templates_form($item)
     }
     else
     {
-        $navibars->add_tab_content_row(array(	'<label>'.t(82, 'File').'</label>',
-                                                '<span>'.NAVIGATE_PRIVATE.'/'.$website->id.'/templates/</span>',
-                                                $naviforms->textfield('file', $item->file, '236px'),
-                                                empty($item->file)? '' : '<a href="#" onclick="navigate_templates_editor();"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>'
-                                            ));
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(82, 'File').'</label>',
+                '<span>'.NAVIGATE_PRIVATE.'/'.$website->id.'/templates/</span>',
+                $naviforms->textfield('file', $item->file, '236px'),
+                empty($item->file)? '' : '<a href="#" onclick="navigate_templates_editor();"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>'
+            )
+        );
     }
 	
 	$navibars->add_content('
@@ -352,8 +355,10 @@ function templates_form($item)
 			{
 				title: \'<img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" align="absmiddle" /> '.t(170, 'Edit').' \' + file,
 				resizable: true,
-				height: 550,
-				width: "95%",
+				draggable: true,
+				width: $(window).width() - 60,
+				height: $(window).height() - 50,
+				position: { my: "center", at: "center", of: window },
 				modal: true,
 				open: function()
 				{
@@ -382,7 +387,7 @@ function templates_form($item)
 					"'.t(58, 'Cancel').'": function() {
 						$("#templates-file-edit-dialog").dialog("close");
 					},
-					"'.t(190, 'Ok').'": function() 
+					"'.t(34, 'Save').'": function()
 					{ 					
 						current_template_editor.toTextArea();					
 						current_template_editor = null;
@@ -412,7 +417,7 @@ function templates_form($item)
 			}).dialogExtend(
 			{
 				maximizable: true
-			}).dialogExtend("maximize");
+			});
 		}
 	');
 																				

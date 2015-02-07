@@ -128,7 +128,7 @@ function about_layout()
 											'<a href="https://github.com/mathiasbynens/jquery-noselect" target="_blank">jQuery noSelect plugin v51bac1d397 (2012-01-11)</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://code.google.com/p/jquery-dialogextend/" target="_blank">jQuery Dialog Extend plugin v2.0.2</a><br />' ));
+											'<a href="https://github.com/ROMB/jquery-dialogextend" target="_blank">jQuery Dialog Extend plugin v2.0.4</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',											
 											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v4.0</a><br />'));
