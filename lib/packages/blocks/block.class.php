@@ -164,7 +164,7 @@ class block
                             $value = array_filter($value);
 
                             // ignore links without a title or without a link
-                            if(empty($value))
+                            if(empty($value) || empty($key_name))
                                 continue;
 
                             $this->trigger[$field][$key_lang][$key_name] = $value;

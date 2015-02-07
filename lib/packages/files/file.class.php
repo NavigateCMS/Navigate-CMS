@@ -805,7 +805,7 @@ class file
 
 			$handle->image_convert = 'png';
             $handle->file_max_size = '512M'; // maximum image size: 512M (it really depends on available memory)
-			
+
 			// if needed, calculate width or height with aspect ratio
 			if(empty($width))
 			{

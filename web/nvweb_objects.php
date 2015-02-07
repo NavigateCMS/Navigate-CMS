@@ -83,7 +83,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 		case 'img':			
 			if(!$item->enabled && !$ignoreEnabled) 
 				nvweb_clean_exit();
-			
+
 			$path = $item->absolute_path();
 
 			$etag_add = '';		
@@ -104,7 +104,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			if((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true'))
 			{
 				$border = ($_REQUEST['border']=='false'? false : true);
-				$path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
+                $path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
 				$etag_add  = '-'.$width.'-'.$height.'-'.$border.'-'.$quality;
 				$item->name = $width.'x'.$height.'-'.$item->name;
 				$item->size = filesize($path);

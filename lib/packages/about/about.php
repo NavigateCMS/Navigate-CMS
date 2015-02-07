@@ -68,7 +68,7 @@ function about_layout()
                                             '<a href="http://code.google.com/p/tinymce-pre-plugin/" target="_blank">TinyMCE pre plugin r3 (17 Nov 2010)</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.jquery.com" target="_blank">jQuery v1.11.1 + jQuery Migrate v1.2.1</a><br />' ));
+											'<a href="http://www.jquery.com" target="_blank">jQuery v1.11.2 + jQuery Migrate v1.2.1</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />' ));
