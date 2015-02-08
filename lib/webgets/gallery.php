@@ -15,6 +15,14 @@ function nvweb_gallery($vars=array())
     $border = '';
     if(!empty($vars['border']))
         $border = '&border='.$vars['border'];
+
+    $items = PHP_INT_MAX; // number of images shown, 0 => all gallery photos
+    if(!empty($vars['items']) && $vars['items']!='0')
+        $items = intval($vars['items']);
+
+    $order = 'priority'; // display images using the assigned priority
+    if(!empty($vars['order']))
+        $order = $vars['order'];
 	
 	if(!empty($vars['item']))
 	{
@@ -51,7 +59,7 @@ function nvweb_gallery($vars=array())
 			$item->load($rs->id);
 		}
 	}
-		
+
 	if($item==NULL) return '';
 	
 	if(empty($vars['width']) && empty($vars['height']))
@@ -84,6 +92,8 @@ function nvweb_gallery($vars=array())
             if(!is_array($gallery))
                 return '';
 
+            $gallery = nvweb_gallery_reorder($gallery, $order);
+
             $image_ids = array_keys($gallery);
             $position = intval($vars['position']);
             $image_selected = $image_ids[$position];
@@ -111,16 +121,16 @@ function nvweb_gallery($vars=array())
 			$out[] = '<div class="nv_gallery">';		
 		
 			$gallery = mb_unserialize($item->galleries);
-			
 			$gallery = $gallery[0];
-			if(!is_array($gallery)) $gallery = array();
+            $gallery = nvweb_gallery_reorder($gallery, $order);
+
 			$first = true;
 			
 			$jsout = "var image_set_".$item->id." = [";
 			$preload = array();			
 			
 			foreach($gallery as $image => $dictionary)
-			{			
+			{
 				if($first)
 				{
 					$out[] = '<a href="#" onclick="return GB_showImageSet(image_set_'.$item->id.', 1);">
@@ -135,6 +145,8 @@ function nvweb_gallery($vars=array())
 				$jsout .= '{"caption": "'.$dictionary[$current['lang']].'", "url": "'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline"}';
 				$preload[] = "'".NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline';
 				$first = false;
+                $items--;
+                if($items <= 0) break;
 			}
 			
 			$jsout .= "];";
@@ -147,11 +159,14 @@ function nvweb_gallery($vars=array())
 
         case 'piecemaker':
             $gallery = mb_unserialize($item->galleries);
-            $gallery = $gallery[0];
-            if(!is_array($gallery)) $gallery = array();
+            $gallery = nvweb_gallery_reorder($gallery[0], $order);
 
             foreach($gallery as $image => $dictionary)
+            {
                 $out[] = '<Image Source="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" Title="'.$dictionary[$current['lang']].'"></Image>';
+                $items--;
+                if($items <= 0) break;
+            }
             break;
 
         case 'images':
@@ -166,8 +181,8 @@ function nvweb_gallery($vars=array())
                 $gallery = $gallery[0];
             }
 
-            if(is_array($gallery))
-                $images = array_keys($gallery);
+            $gallery = nvweb_gallery_reorder($gallery, $order);
+            $images = array_keys($gallery);
 
             if(empty($images))
                 return '';
@@ -175,6 +190,8 @@ function nvweb_gallery($vars=array())
             foreach($images as $img)
             {
                 $out[] = '<img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />';
+                $items--;
+                if($items <= 0) break;
             }
             break;
 
@@ -190,8 +207,8 @@ function nvweb_gallery($vars=array())
                 $gallery = $gallery[0];
             }
 
-            if(is_array($gallery))
-                $images = array_keys($gallery);
+            $gallery = nvweb_gallery_reorder($gallery, $order);
+            $images = array_keys($gallery);
 
             if(empty($images))
                 return '';
@@ -202,6 +219,8 @@ function nvweb_gallery($vars=array())
                     <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline">
                         <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />
                     </a>';
+                $items--;
+                if($items <= 0) break;
             }
             break;
 			
@@ -218,9 +237,8 @@ function nvweb_gallery($vars=array())
 				$gallery = mb_unserialize($item->galleries);
 				$gallery = $gallery[0];
 			}
-						
-			if(!is_array($gallery)) 
-				$gallery = array();
+
+            $gallery = nvweb_gallery_reorder($gallery, $order);
 
 			$first = true;
 			
@@ -240,6 +258,9 @@ function nvweb_gallery($vars=array())
 									 alt="'.$dictionary[$current['lang']].'" title="'.$dictionary[$current['lang']].'" />
 							</a>
 						</div>';
+
+                $items--;
+                if($items <= 0) break;
 			}	
 			
 			$out[] = '<div style=" clear: both; "></div>';
@@ -251,5 +272,26 @@ function nvweb_gallery($vars=array())
 	$out = implode("\n", $out);		
 	
 	return $out;
+}
+
+function nvweb_gallery_reorder($gallery=array(), $order='priority')
+{
+    if(!is_array($gallery))
+        $gallery = array();
+
+    switch($order)
+    {
+        case 'random':
+            uasort($gallery, function ($a, $b) {
+                return rand(-1, 1);
+            });
+            break;
+
+        case 'priority':
+        default:
+            // do nothing, the gallery is already ordered by priority
+    }
+
+    return $gallery;
 }
 ?>
