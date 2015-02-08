@@ -440,7 +440,7 @@ function nvweb_list($vars=array())
         {
             $out[] = '<div class="paginator">';
 
-            if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">&lt;&lt;</a>';
+            if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">&#10092;</a>'; // ❬
 
             if($page == 4)
                 $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
@@ -464,7 +464,7 @@ function nvweb_list($vars=array())
             else if($page + 3 < $pages)
                 $out[] = '<span class="paginator-etc">...</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
 
-            if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">&gt;&gt;</a>';
+            if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">&#10093;</a>'; // ❭
 
             $out[] = '<div style=" clear: both; "></div>';
 

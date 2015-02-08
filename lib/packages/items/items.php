@@ -1001,7 +1001,8 @@ function items_form($item)
 									);	
 																		
 									
-	if(empty($item->author)) $item->author = $user->id;
+	if(empty($item->id))
+        $item->author = $user->id;
 	$author_webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->author);	
 	$navibars->add_tab_content($naviforms->hidden('item-author', $item->author));
 	$navibars->add_tab_content_row(array(	'<label>'.t(266, 'Author').'</label>',
