@@ -48,7 +48,7 @@ function nvweb_liveedit($vars=array())
         // add jQuery if has not already been loaded in the template
         $includes = array();
         if(strpos($vars['nvweb_html'], 'jquery')===false)
-            $includes[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>';
+            $includes[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>';
 
         $includes[] = '<script language="javascript" type="text/javascript" src="'.NAVIGATE_URL.'/js/navigate_liveedit.js"></script>';
         $includes[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/navigate_liveedit.css" />';
@@ -64,6 +64,8 @@ function nvweb_liveedit($vars=array())
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/page_add.png" /> '.t(38, 'Create').'</a>';
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/comments.png" /> '.$comments.'</a>';
         //$out[] = '  <div id="navigate_liveedit_bar_liveedit_button"><img src="'.NAVIGATE_URL.'/img/icons/silk/shape_square_select.png" /> '.t(458, 'Edit in place').'</div>';
+
+        $out[] = '  <div id="navigate_liveedit_bar_hide_button" style=" float: right; " title="'.t(554, 'Hide').'">x</div>';
 
         if(!empty($url))
             $out []= '<a style="float: right;" href="'.$url.'" target="_blank">

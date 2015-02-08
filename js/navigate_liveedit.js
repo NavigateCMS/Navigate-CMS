@@ -18,6 +18,11 @@ function navigate_liveedit_init()
 {
     $('body').append('<div id="navigate_liveedit_bar_spacer">&nbsp;</div>');
 
+    $('#navigate_liveedit_bar_hide_button').on('click', function()
+    {
+        $('#navigate_liveedit_bar,#navigate_liveedit_bar_spacer').hide();
+    });
+
     $('#navigate_liveedit_bar_information_button').on('click', function()
     {
         if($('#navigate_liveedit_bar').height()==28)
