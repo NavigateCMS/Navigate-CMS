@@ -144,7 +144,7 @@ function nvweb_list($vars=array())
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
 			            s.date_published, s.date_unpublish, s.date_published as pdate,
-			            d.text as title, s.position
+			            d.text as title, s.position as position
 			  FROM nv_structure s, nv_webdictionary d
 			 WHERE s.id IN('.implode(",", $categories).')
 			   AND s.website = '.$website->id.'
@@ -243,7 +243,7 @@ function nvweb_list($vars=array())
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
                     i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-                    d.text as title, i.position as position
+                    d.text as title, i.position as position, s.position
 			  FROM nv_items i, nv_structure s, nv_webdictionary d
 			 WHERE i.category IN('.implode(",", $categories).')
 			   AND i.website = '.$website->id.'
@@ -774,6 +774,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					$out = intval($item->votes);
 					break;
 
+                case 'views':
+                    $out = intval($item->views);
+                    break;
+
 				case 'property':
 					$out = nvweb_properties(array(
 						'mode'		=>	(($source=='structure' || $source=='category')? 'structure' : 'item'),
@@ -834,7 +838,7 @@ function nvweb_list_get_orderby($order)
             break;
 
         case 'priority':
-            $orderby = ' ORDER BY position ASC ';
+            $orderby = ' ORDER BY IFNULL(i.position, 0) ASC, IFNULL(s.position,0) ASC ';
             break;
 
         case 'rating':
