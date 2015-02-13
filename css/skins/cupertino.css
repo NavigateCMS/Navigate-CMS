@@ -336,14 +336,33 @@ img
 	height: 13px;
 	width: 98.6%;
 	z-index: 100;
-	background-image:url(../../img/skins/background_menu_items.png);
-	background-repeat:repeat-x;
+	background-image: url(../../img/skins/background_menu_items.png);
+	background-repeat: repeat-x;
 }
 
 #navigate-status a,#navigate-status a:visited,#navigate-status a:hover
 {
 	color: #008;
 	text-decoration: none;
+}
+
+#navigate-status-progressbar
+{
+    display: inline-block;
+    margin-left: 16px;
+    height: 13px;
+    width: 200px;
+    position: relative;
+}
+
+#navigate-status-progressbar-label
+{
+    position: absolute;
+    left: 44%;
+    top: 0px;
+    font-weight: normal;
+    text-shadow: 1px 1px 0 #fff;
+    font-size: 10px;
 }
 
 #navigate-content-title

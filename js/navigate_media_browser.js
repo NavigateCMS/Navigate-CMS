@@ -74,6 +74,24 @@ function navigate_media_browser()
                 "#navigate_media_browser_items",
                 navigate_media_browser_parent,
                 {
+                    uploadStarted: function(file)
+                    {
+                        /*
+                        var div_id = 'upload-'+phpjs_sha1(file.name);
+                        $('#navigate_media_browser_items').prepend('<div id="'+div_id+'" class="ui-corner-all" style="display: none;"></div>');
+                        $('#'+div_id).append('<figure class="navigatecms_loader"></figure>');
+                        $('#'+div_id).append('<span style="clear: both; display: block; height: 0px;">'+file.name+'</span>');
+                        $('#navigate_media_browser_items .draggable-folder:last').after($('#'+div_id));
+                        $('#'+div_id).show();
+                        */
+                    },
+                    afterOne: function(file)
+                    {
+                        /*
+                        var div_id = 'upload-'+phpjs_sha1(file.name);
+                        $('#'+div_id).find('figure').remove();
+                        */
+                    },
                     afterAll: navigate_media_browser_reload
                 }
             );

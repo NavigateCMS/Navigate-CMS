@@ -323,7 +323,7 @@
                 },
                 {
                     "id": "portfolio-intro",
-                    "type": "text",
+                    "type": "textarea",
                     "name": "@portfolio_description",
                     "element": "item"
                 },

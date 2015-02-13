@@ -264,7 +264,7 @@ function navigate_window_resize()
     }
 }
 
-function navigate_status(text, img, status)
+function navigate_status(text, img, status, percentage)
 {
 	var ns = $("#navigate-status-info");
 	
@@ -278,6 +278,7 @@ function navigate_status(text, img, status)
 		$(ns).html(text);
 
     $('#navigate-status').removeClass("ui-state-active ui-state-error ui-state-highlight");
+    $("#navigate-status-progressbar").remove();
 
     if(status=='error')
         $('#navigate-status').addClass("ui-state-error");
@@ -286,6 +287,14 @@ function navigate_status(text, img, status)
     else if(status==true || status=="true" || status=='active')
 		$('#navigate-status').addClass("ui-state-active");
 
+    if(percentage && parseInt(percentage) > 0)
+    {
+        $(ns).after('<div id="navigate-status-progressbar"><div id="navigate-status-progressbar-label"></div></div>');
+        $("#navigate-status-progressbar" ).progressbar({
+            value: percentage
+        });
+        $('#navigate-status-progressbar-label').text(percentage + '%');
+    }
 }
 
 function navigate_notification(text, sticky)
@@ -1440,7 +1449,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                 var fname = file.fileName;
                 if(!fname)  fname = file.name;
 
-				navigate_status(navigate_lang_dictionary[261] + ": " + fname + " " + progress + "%", "loader"); // uploading
+				navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader", "default", progress); // uploading
                 
                 if(show_progress_in_title)
                 {

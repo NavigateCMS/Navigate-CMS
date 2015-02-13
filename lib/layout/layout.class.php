@@ -640,18 +640,20 @@ class layout
         if($user->permission('navigatecms.display_version')=='false')
             $version = '';
 
-		$this->add_content('<div id="navigate-status" class="ui-corner-all">
-								<div>
-									<div style="float: left;" id="navigate-status-info">
-										<img src="'.NAVIGATE_URL.'/img/loader.gif" width="16px" height="16px" align="absmiddle"> '.t(6, 'Loading').'...
-									</div>
-									<div style="float: right; font-weight: normal;">
-										<a href="?fid=about">'.APP_NAME.$version.'</a>, <a href="http://www.naviwebs.com" target="_blank">&copy; '.date('Y').'</a>
-										<a class="navigate-hidemenu-link" href="#">&#9650;</a>
-									</div>    
-									<div style=" clear: both; "></div>
-									</div>
-							</div>');
+		$this->add_content('
+		    <div id="navigate-status" class="ui-corner-all">
+                <div>
+                    <div style="float: left;" id="navigate-status-info">
+                        <img src="'.NAVIGATE_URL.'/img/loader.gif" width="16px" height="16px" align="absmiddle"> '.t(6, 'Loading').'...
+                    </div>
+                    <div style="float: right; font-weight: normal;">
+                        <a href="?fid=about">'.APP_NAME.$version.'</a>, <a href="http://www.naviwebs.com" target="_blank">&copy; '.date('Y').'</a>
+                        <a class="navigate-hidemenu-link" href="#">&#9650;</a>
+                    </div>
+                    <div style=" clear: both; "></div>
+                </div>
+            </div>'
+        );
 		
 	}
 
