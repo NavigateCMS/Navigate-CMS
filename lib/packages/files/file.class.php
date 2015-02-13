@@ -698,27 +698,33 @@ class file
 		{
 			$this->refresh();
 
-			if($this->width > $this->height)
-			{
-				// resize by width
-				$thumbnail_path = file::thumbnail($this, $website->resize_uploaded_images, 0, false);
-			}
-			else
-			{
-				// resize by height
-				$thumbnail_path = file::thumbnail($this, 0, $website->resize_uploaded_images, false);
-			}
+            if( ($this->width > $website->resize_uploaded_images)   ||
+                ($this->height > $website->resize_uploaded_images)
+            )
+            {
+                // the image is bigger than the maximum size allowed by the website
+                if($this->width > $this->height)
+                {
+                    // resize by width
+                    $thumbnail_path = file::thumbnail($this, $website->resize_uploaded_images, 0, false);
+                }
+                else
+                {
+                    // resize by height
+                    $thumbnail_path = file::thumbnail($this, 0, $website->resize_uploaded_images, false);
+                }
 
-            $size = filesize($thumbnail_path);
+                $size = filesize($thumbnail_path);
 
-			// copy created thumbnail (resized image) over the original file
-			@copy($thumbnail_path, $this->absolute_path());
+                // copy created thumbnail (resized image) over the original file
+                @copy($thumbnail_path, $this->absolute_path());
 
-			// remove all previous thumbnails (including the temporary resized image)
-			$this->refresh();
+                // remove all previous thumbnails (including the temporary resized image)
+                $this->refresh();
 
-            $this->size = $size;
-            $this->save();
+                $this->size = $size;
+                $this->save();
+            }
 		}
 	}
 
