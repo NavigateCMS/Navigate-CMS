@@ -30,6 +30,9 @@ session_save_path(NAVIGATE_PRIVATE.'/sessions');
 session_name($session_name);
 session_start();
 
+// set/refresh session cookie
 setcookie(session_name(), session_id(), time() + 3600, '/', $session_cookie_domain);
+// also refresh PHPSESSID cookie, to avoid problems
+setcookie("PHPSESSID", session_id(), time() + 3600, '/', $session_cookie_domain);
 
 ?>
