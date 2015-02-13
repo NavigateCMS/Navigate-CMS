@@ -616,7 +616,7 @@ function webusers_form($item)
                             {
                                 var note = '<div class=\"grid_note ui-corner-all\" grid-note-id=\"'+data[d].id+'\" style=\" background: '+data[d].background+'; \">';
                                 note += '<span class=\"grid_note_username\">'+data[d].username+'</span>';
-                                note += '<span class=\"grid_note_remove\"><img src=\"".NAVIGATE_URL."img/icons/silk/decline.png\" /></span>';
+                                note += '<span class=\"grid_note_remove\"><img src=\"".NAVIGATE_URL."/img/icons/silk/decline.png\" /></span>';
                                 note += '<span class=\"grid_note_date\">'+data[d].date+'</span>';
                                 note += '<span class=\"grid_note_text\">'+data[d].note+'</span>';
                                 note += '</div>';

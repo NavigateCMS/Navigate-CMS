@@ -35,7 +35,9 @@ if(isset($_REQUEST['debug']) || APP_DEBUG)
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
-define('NAVIGATE_URL', !empty($_ENV['SCRIPT_URI'])? dirname($_ENV['SCRIPT_URI']) : dirname(nvweb_self_url()));
+$navigate_url = !empty($_ENV['SCRIPT_URI'])? dirname($_ENV['SCRIPT_URI']) : dirname(nvweb_self_url());
+if(substr($navigate_url, -1)=='/')  $navigate_url = substr($navigate_url, 0, -1);
+define('NAVIGATE_URL', $navigate_url);
 
 /* global variables */
 global $DB;

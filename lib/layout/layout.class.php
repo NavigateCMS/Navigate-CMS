@@ -587,7 +587,7 @@ class layout
 			else			
 				$extruder .= '<div class="voice {}" style=" display: none; ">
 								<a href="'.$url.'" target="_blank"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/house_link.png" width="16px" height="16px" /></a>
-								<a class="label" href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?act=0&wid='.$ws->id.'">'.$ws->name.'</a>
+								<a class="label" href="?act=0&wid='.$ws->id.'">'.$ws->name.'</a>
 							  </div>';
 		}
 
@@ -763,7 +763,7 @@ class layout
                             {
                                 var note = '<div class=\"grid_note ui-corner-all\" grid-note-id=\"'+data[d].id+'\" style=\" background: '+data[d].background+'; \">';
                                 note += '<span class=\"grid_note_username\">'+data[d].username+'</span>';
-                                note += '<span class=\"grid_note_remove\"><img src=\"".NAVIGATE_URL."img/icons/silk/decline.png\" /></span>';
+                                note += '<span class=\"grid_note_remove\"><img src=\"".NAVIGATE_URL."/img/icons/silk/decline.png\" /></span>';
                                 note += '<span class=\"grid_note_date\">'+data[d].date+'</span>';
                                 note += '<span class=\"grid_note_text\">'+data[d].note+'</span>';
                                 note += '</div>';

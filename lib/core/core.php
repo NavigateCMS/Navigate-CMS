@@ -756,7 +756,7 @@ function core_session_remove()
 			$params["secure"], $params["httponly"]
 		);
 	}
-	session_destroy();	
+	@session_destroy();
 }
 
 /**

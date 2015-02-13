@@ -1,11 +1,11 @@
 <?php
-if(empty($_REQUEST['session_id']))
-	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to retrieve session_id."}, "id" : "id"}');
-
-session_id($_REQUEST['session_id']);
-
 @ini_set('max_execution_time','3600');
 @ini_set('max_input_time','3600');
+
+if(empty($_REQUEST['session_id']))
+    die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to retrieve session_id."}, "id" : "id"}');
+
+session_id($_REQUEST['session_id']);
 
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
