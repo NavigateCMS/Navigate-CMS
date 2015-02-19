@@ -362,7 +362,7 @@ class property
 
         if(is_numeric($template))
         {
-            // properties attached to a custom template (not theme template)
+            // properties attached to a custom template (not a theme template)
             if(!empty($element))
                 $element = ' AND element = '.protect($element);
             else
@@ -407,7 +407,13 @@ class property
 
                 for($p=0; $p < count($template_properties); $p++)
                 {
-                    if(empty($element) || $template_properties[$p]->element == $element)
+                    // if we want all properties, no matter the element assigned or
+                    // if the property is not assigned to an element, we assume "item", or
+                    // if the property is assigned to an element, we check it
+                    if( empty($element) ||
+                        ($element == 'item' && empty($template_properties[$p]->element)) ||
+                        $template_properties[$p]->element == $element
+                    )
                         $data[] = $template_properties[$p];
                 }
             }
@@ -516,7 +522,7 @@ class property
 		// load multilanguage strings
 		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id);
 		
-		// load properties values
+		// load custom properties values
 		$DB->query('SELECT * FROM nv_properties_items 
  				     WHERE element = '.protect($item_type).'
 					   AND node_id = '.protect($item_id).'

@@ -217,7 +217,16 @@
 			"enabled": true,
 			"gallery": false,
 			"comments": false,
-			"tags": false
+			"tags": false,
+            "properties":[
+                {
+                    "id": "blog_entry_image",
+                    "type": "image",
+                    "name": "@blog_entry_image",
+                    "element": "item",
+                    "enabled": "1"
+                }
+            ]
         },
         {
             "type": "blog_entry",

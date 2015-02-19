@@ -2,6 +2,8 @@ var navigatecms = {};
 var navigate_menu_current_tab;
 var navigate_lang_dictionary = Array();
 var navigate_codemirror_instances = Array();
+var navigate_form_conditional_properties = Array();
+var navigate_form_properties_language_selected = null;
 var navigate_menu_unselect_timer = null;
 
 //var $P = new PHP_JS();
@@ -552,6 +554,7 @@ function navigate_tabform_language_selector(el)
 {
     // identify language selected
     var code = $("#"+$(el).attr("for")).val();
+    navigate_form_properties_language_selected = code;
 
     if(!code || code=="")
     {
@@ -572,7 +575,66 @@ function navigate_tabform_language_selector(el)
         }
     }
 
+    $(navigate_form_conditional_properties).each(function() { this.trigger("change", code); });
     $(navigate_codemirror_instances).each(function() { this.refresh(); } );
+}
+
+function navigate_tabform_conditional_property(property_id, property_conditional, allowed_values)
+{
+    $(document).ready(function()
+    {
+        var prop_check = $("#navigate-properties-form").find("[id^=property-" + property_conditional + "]").on(
+            "change keyup click blur",
+            function(event)
+            {
+                var conditional_value = $(this).val();
+                var conditional_lang = $(this).parent(".navigate-form-row").attr("lang");
+
+                if($(this).attr("type")=="checkbox")
+                {
+                    conditional_value = 0;
+                    if($(this).is(":checked"))
+                        conditional_value = 1;
+                }
+
+                // now, for each property with the assigned id (may be multilanguage)...
+                $("div[nv_property=" + property_id + "]").each(function()
+                {
+                    var property_lang = $(this).attr("lang");
+
+                    // if the current property is multilanguage and the language is not the same of the condition,
+                    // or if the current prop is multi and the conditional is also multi
+                    // do nothing, the property will be treated in another loop
+                    if( (typeof(property_lang) != "undefined" && (typeof(conditional_lang) != "undefined") && conditional_lang != property_lang ) )
+                    {
+                        return;
+                    }
+
+                    // first we hide the property
+                    $(this).hide();
+
+                    // then we check if the property has to be shown right now
+                    if( $.inArray(String(conditional_value), allowed_values) >= 0 )
+                    {
+                        if( typeof(property_lang) == "undefined")
+                        {
+                            $("div[nv_property=" + property_id + "]").show();
+                        }
+                        else if(
+                            !navigate_form_properties_language_selected ||
+                            navigate_form_properties_language_selected == property_lang
+                        )
+                        {
+                            $("div[nv_property=" + property_id + "][lang="+property_lang+"]").show();
+                        }
+                    }
+
+                });
+            });
+
+        navigate_form_conditional_properties.push(prop_check);
+        prop_check.trigger("change");
+    });
 }
 
 function navigate_periodic_event()
