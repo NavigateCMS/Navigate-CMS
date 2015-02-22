@@ -319,8 +319,14 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
             }
         }
 
+        $already_sent = array();
+
         foreach($recipients as $name => $email)
         {
+            // avoid sending someone the same email two times
+            if(in_array($email, $already_sent))
+                continue;
+
             if(empty($email) && !empty($name))
                 $email = $name;
 
@@ -328,6 +334,8 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
             $mail->AddAddress($email, $name);
 
             $mail->Send();
+
+            array_push($already_sent, $email);
         }
 
         $ok = true; // no exceptions => mail sent
