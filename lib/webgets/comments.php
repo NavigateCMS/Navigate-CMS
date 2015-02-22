@@ -92,7 +92,60 @@ function nvweb_comments($vars=array())
 	switch(@$vars['mode'])
 	{	
 		case 'process':
-		
+
+            if(isset($_GET['nv_approve_comment']))
+            {
+                // process 1-click comment approval
+                $comment = new comment();
+                $comment->load($_GET['id']);
+
+                if(!empty($comment->id) && $comment->status == -1) // comment is still not reviewed
+                {
+                    $hash = $_GET['hash'];
+                    if($hash == sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails)))
+                    {
+                        // hash check passed
+                        $comment->status = 0;
+                        $comment->save();
+                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(555, "Item has been successfully published.").'");');
+                    }
+                    else
+                    {
+                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(344, "Security error").'");');
+                    }
+                }
+                else
+                {
+                    nvweb_after_body("js", $vars['alert_callback'].'("'.t(56, "Unexpected error").'");');
+                }
+            }
+
+            if(isset($_GET['nv_remove_comment']))
+            {
+                // process 1-click comment removal
+                $comment = new comment();
+                $comment->load($_GET['id']);
+
+                if(!empty($comment->id) && $comment->status == -1) // comment is still not reviewed
+                {
+                    $hash = $_GET['hash'];
+                    if($hash == sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails)))
+                    {
+                        // hash check passed
+                        $comment->delete();
+                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(55, "Item successfully deleted").'");');
+                    }
+                    else
+                    {
+                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(344, "Security error").'");');
+                    }
+                }
+                else
+                {
+                    nvweb_after_body("js", $vars['alert_callback'].'("'.t(56, "Unexpected error").'");');
+                }
+            }
+
 			if($_REQUEST['form-type']=='comment-reply')
 			{
 				// add comment	
@@ -151,6 +204,13 @@ function nvweb_comments($vars=array())
 				if(!empty($comment->id) && $status == -1)
 					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
 
+                $notify_addresses = $website->contact_emails;
+
+                if(!empty($element->comments_moderator))
+                    $notify_addresses[] = user::email_of($element->comments_moderator);
+
+                $hash = sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails) );
+
                 $message = navigate_compose_email(array(
                     array(
                         'title' => t(9, 'Content'),
@@ -169,14 +229,18 @@ function nvweb_comments($vars=array())
                         'content' => nl2br($_REQUEST['reply-message'])
                     ),
                     array(
-                        'footer' => '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&tab=5&id='.$element->id.'">'.$webgets[$webget]['translations']['review_comments'].'</a>'
+                        'footer' =>
+                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&tab=5&id='.$element->id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
+                            '&nbsp;&nbsp;|&nbsp;&nbsp;'.
+                            '<a style=" color: #008830" href="'.nvweb_self_url().'?nv_approve_comment&id='.$comment->id.'&hash='.$hash.'">'.t(258, "Publish").'</a>'.
+                            '&nbsp;&nbsp;|&nbsp;&nbsp;'.
+                            '<a style=" color: #FF0090" href="'.nvweb_self_url().'?nv_remove_comment&id='.$comment->id.'&hash='.$hash.'">'.t(525, "Remove comment (without confirmation)").'</a>'
                     )
                 ));
 
-                if(!empty($element->comments_moderator))
-					nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, user::email_of($element->comments_moderator));
+                foreach($website->contact_emails as $contact_address)
+                    nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address);
 
-                nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message);
 			}
 			break;
 
