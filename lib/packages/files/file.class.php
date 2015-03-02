@@ -1081,7 +1081,7 @@ class file
 	}
 
     // precondition: the file must exist in the website "files" folder
-    // if not, you must set "move_uploaded_file" paramter to true and give the full path on tmp_name
+    // if not, you must set "move_uploaded_file" parameter to true and give the full path on tmp_name
     public static function register_upload($tmp_name, $target_name, $parent, $mime=NULL, $move_uploaded_file=false)
     {
         global $website;

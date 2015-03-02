@@ -417,7 +417,8 @@ function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=arra
  *  function to truncate and then clean up end of the HTML,
  *  truncates by counting characters outside of HTML tags
  *
- *  @author alex lockwood, alex dot lockwood at websightdesign
+ *  @author Alex Lockwood, alex dot lockwood at websightdesign
+ *  @updated by Marc Lobato [try not to truncate words]
  *
  *  @param string $str the string to truncate
  *  @param int $len the number of characters
@@ -477,8 +478,14 @@ function core_truncate_html($str, $len, $end = '&hellip;')
 
     if(strlen($str) > $len)
     {
-        //truncate with new len
-        $truncated_html = substr($str, 0, $len);
+        // look for the first space character after the required length
+        // then, truncate with new len
+        $slen = core_strpos_array($str, array(' ', ',', '.', ';', "\n"), $len);
+        if(!$slen)
+            $truncated_html = substr($str, 0, $len);
+        else
+            $truncated_html = substr($str, 0, $slen);
+
         //add the end text
         $truncated_html .= $end ;
         //restore any open tags
@@ -488,6 +495,31 @@ function core_truncate_html($str, $len, $end = '&hellip;')
         $truncated_html = $str;
 
     return $truncated_html;
+}
+
+function core_strpos_array($haystack, $needles, $offset)
+{
+    if ( is_array($needles) )
+    {
+        foreach ($needles as $str)
+        {
+            if ( is_array($str) )
+            {
+                $pos = core_strpos_array($haystack, $str, $offset);
+            }
+            else
+            {
+                $pos = strpos($haystack, $str, $offset);
+            }
+
+            if ($pos !== FALSE)
+                return $pos;
+        }
+    }
+    else
+    {
+        return strpos($haystack, $needles, $offset);
+    }
 }
 
 /**
