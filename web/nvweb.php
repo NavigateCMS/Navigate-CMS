@@ -143,7 +143,10 @@ try
     // if preview but no navigate_session active
 	if( ($_REQUEST['preview']=='true' && $current['navigate_session']!=1) ||
         (empty($_REQUEST['preview']) && !$permission))
+    {
+        nvweb_route_parse('***nv.not_allowed***');
 		nvweb_clean_exit();
+    }
 
     define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
 			
