@@ -63,21 +63,25 @@ function run()
                     break;
 
                 case 'duplicate_file':
-                    error_reporting(~0);
-                    ini_set('display_errors', 1);
+                    //error_reporting(~0);
+                    //ini_set('display_errors', 1);
+                    $status = false;
                     $f = new file();
                     $f->load(intval($_REQUEST['id']));
                     $f->id = 0;
                     $f->insert();
-                    $done = copy(
-                        NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.intval($_REQUEST['id']),
-                        NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$f->id
-                    );
-                    $status = "true";
-                    if(!$done)
+                    if(!empty($f->id))
                     {
-                        $f->delete();
-                        $status = t(56, "Unexpected error");
+                        $done = copy(
+                            NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.intval($_REQUEST['id']),
+                            NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$f->id
+                        );
+                        $status = "true";
+                        if(!$done)
+                        {
+                            $f->delete();
+                            $status = t(56, "Unexpected error");
+                        }
                     }
                     echo $status;
                     break;
