@@ -216,7 +216,7 @@ function extensions_grid($list)
 
     $grid->set_header('
         <div class="navibrowse-path ui-corner-all">
-            <input type="checkbox" id="extension-available-button" /><label for="extension-available-button"><img src="img/icons/silk/rainbow.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
+            <input type="checkbox" id="extension-available-button" /><label for="extension-available-button"><img src="img/icons/silk/plugin.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
             <input type="checkbox" id="extension-marketplace-button" /><label for="extension-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
         </div>
 	');

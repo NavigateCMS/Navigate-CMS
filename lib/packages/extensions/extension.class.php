@@ -229,8 +229,8 @@ class extension
 
         foreach($rs as $row)
             $properties[$row['extension']] = array(
-                'enabled' => intval($row['enabled']),
-                'favorite' => intval($row['favorite'])
+                'enabled' => intval($row['enabled'])/*,
+                'favorite' => intval($row['favorite'])*/
             );
 
         for($t=0; $t < count($extensions); $t++)
@@ -260,7 +260,11 @@ class extension
 
                 $extensions[$t]['code'] = $code;
                 $extensions[$t]['update'] = ((version_compare($updates[$code], $extensions[$t]['version']) > 0)? $updates[$code] : '');
-                $extensions[$t]['enabled'] = ($properties[$code]['enabled']===0)? '0' : '1';
+
+                if(isset($properties))
+                    $extensions[$t]['enabled'] = ($properties[$code]['enabled']===0)? '0' : '1';
+                else
+                    $extensions[$t]['enabled'] = '1';
                 //$extensions[$t]['favorite'] = ($properties[$code]['favorite']===0)? '0' : '1';
             }
         }
@@ -299,4 +303,5 @@ class extension
         return $latest_update;
     }
 }
+
 ?>
