@@ -50,9 +50,6 @@ function nv_plugin_init()
 		die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
 	}
 
-    $events = new events();
-    nvweb_plugins_load();
-    $events->extension_backend_bindings();
 
 	// global exception catcher
 	try
@@ -107,7 +104,7 @@ function nv_plugin_init()
 		else if(!empty($_COOKIE["webuser"]))
 			$webuser->load_by_hash($_COOKIE['webuser']);
 
-        setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
+        @setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
         // remove the "folder" part of the route
         $route = '';
@@ -147,6 +144,10 @@ function nv_plugin_init()
 		</html>
 		<?php
 	}
+
+    $events = new events();
+    nvweb_plugins_load();
+    $events->extension_backend_bindings();
 }
 
 function nv_plugin_end($redirect_to="")
@@ -164,5 +165,4 @@ function nv_plugin_end($redirect_to="")
         header('Location: '.$redirect_to);
 	exit;
 }
-
 ?>
