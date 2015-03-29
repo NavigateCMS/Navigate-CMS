@@ -3,7 +3,7 @@
  * 
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2013 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2015 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license GPLv2
  *
@@ -239,7 +239,7 @@ class database
                     else
                     {
                         $error = $stm->errorInfo();
-                        throw new Exception('SQL '.$error[0].'/'.$error[1].': '.$error[2]);
+                        throw new Exception('SQL '.$error[0].'/'.$error[1].': '.$error[2].' / '.$sql);
                     }
 
                     $stm->closeCursor();
