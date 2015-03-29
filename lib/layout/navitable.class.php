@@ -9,6 +9,7 @@ class navitable
 	public $sortorder;
 	public $edit_index;
 	public $edit_url;
+    public $delete_url;
 	public $initial_url;
 	public $data_index;
 	public $click_action;
@@ -53,9 +54,13 @@ class navitable
         $this->load_callback = $script;
     }
 	
-	public function enableDelete()
+	public function enableDelete($delete_url = NULL)
 	{
 		$this->delete_action = true;
+        if(!empty($delete_url))
+            $this->delete_url = $delete_url;
+        else
+            $this->delete_url = '?fid='.$this->default_fid.'&act=1&oper=del';
     }
 	
 	public function enableSearch()
@@ -76,7 +81,6 @@ class navitable
     public function setDataIndex($name)
 	{
         $this->data_index = $name;
-
     }
 
     public function setDefaultFID($fid)
@@ -367,6 +371,10 @@ class navitable
 		global $layout;
 		global $user;
 
+        $grid_notes_control = '?fid='.$this->default_fid.'&act=';
+        if(strpos($this->default_fid, 'ext_')===0)
+            $grid_notes_control = '?fid='.$this->default_fid.'&mode=';
+
 		$html = array();
 
 		$html[] = '<table id="'.$this->id.'"></table>';
@@ -457,67 +465,69 @@ class navitable
 				
 		$html[] = '});';
 
-		$html[] = '$("#'.$this->id.'").jqGrid(	"navGrid",
-												"#'.$this->id.'-pager", 
-												{
-													add: '.($this->add_action && !empty($this->edit_url)? 'true' : 'false').',
-													edit: '.(($this->click_action=='redirect')? 'false' : 'true').',
-													del: '.($this->delete_action? 'true' : 'false').',
-													search:'.(!empty($this->search_action)? 'true' : 'false').',
-													searchtext:"'.t(41, 'Search').' ",											
-													addfunc: function()
-													{
-														window.location.href="?fid='.$this->default_fid.'&act=2";
-													},
-													delfunc: function(rownums)
-													{
-														// ask confirmation
-														$(\'<div id="navigate-delete-dialog" class="hidden">'.t(60, 'Do you really want to delete the selected items?').'</div>\')
-															.dialog(
-															{
-                                                                resizable: true,
-                                                                height: 150,
-                                                                width: 300,
-                                                                modal: true,
-                                                                title: "'.t(59, 'Confirmation').'",
-                                                                buttons:
-                                                                {
-                                                                    "'.t(58, 'Cancel').'": function()
-                                                                    {
-                                                                        $(this).dialog("close");
-                                                                    },
-                                                                    "'.t(35, 'Delete').'": function()
-                                                                    {
-                                                                        $(this).dialog("close");
-                                                                        // get row main id
-                                                                        var rowids = [];
-                                                                        for(var rownum in rownums)
-                                                                        {
-                                                                            rowids.push($("#'.$this->id.'").getRowData(rownums[rownum]).'.$this->data_index.');
-                                                                        }
-                                                                        // ajax call
-                                                                        $.ajax(
-                                                                        {
-                                                                            async: false,
-                                                                            data: {ids: rowids},
-                                                                            dataType: "json",
-                                                                            complete: function()
-                                                                            {
-                                                                                // reload table (with or without success)
-                                                                                $("#'.$this->id.'").trigger("reloadGrid");
-                                                                            },
-                                                                            type: "post",
-                                                                            url: "?fid='.$this->default_fid.'&act=1&oper=del"
-                                                                        });
-																	}
-																}
-														    });
-													}
-												}, 
-												{}, 
-												{}, 
-												{}, 
-												{ multipleSearch: true });';
+		$html[] = '$("#'.$this->id.'").jqGrid(
+		    "navGrid",
+            "#'.$this->id.'-pager",
+            {
+                add: '.($this->add_action && !empty($this->edit_url)? 'true' : 'false').',
+                edit: '.(($this->click_action=='redirect')? 'false' : 'true').',
+                del: '.($this->delete_action? 'true' : 'false').',
+                search:'.(!empty($this->search_action)? 'true' : 'false').',
+                searchtext:"'.t(41, 'Search').' ",
+                addfunc: function()
+                {
+                    window.location.href="?fid='.$this->default_fid.'&act=2";
+                },
+                delfunc: function(rownums)
+                {
+                    // ask confirmation
+                    $(\'<div id="navigate-delete-dialog" class="hidden">'.t(60, 'Do you really want to delete the selected items?').'</div>\')
+                        .dialog(
+                        {
+                            resizable: true,
+                            height: 150,
+                            width: 300,
+                            modal: true,
+                            title: "'.t(59, 'Confirmation').'",
+                            buttons:
+                            {
+                                "'.t(58, 'Cancel').'": function()
+                                {
+                                    $(this).dialog("close");
+                                },
+                                "'.t(35, 'Delete').'": function()
+                                {
+                                    $(this).dialog("close");
+                                    // get row main id
+                                    var rowids = [];
+                                    for(var rownum in rownums)
+                                    {
+                                        rowids.push($("#'.$this->id.'").getRowData(rownums[rownum]).'.$this->data_index.');
+                                    }
+                                    // ajax call
+                                    $.ajax(
+                                    {
+                                        async: false,
+                                        data: {ids: rowids},
+                                        dataType: "json",
+                                        complete: function()
+                                        {
+                                            // reload table (with or without success)
+                                            $("#'.$this->id.'").trigger("reloadGrid");
+                                        },
+                                        type: "post",
+                                        url: "'.$this->delete_url.'"
+                                    });
+                                }
+                            }
+                        });
+                }
+            },
+            {},
+            {},
+            {},
+            { multipleSearch: true }
+        );';
 
 		$html[] = '$("#'.$this->id.'").jqGrid("setGridParam", 
 		{ 
@@ -631,10 +641,14 @@ class navitable
 			$html[] = '		if('.$this->click_action.') '.$this->click_action.'(rowid); ';
 			$html[] = '}';
 		}
-		
+
+        $quicksearch_url = '?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=';
+        if(strpos($this->default_fid, 'ext_')===0)
+            $quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
+
 		$html[] = 'function navitable_quicksearch(text)';
 		$html[] = '{';
-		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=" + text });';
+		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$quicksearch_url.'" + text });';
 		$html[] = '		$("#'.$this->id.'").trigger("reloadGrid");';
 		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$this->url.'" });';	
 		$html[] = '}';
@@ -699,7 +713,7 @@ class navitable
                             open: function(event, ui)
                             {
                                 var container = this;
-                                $.getJSON('?fid=".$this->default_fid."&act=grid_notes_comments&id=' + row_id, function(data)
+                                $.getJSON('".$grid_notes_control."grid_notes_comments&id=' + row_id, function(data)
                                 {
                                     $(container).html('".
                                         '<div><form action="#" onsubmit="return false;" method="post"><span class=\"grid_note_username\">'.$user->username.'</span><button class="grid_note_save">'.t(34, 'Save').'</button><br /><textarea id="grid_note_comment" class="grid_note_comment"></textarea></form></div>'
@@ -726,7 +740,7 @@ class navitable
                                         var grid_note = $(this).parent();
 
                                         $.get(
-                                            '?fid=".$this->default_fid."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'),
+                                            '".$grid_notes_control."grid_note_remove&id=' + $(this).parent().attr('grid-note-id'),
                                             function(result)
                                             {
                                                 if(result=='true')
@@ -742,7 +756,7 @@ class navitable
                                         icons: { primary: 'ui-icon-disk' }
                                     }).on('click', function()
                                     {
-                                        $.post('?fid=".$this->default_fid."&act=grid_notes_add_comment',
+                                        $.post('".$grid_notes_control."grid_notes_add_comment',
                                         {
                                             comment: $(container).find('.grid_note_comment').val(),
                                             id: row_id,
@@ -813,7 +827,7 @@ class navitable
 			            // now save this preference
 			            $.ajax({
 			               type: 'POST',
-			               url: NAVIGATE_APP + '?fid=".$this->default_fid."&act=grid_note_background',
+			               url: '".$grid_notes_control."grid_note_background',
 			               data: {
 			                   id: $(this).attr('data-item-id'),
 			                   background: new_background
@@ -899,5 +913,4 @@ class navitable
 		return implode("\n", $html);	
 	}
 }
-
 ?>

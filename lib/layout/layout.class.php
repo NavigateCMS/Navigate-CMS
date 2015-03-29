@@ -740,6 +740,11 @@ class layout
     {
         global $user;
 
+        $grid_control_url = "?fid=".$_REQUEST['fid']."&act=";
+
+        if($_REQUEST['fid']=='extensions')
+            $grid_control_url = "?fid=extensions&extension=".$_REQUEST['extension']."&act=run&mode=";
+
         $this->add_script("
             function navigate_display_notes_dialog()
             {
@@ -753,7 +758,7 @@ class layout
                     open: function(event, ui)
                     {
                         var container = this;
-                        $.getJSON('?fid=".$_REQUEST['fid']."&act=grid_notes_comments&id=' + row_id, function(data)
+                        $.getJSON('".$grid_control_url."grid_notes_comments&id=' + row_id, function(data)
                         {
                             $(container).html('".
                                 '<div><form action="#" onsubmit="return false;" method="post"><span class=\"grid_note_username\">'.$user->username.'</span><button class="grid_note_save">'.t(34, 'Save').'</button><br /><textarea id="grid_note_comment" class="grid_note_comment"></textarea></form></div>'
@@ -775,7 +780,7 @@ class layout
                             {
                                 var grid_note = $(this).parent();
 
-                                $.get('?fid=".$_REQUEST['fid']."&act=grid_note_remove&id=' + $(this).parent().attr('grid-note-id'), function(result)
+                                $.get('".$grid_control_url."grid_note_remove&id=' + $(this).parent().attr('grid-note-id'), function(result)
                                 {
                                     if(result=='true')
                                     {
@@ -798,7 +803,7 @@ class layout
                                 else
                                     background_color = $('.grid_note:visible:first').css('background-color');
 
-                                $.post('?fid=".$_REQUEST['fid']."&act=grid_notes_add_comment',
+                                $.post('".$grid_control_url."grid_notes_add_comment',
                                 {
                                     comment: $(container).find('.grid_note_comment').val(),
                                     id: row_id,
