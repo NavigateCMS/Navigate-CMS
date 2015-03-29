@@ -168,6 +168,10 @@ function nvweb_template_parse($template)
 				$content = NVWEB_ABSOLUTE;
 				break;
 
+            case 'nvajax':
+                $content = NVWEB_AJAX;
+                break;
+
 			case 'url':
                 $content = '';
                 if(!empty($tag['attributes']['lang']))
