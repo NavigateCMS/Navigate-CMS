@@ -26,8 +26,11 @@ class navibars
 				// if we are showing a list (act=0 || act=list), make an ajax call
 				// else redirect browser to the list and make the search after load
 				
-				if(empty($_REQUEST['act']) || $_REQUEST['act']=='list')	// list!
+				if( empty($_REQUEST['act']) || $_REQUEST['act']=='list' ||
+                    ($_REQUEST['fid']=='extensions' && $_REQUEST['act']=='run' && (empty($_REQUEST['mode']) || $_REQUEST['mode']=='list'))
+                )
 				{
+                    // we are displaying a list
 					$actions[$search_form_pos][] = '<img onclick="$(this).next().triggerHandler(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';
 					$actions[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" navitable_quicksearch($(\'#navigate-quicksearch\').val()); return false;">';
 				}
