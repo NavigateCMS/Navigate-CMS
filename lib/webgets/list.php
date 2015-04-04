@@ -375,8 +375,22 @@ function nvweb_list($vars=array())
                                 $item_html = str_replace($tag['full_tag'], '', $item_html);
                             break;
 
+                        case 'not_first':
+                            if($i > 0)
+                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                            else
+                                $item_html = str_replace($tag['full_tag'], '', $item_html);
+                            break;
+
                         case 'last':
                             if($i == (count($rs)-1))
+                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                            else
+                                $item_html = str_replace($tag['full_tag'], '', $item_html);
+                            break;
+
+                        case 'not_last':
+                            if($i != (count($rs)-1))
                                 $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
                             else
                                 $item_html = str_replace($tag['full_tag'], '', $item_html);
