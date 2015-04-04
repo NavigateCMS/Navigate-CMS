@@ -1371,13 +1371,55 @@ function navigate_selector_upgrade(el)
             formatSearching: function ()
             {
                 return navigate_lang_dictionary[494]; /*"Searching..."*/
-            }
+            },
+            selectOnBlur: true
         }
     );
 
     // force defined width
     if(width)
         $(el).prev().find('a:first').css('width', width);
+
+    // add custom values, if enabled
+    $(el).parent().find('a[data-action="create_custom_value"]').on("click", function()
+    {
+        $('<div class="navigate-form-row"><input type="text" name="create_custom_value" /></div>').dialog({
+            title: navigate_t(472, "Add"),
+            modal: true,
+            width: 428,
+            buttons: [
+                {
+                    text: navigate_t(190, "Ok"),
+                    icons: {
+                        primary: "ui-icon-check"
+                    },
+                    click: function()
+                    {
+                        var new_value = $(this).find('input[name="create_custom_value"]').val();
+                        if(new_value)
+                        {
+                            $(el).append($('<option>', { value: new_value, text: new_value, selected: true }));
+                            if($(el).attr('multiselect'))
+                                $(el).select2("val", $(el).select2("val").concat(new_value));
+                            else
+                                $(el).select2("val", new_value);
+                        }
+                        $( this ).dialog( "close" );
+                    }
+                },
+                {
+                    text: navigate_t(58, "Cancel"),
+                    icons: {
+                        primary: "ui-icon-close"
+                    },
+                    click: function()
+                    {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            ]
+        });
+    });
 }
 
 function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)

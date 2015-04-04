@@ -694,6 +694,7 @@ class layout
                 402: "'.t(402, 'Please select a fewer number of files').'",
                 403: "'.t(403, 'File too large').'",
                 440: "'.t(440, 'Error saving the data, please do an external backup of your changes to prevent data loss').'",
+                472: "'.t(472, 'Add').'",
                 476: "'.t(476, 'Copy to clipboard').'",
                 492: "'.t(492, 'No matches found').'",
                 493: "'.t(493, 'Loading more results...').'",

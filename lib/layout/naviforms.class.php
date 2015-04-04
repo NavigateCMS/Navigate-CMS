@@ -31,7 +31,7 @@ class naviforms
 		return implode("\n", $out);	
 	}
 	
-	public function selectfield($id, $values, $texts, $selected_value="", $onChange="", $multiple=false, $titles=array(), $style="", $control_replacement=true)
+	public function selectfield($id, $values, $texts, $selected_value="", $onChange="", $multiple=false, $titles=array(), $style="", $control_replacement=true, $allow_custom_value=false)
 	{
         $class = '';
         if($control_replacement)
@@ -55,6 +55,11 @@ class naviforms
 		}
 		
 		$out[] = '</select>';
+
+        if($allow_custom_value)
+        {
+            $out[] = '<a href="#" class="uibutton" data-action="create_custom_value"><i class="fa fa-plus"></i></a>';
+        }
 		
 		return implode("\n", $out);	
 	}
