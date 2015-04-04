@@ -960,7 +960,7 @@ class file
     {
         $f = new file();
         $f->load($id);
-        $thumbnails = glob(NAVIGATE_PRIVATE.'/'.$f->website.'/thumbnails/*x*-*-'.$id);
+        $thumbnails = glob(NAVIGATE_PRIVATE.'/'.$f->website.'/thumbnails/*x*-*-'.$id.'*');
         for($t=0; $t < count($thumbnails); $t++)
             @unlink($thumbnails[$t]);
     }
