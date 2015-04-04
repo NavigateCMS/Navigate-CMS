@@ -1803,6 +1803,12 @@ input.naviforms-colorpicker-text
     border-color: #bbc;
 }
 
+.select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit
+{
+    background-color: #E8EDFF;
+    padding: 5px;
+}
+
 
 
 .navi-ui-widget-shadow
