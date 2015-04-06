@@ -16,6 +16,7 @@ function nvweb_list($vars=array())
 	global $cache;
 	global $structure;
 	global $webgets;
+    global $theme;
     global $webuser;
 
 	$out = array();
@@ -176,6 +177,49 @@ function nvweb_list($vars=array())
             'zone' => 'object'
         ));
     }
+    else if($vars['source']=='block_group')
+    {
+        $bg = new block_group();
+        if(!empty($vars['type']))
+            $bg->load_by_code($vars['type']);
+        if(!empty($bg))
+        {
+            $rs = array();
+            foreach($bg->blocks as $bgb)
+            {
+                unset($bgbo);
+
+                if(is_numeric($bgb))
+                {
+                    $bgbo = new block();
+                    $bgbo->load($bgb);
+                    $rs[] = $bgbo;
+                }
+                else
+                {
+                    // is block group block type?
+                    $bgba = $theme->block_group_blocks($vars['type']);
+                    if(!empty($bgba))
+                    {
+                        $bgbo = $bgba[$bgb];
+                        $rs[] = $bgbo;
+                    }
+                    else // then is block type
+                    {
+                        list($bgbos, $foo) = nvweb_blocks(array(
+                            'type' => $bgb,
+                            'mode' => ($order=='random'? 'random' : 'ordered'),
+                            'zone' => 'object'
+                        ));
+
+                        for($i=0; $i < count($bgbos); $i++)
+                            $rs[] = $bgbos[$i];
+                    }
+                }
+            }
+            $total = count($rs);
+        }
+    }
     else if($vars['source']=='rss')
     {
         list($rs, $total) = nvweb_list_get_from_rss($vars['url'], @$vars['cache'], $offset, $vars['items'], $permission, $order);
@@ -296,7 +340,7 @@ function nvweb_list($vars=array())
             // item is virtually created
             $item = $rs[$i];
         }
-        else if($vars['source']=='block')
+        else if($vars['source']=='block' || $vars['source']=='block_group')
         {
             $item = $rs[$i];
         }
@@ -311,6 +355,10 @@ function nvweb_list($vars=array())
 
         // get the nv list template
 		$item_html = $vars['template'];
+
+        // first we need to isolate the nested nv lists/searches
+        unset($nested_lists_fragments);
+        list($item_html, $nested_lists_fragments) = nvweb_list_isolate_lists($item_html);
 
         // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
         $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
@@ -405,6 +453,19 @@ function nvweb_list($vars=array())
                     }
                 }
             }
+            else if($tag['attributes']['by']=='block')
+            {
+                // $item may be a block object or a block group block type
+                if($tag['attributes']['type'] == $item->type)
+                {
+                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
+                }
+                else
+                {
+                    // no match, discard this conditional
+                    $item_html = str_replace($tag['full_tag'], '', $item_html);
+                }
+            }
             else // unknown nvlist_conditional, discard
             {
                 $item_html = str_replace($tag['full_tag'], '', $item_html);
@@ -432,6 +493,13 @@ function nvweb_list($vars=array())
             // html template has changed, the nvlist tags may have changed its positions
             $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8');
 		}
+
+        // restore & process nested lists (if active)
+        foreach($nested_lists_fragments as $nested_list_uid => $nested_list_vars)
+        {
+            $content = nvweb_list($nested_list_vars);
+            $item_html = str_replace('<!--#'.$nested_list_uid.'#-->', $content, $item_html);
+        }
 
 		$out[] = $item_html;
 	}
@@ -875,6 +943,43 @@ function nvweb_list_get_orderby($order)
     }
 
     return $orderby;
+}
+
+function nvweb_list_isolate_lists($item_html)
+{
+    $nested_lists_fragments = array();
+    $nested_lists_tags = nvweb_tags_extract($item_html, 'nv', true, true, 'UTF-8');
+
+    foreach($nested_lists_tags as $tag)
+    {
+        $changed = false;
+
+        switch($tag['attributes']['object'])
+        {
+            case 'list':
+            case 'search':
+                $template_end = nvweb_templates_find_closing_list_tag($item_html, $tag['offset'] + strlen($tag['full_tag']));
+                $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
+                $list_template = substr($item_html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
+
+                $nested_list_vars = array_merge($tag['attributes'], array('template' => $list_template));
+                $nested_list_uid = uniqid('nvlist-');
+                $nested_lists_fragments[$nested_list_uid] = $nested_list_vars;
+                $item_html = substr_replace($item_html, '<!--#'.$nested_list_uid.'#-->', $tag['offset'], $tag['length']);
+                $changed = true;
+                break;
+        }
+
+        // offsets may change due the replace
+        if($changed)
+        {
+            list($item_html, $nested_sub_lists_fragments) = nvweb_list_isolate_lists($item_html);
+            $nested_lists_fragments = array_merge($nested_lists_fragments, $nested_sub_lists_fragments);
+            break;
+        }
+    }
+
+    return array($item_html, $nested_lists_fragments);
 }
 
 function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null, $permission=null, $order=null)
