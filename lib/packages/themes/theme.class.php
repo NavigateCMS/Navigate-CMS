@@ -19,6 +19,7 @@ class theme
 	public $languages;
 	public $styles;
 	public $options;
+    public $block_groups;
 	public $blocks;
 	public $templates;
 	
@@ -241,6 +242,24 @@ class theme
 
 		return $themes;
 	}
+
+    public function block_group_blocks($block_group_id)
+    {
+        $out = array();
+        foreach($this->block_groups as $bg)
+        {
+            if($bg->id == $block_group_id)
+            {
+                foreach($bg->blocks as $bgb)
+                {
+                    if(empty($bgb->type))
+                        $bgb->type = $bgb->id;
+                    $out[$bgb->id] = $bgb;
+                }
+            }
+        }
+        return $out;
+    }
 
     public function import_sample()
     {

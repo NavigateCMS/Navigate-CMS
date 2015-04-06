@@ -1828,11 +1828,29 @@ function block_group_form($item)
 
     $blgroups = array();
     for($blg=0; $blg < count($theme->block_groups); $blg++)
-        $blgroups[$theme->block_groups[$blg]->code] = $theme->t($theme->block_groups[$blg]->code);
+    {
+        $blgroups[$theme->block_groups[$blg]->id] = '';
+        if(!empty($theme->block_groups[$blg]->description))
+            $blgroups[$theme->block_groups[$blg]->id] = $theme->t($theme->block_groups[$blg]->description);
+    }
+
+    if(!in_array($item->code, $blgroups))
+        $blgroups[$item->code] = $item->code;
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(237, 'Code').'</label>',
-        $naviforms->autocomplete('code', $item->code, array_keys($blgroups))
+        $naviforms->selectfield(
+            'code',
+            array_keys($blgroups),
+            array_keys($blgroups),
+            $item->code,
+            NULL,
+            NULL,
+            array_values($blgroups),
+            "",
+            true,
+            true
+        )
     ));
 
     $navibars->add_tab_content_row(array(
@@ -1883,19 +1901,44 @@ function block_group_form($item)
         }
         else if(!empty($item->blocks[$p]))
         {
-            for($bt=0; $bt < count($block_types); $bt++)
+            // maybe a block group type?
+            if(is_array($theme->block_groups))
             {
-                if($block_types[$bt]['id']==$item->blocks[$p])
+                foreach($theme->block_groups as $key => $bg)
                 {
-                    $block = $block_types[$bt];
-                    break;
+                    for($i=0; $i < count($bg->blocks); $i++)
+                    {
+                        if($bg->blocks[$i]->id==$item->blocks[$p])
+                        {
+                            $block = array(
+                                'code' => $bg->blocks[$i]->id,
+                                'type' => $bg->blocks[$i]->id,
+                                'title' => $theme->t($bg->blocks[$i]->title),
+                                'description'  => $theme->t($bg->blocks[$i]->description)
+                            );
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // maybe a block type?
+            if(empty($block))
+            {
+                for($bt=0; $bt < count($block_types); $bt++)
+                {
+                    if($block_types[$bt]['id']==$item->blocks[$p])
+                    {
+                        $block = $block_types[$bt];
+                        break;
+                    }
                 }
             }
 
             $table->addRow($p, array(
                 array('content' => '<span>'.$block['code'].'</span>', 'align' => 'left'),
                 array('content' => '<span>'.$block['type'].'</span>', 'align' => 'left'),
-                array('content' => '<span>'.$block['title'].'</span>', 'align' => 'left'),
+                array('content' => '<span title="'.$block['description'].'">'.$block['title'].'</span>', 'align' => 'left'),
                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
             ));
         }
@@ -1911,10 +1954,84 @@ function block_group_form($item)
 
     $navibars->add_tab_content_row(array(
         '<label>&nbsp;</label>',
-        '<button id="block-selection-add-block"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').': '.t(437, 'Block').'</button>',
-        '<button id="block-selection-add-block_type"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').': '.t(543, 'Block type').'</button>'
+        '<button id="block-selection-add-block"><i class="fa fa-plus-square-o"></i> '.t(437, 'Block').'</button>',
+        '<button id="block-selection-add-block_type"><i class="fa fa-plus-square"></i> '.t(543, 'Block type').'</button>',
+        '<button id="block-selection-add-block_from_group"><i class="fa fa-puzzle-piece"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</button>'
         )
     );
+
+    // **** ADD BLOCK FROM GROUP dialog ****
+
+    $block_types_from_group_assoc = array();
+    $block_types_from_group_titles = array();
+    foreach($theme->block_groups as $key => $bg)
+    {
+        for($i=0; $i < count($bg->blocks); $i++)
+        {
+            $block_types_from_group_titles[$bg->blocks[$i]->id] = $theme->t($bg->blocks[$i]->title);
+            $block_types_from_group_assoc[$bg->blocks[$i]->id] = (array)$bg->blocks[$i];
+        }
+    }
+
+    $layout->add_script('var blocks_selection_block_types_from_group = '.json_encode($block_types_from_group_assoc));
+
+    $layout->add_content('
+        <div id="block-selection-add-block_from_group-dialog" style="display: none;">
+            <form action="#" method="post" onsubmit="return false;">
+                '.$naviforms->selectfield('block-selection-add-block_from_group-dialog-type', array_keys($block_types_from_group_titles), array_values($block_types_from_group_titles)).'
+            </form>
+        </div>
+    ');
+
+    $layout->add_script('
+        $("#block-selection-add-block_from_group").on("click", function()
+        {
+            $("#block-selection-add-block_from_group-dialog").dialog(
+            {
+                title: "'.t(472, 'Add').': '.t(556, 'Block from group').' ['.$theme->t($item->code).'].",
+                modal: true,
+                width: 430,
+                height: 130,
+                buttons:
+                {
+                    "'.t(190, 'Ok').'": function()
+                    {
+                        var bts = $("#block-selection-add-block_from_group-dialog-type").val();
+
+                        var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
+                        tr += \'<td>\'+bts+\'</td>\';
+                        tr += \'<td>\'+blocks_selection_block_types_from_group[bts].id+\'</td>\';
+                        tr += \'<td>\'+blocks_selection_block_types_from_group[bts].title+\'</td>\';
+                        tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
+                        tr += \'</tr>\';
+
+                        $("#blocks_group_table").find("tbody:last").append(tr);
+                        $("#blocks_group_table").tableDnD(
+                        {
+                            onDrop: function(table, row)
+                            {
+                                navigate_naviorderedtable_blocks_group_table_reorder();
+                            }
+                        });
+
+                        // force a table refresh
+                        navigate_naviorderedtable_blocks_group_table_reorder();
+
+                        $("#block-selection-add-block_from_group-dialog").dialog("close");
+                    },
+                    "'.t(58, 'Cancel').'": function()
+                    {
+                        $("#block-selection-add-block_from_group-dialog").dialog("close");
+                    }
+                }
+            });
+
+            return false;
+        });
+    ');
+
+
+    // **** ADD BLOCK TYPE dialog ****
 
     $block_types_assoc = array();
     $block_types_titles = array();
@@ -1980,6 +2097,8 @@ function block_group_form($item)
             return false;
         });
     ');
+
+    // **** ADD specific BLOCK dialog ****
 
     $sql = '
          SELECT b.type, b.id, d.text as title
