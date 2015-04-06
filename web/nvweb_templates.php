@@ -461,9 +461,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
         return $html;
     }
 
-	// parse special navigate tags (includes, lists, searchs...)
+	// parse special navigate tags (includes, lists, searches...)
 	$tags = nvweb_tags_extract($html, 'nv', true, true, 'UTF-8');
-	
+
 	foreach($tags as $tag)
 	{
 		$content = '';
@@ -472,7 +472,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 		switch($tag['attributes']['object'])
 		{
 			case 'list':
-				$template_end = strpos($html, '</nv>', $tag['offset']);
+                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset'] + strlen($tag['full_tag']));
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
 				$list = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
@@ -495,7 +495,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 				break;	
 
 			case 'search':
-				$template_end = strpos($html, '</nv>', $tag['offset']);
+                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset'] + strlen($tag['full_tag']));
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
 				$search = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 								
@@ -518,7 +518,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 				break;
 
             case 'conditional':
-                $template_end = strpos($html, '</nv>', $tag['offset']);
+                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset'] + strlen($tag['full_tag']));
                 $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
                 $conditional = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
@@ -543,6 +543,57 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 	}
 
 	return $html;
+}
+
+function nvweb_templates_find_closing_list_tag($html, $offset)
+{
+    // no support for nested lists
+    // $template_end = strpos($html, '</nv>', $tag['offset']);
+    // return $template_end;
+
+    // supporting nested lists
+    $loops = 0;
+    $found = false;
+
+    while(!$found)
+    {
+        // find next '</nv>' occurrence from offset
+        $next_closing = stripos($html, '</nv>', $offset);
+
+        // check if there is a special '<nv>' opening tag (list, search, conditional) before the next closing found tag
+        $next_opening = stripos_array(
+            $html,
+            array(
+                '<nv object="list" ',
+                '<nv object="search" ',
+                '<nv object="conditional" '
+            ),
+            $offset
+        );
+
+        if(!$next_opening)
+        {
+            $found = true;
+        }
+        else
+        {
+            $found = $next_opening > $next_closing;
+
+            if(!$found)
+            {
+                $offset = $next_closing + strlen('</nv>');
+                $loops++;
+            }
+        }
+
+        if(!$found && ($offset > strlen($html) || $loops > 1000))
+            break;
+    }
+
+    if(!$found)
+        $next_closing = false;
+
+    return $next_closing;
 }
 
 /**
