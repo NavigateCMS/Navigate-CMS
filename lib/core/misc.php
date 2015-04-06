@@ -261,6 +261,19 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 	return $tags;
 }
 
+/* strpos that takes an array of values to match against a string */
+function stripos_array($haystack, $needles=array(), $offset=0)
+{
+    $chr = array();
+    foreach($needles as $needle)
+    {
+        $res = stripos($haystack, $needle, $offset);
+        if ($res !== false) $chr[$needle] = $res;
+    }
+    if(empty($chr)) return false;
+    return min($chr);
+}
+
 /**
  * Sort the elements of an associative array by one of its field values
  *
