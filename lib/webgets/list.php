@@ -369,11 +369,69 @@ function nvweb_list($vars=array())
 
             if($tag['attributes']['by']=='property')
             {
-                if(empty($tag['attributes']['property_id']))
-                    $property_value = $item->property($tag['attributes']['property_name']);
-                else
-                    $property_value = $item->property($tag['attributes']['property_id']);
-                if($property_value == $tag['attributes']['property_value'])
+                $property_name = $tag['attributes']['property_id'];
+                if(empty($property_name))
+                    $property_name = $tag['attributes']['property_name'];
+
+                $property_value = $item->property($property_name);
+                $property_definition = $item->property_definition($property_name);
+                $condition_value = $tag['attributes']['property_value'];
+
+                // process special comparing values
+                switch($property_definition->type)
+                {
+                    case 'date':
+                        if($condition_value == 'today')
+                        {
+                            $now = getdate(core_time());
+                            $condition_value = mktime(0, 0, 0, $now['mon'], $now['mday'], $now['year']);
+                        }
+                        else if($condition_value == 'now')
+                        {
+                            $condition_value = core_time();
+                        }
+                        break;
+                }
+
+                $condition = false;
+                switch($tag['attributes']['property_compare'])
+                {
+                    case '>':
+                    case 'gt':
+                        $condition = ($property_value > $condition_value);
+                        break;
+
+                    case '<':
+                    case 'lt':
+                        $condition = ($property_value < $condition_value);
+                        break;
+
+                    case '>=':
+                    case '=>':
+                    case 'gte':
+                        $condition = ($property_value >= $condition_value);
+                        break;
+
+                    case '<=':
+                    case '=<':
+                    case 'lte':
+                        $condition = ($property_value <= $condition_value);
+                        break;
+
+                    case '!=':
+                    case 'neq':
+                        $condition = ($property_value != $condition_value);
+                        break;
+
+                    case '=':
+                    case '==':
+                    case 'eq':
+                    default:
+                        $condition = ($property_value == $condition_value);
+                }
+
+
+                if($condition)
                 {
                     // parse the contents of this condition on this round
                     $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
