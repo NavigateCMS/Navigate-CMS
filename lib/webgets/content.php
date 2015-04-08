@@ -326,7 +326,7 @@ function nvweb_content_date_format($format="", $ts)
 	return $out;
 }
 
-function nvweb_content_items($categories=array(), $only_published=false, $max=NULL)
+function nvweb_content_items($categories=array(), $only_published=false, $max=NULL, $embedding = true)
 {
     global $website;
     global $DB;
@@ -338,7 +338,7 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
 
     $where = ' website = '.$website->id.'
                AND category IN ('.implode(",", $categories).')
-               AND embedding = 1';
+               AND embedding = '.($embedding? '1' : '0');
 
     if($only_published)
         $where .= ' AND (date_published = 0 OR date_published < '.core_time().')
@@ -380,6 +380,7 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
             ORDER BY pdate ASC
             '.$limit
     );
+
     $rs = $DB->result();
 
     return $rs;
