@@ -524,6 +524,25 @@ class block
 
         return $out;
     }
+
+    public function property_definition($property_name)
+    {
+        // load properties if not already done
+        if(empty($this->properties))
+            $this->properties = property::load_properties('block', $this->type, 'block', $this->id);
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                $out = $this->properties[$p];
+                break;
+            }
+        }
+
+        return $out;
+    }
+
 	
 	public function quicksearch($text)
 	{
@@ -580,7 +599,6 @@ class block
 
         return $out;
     }
-		
-}
 
+}
 ?>
