@@ -263,6 +263,26 @@ function nvweb_comments($vars=array())
 						</form>
 					</div>
 				';
+
+                $extensions_messages = $events->trigger('comment', 'reply_extra_fields', array('html' => &$out));
+                // add any extra field generated
+                if(!empty($extensions_messages))
+                {
+                    $extra_fields = array_map(
+                        function($v)
+                        {
+                            return $v;
+                        },
+                        array_values($extensions_messages)
+                    );
+
+                    $out = str_replace(
+                        '<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->',
+                        implode("\n", $extra_fields),
+                        $out
+                    );
+                }
+                
 			}
 			else if($element->comments_enabled_to > 0 && !empty($webuser->id))
 			{
@@ -287,7 +307,26 @@ function nvweb_comments($vars=array())
 							<div class="comments-reply-field-submit"><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
 						</form>
 					</div>
-				';				
+				';
+
+                $extensions_messages = $events->trigger('comment', 'reply_extra_fields', array('html' => $out));
+                // add any extra field generated
+                if(!empty($extensions_messages))
+                {
+                    $extra_fields = array_map(
+                        function($v)
+                        {
+                            return $v;
+                        },
+                        array_values($extensions_messages)
+                    );
+
+                    $out = str_replace(
+                        '<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->',
+                        implode("\n", $extra_fields),
+                        $out
+                    );
+                }
 			}
 			else if($element->comments_enabled_to==1)
 			{
