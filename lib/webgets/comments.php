@@ -282,7 +282,7 @@ function nvweb_comments($vars=array())
                         $out
                     );
                 }
-                
+
 			}
 			else if($element->comments_enabled_to > 0 && !empty($webuser->id))
 			{

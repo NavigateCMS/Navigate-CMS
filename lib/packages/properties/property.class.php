@@ -26,7 +26,7 @@ class property
 		// Date
 		// Date & Time
 		// Link (multi)
-		// Image
+		// Image (optional multi)
 		// File
         // Color
 		// Comment
@@ -34,7 +34,7 @@ class property
 		// Country
 		// Coordinates
         // Video
-        // Source code
+        // Source code (optional multi)
         // Rich text area (multi)
         // Web user groups
         // Category (Structure entry)
@@ -621,13 +621,20 @@ class property
 
                 if($property->type=='webuser_groups' && !empty($_REQUEST['property-'.$property->id]))
                     $_REQUEST['property-'.$property->id] = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
+
+                // boolean (checkbox): if not checked,  form does not send the value
+                if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
+                    $_REQUEST['property-'.$property->id] = 0;
 								
 				// remove the old element
-				$DB->execute('DELETE FROM nv_properties_items
-								WHERE property_id = '.protect($property->id).'
-								  AND element = '.protect($item_type).'
-								  AND node_id = '.protect($item_id).'
-								  AND website = '.$website->id);
+				$DB->execute('
+				    DELETE
+				         FROM nv_properties_items
+                        WHERE property_id = '.protect($property->id).'
+                          AND element = '.protect($item_type).'
+                          AND node_id = '.protect($item_id).'
+                          AND website = '.$website->id
+                );
 
 				// now we insert a new row
 				$DB->execute('
@@ -738,6 +745,10 @@ class property
             if($property->type=='webuser_groups' && !empty($value))
                 $value = 'g'.implode(',g', $value);
 
+            // boolean (checkbox): if not checked,  form does not send the value
+            if($property->type=='boolean' && empty($value))
+                $value = 0;
+
                // remove the old element
             $DB->execute('DELETE FROM nv_properties_items
                             WHERE property_id = '.protect($property->id).'
@@ -823,7 +834,7 @@ class property
         $value = $property_value;
 
         // multilanguage property?
-        if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')))
+        if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || $property->multilanguage=='true')
         {
             $values_dict = $value;
             $value = '[dictionary]';
@@ -1061,5 +1072,4 @@ class property
         return $out;
     }
 }
-
 ?>

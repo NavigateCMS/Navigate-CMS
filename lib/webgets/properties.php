@@ -253,7 +253,10 @@ function nvweb_properties_render($property, $vars)
             break;
 
         case 'source_code':
-            $out = $property->value[$current['lang']];
+            if(@$property->multilanguage=='true' || $property->multilanguage=='1')
+                $out = $property->value[$current['lang']];
+            else
+                $out = $property->value;
             break;
 
 		case 'date':
@@ -301,7 +304,7 @@ function nvweb_properties_render($property, $vars)
 			$add = '';
 			$extra = '';
 
-            if(@$property->multilanguage=='true')
+            if(@$property->multilanguage=='true'  || $property->multilanguage=='1')
                 $image_id = $property->value[$session['lang']];
             else
                 $image_id = $property->value;
@@ -495,5 +498,4 @@ function nvweb_properties_render($property, $vars)
 	
 	return $out;	
 }
-
 ?>
