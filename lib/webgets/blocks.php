@@ -298,21 +298,32 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 	$lang = $current['lang'];
 	
 	$sizes = '';
-	
-	if(!empty($type['width'])) $sizes.= ' width="'.$type['width'].'" ';
-	if(!empty($type['height'])) $sizes.= ' height="'.$type['height'].'" ';
+    $width = '';
+    $height = '';
+
+	if(!empty($type['width']))
+    {
+        $sizes.= ' width="'.$type['width'].'" ';
+        $width = $type['width'];
+    }
+
+	if(!empty($type['height']))
+    {
+        $sizes.= ' height="'.$type['height'].'" ';
+        $height = $type['height'];
+    }
 
 	switch($trigger['trigger-type'][$lang])
 	{
 		case 'image':
-			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$type['width'].'&height='.$type['height'].'" '.$sizes.' />';
+			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'" '.$sizes.' />';
 			break;
 			
 		case 'rollover':
-			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$type['width'].'&height='.$type['height'].'" 
+			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'"
 								   '.$sizes.'
-								  onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$type['width'].'&height='.$type['height'].'\';" 
-								  onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$type['width'].'&height='.$type['height'].'\';" />';
+								  onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'\';"
+								  onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'\';" />';
 			break;
 			
 		case 'flash':
