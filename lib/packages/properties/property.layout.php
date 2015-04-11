@@ -145,7 +145,7 @@ function navigate_property_layout_field($property)
 			$field[] = $naviforms->checkbox("property-".$property->id, ($property->value=='1'));
             if(!empty($property->helper))
                 $field[] = '<div class="subcomment">'.$property->helper.'</div>';
-			$field[] = '</div>';		            
+			$field[] = '</div>';
 			break;
 		
 		case 'option':

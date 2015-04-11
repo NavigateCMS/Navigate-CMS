@@ -361,176 +361,53 @@ function nvweb_list($vars=array())
         list($item_html, $nested_lists_fragments) = nvweb_list_isolate_lists($item_html);
 
         // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
-        $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
+        unset($nested_condition_fragments);
+        list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html);
 
-        while(!empty($template_tags))
+        $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
+
+        while(!empty($conditional_placeholder_tags))
         {
-            $tag = $template_tags[0];
+            $tag = $conditional_placeholder_tags[0];
+            $conditional = $nested_conditional_fragments[$tag["attributes"]["id"]];
 
-            if($tag['attributes']['by']=='property')
-            {
-                $property_name = $tag['attributes']['property_id'];
-                if(empty($property_name))
-                    $property_name = $tag['attributes']['property_name'];
+            /*
 
-                $property_value = $item->property($property_name);
-                $property_definition = $item->property_definition($property_name);
-                $condition_value = $tag['attributes']['property_value'];
+            $conditional_html_output = nvweb_list_parse_conditional(
+                $conditional,
+                $item,
+                $conditional['nvlist_conditional_template'],
+                $i,
+                count($rs)
+            );
 
-                // process special comparing values
-                switch($property_definition->type)
-                {
-                    case 'date':
-                        if($condition_value == 'today')
-                        {
-                            $now = getdate(core_time());
-                            $condition_value = mktime(0, 0, 0, $now['mon'], $now['mday'], $now['year']);
-                        }
-                        else if($condition_value == 'now')
-                        {
-                            $condition_value = core_time();
-                        }
-                        break;
-                }
+            $conditional['contents'] = $conditional['nvlist_conditional_template'];
+            $item_html = nvweb_list_parse_conditional(
+                $conditional,
+                $item,
+                $item_html,
+                $i,
+                count($rs)
+            );
+*/
 
-                $condition = false;
-                switch($tag['attributes']['property_compare'])
-                {
-                    case '>':
-                    case 'gt':
-                        $condition = ($property_value > $condition_value);
-                        break;
+            $conditional_html_output = nvweb_list_parse_conditional(
+                $conditional,
+                $item,
+                $conditional['nvlist_conditional_template'],
+                $i,
+                count($rs)
+            );
 
-                    case '<':
-                    case 'lt':
-                        $condition = ($property_value < $condition_value);
-                        break;
+            $item_html = str_replace(
+                $tag["full_tag"],
+                $conditional_html_output,
+                $item_html
+            );
 
-                    case '>=':
-                    case '=>':
-                    case 'gte':
-                        $condition = ($property_value >= $condition_value);
-                        break;
+            //$item_html = nvweb_list_parse_conditional($conditional, $item, $item_html, $i, count($rs));
 
-                    case '<=':
-                    case '=<':
-                    case 'lte':
-                        $condition = ($property_value <= $condition_value);
-                        break;
-
-                    case '!=':
-                    case 'neq':
-                        $condition = ($property_value != $condition_value);
-                        break;
-
-                    case '=':
-                    case '==':
-                    case 'eq':
-                    default:
-                        $condition = ($property_value == $condition_value);
-                }
-
-
-                if($condition)
-                {
-                    // parse the contents of this condition on this round
-                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                }
-                else
-                {
-                    // remove this conditional html code on this round
-                    $item_html = str_replace($tag['full_tag'], '', $item_html);
-                }
-            }
-            else if($tag['attributes']['by']=='template' || $tag['attributes']['by']=='templates')
-            {
-                $templates = array();
-                if(isset($tag['attributes']['templates']))
-                    $templates = explode(",", $tag['attributes']['templates']);
-                else if(isset($tag['attributes']['template']))
-                    $templates = array($tag['attributes']['template']);
-
-                if(in_array($item->template, $templates))
-                {
-                    // the template matches the condition, apply
-                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                }
-                else
-                {
-                    // remove this conditional html code on this round
-                    $item_html = str_replace($tag['full_tag'], '', $item_html);
-                }
-            }
-            else if($tag['attributes']['by']=='position')
-            {
-                if(isset($tag['attributes']['each']))
-                {
-                    if($i % $tag['attributes']['each'] == 0) // condition applies
-                        $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                    else // remove the full nvlist_conditional tag, doesn't apply here
-                        $item_html = str_replace($tag['full_tag'], '', $item_html);
-                }
-                else if(isset($tag['attributes']['position']))
-                {
-                    switch($tag['attributes']['position'])
-                    {
-                        case 'first':
-                            if($i == 0)
-                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                            else
-                                $item_html = str_replace($tag['full_tag'], '', $item_html);
-                            break;
-
-                        case 'not_first':
-                            if($i > 0)
-                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                            else
-                                $item_html = str_replace($tag['full_tag'], '', $item_html);
-                            break;
-
-                        case 'last':
-                            if($i == (count($rs)-1))
-                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                            else
-                                $item_html = str_replace($tag['full_tag'], '', $item_html);
-                            break;
-
-                        case 'not_last':
-                            if($i != (count($rs)-1))
-                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                            else
-                                $item_html = str_replace($tag['full_tag'], '', $item_html);
-                            break;
-
-                        default: // position "x"?
-                            if($i == $tag['attributes']['position'])
-                                $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                            else
-                                $item_html = str_replace($tag['full_tag'], '', $item_html);
-                            break;
-                    }
-                }
-            }
-            else if($tag['attributes']['by']=='block')
-            {
-                // $item may be a block object or a block group block type
-                if($tag['attributes']['type'] == $item->type)
-                {
-                    $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
-                }
-                else
-                {
-                    // no match, discard this conditional
-                    $item_html = str_replace($tag['full_tag'], '', $item_html);
-                }
-            }
-            else // unknown nvlist_conditional, discard
-            {
-                $item_html = str_replace($tag['full_tag'], '', $item_html);
-            }
-
-            // html template has changed, the nvlist tags may have changed its positions
-            $template_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', false, true, 'UTF-8'); // selfclosing = false
+            $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
         }
 
         // now, parse the common nvlist tags (selfclosing tags)
@@ -552,7 +429,7 @@ function nvweb_list($vars=array())
             $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8');
 		}
 
-        // restore & process nested lists (if active)
+        // restore & process nested lists (if any)
         foreach($nested_lists_fragments as $nested_list_uid => $nested_list_vars)
         {
             $content = nvweb_list($nested_list_vars);
@@ -759,6 +636,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
             {
                 case 'id':
                     $out = $item->id;
+                    break;
+
+                case 'block':
+                    // generate the full block code
+                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action);
                     break;
 
                 case 'title':
@@ -1038,6 +920,248 @@ function nvweb_list_isolate_lists($item_html)
     }
 
     return array($item_html, $nested_lists_fragments);
+}
+
+function nvweb_list_isolate_conditionals($item_html)
+{
+    $nested_conditionals_fragments = array();
+    $conditional_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', true, true, 'UTF-8');
+
+    if(!empty($conditional_tags))
+    {
+        $tag = $conditional_tags[0];
+
+        $template_end = nvweb_list_find_closing_conditional_tag($item_html, $tag['offset'] + strlen($tag['full_tag']));
+        $tag['length'] = $template_end - $tag['offset'] + strlen('</nvlist_conditional>'); // remove tag characters
+        $conditional_template = substr($item_html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nvlist_conditional>') - strlen($tag['full_tag'])));
+
+        // find inner conditionals before replacing the conditional found
+        list($conditional_template, $nested_sub_conditionals_fragments) = nvweb_list_isolate_conditionals($conditional_template);
+        $nested_conditionals_fragments = array_merge($nested_sub_conditionals_fragments, $nested_conditionals_fragments);
+
+        $nested_conditional_vars = array_merge($tag, array('nvlist_conditional_template' => $conditional_template));
+        $nested_conditional_uid = uniqid('nvlist_conditional-');
+        $nested_conditionals_fragments[$nested_conditional_uid] = $nested_conditional_vars;
+        $item_html = substr_replace($item_html, '<nvlist_conditional_placeholder id="'.$nested_conditional_uid.'" />', $tag['offset'], $tag['length']);
+
+        // process other conditionals
+        list($item_html, $nested_sub_conditionals_fragments) = nvweb_list_isolate_conditionals($item_html);
+        $nested_conditionals_fragments = array_merge($nested_sub_conditionals_fragments, $nested_conditionals_fragments);
+    }
+
+    return array($item_html, $nested_conditionals_fragments);
+}
+
+function nvweb_list_find_closing_conditional_tag($html, $offset)
+{
+    $loops = 0;
+    $found = false;
+
+    while(!$found)
+    {
+        // find next '</nv>' occurrence from offset
+        $next_closing = stripos($html, '</nvlist_conditional>', $offset);
+
+        // check if there is a special '<nv>' opening tag (list, search, conditional) before the next closing found tag
+        $next_opening = stripos_array(
+            $html,
+            array(
+                '<nvlist_conditional ',
+            ),
+            $offset
+        );
+
+        if(!$next_opening)
+        {
+            $found = true;
+        }
+        else
+        {
+            $found = $next_opening > $next_closing;
+
+            if(!$found)
+            {
+                $offset = $next_closing + strlen('</nvlist_conditional>');
+                $loops++;
+            }
+        }
+
+        if(!$found && ($offset > strlen($html) || $loops > 1000))
+            break;
+    }
+
+    if(!$found)
+        $next_closing = false;
+
+    return $next_closing;
+}
+
+function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total)
+{
+    $out = '';
+
+    if($tag['attributes']['by']=='property')
+    {
+        $property_name = $tag['attributes']['property_id'];
+        if(empty($property_name))
+            $property_name = $tag['attributes']['property_name'];
+
+        $property_value = $item->property($property_name);
+        $property_definition = $item->property_definition($property_name);
+        $condition_value = $tag['attributes']['property_value'];
+
+        // process special comparing values
+        switch($property_definition->type)
+        {
+            case 'date':
+                if($condition_value == 'today')
+                {
+                    $now = getdate(core_time());
+                    $condition_value = mktime(0, 0, 0, $now['mon'], $now['mday'], $now['year']);
+                }
+                else if($condition_value == 'now')
+                {
+                    $condition_value = core_time();
+                }
+                break;
+        }
+
+        $condition = false;
+        switch($tag['attributes']['property_compare'])
+        {
+            case '>':
+            case 'gt':
+                $condition = ($property_value > $condition_value);
+                break;
+
+            case '<':
+            case 'lt':
+                $condition = ($property_value < $condition_value);
+                break;
+
+            case '>=':
+            case '=>':
+            case 'gte':
+                $condition = ($property_value >= $condition_value);
+                break;
+
+            case '<=':
+            case '=<':
+            case 'lte':
+                $condition = ($property_value <= $condition_value);
+                break;
+
+            case '!=':
+            case 'neq':
+                $condition = ($property_value != $condition_value);
+                break;
+
+            case '=':
+            case '==':
+            case 'eq':
+            default:
+                $condition = ($property_value == $condition_value);
+        }
+
+        if($condition)
+        {
+            // parse the contents of this condition on this round
+            $out = $item_html;
+        }
+        else
+        {
+            // remove this conditional html code on this round
+            $out = '';
+        }
+    }
+    else if($tag['attributes']['by']=='template' || $tag['attributes']['by']=='templates')
+    {
+        $templates = array();
+        if(isset($tag['attributes']['templates']))
+            $templates = explode(",", $tag['attributes']['templates']);
+        else if(isset($tag['attributes']['template']))
+            $templates = array($tag['attributes']['template']);
+
+        if(in_array($item->template, $templates))
+        {
+            // the template matches the condition, apply
+            $out = $item_html;
+        }
+        else
+        {
+            // remove this conditional html code on this round
+            $out = '';
+        }
+    }
+    else if($tag['attributes']['by']=='position')
+    {
+        if(isset($tag['attributes']['each']))
+        {
+            if($position % $tag['attributes']['each'] == 0) // condition applies
+                $out = $item_html;
+            else // remove the full nvlist_conditional tag, doesn't apply here
+                $out = '';
+        }
+        else if(isset($tag['attributes']['position']))
+        {
+            switch($tag['attributes']['position'])
+            {
+                case 'first':
+                    if($position == 0)
+                        $out = $item_html;
+                    else
+                        $out = '';
+                    break;
+
+                case 'not_first':
+                    if($position > 0)
+                        $out = $item_html;
+                    else
+                        $out = '';
+                    break;
+
+                case 'last':
+                    if($position == ($total-1))
+                        $out = $item_html;
+                    else
+                        $out = '';
+                    break;
+
+                case 'not_last':
+                    if($position != ($total-1))
+                        $out = $item_html;
+                    else
+                        $out = '';
+                    break;
+
+                default: // position "x"?
+                    if($position == $tag['attributes']['position'])
+                        $out = $item_html;
+                    else
+                        $out = '';
+                    break;
+            }
+        }
+    }
+    else if($tag['attributes']['by']=='block')
+    {
+        // $item may be a block object or a block group block type
+        if($tag['attributes']['type'] == $item->type)
+        {
+            $out = $item_html;
+        }
+        else
+        {
+            // no match, discard this conditional
+            $out = '';
+        }
+    }
+    else // unknown nvlist_conditional, discard
+    {
+        $out = '';
+    }
+
+    return $out;
 }
 
 function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null, $permission=null, $order=null)
