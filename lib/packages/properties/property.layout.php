@@ -145,7 +145,7 @@ function navigate_property_layout_field($property)
 			$field[] = $naviforms->checkbox("property-".$property->id, ($property->value=='1'));
             if(!empty($property->helper))
                 $field[] = '<div class="subcomment">'.$property->helper.'</div>';
-			$field[] = '</div>';			
+			$field[] = '</div>';		            
 			break;
 		
 		case 'option':
@@ -397,12 +397,37 @@ function navigate_property_layout_field($property)
 			break;
 
         case 'source_code':
-            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
-            $field[] = '<label>'.$property->name.'</label>';
-            $field[] = $naviforms->scriptarea("property-".$property->id, $property->value);
-            if(!empty($property->helper))
-                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
-            $field[] = '</div>';
+            if($property->multilanguage!='true' && $property->multilanguage!='1')
+            {
+                $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+                $field[] = '<label>'.$property->name.'</label>';
+                $field[] = $naviforms->scriptarea("property-".$property->id, $property->value);
+                if(!empty($property->helper))
+                    $field[] = '<div class="subcomment">'.$property->helper.'</div>';
+                $field[] = '</div>';
+            }
+            else
+            {
+                foreach($langs as $lang)
+                {
+                    if(!is_array($property->value))
+                    {
+                        $ovalue = $property->value;
+                        $property->value = array();
+                        foreach($langs as $lang_value)
+                            $property->value[$lang_value] = $ovalue;
+                    }
+
+                    $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+
+                    $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
+                    $field[] = '<label>'.$property->name.' '.$language_info.'</label>';
+                    $field[] = $naviforms->scriptarea("property-".$property->id."-".$lang, $property->value[$lang]);
+                    if(!empty($property->helper))
+                        $field[] = '<div class="subcomment">'.$property->helper.'</div>';
+                    $field[] = '</div>';
+                }
+            }
             break;
 		
 		case 'link':
