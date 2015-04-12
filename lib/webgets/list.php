@@ -592,6 +592,8 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                             $out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                         else if(strpos($tag['attributes']['default'], 'http://')===0)
                             $out = '<img class="'.$tag['attributes']['class'].'" src="'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                        else if($tag['attributes']['default']=='none')
+                            $out = ''; // no image
                         else
                             $out = '<img class="'.$tag['attributes']['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                     }
