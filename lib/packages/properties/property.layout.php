@@ -56,6 +56,7 @@ function navigate_property_layout_field($property)
 {
 	global $website;
 	global $layout;
+    global $theme;
     global $DB;
 
 	$naviforms = new naviforms();
@@ -154,6 +155,11 @@ function navigate_property_layout_field($property)
                 $options = mb_unserialize($options);
             else if(is_object($options))
                 $options = (array)$options;
+
+            // translate each option text
+            foreach($options as $value => $text)
+                $options[$value] = $theme->t($text);
+
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property->name.'</label>';			
 			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value);
@@ -168,7 +174,12 @@ function navigate_property_layout_field($property)
                 $options = mb_unserialize($options);
             else if(is_object($options))
                 $options = (array)$options;
-			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+
+            // translate each option text
+            foreach($options as $value => $text)
+                $options[$value] = $theme->t($text);
+
+            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property->name.'</label>';			
 			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), explode(',', $property->value), "", true);
             if(!empty($property->helper))
