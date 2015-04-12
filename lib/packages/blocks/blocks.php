@@ -17,6 +17,7 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
+        case 'json':
 		case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
@@ -466,6 +467,21 @@ function run()
 
             session_write_close();
             exit;
+            break;
+
+        case 'block_group_block_options':
+            $status = null;
+            $block_group = $_REQUEST['block_group'];
+            $block_code = $_REQUEST['code'];
+
+            if(isset($_REQUEST['form-sent']))
+                $status = property::save_properties_from_post('block_group_block', $block_code, $block_group, $block_code);
+
+            $out = block_group_block_options($block_group, $block_code, $status);
+
+            echo $out;
+
+            core_terminate();
             break;
 
         case 'grid_note_background':
@@ -1878,6 +1894,7 @@ function block_group_form($item)
     $table->addHeaderColumn('ID', 200);
     $table->addHeaderColumn(t(160, 'Type'), 200);
     $table->addHeaderColumn(t(67, 'Title'), 250);
+    $table->addHeaderColumn(t(170, 'Edit'), 50);
     $table->addHeaderColumn(t(35, 'Remove'), 50);
 
     $block_types = block::types();
@@ -1895,6 +1912,7 @@ function block_group_form($item)
                 array('content' => '<span>'.$item->blocks[$p].'</span>', 'align' => 'left'),
                 array('content' => '<span>'.$block->type.'</span>', 'align' => 'left'),
                 array('content' => '<span>'.$block->dictionary[$lang]['title'].'</span>', 'align' => 'left'),
+                array('content' => '<a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>', 'align' => 'center'),
                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
             ));
 
@@ -1914,7 +1932,9 @@ function block_group_form($item)
                                 'code' => $bg->blocks[$i]->id,
                                 'type' => $bg->blocks[$i]->id,
                                 'title' => $theme->t($bg->blocks[$i]->title),
-                                'description'  => $theme->t($bg->blocks[$i]->description)
+                                'description'  => $theme->t($bg->blocks[$i]->description),
+                                'properties'  => $bg->blocks[$i]->properties,
+                                'block_group' => $bg->id
                             );
                             break;
                         }
@@ -1939,6 +1959,7 @@ function block_group_form($item)
                 array('content' => '<span>'.$block['code'].'</span>', 'align' => 'left'),
                 array('content' => '<span>'.$block['type'].'</span>', 'align' => 'left'),
                 array('content' => '<span title="'.$block['description'].'">'.$block['title'].'</span>', 'align' => 'left'),
+                array('content' => (empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>'), 'align' => 'center'),
                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
             ));
         }
@@ -2211,6 +2232,113 @@ function block_group_form($item)
         blocks_selection_update();
     ');
 
+    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js"></script>');
+
     return $navibars->generate();
 }
+
+function block_group_block_options($block_group, $code, $status)
+{
+    global $layout;
+    global $website;
+    global $theme;
+
+    $block = block::block_group_block($block_group, $code);
+    $properties = $block->properties;
+
+    if(empty($properties))
+        return;
+
+    $layout = null;
+    $layout = new layout('navigate');
+
+    if($status!==null)
+    {
+        if($status)
+            $layout->navigate_notification(t(53, "Data saved successfully."), false);
+        else
+            $layout->navigate_notification(t(56, "Unexpected error"), true, true);
+    }
+
+    $navibars = new navibars();
+    $naviforms = new naviforms();
+
+    $navibars->title(t(556, 'Block from group').' ['.$theme->t($block_group).']');
+
+    $layout->navigate_media_browser();	// we can use media browser in this function
+
+    $navibars->add_actions(
+        array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	)
+    );
+
+    $navibars->add_actions(
+        array(	'<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
+    );
+
+    $navibars->form();
+
+    $navibars->add_tab(t(200, 'Options'));
+
+    $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+
+    // show a language selector (only if it's a multi language website)
+    if(count($website->languages) > 1)
+    {
+        $website_languages_selector = $website->languages();
+        $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(63, 'Languages').'</label>',
+                $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+            )
+        );
+    }
+
+    $properties_values = property::load_properties($code, $block_group, 'block_group_block', $code);
+
+    foreach($properties as $option)
+    {
+        $property = new property();
+        $property_value = '';
+
+        foreach($properties_values as $pv)
+        {
+            if($pv->id == $option->id)
+                $property_value = $pv->value;
+        }
+
+        $property->load_from_object($option, $property_value, $theme);
+
+        if($property->type == 'tab')
+        {
+            $navibars->add_tab($property->name);
+            if(count($website->languages) > 1)
+            {
+                $website_languages_selector = $website->languages();
+                $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+                $navibars->add_tab_content_row(
+                    array(
+                        '<label>'.t(63, 'Languages').'</label>',
+                        $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+                    )
+                );
+            }
+        }
+
+        $navibars->add_tab_content(navigate_property_layout_field($property));
+    }
+
+    $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$navibars->generate().'</div>');
+    $layout->navigate_additional_scripts();
+    $layout->add_script('
+        $("html").css("background", "transparent");
+    ');
+
+    $out = $layout->generate();
+
+    return $out;
+}
+
 ?>

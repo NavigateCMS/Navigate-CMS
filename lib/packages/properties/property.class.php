@@ -516,8 +516,16 @@ class property
 		global $website;
         global $theme;
 
-		// load properties associated with the element type
-		$e_properties = property::elements($template, $item_type);
+        if($item_type == 'block_group_block')
+        {
+            $block = block::block_group_block($template, $element);
+            $e_properties = $block->properties;
+        }
+        else
+        {
+		    // load properties associated with the element type
+		    $e_properties = property::elements($template, $item_type);
+        }
 
 		// load multilanguage strings
 		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id);
@@ -580,7 +588,7 @@ class property
 	}
 
     // called when using navigate cms
-	public static function save_properties_from_post($item_type, $item_id)
+	public static function save_properties_from_post($item_type, $item_id, $template=null, $element=null)
 	{
 		global $DB;
 		global $website;
@@ -588,7 +596,17 @@ class property
 		$dictionary = array();
 		
 		// load properties associated with the element type
-		$properties = property::elements($_REQUEST['property-template'], $_REQUEST['property-element']);
+        if($item_type=='block_group_block')
+        {
+            $block = block::block_group_block($template, $element);
+            $properties = $block->properties;
+        }
+        else
+        {
+            if(empty($template)) $template = $_REQUEST['property-template'];
+            if(empty($element)) $element = $_REQUEST['property-element'];
+            $properties = property::elements($template, $element);
+        }
 
         if(!is_array($properties))
             $properties = array();
@@ -692,6 +710,8 @@ class property
 		
 		if(!empty($dictionary))
 			webdictionary::save_element_strings('property-'.$_REQUEST['property-element'], $item_id, $dictionary);
+
+        return true;
 	}
 
     // save properties from an associative array (ID => VALUE)

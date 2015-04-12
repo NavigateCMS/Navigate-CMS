@@ -665,8 +665,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
                 case 'property':
+                    $properties_mode = 'block';
+
+                    if(!is_numeric($item->id))
+                        $properties_mode = 'block_group_block';
+
                     $out = nvweb_properties(array(
-                        'mode'		=>	'block',
+                        'mode'		=>	$properties_mode,
                         'id'		=>	$item->id,
                         'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name']),
                         'option'	=>	$tag['attributes']['option'],

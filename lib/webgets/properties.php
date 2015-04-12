@@ -102,6 +102,28 @@ function nvweb_properties($vars=array())
 				}
 			}
 			break;
+
+        case 'block_group_block':
+            // find block_group block definition
+            $block_group = null; // unknown
+            $block_code = $vars['id'];
+
+            $block = block::block_group_block($block_group, $block_code);
+            $properties = $block->properties;
+
+            $current_properties = property::load_properties($block_code, $block_group, 'block_group_block', $block_code);
+
+			// now we find the property requested
+			if(!is_array($current_properties)) $current_properties = array();
+			foreach($current_properties as $property)
+			{
+				if($property->id == $vars['property'] || $property->name == $vars['property'])
+				{
+					$out = nvweb_properties_render($property, $vars);
+					break;
+				}
+			}
+			break;
 		
 		case 'structure':
 			if(empty($vars['id']))
