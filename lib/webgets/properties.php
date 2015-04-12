@@ -199,6 +199,7 @@ function nvweb_properties_render($property, $vars)
 	global $current;
 	global $DB;
     global $session;
+    global $theme;
 	
 	$out = '';
 
@@ -226,19 +227,38 @@ function nvweb_properties_render($property, $vars)
 		
 		case 'option': 				
 			$options = mb_unserialize($property->options);
-			$out = $options[$property->value];
+            $options = (array)$options;
+
+            switch(@$vars['return'])
+            {
+                case 'value':
+                    $out = $property->value;
+                    break;
+
+                default:
+                    $out = $theme->t($options[$property->value]);
+            }
 			break;
 			
 		case 'moption': 				
 			$options = mb_unserialize($property->options);
 			$selected = explode(",", $property->value);
-			$buffer = array();
-			foreach($selected as $seloption)
-			{
-				$buffer[] = '<span>'.$options[$seloption].'</span>';
-			}
-			$out .= implode(', ', $buffer);
-			break;			
+
+            switch(@$vars['return'])
+            {
+                case 'values':
+                    $out = $property->value;
+                    break;
+
+                default:
+                    $buffer = array();
+                    foreach($selected as $seloption)
+                    {
+                        $buffer[] = '<span>'.$theme->t($options[$seloption]).'</span>';
+                    }
+                    $out .= implode(', ', $buffer);
+            }
+			break;
 			
 		case 'text':
 			$out = htmlspecialchars($property->value[$current['lang']]);
