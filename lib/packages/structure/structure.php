@@ -670,25 +670,27 @@ function structure_form($item)
 											));		
 		*/
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(172, 'Action').'</label>',
-												$naviforms->selectfield('action-type-'.$lang_code, 
-													array(
-															0 => 'url',
-															1 => 'jump-branch',
-															2 => 'jump-item',
-															3 => 'do-nothing'
-														),
-													array(
-															0 => t(173, 'Open URL'),
-															1 => t(322, 'Jump to another branch'),
-															2 => t(323, 'Jump to an element'),
-															3 => t(183, 'Do nothing')
-														),
-													$item->dictionary[$lang_code]['action-type'],
-													"navigate_structure_action_change('".$lang_code."', this);"
-												)
-											)
-										);
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(172, 'Action').'</label>',
+                $naviforms->selectfield('action-type-'.$lang_code,
+                    array(
+                            0 => 'url',
+                            1 => 'jump-branch',
+                            2 => 'jump-item',
+                            3 => 'do-nothing'
+                        ),
+                    array(
+                            0 => t(173, 'Open URL'),
+                            1 => t(322, 'Jump to another branch'),
+                            2 => t(323, 'Jump to an element'),
+                            3 => t(183, 'Do nothing')
+                        ),
+                    $item->dictionary[$lang_code]['action-type'],
+                    "navigate_structure_action_change('".$lang_code."', this);"
+                )
+            )
+        );
 
 		// load item title if action was "jump to an element"				
 		if(!empty($item->dictionary[$lang_code]['action-jump-item']))
@@ -711,16 +713,22 @@ function structure_form($item)
             '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.t(534, "You can only select elements which have their own path (no category embedded elements)").'</div>'
 		));
 
-		$categories_list = structure::hierarchyList($hierarchy, $item->dictionary[$lang_code]['action-jump-branch']);
-	
-		$navibars->add_tab_content_row(array(	'<label>'.t(325, 'Branch').'</label>',
-												'<div class="category_tree" id="category_tree_jump_branch_'.$lang_code.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>',
-												$naviforms->hidden('action-jump-branch-'.$lang_code, $item->dictionary[$lang_code]['action-jump-branch'])
-											));		
+		$categories_list = structure::hierarchyList($hierarchy, $item->dictionary[$lang_code]['action-jump-branch'], $lang_code);
+
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(325, 'Branch').'</label>',
+				'<div class="category_tree" id="category_tree_jump_branch_'.$lang_code.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>',
+				$naviforms->hidden('action-jump-branch-'.$lang_code, $item->dictionary[$lang_code]['action-jump-branch'])
+            )
+        );
 										
-		$navibars->add_tab_content_row(array(	'<label>'.t(324, 'New window').'</label>',
-												$naviforms->checkbox('action-new-window-'.$lang_code, $item->dictionary[$lang_code]['action-new-window'])
-										));												
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(324, 'New window').'</label>',
+				$naviforms->checkbox('action-new-window-'.$lang_code, $item->dictionary[$lang_code]['action-new-window'])
+            )
+        );
 										
 		$navibars->add_tab_content('</div>');		
 	}

@@ -368,7 +368,7 @@ class structure
 		return $tree;
 	}
 	
-	public static function hierarchyList($hierarchy, $selected=0)
+	public static function hierarchyList($hierarchy, $selected=0, $lang="")
 	{		
 		$html = array();
 				
@@ -381,14 +381,20 @@ class structure
 		foreach($hierarchy as $node)
 		{	
 			$li_class = '';
-			$post_html = structure::hierarchyList($node->children, $selected);
+			$post_html = structure::hierarchyList($node->children, $selected, $lang);
 			if(strpos($post_html, 'class="active"')!==false) $li_class = ' class="open" ';
 					
 			if(empty($html)) $html[] = '<ul>';
+
+            if(empty($lang))
+                $title = $node->label;
+            else
+                $title = $node->dictionary[$lang]['title'];
+
 			if(in_array($node->id, $selected))
-				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span class="active">'.$node->label.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span class="active">'.$title.'</span>';
 			else
-				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span>'.$node->label.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span>'.$title.'</span>';
 
 			$html[] = $post_html;
 			$html[] = '</li>';
