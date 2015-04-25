@@ -199,6 +199,29 @@ function run()
                         $social_comments = '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
                             '<span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>';
 
+                        if(empty($dataset[$i]['title']))
+                        {
+                            // if title is empty for the default language,
+                            // try to load the title in another language
+                            $DB->query('
+                                SELECT lang, text
+                                  FROM nv_webdictionary
+                                 WHERE website = '.$website->id.' AND
+                                        node_type = "item" AND
+                                        subtype="title" AND
+                                        node_id = '.$dataset[$i]['id'].' AND
+                                        text != ""
+                                ORDER BY id ASC');
+
+                            $titles = $DB->result();
+                            if(!empty($titles))
+                            {
+                                $dataset[$i]['title'] = '<img src="img/icons/silk/comment.png" align="absmiddle" />';
+                                $dataset[$i]['title'] .= '<small>'.$titles[0]->lang.'</small>&nbsp;&nbsp;';
+                                $dataset[$i]['title'] .= $titles[0]->text;
+                            }
+                        }
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> $dataset[$i]['title'],
