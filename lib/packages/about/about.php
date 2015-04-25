@@ -122,7 +122,7 @@ function about_layout()
 											'<a href="https://github.com/ludo/jquery-treetable" target="_blank">jQuery treeTable plugin v2.3.0</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7</a><br />' ));
+											'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7+ (2015/03/23)</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/mathiasbynens/jquery-noselect" target="_blank">jQuery noSelect plugin v51bac1d397 (2012-01-11)</a><br />' ));

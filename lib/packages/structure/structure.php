@@ -1170,13 +1170,15 @@ function structure_form($item)
             $ids[] = $element->id;
         }
 
-        $navibars->add_tab_content_row(array(
+        $navibars->add_tab_content_row(
+            array(
                 '<label>'.t(22, 'Elements').'</label>',
                 '<div>'.$table->generate().'</div>',
                 '<div class="subcomment">
                     <input type="hidden" name="elements-order" id="elements-order" value="'.implode("#", $ids).'" />
                     <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'
-                </div>' )
+                </div>'
+            )
         );
 
         $layout->add_script('
