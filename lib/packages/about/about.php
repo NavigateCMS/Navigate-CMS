@@ -56,7 +56,7 @@ function about_layout()
 											'<a href="https://github.com/tinymce-plugins/codemagic" target="_blank">TinyMCE CodeMagic plugin (2013/07/20)</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://code.google.com/p/imgmap/" target="_blank">TinyMCE imgmap plugin v1.08</a><br />' ));
+											'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.08</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
    											'<a href="http://www.assembla.com/spaces/lorem-ipsum" target="_blank">TinyMCE LoremIpsum plugin v0.12</a><br />' ));
@@ -131,7 +131,7 @@ function about_layout()
 											'<a href="https://github.com/ROMB/jquery-dialogextend" target="_blank">jQuery Dialog Extend plugin v2.0.4</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',											
-											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v4.0</a><br />'));
+											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.2</a><br />'));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://code.google.com/a/apache-extras.org/p/phpmailer/" target="_blank">PHP Mailer v5.2.2</a><br />'));
@@ -140,7 +140,7 @@ function about_layout()
 											'<a href="http://craigsworks.com/projects/qtip2/" target="_blank">qTip2 (14 Dec 2012)</a><br />'));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://phlymail.com/en/downloads/idna-convert.html" target="_blank">Net_IDNA v0.8.0</a><br />'));
+											'<a href="http://phlymail.com/en/downloads/idna-convert.html" target="_blank">Net_IDNA v0.9.0</a><br />'));
 											
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://xoxco.com/clickable/jquery-tags-input" target="_blank">jQuery Tags Input v1.2.2</a><br />'));											
