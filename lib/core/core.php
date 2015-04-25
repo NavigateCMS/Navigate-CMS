@@ -59,12 +59,14 @@ function pquotes($text)
 /**
  * Executes a Navigate CMS function taking the 'fid' url parameter
  * fid can be the name of the package (p.e. "dashboard") or its numeric assignment (p.e. "6")
+ * note: if no "fid" is found, then loads the first available menu function
  *
  * @return mixed Navigate CMS package output
  */
 function core_run()
 {
 	global $layout;
+    global $menu_layout;
 
 	$content = "";
 	$fid = 'dashboard'; // default function
@@ -73,6 +75,20 @@ function core_run()
 		$fid = $_REQUEST['fid'];
 
 	$f = core_load_function($fid);
+
+    if(empty($f) && ($fid=="dashboard" || empty($fid)))
+    {
+        // load first function available
+        $fid = $menu_layout->menus[0]->items[0]->codename;
+        if(empty($fid))
+            $fid = "unknown";
+        else
+        {
+            header('location: '.NAVIGATE_MAIN.'?fid='.$fid);
+            core_terminate();
+        }
+
+    }
 
 	if(file_exists('lib/packages/'.$f->codename.'/'.$f->codename.'.php'))
 	{
