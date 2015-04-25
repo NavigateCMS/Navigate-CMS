@@ -62,10 +62,11 @@ class profile
 
 		if(!empty($this->id))
 		{
-			$DB->execute(' DELETE FROM nv_profiles
-							WHERE id = '.intval($this->id).'
-              				LIMIT 1 '
-						);
+			$DB->execute('
+			    DELETE FROM nv_profiles
+				WHERE id = '.intval($this->id).'
+              	LIMIT 1 '
+            );
 		}
 		
 		return $DB->get_affected_rows();		
@@ -74,17 +75,20 @@ class profile
 	public function insert()
 	{
 		global $DB;
-    
-		$ok = $DB->execute(' INSERT INTO nv_profiles
-								(id, name, description, menus)
-								VALUES 
-								( 0,
-								  '.protect($this->name).',
-								  '.protect($this->description).',
-								  '.protect(json_encode($this->menus)).',
-								)');
+
+		$ok = $DB->execute('
+		    INSERT INTO nv_profiles
+			(id, name, description, menus)
+			VALUES
+            ( 0,
+              '.protect($this->name).',
+              '.protect($this->description).',
+              '.protect(json_encode($this->menus)).'
+            )'
+        );
 				
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+            throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
 

@@ -356,16 +356,19 @@ function profiles_form($item)
 	}
 	
 	// the other menus not included on the profile
-	foreach($menus as $menu)
-	{
-		if(!in_array($menu->id, $item->menus))
-		{
-			if($menu->enabled=='1')
-				$sortable_unassigned[] = '<li class="ui-state-default" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
-			else
-				$sortable_unassigned[] = '<li class="ui-state-default ui-state-disabled" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
-		}
-	}
+    if(is_array($menus))
+    {
+        foreach($menus as $menu)
+        {
+            if(!in_array($menu->id, $item->menus))
+            {
+                if($menu->enabled=='1')
+                    $sortable_unassigned[] = '<li class="ui-state-default" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
+                else
+                    $sortable_unassigned[] = '<li class="ui-state-default ui-state-disabled" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
+            }
+        }
+    }
 	
 	$sortable_profile[] = '</ul>';
 	$sortable_unassigned[] = '</ul>';
