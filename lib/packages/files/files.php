@@ -351,12 +351,20 @@ function files_browser($parent, $search="")
 	
 	$navibars->title(t(89, 'Files'));
 
-	$navibars->add_actions(	array(	'<a href="#" onclick="navigate_files_uploader();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_white_get.png"> '.t(140, 'Upload').'</a>',
-									'<a href="#" onclick="navigate_files_edit_folder();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_add.png"> '.t(141, 'Folder').'</a>',
-									'<a href="#" onclick="navigate_files_remove();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>' ));
+	$navibars->add_actions(
+        array(
+            '<a href="#" onclick="navigate_files_uploader();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_white_get.png"> '.t(140, 'Upload').'</a>',
+            '<a href="#" onclick="navigate_files_edit_folder();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_add.png"> '.t(141, 'Folder').'</a>',
+            '<a href="#" onclick="navigate_files_remove();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+        )
+    );
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_home.png"> '.t(18, 'Home').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_home.png"> '.t(18, 'Home').'</a>',
+			'search_form'
+        )
+    );
 	
 	if(!empty($search))
 	{
@@ -402,16 +410,10 @@ function files_browser($parent, $search="")
                 }
             },
             true
-        );'
-    );
+        );
+    ');
 
-    $layout->add_script("
-        $(document).on('keydown.del', function (evt)    { navigate_files_remove(); return false; } );
-        $(document).on('keydown.home', function (evt)   { window.location.href = '?fid=files&act=0'; return false; } );
-        $(document).on('keydown.Ctrl_j', function (evt) { navibrowse_folder_tree_dialog(0); return false; } );
-    ");
-
-	// PLUPLOAD	
+	// PLUPLOAD
 	$navibars->add_content('<div id="navigate-files-uploader"></div>');
 
 	$layout->add_script(' 
@@ -482,19 +484,19 @@ function files_browser($parent, $search="")
 						}
 					});
 				});
-			}								 
+			}
 
-			$("#navigate-files-uploader").dialog(
-			{
-				title: "'.t(142, 'Select files').'",
-				height: 355,
-				width: 650,
-				modal: true,
-				close: function()
-				{
-					window.location.reload();
-				}
-			});
+            $("#navigate-files-uploader").dialog(
+            {
+                title: "'.t(142, 'Select files').'",
+                height: 355,
+                width: 650,
+                modal: true,
+                close: function()
+                {
+                    window.location.reload();
+                }
+            });
 
             $(".plupload_wrapper").removeClass("plupload_scroll");
 
@@ -502,7 +504,8 @@ function files_browser($parent, $search="")
             {
                 $("div.plupload input").css("z-index","99999");
             });
-	}');
+	    }'
+    );
 						 
 	$layout->add_script('
 		function navigate_files_remove(elements)
@@ -518,13 +521,13 @@ function files_browser($parent, $search="")
 					resizable: false,
 					height:140,
 					modal: true,
-					buttons: 
+					buttons:
 					{
-						"'.t(58, 'Cancel').'": function() 
+						"'.t(58, 'Cancel').'": function()
 						{
 							$(this).dialog("close");
 						},
-						"'.t(152, 'Continue').'": function() 
+						"'.t(152, 'Continue').'": function()
 						{
 							$(elements).each(function()
 							{
@@ -535,153 +538,19 @@ function files_browser($parent, $search="")
 									async: false,
 									url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id=" + itemId,
 									success: function(data)
-									{									
+									{
 										$("#item-"+itemId).remove();
 									}
 								});
 							});
 							$(this).dialog("close");
-						}									
+						}
 					}
-				});	
+				});
 			}
 		}
 	');
-						 
-	$layout->add_script('
-		function navigate_files_dblclick(el)
-		{
-		 	var itemId = el.id.substring(5);
-		 	window.location.href = "?fid='.$_REQUEST['fid'].'&act=2&id=" + itemId;
-		}
-		
-		function navigate_files_move(item_id, folder_id, element)
-		{
-			$.ajax(
-			{
-				async: false,
-				type: "post",
-				data: {
-					item: item_id,
-					folder: folder_id
-				},
-				url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=move",
-				success: function(data)
-				{
-					if(data=="true")
-					{
-						if(typeof(element)=="array")
-						{
-							for(el in element)	
-							{
-								if($(el).attr("id").substring(5) != folder_id)
-									$(el).remove();
-							}
-						}
-						else					
-						{
-							$(element).remove();
-						}
-					}
-				}
-			});						
-		}
 
-        function navigate_files_contextmenu(el, ev)
-        {
-            var html = \'<ul id="navigate-files-contextmenu">\'+
-                        \'<li action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>\'+
-                        \'<li action="rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, "Rename").'</a></li>\'+
-                        \'<li action="duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>\'+
-                        \'<li action="delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>\'+
-                        \'</ul>\';
-
-            $("#navigate-files-contextmenu").remove();
-            $(html).appendTo($("body"));
-
-            $("#navigate-files-contextmenu").menu();
-
-            $("#navigate-files-contextmenu").css({
-                "top": ev.clientY,
-                "left": ev.clientX,
-                "z-index": 100000,
-                "position": "absolute"
-            }).addClass("navi-ui-widget-shadow").show();
-
-            var type = "file";
-            if($(el).hasClass("navibrowse-folder"))
-                type = "folder";
-
-            var id = $(el).attr("id").replace(/item-/, "");
-
-            var selected_items = $("div.navibrowse-file.ui-selected,div.navibrowse-folder.ui-selected");
-
-            // attach events to type & id
-
-            if(selected_items.length == 1 || selected_items.length == 0)
-            {
-                $("#navigate-files-contextmenu").find("li[action=\"open\"]").on("click", function()
-                {
-                    $(el).trigger("dblclick");
-                }).show();
-
-                $("#navigate-files-contextmenu").find("li[action=\"rename\"]").on("click", function()
-                {
-                    if(type=="folder")
-                    {
-                        navigate_files_edit_folder(id, $(el).find(".navibrowse-item-name").text(), $(el).attr("mime"));
-                    }
-                    else
-                    {
-                        navigate_files_rename(id, $(el).find(".navibrowse-item-name").text());
-                    }
-                }).show();
-
-                if(type=="file")
-                {
-                    $("#navigate-files-contextmenu").find("li[action=\"duplicate\"]").on("click", function()
-                    {
-                        $.ajax(
-						{
-							async: false,
-							type: "post",
-							data: {
-								id: id
-							},
-							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=duplicate_file",
-							success: function(data)
-							{
-								if(data=="true")
-								    window.location.reload();
-                                else
-                                    navigate_notification(data, true, true);
-							}
-						});
-                    }).show();
-                }
-
-                $("#navigate-files-contextmenu").find("li[action=\"delete\"]").on("click", function()
-                {
-                    var elements = $(".ui-selected img").parent();
-                    $(el).trigger("click");
-                    navigate_files_remove(elements);
-                });
-            }
-            else
-            {
-                $("#navigate-files-contextmenu").find("li[action=\"open\"]").hide();
-                $("#navigate-files-contextmenu").find("li[action=\"rename\"]").hide();
-                $("#navigate-files-contextmenu").find("li[action=\"duplicate\"]").hide();
-                $("#navigate-files-contextmenu").find("li[action=\"delete\"]").on("click", function()
-                {
-                    var elements = $(".ui-selected img").parent();
-                    $(el).trigger("click");
-                    navigate_files_remove(elements);
-                });
-            }
-        }
-	');
-	
 	$navibars->add_content('
 		<div id="navigate-edit-folder" style=" display: none; ">
 		<form action="#" onsubmit="return false;">
@@ -726,7 +595,7 @@ function files_browser($parent, $search="")
 		</form>
 		</div>
 	');
-						 
+
 	$layout->add_script('
 		function navigate_files_edit_folder(id, name, mime)
 		{
@@ -737,13 +606,13 @@ function files_browser($parent, $search="")
 				height: 200,
 				width: 625,
 				modal: true,
-				buttons: 
+				buttons:
 				{
-					"'.t(58, 'Cancel').'": function() 
+					"'.t(58, 'Cancel').'": function()
 					{
 						$("#navigate-edit-folder").dialog("close");
 					},
-					"'.t(152, 'Continue').'": function() 
+					"'.t(152, 'Continue').'": function()
 					{
 					    var op = "edit_folder";
 						if(!id)
@@ -764,53 +633,21 @@ function files_browser($parent, $search="")
 								$("#navigate-edit-folder").dialog("close");
 								window.location.reload();
 							}
-						});						
-					}									
-				}			
-			});
-
-			$("#folder-name").val(name);
-			$("#folder-mime").val(mime).trigger("change");
-		}
-
-		function navigate_files_rename(id, name)
-		{
-            $("#navigate-edit-file").dialog(
-			{
-				title: "'.t(82, 'File').': " + name,
-				resizable: false,
-				height: 200,
-				width: 625,
-				modal: true,
-				buttons:
-				{
-					"'.t(58, 'Cancel').'": function()
-					{
-						$("#navigate-edit-file").dialog("close");
-					},
-					"'.t(152, 'Continue').'": function()
-					{
-						$.ajax(
-						{
-							async: false,
-							type: "post",
-							data: {
-								name: $("#file-name").val(),
-								id: id
-							},
-							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=edit_file",
-							success: function(data)
-							{
-								$("#navigate-edit-file").dialog("close");
-								window.location.reload();
-							}
 						});
 					}
 				}
 			});
 
-			$("#file-name").val(name);
+			$("#folder-name").val(name);
+			$("#folder-mime").val(mime).trigger("change");
 		}
+	');
+
+    $layout->add_script('
+		$.getScript("lib/packages/files/files.js", function()
+		{
+            navigate_files_onload();
+		});
 	');
 
 	

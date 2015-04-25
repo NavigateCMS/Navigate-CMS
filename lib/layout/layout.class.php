@@ -678,6 +678,7 @@ class layout
                 57: "'.t(57, 'Do you really want to delete this item?').'",
                 58: "'.t(58, 'Cancel').'",
                 59: "'.t(59, 'Confirmation').'",
+                82: "'.t(82, 'File').'",
                 185: "'.t(185, 'Searching elements').'",
                 189: "'.t(189, 'Copy from').'",
                 190: "'.t(190, 'Ok').'",
@@ -696,11 +697,14 @@ class layout
                 440: "'.t(440, 'Error saving the data, please do an external backup of your changes to prevent data loss').'",
                 472: "'.t(472, 'Add').'",
                 476: "'.t(476, 'Copy to clipboard').'",
+                477: "'.t(477, 'Duplicate').'",
                 492: "'.t(492, 'No matches found').'",
                 493: "'.t(493, 'Loading more results...').'",
                 494: "'.t(494, 'Searching...').'",
                 495: "'.t(495, 'Please enter at least {number} characters').'",
-                496: "'.t(496, 'You can only select {number} items').'"
+                496: "'.t(496, 'You can only select {number} items').'",
+                499: "'.t(499, 'Open').'",
+                500: "'.t(500, 'Rename').'"
             };
         ');
 

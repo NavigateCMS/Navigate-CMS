@@ -379,40 +379,42 @@ class navibrowse
 				});
 			';
 			
-			$html[] = '$(".navibrowse-folder").droppable(
-					   {
-							hoverClass: "ui-selected",
-							tolerance: "pointer",
-							drop: function(event, ui)
-							{
-								if(navibrowse_selected!=null && navibrowse_selected.length > 1)
-								{									
-									var folder = $(this).attr("id").substring(5);									
-									var ids = [];
-									
-									$(navibrowse_selected).each(function()
-									{
-										if($(this).attr("id").substring(5) != folder)
-											ids.push($(this).attr("id").substring(5));
-									});
-									
-									navibrowse_selected = jQuery.grep(navibrowse_selected, function(value) 
-									{
-										return $(value).attr("id").substring(5) != folder;
-									});									
-									'.$this->onMove.'(ids, folder, navibrowse_selected);									
-								}
-								else
-								{								
-									var folder = $(this).attr("id").substring(5);
-									var item = $(ui.draggable).attr("id").substring(5);
-									'.$this->onMove.'(item, folder, ui.draggable);
-								}
-								
-								$(".navibrowse-items div").removeClass("ui-selectee ui-selected");
-								$(".navibrowse-items img").removeClass("ui-selectee ui-selected");								
-							}
-					   });';		
+			$html[] = '
+			    $(".navibrowse-folder").droppable(
+                {
+                    hoverClass: "ui-selected",
+                    tolerance: "pointer",
+                    drop: function(event, ui)
+                    {
+                        if(navibrowse_selected!=null && navibrowse_selected.length > 1)
+                        {
+                            var folder = $(this).attr("id").substring(5);
+                            var ids = [];
+
+                            $(navibrowse_selected).each(function()
+                            {
+                                if($(this).attr("id").substring(5) != folder)
+                                    ids.push($(this).attr("id").substring(5));
+                            });
+
+                            navibrowse_selected = jQuery.grep(navibrowse_selected, function(value)
+                            {
+                                return $(value).attr("id").substring(5) != folder;
+                            });
+                            '.$this->onMove.'(ids, folder, navibrowse_selected);
+                        }
+                        else
+                        {
+                            var folder = $(this).attr("id").substring(5);
+                            var item = $(ui.draggable).attr("id").substring(5);
+                            '.$this->onMove.'(item, folder, ui.draggable);
+                        }
+
+                        $(".navibrowse-items div").removeClass("ui-selectee ui-selected");
+                        $(".navibrowse-items img").removeClass("ui-selectee ui-selected");
+                    }
+                });
+            ';
 		}
 					
 		$html[] = '</script>';

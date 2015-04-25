@@ -1460,7 +1460,8 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 				}
 			},
 			maxfiles: 1000,
-			maxfilesize: NAVIGATE_MAX_UPLOAD_SIZE,    // max file size in MBs
+			maxfilesize: NAVIGATE_MAX_UPLOAD_SIZE,    // max file size in MBs,
+            queuefiles: 2,
             document_title: "",
 			dragOver: function() 
 			{
