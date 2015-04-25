@@ -148,10 +148,41 @@ function nvweb_conditional($vars=array())
         else
         {
             // remove this conditional html code on this round
-            $out = $item_html;
+            $out = '';
         }
     }
+    else if($vars['by']=='access')
+    {
+        $access = 0;
+        switch($vars['access'])
+        {
+            case 3:
+            case 'webuser_groups':
+                $access = 3;
+                break;
 
+            case 2:
+            case 'not_signed_in':
+                $access = 2;
+                break;
+
+            case 1:
+            case 'signed_in':
+                $access = 1;
+                break;
+
+            case 0:
+            case 'everyone':
+            default:
+                $access = 0;
+                break;
+        }
+
+        if($item->access == $access)
+            $out = $item_html;
+        else
+            $out = '';
+    }
     else // unknown nvlist_conditional, discard
     {
         $out = '';
