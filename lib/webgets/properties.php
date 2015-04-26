@@ -508,7 +508,10 @@ function nvweb_properties_render($property, $vars)
 			break;
 			
 		case 'category':
-			// use "return" attribute to determine what to return of a category (title, ID...)
+            $out = $property->value;
+            break;
+
+        case 'categories':
             $out = $property->value;
             break;
 

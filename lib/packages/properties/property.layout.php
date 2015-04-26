@@ -575,6 +575,69 @@ function navigate_property_layout_field($property)
             $field[] = '</div>';
             break;
 
+        case 'categories':
+            $hierarchy = structure::hierarchy(0);
+            $selected = explode(',', $property->value);
+            if(!is_array($selected))
+                $selected = array($property->value);
+            $categories_list = structure::hierarchyList($hierarchy, $selected);
+
+            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+            $field[] = '<label>'.$property->name.'</label>';
+            $field[] = '<div class="category_tree" id="categories-tree-property-'.$property->id.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>';
+            $field[] = $naviforms->hidden('property-'.$property->id, $property->value);
+            $field[] = '<label>&nbsp;</label>';
+            $field[] = '<button id="categories_tree_select_all_categories-property-'.$property->id.'">'.t(481, 'Select all').'</button>';
+            if(!empty($property->helper))
+                $field[] = '<div class="subcomment">'.$property->helper.'</div>';
+            $field[] = '</div>';
+
+            $layout->add_script('
+                $("#categories-tree-property-'.$property->id.' ul:first").kvaTree({
+                    imgFolder: "js/kvatree/img/",
+                    dragdrop: false,
+                    background: "#f2f5f7",
+                    overrideEvents: true,
+                    onClick: function(event, node)
+                    {
+                        if($(node).find("span:first").hasClass("active"))
+                            $(node).find("span:first").removeClass("active");
+                        else
+                            $(node).find("span:first").addClass("active");
+
+                        var categories = new Array();
+
+                        $("#categories-tree-property-'.$property->id.' span.active").parent().each(function()
+                        {
+                            categories.push($(this).attr("value"));
+                        });
+
+                        if(categories.length > 0)
+                            $("#property-'.$property->id.'").val(categories);
+                        else
+                            $("#property-'.$property->id.'").val("");
+                    }
+                });
+
+                $("#categories-tree-property-'.$property->id.' li").find("span:first").css("cursor", "pointer");
+
+                $("#categories_tree_select_all_categories-property-'.$property->id.'").on("click", function()
+                {
+                    var categories = new Array();
+
+                    $("#categories-tree-property-'.$property->id.'").find("li").not(".separator").each(function(i, el)
+                    {
+                        $(el).find("span:first").addClass("active");
+                        categories.push($(el).attr("value"));
+                    });
+
+                    $("#property-'.$property->id.'").val(categories);
+
+                    return false
+                });
+            ');
+            break;
+
         case 'item':
 
             $item_title = '';

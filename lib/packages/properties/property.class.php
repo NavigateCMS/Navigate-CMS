@@ -38,6 +38,7 @@ class property
         // Rich text area (multi)
         // Web user groups
         // Category (Structure entry)
+        // Categories (Multiple structure entries)
 		// Product (not yet!)
 	
 	public function load($id)
@@ -445,6 +446,7 @@ class property
             'coordinates'	=>	t(297, 'Coordinates'),
             'product'		=>	t(198, 'Product'),
             'category'		=>	t(78, 'Category'),
+            'categories'	=>	t(330, 'Categories'),
             'item'		    =>	t(180, 'Item'),
             'source_code'   =>  t(489, 'Source code'),
             'webuser_groups'=>  t(512, 'Selected web user groups')
