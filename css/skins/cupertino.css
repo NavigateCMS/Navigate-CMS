@@ -460,7 +460,8 @@ a.navigate-content-actions-selected
     display: none;
     position: absolute;
     max-height: 180px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
+    overflow: hidden;
     margin-left: -10px;
     margin-top: 5px;
 }
@@ -468,18 +469,9 @@ a.navigate-content-actions-selected
 #navigate-content-actions ul.content-actions-submenu a
 {
     display: block;
-    margin-right: 0px;
+    clear: both;
 }
 
-#navigate-content-actions ul.content-actions-submenu li
-{
-    margin: 1px;
-}
-
-#navigate-content-actions ul.content-actions-submenu li:hover
-{
-    margin: 0;
-}
 
 #navigate-content-top-spacer
 {
@@ -1822,7 +1814,7 @@ input.naviforms-colorpicker-text
     font-size: 10px;
     color: #362b36;
     white-space: nowrap;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 .ui-menu .ui-menu-item a
@@ -1833,6 +1825,8 @@ input.naviforms-colorpicker-text
     text-decoration: none;
     color: #362b36;
     font-weight: normal;
+
+    display: block;
 }
 
 .ui-menu .ui-menu-item.ui-state-focus > a
@@ -1959,7 +1953,7 @@ div.jGrowl div.jGrowl-notification
     background: url("../../css/cupertino/images/ui-bg_glass_100_e4f1fb_1x400.png") repeat-x scroll 50% 50% #E4F1FB;
     border: 1px solid #74B2E2;
     color: #0070A3;
-    border-radius: 8px;
+    border-radius: 4px;
     font-weight: normal;
 }
 
@@ -1969,7 +1963,7 @@ div.jGrowl div.jGrowl-notification
     background: url("../../css/cupertino/images/ui-bg_highlight-soft_25_ffef8f_1x100.png") repeat-x scroll 50% top #FFEF8F;
     border: 1px solid #F9DD34;
     color: #363636;
-    border-radius: 8px;
+    border-radius: 4px;
 }
 
 /* jQuery UI hack */

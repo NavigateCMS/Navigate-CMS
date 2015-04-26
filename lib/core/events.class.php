@@ -54,7 +54,7 @@ class events
         return $messages;
     }
 
-    public function add_actions($module, $parameters, $extra=array())
+    public function add_actions($module, $parameters, $extra=array(), $extra_parent_action='')
     {
         if(is_array($this->events[$module]['actions']))
         {
@@ -68,11 +68,16 @@ class events
 
         if(!empty($extra))
         {
+            if(empty($extra_parent_action))
+                $extra_parent_action = '
+                    <a href="#" class="content-actions-submenu-trigger">
+                        <img height="16" align="absmiddle" width="16" src="img/icons/silk/plugin.png"> '.t(521, "Extra").' &#9662;
+                    </a>
+                ';
+
             array_unshift(
                 $extra,
-                '<a href="#" class="content-actions-submenu-trigger">
-                    <img height="16" align="absmiddle" width="16" src="img/icons/silk/plugin.png"> '.t(521, "Extra").' &#9662;
-                </a>'
+                $extra_parent_action
             );
             $navibars = $parameters['navibars'];
             $navibars->add_actions(

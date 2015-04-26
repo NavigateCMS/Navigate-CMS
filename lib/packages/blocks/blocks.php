@@ -111,10 +111,11 @@ function run()
 					{
 						if(empty($dataset[$i])) continue;
 						
-						$access = array(	0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
-											1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
-											2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
-                                            3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
+						$access = array(
+                            0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
+							1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
+							2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
+                            3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
 						);						
 						
 						if(empty($dataset[$i]['date_published'])) 
@@ -128,11 +129,15 @@ function run()
 							$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
 							
 						if($dataset[$i]['category'] > 0)
-							$dataset[$i]['category'] = $DB->query_single('text', 'nv_webdictionary', 
-																		 ' 	node_type = "structure" AND
-																		 	node_id = "'.$dataset[$i]['category'].'" AND 
-																			subtype = "title" AND
-																			lang = "'.$website->languages_list[0].'"');
+							$dataset[$i]['category'] = $DB->query_single(
+                                'text',
+                                'nv_webdictionary',
+                                ' 	node_type = "structure" AND
+                                    node_id = "'.$dataset[$i]['category'].'" AND
+                                    subtype = "title" AND
+                                    lang = "'.$website->languages_list[0].'"
+                                '
+                            );
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
@@ -516,21 +521,48 @@ function run()
 
 function blocks_list()
 {
+    global $events;
+
 	$navibars = new navibars();
 	$navitable = new navitable("blocks_list");
 	
 	$navibars->title(t(23, 'Blocks'));
 
+    // retrieve block groups, if more than 10, do not show quickmenu
+
+    $group_blocks_links = array();
+    list($bg_rs, $bg_total) = block_group::paginated_list(0, 10, 'title', 'desc');
+
+    if($bg_total > 0 && $bg_total <= 10)
+    {
+        foreach($bg_rs as $bg)
+            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+
+        $events->add_actions(
+            'blocks',
+            array(
+                'item' => null,
+                'navibars' => &$navibars
+            ),
+            $group_blocks_links,
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+        );
+    }
+
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>',
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'),
             '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 	
 	if(@$_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
