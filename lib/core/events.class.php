@@ -18,10 +18,10 @@ class events
      */
     public function bind($module, $event, $extension, $function)
     {
-        if(!is_array($this->events[$module]))
+        if(!isset($this->events[$module]) || !is_array($this->events[$module]))
             $this->events[$module] = array();
 
-        if(!is_array($this->events[$module][$event]))
+        if(!isset($this->events[$module][$event]) || !is_array($this->events[$module][$event]))
             $this->events[$module][$event] = array();
 
         $this->events[$module][$event][] = array(
