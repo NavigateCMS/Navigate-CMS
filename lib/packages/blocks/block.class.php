@@ -4,7 +4,8 @@ require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php'
 class block
 {
 	public $id;
-	public $type;
+	public $type;   // assigned block type name (f.e. sidebar_poll)
+    public $class;  // block class (block, theme, poll...)
 	public $date_published;
 	public $date_unpublish;		
 	public $access;
@@ -37,9 +38,11 @@ class block
 		global $DB;
 		global $website;
 		
-		if($DB->query('SELECT * FROM nv_blocks 
-						WHERE id = '.intval($id).'
-						  AND website = '.$website->id))
+		if($DB->query('
+		    SELECT * FROM nv_blocks
+			 WHERE id = '.intval($id).'
+			   AND website = '.$website->id)
+        )
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data);
@@ -89,6 +92,14 @@ class block
         $groups = str_replace('g', '', $main->groups);
         $this->groups = explode(',', $groups);
         if(!is_array($this->groups))  $this->groups = array($groups);
+
+        $block_classes = block::types();
+        foreach($block_classes as $bc)
+        {
+            if($bc['code']==$this->type)
+                $this->class = $bc['type'];
+        }
+
 	}
 	
 	public function load_from_post()
@@ -108,95 +119,135 @@ class block
 		$this->enabled			= intval($_REQUEST['enabled']);	
 		$this->notes  			= pquotes($_REQUEST['notes']);
 
+        $this->categories 	= '';
+        if(!empty($_REQUEST['categories']))
+            $this->categories	= explode(',', $_REQUEST['categories']);
+
+        $this->exclusions 	= '';
+        if(!empty($_REQUEST['exclusions']))
+            $this->exclusions	= explode(',', $_REQUEST['exclusions']);
+
+        if($_REQUEST['all_categories']=='1')
+        {
+            $this->categories 	= array();
+            $this->exclusions 	= array();
+        }
+
 		$this->dictionary		= array();	// for titles
 		$this->trigger			= array();
 		$this->action			= array();
-				
-		$fields_title 	= array ( 'title' );
-		$fields_trigger = array (
-            'trigger-type',
-            'trigger-title',
-            'trigger-image',
-            'trigger-rollover',
-            'trigger-rollover-active',
-            'trigger-video',
-            'trigger-flash',
-            'trigger-html',
-            'trigger-links',
-            'trigger-content'
-        );
-		$fields_action	= array (
-            'action-type',
-            'action-web',
-            'action-file',
-            'action-image'
-        );
 
-		foreach($_REQUEST as $key => $value)
-		{
-			if(empty($value)) continue;
-				
-			foreach($fields_title as $field)
-			{
-				if(substr($key, 0, strlen($field.'-'))==$field.'-')
-					$this->dictionary[substr($key, strlen($field.'-'))]['title'] = $value;
-			}
+        if(empty($this->class))
+            $this->class = 'block';
 
-			foreach($fields_trigger as $field)
-			{
-                // f.e., Does this REQUEST field begins with "trigger-content-"?
-				if(substr($key, 0, strlen($field.'-'))==$field.'-')
-				{
-                    switch($field)
-                    {
-                        case 'trigger-html':
-                            $this->trigger[$field][substr($key, strlen($field.'-'))] = htmlspecialchars($value);
-                            break;
-
-                        case 'trigger-content':
-                            $this->trigger[$field][substr($key, strlen($field.'-'))] = $value;
-                            break;
-
-                        case 'trigger-links':
-                            $key_parts = explode("-", $key);
-                            $key_lang = array_pop($key_parts);
-                            $key_name = array_pop($key_parts);
-                            $value = array_filter($value);
-
-                            // ignore links without a title or without a link
-                            if(empty($value) || empty($key_name))
-                                continue;
-
-                            $this->trigger[$field][$key_lang][$key_name] = $value;
-                            break;
-
-                        default:
-                            $this->trigger[$field][substr($key, strlen($field.'-'))] = pquotes($value);
-                            break;
-                    }
-				}
-			}
-			
-			foreach($fields_action as $field)
-			{
-				if(substr($key, 0, strlen($field.'-'))==$field.'-')
-					$this->action[$field][substr($key, strlen($field.'-'))] = $value;
-			}						
-		}
-
-		$this->categories 	= '';
-		if(!empty($_REQUEST['categories']))
-			$this->categories	= explode(',', $_REQUEST['categories']);	
-			
-		$this->exclusions 	= '';
-		if(!empty($_REQUEST['exclusions']))
-			$this->exclusions	= explode(',', $_REQUEST['exclusions']);
-
-		if($_REQUEST['all_categories']=='1')
+        switch($this->class)
         {
-			$this->categories 	= array();
-			$this->exclusions 	= array();
-        }
+            case 'poll':
+                foreach($website->languages_list as $lang)
+                {
+                    $this->dictionary[$lang]['title'] = $_REQUEST['title-'.$lang];
+                    $this->trigger[$lang] = array();
+
+                    $answers_order = explode("#", $_REQUEST['poll-answers-table-order-'.$lang]);
+
+                    foreach($_REQUEST['poll-answers-table-title-'.$lang] as $fcode => $fval)
+                    {
+                        $pos = array_search("poll-answers-table-row-".$fcode, $answers_order);
+
+                        if($pos===false)
+                            $pos = $fcode;
+
+                        $fval = trim($fval);
+                        if(empty($fval))
+                            continue;
+
+                        $this->trigger[$lang][$pos] = array(
+                            'title' => $fval,
+                            'code' => $fcode,
+                            'votes' => intval($_REQUEST['poll-answers-table-votes-'.$lang][$fcode])
+                        );
+                    }
+
+                    ksort($this->trigger[$lang]);
+                }
+                break;
+
+            case 'block':
+            case 'theme':
+            default:
+                $fields_title 	= array ( 'title' );
+                $fields_trigger = array (
+                    'trigger-type',
+                    'trigger-title',
+                    'trigger-image',
+                    'trigger-rollover',
+                    'trigger-rollover-active',
+                    'trigger-video',
+                    'trigger-flash',
+                    'trigger-html',
+                    'trigger-links',
+                    'trigger-content'
+                );
+                $fields_action	= array (
+                    'action-type',
+                    'action-web',
+                    'action-file',
+                    'action-image'
+                );
+
+                foreach($_REQUEST as $key => $value)
+                {
+                    if(empty($value)) continue;
+
+                    foreach($fields_title as $field)
+                    {
+                        if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                            $this->dictionary[substr($key, strlen($field.'-'))]['title'] = $value;
+                    }
+
+                    foreach($fields_trigger as $field)
+                    {
+                        // f.e., Does this REQUEST field begins with "trigger-content-"?
+                        if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                        {
+                            switch($field)
+                            {
+                                case 'trigger-html':
+                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = htmlspecialchars($value);
+                                    break;
+
+                                case 'trigger-content':
+                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = $value;
+                                    break;
+
+                                case 'trigger-links':
+                                    $key_parts = explode("-", $key);
+                                    $key_lang = array_pop($key_parts);
+                                    $key_name = array_pop($key_parts);
+                                    $value = array_filter($value);
+
+                                    // ignore links without a title or without a link
+                                    if(empty($value) || empty($key_name))
+                                        continue;
+
+                                    $this->trigger[$field][$key_lang][$key_name] = $value;
+                                    break;
+
+                                default:
+                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = pquotes($value);
+                                    break;
+                            }
+                        }
+                    }
+
+                    foreach($fields_action as $field)
+                    {
+                        if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                            $this->action[$field][substr($key, strlen($field.'-'))] = $value;
+                    }
+                }
+
+            }
 	}
 	
 	public static function reorder($type, $order, $fixed)
@@ -397,7 +448,8 @@ class block
     {
         $modes = array(
             'block' => t(437, 'Block'),
-            'theme' => t(368, 'Theme')
+            'theme' => t(368, 'Theme'),
+            'poll' => t(557, 'Poll')
             /*
              * 'google_map' => 'Google Map',
              * 'bing_map' => 'Bing Map',
@@ -467,19 +519,19 @@ class block
 		// $data as the last parameter, to sort by the common key
 		array_multisort($order, (($asc=='asc')? SORT_ASC : SORT_DESC), $data);
 
-/*
-		$x[] = array( 'id'		=> 1,
-					  'title'	=> 'test',
-                      'code'    => 'codename',
-					  'width'	=> 200,
-					  'height'	=> 50,
-					  'order'	=> 'theme',
-					  'maximum' => 3
-					);
+        /*
+            $x[] = array( 'id'		=> 1,
+                          'title'	=> 'test',
+                          'code'    => 'codename',
+                          'width'	=> 200,
+                          'height'	=> 50,
+                          'order'	=> 'theme',
+                          'maximum' => 3
+                        );
 
-		$x = serialize($x);
-		var_dump($x);
-*/
+            $x = serialize($x);
+            var_dump($x);
+        */
 		return $data;
 	}
 	
@@ -493,9 +545,11 @@ class block
 
 		$array = serialize($array);
 				
-		$ok = $DB->execute('UPDATE nv_websites 
-		 				 	SET block_types = '.protect($array).'
-					   		WHERE id = '.$website->id);
+		$ok = $DB->execute('
+		    UPDATE nv_websites
+               SET block_types = '.protect($array).'
+			 WHERE id = '.$website->id
+        );
 					
 		if(!$ok)
 			throw new Exception($DB->last_error());

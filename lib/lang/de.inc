@@ -555,3 +555,7 @@
 554     # Verbergen
 555     # Der Artikel wurde veröffentlicht.
 556     # Block Gruppe
+557     # Umfrage
+558     # Frage
+559     # Antworten
+560     # Stimmen

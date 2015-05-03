@@ -555,3 +555,7 @@
 554     # Esconder
 555     # El elemento ha sido publicado correctamente.
 556     # Bloque del grupo
+557     # Encuesta
+558     # Pregunta
+559     # Respuestas
+560     # Votos

@@ -555,3 +555,7 @@
 554     # Amagar
 555     # L'element ha estat publicat correctament.
 556     # Bloc del grup
+557     # Enquesta
+558     # Pregunta
+559     # Respostes
+560     # Vots
