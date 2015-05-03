@@ -553,36 +553,36 @@ function files_browser($parent, $search="")
 
 	$navibars->add_content('
 		<div id="navigate-edit-folder" style=" display: none; ">
-		<form action="#" onsubmit="return false;">
-			<input type="submit" value="" style=" display: none; " />
-			<div class="navigate-form-row">
-				<label>'.t(159, 'Name').'</label>
-				'.$naviforms->textfield('folder-name', '').'
-			</div>
-			<div class="navigate-form-row">
-				<label>'.t(160, 'Type').'</label>
-				'.$naviforms->selectfield(
-                    'folder-mime',
-                    array(
-                            0 => 'folder/generic',
-                            1 => 'folder/images',
-                            2 => 'folder/audio',
-                            3 => 'folder/video',
-                            4 => 'folder/flash',
-                            5 => 'folder/documents'
-                        ),
-                    array(
-                            0 => t(161, 'Generic'),
-                            1 => t(29, 'Images'),
-                            2 => t(31, 'Audio'),
-                            3 => t(30, 'Video'),
-                            4 => t(186, 'Adobe Flash'),
-                            5 => t(32, 'Documents')
-                        ),
-                    'folder/generic'
-                ).'
-			</div>			
-		</form>
+            <form action="#" onsubmit="return false;">
+                <input type="submit" value="" style=" display: none; " />
+                <div class="navigate-form-row">
+                    <label>'.t(159, 'Name').'</label>
+                    '.$naviforms->textfield('folder-name', '').'
+                </div>
+                <div class="navigate-form-row">
+                    <label>'.t(160, 'Type').'</label>
+                    '.$naviforms->selectfield(
+                        'folder-mime',
+                        array(
+                                0 => 'folder/generic',
+                                1 => 'folder/images',
+                                2 => 'folder/audio',
+                                3 => 'folder/video',
+                                4 => 'folder/flash',
+                                5 => 'folder/documents'
+                            ),
+                        array(
+                                0 => t(161, 'Generic'),
+                                1 => t(29, 'Images'),
+                                2 => t(31, 'Audio'),
+                                3 => t(30, 'Video'),
+                                4 => t(186, 'Adobe Flash'),
+                                5 => t(32, 'Documents')
+                            ),
+                        'folder/generic'
+                    ).'
+                </div>
+            </form>
 		</div>
 
 		<div id="navigate-edit-file" style=" display: none; ">

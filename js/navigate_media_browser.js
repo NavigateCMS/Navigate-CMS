@@ -158,6 +158,96 @@ function navigate_media_browser_refresh()
 
     // images only: .find("div[mediatype='image']") [not needed right now]
 
+    $("#navigate_media_browser_items").off("contextmenu");
+    if($('select#media_browser_type').val()=="folder")
+    {
+        $("#navigate_media_browser_items").on("contextmenu", function(e)
+        {
+            navigate_hide_context_menus();
+            var trigger = $(this);
+
+            setTimeout(function()
+            {
+                $('#contextmenu-mediabrowser').menu();
+
+                var xpos = e.clientX;
+                var ypos = e.clientY;
+
+                if(xpos + $('#contextmenu-mediabrowser').width() > $(window).width())
+                    xpos -= $('#contextmenu-mediabrowser').width();
+
+                $('#contextmenu-mediabrowser').css({
+                    "top": ypos,
+                    "left": xpos,
+                    "z-index": 100000,
+                    "position": "absolute"
+                });
+
+                $('#contextmenu-mediabrowser').addClass('navi-ui-widget-shadow');
+
+                $('#contextmenu-mediabrowser').show();
+
+                $("#contextmenu-mediabrowser-create_folder").off('click').on("click", function ()
+                {
+                    var name = "";
+                    var mime = "";
+                    var id = "";
+
+                    $('#navigate-edit-folder').dialog({
+                        modal: true,
+                        width: 620,
+                        height: 160,
+                        title: navigate_lang_dictionary[141], // Folder
+                        resizable: false,
+                        buttons:
+                        [
+                            {
+                                text: navigate_lang_dictionary[58], // Cancel
+                                click: function()
+                                {
+                                    $("#navigate-edit-folder").dialog("close");
+                                }
+                            },
+                            {
+                                text: navigate_lang_dictionary[190], // Ok
+                                click: function()
+                                {
+                                    var op = "edit_folder";
+                                    if(!name)
+                                        op = "create_folder";
+
+                                    $.ajax(
+                                        {
+                                            async: false,
+                                            type: "post",
+                                            data: {
+                                                name: $("#folder-name").val(),
+                                                mime: $("#folder-mime").val(),
+                                                parent: navigate_media_browser_parent
+                                            },
+                                            url: "?fid=files&act=json&id=" + id + "&op=" + op,
+                                            success: function(data)
+                                            {
+                                                navigate_media_browser_reload();
+                                                $("#navigate-edit-folder").dialog("close");
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                        ]
+                    });
+
+                    $("#folder-name").val(name);
+                    $("#folder-mime").val(mime).trigger("change");
+                });
+
+            }, 250);
+
+            return false;
+        });
+    }
+
     $("#navigate_media_browser_items div").not("#file-more").not(".draggable-folder").off("contextmenu").on("contextmenu", function(e)
     {
         navigate_hide_context_menus();

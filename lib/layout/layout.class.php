@@ -679,6 +679,7 @@ class layout
                 58: "'.t(58, 'Cancel').'",
                 59: "'.t(59, 'Confirmation').'",
                 82: "'.t(82, 'File').'",
+                141: "'.t(141, 'Folder').'",
                 185: "'.t(185, 'Searching elements').'",
                 189: "'.t(189, 'Copy from').'",
                 190: "'.t(190, 'Ok').'",
@@ -910,6 +911,41 @@ class layout
                 <li id="contextmenu-images-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
                 <li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
             </ul>
+            <ul id="contextmenu-mediabrowser"  style="display: none" class="ui-corner-all">
+                <li id="contextmenu-mediabrowser-create_folder"><a href="#"><span class="ui-icon ui-icon-folder-collapsed"></span>'.t(561, "Create a new folder").'</a></li>
+            </ul>
+            <div id="navigate-edit-folder" style=" display: none; ">
+                <form action="#" onsubmit="return false;">
+                    <input type="submit" value="" style=" display: none; " />
+                    <div class="navigate-form-row">
+                        <label>'.t(159, 'Name').'</label>
+                        '.$naviforms->textfield('folder-name', '').'
+                    </div>
+                    <div class="navigate-form-row">
+                        <label>'.t(160, 'Type').'</label>
+                        '.$naviforms->selectfield(
+                            'folder-mime',
+                            array(
+                                0 => 'folder/generic',
+                                1 => 'folder/images',
+                                2 => 'folder/audio',
+                                3 => 'folder/video',
+                                4 => 'folder/flash',
+                                5 => 'folder/documents'
+                            ),
+                            array(
+                                0 => t(161, 'Generic'),
+                                1 => t(29, 'Images'),
+                                2 => t(31, 'Audio'),
+                                3 => t(30, 'Video'),
+                                4 => t(186, 'Adobe Flash'),
+                                5 => t(32, 'Documents')
+                            ),
+                            'folder/generic'
+                        ).'
+                    </div>
+                </form>
+            </div>
         ');
 
         // permissions dialog
