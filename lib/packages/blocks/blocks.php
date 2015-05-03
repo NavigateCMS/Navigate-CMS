@@ -594,6 +594,7 @@ function blocks_form($item)
 	global $DB;
 	global $website;
 	global $layout;
+    global $events;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();	
@@ -664,9 +665,28 @@ function blocks_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 
+    $group_blocks_links = array();
+    list($bg_rs, $bg_total) = block_group::paginated_list(0, 10, 'title', 'desc');
+
+    if($bg_total > 0 && $bg_total <= 10)
+    {
+        foreach($bg_rs as $bg)
+            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+
+        $events->add_actions(
+            'blocks',
+            array(
+                'item' => null,
+                'navibars' => &$navibars
+            ),
+            $group_blocks_links,
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+        );
+    }
+
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>',
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'),
             '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
@@ -1352,19 +1372,39 @@ function blocks_types_list()
 	global $user;
 	global $DB;
 	global $website;
+    global $events;
 	
 	$navibars = new navibars();
 	$navitable = new navitable('blocks_types_list');
 	
 	$navibars->title(t(23, 'Blocks').' / '.t(167, 'Types'));
-	
+
+    $group_blocks_links = array();
+    list($bg_rs, $bg_total) = block_group::paginated_list(0, 10, 'title', 'desc');
+
+    if($bg_total > 0 && $bg_total <= 10)
+    {
+        foreach($bg_rs as $bg)
+            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+
+        $events->add_actions(
+            'blocks',
+            array(
+                'item' => null,
+                'navibars' => &$navibars
+            ),
+            $group_blocks_links,
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+        );
+    }
+
     $navibars->add_actions(
         array(
             '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>')
         )
     );
-	
+
 	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=82"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
 									'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
 								));
@@ -1393,6 +1433,7 @@ function blocks_type_form($item)
 	global $DB;
 	global $website;
 	global $layout;
+    global $events;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -1451,12 +1492,32 @@ function blocks_type_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 
+    $group_blocks_links = array();
+    list($bg_rs, $bg_total) = block_group::paginated_list(0, 10, 'title', 'desc');
+
+    if($bg_total > 0 && $bg_total <= 10)
+    {
+        foreach($bg_rs as $bg)
+            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+
+        $events->add_actions(
+            'blocks',
+            array(
+                'item' => null,
+                'navibars' => &$navibars
+            ),
+            $group_blocks_links,
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+        );
+    }
+
     $navibars->add_actions(
         array(
             '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>')
         )
     );
+
 
 	$navibars->add_actions(
         array(
