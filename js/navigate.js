@@ -1433,159 +1433,165 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 	//		dragLeave: function() {}	
 	// }	
 	$(function()
-	{	
-		$(selector).filedrop(
-		{
-			url: NAVIGATE_URL + "/navigate_upload.php?session_id=" + navigate["session_id"] + "&engine=filedrop",
-			paramname: "upload",
-			error: function(err, file) 
-			{
-				switch(err) 
-				{
-					case "BrowserNotSupported":
-						alert(navigate_lang_dictionary[401]);
-						break;
-					case "TooManyFiles":
-						alert(navigate_lang_dictionary[402]);
-						break;
-					case "FileTooLarge":
-						// program encountered a file whose size is greater than maxfilesize
-						// FileTooLarge also has access to the file which was too large
-						// use file.name to reference the filename of the culprit file
-						alert(navigate_lang_dictionary[403] + ': ' + file.name);
-						break;
-					default:
-                        alert(err + ': ' + file.name);
-						break;
-				}
-			},
-			maxfiles: 1000,
-			maxfilesize: NAVIGATE_MAX_UPLOAD_SIZE,    // max file size in MBs,
-            queuefiles: 2,
-            document_title: "",
-			dragOver: function() 
-			{
-				// user dragging files over #dropzone
-				navigate_status(navigate_lang_dictionary[260], "img/icons/misc/dropbox.png", true); // Drag & Drop files now to upload them
-				if(callbacks.dragOver)
-					callbacks.dragOver();				
-			},
-			dragLeave: function() 
-			{
-				// user dragging files out of #dropzone
-				navigate_status(navigate_lang_dictionary[42], "ready"); // ready
-				if(callbacks.dragLeave)
-					callbacks.dragLeave();			
-			},
-			docOver: function() 
-			{
-				// user dragging files anywhere inside the browser document window
-			},
-			docLeave: function() 
-			{
-				// user dragging files out of the browser document window
-			},
-			drop: function() 
-			{
-				// user drops file
-			},
-			uploadStarted: function(i, file, len)
-			{
-                // a file began uploading
-				// i = index => 0, 1, 2, 3, 4 etc
-				// file is the actual file of the index
-				// len = total files user dropped
-
-                var fname = file.fileName;
-                if(!fname)  fname = file.name;
-
-				navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader"); // uploading
-				$("link[rel*=shortcut]").remove().clone().appendTo("head").attr("href", "img/loader.gif");
-
-                if(show_progress_in_title)
+	{
+        if($(selector).attr("data-filedrop")!="true")
+        {
+            // filedrop does not offer a "remove bindings" option, so only the first binding for an element is used
+            $(selector).filedrop(
+            {
+                url: NAVIGATE_URL + "/navigate_upload.php?session_id=" + navigate["session_id"] + "&engine=filedrop",
+                paramname: "upload",
+                error: function(err, file)
                 {
-                    $(this).document_title = $(document).attr("title");
-				    $(document).attr("title", navigate_lang_dictionary[261] + ": " + fname); // uploading
-                }
-
-                if(callbacks.uploadStarted)
-                    callbacks.uploadStarted(file);
-            },
-			uploadFinished: function(i, file, response, time) 
-			{
-				// response is the data you got back from server in JSON format.
-                if(show_progress_in_title)
+                    switch(err)
+                    {
+                        case "BrowserNotSupported":
+                            alert(navigate_lang_dictionary[401]);
+                            break;
+                        case "TooManyFiles":
+                            alert(navigate_lang_dictionary[402]);
+                            break;
+                        case "FileTooLarge":
+                            // program encountered a file whose size is greater than maxfilesize
+                            // FileTooLarge also has access to the file which was too large
+                            // use file.name to reference the filename of the culprit file
+                            alert(navigate_lang_dictionary[403] + ': ' + file.name);
+                            break;
+                        default:
+                            alert(err + ': ' + file.name);
+                            break;
+                    }
+                },
+                maxfiles: 1000,
+                maxfilesize: NAVIGATE_MAX_UPLOAD_SIZE,    // max file size in MBs,
+                queuefiles: 1,
+                document_title: "",
+                dragOver: function()
                 {
-                    $(document).attr("title", $(this).document_title);
-                }
-                
-				var uploaded = [];
-				
-				if(response.filename)	uploaded = response;
-				else if(response[0])	uploaded = response[0];
-						
-				if(uploaded.error)
-                    navigate_notification(navigate_lang_dictionary[262] + ": " + uploaded.filename); // Error uploading file
-				else
-				{
-					$.ajax(
-					{
-						async: false,
-						url: NAVIGATE_APP + "?fid=files&act=1&op=upload&parent=" + parent,
-						success: function(data)
-						{
-							if(callbacks.afterOne)
-								callbacks.afterOne(data);
-						},
-						type: "post",
-						dataType: "json",
-						data: ({
-							tmp_name: uploaded.temporal,
-							name: uploaded.filename,
-							size: file.size
-						})
-					});					
-				}
-			},
-			progressUpdated: function(i, file, progress) 
-			{
-				// this function is used for large files and updates intermittently
-				// progress is the integer value of file being uploaded percentage to completion
-                var fname = file.fileName;
-                if(!fname)  fname = file.name;
-
-				navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader", "default", progress); // uploading
-                
-                if(show_progress_in_title)
+                    // user dragging files over #dropzone
+                    navigate_status(navigate_lang_dictionary[260], "img/icons/misc/dropbox.png", true); // Drag & Drop files now to upload them
+                    if(callbacks.dragOver)
+                        callbacks.dragOver();
+                },
+                dragLeave: function()
                 {
-                    $(document).attr("title", navigate_lang_dictionary[261] + ": " + fname + " " + progress + "%", "loader");
+                    // user dragging files out of #dropzone
+                    navigate_status(navigate_lang_dictionary[42], "ready"); // ready
+                    if(callbacks.dragLeave)
+                        callbacks.dragLeave();
+                },
+                docOver: function()
+                {
+                    // user dragging files anywhere inside the browser document window
+                },
+                docLeave: function()
+                {
+                    // user dragging files out of the browser document window
+                },
+                drop: function()
+                {
+                    // user drops file
+                },
+                uploadStarted: function(i, file, len)
+                {
+                    // a file began uploading
+                    // i = index => 0, 1, 2, 3, 4 etc
+                    // file is the actual file of the index
+                    // len = total files user dropped
+
+                    var fname = file.fileName;
+                    if(!fname)  fname = file.name;
+
+                    navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader"); // uploading
+                    $("link[rel*=shortcut]").remove().clone().appendTo("head").attr("href", "img/loader.gif");
+
+                    if(show_progress_in_title)
+                    {
+                        $(this).document_title = $(document).attr("title");
+                        $(document).attr("title", navigate_lang_dictionary[261] + ": " + fname); // uploading
+                    }
+
+                    if(callbacks.uploadStarted)
+                        callbacks.uploadStarted(file);
+                },
+                uploadFinished: function(i, file, response, time)
+                {
+                    // response is the data you got back from server in JSON format.
+                    if(show_progress_in_title)
+                    {
+                        $(document).attr("title", $(this).document_title);
+                    }
+
+                    var uploaded = [];
+
+                    if(response.filename)	uploaded = response;
+                    else if(response[0])	uploaded = response[0];
+
+                    if(uploaded.error)
+                        navigate_notification(navigate_lang_dictionary[262] + ": " + uploaded.filename); // Error uploading file
+                    else
+                    {
+                        $.ajax(
+                        {
+                            async: false,
+                            url: NAVIGATE_APP + "?fid=files&act=1&op=upload&parent=" + parent,
+                            success: function(data)
+                            {
+                                if(callbacks.afterOne)
+                                    callbacks.afterOne(data);
+                            },
+                            type: "post",
+                            dataType: "json",
+                            data: ({
+                                tmp_name: uploaded.temporal,
+                                name: uploaded.filename,
+                                size: file.size
+                            })
+                        });
+                    }
+                },
+                progressUpdated: function(i, file, progress)
+                {
+                    // this function is used for large files and updates intermittently
+                    // progress is the integer value of file being uploaded percentage to completion
+                    var fname = file.fileName;
+                    if(!fname)  fname = file.name;
+
+                    navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader", "default", progress); // uploading
+
+                    if(show_progress_in_title)
+                    {
+                        $(document).attr("title", navigate_lang_dictionary[261] + ": " + fname + " " + progress + "%", "loader");
+                    }
+                },
+                speedUpdated: function(i, file, speed)
+                {
+                    // speed in kb/s
+                },
+                rename: function(name)
+                {
+                    // name in string format
+                    // must return alternate name as string
+                },
+                beforeEach: function(file)
+                {
+                    // file is a file object
+                    // return false to cancel upload
+                },
+                afterAll: function()
+                {
+                    // runs after all files have been uploaded or otherwise dealt with
+                    $("link[rel*=shortcut]").remove().clone().appendTo("head").attr("href", "favicon.ico");
+                    navigate_status(navigate_lang_dictionary[42], "ready"); // ready
+
+                    if(callbacks.afterAll)
+                        callbacks.afterAll();
                 }
-			},
-			speedUpdated: function(i, file, speed) 
-			{
-				// speed in kb/s
-			},
-			rename: function(name) 
-			{
-				// name in string format
-				// must return alternate name as string
-			},
-			beforeEach: function(file) 
-			{
-				// file is a file object
-				// return false to cancel upload
-			},
-			afterAll: function() 
-			{
-				// runs after all files have been uploaded or otherwise dealt with
-				$("link[rel*=shortcut]").remove().clone().appendTo("head").attr("href", "favicon.ico");	
-				navigate_status(navigate_lang_dictionary[42], "ready"); // ready
-				                
-				if(callbacks.afterAll)
-					callbacks.afterAll();
-			}
-		});
-	});
+            });
+
+            $(selector).attr("data-filedrop", "true");
+        }
+    });
 }
 
 function navigate_file_video_info(provider, reference, callback)

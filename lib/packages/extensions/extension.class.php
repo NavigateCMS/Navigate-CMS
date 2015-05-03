@@ -261,7 +261,7 @@ class extension
                 $extensions[$t]['code'] = $code;
                 $extensions[$t]['update'] = ((version_compare($updates[$code], $extensions[$t]['version']) > 0)? $updates[$code] : '');
 
-                if(isset($properties))
+                if(isset($properties) && isset($properties[$code]))
                     $extensions[$t]['enabled'] = ($properties[$code]['enabled']===0)? '0' : '1';
                 else
                     $extensions[$t]['enabled'] = '1';
