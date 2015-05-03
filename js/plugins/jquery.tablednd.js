@@ -243,8 +243,10 @@ jQuery.tableDnD = {
             || $(table.rows).each(function() {
                 // Iterate through each row, the row is bound to "this"
                 if (! $(this).hasClass("nodrag")) {
-                    $(this).bind(startEvent, function(e) {
-                        if (e.target.tagName) // was (e.target.tagName == "TD")
+                    $(this).bind(startEvent, function(e)
+                    {
+                        var allowed_targets = ["IMG", "INPUT", "TEXTAREA", "SELECT"];
+                        if($.inArray(e.target.tagName, allowed_targets) < 0) // was (e.target.tagName == "TD")
                         {
                             $.tableDnD.initialiseDrag(this, table, this, e, config);
                             return false;
@@ -500,14 +502,15 @@ jQuery.tableDnD = {
         }
         return null;
     },
-    processMouseup: function() {
+    processMouseup: function()
+    {
+        if (!this.currentTable || !this.dragObject)
+            return null;
+
         var config      = this.currentTable.tableDnDConfig,
             droppedRow  = this.dragObject,
             parentLevel = 0,
             myLevel     = 0;
-
-        if (!this.currentTable || !droppedRow)
-            return null;
 
         // Unbind the event handlers
         $(document)

@@ -84,11 +84,17 @@ class naviorderedtable
 		$layout->add_script('
 			$("#'.$this->id.'").tableDnD(
 			{
-				onDrop: function(table, row) 
+				onDrop: function(table, row)
 				{
-					navigate_naviorderedtable_'.$this->id.'_reorder();					
+					navigate_naviorderedtable_'.$this->id.'_reorder();
 				}
 			});
+
+            $("#'.$this->id.'").on("mouseup", function()
+				{
+					navigate_naviorderedtable_'.$this->id.'_reorder();
+				}
+			);
 			
 			$("#'.$this->id.' img.silk-zoom").css({cursor: "pointer"}).on("click", function()
 			{
@@ -110,8 +116,8 @@ class naviorderedtable
 				{
 					if(!trs[i] || !trs[i].id || trs[i].id=="") continue;
 					ids.push(trs[i].id);	
-				}		
-				
+				}
+
 				$("#'.$this->input_id.'").val(phpjs_implode("#", ids));
 				'.(empty($this->reorder_callback)? '' : $this->reorder_callback.'(ids);').'
 			}
