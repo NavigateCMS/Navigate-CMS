@@ -558,5 +558,6 @@
 557     # Umfrage
 558     # Frage
 559     # Antworten
-560     # Stimmen
+560     # Wählen
 561     # Erstellen Sie einen Ordner
+562     # Ergebnisse

@@ -863,7 +863,7 @@ function blocks_form($item)
 
                 $table->addHeaderColumn(t(67, 'Title'), 200);
                 //$table->addHeaderColumn(t(237, 'Code'), 120);
-                $table->addHeaderColumn(t(561, 'Votes'), 80);
+                $table->addHeaderColumn(t(352, 'Votes'), 80);
                 $table->addHeaderColumn(t(35, 'Remove'), 50);
 
                 if(!empty($item->trigger[$lang]))
@@ -2261,6 +2261,7 @@ function block_group_form($item)
                         tr += \'<td>\'+bts+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_types_from_group[bts].id+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_types_from_group[bts].title+\'</td>\';
+                        tr += \'<td></td>\';
                         tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
                         tr += \'</tr>\';
 
@@ -2329,6 +2330,7 @@ function block_group_form($item)
                         tr += \'<td>\'+bts+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_types[bts].type+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_types[bts].title+\'</td>\';
+                        tr += \'<td></td>\';
                         tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
                         tr += \'</tr>\';
 
@@ -2411,6 +2413,7 @@ function block_group_form($item)
                         tr += \'<td>\'+bs+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_elements[bs].type+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_elements[bs].title+\'</td>\';
+                        tr += \'<td></td>\';
                         tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
                         tr += \'</tr>\';
 

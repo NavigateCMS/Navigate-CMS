@@ -7,8 +7,47 @@ function nvweb_blocks($vars=array())
 	global $current;
     global $webgets;
     global $webuser;
+    global $theme;
 
     $webget = 'blocks';
+
+    if(!isset($webgets[$webget]))
+    {
+        $webgets[$webget] = array();
+
+        global $lang;
+        if(empty($lang))
+        {
+            $lang = new language();
+            $lang->load($current['lang']);
+        }
+
+        // default translations
+        $webgets[$webget]['translations'] = array(
+            'vote' => t(560, 'Vote'),
+            'votes' => t(352, 'Votes'),
+            'results' => t(562, 'Results')
+        );
+
+        // theme translations
+        // if the web theme has custom translations for this string subtypes, use it (for the user selected language)
+        /* just add the following translations to your json theme dictionary:
+
+            "vote": "Vote",
+            "results": "Results",
+        */
+
+        if(!empty($website->theme) && method_exists($theme, 't'))
+        {
+            foreach($webgets[$webget]['translations'] as $code => $text)
+            {
+                $theme_translation = $theme->t($code);
+
+                if(!empty($theme_translation) && $theme_translation!=$code)
+                    $webgets[$webget]['translations'][$code] = $theme_translation;
+            }
+        }
+    }
 
 	$out = '';
 
@@ -440,6 +479,168 @@ function nvweb_blocks_render_action($action, $trigger_html, $lang, $return_url=f
 
     return $action;
 }
+
+function nvweb_blocks_render_poll($object)
+{
+    global $current;
+    global $webgets;
+    global $session;
+
+    $webget = 'blocks';
+
+    if($object->class != 'poll')
+        return;
+
+    if(!isset($session['polls'][$object->id]))
+        $session['polls'][$object->id] = false;
+
+    if(($_GET['poll_vote']==$object->id && !empty($_POST['vote'])))
+    {
+        // submit vote and show results
+        if(empty($session['polls'][$object->id]))
+        {
+            foreach($object->trigger[$current['lang']] as $i => $answer)
+            {
+                if($answer['code'] == $_POST['vote'])
+                    $object->trigger[$current['lang']][$i]['votes'] = $object->trigger[$current['lang']][$i]['votes'] + 1;
+            }
+            $object->save();
+            $session['polls'][$object->id] = true;
+        }
+
+        $out = nvweb_blocks_render_poll_results($object);
+
+        echo $out;
+        nvweb_clean_exit();
+    }
+    else if($_GET['poll_result']==$object->id)
+    {
+        echo nvweb_blocks_render_poll_results($object);
+        nvweb_clean_exit();
+    }
+    else if(!empty($session['polls'][$object->id]))
+    {
+        $out = '<div class="block-poll '.$object->type.'-'.$object->id.'" data-id="'.$object->id.'">';
+        $out .= nvweb_blocks_render_poll_results($object);
+        $out.= '</div>';
+    }
+    else
+    {
+        $out = '<div class="block-poll '.$object->type.'-'.$object->id.'" data-id="'.$object->id.'">';
+        $out.= '<form action="?" method="post" id="block_poll_'.$object->type.'-'.$object->id.'_form">';
+
+        foreach($object->trigger[$current['lang']] as $answer)
+        {
+            $out .= '<div class="block-poll-answer">';
+            $out .= '   <input type="radio" id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'" name="'.$object->type.'-'.$object->id.'-answer" value="'.$answer['code'].'" />';
+            $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.$answer['title'].'</label>';
+            $out .= '</div>';
+        }
+
+
+        $out .= '<div class="block-poll-actions">';
+        $out .= '   <input type="submit" id="'.$object->type.'-'.$object->id.'-submit" value="'.$webgets[$webget]['translations']["vote"].'" />';
+        $out .= '   <input type="button" value="'.$webgets[$webget]['translations']["results"].'" />';
+        $out .= '</div>';
+
+        $out.= '</form>';
+        $out.= '</div>';
+
+        nvweb_after_body("js", '
+            function block_poll_'.$object->id.'_vote()
+            {
+                if(document.querySelector("input[name=\"'.$object->type.'-'.$object->id.'-answer\"]:checked"))
+                {
+                    var vote_value = document.querySelector("input[name=\"'.$object->type.'-'.$object->id.'-answer\"]:checked").value;
+
+                    var request = new XMLHttpRequest();
+                    request.open("POST", "?poll_vote='.$object->id.'", true);
+                    request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+
+                    request.onreadystatechange = function() {
+                      if (this.readyState === 4) {
+                        if (this.status >= 200 && this.status < 400)
+                        {
+                            var resp = this.responseText;
+                            document.querySelector(".'.$object->type.'-'.$object->id.'").innerHTML = resp;
+                        }
+                        else
+                        {
+                          // Error
+                        }
+                      }
+                    };
+
+                    request.send("poll='.$object->id.'&vote=" + vote_value);
+                    request = null;
+
+                    return false;
+                }
+                else
+                    return false;
+            }
+
+            function block_poll_'.$object->id.'_result()
+            {
+                var request = new XMLHttpRequest();
+                request.open("GET", "?poll_result='.$object->id.'", true);
+
+                request.onreadystatechange = function() {
+                  if (this.readyState === 4) {
+                    if (this.status >= 200 && this.status < 400)
+                    {
+                        var resp = this.responseText;
+                        document.querySelector(".'.$object->type.'-'.$object->id.'").innerHTML = resp;
+                    }
+                    else
+                    {
+                      // Error
+                    }
+                  }
+                };
+
+                request.send();
+                request = null;
+
+                return false;
+            }
+
+            document.querySelector("form[id=block_poll_'.$object->type.'-'.$object->id.'_form]").onsubmit = block_poll_'.$object->id.'_vote;
+            document.querySelector(".block-poll-actions input[type=button]").onclick = block_poll_'.$object->id.'_result;
+        ');
+    }
+
+
+
+    return $out;
+}
+
+function nvweb_blocks_render_poll_results($object)
+{
+    global $webgets;
+    global $current;
+
+    $out = '';
+    $webget = 'blocks';
+
+    // calculate totals
+    $votes_array = array_map(function($k) { return $k['votes']; }, array_values($object->trigger[$current['lang']]));
+    $votes_count = array_sum($votes_array);
+
+    foreach($object->trigger[$current['lang']] as $i => $answer)
+    {
+        $percentage = $answer['votes'] / $votes_count * 100;
+        $out .= '<div class="block-poll-result">';
+        $out .= '   <span id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.round($percentage, 1).' %</span>';
+        $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.$answer['title'].'</label>';
+        $out .= '</div>';
+    }
+
+    $out .= '<div class="block-poll-results-count">'.$votes_count.' '.$webgets[$webget]['translations']["votes"].'</div>';
+
+    return $out;
+}
+
 
 function nvweb_block_enabled($object)
 {

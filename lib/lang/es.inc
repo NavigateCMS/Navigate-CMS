@@ -558,5 +558,6 @@
 557     # Encuesta
 558     # Pregunta
 559     # Respuestas
-560     # Votos
+560     # Votar
 561     # Crear una carpeta
+562     # Resultados

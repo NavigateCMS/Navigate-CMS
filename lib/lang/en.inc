@@ -558,5 +558,6 @@
 557     # Poll
 558     # Question
 559     # Answers
-560     # Votes
+560     # Vote
 561     # Create a new folder
+562     # Results

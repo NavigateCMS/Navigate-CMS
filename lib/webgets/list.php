@@ -686,6 +686,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     ));
                     break;
 
+                case 'poll_answers':
+                    $out = nvweb_blocks_render_poll($item);
+                    break;
+
                 default:
                     break;
             }
