@@ -2247,7 +2247,7 @@ function block_group_form($item)
         {
             $("#block-selection-add-block_from_group-dialog").dialog(
             {
-                title: "'.t(472, 'Add').': '.t(556, 'Block from group').' ['.$theme->t($item->code).'].",
+                title: "'.t(472, 'Add').': '.t(556, 'Block from group').' ['.$theme->t($item->code).']",
                 modal: true,
                 width: 430,
                 height: 130,
@@ -2257,11 +2257,17 @@ function block_group_form($item)
                     {
                         var bts = $("#block-selection-add-block_from_group-dialog-type").val();
 
+                        if(!bts) return;
+
+                        var settings_column = "";
+                        if(blocks_selection_block_types_from_group[bts].properties)
+                            settings_column = \'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="\'+bts+\'" data-block-group-action="settings"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>\';
+
                         var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
                         tr += \'<td>\'+bts+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_types_from_group[bts].id+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_types_from_group[bts].title+\'</td>\';
-                        tr += \'<td></td>\';
+                        tr += \'<td align="center">\'+settings_column+\'</td>\';
                         tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
                         tr += \'</tr>\';
 
@@ -2413,7 +2419,7 @@ function block_group_form($item)
                         tr += \'<td>\'+bs+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_elements[bs].type+\'</td>\';
                         tr += \'<td>\'+blocks_selection_block_elements[bs].title+\'</td>\';
-                        tr += \'<td></td>\';
+                        tr += \'<td style="text-align: center;"><a href="?fid=blocks&act=edit&id=\'+blocks_selection_block_elements[bs].id+\'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a></td>\';
                         tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
                         tr += \'</tr>\';
 
