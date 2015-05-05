@@ -69,6 +69,7 @@ try
 	define('NVWEB_OBJECT', $nvweb_absolute.'/object');
 	define('NVWEB_AJAX', $nvweb_absolute.'/nvajax');
 	define('NVWEB_THEME', $idn->encode($website->absolute_path(false)).NAVIGATE_FOLDER.'/themes/'.$theme->name);
+    define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
 
 	if(!isset($_SESSION['nvweb.'.$website->id]))
 	{
@@ -148,8 +149,6 @@ try
 		nvweb_clean_exit();
     }
 
-    define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
-			
 	$dictionary = nvweb_dictionary_load();
 
 	$template = nvweb_template_load();
