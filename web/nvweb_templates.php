@@ -6,7 +6,7 @@
  *
  * @return string $template
  */
-function nvweb_template_load()
+function nvweb_template_load($template_id=null)
 {
 	global $current;
 	global $DB;
@@ -14,19 +14,22 @@ function nvweb_template_load()
 	
 	$template = '';
 
-	if(!empty($current['template']))
+	if(empty($template_id))
+        $template_id = $current['template'];
+
+    if(!empty($template_id))
 	{
 		$template = new template();
-		$template->load($current['template']);
+		$template->load($template_id);
 
 		if(!$template->enabled)
 			nvweb_clean_exit();
-			
-		if($template->permission == 2) 
+
+		if($template->permission == 2)
 			nvweb_clean_exit();
 		else if($template->permission == 1 && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 			nvweb_clean_exit();
-			
+
 		if(file_exists($template->file))
 			$template->file_contents = @file_get_contents($template->file);	// from theme
 		else if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$template->file))
