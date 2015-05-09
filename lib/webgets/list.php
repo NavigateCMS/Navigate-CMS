@@ -241,7 +241,7 @@ function nvweb_list($vars=array())
 
 		nvweb_webget_load($vars['source']);
 		if(function_exists($fname))
-			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order);
+			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order, $vars);
     }
 
     $categories = array_filter($categories);
