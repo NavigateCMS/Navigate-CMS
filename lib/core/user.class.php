@@ -357,6 +357,20 @@ class user
 		return $email;
 	}
 
+    /**
+	 * Retrieve the username of a Navigate CMS user by his/her ID.
+	 *
+	 * @param integer $user_id ID of the user
+	 * @return string username of the user
+	 */
+	public static function username_of($user_id)
+	{
+		global $DB;
+		$email = $DB->query_single('username', 'nv_users', ' id = '.intval($user_id));
+
+		return $email;
+	}
+
 	/**
 	 * Sent an e-mail to the user as a password request process
 	 *

@@ -11,6 +11,7 @@ class comment
 	public $ip;	
 	public $date_created;
 	public $date_modified;
+    public $last_modified_by;
 	public $status; //  -1 => To review  0 => Published  1 => Private    2 => Hidden   3 => Spam
 	public $message;
 
@@ -37,6 +38,7 @@ class comment
    		$this->ip		    = $main->ip;    		
 		$this->date_created	= $main->date_created;
 		$this->date_modified= $main->date_modified;		
+		$this->last_modified_by  = $main->last_modified_by;
 		$this->status		= $main->status;
 		$this->message		= $main->message;	
 	}
@@ -84,7 +86,7 @@ class comment
 		global $website;
 	
 		$ok = $DB->execute(' INSERT INTO nv_comments
-								(id, website, item, user, name, email, ip, date_created, date_modified, status, message)
+								(id, website, item, user, name, email, ip, date_created, date_modified, last_modified_by, status, message)
 								VALUES 
 								( 0,
 								  '.protect($website->id).',
@@ -94,6 +96,7 @@ class comment
 								  '.protect($this->email).',								  
 								  '.protect(core_ip()).',								  
 								  '.protect(core_time()).',								  
+								  '.protect(0).',
 								  '.protect(0).',
 								  '.protect($this->status).',
 								  '.protect($this->message).'  
@@ -112,17 +115,21 @@ class comment
 	public function update()
 	{
 		global $DB;
+        global $user;
 	    
-		$ok = $DB->execute(' UPDATE nv_comments
-								SET
-								  item = '.protect($this->item).',
-								  user = '.protect($this->user).',
-								  name = '.protect($this->name).',								  
-								  email = '.protect($this->email).',
-								  date_modified = '.protect(core_time()).',
-								  status = '.protect($this->status).', 
-								  message = '.protect($this->message).'
-                 				WHERE id = '.protect($this->id));
+		$ok = $DB->execute('
+		    UPDATE nv_comments
+            SET
+              item = '.protect($this->item).',
+              user = '.protect($this->user).',
+              name = '.protect($this->name).',
+              email = '.protect($this->email).',
+              date_modified = '.protect(core_time()).',
+              last_modified_by = '.$user->id.',
+              status = '.protect($this->status).',
+              message = '.protect($this->message).'
+            WHERE id = '.protect($this->id)
+        );
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		

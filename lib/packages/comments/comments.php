@@ -461,16 +461,23 @@ function comments_form($item)
 	
 	if($item->date_created > 0)
 	{												
-		$navibars->add_tab_content_row(array(	'<label>'.t(226, 'Date created').'</label>',
-												core_ts2date($item->date_created, true)
-											));																														
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(226, 'Date created').'</label>',
+				core_ts2date($item->date_created, true)
+            )
+        );
 	}
 	
 	if($item->date_modified > 0)
 	{
-		$navibars->add_tab_content_row(array(	'<label>'.t(227, 'Date modified').'</label>',
-												core_ts2date($item->date_modified, true)
-											));		
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(227, 'Date modified').'</label>',
+			    core_ts2date($item->date_modified, true),
+                (empty($item->last_modified_by)? '' : '('.user::username_of($item->last_modified_by).')')
+            )
+        );
 	}
 			
 	$navibars->add_tab_content_row(
