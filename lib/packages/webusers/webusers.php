@@ -328,26 +328,44 @@ function webusers_form($item)
 	else
 		$navibars->title(t(24, 'Web users').' / '.t(170, 'Edit').' ['.$item->id.']');		
 
-	$navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
-	$navibars->add_actions(		array(	'<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'	));
+	$navibars->add_actions(
+        array(
+            '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
+        )
+    );
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'
+        )
+    );
 
     if(!empty($item->id))
     {
         $notes = grid_notes::comments('webuser', $item->id);
-        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_webuser_display_notes();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
+        $navibars->add_actions(
+            array(
+                '<a href="#" onclick="javascript: navigate_webuser_display_notes();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'
+            )
+        );
     }
 
     if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+            array(
+                '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+            )
+        );
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
+		$navibars->add_actions(
+            array(
+                '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -376,9 +394,13 @@ function webusers_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=webusers&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=webusers&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+        array(
+            (!empty($item->id)? '<a href="?fid=webusers&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=webusers&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 
 	$navibars->form();
 
@@ -387,39 +409,57 @@ function webusers_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(array(
+        '<label>ID</label>',
+		'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' )
+    );
 
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(246, 'Avatar').'</label>',
+		$naviforms->dropbox('webuser-avatar', $item->avatar, "image"),
+    ));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(246, 'Avatar').'</label>',
-											$naviforms->dropbox('webuser-avatar', $item->avatar, "image"),
-										));																				
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(1, 'User').'</label>',
+		$naviforms->textfield('webuser-username', $item->username, false, false, 'autocomplete="off"'),
+    ));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(1, 'User').'</label>',
-											$naviforms->textfield('webuser-username', $item->username, false, false, 'autocomplete="off"'),
-										));																	
-
-	$navibars->add_tab_content_row(array(	'<label>'.t(2, 'Password').'</label>',
-											'<input type="password" name="webuser-password" autocomplete="off" value="" size="32" />',
-											'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' ));
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(2, 'Password').'</label>',
+		'<input type="password" name="webuser-password" autocomplete="off" value="" size="32" />',
+		'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' )
+    );
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',
-                                            $naviforms->textfield('webuser-email', $item->email)));
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(44, 'E-Mail').'</label>',
+        $naviforms->textfield('webuser-email', $item->email))
+    );
 
 	if(!empty($item->joindate))
 	{
-		$navibars->add_tab_content_row(array(	'<label>'.t(247, 'Date joined').'</label>',
-												core_ts2date($item->joindate, true),
-											));												
+		$navibars->add_tab_content_row(array(
+            '<label>'.t(247, 'Date joined').'</label>',
+			core_ts2date($item->joindate, true),
+        ));
+	}
+
+    if(!empty($item->lastseen))
+	{
+		$navibars->add_tab_content_row(array(
+            '<label>'.t(563, 'Last seen').'</label>',
+			core_ts2date($item->lastseen, true),
+        ));
 	}
 	
-	$navibars->add_tab_content_row(array(	'<label>'.t(249, 'Newsletter').'</label>',
-											$naviforms->checkbox('webuser-newsletter', $item->newsletter),
-										));	
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(249, 'Newsletter').'</label>',
+		$naviforms->checkbox('webuser-newsletter', $item->newsletter),
+    ));
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(47, 'Blocked').'</label>',
-											$naviforms->checkbox('webuser-blocked', $item->blocked),
-										));
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(47, 'Blocked').'</label>',
+		$naviforms->checkbox('webuser-blocked', $item->blocked),
+    ));
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(538, 'Private comment').'</label>',
@@ -467,9 +507,12 @@ function webusers_form($item)
         )
     );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(248, 'Birthdate').'</label>',
-											$naviforms->datefield('webuser-birthdate', $item->birthdate, false),
-										));		
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(248, 'Birthdate').'</label>',
+		    $naviforms->datefield('webuser-birthdate', $item->birthdate, false),
+        )
+    );
 
 	$countries = property::countries();
     $country_names = array_values($countries);
@@ -488,9 +531,12 @@ function webusers_form($item)
 	if(empty($item->timezone))
 		$item->timezone = date_default_timezone_get();	
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(97, 'Timezone').'</label>',
-											$naviforms->selectfield("webuser-timezone", array_keys($timezones), array_values($timezones), $item->timezone)
-										));												
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(97, 'Timezone').'</label>',
+			$naviforms->selectfield("webuser-timezone", array_keys($timezones), array_values($timezones), $item->timezone)
+        )
+    );
 										
 	$layout->add_script('
 		var webuser_country = "'.$item->country.'";
@@ -519,32 +565,51 @@ function webusers_form($item)
 	$data = language::language_names(false);
 		
 	$select = $naviforms->selectfield('webuser-language', array_keys($data), array_values($data), $item->language);
-	$navibars->add_tab_content_row(array(	'<label>'.t(46, 'Language').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(46, 'Language').'</label>',
+		    $select
+        )
+    );
 
 	$navibars->add_tab(t(233, "Address"));
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(233, 'Address').'</label>',
-											$naviforms->textfield('webuser-address', $item->address)		
-										));	
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(233, 'Address').'</label>',
+			$naviforms->textfield('webuser-address', $item->address)
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(319, 'Location').'</label>',
-											$naviforms->textfield('webuser-location', $item->location)		
-										));											
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(319, 'Location').'</label>',
+			$naviforms->textfield('webuser-location', $item->location)
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(318, 'Zip code').'</label>',
-											$naviforms->textfield('webuser-zipcode', $item->zipcode)		
-										));											
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(318, 'Zip code').'</label>',
+			$naviforms->textfield('webuser-zipcode', $item->zipcode)
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(320, 'Phone').'</label>',
-											$naviforms->textfield('webuser-phone', $item->phone)		
-										));											
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(320, 'Phone').'</label>',
+			$naviforms->textfield('webuser-phone', $item->phone)
+        )
+    );
 											
 	$navibars->add_tab(t(309, "Social"));
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(177, 'Website').'</label>',
-											$naviforms->textfield('webuser-social_website', $item->social_website)											
-										));
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(177, 'Website').'</label>',
+			$naviforms->textfield('webuser-social_website', $item->social_website)
+        )
+    );
 
     /* webuser groups management */
     /*

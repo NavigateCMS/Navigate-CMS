@@ -21,6 +21,7 @@ class webuser
 	public $phone;
 	public $social_website;
 	public $joindate;
+    public $lastseen;
 	public $newsletter;
     public $private_comment;
 	public $activation_key;
@@ -107,6 +108,7 @@ class webuser
 		$this->phone		= $main->phone;	
 		$this->social_website   = $main->social_website;
         $this->joindate		= $main->joindate;
+        $this->lastseen		= $main->lastseen;
 		$this->newsletter	= $main->newsletter;
 		$this->private_comment	= $main->private_comment;
 		$this->activation_key	= $main->activation_key;
@@ -210,7 +212,7 @@ class webuser
 		$ok = $DB->execute(' INSERT INTO nv_webusers
 								(	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
 									language, country, timezone, address, zipcode, location, phone, social_website,
-									joindate, newsletter, private_comment, activation_key, cookie_hash, blocked)
+									joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, blocked)
 								VALUES 
 								( 0,
 								  '.protect($website->id).',
@@ -231,6 +233,7 @@ class webuser
 								  '.protect($this->phone).',
 								  '.protect($this->social_website).',
 								  '.protect(core_time()).',
+								  '.protect(0).',
 								  '.protect($this->newsletter).',
 								  '.protect($this->private_comment).',
 								  '.protect($this->activation_key).',
@@ -437,6 +440,7 @@ class webuser
                 // Ex. Signed in with Facebook without having a previous webuser account in the current website
                 $wuser->website = $website->id;
                 $wuser->joindate = core_time();
+                $wuser->lastseen = core_time();
                 $wuser->blocked = 0;
                 $wuser->insert();
 
@@ -499,7 +503,7 @@ class webuser
                 '/*avatar,*/.'
                 birthdate, language, country, timezone,
                 address, zipcode, location, phone, social_website,
-                joindate, newsletter, private_comment, blocked
+                joindate, lastseen, newsletter, private_comment, blocked
             FROM nv_webusers
             WHERE website = '.protect($website->id), 'array');
 
@@ -521,8 +525,8 @@ class webuser
             t(319, 'Location'),
             t(320, 'Phone'),
             t(177, 'Website'),
-
             t(247, 'Date joined'),
+            t(563, 'Last seen'),
             t(249, 'Newsletter'),
             t(538, 'Private comment'),
             t(47, 'Blocked')

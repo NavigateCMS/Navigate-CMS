@@ -1458,7 +1458,10 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                             alert(navigate_lang_dictionary[403] + ': ' + file.name);
                             break;
                         default:
-                            alert(err + ': ' + file.name);
+                            if(file && file.name)
+                                alert(err + ': ' + file.name);
+                            else
+                                alert(err);
                             break;
                     }
                 },

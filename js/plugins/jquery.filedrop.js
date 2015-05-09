@@ -281,8 +281,10 @@
                     processingQueue.push(fileIndex);
                 }
 
-                try {
-                    if (beforeEach(files[fileIndex]) !== false) {
+                try
+                {
+                    if (beforeEach(files[fileIndex]) !== false)
+                    {
                         if (fileIndex === files_count) {
                             return;
                         }

@@ -100,6 +100,11 @@ try
         unset($webuser);
         $webuser = new webuser();
     }
+    else
+    {
+        $webuser->lastseen = core_time();
+        $webuser->save();
+    }
 
     // check if the webuser wants to sign out
     if(isset($_REQUEST['webuser_signout']))
