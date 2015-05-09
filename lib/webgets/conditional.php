@@ -183,6 +183,15 @@ function nvweb_conditional($vars=array())
         else
             $out = '';
     }
+    else if($vars['by']=='webuser')
+    {
+        if($vars['signed_in']=='true' && !empty($webuser->id))
+            $out = $item_html;
+        else if($vars['signed_in']=='false' && empty($webuser->id))
+            $out = $item_html;
+        else
+            $out = '';
+    }
     else // unknown nvlist_conditional, discard
     {
         $out = '';
