@@ -10,44 +10,7 @@ function nvweb_blocks($vars=array())
     global $theme;
 
     $webget = 'blocks';
-
-    if(!isset($webgets[$webget]))
-    {
-        $webgets[$webget] = array();
-
-        global $lang;
-        if(empty($lang))
-        {
-            $lang = new language();
-            $lang->load($current['lang']);
-        }
-
-        // default translations
-        $webgets[$webget]['translations'] = array(
-            'vote' => t(560, 'Vote'),
-            'votes' => t(352, 'Votes'),
-            'results' => t(562, 'Results')
-        );
-
-        // theme translations
-        // if the web theme has custom translations for this string subtypes, use it (for the user selected language)
-        /* just add the following translations to your json theme dictionary:
-
-            "vote": "Vote",
-            "results": "Results",
-        */
-
-        if(!empty($website->theme) && method_exists($theme, 't'))
-        {
-            foreach($webgets[$webget]['translations'] as $code => $text)
-            {
-                $theme_translation = $theme->t($code);
-
-                if(!empty($theme_translation) && $theme_translation!=$code)
-                    $webgets[$webget]['translations'][$code] = $theme_translation;
-            }
-        }
-    }
+    nvweb_blocks_init();
 
 	$out = '';
 
@@ -318,6 +281,54 @@ function nvweb_blocks($vars=array())
 	return $out;
 }
 
+function nvweb_blocks_init()
+{
+    global $webgets;
+    global $website;
+    global $theme;
+    global $current;
+
+    $webget = 'blocks';
+
+    if(!isset($webgets[$webget]))
+    {
+        $webgets[$webget] = array();
+
+        global $lang;
+        if(empty($lang))
+        {
+            $lang = new language();
+            $lang->load($current['lang']);
+        }
+
+        // default translations
+        $webgets[$webget]['translations'] = array(
+            'vote' => t(560, 'Vote'),
+            'votes' => t(352, 'Votes'),
+            'results' => t(562, 'Results')
+        );
+
+        // theme translations
+        // if the web theme has custom translations for this string subtypes, use it (for the user selected language)
+        /* just add the following translations to your json theme dictionary:
+
+            "vote": "Vote",
+            "results": "Results",
+        */
+
+        if(!empty($website->theme) && method_exists($theme, 't'))
+        {
+            foreach($webgets[$webget]['translations'] as $code => $text)
+            {
+                $theme_translation = $theme->t($code);
+
+                if(!empty($theme_translation) && $theme_translation!=$code)
+                    $webgets[$webget]['translations'][$code] = $theme_translation;
+            }
+        }
+    }
+}
+
 function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $vars=array())
 {
 	global $current;
@@ -487,6 +498,7 @@ function nvweb_blocks_render_poll($object)
     global $session;
 
     $webget = 'blocks';
+    nvweb_blocks_init();
 
     if($object->class != 'poll')
         return;
@@ -631,7 +643,7 @@ function nvweb_blocks_render_poll_results($object)
     {
         $percentage = $answer['votes'] / $votes_count * 100;
         $out .= '<div class="block-poll-result">';
-        $out .= '   <span id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.round($percentage, 1).' %</span>';
+        $out .= '   <span id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'" data-percentage="'.round($percentage, 1).'" data-votes="'.$answer['votes'].'">'.round($percentage, 1).' %</span>';
         $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.$answer['title'].'</label>';
         $out .= '</div>';
     }
