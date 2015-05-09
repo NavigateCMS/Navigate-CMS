@@ -90,7 +90,6 @@ class item
 		$this->paths			= path::loadElementPaths('item', $this->id);
 
         // to get the array of groups first we remove the "g" character
-        // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
         $this->groups = explode(',', $groups);
         if(!is_array($this->groups))  $this->groups = array($groups);
@@ -227,10 +226,11 @@ class item
             property::remove_properties('item', $this->id);
 
             // finally remove the item
-			$DB->execute('DELETE FROM nv_items
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id
-						);
+			$DB->execute('
+			    DELETE FROM nv_items
+				 WHERE id = '.intval($this->id).'
+				   AND website = '.$website->id
+            );
 		}
 		
 		return $DB->get_affected_rows();		
@@ -265,35 +265,44 @@ class item
         if($groups == 'g')
             $groups = '';
 
-        $ok = $DB->execute(' INSERT INTO nv_items
-								(id, website, association, category, embedding, template, 
-								 date_to_display, date_published, date_unpublish, date_created, date_modified, author,
-								 galleries, comments_enabled_to, comments_moderator, 
-								 access, groups, permission,
-								 views, votes, score)
-								VALUES 
-								( 0,
-								  '.$website->id.',
-								  '.protect($this->association).',
-								  '.protect($this->category).',
-								  '.protect($this->embedding).',
-								  '.protect($this->template).',
-								  '.protect($this->date_to_display).',
-								  '.protect($this->date_published).',
-								  '.protect($this->date_unpublish).',
-								  '.protect($this->date_created).',
-								  '.protect($this->date_modified).',
-								  '.protect($this->author).',								  								  
-								  '.protect(serialize($this->galleries)).',
-								  '.protect($this->comments_enabled_to).',
-								  '.protect($this->comments_moderator).',
-								  '.protect($this->access).',
-								  '.protect($groups).',
-								  '.protect($this->permission).',
-  								  0,
-								  0,
-								  0
-								)');						
+        $ok = $DB->execute('
+            INSERT INTO nv_items
+                (id, website, association, category, embedding, template,
+                 date_to_display, date_published, date_unpublish, date_created, date_modified, author,
+                 galleries, comments_enabled_to, comments_moderator,
+                 access, groups, permission,
+                 views, votes, score)
+            VALUES
+                (:id, :website, :association, :category, :embedding, :template,
+                 :date_to_display, :date_published, :date_unpublish, :date_created, :date_modified, :author,
+                 :galleries, :comments_enabled_to, :comments_moderator,
+                 :access, :groups, :permission,
+                 :views, :votes, :score)
+             ',
+            array(
+                ":id" => 0,
+                ":website" => $website->id,
+                ":association" => $this->association,
+                ":category" => $this->category,
+                ":embedding" => $this->embedding,
+                ":template" => $this->template,
+                ":date_to_display" => $this->date_to_display,
+                ":date_published" => $this->date_published,
+                ":date_unpublish" => $this->date_unpublish,
+                ":date_created" => $this->date_created,
+                ":date_modified" => $this->date_modified,
+                ":author" => $this->author,
+                ":galleries" => serialize($this->galleries),
+                ":comments_enabled_to" => $this->comments_enabled_to,
+                ":comments_moderator" => $this->comments_moderator,
+                ":access" => $this->access,
+                ":groups" => $groups,
+                ":permission" => $this->permission,
+                ":views" => 0,
+                ":votes" => 0,
+                ":score" => 0
+            )
+        );
 			
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -325,28 +334,52 @@ class item
         if($groups == 'g')
             $groups = '';
 
-        $ok = $DB->execute(' UPDATE nv_items
-								SET 
-									association	= '.protect($this->association).',
-									category	=   '.protect($this->category).',
-									embedding	= 	'.protect($this->embedding).',
-									template	=   '.protect($this->template).',
-									date_to_display	=   '.protect($this->date_to_display).',
-									date_published	=   '.protect($this->date_published).',
-									date_unpublish	=   '.protect($this->date_unpublish).',
-									date_modified	=   '.protect($this->date_modified).',
-									author		=   '.protect($this->author).',									
-									galleries	=  '.protect(serialize($this->galleries)).',
-									comments_enabled_to = '.protect($this->comments_enabled_to).',
-									comments_moderator = '.protect($this->comments_moderator).',
-									access	 	=  '.protect($this->access).',
-									groups      =  '.protect($groups).',
-									permission 	=  '.protect($this->permission).',
-									views 	=  '.protect($this->views).',
-									votes 	=  '.protect($this->votes).',
-									score 	=  '.protect($this->score).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+        $ok = $DB->execute(' 
+            UPDATE nv_items
+            SET 
+                association	= :association,
+                category	=   :category,
+                embedding	= 	:embedding,
+                template	=   :template,
+                date_to_display	=  :date_to_display,
+                date_published	=  :date_published,
+                date_unpublish	=  :date_unpublish,
+                date_modified	=  :date_modified,
+                author		=   :author,
+                galleries	=  :galleries,
+                comments_enabled_to = :comments_enabled_to,
+                comments_moderator = :comments_moderator,
+                access	 	=  :access,
+                groups      =  :groups,
+                permission 	=  :permission,
+                views 	=  :views,
+                votes 	=  :votes,
+                score 	=  :score
+            WHERE id = :id
+              AND website = :website',
+            array(
+                ":association"	    => $this->association,
+                ":category" 	    => $this->category,
+                ":embedding"        => $this->embedding,
+                ":template" 	    =>  $this->template,
+                ":date_to_display"	=>   $this->date_to_display,
+                ":date_published"	=>   $this->date_published,
+                ":date_unpublish"	=>   $this->date_unpublish,
+                ":date_modified"    =>   $this->date_modified,
+                ":author"   	    =>   $this->author,
+                ":galleries"        =>  serialize($this->galleries),
+                ":comments_enabled_to"  => $this->comments_enabled_to,
+                ":comments_moderator"   => $this->comments_moderator,
+                ":access"	        =>  $this->access,
+                ":groups"           =>  $groups,
+                ":permission" 	    =>  $this->permission,
+                ":views" 	        =>  $this->views,
+                ":votes" 	        =>  $this->votes,
+                ":score" 	        =>  $this->score,
+                ":id"               =>   $this->id,
+                ":website"          =>   $website->id
+            )
+        );
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 
