@@ -151,13 +151,15 @@ try
 
 	$dictionary = nvweb_dictionary_load();
 
-	$template = nvweb_template_load();
-
-	if(empty($template)) 
-		throw new Exception('Navigate CMS: no template found!');
-
 	nvweb_plugins_load();
     $events->extension_backend_bindings();
+
+    $template = nvweb_template_load();
+    $events->trigger('theme', 'template_load', array('template' => &$template));
+
+    if(empty($template))
+        throw new Exception('Navigate CMS: no template found!');
+
 
     // parse the special tag "include"
     // also convert curly brackets tags {{nv object=""}} to <nv object="" /> version
