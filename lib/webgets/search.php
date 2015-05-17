@@ -30,9 +30,15 @@ function nvweb_search($vars=array())
 		foreach($search_what as $what)
         {
             if(substr($what, 0, 1)=='-')
-                $likes[] = 'd.text NOT LIKE '.protect('%'.substr($what, 1).'%');
+            {
+                $likes[] = 'd.text NOT LIKE '.protect('%'.substr($what, 1).'%').
+                           'AND p.value NOT LIKE '.protect('%'.substr($what, 1).'%');
+            }
             else
-			    $likes[] = 'd.text LIKE '.protect('%'.$what.'%');
+            {
+			    $likes[] = 'd.text LIKE '.protect('%'.$what.'%').
+			               ' OR p.value LIKE '.protect('%'.$what.'%');
+            }
         }
 
         if(!empty($search_archive)) // add the conditions
@@ -87,6 +93,10 @@ function nvweb_search($vars=array())
 			   AND wd.lang =  '.protect($current['lang']).'
 			   AND wd.node_type = "item"
 			   AND wd.website = '.protect($website->id).'
+			  LEFT JOIN nv_properties_items p
+			    ON p.node_id = d.node_id
+			   AND p.element = "item"
+			   AND p.website = '.protect($website->id).'
 			 WHERE i.website = '.$website->id.'
 			   AND i.permission <= '.$permission.'
 			   AND (i.date_published = 0 OR i.date_published < '.core_time().')
@@ -105,6 +115,7 @@ function nvweb_search($vars=array())
 			 LIMIT '.$vars['items'].'
 			OFFSET '.$offset
 		);
+
 
 		$rs = $DB->result();
 		$total = $DB->foundRows();
