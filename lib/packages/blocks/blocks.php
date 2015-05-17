@@ -537,7 +537,7 @@ function blocks_list()
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
-            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+            $group_blocks_links[] = '<a class="ui-menu-action-bigger" href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
 
         $events->add_actions(
             'blocks',

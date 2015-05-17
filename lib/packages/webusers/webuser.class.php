@@ -285,6 +285,7 @@ class webuser
 								  avatar = '.protect($this->avatar).',								  
 								  birthdate = '.protect($this->birthdate).',
 								  language = '.protect($this->language).',
+								  lastseen = '.protect($this->lastseen).',
 								  country = '.protect($this->country).',
 								  timezone = '.protect($this->timezone).',
 								  address = '.protect($this->address).',

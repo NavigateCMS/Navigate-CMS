@@ -113,6 +113,11 @@ $(window).on('load', function()
         return false;
     });
 
+    $('#navigate-content-actions a.content-actions-submenu-trigger').on('dblclick', function(ev)
+    {
+        window.location.replace($(this).attr('href'));
+    });
+
     // favorite extensions
     $('.navigate-favorites-link').on('click', function()
     {

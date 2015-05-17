@@ -472,6 +472,12 @@ a.navigate-content-actions-selected
     clear: both;
 }
 
+#navigate-content-actions ul.content-actions-submenu a.ui-menu-action-bigger
+{
+    font-size: 12px;
+}
+
+
 
 #navigate-content-top-spacer
 {

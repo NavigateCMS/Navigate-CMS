@@ -100,7 +100,8 @@ try
         unset($webuser);
         $webuser = new webuser();
     }
-    else
+
+    if(!empty($webuser->id))
     {
         $webuser->lastseen = core_time();
         $webuser->save();
