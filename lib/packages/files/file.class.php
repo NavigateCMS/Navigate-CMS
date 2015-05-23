@@ -116,9 +116,18 @@ class file
 		$this->enabled		= $main->enabled;
 
         // to get the array of groups first we remove the "g" character
-        $groups = str_replace('g', '', $main->groups);
-        $this->groups = explode(',', $groups);
-        if(!is_array($this->groups))  $this->groups = array($groups);
+        if(!empty($main->groups))
+        {
+            if(!is_array($main->groups))
+            {
+                $groups = str_replace('g', '', $main->groups);
+                $this->groups = explode(',', $groups);
+            }
+            else
+                $this->groups = $main->groups;
+        }
+        if(!is_array($this->groups))
+            $this->groups = array($groups);
 
         if($this->type=='video')
         {

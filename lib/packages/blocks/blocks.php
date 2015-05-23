@@ -2076,7 +2076,8 @@ function block_group_form($item)
         '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' )
     );
 
-    $navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(67, 'Title').'</label>',
         $naviforms->textfield('title', $item->title)
     ));
 
@@ -2123,15 +2124,15 @@ function block_group_form($item)
     $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', implode('#', $item->blocks)));
 
     $table = new naviorderedtable("blocks_group_table");
-    $table->setWidth("700px");
+    $table->setWidth("800px");
     $table->setHiddenInput("blocks-order");
     $table->setReorderCallback("blocks_selection_update");
 
     $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
 
     $table->addHeaderColumn('ID', 200);
-    $table->addHeaderColumn(t(160, 'Type'), 200);
-    $table->addHeaderColumn(t(67, 'Title'), 250);
+    $table->addHeaderColumn(t(160, 'Type'), 250);
+    $table->addHeaderColumn(t(67, 'Title'), 300);
     $table->addHeaderColumn(t(170, 'Edit'), 50);
     $table->addHeaderColumn(t(35, 'Remove'), 50);
 
@@ -2148,7 +2149,7 @@ function block_group_form($item)
 
             $table->addRow($p, array(
                 array('content' => '<span>'.$item->blocks[$p].'</span>', 'align' => 'left'),
-                array('content' => '<span>'.$block->type.'</span>', 'align' => 'left'),
+                array('content' => '<span>'.$theme->t($block->type).'</span>', 'align' => 'left'),
                 array('content' => '<span>'.$block->dictionary[$lang]['title'].'</span>', 'align' => 'left'),
                 array('content' => '<a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>', 'align' => 'center'),
                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
@@ -2195,7 +2196,7 @@ function block_group_form($item)
 
             $table->addRow($p, array(
                 array('content' => '<span>'.$block['code'].'</span>', 'align' => 'left'),
-                array('content' => '<span>'.$block['type'].'</span>', 'align' => 'left'),
+                array('content' => '<span>'.$theme->t($block['type']).'</span>', 'align' => 'left'),
                 array('content' => '<span title="'.$block['description'].'">'.$block['title'].'</span>', 'align' => 'left'),
                 array('content' => (empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>'), 'align' => 'center'),
                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')

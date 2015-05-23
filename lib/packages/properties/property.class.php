@@ -393,6 +393,24 @@ class property
                     }
                 }
             }
+            else if($element == 'block_group_block')
+            {
+                // block group blocks properties
+                for($b=0; $b < count($theme->block_groups); $b++)
+                {
+                    if($theme->block_groups[$b]->id == $template)
+                    {
+                        $data = array();
+                        foreach($theme->block_groups[$b]->blocks as $bgb)
+                        {
+                            // note: properties in block group blocks can't have the same name
+                            if(isset($bgb->properties))
+                                $data = array_merge($data, $bgb->properties);
+                        }
+                        break;
+                    }
+                }
+            }
             else
             {
                 // properties of a theme template
@@ -522,6 +540,12 @@ class property
         {
             $block = block::block_group_block($template, $element);
             $e_properties = $block->properties;
+
+            // we must find the block group ID to search the assigned property values
+            $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template));
+            $item_id = $block_group_id;
+            if(empty($block_group_id))
+                $item_id = 0;
         }
         else
         {
@@ -533,11 +557,13 @@ class property
 		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id);
 		
 		// load custom properties values
-		$DB->query('SELECT * FROM nv_properties_items 
- 				     WHERE element = '.protect($item_type).'
-					   AND node_id = '.protect($item_id).'
-					   AND website = '.$website->id,
-                    'array');
+		$DB->query('
+		    SELECT * FROM nv_properties_items
+ 			 WHERE element = '.protect($item_type).'
+			   AND node_id = '.protect($item_id).'
+			   AND website = '.$website->id,
+            'array'
+        );
 			
 		$values = $DB->result();
 

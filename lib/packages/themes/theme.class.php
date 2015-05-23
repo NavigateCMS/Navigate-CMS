@@ -274,11 +274,14 @@ class theme
         core_remove_folder($ptf);
 
         // decompress the zip file
+        $extracted = false;
         $zip = new ZipArchive;
         if($zip->open(NAVIGATE_PATH.'/themes/'.$this->name.'/'.$this->name.'_sample.zip') === TRUE)
         {
             @mkdir($ptf, 0777, true);
-            $zip->extractTo($ptf);
+            $extracted = $zip->extractTo($ptf);
+            if(!$extracted)
+                throw new Exception(t(56, 'Unexpected error'));
             $zip->close();
         }
 
@@ -463,6 +466,8 @@ class theme
                     $new_selection[] = $blocks[$block_group->blocks[$bi]]->id;
                 else if(!empty($block_groups->blocks[$bi]))
                     $new_selection[] = $block_group->blocks[$bi];
+                else
+                    $new_selection[] = $block_group->blocks[$bi];
             }
             $block_group->blocks = $new_selection;
 
@@ -504,12 +509,14 @@ class theme
         // properties
         // array ('structure' => ..., 'item' => ..., 'block' => ...)
         $properties = unserialize(file_get_contents($ptf.'/properties.serialized'));
-        $elements_with_properties = array('structure', 'item', 'block');
+        $elements_with_properties = array('structure', 'item', 'block', 'block_group_block');
+
         foreach($elements_with_properties as $el)
         {
-            if($el=='structure')    $real = $structure;
-            else if($el=='item')    $real = $items;
-            else if($el=='block')   $real = $blocks;
+            if($el=='structure')                $real = $structure;
+            else if($el=='item')                $real = $items;
+            else if($el=='block')               $real = $blocks;
+            else if($el=='block_group_block')   $real = $block_groups;
 
             foreach($properties[$el] as $el_id => $el_properties)
             {
@@ -520,6 +527,9 @@ class theme
 
                 foreach($el_properties as $foo => $property)
                 {
+                    if(!empty($property) && is_array($property))
+                        $property = $property[0];
+
                     if(empty($property->value))
                         continue;
 
@@ -536,6 +546,14 @@ class theme
                                 $property->value = $structure[$property->value]->id;
                             break;
 
+                        case 'categories':
+                            $property_categories_old = explode(',', $property->value);
+                            $property_categories_new = array();
+                            foreach($property_categories_old as $oc)
+                                $property_categories_new[] = $structure[$oc]->id;
+                            $property->value = implode(',', $property_categories_new);
+                            break;
+
                         default:
                     }
 
@@ -544,7 +562,9 @@ class theme
 
                 if(!empty($el_properties_associative))
                 {
-                    if($el=='block')
+                    if($el=='block_group_block')
+                        $template = $real[$el_id]->code;
+                    else if($el=='block')
                         $template = $real[$el_id]->type;
                     else
                         $template = $real[$el_id]->template;
@@ -555,6 +575,7 @@ class theme
         }
 
         core_remove_folder($ptf);
+
     }
 
     public static function export_sample($a_categories, $a_items, $a_block_groups, $a_blocks, $a_comments, $folder)
@@ -624,6 +645,15 @@ class theme
             $tmp = new block_group();
             $tmp->load($a_block_groups[$i]);
             $block_groups[$tmp->id] = $tmp;
+
+            foreach($tmp->blocks as $bgb)
+            {
+                if(!is_numeric($bgb))
+                {
+                    $properties['block_group_block'][$a_block_groups[$i]][$bgb] = property::load_properties($bgb, $tmp->code, 'block_group_block', $bgb);
+                }
+            }
+
             // note: maybe not all blocks in the group have been selected in the "blocks" tab
             // here we only export the block group definition, not adding anything else to export
         }

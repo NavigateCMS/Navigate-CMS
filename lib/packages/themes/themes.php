@@ -206,8 +206,17 @@ function themes_grid($list)
 
     $marketplace = isset($_REQUEST['marketplace']);
 
-    $navibars->add_actions(	array(	'<a href="#" id="theme-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'));
-    $navibars->add_actions(	array(	'<a href="?fid=themes&act=theme_sample_content_export" id="theme-sample-content-export-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/server_compressed.png"> '.t(480, 'Export sample content').'</a>'));
+    $navibars->add_actions(
+        array(
+            '<a href="#" id="theme-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'
+        )
+    );
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid=themes&act=theme_sample_content_export" id="theme-sample-content-export-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/server_compressed.png"> '.t(480, 'Export sample content').'</a>'
+        )
+    );
 
 	$grid = new navigrid('themes');	
 
