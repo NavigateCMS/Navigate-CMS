@@ -71,7 +71,7 @@ function nvweb_menu($vars=array())
 		//  we want the menu from level 1
 		//	from: 1	--> 8, 9		
 		$parent = $current['hierarchy'][$from];
-		
+
 		if(is_null($parent)) return '';	// the requested level of menu does not exist under the current category
 	}
 
@@ -120,7 +120,7 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
         return '';
 	
 	nvweb_menu_load_structure($parent);
-			
+
 	if(!empty($structure['cat-'.$parent]))
 	{	
 		switch($mode)

@@ -193,12 +193,39 @@ function nvweb_list($vars=array())
                 {
                     $bgbo = new block();
                     $bgbo->load($bgb);
-                    $rs[] = $bgbo;
+
+                    // check if we can display this block
+                    if(nvweb_object_enabled($bgbo))
+                    {
+                        // check categories / exclusions
+                        if(!empty($bgbo->categories))
+                        {
+                            $bgbo_cat_found = false;
+
+                            foreach($categories as $list_cat)
+                            {
+                                if(in_array($list_cat, $bgbo->categories))
+                                    $bgbo_cat_found = true;
+                            }
+                            if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
+                                continue;
+                        }
+                        if(!empty($bgbo->exclusions))
+                        {
+                            foreach($categories as $list_cat)
+                            {
+                                if(in_array($list_cat, $bgbo->exclusions))
+                                    continue; // skip this block
+                            }
+                        }
+                        $rs[] = $bgbo;
+                    }
                 }
                 else
                 {
                     // is block group block type?
                     $bgba = $theme->block_group_blocks($vars['type']);
+
                     if(!empty($bgba))
                     {
                         $bgbo = $bgba[$bgb];
