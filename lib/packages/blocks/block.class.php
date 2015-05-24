@@ -613,10 +613,44 @@ class block
                     if($bg->blocks[$i]->id == $block_code)
                     {
                         $block = $bg->blocks[$i];
+                        $block->_block_group_id = $bg->id;
                         break;
                     }
                 }
             }
+            if(!empty($block))
+                break;
+        }
+
+        return $block;
+    }
+
+    public static function block_group_block_by_property($property)
+    {
+        global $theme;
+
+        $block = null;
+        foreach($theme->block_groups as $key => $bg)
+        {
+            for($i=0; $i < count($bg->blocks); $i++)
+            {
+                if(empty($bg->blocks[$i]->properties))
+                    continue;
+
+                foreach($bg->blocks[$i]->properties as $bgbp)
+                {
+                    if($bgbp->id == $property)
+                    {
+                        $block = $bg->blocks[$i];
+                        $block->_block_group_id = $bg->id;
+                        break;
+                    }
+                }
+                if(!empty($block))
+                    break;
+            }
+            if(!empty($block))
+                break;
         }
 
         return $block;
