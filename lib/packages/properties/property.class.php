@@ -542,10 +542,13 @@ class property
             $e_properties = $block->properties;
 
             // we must find the block group ID to search the assigned property values
-            $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template));
-            $item_id = $block_group_id;
-            if(empty($block_group_id))
-                $item_id = 0;
+            if(!empty($template))
+            {
+                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template));
+                $item_id = $block_group_id;
+                if(empty($block_group_id))
+                    $item_id = 0;
+            }
         }
         else
         {

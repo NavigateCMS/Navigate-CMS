@@ -108,13 +108,21 @@ function nvweb_properties($vars=array())
             $block_group = null; // unknown
             $block_code = $vars['id'];
 
-            $block = block::block_group_block($block_group, $block_code);
+            if(empty($block_code))  // find the block group block which has the requested property (property name must be unique!)
+            {
+                $block = block::block_group_block_by_property($vars['property']);
+                $block_code = $block->type;
+            }
+            else                    // find the block group block by its type
+                $block = block::block_group_block($block_group, $block_code);
+
             $properties = $block->properties;
 
-            $current_properties = property::load_properties($block_code, $block_group, 'block_group_block', $block_code);
+            $current_properties = property::load_properties($block_code, $block->_block_group_id, 'block_group_block', $block_code);
 
 			// now we find the property requested
-			if(!is_array($current_properties)) $current_properties = array();
+			if(!is_array($current_properties))
+                $current_properties = array();
 			foreach($current_properties as $property)
 			{
 				if($property->id == $vars['property'] || $property->name == $vars['property'])

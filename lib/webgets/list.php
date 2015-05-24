@@ -39,6 +39,26 @@ function nvweb_list($vars=array())
             $categories = array(0);
             $vars['children'] = 'true';
         }
+        else if(!is_numeric($vars['categories']))
+        {
+            $categories = nvweb_properties(array(
+                'property'	=> 	$vars['categories']
+            ));
+
+            if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+            {
+                $categories = nvweb_properties(array(
+                    'mode'	=>	'block_group_block',
+                    'property' => $vars['categories']
+                ));
+            }
+
+            if(!is_array($categories))
+            {
+                $categories = explode(',', $categories);
+                $categories = array_filter($categories); // remove empty elements
+            }
+        }
         else
         {
             $categories = explode(',', $vars['categories']);
@@ -398,26 +418,6 @@ function nvweb_list($vars=array())
             $tag = $conditional_placeholder_tags[0];
             $conditional = $nested_conditional_fragments[$tag["attributes"]["id"]];
 
-            /*
-
-            $conditional_html_output = nvweb_list_parse_conditional(
-                $conditional,
-                $item,
-                $conditional['nvlist_conditional_template'],
-                $i,
-                count($rs)
-            );
-
-            $conditional['contents'] = $conditional['nvlist_conditional_template'];
-            $item_html = nvweb_list_parse_conditional(
-                $conditional,
-                $item,
-                $item_html,
-                $i,
-                count($rs)
-            );
-*/
-
             $conditional_html_output = nvweb_list_parse_conditional(
                 $conditional,
                 $item,
@@ -431,8 +431,6 @@ function nvweb_list($vars=array())
                 $conditional_html_output,
                 $item_html
             );
-
-            //$item_html = nvweb_list_parse_conditional($conditional, $item, $item_html, $i, count($rs));
 
             $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
         }
@@ -459,6 +457,7 @@ function nvweb_list($vars=array())
         // restore & process nested lists (if any)
         foreach($nested_lists_fragments as $nested_list_uid => $nested_list_vars)
         {
+            $nested_list_vars['nvlist_parent_vars'] = $vars;
             $content = nvweb_list($nested_list_vars);
             $item_html = str_replace('<!--#'.$nested_list_uid.'#-->', $content, $item_html);
         }
@@ -943,6 +942,7 @@ function nvweb_list_isolate_lists($item_html)
                 $nested_list_vars = array_merge($tag['attributes'], array('template' => $list_template));
                 $nested_list_uid = uniqid('nvlist-');
                 $nested_lists_fragments[$nested_list_uid] = $nested_list_vars;
+
                 $item_html = substr_replace($item_html, '<!--#'.$nested_list_uid.'#-->', $tag['offset'], $tag['length']);
                 $changed = true;
                 break;
