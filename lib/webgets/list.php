@@ -214,6 +214,9 @@ function nvweb_list($vars=array())
                     $bgbo = new block();
                     $bgbo->load($bgb);
 
+                    if(empty($bgbo) || empty($bgbo->type))
+                        continue;
+
                     // check if we can display this block
                     if(nvweb_object_enabled($bgbo))
                     {

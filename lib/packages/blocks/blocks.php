@@ -2147,6 +2147,9 @@ function block_group_form($item)
             $block = new block();
             $block->load($item->blocks[$p]);
 
+            if(empty($block) || empty($block->type))
+                continue;
+
             $table->addRow($p, array(
                 array('content' => '<span>'.$item->blocks[$p].'</span>', 'align' => 'left'),
                 array('content' => '<span>'.$theme->t($block->type).'</span>', 'align' => 'left'),
