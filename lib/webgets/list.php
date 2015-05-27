@@ -759,20 +759,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
 				case 'date':
+                case 'date_post':
 					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
 						$out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
 					else
 						$out = date($website->date_format, $item->date_to_display);
 					break;
 
-                case 'date_post':
-                    $date_post = $item->date_to_display;
-
-					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
-						$out = nvweb_content_date_format($tag['attributes']['format'], $date_post);
-					else
-						$out = date($website->date_format, $date_post);
-					break;
 
 				case 'content':
 				case 'section':
