@@ -87,6 +87,13 @@ try
 	if(isset($_REQUEST['lang']))
 		$session['lang'] = $_REQUEST['lang'];
 
+
+    // load dictionary, extensions and bind events (as soon as possible)
+    $dictionary = nvweb_dictionary_load();
+
+    nvweb_plugins_load();
+    $events->extension_backend_bindings();
+
 	if(!empty($session['webuser']))
 		$webuser->load($session['webuser']);
 	else if(!empty($_COOKIE["webuser"]))
@@ -154,11 +161,6 @@ try
         nvweb_route_parse('***nv.not_allowed***');
 		nvweb_clean_exit();
     }
-
-	$dictionary = nvweb_dictionary_load();
-
-	nvweb_plugins_load();
-    $events->extension_backend_bindings();
 
     $template = nvweb_template_load();
     $events->trigger('theme', 'template_load', array('template' => &$template));
