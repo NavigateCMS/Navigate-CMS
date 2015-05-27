@@ -774,6 +774,9 @@ class theme
                     $files[] = $file_id;
 
                     $file_query['id'] = '{{NAVIGATE_FILE}'.$file_id.'}';
+                    if(!empty($file_query['wid']))
+                        $file_query['wid'] = '{{NVWEB_WID}}';
+
                     $file_query = http_build_query($file_query);
 
                     $content = substr_replace($content, $file_query, $offset + 1, $end - $offset - 1);
@@ -855,6 +858,7 @@ class theme
                 $content = substr_replace($content, $files[$file_id]->id, $matches[$m][1], strlen('%7B%7BNAVIGATE_FILE%7D'.$file_id.'%7D'));
             }
 
+            $content = str_replace('%7B%7BNVWEB_WID%7D%7D', $website->id, $content);
             $content = str_replace('url://{{NAVIGATE_DOWNLOAD}}', NAVIGATE_DOWNLOAD, $content);
             $content = str_replace('url://{{WEBSITE_ABSOLUTE_PATH}}', $website->absolute_path(), $content);
             $content = str_replace('url://{{THEME_ABSOLUTE_PATH}}', NAVIGATE_PARENT.NAVIGATE_FOLDER.'/themes/'.$website->theme, $content);
