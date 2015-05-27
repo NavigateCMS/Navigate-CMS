@@ -693,6 +693,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         $out = nvweb_prepare_link($out);
                     break;
 
+                case 'target':
+                    if($item->action['action-type'][$current['lang']]=='web-n')
+                        $out = '_blank';
+                    else
+                        $out = '_self';
+                    break;
+
                 case 'property':
                     $properties_mode = 'block';
 
