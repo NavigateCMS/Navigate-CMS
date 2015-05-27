@@ -50,18 +50,18 @@ class webuser
 
         if(!empty($data))
 		{
-
 			$this->load_from_resultset($data);
 			$session['webuser'] = $this->id;
 
-            // maybe this functions is called without initializing $events
+            // maybe this function is called without initializing $events
             if(method_exists($events, 'trigger'))
             {
                 $events->trigger(
                     'webuser',
                     'sign_in',
                     array(
-                        'webuser' => $this
+                        'webuser' => $this,
+                        'by' => 'cookie'
                     )
                 );
             }
@@ -339,13 +339,18 @@ class webuser
 			{
 				$this->load_from_resultset($data);
 
-                $events->trigger(
-                    'webuser',
-                    'sign_in',
-                    array(
-                        'webuser' => $this
-                    )
-                );
+                // maybe this function is called without initializing $events
+                if(method_exists($events, 'trigger'))
+                {
+                    $events->trigger(
+                        'webuser',
+                        'sign_in',
+                        array(
+                            'webuser' => $this,
+                            'by' => 'authenticate'
+                        )
+                    );
+                }
 
 				return true;
 			}
@@ -372,10 +377,24 @@ class webuser
 	public static function unset_cookie()
 	{
 		global $session;
-		
-		$session['webuser'] = '';
-		setcookie('webuser', NULL, -1, '/', substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], ".")));
-	}
+        global $events;
+
+        $webuser_sign_out_id = $session['webuser'];
+        $session['webuser'] = '';
+        setcookie('webuser', NULL, -1, '/', substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], ".")));
+
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'webuser',
+                'sign_out',
+                array(
+                    'webuser_id' => $webuser_sign_out_id
+                )
+            );
+        }
+    }
 
 	public function quicksearch($text)
 	{
