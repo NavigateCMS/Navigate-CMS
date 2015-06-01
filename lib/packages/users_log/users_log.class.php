@@ -39,7 +39,7 @@ class users_log
 		$this->data				= $main->data;	
 
 		// uncompress with gzdecode (function on PHP SVN, yet to be released)
-		if(!empty($this->data))
+		if(!empty($this->data) && function_exists('gzdecode'))
 			$this->data = gzdecode($this->data);
 		
 	}
@@ -67,41 +67,7 @@ class users_log
 		
 		return $DB->get_affected_rows();		
 	}
-	
-	public function insert()
-	{
-		global $DB;
-		global $website;
-		
-		$this->date = core_time();	
 
-		$encoded_data = '';	
-		if($action=='save')
-			$encoded_data = gzencode($data);    
-   		
-		// prepared statement
-		$ok = $DB->execute(' INSERT INTO nv_users_log
-								(id, `date`, user, website, `function`, item, action, item_title, data)
-								VALUES 
-								( ?, ?, ?, ?, ?, ?, ?, ?, ?	)',
-							array(
-								0,
-								core_time(),
-								$user->id,
-								$website->id,
-								$function,
-								$item,
-								$action,
-								$item_title,
-								$encoded_data
-							));							
-			
-		if(!$ok) throw new Exception($DB->get_last_error());
-		
-		$this->id = $DB->get_last_id();
-				
-		return true;
-	}
 		
 	public static function action($function, $item='', $action='', $item_title='', $data='')
 	{
@@ -110,7 +76,7 @@ class users_log
 		global $user;
 		
 		$encoded_data = '';
-		if($action=='save')
+		if($action=='save' && function_exists('gzencode'))
 			$encoded_data = gzencode($data); 
 			
 		// a blank (new) form requested
