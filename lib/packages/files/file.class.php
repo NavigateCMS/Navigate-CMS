@@ -636,9 +636,12 @@ class file
 
             // ms office
             'doc' => array('application/msword', 'document'),
+            'docx' => array('application/msword', 'document'),
             'rtf' => array('application/rtf', 'document'),
             'xls' => array('application/vnd.ms-excel', 'document'),
-            'ppt' => array('application/vnd.ms-powerpoint', 'document')			
+            'xlsx' => array('application/vnd.ms-excel', 'document'),
+            'ppt' => array('application/vnd.ms-powerpoint', 'document'),
+            'pptx' => array('application/vnd.ms-powerpoint', 'document')
         );
 
 		$ext = file::getExtension($filename);
