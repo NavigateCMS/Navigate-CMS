@@ -925,6 +925,9 @@ function items_form($item)
         )
     );
 
+    if(empty($item->id))
+        $item->date_to_display = core_time();
+
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(551, 'Date to display').'</label>',
