@@ -121,7 +121,10 @@ function nvweb_content($vars=array())
                     if(!empty($itags))
                     {
                         for($i=0; $i < count($itags); $i++)
+                        {
+                            if(empty($itags[$i])) continue;
                             $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                        }
                     }
                 }
             }
@@ -137,7 +140,10 @@ function nvweb_content($vars=array())
                     if(!empty($itags))
                     {
                         for($i=0; $i < count($itags); $i++)
+                        {
+                            if(empty($itags[$i])) continue;
                             $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                        }
                     }
                 }
             }

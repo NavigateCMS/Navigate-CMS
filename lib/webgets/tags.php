@@ -30,6 +30,9 @@ function nvweb_tags($vars=array())
 
             foreach($tags as $tag => $times)
             {
+                if(empty($tag))
+                    continue;
+
                 if($vars['tag']=='li')
                     $out[] = '<li><a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a></li>';
                 else if($vars['tag']=='span')
