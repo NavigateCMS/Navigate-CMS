@@ -562,3 +562,17 @@
 561     # Erstellen Sie einen Ordner
 562     # Ergebnisse
 563     # Letzter Besuch
+564     # vor %s sekunden
+565     # vor einer minute
+566     # vor %m minuten
+567     # vor einer stunde
+568     # vor %h stunden
+569     # gestern
+570     # vor %d tagen
+571     # vor einer woche
+572     # vor %w wochen
+573     # vor einem monat
+574     # vor %m monaten
+575     # vor einem jahr
+576     # vor %y jahren
+577     # Neueste Änderungen

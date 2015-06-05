@@ -245,6 +245,75 @@ function core_ts2date($timestamp, $time=false)
 	return $date->format($format);
 }
 
+
+function core_ts2elapsed_time($timestamp)
+{
+    $time_elapsed 	= time() - $timestamp;
+    $seconds 	= $time_elapsed ;
+    $minutes 	= round($time_elapsed / 60 );
+    $hours 		= round($time_elapsed / 3600);
+    $days 		= round($time_elapsed / 86400 );
+    $weeks 		= round($time_elapsed / 604800);
+    $months 	= round($time_elapsed / 2600640 );
+    $years 		= round($time_elapsed / 31207680 );
+
+    // Seconds
+    if($seconds <= 60)
+    {
+        $out = t(564, "%s seconds ago", array('%s' => $seconds));
+    }
+    //Minutes
+    else if($minutes <= 60)
+    {
+        if($minutes==1)
+            $out = t(565, "one minute ago");
+        else
+            $out = t(566, "%m minutes ago", array('%m' => $minutes));
+    }
+    //Hours
+    else if($hours <=24)
+    {
+        if($hours==1)
+            $out = t(567, "an hour ago");
+        else
+            $out = t(568, "%h hours ago", array('%h' => $hours));
+    }
+    //Days
+    else if($days <= 7)
+    {
+        if($days==1)
+            $out = t(569, "yesterday");
+        else
+            $out = t(570, "%d days ago", array('%d' => $days));
+    }
+    //Weeks
+    else if($weeks <= 4.3)
+    {
+        if($weeks==1)
+            $out = t(571, "a week ago");
+        else
+            $out = t(572, "%w weeks ago", array('%w' => $weeks));
+    }
+    //Months
+    else if($months <=12)
+    {
+        if($months==1)
+            $out = t(573, "a month ago");
+        else
+            $out = t(574, "%m months ago", array('%m' => $months));
+    }
+    //Years
+    else
+    {
+        if($years==1)
+            $out = t(575, "one year ago");
+        else
+            $out = t(576, "%y years ago", array('%y' => $years));
+    }
+
+    return $out;
+}
+
 /**
  * Returns the current UNIX timestamp (UTC)
  *

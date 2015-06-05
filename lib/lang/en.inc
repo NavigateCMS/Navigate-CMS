@@ -562,3 +562,17 @@
 561     # Create a new folder
 562     # Results
 563     # Last seen
+564     # %s seconds ago
+565     # one minute ago
+566     # %m minutes ago
+567     # an hour ago
+568     # %h hours ago
+569     # yesterday
+570     # %d days ago
+571     # a week ago
+572     # %w weeks ago
+573     # a month ago
+574     # %m months ago
+575     # one year ago
+576     # %y years ago
+577     # Latest modifications

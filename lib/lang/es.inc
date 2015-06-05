@@ -562,3 +562,17 @@
 561     # Crear una carpeta
 562     # Resultados
 563     # Última visita
+564     # hace %s segundos
+565     # hace un minuto
+566     # hace %m minutos
+567     # hace una hora
+568     # hace %h horas
+569     # ayer
+570     # hace %d días
+571     # hace una semana
+572     # hace %w semanas
+573     # hace un mes
+574     # hace %m meses
+575     # hace un año
+576     # hace %y años
+577     # Últimas modificaciones

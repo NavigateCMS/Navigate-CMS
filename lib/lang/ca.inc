@@ -562,3 +562,17 @@
 561     # Crear nova carpeta
 562     # Resultats
 563     # Última visita
+564     # fa %s segons
+565     # fa un minut
+566     # fa %m minuts
+567     # fa una hora
+568     # fa %h hores
+569     # ahir
+570     # fa %d diess
+571     # fa una setmana
+572     # fa %w setmanes
+573     # fa un mes
+574     # fa %m mesos
+575     # fa un any
+576     # fa %y anys
+577     # Últimas modificaciones
