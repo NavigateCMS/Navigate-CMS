@@ -1542,7 +1542,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                         $.ajax(
                         {
                             async: false,
-                            url: NAVIGATE_APP + "?fid=files&act=1&op=upload&parent=" + parent,
+                            url: NAVIGATE_APP + "?fid=files&act=1&op=upload&parent=" + $(selector).attr("data-filedrop-parent"),
                             success: function(data)
                             {
                                 if(callbacks.afterOne)
@@ -1598,6 +1598,13 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
             });
 
             $(selector).attr("data-filedrop", "true");
+            $(selector).attr("data-filedrop-parent", parent);
+        }
+        else
+        {
+            // filedrop was already bound
+            // we still allow changing the upload folder
+            $(selector).attr("data-filedrop-parent", parent);
         }
     });
 }
