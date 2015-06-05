@@ -53,15 +53,34 @@ function dashboard_create()
 	
 //	$stats['pages_available'] = $DB->query_single('COUNT(DISTINCT object_id)', 'nv_paths', 'website = '.protect($website->id).' GROUP BY object_id');
 
-	$DB->query('SELECT COUNT(c.object_id) as total
-	              FROM ( SELECT DISTINCT p.object_id
-	                       FROM nv_paths p
-	                      WHERE p.website = '.protect($website->id).'
-	                   GROUP BY p.object_id ) c');
+    // count number of paths, ignoring extra languages (so if the item has 3 languages and 3 different paths, only one is counted)
+	$DB->query('
+	    SELECT COUNT(c.object_id) as total
+	      FROM
+	      (
+                SELECT DISTINCT p.object_id
+                  FROM nv_paths p
+                 WHERE p.website = '.protect($website->id).'
+              GROUP BY p.object_id
+          ) c
+    ');
 	$count = $DB->first();
 	$stats['pages_available'] = $count->total;
 
-    // TODO: include Elements without a path assigned but accessible through /node/xx
+    // we need to include elements without paths assigned but accessible through /node/xx
+    $DB->query('
+        SELECT COUNT(i.id) as total
+          FROM nv_items i
+         WHERE i.website = '.protect($website->id).'
+           AND i.embedding = 0
+           AND (
+                SELECT count(p.id)
+                 FROM nv_paths p
+                WHERE p.object_id = i.id
+           ) < 1
+    ');
+    $count = $DB->first();
+    $stats['pages_available'] += $count->total;
 	
 //	$stats['pages_viewed'] = $DB->query_single('SUM(i.views)', 'nv_items i', 'website = '.protect($website->id));
 	$stats['comments_count'] = $DB->query_single('COUNT(*)', 'nv_comments', 'website = '.protect($website->id));
@@ -90,13 +109,17 @@ function dashboard_create()
 	$stats['pages_viewed'] = $DB->first();
 	$stats['pages_viewed'] = intval($stats['pages_viewed']->pages_viewed);
 
-	$navibars->add_tab_content_panel('<img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(278, 'Web summary'), 
-									 array(	'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['pages_available'].'</h2><br />'.t(279, 'pages available').'</div>',
-									 		'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['pages_viewed'].'</h2><br />'.t(280, 'pages viewed').'</div>',
-											'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['comments_count'].'</h2><br />'.t(250, 'Comments').'</div>',
-											'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['comments_torevise'].'</h2><br />'.t(281, 'comments to revise').'</div>'
-									 ), 
-									 'navigate-panel-web-summary', '385px', '314px');
+	$navibars->add_tab_content_panel('
+	     <img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(278, 'Web summary'),
+         array(	'<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['pages_available'].'</h2><br />'.t(279, 'pages available').'</div>',
+                '<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['pages_viewed'].'</h2><br />'.t(280, 'pages viewed').'</div>',
+                '<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['comments_count'].'</h2><br />'.t(250, 'Comments').'</div>',
+                '<div class="navigate-panels-summary ui-corner-all"><h2>'.$stats['comments_torevise'].'</h2><br />'.t(281, 'comments to revise').'</div>'
+         ),
+         'navigate-panel-web-summary',
+        '385px',
+        '314px'
+    );
 
     $layout->add_script('
         $(".navigate-panels-summary").each(function()
@@ -107,27 +130,28 @@ function dashboard_create()
     ');
 	
 	/* TOP PAGES */
-	$sql = '	SELECT i.views as page_views, i.id as id_item, i.category as id_category, p.views as path_views, p.path as path
-				  FROM nv_items i, nv_paths p
-				 WHERE i.website = '.protect($website->id).'
-				   AND i.template > 0
-				   AND i.embedding = 0
-				   AND p.website = '.protect($website->id).'
-				   AND p.type = "item"
-				   AND p.object_id = i.id
-				   
-				UNION ALL
-				
-				SELECT s.views as page_views, NULL as id_item, s.id as id_category, p.views as path_views, p.path as path
-				  FROM nv_structure s, nv_paths p
-				 WHERE s.website = '.protect($website->id).'
-				   AND p.website = '.protect($website->id).'
-				   AND p.type = "structure"
-				   AND p.object_id = s.id	
-				   
-				ORDER BY path_views DESC
-				LIMIT 10			   
-			';
+	$sql = '
+	    SELECT i.views as page_views, i.id as id_item, i.category as id_category, p.views as path_views, p.path as path
+          FROM nv_items i, nv_paths p
+         WHERE i.website = '.protect($website->id).'
+           AND i.template > 0
+           AND i.embedding = 0
+           AND p.website = '.protect($website->id).'
+           AND p.type = "item"
+           AND p.object_id = i.id
+
+        UNION ALL
+
+        SELECT s.views as page_views, NULL as id_item, s.id as id_category, p.views as path_views, p.path as path
+          FROM nv_structure s, nv_paths p
+         WHERE s.website = '.protect($website->id).'
+           AND p.website = '.protect($website->id).'
+           AND p.type = "structure"
+           AND p.object_id = s.id
+
+        ORDER BY path_views DESC
+        LIMIT 10
+    ';
 
 	$DB->query($sql, 'array');
 	$pages = $DB->result();
@@ -152,7 +176,13 @@ function dashboard_create()
 						  '</div>';
 	}
 
-	$navibars->add_tab_content_panel('<img src="img/icons/silk/award_star_gold_3.png" align="absmiddle" /> '.t(296, 'Top pages'), $pages_html, 'navigate-panel-top-pages', '385px', '314px');
+	$navibars->add_tab_content_panel(
+        '<img src="img/icons/silk/award_star_gold_3.png" align="absmiddle" /> '.t(296, 'Top pages'),
+        $pages_html,
+        'navigate-panel-top-pages',
+        '385px',
+        '314px'
+    );
 	
 	
 	/* RECENT COMMENTS */
@@ -240,8 +270,67 @@ function dashboard_create()
             });
         ');
 		
-		$navibars->add_tab_content_panel('<img src="img/icons/silk/comment.png" align="absmiddle" /> '.t(276, 'Recent comments'), $comments_html, 'navigate-panel-recent-comments', '385px', '314px');
+		$navibars->add_tab_content_panel(
+            '<img src="img/icons/silk/comment.png" align="absmiddle" /> '.t(276, 'Recent comments'),
+            $comments_html,
+            'navigate-panel-recent-comments',
+            '385px',
+            '314px'
+        );
 	}
+
+
+    /* NV USER LOG */
+    $DB->query('
+        SELECT u.username, ul.action, f.lid as function_lid, f.icon as function_icon, f.id as function_id, ul.item_title as title, ul.date, ul.item as item_id
+          FROM nv_users_log ul, nv_users u, nv_functions f
+         WHERE u.id = ul.user
+           AND ul.action IN ("save", "remove")
+           AND website = '.$website->id.'
+           AND f.id = ul.function
+      GROUP BY u.username, ul.function, ul.item
+      ORDER BY date DESC
+      LIMIT 10
+    ', 'array');
+    $users_log = $DB->result();
+
+    if(!empty($users_log))
+    {
+        $users_log_html = '';
+        for($e = 0; $e < 10; $e++)
+        {
+            if(!@$users_log[$e]) break;
+            if(empty($users_log[$e]['title'])) $users_log[$e]['title'] = '('.t(282, 'Untitled').')';
+
+            if($users_log[$e]['action']=='save')
+            {
+                $users_log_html .= '
+                    <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
+                        '<a href="?fid='.$users_log[$e]['function_id'].'&act=2&id='.$users_log[$e]['item_id'].'" title="'.core_ts2date($users_log[$e]['date'], true).' - '.t($users_log[$e]['function_lid']).'">'.
+                            '<span>'.core_ts2elapsed_time($users_log[$e]['date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_green.png" align="absmiddle">'.$users_log[$e]['username'] . ' <img align="absmiddle" src="'.$users_log[$e]['function_icon'].'" align="absmiddle"> ' . $users_log[$e]['title'].
+                        '</a>'.
+                    '</div>';
+            }
+            else if($users_log[$e]['action']=='remove')
+            {
+                $users_log_html .= '
+                    <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
+                    '<a href="?fid='.$users_log[$e]['function_id'].'" title="'.core_ts2date($users_log[$e]['date'], true).' - '.t($users_log[$e]['function_lid']).'">'.
+                    '<span>'.core_ts2elapsed_time($users_log[$e]['date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_red.png" align="absmiddle">'.$users_log[$e]['username'] . ' <img align="absmiddle" src="'.$users_log[$e]['function_icon'].'" align="absmiddle"> ' . $users_log[$e]['title'].
+                    '</a>'.
+                    '</div>';
+            }
+        }
+
+        $navibars->add_tab_content_panel(
+            '<img src="img/icons/silk/page_edit.png" align="absmiddle" /> '.t(577, 'Latest modifications'),
+            $users_log_html,
+            'navigate-panel-top-elements',
+            '385px',
+            '314px'
+        );
+    }
+
 	
 	
 	/* TOP ITEMS */
@@ -297,7 +386,13 @@ function dashboard_create()
 						  '</div>';
 	}
 
-	$navibars->add_tab_content_panel('<img src="img/icons/silk/award_star_silver_3.png" align="absmiddle" /> '.t(277, 'Top elements'), $elements_html, 'navigate-panel-top-elements', '385px', '145px');
+	$navibars->add_tab_content_panel(
+        '<img src="img/icons/silk/award_star_silver_3.png" align="absmiddle" /> '.t(277, 'Top elements'),
+        $elements_html,
+        'navigate-panel-top-elements',
+        '385px',
+        '145px'
+    );
 			
 	
 	/* LAST MODIFIED ITEMS */
@@ -328,7 +423,13 @@ function dashboard_create()
 						  '</div>';
 	}
 
-	$navibars->add_tab_content_panel('<img src="img/icons/silk/pencil.png" align="absmiddle" /> '.t(275, 'Recent elements'), $elements_html, 'navigate-panel-recent-elements', '385px', '162px');
+	$navibars->add_tab_content_panel(
+        '<img src="img/icons/silk/pencil.png" align="absmiddle" /> '.t(275, 'Recent elements'),
+        $elements_html,
+        'navigate-panel-recent-elements',
+        '385px',
+        '162px'
+    );
 
 	
 	//$navibars->add_tab(t(62, "Statistics"));
