@@ -157,8 +157,11 @@ function navigate_property_layout_field($property)
                 $options = (array)$options;
 
             // translate each option text
-            foreach($options as $value => $text)
-                $options[$value] = $theme->t($text);
+            if(!empty($theme))
+            {
+                foreach($options as $value => $text)
+                    $options[$value] = $theme->t($text);
+            }
 
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property->name.'</label>';			
@@ -176,8 +179,11 @@ function navigate_property_layout_field($property)
                 $options = (array)$options;
 
             // translate each option text
-            foreach($options as $value => $text)
-                $options[$value] = $theme->t($text);
+            if(!empty($theme))
+            {
+                foreach($options as $value => $text)
+                    $options[$value] = $theme->t($text);
+            }
 
             $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property->name.'</label>';			
