@@ -218,7 +218,7 @@ class database
 	 * @return boolean True if the query could be executed without errors
 	 */	
 	public function execute($sql, $prepared=array())
-	{		
+	{
 		$this->lastAffectedRows = NULL;
 		$this->lastError = '';
         $this->lastResult = '';
