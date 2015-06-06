@@ -361,6 +361,9 @@ class file
         if($groups == 'g')
             $groups = '';
 
+        if(!isset($this->uploaded_by))
+            $this->uploaded_by = '';
+
         $ok = $DB->execute('
             INSERT INTO nv_files
             (   id, website, type, parent, name, size, mime,
