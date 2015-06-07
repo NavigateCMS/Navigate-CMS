@@ -1002,67 +1002,79 @@ function items_form($item)
         navigate_webuser_groups_visibility('.$item->access.');
     ');
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
-											$naviforms->selectfield('permission', 
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-													),
-												array(
-														0 => t(69, 'Published'),
-														1 => t(70, 'Private'),
-														2 => t(81, 'Hidden')
-													),
-												$item->permission,
-												'',
-												false,
-												array(
-														0 => t(360, 'Visible to everybody'),
-														1 => t(359, 'Visible only to Navigate CMS users'),
-														2 => t(358, 'Hidden to everybody')												
-												)
-											)
-										)
-									);	
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(68, 'Status').'</label>',
+			$naviforms->selectfield(
+                'permission',
+                array(
+                        0 => 0,
+                        1 => 1,
+                        2 => 2
+                    ),
+                array(
+                        0 => t(69, 'Published'),
+                        1 => t(70, 'Private'),
+                        2 => t(81, 'Hidden')
+                    ),
+                $item->permission,
+                '',
+                false,
+                array(
+                        0 => t(360, 'Visible to everybody'),
+                        1 => t(359, 'Visible only to Navigate CMS users'),
+                        2 => t(358, 'Hidden to everybody')
+                )
+            )
+        )
+    );
 																		
 									
 	if(empty($item->id))
         $item->author = $user->id;
 	$author_webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->author);	
 	$navibars->add_tab_content($naviforms->hidden('item-author', $item->author));
-	$navibars->add_tab_content_row(array(	'<label>'.t(266, 'Author').'</label>',
-											$naviforms->textfield('item-author-text', $author_webuser)
-										));	
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(266, 'Author').'</label>',
+		$naviforms->textfield('item-author-text', $author_webuser)
+    ));
 	
 	// script#1									
 
 	if($item->date_modified > 0)
 	{																		
-		$navibars->add_tab_content_row(array(	'<label>'.t(227, 'Date modified').'</label>',
-												core_ts2date($item->date_modified, true)
-											));											
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(227, 'Date modified').'</label>',
+				core_ts2date($item->date_modified, true)
+            )
+        );
 	}
 	
 	if($item->date_created > 0)
 	{
-		$navibars->add_tab_content_row(array(	'<label>'.t(226, 'Date created').'</label>',
-												core_ts2date($item->date_created, true)
-											));	
+		$navibars->add_tab_content_row(
+            array(
+                '<label>'.t(226, 'Date created').'</label>',
+				core_ts2date($item->date_created, true)
+            )
+        );
 	}
 
 	$navibars->add_tab(t(87, "Association")); // tab #1
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(87, "Association").'</label>',
-											$naviforms->buttonset(
-                                                'association',
-												array(  'free' => t(100, 'Free'),
-												        'category' => t(78, 'Category')
-                                                ),
-                                                (empty($item->id)? 'category' : $item->association),
-                                                "navigate_change_association(this);"
-                                            )
-										)
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(87, "Association").'</label>',
+			$naviforms->buttonset(
+                'association',
+                array(  'free' => t(100, 'Free'),
+                        'category' => t(78, 'Category')
+                ),
+                (empty($item->id)? 'category' : $item->association),
+                "navigate_change_association(this);"
+            )
+        )
     );
 										
 	$hierarchy = structure::hierarchy(0);
@@ -1071,10 +1083,13 @@ function items_form($item)
     if(empty($categories_list))
         $categories_list = '<ul><li value="0">'.t(428, '(no category)').'</li></ul>';
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(78, 'Category').'</label>',
-                                            $naviforms->dropdown_tree('category', $categories_list, $item->category, 'navigate_item_category_change')
-										),
-									'div_category_tree');
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(78, 'Category').'</label>',
+            $naviforms->dropdown_tree('category', $categories_list, $item->category, 'navigate_item_category_change')
+        ),
+        'div_category_tree'
+    );
 
     /*
 	$navibars->add_tab_content($naviforms->hidden('category', $item->category));
@@ -1124,23 +1139,31 @@ function items_form($item)
         }
     ');
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(162, 'Embedding').'</label>',
-											$naviforms->buttonset(	'embedding', 
-																	array( '1' => t(163, 'Embedded'),
-																		   '0' => t(164, 'Own path')
-																		 ),
-																	(empty($item->id)? '1' : intval($item->embedding)), 
-																	"navigate_change_association();"),
-											'<span id="embedding_info" class="ui-icon ui-icon-lightbulb" style="float: left;"></span>'
-										),
-									'div_category_embedded');	
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(162, 'Embedding').'</label>',
+			$naviforms->buttonset(
+                'embedding',
+                array( '1' => t(163, 'Embedded'),
+                       '0' => t(164, 'Own path')
+                     ),
+                (empty($item->id)? '1' : intval($item->embedding)),
+                "navigate_change_association();"
+            ),
+            '<span id="embedding_info" class="ui-icon ui-icon-lightbulb" style="float: left;"></span>'
+        ),
+        'div_category_embedded'
+    );
 
-    $navibars->add_tab_content_row(array(   '<label>'.t(22, 'Elements').'</label>',
-                                            '<button style="float: left;">'.t(171, 'Order').'</button>',
-                                            '<span id="order_info" class="ui-icon ui-icon-info" style="float: left;"></span>',
-                                            '<div id="items_order_window" style="display: none;"></div>'
-                                   ),
-                                   'div_category_order');
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(22, 'Elements').'</label>',
+            '<button style="float: left;">'.t(171, 'Order').'</button>',
+            '<span id="order_info" class="ui-icon ui-icon-info" style="float: left;"></span>',
+            '<div id="items_order_window" style="display: none;"></div>'
+        ),
+        'div_category_order'
+    );
 
 	$layout->add_script('
 	    $("#div_category_order button").button(
@@ -1149,7 +1172,7 @@ function items_form($item)
 	        {
                 primary: "ui-icon-arrowthick-2-n-s"
             }
-	    }).bind("click", function(e)
+	    }).on("click", function(e)
 	    {
 	        e.stopPropagation();
 	        e.preventDefault();
@@ -1248,13 +1271,16 @@ function items_form($item)
 		});
 	');
 
-	$templates = template::elements();
+	$templates = template::elements('element');
 	$template_select = $naviforms->select_from_object_array('template', $templates, 'id', 'title', $item->template);
 										                    
-	$navibars->add_tab_content_row(array(	'<label>'.t(79, 'Template').'</label>',
-											$template_select,
-										),
-								   'div_template_select');							
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(79, 'Template').'</label>',
+			$template_select,
+        ),
+		'div_template_select'
+    );
 
 	$layout->add_script('
 		var last_check = [];

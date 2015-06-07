@@ -529,7 +529,7 @@ function structure_form($item)
 		});');
     */
 
-	$templates = template::elements();
+	$templates = template::elements('structure');
 	$template_select = $naviforms->select_from_object_array('template', $templates, 'id', 'title', $item->template);
 										                    
 	$navibars->add_tab_content_row(array(	'<label>'.t(79, 'Template').'</label>',
