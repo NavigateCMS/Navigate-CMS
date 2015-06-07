@@ -246,7 +246,7 @@ class template
 		return true;
 	}		
 	
-	public static function elements()
+	public static function elements($uses="")
 	{
 		global $DB;
 		global $website;
@@ -265,16 +265,36 @@ class template
 		if(is_array($out))
 			$data = array_merge($data, $out);
 		
-		if($DB->query('SELECT id, title 
-						 FROM nv_templates 
-						 WHERE website = '.$website->id.' 
-						 ORDER BY title'))
+		if($DB->query('
+		    SELECT id, title
+			  FROM nv_templates
+			 WHERE website = '.$website->id.'
+		  ORDER BY title'))
 		{
 			$out = $DB->result();
 		}
 
 		if(is_array($out))
 			$data = array_merge($data, $out);
+
+        // clean templates not for the given use
+        // for example, don't display "blog_entry" template in the "structure" template selector
+        if(!empty($uses))
+        {
+            $uses = explode(',', $uses);
+            for($t=0; $t < count($data); $t++)
+            {
+                if(isset($data[$t]->uses) && !empty($data[$t]->uses))
+                {
+                    $template_uses = explode(',', $data[$t]->uses);
+                    $matches = array_intersect($template_uses, $uses);
+                    if(empty($matches))
+                        $data[$t] = null;
+                }
+            }
+        }
+
+        $data = array_filter($data);
 
 		return $data;
 	}

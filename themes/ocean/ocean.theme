@@ -103,6 +103,7 @@
 		{
 			"type": "home",
 			"file": "templates/home.nvt.html",
+            "uses": "structure",
             "gallery": false,
             "statistics": true,
             "sections": [
@@ -213,6 +214,7 @@
         {
 			"type": "blog",
 			"file": "templates/blog.nvt.html",
+            "uses": "structure",
 			"statistics": true,
 			"enabled": true,
 			"gallery": false,
@@ -231,6 +233,7 @@
         {
             "type": "blog_entry",
             "file": "templates/blog-entry.nvt.html",
+            "uses": "element",
             "enabled": true,
             "permission": 0,
             "statistics": true,
@@ -258,6 +261,7 @@
         {
             "type": "contact",
             "file": "templates/contact.nvt.html",
+            "uses": "structure,element",
             "enabled": true,
             "statistics": true,
             "gallery": false,
@@ -301,6 +305,7 @@
         {
             "type": "portfolio",
             "file": "templates/portfolio.nvt.html",
+            "uses": "structure",
             "enabled": true,
             "permission": 0,
             "statistics": true,
@@ -319,6 +324,7 @@
         {
             "type": "portfolio_item",
             "file": "templates/portfolio-item.nvt.html",
+            "uses": "element",
             "statistics": true,
             "tags": true,
             "gallery": false,
