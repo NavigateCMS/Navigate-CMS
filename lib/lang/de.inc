@@ -576,3 +576,4 @@
 575     # vor einem jahr
 576     # vor %y jahren
 577     # Neueste Änderungen
+578     # Es konnte keine Verbindung zu Updates

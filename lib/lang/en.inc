@@ -576,3 +576,4 @@
 575     # one year ago
 576     # %y years ago
 577     # Latest modifications
+578     # Could not connect to check updates

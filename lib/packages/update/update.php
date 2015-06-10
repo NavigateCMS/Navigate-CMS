@@ -86,6 +86,13 @@ function update_list()
 	$updates_available = update::updates_available();
 	$current_version = update::latest_installed();
 	$latest_available = update::latest_available();
+
+    if(empty($latest_available))
+    {
+        $layout->navigate_notification(t(578, "Sorry, could not connect to check updates"), true);
+        $latest_available->Version = $current_version->version;
+        $latest_available->Revision = $current_version->revision;
+    }
 	
 	if($latest_available->Revision > $current_version->revision)
 		$navibars->add_actions(	 array(	'<a href="?fid=update&act=install_next_update"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"> '.t(289, 'Update Navigate').' <img src="img/icons/silk/bullet_go.png" align="absmiddle" /> '.$updates_available[0]['Version'].' r'.$updates_available[0]['Revision'].'</a>') );

@@ -576,3 +576,4 @@
 575     # fa un any
 576     # fa %y anys
 577     # Últimas modificaciones
+578     # No s'ha pogut connectar per a comprovar les actualitzacions

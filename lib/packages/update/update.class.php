@@ -105,7 +105,17 @@ class update
 	
 	public static function latest_available()
 	{
-		$latest_update = @file_get_contents('http://update.navigatecms.com/latest');
+        $context = stream_context_create(array(
+                'http' => array(
+                    'timeout' => 20
+                )
+            )
+        );
+		$latest_update = @file_get_contents(
+            'http://update.navigatecms.com/latest',
+            0,
+            $context
+        );
 		if(empty($latest_update))
 			return false;
 		$latest_update = json_decode($latest_update);
@@ -122,8 +132,18 @@ class update
 	
 	public static function updates_available()
 	{
-		$latest_installed = update::latest_installed();	
-		$list = file_get_contents('http://update.navigatecms.com/from?revision='.$latest_installed->revision);
+		$latest_installed = update::latest_installed();
+        $context = stream_context_create(array(
+                'http' => array(
+                    'timeout' => 20
+                )
+            )
+        );
+		$list = file_get_contents(
+            'http://update.navigatecms.com/from?revision='.$latest_installed->revision,
+            0,
+            $context
+        );
 		$list = json_decode($list, true);
 		if(!$list) $list = array();
 		$list = array_values($list);
