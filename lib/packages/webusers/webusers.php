@@ -40,7 +40,12 @@ function run()
 						if(isset($_REQUEST['quicksearch']))
 							$where .= $item->quicksearch($_REQUEST['quicksearch']);
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $filters = $_REQUEST['filters'];
+                            if(is_array($filters))
+                                $filters = json_encode($filters);
+							$where .= navitable::jqgridsearch($filters);
+                        }
 						else	// single search
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
@@ -81,7 +86,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.$dataset[$i]['username'].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
-							2	=> $dataset[$i]['username'],
+                            2 	=> '<div class="list-row" data-blocked="'.$dataset[$i]['blocked'].'">'.$dataset[$i]['username'].'</div>',
 							3	=> $dataset[$i]['fullname'],
 							4	=> implode("<br />", $wug),
 							5 	=> core_ts2date($dataset[$i]['joindate'], true),
@@ -259,6 +264,7 @@ function run()
 function webusers_list()
 {
     global $events;
+    global $layout;
 
     $navibars = new navibars();
 	$navitable = new navitable("webusers_list");
@@ -277,7 +283,11 @@ function webusers_list()
         $extra_actions
     );
 
-    $navibars->add_actions(		array(	'<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'	));
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'
+        )
+    );
 
     $navibars->add_actions(
         array(
@@ -304,6 +314,95 @@ function webusers_list()
 	$navitable->addCol(t(247, 'Date joined'), 'joindate', "60", "true", "left");
 	$navitable->addCol(t(321, 'Allowed'), 'blocked', "80", "true", "center");
     $navitable->addCol(t(168, 'Notes'), 'note', "32", "false", "center");
+
+    // webuser groups filter
+    $navitable->setLoadCallback('
+        if($("#jqgh_webusers_list_groups button").length < 1)
+        {
+            $("#jqgh_webusers_list_groups").prepend("<button>");
+            $("#jqgh_webusers_list_groups button").button({
+                icons: { primary: "ui-icon-gear" },
+                text: false
+            }).css({
+                "float": "right",
+                "margin-top": "0px",
+                "padding": "3px 0px"
+            }).on("click", webusers_list_choose_groups);
+        }
+    ');
+
+    $groups = webuser_group::all_in_array();
+    $groups_html = array_map(
+        function($id, $name)
+        {
+            return '<li class="level1" data-value="g'.$id.'">'.$name.'</li>';
+        },
+        array_keys($groups),
+        array_values($groups)
+    );
+
+
+    $navibars->add_content('
+        <div id="filter_groups_window" style="display: none;">
+            <ul data-name="filter_groups_field">'.
+                implode("\n", $groups_html).'
+            </ul>
+        </div>
+    ');
+
+    $layout->add_script('
+        $("#filter_groups_window ul").jAutochecklist({
+            popup: false,
+            absolutePosition: true,
+            width: 0,
+            listWidth: 400,
+            listMaxHeight: 400,
+            onItemClick: function(nval, li, selected_before, selected_after)
+            {
+                selected_after = selected_after.join(",");
+                var filters = {
+                    "groupOp" : "AND",
+                    "rules": [
+                        {   "field" : "groups",
+                            "op" : "in",
+                            "data" : selected_after
+                        },
+                        {   "field" : "username",
+                            "op" : "cn",
+                            "data" : $("#navigate-quicksearch").val()
+                        }
+                    ]
+                };
+
+                $("#webusers_list").jqGrid("setGridParam", {
+                    search: true,
+                    postData: { "filters": filters }
+                    }
+                ).trigger("reloadGrid");
+            }
+        });');
+
+    $layout->add_script('
+        function webusers_list_choose_groups()
+        {
+            $("#navigate-quicksearch").parent().on("submit", function(){
+                $("#filter_groups_window ul").jAutochecklist("deselectAll");
+            });
+
+            $("#filter_groups_window ul").jAutochecklist("open");
+            $(".jAutochecklist_list").css({"position": "absolute"});
+            $(".jAutochecklist_list").css($("#jqgh_webusers_list_groups button").offset());
+            $(".jAutochecklist_dropdown_wrapper").hide();
+            $(".jAutochecklist_list").css({
+                "border-radius": "8px",
+                "margin-left": "-373px",
+                "margin-top": "16px"
+            });
+            $(".jAutochecklist_list").addClass("navi-ui-widget-shadow ui-menu ui-widget ui-widget-content ui-corner-all");
+
+            return false;
+        }
+    ');
 
 	$navibars->add_content($navitable->generate());	
 	
