@@ -253,9 +253,23 @@ class navitable
             case 'in': // is in
                 if(!empty($compareValue))
                 {
-                    $compare = $compareField.' IN ('.$compareValue.') ';
+                    $compareValue = explode(",", $compareValue);
+                    $compareValue = array_filter($compareValue);
+                    $compareValue = array_map(
+                        function($v)
+                        {
+                            if(is_integer($v))
+                                return $v;
+                            else
+                                return '"'.$v.'"';
+                        },
+                        $compareValue
+                    );
+
+                    $compare = $compareField.' IN ('.implode(",", $compareValue).') ';
+
                     if($returnResult)
-                        $result = in_array($compareField, explode(',', $compareValue));
+                        $result = in_array($compareField, $compareValue);
                 }
                 else
                     $compare = ' 1=1 ';
@@ -320,7 +334,7 @@ class navitable
 		if($filters->groupOp=='OR') $groupOp = ' OR ';
 		
 		$where = '';
-		
+
 		foreach($filters->rules as $rule)
 		{
 			if(empty($where)) $where =  ' AND ( ';
@@ -330,7 +344,7 @@ class navitable
 		}
 		
 		$where .= ') ';
-			
+
 		return $where;
 
 	}

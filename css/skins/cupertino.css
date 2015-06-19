@@ -1870,6 +1870,15 @@ input.naviforms-colorpicker-text
     width: 26em;
 }
 
+/* private, hidden, or disabled items */
+.list-row[data-permission="1"],
+.list-row[data-permission="2"],
+.list-row[data-enabled="0"],
+.list-row[data-blocked="1"]
+{
+    color: #777;
+}
+
 
 /* css for uix.multiselect */
 

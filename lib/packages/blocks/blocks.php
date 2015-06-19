@@ -142,7 +142,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> $block_types_list[$dataset[$i]['type']],
-							2	=> $dataset[$i]['title'],
+                            2 	=> '<div class="list-row" data-enabled="'.$dataset[$i]['enabled'].'">'.$dataset[$i]['title'].'</div>',
 							3	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							4	=> $access[$dataset[$i]['access']],
 							5	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
