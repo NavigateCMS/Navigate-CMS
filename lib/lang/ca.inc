@@ -568,12 +568,12 @@
 567     # fa una hora
 568     # fa %h hores
 569     # ahir
-570     # fa %d diess
+570     # fa %d dies
 571     # fa una setmana
 572     # fa %w setmanes
 573     # fa un mes
 574     # fa %m mesos
 575     # fa un any
 576     # fa %y anys
-577     # Últimas modificaciones
+577     # Últimes modificacions
 578     # No s'ha pogut connectar per a comprovar les actualitzacions

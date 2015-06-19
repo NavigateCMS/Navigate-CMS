@@ -300,7 +300,17 @@ function dashboard_create()
         for($e = 0; $e < 10; $e++)
         {
             if(!@$users_log[$e]) break;
-            if(empty($users_log[$e]['title'])) $users_log[$e]['title'] = '('.t(282, 'Untitled').')';
+            if(empty($users_log[$e]['title']))
+            {
+                $users_log[$e]['title'] = '('.t(282, 'Untitled').')';
+                if($users_log[$e]['function_id'] == 10) // function: Elements
+                {
+                    // try to retrieve the title, as it may be assigned later
+                    $title = $DB->query_single('text', 'nv_webdictionary', 'website = '.$website->id.' AND node_type = "item" AND node_id = '.$users_log[$e]['item_id'].' AND subtype = "title"', 'id ASC');
+                    if(!empty($title))
+                        $users_log[$e]['title'] = $title;
+                }
+            }
 
             if($users_log[$e]['action']=='save')
             {
