@@ -5,6 +5,7 @@ require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
 function nvweb_search($vars=array())
 {
 	global $website;
+    global $webuser;
 	global $DB;
 	global $current;
 	global $cache;
@@ -20,6 +21,25 @@ function nvweb_search($vars=array())
 
 	if(!empty($search_what) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
+        // LOG search request
+        $wu_id = 0;
+        if(!empty($webuser->id))
+            $wu_id = $webuser->id;
+
+        $DB->execute('
+            INSERT INTO nv_search_log
+              (id, website, date, webuser, origin, text)
+            VALUES
+              (0, :website, :date, :webuser, :origin, :text)
+        ', array(
+            'website' => $website->id,
+            'date' => time(),
+            'webuser' => $wu_id,
+            'origin' => $_SERVER['HTTP_REFERER'],
+            'text' => $search_what,
+        ));
+
+        // prepare and execute the search
 		$search_what = explode(' ', $search_what);
 		$search_what = array_filter($search_what);
 

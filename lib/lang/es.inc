@@ -577,3 +577,4 @@
 576     # hace %y años
 577     # Últimas modificaciones
 578     # No se ha podido conectar para comprobar las actualizaciones
+579     # Últimas búsquedas

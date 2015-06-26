@@ -441,7 +441,38 @@ function dashboard_create()
         '162px'
     );
 
-	
+    /* LATEST SEARCHES */
+	$sql = ' SELECT date, text, origin
+			   FROM nv_search_log
+			  WHERE website = '.$website->id.'
+		   ORDER BY date DESC
+			  LIMIT 5';
+
+	$DB->query($sql, 'array');
+	$data = $DB->result();
+
+	$data_html = '';
+    if(!empty($data))
+    {
+        for($e = 0; $e < 5; $e++)
+        {
+            if(!@$data[$e]) break;
+            $data_html .= '
+                <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
+                    '<div>'.core_ts2date($data[$e]['date']).' <img align="absmiddle" src="img/icons/silk/bullet_star.png" align="absmiddle"> '.$data[$e]['text'].'</div>'.
+                '</div>';
+        }
+
+        $navibars->add_tab_content_panel(
+            '<img src="img/icons/silk/zoom.png" align="absmiddle" /> '.t(579, 'Latest searches'),
+            $data_html,
+            'navigate-panel-latest-searches',
+            '385px',
+            '162px'
+        );
+    }
+
+
 	//$navibars->add_tab(t(62, "Statistics"));
 	
 	return $navibars->generate();
