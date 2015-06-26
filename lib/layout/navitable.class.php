@@ -423,7 +423,8 @@ class navitable
 			$html[] = 'multiselect: true,';			
 		//$html[] = 'multikey: "ctrlKey",';
 				
-		$html[] = 'autowidth: true,';	
+		$html[] = 'autowidth: true,';
+		$html[] = 'shrinkToFit: true,';
 		$html[] = 'forceFit: true,';
 
         $html[] = 'onSelectRow: function(rowid, status, e) {
@@ -460,6 +461,7 @@ class navitable
 			    // update row background
 			    $("#" + el).trigger("mouseenter").trigger("mouseleave");
             });
+            $("#'.$this->id.'").jqGrid("setGridWidth", $("#navigate-content").width());
 			'.$this->load_callback.'
 		},';
 

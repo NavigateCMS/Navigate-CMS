@@ -1277,9 +1277,26 @@ label.ui-state-active #navigate_media_browser_folder_path
     overflow: visible;
 }
 
+/* jqGrid styles */
+
 .ui-jqgrid-view
 {
     text-overflow: ellipsis;
+}
+
+.ui-jqgrid .ui-jqgrid-pager.ui-state-default
+{
+    border-top: 1px solid #aed0ea;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td
+{
+    padding: 4px;
+}
+
+.ui-jqgrid .ui-jqgrid-htable .ui-jqgrid-labels th div
+{
+    padding: 2px;
 }
 
 
