@@ -1116,6 +1116,8 @@ class file
             if(empty($mime))
                 $mime = file::getMime($target_name, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
 
+            $target_name = rawurldecode($target_name);
+
             $file = new file();
             $file->id = 0;
             $file->website = $website->id;
