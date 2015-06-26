@@ -209,37 +209,46 @@ class webuser
         if($groups == 'g')
             $groups = '';
 
-		$ok = $DB->execute(' INSERT INTO nv_webusers
-								(	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
-									language, country, timezone, address, zipcode, location, phone, social_website,
-									joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, blocked)
-								VALUES 
-								( 0,
-								  '.protect($website->id).',
-								  '.protect($this->username).',
-								  '.protect($this->password).',
-								  '.protect($this->email).',
-								  '.protect($groups).',
-								  '.protect($this->fullname).',
-								  '.protect($this->gender).',								  
-								  '.protect($this->avatar).',								  
-								  '.protect($this->birthdate).',
-								  '.protect($this->language).',
-								  '.protect($this->country).',
-								  '.protect($this->timezone).',
-								  '.protect($this->address).',
-								  '.protect($this->zipcode).',
-								  '.protect($this->location).',
-								  '.protect($this->phone).',
-								  '.protect($this->social_website).',
-								  '.protect(core_time()).',
-								  '.protect(0).',
-								  '.protect($this->newsletter).',
-								  '.protect($this->private_comment).',
-								  '.protect($this->activation_key).',
-								  '.protect($this->cookie_hash).',
-								  '.protect($this->blocked).'				  
-								)');							
+		$ok = $DB->execute(' 
+		    INSERT INTO nv_webusers
+                (	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
+                    language, country, timezone, address, zipcode, location, phone, social_website,
+                    joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, blocked
+                )
+                VALUES 
+                (
+                    :id, :website, :username, :password, :email, :groups, :fullname, :gender, :avatar, :birthdate,
+                    :language, :country, :timezone, :address, :zipcode, :location, :phone, :social_website,
+                    :joindate, :lastseen, :newsletter, :private_comment, :activation_key, :cookie_hash, :blocked
+                )',
+            array(
+                ":id" => 0,
+                ":website" => $website->id,
+                ":username" => is_null($this->username)? '' : $this->username,
+                ":password" => is_null($this->password)? '' : $this->password,
+                ":email" => $this->email,
+                ":groups" => $groups,
+                ":fullname" => $this->fullname,
+                ":gender" => is_null($this->gender)? '' : $this->gender,
+                ":avatar" => $this->avatar,
+                ":birthdate" => $this->birthdate,
+                ":language" => $this->language,
+                ":country" => $this->country,
+                ":timezone" => $this->timezone,
+                ":address" => $this->address,
+                ":zipcode" => $this->zipcode,
+                ":location" => $this->location,
+                ":phone" => $this->phone,
+                ":social_website" => $this->social_website,
+                ":joindate" => core_time(),
+                ":lastseen" => 0,
+                ":newsletter" => $this->newsletter,
+                ":private_comment" => $this->private_comment,
+                ":activation_key" => is_null($this->activation_key)? '' : $this->activation_key,
+                ":cookie_hash" => is_null($this->cookie_hash)? '' : $this->cookie_hash,
+                ":blocked" => $this->blocked
+            )
+        );							
 				
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -273,33 +282,62 @@ class webuser
         if($groups == 'g')
             $groups = '';
 
-		$ok = $DB->execute(' UPDATE nv_webusers
-								SET
-								  website = '.protect($this->website).',
-								  username = '.protect($this->username).',
-								  password = '.protect($this->password).',
-								  email = '.protect($this->email).',
-								  groups = '.protect($groups).',
-								  fullname = '.protect($this->fullname).',
-								  gender = '.protect($this->gender).',
-								  avatar = '.protect($this->avatar).',								  
-								  birthdate = '.protect($this->birthdate).',
-								  language = '.protect($this->language).',
-								  lastseen = '.protect($this->lastseen).',
-								  country = '.protect($this->country).',
-								  timezone = '.protect($this->timezone).',
-								  address = '.protect($this->address).',
-								  zipcode = '.protect($this->zipcode).',
-								  location = '.protect($this->location).',
-								  phone	= '.protect($this->phone).',
-								  social_website = '.protect($this->social_website).',
-								  newsletter = '.protect($this->newsletter).',
-								  private_comment = '.protect($this->private_comment).',
-								  activation_key = '.protect($this->activation_key).',
-								  cookie_hash = '.protect($this->cookie_hash).',
-								  blocked = '.protect($this->blocked).'
-                 				WHERE id = '.protect($this->id));
-		
+		$ok = $DB->execute('
+		    UPDATE nv_webusers
+                SET
+                  website = :website,
+                  username = :username,
+                  password = :password,
+                  email = :email,
+                  groups = :groups,
+                  fullname = :fullname,
+                  gender = :gender,
+                  avatar = :avatar,
+                  birthdate = :birthdate,
+                  language = :language,
+                  lastseen = :lastseen,
+                  country = :country,
+                  timezone = :timezone,
+                  address = :address,
+                  zipcode = :zipcode,
+                  location = :location,
+                  phone	= :phone,
+                  social_website = :social_website,
+                  newsletter = :newsletter,
+                  private_comment = :private_comment,
+                  activation_key = :activation_key,
+                  cookie_hash = :cookie_hash,
+                  blocked = :blocked
+                WHERE id = :id
+            ',
+            array(
+                ':website' => $this->website,
+                ':username' => $this->username,
+                ':password' => $this->password,
+                ':email' => $this->email,
+                ':groups' => $groups,
+                ':fullname' => $this->fullname,
+                ':gender' => $this->gender,
+                ':avatar' => $this->avatar,
+                ':birthdate' => $this->birthdate,
+                ':language' => $this->language,
+                ':lastseen' => $this->lastseen,
+                ':country' => $this->country,
+                ':timezone' => $this->timezone,
+                ':address' => $this->address,
+                ':zipcode' => $this->zipcode,
+                ':location' => $this->location,
+                ':phone'	=> $this->phone,
+                ':social_website' => $this->social_website,
+                ':newsletter' => $this->newsletter,
+                ':private_comment' => $this->private_comment,
+                ':activation_key' => $this->activation_key,
+                ':cookie_hash' => $this->cookie_hash,
+                ':blocked' => $this->blocked,
+                ':id' => $this->id
+            )
+        );
+
 		if(!$ok) throw new Exception($DB->get_last_error());
 
         $events->trigger(
@@ -367,11 +405,11 @@ class webuser
 	public function set_cookie()
 	{
 		global $session;
-		
+
 		$session['webuser'] = $this->id;
 		$this->cookie_hash = sha1(rand(1, 9999999));
 		$this->update();
-		setcookie('webuser', $this->cookie_hash, time()+60*60*24*365, '/', substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."))); // 365 days		
+		setcookie('webuser', $this->cookie_hash, time()+60*60*24*365, '/', substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."))); // 365 days
 	}
 	
 	public static function unset_cookie()
@@ -528,7 +566,7 @@ class webuser
             WHERE website = '.protect($website->id), 'array');
 
         $fields = array(
-            "ID",
+            "id",
             t(177, 'Website').' [NV]',
             t(1, 'User'),
             t(44, 'E-Mail'),
