@@ -70,7 +70,14 @@ function run()
 						if(isset($_REQUEST['quicksearch']))
 							$where .= $item->quicksearch($_REQUEST['quicksearch']);
 						else if(isset($_REQUEST['filters']))
+                        {
 							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                            // special case
+                            if( strpos($where, 'title LIKE')!== false)
+                            {
+                                $where = substr_replace($where, 'd.text', strpos($where, 'title LIKE'), 5);
+                            }
+                        }
 						else	// single search
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
@@ -88,7 +95,7 @@ function run()
 						   ORDER BY '.$orderby.' 
 							  LIMIT '.$max.'
 							 OFFSET '.$offset;
-				
+
 					if(!$DB->query($sql, 'array'))
 					{
 						throw new Exception($DB->get_last_error());	
