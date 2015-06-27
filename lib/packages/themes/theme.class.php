@@ -646,11 +646,14 @@ class theme
             $tmp->load($a_block_groups[$i]);
             $block_groups[$tmp->id] = $tmp;
 
-            foreach($tmp->blocks as $bgb)
+            if(is_array($tmp->blocks))
             {
-                if(!is_numeric($bgb))
+                foreach($tmp->blocks as $bgb)
                 {
-                    $properties['block_group_block'][$a_block_groups[$i]][$bgb] = property::load_properties($bgb, $tmp->code, 'block_group_block', $bgb);
+                    if(!is_numeric($bgb))
+                    {
+                        $properties['block_group_block'][$a_block_groups[$i]][$bgb] = property::load_properties($bgb, $tmp->code, 'block_group_block', $bgb);
+                    }
                 }
             }
 
