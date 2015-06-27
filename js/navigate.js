@@ -1234,9 +1234,12 @@ function phpjs_utf8_encode(argString)
 
 
 
-function navigate_query_parameter(name)
+function navigate_query_parameter(name, url)
 {
-	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if(!url)
+        url = window.location.href;
+
+	var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
 	if (!results) { return 0; }
 	return results[1] || 0;
 }

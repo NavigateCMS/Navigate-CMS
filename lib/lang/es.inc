@@ -578,3 +578,4 @@
 577     # Últimas modificaciones
 578     # No se ha podido conectar para comprobar las actualizaciones
 579     # Últimas búsquedas
+580     # Se usa en esta página

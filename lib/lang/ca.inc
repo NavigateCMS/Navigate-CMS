@@ -578,3 +578,4 @@
 577     # Últimes modificacions
 578     # No s'ha pogut connectar per a comprovar les actualitzacions
 579     # Últimes cerques
+580     # S'utilitza en aquesta pàgina

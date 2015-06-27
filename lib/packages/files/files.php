@@ -1205,6 +1205,7 @@ function files_media_browser($limit = 50, $offset = 0)
 			               navipath="'.$navipath.'"
 			               download-link="'.$download_link.'"
 			               id="file-'.$f->id.'">
+			               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 			               <img src="'.$icon.'" width="50" height="50" />
                            <span style="clear: both; display: block; height: 0px;"></span>'.
                            $f->name.'

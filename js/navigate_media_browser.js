@@ -153,6 +153,7 @@ function navigate_media_browser_refresh()
         stop: function(event, ui)
         {
             $(ui.helper).find('div.file-access-icons').show();
+            navigate_media_browser_refresh_files_used();
         }
 	});
 
@@ -352,6 +353,68 @@ function navigate_media_browser_refresh()
 
         return false;
     });
+
+    navigate_media_browser_refresh_files_used();
+}
+
+function navigate_media_browser_refresh_files_used()
+{
+    // find images and files used in the current page and put a mark on them
+    // files can be used in: properties (navigate-droppable), content, galleries
+
+    // 1. remove all existing marks
+    $("#navigate_media_browser_items").find(".file-access-icons").find(".file-used").remove();
+    var files_used = [];
+
+    // 2. find files used in properties
+    $(".navigate-droppable").each(function()
+    {
+        files_used.push($(this).parent().find('input').val());
+    });
+
+    // 3. find files used in galleries
+    var gallery_items = $(".items-gallery").parents(".ui-tabs-panel").find("input");
+    if($(gallery_items))
+    {
+        gallery_items = $(gallery_items).val();
+        if(gallery_items && gallery_items != "")
+        files_used = files_used.concat(gallery_items.split("#"));
+    }
+
+    // 4. find files used in content
+    $(".navigate-form-row textarea").each(function()
+    {
+        var text = '<div>' + $(this).val() + '</div>'; // force having html code
+        // find all occurrences of "navigate_download.php" and "/object" in images and links
+        $(text).find("img,a").each(function()
+        {
+            var link = $(this).attr("src");
+            if(!link)
+                link = $(this).attr("href");
+
+            if( link.indexOf("/navigate_download.php") > -1   ||
+                link.indexOf("/object") > -1 )
+            {
+                // find file id value
+                files_used.push(navigate_query_parameter('id', link));
+            }
+        });
+    });
+
+    // 5. clean array
+    files_used = files_used.filter (function (v, i, a) { return a.indexOf (v) == i });
+
+    // 6. put a mark on each file used
+    for(i in files_used)
+    {
+        if(!files_used[i] || files_used[i]=="")
+            continue;
+
+        $("#navigate_media_browser_items")
+            .find("#file-" + files_used[i])
+            .find(".file-access-icons")
+            .append('<img align="absmiddle" class="file-used" title="'+navigate_t(580, "Used in this page")+'" src="img/icons/silk/tick.png">');
+    }
 }
 
 function navigate_contextmenu_permissions_dialog(file_id, trigger)
