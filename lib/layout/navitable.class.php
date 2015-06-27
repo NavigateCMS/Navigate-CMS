@@ -10,6 +10,7 @@ class navitable
 	public $edit_index;
 	public $edit_url;
     public $delete_url;
+    public $quicksearch_url;
 	public $initial_url;
 	public $data_index;
 	public $click_action;
@@ -113,7 +114,7 @@ class navitable
 			if(empty($edit['rules'])) $edit['rules'] = '{}';
 			if(empty($edit['form'])) $edit['form'] = '{}';			
 			
-			$newcol		 = '{	label: "'.$label.'", 
+			$newcol		 = '{	label: "'.$label.'",
 								name: "'.$index.'", 
 								index : "'.$sortby.'", 
 								width : "'.$width.'", 
@@ -550,6 +551,7 @@ class navitable
 			url: "'.$this->url.'"
 		});';
 
+
         // enable multiple row selection with shift key
         // the following code is adapted from:
         // http://stackoverflow.com/questions/11174499/shift-click-jqgrid-multiselect-missing-last-row
@@ -613,6 +615,16 @@ class navitable
                     }
                 }
                 return true;
+            },
+            beforeRequest: function()
+            {
+                var filters = $("#'.$this->id.'").jqGrid("getGridParam", "postData").filters;
+                if(filters)
+                {
+                    // remove quicksearch text field and restore grid search url
+                    $("#navigate-quicksearch").val("");
+                    $("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$this->url.'" });
+                }
             }
 		});';
 
@@ -658,15 +670,17 @@ class navitable
 			$html[] = '}';
 		}
 
-        $quicksearch_url = '?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=';
+        $this->quicksearch_url = '?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=';
         if(strpos($this->default_fid, 'ext_')===0)
-            $quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
+            $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
 
 		$html[] = 'function navitable_quicksearch(text)';
 		$html[] = '{';
-		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$quicksearch_url.'" + text });';
+		$html[] = '     $("#'.$this->id.'").jqGrid("setGridParam", { postData: { filters: null} });'; // remove current search filters
+		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$this->quicksearch_url.'" + text });';
 		$html[] = '		$("#'.$this->id.'").trigger("reloadGrid");';
-		$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$this->url.'" });';	
+        // disable original search URL to allow table sorting based on quicksearch
+		//$html[] = '		$("#'.$this->id.'").jqGrid("setGridParam", { url: "'.$this->url.'" });';
 		$html[] = '}';
 
 		$html[] = "

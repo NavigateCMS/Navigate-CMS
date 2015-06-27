@@ -694,9 +694,13 @@ function items_list()
 	
 	$navibars->title(t(22, 'Items'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 	
 	if($_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
@@ -759,20 +763,24 @@ function items_list()
                 var filters = {
                     "groupOp" : "AND",
                     "rules": [
-                        {   "field" : "category",
+                        {
+                            "field" : "category",
                             "op" : "in",
                             "data" : selected_after
                         },
-                        {   "field" : "title",
+                        {
+                            "field" : "title",
                             "op" : "cn",
                             "data" : $("#navigate-quicksearch").val()
                         }
                     ]
                 };
 
-                $("#items_list").jqGrid("setGridParam", {
-                    search: true,
-                    postData: { "filters": filters }
+                $("#items_list").jqGrid(
+                    "setGridParam",
+                    {
+                        search: true,
+                        postData: { "filters": filters }
                     }
                 ).trigger("reloadGrid");
             }
