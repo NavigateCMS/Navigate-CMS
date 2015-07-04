@@ -109,8 +109,9 @@ class theme
 	{
         global $DB;
 		global $user;
+		global $webuser;
         global $website;
-        global $current;
+        global $session;
 
 		if(empty($this->dictionary))
 		{
@@ -122,7 +123,9 @@ class theme
 
             // if we are in Navigate CMS, user has the default language
             // if we call this function from the website, the session has the default language
-            $current_language = (empty($user)? $current['lang'] : $user->language);
+            $current_language = $session['lang'];
+            if(empty($current_language) && !empty($webuser)) $current_language = $webuser->language;
+            if(empty($current_language) && !empty($user)) $current_language = $user->language;
 
 			foreach($theme_languages as $lcode => $lfile)
 			{
