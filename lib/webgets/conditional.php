@@ -116,20 +116,86 @@ function nvweb_conditional($vars=array())
     // now, parse the conditional tags (with html source code inside)
     if($vars['by']=='property')
     {
-        if(empty($vars['property_id']))
-            $property_value = $item->property($vars['property_name']);
-        else
-            $property_value = $item->property($vars['property_id']);
+        $property_value = NULL;
+        $property_name = $vars['property_name'];
+        if(empty($vars['property_name']))
+            $property_name = $vars['property_id'];
 
-        if($property_value == $vars['property_value'])
+        if($vars['property_scope'] == "element")
         {
-            // parse the contents of this condition on this round
-            $out = $item_html;
+            $property_value = $item->property($vars['property_name']);
+        }
+        else if($vars['property_scope'] == "structure")
+        {
+            $property = nvweb_properties(array('mode' => 'structure', 'property' => $vars['property_name'], 'return' => 'object'));
+            if(!empty($property))
+                $property_value = $property->value;
+        }
+        else if($vars['property_scope'] == "website")
+        {
+            $property_value = $website->theme_options->{$vars['property_name']};
         }
         else
         {
-            // remove this conditional html code on this round
-            $out = '';
+            // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
+            // element
+            $property_value = $item->property($vars['property_name']);
+            if(!isset($item->properties->{$vars['property_name']}))
+            {
+                // structure
+                $property = nvweb_properties(array('mode' => 'structure', 'property' => $vars['property_name'], 'return' => 'object'));
+                if(!empty($property))
+                    $property_value = $property->value;
+                else
+                {
+                    // website
+                    $property_value = $website->theme_options->{$vars['property_name']};
+                }
+            }
+        }
+
+
+        if(isset($vars['property_value']))
+        {
+            if($property_value == $vars['property_value'])
+            {
+                // parse the contents of this condition on this round
+                $out = $item_html;
+            }
+            else
+            {
+                // remove this conditional html code on this round
+                $out = '';
+            }
+        }
+        else if(isset($vars['property_empty']))
+        {
+            if($vars['property_empty']=='true')
+            {
+                if(empty($property_value))
+                {
+                    // parse the contents of this condition on this round
+                    $out = $item_html;
+                }
+                else
+                {
+                    // remove this conditional html code on this round
+                    $out = '';
+                }
+            }
+            else if($vars['property_empty']=='false')
+            {
+                if(!empty($property_value))
+                {
+                    // parse the contents of this condition on this round
+                    $out = $item_html;
+                }
+                else
+                {
+                    // remove this conditional html code on this round
+                    $out = '';
+                }
+            }
         }
     }
     else if($vars['by']=='template' || $vars['by']=='templates')
