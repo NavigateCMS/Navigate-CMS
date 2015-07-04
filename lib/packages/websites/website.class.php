@@ -41,7 +41,7 @@ class website
 	public $theme_options;
 	
 	public $languages_list;
-	
+
 	public function load($id="")
 	{
 		global $DB;
@@ -770,6 +770,7 @@ class website
 
         return $out;
     }
+
 
     public function windows_locales()
     {

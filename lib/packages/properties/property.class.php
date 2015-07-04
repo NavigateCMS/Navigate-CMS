@@ -93,7 +93,7 @@ class property
         if(empty($this->type))
             $this->type = 'value';
 
-        if(empty($this->element))
+        if(empty($this->element) || $this->element == 'element')
             $this->element = 'item';
 		
 		if(isset($_REQUEST['property-position']))
@@ -160,7 +160,7 @@ class property
                     }
                 }
 
-                if(empty($theme_option->element))
+                if(empty($theme_option->element) || $theme_option->element == 'element')
                     $theme_option->element = 'item';
             }
         }
@@ -429,8 +429,10 @@ class property
                     // if we want all properties, no matter the element assigned or
                     // if the property is not assigned to an element, we assume "item", or
                     // if the property is assigned to an element, we check it
+                    // note: in this case, "element" is an alias of "item"
                     if( empty($element) ||
                         ($element == 'item' && empty($template_properties[$p]->element)) ||
+                        ($element == 'item' && $template_properties[$p]->element=="element") ||
                         $template_properties[$p]->element == $element
                     )
                         $data[] = $template_properties[$p];
