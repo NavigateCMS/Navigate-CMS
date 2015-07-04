@@ -160,7 +160,10 @@ function nvweb_properties($vars=array())
 			{
 				if($property->id == $vars['property'] || $property->name == $vars['property'])
 				{
-					$out = nvweb_properties_render($property, $vars);
+                    if($vars['return']=='object')
+                        $out = $property;
+                    else
+					    $out = nvweb_properties_render($property, $vars);
 					break;	
 				}
 			}			
@@ -203,7 +206,7 @@ function nvweb_properties($vars=array())
 			}
 			else if($current['type']=='article')
 			{
-				// to do	
+				// TO DO
 			}
 
 			// now we find the property requested
@@ -345,9 +348,22 @@ function nvweb_properties_render($property, $vars)
                 $link = $website->absolute_path() . $link;
 
             if($vars['link']==='false')
+            {
 				$out = $link;
-			else
+            }
+			else if(isset($vars['return']))
+            {
+                if($vars['return']=='title')
+                    $out = $title;
+                else if($vars['return']=='link' || $vars['return']=='url')
+                    $out = $link;
+                else if($vars['return']=='target')
+                    $out = $target;
+            }
+            else
+            {
 				$out = '<a href="'.$link.'" target="'.$target.'">'.$title.'</a>';
+            }
 			break;
 			
 		case 'image':
