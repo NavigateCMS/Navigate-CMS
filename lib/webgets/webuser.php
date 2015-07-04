@@ -119,31 +119,68 @@ function nvweb_webuser($vars=array())
             if(!empty($vars['email_field']) && !empty($email))
             {
                 $ok = false;
-                $wu_id = $DB->query_single(
-                    'id',
-                    'nv_webusers',
-                    ' email = '.protect($email).'
-                      AND website = '.$website->id
-                );
 
-                if(!empty($wu_id))
+                if(filter_var($email, FILTER_VALIDATE_EMAIL)!==FALSE)
                 {
-                    $wu = new webuser();
-                    $wu->load($wu_id);
-                    $wu->newsletter = 1;
-                    $ok = $wu->save();
-                }
-                else
-                {
-                    // create a new webuser account with that email
-                    $wu = new webuser();
-                    $wu->id = 0;
-                    $wu->website = $website->id;
-                    $wu->email = $email;
-                    $wu->newsletter = 1;
-                    $wu->language = $current['lang']; // infer the webuser language by the active website language
-                    $wu->username = substr($email, 0, strpos($email, '@'));
-                    $ok = $wu->save();
+                    $wu_id = $DB->query_single(
+                        'id',
+                        'nv_webusers',
+                        ' email = '.protect($email).'
+                          AND website = '.$website->id
+                    );
+
+                    if(!empty($wu_id))
+                    {
+                        $wu = new webuser();
+                        $wu->load($wu_id);
+                        $wu->newsletter = 1;
+                        $ok = $wu->save();
+                    }
+                    else
+                    {
+                        // create a new webuser account with that email
+                        $username = substr($email, 0, strpos($email, '@')); // left part of the email
+                        // if proposed username already exists,
+                        // use the email as username
+                        // ** if the email already exists, the subscribe process only updates the newsletter setting!
+                        $wu_id = $DB->query_single(
+                            'id',
+                            'nv_webusers',
+                            ' username = '.protect($username).'
+                          AND website = '.$website->id
+                        );
+
+                        if(!empty($wu_id))
+                        {
+                            // oops, user already exists... try another username -- the email
+                            $wu_id = $DB->query_single(
+                                'id',
+                                'nv_webusers',
+                                ' username = '.protect($email).'
+                                    AND website = '.$website->id
+                            );
+
+                            if(empty($wu_id))
+                            {
+                                // ok, email is a new username
+                                $username = $email;
+                            }
+                            else
+                            {
+                                // nope, email is already used (this code should never execute**)
+                                $username = uniqid($username.'-');
+                            }
+                        }
+
+                        $wu = new webuser();
+                        $wu->id = 0;
+                        $wu->website = $website->id;
+                        $wu->email = $email;
+                        $wu->newsletter = 1;
+                        $wu->language = $current['lang']; // infer the webuser language by the active website language
+                        $wu->username = $username;
+                        $ok = $wu->save();
+                    }
                 }
 
                 $message = $webgets[$webget]['translations']['subscribe_error'];
