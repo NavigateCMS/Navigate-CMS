@@ -198,7 +198,8 @@ try
 	$html = str_replace('</body>', $end, $html);
 	
 	$html = nvweb_template_tweaks($html);
-	$html = nvweb_plugins_event('after_parse', $html);
+    $events->trigger('theme', 'after_parse', array('html' => &$html));
+    $html = nvweb_plugins_event('after_parse', $html);
 
 	$_SESSION['nvweb.'.$website->id] = $session;
 	session_write_close();
