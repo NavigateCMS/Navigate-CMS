@@ -769,9 +769,20 @@ class file
 		
 		return ($frames > 1);
 	}
-	
+
+    // $item: file ID or file object
 	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95)
-	{	
+	{
+        if(is_numeric($item))
+        {
+            $f = new file();
+            $f->load($item);
+            $item = $f;
+        }
+
+        if(!get_class($item)=='file')
+            return;
+
 		$original  = $item->absolute_path();
 		$thumbnail = '';
 
