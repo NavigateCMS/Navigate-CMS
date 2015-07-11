@@ -7,6 +7,7 @@ require_once(NAVIGATE_PATH.'/lib/core/user.class.php');
 require_once(NAVIGATE_PATH.'/lib/core/events.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
 require_once(NAVIGATE_PATH.'/lib/layout/layout.class.php');
 require_once(NAVIGATE_PATH.'/lib/layout/navibars.class.php');
 require_once(NAVIGATE_PATH.'/lib/layout/naviforms.class.php');

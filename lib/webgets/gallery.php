@@ -23,7 +23,7 @@ function nvweb_gallery($vars=array())
     $order = 'priority'; // display images using the assigned priority
     if(!empty($vars['order']))
         $order = $vars['order'];
-	
+
 	if(!empty($vars['item']))
 	{
         if(is_object($vars['item']))
@@ -45,11 +45,12 @@ function nvweb_gallery($vars=array())
 	}
 	else if($current['type']=='structure')
 	{
-		$DB->query('	SELECT id, permission, date_published, date_unpublish
-						  FROM nv_items
-						 WHERE category = '.protect($current['object']->id).'
-						   AND website = '.$website->id.'
-				   ');
+		$DB->query('
+		    SELECT id, permission, date_published, date_unpublish
+              FROM nv_items
+             WHERE category = '.protect($current['object']->id).'
+               AND website = '.$website->id.'
+        ');
 		$rs = $DB->first();
 		$enabled = nvweb_object_enabled($rs);
 
@@ -78,6 +79,7 @@ function nvweb_gallery($vars=array())
 	switch(@$vars['mode'])
 	{
         case 'image':
+
             // TO DO: add alt and title to the image
             if(is_array($item->galleries))
                 $gallery = $item->galleries[0];
@@ -103,7 +105,13 @@ function nvweb_gallery($vars=array())
                 return '';
 
             if(!empty($vars['return']) && $vars['return']=='url')
+            {
                 $out[] = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline';
+            }
+            else if(!empty($vars['return']) && $vars['return']=='thumbnail')
+            {
+                $out[] = '<img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />';
+            }
             else
                 $out[] = '<div class="nv_gallery_item">
                             <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
