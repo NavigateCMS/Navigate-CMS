@@ -180,55 +180,39 @@ function nvweb_content($vars=array())
 			if($current['type']=='item')
 			{
 				// check publishing is enabled
-				$enabled = nvweb_object_enabled($current['object']);				
-								
+				$enabled = nvweb_object_enabled($current['object']);
+                $texts = NULL;
+
+                // retrieve last saved text (is a preview request from navigate)
 				if($_REQUEST['preview']=='true' && $current['navigate_session']==1)
-				{
-					// retrieve last saved text (is a preview request from navigate)
-					$texts = webdictionary_history::load_element_strings('item', $current['object']->id, 'latest');	
-					
-					foreach($template->sections as $tsection)
-					{
-						if($tsection['code'] == $vars['section'])
-						{
-							switch($tsection['editor'])
-							{
-								case 'raw':
-									$out = nl2br($texts[$current['lang']][$section]);
-									break;								
-								case 'html':
-								case 'tinymce':								
-								default:
-									$out = $texts[$current['lang']][$section];	
-									break;
-							}
-							break;	
-						}
-					}
-				}
-				else if($enabled)	// last approved text
-				{
+					$texts = webdictionary_history::load_element_strings('item', $current['object']->id, 'latest');
+                // or last approved/saved text
+				else if($enabled)
 					$texts = webdictionary::load_element_strings('item', $current['object']->id);
 
-					foreach($template->sections as $tsection)
-					{
-						if($tsection['code'] == $vars['section'])
-						{
-							switch($tsection['editor'])
-							{
-								case 'raw':
-									$out = nl2br($texts[$current['lang']][$section]);
-									break;								
-								case 'html':
-								case 'tinymce':								
-								default:
-									$out = $texts[$current['lang']][$section];	
-									break;
-							}
-							break;	
-						}
-					}
-				}
+                // have we found any content?
+                if(!empty($texts))
+                {
+                    foreach($template->sections as $tsection)
+                    {
+                        if($tsection['code'] == $vars['section'])
+                        {
+                            switch($tsection['editor'])
+                            {
+                                case 'raw':
+                                    $out = nl2br($texts[$current['lang']][$section]);
+                                    break;
+                                case 'html':
+                                case 'tinymce':
+                                default:
+                                    $out = $texts[$current['lang']][$section];
+                                    break;
+                            }
+                            break;
+                        }
+                    }
+
+                }
 			}
 			else if($current['type']=='structure')
 			{
