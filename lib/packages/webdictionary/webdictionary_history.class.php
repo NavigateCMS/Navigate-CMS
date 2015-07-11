@@ -10,7 +10,10 @@ class webdictionary_history
         $changed = false;
 
 	    if(empty($node_id)) throw new Exception('ERROR webdictionary: No ID!');
-							  
+
+        if(!is_array($dictionary))
+            $dictionary = array();
+
 		foreach($dictionary as $lang => $item)
 		{
 			foreach($item as $subtype => $litem)

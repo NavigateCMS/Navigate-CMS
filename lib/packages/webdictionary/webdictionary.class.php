@@ -248,6 +248,8 @@ class webdictionary
         );
 							  
 		// and now insert the new values
+        if(!is_array($dictionary))
+            $dictionary = array();
 		foreach($dictionary as $lang => $item)
 		{
 			foreach($item as $subtype => $litem)
