@@ -181,7 +181,15 @@ function nvweb_search($vars=array())
                     else if(isset($tag['attributes']['template']))
                         $templates = array($tag['attributes']['template']);
 
-                    if(in_array($item->template, $templates))
+                    $item_template = $item->template;
+                    if($item->embedding==1) // check parent's template
+                    {
+                        $parent = new structure();
+                        $parent->load($item->category);
+                        $item_template = $parent->template;
+                    }
+
+                    if(in_array($item_template, $templates))
                     {
                         // the template matches the condition, apply
                         $item_html = str_replace($tag['full_tag'], $tag['contents'], $item_html);
