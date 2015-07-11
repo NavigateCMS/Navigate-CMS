@@ -270,6 +270,81 @@ function nvweb_list($vars=array())
             $total = count($rs);
         }
     }
+    else if($vars['source']=='gallery')
+    {
+        if(!isset($vars['nvlist_parent_type']))
+        {
+            // get gallery of the current item
+            if($current['type']=='item')
+            {
+                $rs = $current['object']->galleries[0];
+                $total = count($rs);
+            }
+            else if($current['type']=='structure')
+            {
+                // we need the first item assigned to the structure
+                $access_extra_items = str_replace('s.', 'i.', $access_extra);
+
+                // default source for retrieving items (embedded or not)
+                $DB->query('
+                    SELECT SQL_CALC_FOUND_ROWS i.id
+                      FROM nv_items i, nv_structure s, nv_webdictionary d
+                     WHERE i.category IN('.implode(",", $categories).')
+                       AND i.website = '.$website->id.'
+                       AND i.permission <= '.$permission.'
+                       AND (i.date_published = 0 OR i.date_published < '.core_time().')
+                       AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
+                       AND s.id = i.category
+                       AND (s.date_published = 0 OR s.date_published < '.core_time().')
+                       AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+                       AND s.permission <= '.$permission.'
+                       AND (s.access = 0 OR s.access = '.$access.$access_extra.')
+                       AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
+                       AND d.website = i.website
+                       AND d.node_type = "item"
+                       AND d.subtype = "title"
+                       AND d.node_id = i.id
+                       AND d.lang = '.protect($current['lang']).'
+                     '.$exclude.'
+                     ORDER BY i.position ASC
+                     LIMIT 1
+                ');
+
+                $rs = $DB->result();
+                $tmp = new item();
+                $tmp->load($rs[0]->id);
+
+                $rs = $tmp->galleries[0];
+                $total = count($rs);
+            }
+        }
+        else if($vars['nvlist_parent_type'] == 'item')
+        {
+            $pitem = $vars['nvlist_parent_item'];
+            $rs = $pitem->galleries[0];
+            $total = count($rs);
+        }
+
+        if($total > 0)
+        {
+            $order = 'priority'; // display images using the assigned priority
+            if(!empty($vars['order']))
+                $order = $vars['order'];
+
+            $rs = nvweb_gallery_reorder($rs, $order);
+
+            // prepare format to be parsed by nv list iterator
+            $rs = array_map(
+                function($k, $v)
+                {
+                    $v['file'] = $k;
+                    return $v;
+                },
+                array_keys($rs),
+                array_values($rs)
+            );
+        }
+    }
     else if($vars['source']=='rss')
     {
         list($rs, $total) = nvweb_list_get_from_rss($vars['url'], @$vars['cache'], $offset, $vars['items'], $permission, $order);
@@ -368,13 +443,16 @@ function nvweb_list($vars=array())
 
     // now we have all elements that will be shown in the list
     // let's apply the nvlist template to each one
-
 	for($i = 0; $i < count($rs); $i++)
 	{
-		if(empty($rs[$i]->id)) break;
+        // ignore empty objects
+		if(
+            ($vars['source']!='gallery' && empty($rs[$i]->id))  ||
+            ($vars['source']=='gallery' && empty($rs[$i]['file']))
+        )
+            continue;
 
         // prepare a standard  $item  with the current element
-
 		if($vars['source']=='comments' || $vars['source']=='comment')
 		{
 			$item = $rs[$i];
@@ -391,6 +469,10 @@ function nvweb_list($vars=array())
             $item = $rs[$i];
         }
         else if($vars['source']=='block' || $vars['source']=='block_group')
+        {
+            $item = $rs[$i];
+        }
+        else if($vars['source']=='gallery')
         {
             $item = $rs[$i];
         }
@@ -461,6 +543,8 @@ function nvweb_list($vars=array())
         foreach($nested_lists_fragments as $nested_list_uid => $nested_list_vars)
         {
             $nested_list_vars['nvlist_parent_vars'] = $vars;
+            $nested_list_vars['nvlist_parent_type'] = $vars['source'];
+            $nested_list_vars['nvlist_parent_item'] = $item;
             $content = nvweb_list($nested_list_vars);
             $item_html = str_replace('<!--#'.$nested_list_uid.'#-->', $content, $item_html);
         }
@@ -727,6 +811,28 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
                 default:
+                    break;
+            }
+            break;
+
+        case 'gallery':
+            switch($tag['attributes']['value'])
+            {
+                case 'url':
+                case 'path':
+                    $out = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline';
+                    break;
+
+                case 'thumbnail':
+                    $out = '<img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'"
+									 alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />';
+                    break;
+
+                default:
+                    $out = '<a href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline">
+                                <img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'"
+									 alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />
+                            </a>';
                     break;
             }
             break;
