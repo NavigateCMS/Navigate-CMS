@@ -531,6 +531,7 @@ function files_browser($parent, $search="")
 						{
 							$(elements).each(function()
 							{
+							    if(!$(this) || !$(this).attr) return;
 								var itemId = $(this).attr("id").substring(5);
 
 								$.ajax(
