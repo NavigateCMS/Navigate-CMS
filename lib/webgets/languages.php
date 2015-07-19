@@ -51,6 +51,20 @@ function nvweb_languages($vars=array())
             $out = implode($vars['separator'], $out);
 			break;
 
+        case 'li':
+            foreach($website->languages_published as $lang)
+            {
+                if(empty($lang))
+                    continue;
+                $lang_name = language::name_by_code($lang);
+                if($current['lang']==$lang)
+                    $out[] = '<li><a href="?lang='.$lang.'" class="language-selected active">'.$lang_name.'</a></li>';
+                else
+                    $out[] = '<li><a href="?lang='.$lang.'">'.$lang_name.'</a></li>';
+            }
+            $out = implode($vars['separator'], $out);
+            break;
+
         case 'select':
         default:
             $out[] = '<select onchange="if(this.value!=\''.$current['lang'].'\') window.location.href = \'?lang=\'+this.value;">';

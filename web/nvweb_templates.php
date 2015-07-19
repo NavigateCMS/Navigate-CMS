@@ -51,7 +51,7 @@ function nvweb_template_load($template_id=null)
 function nvweb_dictionary_load()
 {
 	global $DB;
-	global $current;
+	global $session;
 	global $website;
 	global $theme;
 	
@@ -72,14 +72,14 @@ function nvweb_dictionary_load()
 	$DB->query('SELECT node_id, text
 				  FROM nv_webdictionary 
 				 WHERE node_type = "global"
-				   AND lang = '.protect($current['lang']).'
+				   AND lang = '.protect($session['lang']).'
 				   AND website = '.$website->id.'
 				 UNION
 				 SELECT subtype AS node_id, text
 				 FROM nv_webdictionary
 				 WHERE node_type = "theme"
 				   AND theme = '.protect($website->theme).' 
-				   AND lang = '.protect($current['lang']).'
+				   AND lang = '.protect($session['lang']).'
 				   AND website = '.$website->id
 			   );		
 						
