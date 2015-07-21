@@ -627,7 +627,7 @@ class property
 		global $website;
 		
 		$dictionary = array();
-		
+
 		// load properties associated with the element type
         if($item_type=='block_group_block')
         {
