@@ -357,30 +357,31 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 	$sizes = '';
     $width = '';
     $height = '';
+    $border = true;
 
-	if(!empty($type['width']))
-    {
-        $sizes.= ' width="'.$type['width'].'" ';
-        $width = $type['width'];
-    }
+	if(!empty($type['width']))      $width = $type['width'];
+	if(!empty($type['height']))     $height = $type['height'];
 
-	if(!empty($type['height']))
-    {
-        $sizes.= ' height="'.$type['height'].'" ';
-        $height = $type['height'];
-    }
+    // $vars sizes have preference over block type  ($vars is used in nv lists)
+    if(!empty($vars['width']))      $width = $vars['width'];
+    if(!empty($vars['height']))     $height = $vars['height'];
+    if(!empty($vars['border']))     $border = $vars['border'];
+
+    if(!empty($width))  $sizes.= ' width="'.$width.'" ';
+	if(!empty($height)) $sizes.= ' height="'.$type['height'].'" ';
+
 
 	switch($trigger['trigger-type'][$lang])
 	{
 		case 'image':
-			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'" '.$sizes.' />';
+			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'" '.$sizes.' />';
 			break;
 			
 		case 'rollover':
-			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'"
+			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'"
 								   '.$sizes.'
-								  onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'\';"
-								  onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'\';" />';
+								  onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';"
+								  onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';" />';
 			break;
 			
 		case 'flash':
@@ -422,17 +423,36 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
         case 'links':
             $tl = $trigger['trigger-links'][$lang];
             $trigger_html = array();
+            $prefix = '';
+            $suffix = '';
+
+            if($vars['wrapper']=='ul')
+            {
+                $prefix = '<li>';
+                $suffix = '</li>';
+            }
+
             foreach($tl['title'] as $key => $title)
             {
                 $new_window = '';
                 if($tl['new_window'][$key]=='1')
                     $new_window = ' target="_blank" ';
-                $trigger_html[] = '<a href="'.$tl['link'][$key].'"'.$new_window.'>'.$title.'</a>';
+
+                // special case: Font Awesome <i> element
+                if(strpos($title, 'i.fa')===0)
+                    $title = '<i class="fa '.substr($title, 4).'"></i>';
+
+                $trigger_html[] = $prefix.'<a href="'.$tl['link'][$key].'"'.$new_window.'>'.$title.'</a>'.$suffix;
             }
             $glue = '';
             if(!empty($vars['separator']))
                 $glue = $vars['separator'];
             $trigger_html = implode($glue, $trigger_html);
+
+            if(!empty($vars['wrapper']))    // "ul", for example
+            {
+                $trigger_html = '<'.$vars['wrapper'].' class="'.$vars['wrapper_class'].'">'.$trigger_html.'</'.$vars['wrapper'].'>';
+            }
             break;
 			
 		case 'html':
