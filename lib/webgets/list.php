@@ -41,9 +41,14 @@ function nvweb_list($vars=array())
         }
         else if(!is_numeric($vars['categories']))
         {
-            $categories = nvweb_properties(array(
-                'property'	=> 	$vars['categories']
-            ));
+            // if "categories" attribute has a comma, then we suppose it is a list of comma separated values
+            // if not, then maybe we want to get the categories from a specific property of the current page
+            if(strpos($vars['categories'], ',')===false)
+            {
+                $categories = nvweb_properties(array(
+                    'property'	=> 	$vars['categories']
+                ));
+            }
 
             if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
             {
@@ -65,6 +70,7 @@ function nvweb_list($vars=array())
             $categories = array_filter($categories); // remove empty elements
         }
 	}
+
 
 	if($vars['children']=='true')
         $categories = nvweb_menu_get_children($categories);
@@ -202,6 +208,7 @@ function nvweb_list($vars=array())
         $bg = new block_group();
         if(!empty($vars['type']))
             $bg->load_by_code($vars['type']);
+
         if(!empty($bg))
         {
             $rs = array();
@@ -249,7 +256,7 @@ function nvweb_list($vars=array())
                     // is block group block type?
                     $bgba = $theme->block_group_blocks($vars['type']);
 
-                    if(!empty($bgba))
+                    if(!empty($bgba[$bgb]))
                     {
                         $bgbo = $bgba[$bgb];
                         $rs[] = $bgbo;
@@ -520,6 +527,7 @@ function nvweb_list($vars=array())
             $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
         }
 
+
         // now, parse the common nvlist tags (selfclosing tags)
         $template_tags_processed = 0;
         $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8'); // selfclosing = true
@@ -765,7 +773,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
                 case 'content':
-                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, 'content');
+                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, 'content', $item, $tag['attributes']);
                     break;
 
                 case 'url':
@@ -1293,7 +1301,7 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     else if($tag['attributes']['by']=='block')
     {
         // $item may be a block object or a block group block type
-        if($tag['attributes']['type'] == $item->type)
+        if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
         {
             $out = $item_html;
         }
