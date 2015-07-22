@@ -578,4 +578,5 @@
 577     # Neueste Änderungen
 578     # Es konnte keine Verbindung zu Updates
 579     # Letzte Suchanfragen
-580     #
+580     # Dieser Artikel wird von dieser Seite verwendet
+581     # Keine

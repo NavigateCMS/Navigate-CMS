@@ -602,6 +602,7 @@ function blocks_form($item)
 	global $website;
 	global $layout;
     global $events;
+    global $theme;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();	
@@ -1026,11 +1027,27 @@ function blocks_form($item)
                 );
 
                 /* links list */
+
+                // check if navigate must show an icon selector
+                $links_icons = '';
+                if(!empty($theme) && !empty($theme->blocks))
+                {
+                    foreach($theme->blocks as $tb)
+                    {
+                        if($item->type == $tb->id)
+                        {
+                            $links_icons = @$tb->icons;
+                            break;
+                        }
+                    }
+                }
+
                 $table = new naviorderedtable("trigger_links_table_".$lang);
                 $table->setWidth("600px");
                 $table->setHiddenInput("trigger-links-table-order-".$lang);
                 $navibars->add_tab_content( $naviforms->hidden("trigger-links-table-order-".$lang, "") );
 
+                $table->addHeaderColumn(t(242, 'Icon'), 50);
                 $table->addHeaderColumn(t(67, 'Title'), 200);
                 $table->addHeaderColumn(t(197, 'Link'), 200);
                 $table->addHeaderColumn('<i class="fa fa-external-link" title="'.t(324, 'New window').'"></i>', 16);
@@ -1040,13 +1057,14 @@ function blocks_form($item)
                 {
                     $tlinks = $item->trigger['trigger-links'][$lang];
 
-                    foreach($tlinks['title'] as $key => $title)
+                    foreach($tlinks['link'] as $key => $link)
                     {
                         $uid = uniqid();
                         $table->addRow(
                             uniqid('"trigger-links-table-row-'),
                             array(
-                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$title.'" style="width: 200px;" />', 'align' => 'left'),
+                                empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="'.$tlinks['icon'][$key].'" style="width: 54px;" />', 'align' => 'left'),
+                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" style="width: 200px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" style="width: 200px;" />', 'align' => 'left'),
                                 array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />', 'align' => 'left'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
@@ -1059,6 +1077,7 @@ function blocks_form($item)
                 $table->addRow(
                     "trigger-links-table-row-model-".$lang,
                     array(
+                        empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="" style="width: 54px;" />', 'align' => 'left'),
                         array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
                         array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
                         array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />', 'align' => 'left'),
@@ -1148,9 +1167,32 @@ function blocks_form($item)
                 $navibars->add_tab_content('</div>');
             }
 
+
+            // right now, only fontawesome icon set is supported
+            $fontawesome_classes = '';
+            if($links_icons == 'fontawesome')
+            {
+                $fontawesome_classes = block::fontawesome_list();
+                array_unshift($fontawesome_classes, '');
+                $fontawesome_classes = array_map(
+                    function($v)
+                    {
+                        $x = new stdClass();
+                        $x->id = $v;
+                        if(!empty($v))
+                            $x->text = substr($v, 3);
+                        else
+                            $x->text = '';
+                        return $x;
+                    },
+                    $fontawesome_classes
+                );
+            }
+
             $layout->add_script('
                 var active_languages = ["'.implode('", "', array_keys($options)).'"];
                 navigate_items_select_language("'.$website->languages_list[0].'");
+                navigate_fontawesome_classes = '.json_encode($fontawesome_classes).';
             ');
 
             foreach($website->languages_list as $alang)
@@ -1166,6 +1208,27 @@ function blocks_form($item)
                     if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
                         $("#trigger-links-table-row-model-'.$alang.'").hide();
 
+                    // prepare select2 to select icons
+                    if('.($links_icons=='fontawesome'? 'true' : 'false').')
+                    {
+                        $("[id^=trigger_links_table_").find("tr").each(function()
+                        {
+                            // do not apply select2 to model row
+                            if($(this).attr("id") && ($(this).attr("id")).indexOf("table-row-model") > 0) return;
+                            // do not apply select2 to head row
+                            if(!$(this).find("input")) return;
+
+                            navigate_blocks_trigger_links_table_icon_selector(this);
+
+                            // display icon value on load
+                            if($(this).find("td:first").find("input:last").val()!="")
+                            {
+                                $(this).find("a.select2-choice:first")
+                                    .find("span.select2-chosen:first")
+                                    .html("<i class=\"fa fa-fw fa-2x "+$(this).find("td:first").find("input:last").val()+"\"></i>");
+                            }
+                        });
+                    }
                 });
             ');
         }

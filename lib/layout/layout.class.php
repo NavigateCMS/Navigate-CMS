@@ -706,7 +706,8 @@ class layout
                 496: "'.t(496, 'You can only select {number} items').'",
                 499: "'.t(499, 'Open').'",
                 500: "'.t(500, 'Rename').'",
-                580: "'.t(580, 'Used in this page').'"
+                580: "'.t(580, 'Used in this page').'",
+                581: "'.t(581, 'None').'"
             };
         ');
 

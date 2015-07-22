@@ -432,17 +432,23 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
                 $suffix = '</li>';
             }
 
-            foreach($tl['title'] as $key => $title)
+            foreach($tl['link'] as $key => $link)
             {
                 $new_window = '';
+                $title = $tl['title'][$key];
+
                 if($tl['new_window'][$key]=='1')
                     $new_window = ' target="_blank" ';
 
-                // special case: Font Awesome <i> element
-                if(strpos($title, 'i.fa')===0)
-                    $title = '<i class="fa '.substr($title, 4).'"></i>';
+                // icons, by the moment only compatible with Font Awesome
+                $icon = '';
+                if(!empty($tl['icon'][$key]))
+                    $icon = '<i class="fa '.$tl['icon'][$key].'"></i>';
 
-                $trigger_html[] = $prefix.'<a href="'.$tl['link'][$key].'"'.$new_window.'>'.$title.'</a>'.$suffix;
+                if(!empty($title) && !empty($icon))
+                    $icon.= " ";
+
+                $trigger_html[] = $prefix.'<a href="'.$link.'"'.$new_window.'>'.$icon.$title.'</a>'.$suffix;
             }
             $glue = '';
             if(!empty($vars['separator']))
