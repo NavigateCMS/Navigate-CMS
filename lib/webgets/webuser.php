@@ -203,6 +203,10 @@ function nvweb_webuser($vars=array())
                             $out = '<div class="nvweb-newsletter-form-error">'.$message.'</div>';
                         break;
 
+                    case 'boolean':
+                        $out = $ok;
+                        break;
+
                     case 'false':
                         break;
 
