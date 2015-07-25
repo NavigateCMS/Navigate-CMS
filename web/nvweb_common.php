@@ -37,7 +37,7 @@ disable_magic_quotes();
 
 include_once(NAVIGATE_PATH.'/cfg/session.php');
 
-if(!defined(APP_UNIQUE))
+if(!defined('APP_UNIQUE'))
     define('APP_UNIQUE', 'nv_default');
 
 ?>

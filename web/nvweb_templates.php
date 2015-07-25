@@ -185,7 +185,12 @@ function nvweb_template_parse($template)
 				if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['id']))
 				{
 					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
-															   
+					if(!empty($url)) $content .= $url;
+				}
+				else if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['property']))
+				{
+					$tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
+					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
 					if(!empty($url)) $content .= $url;
 				}
                 else if(!empty($tag['attributes']['type']) && empty($tag['attributes']['id']))
