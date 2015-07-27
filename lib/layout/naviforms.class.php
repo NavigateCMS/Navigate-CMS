@@ -371,6 +371,22 @@ class naviforms
 
         $content_css = $website->content_stylesheets();
 
+        $tinymce_gz = glob(NAVIGATE_PATH.'/lib/external/tinymce/*.gz');
+        if(!empty($tinymce_gz))
+        {
+            if(file_exists(NAVIGATE_PATH.'/lib/external/tinymce/server_name'))
+            {
+                $server_name = file_get_contents(NAVIGATE_PATH.'/lib/external/tinymce/server_name');
+                if($server_name != md5($_SERVER['SERVER_NAME']))
+                    @unlink($tinymce_gz[0]);
+                file_put_contents(NAVIGATE_PATH.'/lib/external/tinymce/server_name', md5($_SERVER['SERVER_NAME']));
+            }
+            else
+            {
+                file_put_contents(NAVIGATE_PATH.'/lib/external/tinymce/server_name', md5($_SERVER['SERVER_NAME']));
+            }
+        }
+
         $layout->add_script('
             $("#'.$name.'").tinymce(
             {

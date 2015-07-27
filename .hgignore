@@ -11,3 +11,4 @@ setup/*.zip
 cfg/globals.php
 private/thumbnails/*
 lib/external/tinymce/*.gz
+lib/external/tinymce/server_name
