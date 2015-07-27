@@ -267,8 +267,10 @@ function run()
 			files_media_browser($_GET['limit'], $_GET['offset']);
 			break;
 			
-		case 92: // pixlr (image editor) overlay remover
+        case 92: // pixlr (image editor) overlay remover
+        case 'pixlr_exit':
 			ob_clean();
+            file::thumbnails_remove(intval($_GET['id']));
 
 			echo '
 			<html>
@@ -276,6 +278,7 @@ function run()
 			<body>
 			<script language="javascript" type="text/javascript">
 				//window.parent.eval("$(\'#thumbnail-cache\').attr(\'src\', $(\'#thumbnail-cache\').attr(\'src\') + \'&refresh=\' + new Date().getTime());");
+				window.parent.eval(\'$("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());\');
 				window.parent.eval("pixlr.overlay.hide();");
 			</script>
 			</body>
@@ -920,17 +923,33 @@ function files_item_properties($item)
 					pixlr.overlay.show({
 						service: "editor",
 						loc: "'.$user->language.'",
-						image:"'.NAVIGATE_DOWNLOAD.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed='.core_time().'",
+						image:"'.NAVIGATE_DOWNLOAD.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed=" + new Date().getTime(),
 						title: "'.$item->name.'",
-						target: "'.NAVIGATE_URL.'/navigate_upload.php?wid='.$website->id.'&engine=pixlr&id='.$item->id.'&session_id='.session_id().'&seed='.core_time().'",
-						exit: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=92&id='.$item->id.'&ts='.core_time().'",
+						target: "'.NAVIGATE_URL.'/navigate_upload.php?wid='.$website->id.'&engine=pixlr&id='.$item->id.'&session_id='.session_id().'&seed=" + + new Date().getTime(),
+						exit: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=pixlr_exit&id='.$item->id.'&ts=" + + new Date().getTime(),
 						credentials: true,
 						method: "GET",
 						referrer: "Navigate CMS",
 						locktitle: true,
 						locktype: "png",
-						redirect: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=92&id='.$item->id.'&ts='.core_time().'"
+						redirect: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=pixlr_exit&id='.$item->id.'&ts=" + + new Date().getTime()
 					});
+
+					// add a close button
+					var close_button = $(\'<a href="#"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-close fa-stack-1x fa-inverse"></i></span></a>\');
+					close_button.css({
+					    "position": "absolute",
+					    "right": "-20px",
+					    "top": "-20px",
+					    "font-size": "20px",
+					    "color": "#222"
+					});
+					close_button.on("click", function()
+					{
+				        pixlr.overlay.hide();
+				        $("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());
+					});
+					$("div:last").prepend(close_button);
 				}
 			</script>
 			<a href="#" class="button" onclick="navigate_pixlr_edit();"><img src="'.NAVIGATE_URL.'/img/logos/pixlr.png" width="100px" height="42px" /></a>
@@ -939,7 +958,7 @@ function files_item_properties($item)
         $navibars->add_tab_content_row(
             array(
                 '<label>'.t(274, 'Preview').'</label>',
-                '<div><img src="'.$website_root.'?id='.$item->id.'&disposition=inline" width="400px" /></div>'
+                '<div><img id="image-preview" src="'.$website_root.'?id='.$item->id.'&disposition=inline&seed='.core_time().'" width="400px" /></div>'
             )
         );
 
