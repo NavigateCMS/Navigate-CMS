@@ -533,8 +533,13 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 			break;
 			
 		default:
-			if(selection_content=='') selection_content = '[file]';
-			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
+			if(selection_content=='')
+                selection_content = '[' + navigate_t(82, "File") + ']';
+
+            if($(selection_content).is("A"))
+                selection_content = $(selection_content).text();
+
+			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline"> ' + selection_content + '</a>';
 	}
 
     if(embed_dialog)
