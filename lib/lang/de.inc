@@ -580,3 +580,10 @@
 579     # Letzte Suchanfragen
 580     # Dieser Artikel wird von dieser Seite verwendet
 581     # Keine
+582     # default
+583     # gleiche Breite
+584     # gleiche Höhe
+585     # gleiche Breite und Höhe (Skala)
+586     # gleiche Breite und Höhe (geerntet)
+587     # volle verfügbare Breite
+588     # Bild ersetzen

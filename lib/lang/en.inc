@@ -580,3 +580,10 @@
 579     # Latest searches
 580     # Used in this page
 581     # None
+582     # default
+583     # Same width
+584     # Same height
+585     # Same width & height (scaled)
+586     # Same width & height (cropped)
+587     # Full available width
+588     # Replace image

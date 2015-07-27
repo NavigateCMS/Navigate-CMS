@@ -337,6 +337,7 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 {
     var inst = tinyMCE.getInstanceById(editor_id);
 	var html = '';
+    var embed_dialog = false;
 
 	var selection_active  = (inst.selection.getContent({format : 'text'})!="");
 	var selection_content = inst.selection.getContent({format: 'html'});
@@ -351,18 +352,32 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             {
                 // if tinyMCE has something selected and it is an image, read its dimensions and apply them to the new image
                 var max_width = $(inst.selection.getContent({format: 'raw'})).width();
+                var max_height = $(inst.selection.getContent({format: 'raw'})).height();
+
                 // try an alternative method (Chrome browser work around)
                 if(max_width==0)
                     max_width = $($(inst.selection.getContent({format: 'raw'}))[0]).attr('width');
+
+                if(max_height==0)
+                    max_height = $($(inst.selection.getContent({format: 'raw'}))[0]).attr('height');
+
                 var or_styles = ' style="' + $(inst.selection.getContent({format: 'raw'}))[0].style.cssText + '" ';
+
+                embed_dialog = true;
             }
 
             var image_width = $(element).attr("image-width");
             var image_height = $(element).attr("image-height");
+            var body_width = $(inst.contentAreaContainer).width() - 37;
 
             if(max_width==0 || max_width > image_width)
                 max_width = image_width;
+
+            if(max_height==0 || max_height > image_height)
+                max_height = image_height;
+
             var scaled_height = Math.ceil((max_width * image_height) / image_width);
+            var scaled_width = Math.ceil((max_height * image_width) / image_height);
 
             var title = $.base64.decode($(element).attr('image-title'));
             var alt = $.base64.decode($(element).attr('image-description'));
@@ -383,13 +398,104 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             else
                 alt = "";
 
-			html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
-                    (!title?            '' : ' title="' + title + '" ') +
-                    (!alt?              '' : ' alt="' + alt + '" ' ) +
-                    (!max_width?        '' : ' width="' + max_width + '" ') +
-                    (!scaled_height?    '' : ' height="' + scaled_height + '" ') +
-                    '" ' + or_styles +
-                ' />';
+            if(embed_dialog)
+            {
+                var embed_dialog_html = '' +
+                    '<div class="embed_dialog_img">' +
+                        '<button action="same_width">' +
+                            '<i class="fa fa-fw fa-3x fa-arrows-h"></i><br /><br />' + navigate_t(583, "Same width") + ' (' + navigate_t(582, "default") + ')' +
+                        '</button>' +
+                        '<button action="same_height">' +
+                            '<i class="fa fa-fw fa-3x fa-arrows-v"></i><br /><br />' + navigate_t(584, "Same height") +
+                        '</button>' +
+                        '<button action="same_wahs">' +
+                            '<i class="fa fa-fw fa-3x fa-arrows"></i><br /><br />' + navigate_t(585, "Same width & height (scaled)") +
+                        '</button>' +
+                        '<button action="same_wahc">' +
+                            '<i class="fa fa-fw fa-3x fa-arrows-alt"></i><br /><br />' + navigate_t(586, "Same width & height (cropped)") +
+                        '</button>' +
+                        '<button action="full_width">' +
+                            '<i class="fa fa-fw fa-3x fa-expand"></i><br /><br />' + navigate_t(587, "Full available width") +
+                        '</button>' +
+                    '</div>';
+
+                $(embed_dialog_html).dialog({
+                    modal: true,
+                    title: '<i class="fa fa-lg fa-image"></i> ' + navigate_t(588, "Replace image")
+                });
+
+                $(".embed_dialog_img button")
+                    .button()
+                    .on("click", function()
+                    {
+                        switch($(this).attr("action"))
+                        {
+                            case "same_width":
+                                html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
+                                    (!title?            '' : ' title="' + title + '" ') +
+                                    (!alt?              '' : ' alt="' + alt + '" ' ) +
+                                    ' width="' + max_width + '"' +
+                                    ' height="' + scaled_height + '"' +
+                                    ' ' + or_styles +
+                                    ' />';
+                                break;
+
+                            case "same_height":
+                                html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
+                                    (!title?            '' : ' title="' + title + '" ') +
+                                    (!alt?              '' : ' alt="' + alt + '" ' ) +
+                                    ' width="' + scaled_width + '"' +
+                                    ' height="' + max_height + '"' +
+                                    ' ' + or_styles +
+                                    ' />';
+                                break;
+
+                            case "same_wahs":
+                                html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '&width='+max_width+'&height='+max_height+'&border=true" ' +
+                                    (!title?            '' : ' title="' + title + '" ') +
+                                    (!alt?              '' : ' alt="' + alt + '" ' ) +
+                                    ' width="' + max_width + '"' +
+                                    ' height="' + max_height + '"' +
+                                ' ' + or_styles +
+                                ' />';
+                                break;
+
+                            case "same_wahc":
+                                html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '&width='+max_width+'&height='+max_height+'&border=false" ' +
+                                    (!title?            '' : ' title="' + title + '" ') +
+                                    (!alt?              '' : ' alt="' + alt + '" ' ) +
+                                    ' width="' + max_width + '"' +
+                                    ' height="' + max_height + '"' +
+                                    ' ' + or_styles +
+                                    ' />';
+                                break;
+
+                            case "full_width":
+                                html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
+                                    (!title?            '' : ' title="' + title + '" ') +
+                                    (!alt?              '' : ' alt="' + alt + '" ' ) +
+                                    ' width="' + body_width + '"' +
+                                    ' ' + or_styles +
+                                    ' />';
+                                break;
+                        }
+
+                        tinyMCE.activeEditor.selection.setContent(html);
+                        tinyMCE.activeEditor.execCommand('mceCleanup', false);
+
+                        $('.embed_dialog_img').dialog('close');
+                    });
+            }
+            else
+            {
+                html = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + web_id + '&id=' + file_id + '" ' +
+                        (!title?            '' : ' title="' + title + '" ') +
+                        (!alt?              '' : ' alt="' + alt + '" ' ) +
+                        (!max_width?        '' : ' width="' + max_width + '" ') +
+                        (!scaled_height?    '' : ' height="' + scaled_height + '" ') +
+                        '" ' + or_styles +
+                    ' />';
+            }
 			break;
 		
 		case 'video':
@@ -430,6 +536,9 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 			if(selection_content=='') selection_content = '[file]';
 			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
 	}
+
+    if(embed_dialog)
+        return;
 
 	if(selection_active)
     {

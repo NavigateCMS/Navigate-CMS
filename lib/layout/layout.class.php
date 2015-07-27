@@ -707,7 +707,14 @@ class layout
                 499: "'.t(499, 'Open').'",
                 500: "'.t(500, 'Rename').'",
                 580: "'.t(580, 'Used in this page').'",
-                581: "'.t(581, 'None').'"
+                581: "'.t(581, 'None').'",
+                582: "'.t(582, "defalt").'",
+                583: "'.t(583, "Same width").'",
+                584: "'.t(584, "Same height").'",
+                585: "'.t(585, "Same width & height (scaled)").'",
+                586: "'.t(586, "Same width & height (cropped)").'",
+                587: "'.t(587, "Full available width").'",
+                588: "'.t(588, "Replace image").'"
             };
         ');
 

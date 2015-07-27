@@ -580,3 +580,10 @@
 579     # Últimas búsquedas
 580     # Se usa en esta página
 581     # Ninguno
+582     # por defecto
+583     # Mismo ancho
+584     # Mismo alto
+585     # Mismo tamaño (escalado)
+586     # Mismo tamaño (recortado)
+587     # Todo el espacio disponible
+588     # Reemplazar imagen

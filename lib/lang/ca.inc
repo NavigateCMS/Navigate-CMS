@@ -580,3 +580,10 @@
 579     # Últimes cerques
 580     # S'utilitza en aquesta pàgina
 581     # Cap
+582     # per defecte
+583     # Mateixa amplada
+584     # Mateixa alçada
+585     # Mateixa mida (escalant)
+586     # Mateixa mida (tallant)
+587     # Tot l'ample disponible
+588     # Reemplaçar imatge
