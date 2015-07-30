@@ -451,6 +451,34 @@ class item
 		return $out;
 	}
 
+	public function property_exists($property_name)
+	{
+        global $DB;
+
+		// load properties if not already done
+		if(empty($this->properties))
+        {
+            // check if this is an embedded item or it is a free element
+            if($this->embedding == 1 && $this->association == 'category')
+            {
+                // properties are given in structure definition
+                $structure_template = @$DB->query_single('template', 'nv_structure', 'id = '.intval($this->category));
+                $this->properties = property::load_properties('structure', $structure_template, 'item', $this->id);
+            }
+            else
+            {
+			    $this->properties = property::load_properties('item', $this->template, 'item', $this->id);
+            }
+        }
+
+		for($p=0; $p < count($this->properties); $p++)
+		{
+			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+				return true;
+		}
+		return false;
+	}
+
     public function property_definition($property_name)
 	{
         global $DB;
