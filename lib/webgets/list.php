@@ -39,6 +39,11 @@ function nvweb_list($vars=array())
             $categories = array(0);
             $vars['children'] = 'true';
         }
+        else if($vars['categories']=='parent')
+        {
+            $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
+            $categories = array($parent);
+        }
         else if(!is_numeric($vars['categories']))
         {
             // if "categories" attribute has a comma, then we suppose it is a list of comma separated values
@@ -284,7 +289,10 @@ function nvweb_list($vars=array())
             // get gallery of the current item
             if($current['type']=='item')
             {
-                $rs = $current['object']->galleries[0];
+                $galleries = $current['object']->galleries;
+                if(!is_array($galleries))
+                    $galleries = mb_unserialize($galleries);
+                $rs = $galleries[0];
                 $total = count($rs);
             }
             else if($current['type']=='structure')
@@ -447,6 +455,7 @@ function nvweb_list($vars=array())
 		$rs = $DB->result();
 		$total = $DB->foundRows();
 	}
+
 
     // now we have all elements that will be shown in the list
     // let's apply the nvlist template to each one
@@ -1257,6 +1266,15 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             else // remove the full nvlist_conditional tag, doesn't apply here
                 $out = '';
         }
+        else if(isset($tag['attributes']['range']))
+        {
+            list($pos_min, $pos_max) = explode('-', $tag['attributes']['range']);
+
+            if(($position+1) >= $pos_min && ($position+1) <= $pos_max)
+                $out = $item_html;
+            else
+                $out = '';
+        }
         else if(isset($tag['attributes']['position']))
         {
             switch($tag['attributes']['position'])
@@ -1289,8 +1307,11 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                         $out = '';
                     break;
 
-                default: // position "x"?
-                    if($position == $tag['attributes']['position'])
+                default:
+                    // position "x"?
+                    if($tag['attributes']['position']==='0')
+                        $tag['attributes']['position'] = 1;
+                    if(($position+1) == $tag['attributes']['position'])
                         $out = $item_html;
                     else
                         $out = '';
