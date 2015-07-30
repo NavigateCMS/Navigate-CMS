@@ -140,7 +140,8 @@ function nvweb_conditional($vars=array())
             // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
             // element
             $property_value = $item->property($vars['property_name']);
-            if(!isset($item->properties->{$vars['property_name']}))
+
+            if(!$item->property_exists($vars['property_name']))
             {
                 // structure
                 $property = nvweb_properties(array('mode' => 'structure', 'property' => $vars['property_name'], 'return' => 'object'));
@@ -149,7 +150,10 @@ function nvweb_conditional($vars=array())
                 else
                 {
                     // website
-                    $property_value = $website->theme_options->{$vars['property_name']};
+                    if(isset($website->theme_options->{$vars['property_name']}))
+                        $property_value = $website->theme_options->{$vars['property_name']};
+                    else
+                        $property_value = '';
                 }
             }
         }
