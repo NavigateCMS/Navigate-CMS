@@ -474,6 +474,46 @@ class structure
 		return true;	
 	}
 
+	public function property($property_name, $raw=false)
+	{
+		// load properties if not already done
+		if(empty($this->properties))
+			$this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+
+		for($p=0; $p < count($this->properties); $p++)
+		{
+			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+			{
+				if($raw)
+					$out = $this->properties[$p]->value;
+				else
+					$out = $this->properties[$p]->value;
+
+				break;
+			}
+		}
+
+		return $out;
+	}
+
+	public function property_definition($property_name)
+	{
+		// load properties if not already done
+		if(empty($this->properties))
+			$this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+
+		for($p=0; $p < count($this->properties); $p++)
+		{
+			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+			{
+				$out = $this->properties[$p];
+				break;
+			}
+		}
+
+		return $out;
+	}
+
     public function backup($type='json')
     {
         global $DB;

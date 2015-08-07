@@ -193,7 +193,7 @@ function nvweb_template_parse($template)
 					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
 					if(!empty($url)) $content .= $url;
 				}
-                else if(!empty($tag['attributes']['type']) && empty($tag['attributes']['id']))
+				else if(!empty($tag['attributes']['type']) && empty($tag['attributes']['id']))
                 {
                     // get structure parent for this element and return its path
                     if($current['type']=='structure')
