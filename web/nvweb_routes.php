@@ -618,10 +618,14 @@ function nvweb_source_url($type, $id, $lang='')
             return "";
     }
 
-    $url = $DB->query_single('path', 'nv_paths', ' type = '.protect($type).'
-                                               AND object_id = '.protect($id).'
-                                               AND lang = '.protect($lang).'
-                                               AND website = '.$website->id);
+    $url = $DB->query_single(
+		'path',
+		'nv_paths',
+		' type = '.protect($type).'
+		   AND object_id = '.protect($id).'
+		   AND lang = '.protect($lang).'
+		   AND website = '.$website->id
+	);
 
     $url = nvweb_prepare_link($url);
 

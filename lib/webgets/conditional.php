@@ -123,42 +123,46 @@ function nvweb_conditional($vars=array())
 
         if($vars['property_scope'] == "element")
         {
-            $property_value = $item->property($vars['property_name']);
+            $property_value = $item->property($property_name);
         }
         else if($vars['property_scope'] == "structure")
         {
-            $property = nvweb_properties(array('mode' => 'structure', 'property' => $vars['property_name'], 'return' => 'object'));
+            $property = nvweb_properties(array('mode' => 'structure', 'property' => $property_name, 'return' => 'object'));
             if(!empty($property))
                 $property_value = $property->value;
         }
         else if($vars['property_scope'] == "website")
         {
-            $property_value = $website->theme_options->{$vars['property_name']};
+            $property_value = $website->theme_options->{$property_name};
         }
         else
         {
             // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
             // element
-            $property_value = $item->property($vars['property_name']);
+            $property_value = $item->property($property_name);
 
-            if(!$item->property_exists($vars['property_name']))
+            if(!$item->property_exists($property_name))
             {
                 // structure
-                $property = nvweb_properties(array('mode' => 'structure', 'property' => $vars['property_name'], 'return' => 'object'));
+                $property = nvweb_properties(array('mode' => 'structure', 'property' => $property_name, 'return' => 'object'));
                 if(!empty($property))
                     $property_value = $property->value;
                 else
                 {
                     // website
-                    if(isset($website->theme_options->{$vars['property_name']}))
-                        $property_value = $website->theme_options->{$vars['property_name']};
+                    if(isset($website->theme_options->{$property_name}))
+                        $property_value = $website->theme_options->{$property_name};
                     else
                         $property_value = '';
                 }
             }
         }
 
+        // if the property is multilanguage, get the value for the current language
+        if(is_array($property_value))
+            $property_value = $property_value[$current['lang']];
 
+        // check the given condition
         if(isset($vars['property_value']))
         {
             if($property_value == $vars['property_value'])
