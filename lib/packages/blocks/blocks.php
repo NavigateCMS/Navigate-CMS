@@ -1053,6 +1053,18 @@ function blocks_form($item)
                 $table->addHeaderColumn('<i class="fa fa-external-link" title="'.t(324, 'New window').'"></i>', 16);
                 $table->addHeaderColumn(t(35, 'Remove'), 50);
 
+
+				if(empty($item->trigger['trigger-links'][$lang]['link']))
+				{
+					// create a default entry
+					$item->trigger['trigger-links'][$lang] = array(
+						'order' => '',
+						'icon' => '',
+						'title' => array('0' => ''),
+						'link' => array('0' => '')
+					);
+				}
+
                 if(!empty($item->trigger['trigger-links'][$lang]))
                 {
                     $tlinks = $item->trigger['trigger-links'][$lang];
@@ -1198,41 +1210,41 @@ function blocks_form($item)
             foreach($website->languages_list as $alang)
             {
                 $layout->add_script('
-                $(window).on("load", function()
-                {
-                    $("#trigger-type-'.$alang.'").select2("val", "'.$item->trigger['trigger-type'][$alang].'");
-                    $("#action-type-'.$alang.'").select2("val", "'.$item->action['action-type'][$alang].'");
-                    navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));
+					$(window).on("load", function()
+					{
+						$("#trigger-type-'.$alang.'").select2("val", "'.$item->trigger['trigger-type'][$alang].'");
+						$("#action-type-'.$alang.'").select2("val", "'.$item->action['action-type'][$alang].'");
+						navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));
 
-                    links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
-                    if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
-                        $("#trigger-links-table-row-model-'.$alang.'").hide();
+						links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
+						if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
+							$("#trigger-links-table-row-model-'.$alang.'").hide();
 
-                    // prepare select2 to select icons
-                    if('.($links_icons=='fontawesome'? 'true' : 'false').')
-                    {
-                        $("[id^=trigger_links_table_").find("tr").each(function()
-                        {
-                            // do not apply select2 to model row
-                            if($(this).attr("id") && ($(this).attr("id")).indexOf("table-row-model") > 0) return;
-                            // do not apply select2 to head row
-                            if(!$(this).find("input")) return;
+						// prepare select2 to select icons
+						if('.($links_icons=='fontawesome'? 'true' : 'false').')
+						{
+							$("[id^=trigger_links_table_").find("tr").each(function()
+							{
+								// do not apply select2 to head row
+								if(!$(this).find("input")) return;
 
-                            navigate_blocks_trigger_links_table_icon_selector(this);
+								// do not apply select2 to model row
+								if($(this).attr("id") && ($(this).attr("id")).indexOf("table-row-model") > 0) return;
+								navigate_blocks_trigger_links_table_icon_selector(this);
 
-                            // display icon value on load
-                            if($(this).find("td:first").find("input:last").val()!="")
-                            {
-                                $(this).find("a.select2-choice:first")
-                                    .find("span.select2-chosen:first")
-                                    .html("<i class=\"fa fa-fw fa-2x "+$(this).find("td:first").find("input:last").val()+"\"></i>");
-                            }
-                        });
-                    }
-                });
-            ');
-        }
-    }
+								// display icon value on load
+								if($(this).find("td:first").find("input:last").val()!="")
+								{
+									$(this).find("a.select2-choice:first")
+										.find("span.select2-chosen:first")
+										.html("<i class=\"fa fa-fw fa-2x "+$(this).find("td:first").find("input:last").val()+"\"></i>");
+								}
+							});
+						}
+					});
+            	');
+        	}
+    	}
 
 
     if(!empty($item->type))
