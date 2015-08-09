@@ -89,7 +89,7 @@ img
 .navigate-help
 {
 	position: absolute;
-	top: 4px;
+	top: 6px;
 	right: 10px;
 	color: #fff;
 	text-align: right;
@@ -97,6 +97,46 @@ img
 	line-height: 15px;
 	z-index: 10;
 }
+
+.navigate-help i
+{
+	border-radius: 16px;
+	color: #fff;
+	cursor: pointer;
+	font-size: 16px;
+	margin-left: 6px;
+	padding: 5px 3px;
+	text-align: center;
+	vertical-align: middle;
+	text-shadow: 1px 1px 4px #77b;
+
+
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#99e5f9+0,1d86c1+100 */
+	background: rgb(153,229,249); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(153,229,249,1) 0%, rgba(29,134,193,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(153,229,249,1)), color-stop(100%,rgba(29,134,193,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(153,229,249,1) 0%,rgba(29,134,193,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(153,229,249,1) 0%,rgba(29,134,193,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(153,229,249,1) 0%,rgba(29,134,193,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(153,229,249,1) 0%,rgba(29,134,193,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#99e5f9', endColorstr='#1d86c1',GradientType=0 ); /* IE6-9 */
+}
+
+.navigate-help i:hover
+{
+
+	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#525355+0,020202+100 */
+	background: rgb(82,83,85); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(82,83,85,1) 0%, rgba(2,2,2,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(82,83,85,1)), color-stop(100%,rgba(2,2,2,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(82,83,85,1) 0%,rgba(2,2,2,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(82,83,85,1) 0%,rgba(2,2,2,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(82,83,85,1) 0%,rgba(2,2,2,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(82,83,85,1) 0%,rgba(2,2,2,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#525355', endColorstr='#020202',GradientType=0 ); /* IE6-9 */
+
+}
+
 
 .navigate-hidemenu-link
 {

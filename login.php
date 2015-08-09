@@ -273,7 +273,7 @@ $(document).ready(function()
                 {
                     //$('#navigate-lost-password-dialog').dialog('close');
                     $('#navigate-lost-password-dialog').html('');
-                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; "><img src="img/icons/primo/email_accept.png" /></div>');
+                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; margin: 16px; "><i class="fa fa-5x fa-envelope" style="color: #BBD6F5"></i><i style="position: absolute; margin-top: 28px; margin-left: -12px; color: #2E476E;" class="fa fa-2x fa-check"></i></div>');
                     $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(454, 'An e-mail with a confirmation link has been sent to your e-mail account.', false, true); ?></div>');
                 }
                 else if(data=='not_found')

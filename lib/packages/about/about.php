@@ -191,9 +191,6 @@ function about_layout()
 	
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.cagintranet.com/archive/download-famfamfam-silk-companion-2-icon-pack/" target="_blank">Silk Companion II (Chris Cagle)</a><br />' ));
-	
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.webdesignerdepot.com/2009/07/200-free-exclusive-vector-icons-primo/" target="_blank">Primo Icons</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://fontawesome.io" target="_blank">Font Awesome by Dave Gandy - http://fontawesome.io</a><br />' ));

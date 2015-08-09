@@ -486,10 +486,10 @@ class layout
 
 		$this->add_content(
 			'<div class="navigate-help">'.
-                (empty($website->id)? '' : '<a class="navigate-plus-link" href="#"><img src="img/icons/misc/plus_blue-32.png" width="32" height="32" align="absbottom" title="'.t(38, 'Create').'" /></a>').
-				//'<a class="navigate-favorites-link" href="#"><img src="img/icons/misc/heart_blue-32.png" width="32" height="32" align="absbottom" title="'.t(465, 'Favorites').'" /></a>'.
-				'<a class="navigate-help-link" href="http://www.navigatecms.com/help?lang='.$user->language.'&fid='.$_REQUEST['fid'].'" target="_blank"><img src="img/icons/misc/help_blue-32.png" width="32" height="32" align="absbottom" title="'.t(302, 'Help').'" /></a>'.
-				'<a class="navigate-logout-link" href="?logout"><img src="img/icons/misc/power_blue-32.png" width="32" height="32" align="absbottom" title="'.t(5, 'Logout').'" /></a>'.
+                (empty($website->id)? '' : '<a class="navigate-plus-link" href="#" title="'.t(38, 'Create').'"><i class="fa fa-fw fa-plus"></i></span></a>').
+				//'<a class="navigate-favorites-link" href="#" title="'.t(465, 'Favorites').'"><i class="fa fa-heart"></i></span></a>'.
+				'<a class="navigate-help-link" title="'.t(302, 'Help').'" href="http://www.navigatecms.com/help?lang='.$user->language.'&fid='.$_REQUEST['fid'].'" target="_blank"><i class="fa fa-fw fa-question"></i></a>'.
+				'<a class="navigate-logout-link" href="?logout" title="'.t(5, 'Logout').'"><i class="fa fa-fw fa-power-off"></i></span></a>'.
 			'</div>'.
 			'<div class="navigate-session">'.
                 (empty($website->id)? '' : '<a href="#" id="navigate-recent-items-link"><div><span class="ui-icon ui-icon-triangle-1-s" style=" float: right; "></span><img src="img/icons/silk/briefcase.png" width="16px" height="16px" align="absmiddle" /> '.t(275, 'Recent items').'</div></a>').
