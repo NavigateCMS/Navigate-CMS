@@ -165,7 +165,10 @@ function nvweb_conditional($vars=array())
         // check the given condition
         if(isset($vars['property_value']))
         {
-            if($property_value == $vars['property_value'])
+            if( $property_value == $vars['property_value']  ||
+                ($property_value=='1' && $vars['property_value']=='true') ||
+                ($property_value=='0' && $vars['property_value']=='false')
+            )
             {
                 // parse the contents of this condition on this round
                 $out = $item_html;
