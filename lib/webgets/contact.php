@@ -127,7 +127,7 @@ function nvweb_contact($vars=array())
 
                 $subject = $vars['subject'];
                 if(!empty($subject))
-                    $subject = ' | '.$subject;
+                    $subject = ' | '.$theme->t($subject);
                 $subject = $website->name.$subject;
 
                 $sent = nvweb_send_email($subject, $message, $website->contact_emails);
