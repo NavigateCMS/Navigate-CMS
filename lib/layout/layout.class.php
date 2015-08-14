@@ -487,7 +487,7 @@ class layout
 		$this->add_content(
 			'<div class="navigate-help">'.
                 (empty($website->id)? '' : '<a class="navigate-plus-link" href="#" title="'.t(38, 'Create').'"><i class="fa fa-fw fa-plus"></i></span></a>').
-				//'<a class="navigate-favorites-link" href="#" title="'.t(465, 'Favorites').'"><i class="fa fa-heart"></i></span></a>'.
+				//'<a class="navigate-favorites-link" href="#" title="'.t(465, 'Favorites').'"><i class="fa fa-fw fa-heart"></i></span></a>'.
 				'<a class="navigate-help-link" title="'.t(302, 'Help').'" href="http://www.navigatecms.com/help?lang='.$user->language.'&fid='.$_REQUEST['fid'].'" target="_blank"><i class="fa fa-fw fa-question"></i></a>'.
 				'<a class="navigate-logout-link" href="?logout" title="'.t(5, 'Logout').'"><i class="fa fa-fw fa-power-off"></i></span></a>'.
 			'</div>'.

@@ -703,7 +703,7 @@ function nvweb_country_language()
             $_SERVER['HTTP_ACCEPT_LANGUAGE'],
             $lang_parse);
 
-        if (count($lang_parse[1]))
+        if(count($lang_parse[1]))
         {
             $langs = array_combine($lang_parse[1], $lang_parse[4]);
             foreach ($langs as $lang => $val)
@@ -713,20 +713,23 @@ function nvweb_country_language()
 
         $found = false;
 
-        foreach($langs as $language_browser => $val)
-        {
-            foreach($website->languages_list as $language_available)
-            {
-                if($language_available == $language_browser)
-                {
-                    $lang = $language_browser;
-                    $found = true;
-                    break;
-                }
-            }
-            if($found)
-                break;
-        }
+		if(is_array($langs))
+		{
+			foreach($langs as $language_browser => $val)
+			{
+				foreach($website->languages_list as $language_available)
+				{
+					if($language_available == $language_browser)
+					{
+						$lang = $language_browser;
+						$found = true;
+						break;
+					}
+				}
+				if($found)
+					break;
+			}
+		}
     }
 
     if(empty($lang))
