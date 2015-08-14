@@ -84,7 +84,7 @@ function run()
                 $error = false;
                 parse_str(parse_url($url, PHP_URL_QUERY), $query);
 
-                core_file_curl($url, sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+                @core_file_curl($url, sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
 
                 if(@filesize(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip') > 0)
                 {

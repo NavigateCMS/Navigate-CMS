@@ -436,6 +436,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
             {
                 $new_window = '';
                 $title = $tl['title'][$key];
+                $link = nvweb_prepare_link($link);
 
                 if($tl['new_window'][$key]=='1')
                     $new_window = ' target="_blank" ';
@@ -654,8 +655,6 @@ function nvweb_blocks_render_poll($object)
             document.querySelector(".block-poll-actions input[type=button]").onclick = block_poll_'.$object->id.'_result;
         ');
     }
-
-
 
     return $out;
 }
