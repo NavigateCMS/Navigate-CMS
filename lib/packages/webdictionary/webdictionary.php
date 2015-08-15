@@ -241,8 +241,6 @@ function webdictionary_form($item)
 
     foreach($website->languages_list as $lang)
 	{
-		$select = $naviforms->selectfield('', array_keys($data), array_values($data), $website->languages_list[0], '', false, false, ' width: auto; ');
-
         $translate_menu = '';
         if(!empty($translate_extensions))
         {
