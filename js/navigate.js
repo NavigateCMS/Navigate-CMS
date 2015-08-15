@@ -1752,6 +1752,7 @@ function navigate_file_video_info(provider, reference, callback)
     );
 }
 
+
 function navigate_dropbox_load_video(name, value)
 {
     $("#" + name).val(value);
@@ -1832,6 +1833,31 @@ function navigate_vimeo_reference_from_url(url)
     return m ? m[2] || m[1] : null;
 }
 
+
+function navigate_dropbox_clone_value(origin_field_id, destination_field_id)
+{
+	var orig_dropbox = $("#" + origin_field_id + "-droppable-wrapper");
+	var dest_dropbox = $("#" + destination_field_id + "-droppable-wrapper");
+
+	$("#" + destination_field_id).val($("#" + origin_field_id).val());
+
+	dest_dropbox.find(".navigate-droppable").html(orig_dropbox.find(".navigate-droppable").html());
+	dest_dropbox.find(".navigate-droppable-cancel").html(orig_dropbox.find(".navigate-droppable-cancel").html());
+	dest_dropbox.find(".navigate-droppable-info").html(orig_dropbox.find(".navigate-droppable-info").html());
+
+	if($("#" + destination_field_id).val() != "")
+	{
+		dest_dropbox.find(".navigate-droppable-cancel").show();
+		dest_dropbox.find(".navigate-droppable-create").hide();
+	}
+	else
+	{
+		dest_dropbox.find(".navigate-droppable-cancel").hide();
+		dest_dropbox.find(".navigate-droppable-create").show();
+	}
+}
+
+
 /**
  * https://gist.github.com/1255491
  *
@@ -1875,6 +1901,13 @@ function navigate_vimeo_reference_from_url(url)
                     'top': '',
                     'z-index': 1000
                 });
+
+				$(this).parents('.ui-tabs-panel:first').animate(
+					{
+						scrollTop: $(this).offset().top
+					},
+					200
+				);
 
                 $(document).one("click", function()
                 {
