@@ -1042,6 +1042,8 @@ function blocks_form($item)
                     }
                 }
 
+$links_icons = 'fontawesome';
+
                 $table = new naviorderedtable("trigger_links_table_".$lang);
                 $table->setWidth("600px");
                 $table->setHiddenInput("trigger-links-table-order-".$lang);
@@ -1073,7 +1075,7 @@ function blocks_form($item)
                     {
                         $uid = uniqid();
                         $table->addRow(
-                            uniqid('"trigger-links-table-row-'),
+                            uniqid('trigger-links-table-row-'),
                             array(
                                 empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="'.$tlinks['icon'][$key].'" style="width: 54px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" style="width: 200px;" />', 'align' => 'left'),
@@ -1176,9 +1178,161 @@ function blocks_form($item)
                     )
                 );
 
-                $navibars->add_tab_content('</div>');
+	            // copy from other language
+	            if(count($website->languages) > 1)
+	            {
+		            $block_copyfrom_titles = array();
+		            $block_copyfrom_actions = array();
+
+		            foreach($website->languages as $bcpl)
+		            {
+			            if($bcpl['language'] == $lang)
+				            continue;
+
+			            $block_copyfrom_titles[] = language::name_by_code($bcpl['language']);
+			            $block_copyfrom_actions[] = 'javascript: navigate_blocks_copy_from_language(\''.$bcpl['language'].'\', \''.$lang.'\');';
+		            }
+
+		            $copy_from_menu = $naviforms->splitbutton(
+			            'block_copyfrom_'.$lang,
+			            '<img src="img/icons/silk/comment.png" align="absmiddle"> '.t(189, 'Copy from').'...',
+			            $block_copyfrom_actions,
+			            $block_copyfrom_titles
+		            );
+
+		            $navibars->add_tab_content_row('<label>&nbsp;</label>'.$copy_from_menu);
+	            }
+
+	            $navibars->add_tab_content('</div>');
             }
 
+	        $layout->add_script('
+				function navigate_blocks_copy_from_language(from, to)
+				{
+					// copy title (if destination is empty)
+					if($("#title-" + to).val()=="")
+						$("#title-" + to).val($("#title-" + from).val());
+
+					// copy trigger type
+					$("#trigger-type-" + to)
+						.val($("#trigger-type-" + from).val())
+						.trigger("change");
+
+
+					// copy trigger value, depending on the trigger type
+					switch($("#trigger-type-" + to).val())
+					{
+						case "image":
+							navigate_dropbox_clone_value("trigger-image-" + from, "trigger-image-" + to);
+							break;
+
+						case "rollover":
+							navigate_dropbox_clone_value("trigger-rollover-" + from, "trigger-rollover-" + to);
+							navigate_dropbox_clone_value("trigger-rollover-active-" + from, "trigger-rollover-active-" + to);
+							break;
+
+						case "video":
+							navigate_dropbox_clone_value("trigger-video-" + from, "trigger-video-" + to);
+							break;
+
+						case "flash":
+							navigate_dropbox_clone_value("trigger-flash-" + from, "trigger-flash-" + to);
+							break;
+
+						case "html":
+							// ncid: navigate codemirror instance destination
+							// ncio: navigate codemirror instance destination
+							for(ncid in navigate_codemirror_instances)
+							{
+								if($(navigate_codemirror_instances[ncid].getTextArea()).attr("id") == "trigger-html-" + to)
+								{
+									for(ncio in navigate_codemirror_instances)
+									{
+										if($(navigate_codemirror_instances[ncio].getTextArea()).attr("id") == "trigger-html-" + from)
+										{
+											navigate_codemirror_instances[ncid].setValue(navigate_codemirror_instances[ncio].getValue());
+										}
+									}
+								}
+							}
+							$(navigate_codemirror_instances).each(function() { this.refresh(); } );
+							break;
+
+						case "links":
+							// remove previous links (if any)
+							$("#trigger-links-" + to).find("tr").not("#trigger-links-table-row-model-" + to).not(":first").remove();
+							// copy each link in the origin language
+							$("#trigger-links-" + from).find("tr").not("#trigger-links-table-row-model-" + from).not(":first").each(function()
+							{
+								// add a row
+								$("#trigger-links-table-add-" + to).trigger("click");
+								$(this).find("td").each(function(i)
+								{
+									if($(this).find(".select2-container").length > 0)
+									{
+										// select2 field
+
+										var input_name = $("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("input.select2-offscreen:last").attr("name");
+										var input_value = $(this).find("input.select2-offscreen:last").val();
+
+										if(input_name)
+										{
+											$("input[name=\""+input_name+"\"]").select2("val", input_value);
+											$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("span:first").html("<i class=\"fa fa-fw fa-2x "+input_value+"\"></i>");
+										}
+									}
+									else
+									{
+										// standard input or checkbox field
+										$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("input").val($(this).find("input").val());
+										if($(this).find("input").attr("checked"))
+											$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("input").attr("checked", "checked");
+									}
+								});
+							});
+							break;
+
+						case "content":
+							tinyMCE.getInstanceById("trigger-content-" + to).setContent(
+								tinyMCE.getInstanceById("trigger-content-" + from).getContent()
+							);
+							break;
+
+						case "title":
+						case "":
+						default:
+							// nothing to do
+							break;
+					}
+
+					// copy action type
+					$("#action-type-" + to)
+						.val($("#action-type-" + from).val())
+						.trigger("change");
+
+					// copy action value
+					switch($("#action-type-" + to).val())
+					{
+						case "web":
+						case "web-n":
+							$("#action-web-" + to).val($("#action-web-" + from).val());
+							break;
+
+						case "file":
+							navigate_dropbox_clone_value("action-file-" + from, "action-file-" + to);
+							break;
+
+						case "image":
+							navigate_dropbox_clone_value("action-image-" + from, "action-image-" + to);
+							break;
+
+						case "":
+						default:
+							// nothing to do
+							break;
+					}
+				}
+			');
 
             // right now, only fontawesome icon set is supported
             $fontawesome_classes = '';
@@ -1243,8 +1397,10 @@ function blocks_form($item)
 						}
 					});
             	');
-        	}
-    	}
+            }
+	        break;
+  	}
+
 
 
     if(!empty($item->type))
