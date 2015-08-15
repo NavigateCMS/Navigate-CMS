@@ -597,33 +597,45 @@ function structure_form($item)
     ');
 
 																				
-	$navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
-											$naviforms->selectfield('permission', 
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-													),
-												array(
-														0 => t(69, 'Published'),
-														1 => t(70, 'Private'),
-														2 => t(81, 'Hidden')
-													),
-												$item->permission,
-												'',
-												false,
-												array(
-														0 => t(360, 'Visible to everybody'),
-														1 => t(359, 'Visible only to Navigate CMS users'),
-														2 => t(358, 'Hidden to everybody')												
-												)
-											)
-										)
-									);	
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(68, 'Status').'</label>',
+			$naviforms->selectfield('permission',
+				array(
+						0 => 0,
+						1 => 1,
+						2 => 2
+					),
+				array(
+						0 => t(69, 'Published'),
+						1 => t(70, 'Private'),
+						2 => t(81, 'Hidden')
+					),
+				$item->permission,
+				'',
+				false,
+				array(
+						0 => t(360, 'Visible to everybody'),
+						1 => t(359, 'Visible only to Navigate CMS users'),
+						2 => t(358, 'Hidden to everybody')
+				)
+			)
+		)
+	);
 									
-	$navibars->add_tab_content_row(array(	'<label>'.t(283, 'Shown in menus').'</label>',
-											$naviforms->checkbox('visible', $item->visible)
-										));	
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(283, 'Shown in menus').'</label>',
+			$naviforms->checkbox('visible', $item->visible)
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(280, 'Page views').'</label>',
+			$item->views
+		)
+	);
 									
 											
 	$navibars->add_tab(t(54, "Text").' / '.t(74, "Paths"));

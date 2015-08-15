@@ -195,11 +195,25 @@ function run()
                         else
                             $category_text = $dataset[$i]['category_path'];
 
-                        $social_rating = '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
-                            '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>';
+						$item_views = $dataset[$i]['views'];
+						if($item_views > 1000)
+							$item_views = round($item_views/1000) . "K";
 
-                        $social_comments = '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
-                            '<span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>';
+						$item_comments = $dataset[$i]['comments'];
+						if($item_comments > 1000)
+							$item_comments = round($item_comments/1000) . "K";
+
+                        //$social_rating = '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
+                        //    '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>';
+
+                        //$social_rating = '<i class="fa fa-fw fa-eye" /> <span style="font-size: 90%;">'.$dataset[$i]['views'].'</span>';
+                        $social_rating = '<img src="img/icons/silk/eye.png" align="absmiddle" width="12px" height="12px" /> '.
+                            '<span style="font-size: 90%;">'.$item_views.'</span>';
+
+                        //$social_comments = '<i class="fa fa-fw fa-comments-o" /> <span style="font-size: 90%;">'.$dataset[$i]['comments'].'</span>';
+
+						$social_comments = '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
+							'<span style="font-size: 90%;">'.$item_comments.'</span>';
 
                         if(empty($dataset[$i]['title']))
                         {
@@ -1070,6 +1084,13 @@ function items_form($item)
             )
         );
 	}
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(280, 'Page views').'</label>',
+			$item->views
+		)
+	);
 
 	$navibars->add_tab(t(87, "Association")); // tab #1
 
