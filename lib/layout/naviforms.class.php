@@ -441,7 +441,7 @@ class naviforms
                             }
 
                             var file_id = $(ui.draggable).attr("id").substring(5);
-                            if(!file_id || file_id=="") return;
+                            if(!file_id || file_id=="" || file_id==0) return;
                             var media = $(ui.draggable).attr("mediatype");
                             var mime = $(ui.draggable).attr("mimetype");
                             var web_id = "'.$website->id.'";
@@ -541,7 +541,7 @@ class naviforms
 		global $website;
 		
 		$out = array();
-        $out[] = '<div id="'.$name.'-droppable-wrapper">';
+        $out[] = '<div id="'.$name.'-droppable-wrapper" class="navigate-droppable-wrapper">';
 
 		$out[] = '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$value.'" />';		
 
@@ -625,49 +625,53 @@ class naviforms
                         ev.preventDefault();
                         navigate_hide_context_menus();
                         var file_id = $("#'.$name.'").val();
-                        if(!file_id || file_id=="") return;
+                        if(!file_id || file_id=="" || file_id==0) return;
 
                         setTimeout(function()
                         {
                             var menu_el = $("#'.$name.'-droppable").parent().find(".navigate-droppable-edit-contextmenu");
 
-                            menu_el.menu();
+							var menu_el_clone = menu_el.clone();
+							menu_el_clone.appendTo("body");
 
-                            menu_el.css({
+                            menu_el_clone.menu();
+
+                            menu_el_clone.css({
                                 "z-index": 100000,
                                 "position": "absolute",
-                                "left": "240px",
-                                "top": "80px"
+                                "left": ev.clientX,
+                                "top": ev.clientY
                             }).addClass("navi-ui-widget-shadow").show();
+
+	                        menu_el_clone.find("a").on("click", function(ev)
+		                    {
+		                        ev.preventDefault();
+		                        var action = $(this).parent().attr("action");
+		                        var file_id = $("#'.$name.'").val();
+
+		                        switch(action)
+		                        {
+		                            case "permissions":
+		                            navigate_contextmenu_permissions_dialog(file_id);
+		                            break;
+
+		                            case "focalpoint":
+		                            navigate_media_browser_focalpoint(file_id);
+		                            break;
+
+		                            case "description":
+		                            $.get(
+		                                NAVIGATE_APP + "?fid=files&act=json&op=description&id=" + file_id,
+		                                function(data)
+		                                {
+		                                    data = $.parseJSON(data);
+		                                    navigate_contextmenu_description_dialog(file_id, $("#'.$name.'-droppable"), data.title, data.description);
+		                                }
+		                            );
+		                            break;
+		                        }
+		                    });
                         }, 100);
-                    });
-
-                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-edit-contextmenu a").on("click", function(ev)
-                    {
-                        ev.preventDefault();
-                        var action = $(this).parent().attr("action");
-                        var file_id = $("#'.$name.'").val();
-                        switch(action)
-                        {
-                            case "permissions":
-                            navigate_contextmenu_permissions_dialog(file_id);
-                            break;
-
-                            case "focalpoint":
-                            navigate_media_browser_focalpoint(file_id);
-                            break;
-
-                            case "description":
-                            $.get(
-                                NAVIGATE_APP + "?fid=files&act=json&op=description&id=" + file_id,
-                                function(data)
-                                {
-                                    data = $.parseJSON(data);
-                                    navigate_contextmenu_description_dialog(file_id, $("#'.$name.'-droppable"), data.title, data.description);
-                                }
-                            );
-                            break;
-                        }
                     });
                 ');
             }
@@ -694,7 +698,8 @@ class naviforms
                         .find(".navigate-droppable-create-contextmenu li")
                         .on("click", function()
                         {
-                            navigate_hide_context_menus();
+                            setTimeout(function() { navigate_hide_context_menus(); }, 100);
+
                             switch($(this).attr("action"))
                             {
                                 case "default":
