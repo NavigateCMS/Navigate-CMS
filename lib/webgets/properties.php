@@ -518,7 +518,7 @@ function nvweb_properties_render($property, $vars)
                     break;
 
                 case 'thumbnail':
-                    $out = '<img src="'.$file->extra['thumbnail_url'].'" '.$add.' />';
+                    $out = '<img src="'.$file->extra['thumbnail_url'].'" class="'.$vars['class'].'" '.$add.' />';
                     break;
 
                 case 'embed':
