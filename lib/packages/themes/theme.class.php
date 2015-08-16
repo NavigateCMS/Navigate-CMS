@@ -113,6 +113,8 @@ class theme
         global $website;
         global $session;
 
+		$out = "";
+
 		if(empty($this->dictionary))
 		{
 			$theme_languages = (array)$this->languages;
@@ -151,12 +153,16 @@ class theme
                 $this->dictionary[$rs[$r]->subtype] = $rs[$r]->text;
 		}
 
-		$out = $code;
-        if(substr($out, 0, 1)=='@')  // get translation from theme dictionary
-            $out = substr($out, 1);
+		if(is_string($code))
+		{
+			$out = $code;
 
-        if(!empty($this->dictionary[$out]))
-			$out = $this->dictionary[$out];
+	        if(substr($out, 0, 1)=='@')  // get translation from theme dictionary
+	            $out = substr($out, 1);
+
+	        if(!empty($this->dictionary[$out]))
+				$out = $this->dictionary[$out];
+		}
 		
 		return $out;
 	}
