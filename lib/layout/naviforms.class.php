@@ -766,6 +766,7 @@ class naviforms
 					$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").hide();
 					$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").show();
 					$("#'.$name.'-droppable-info").children().html("");
+					navigate_media_browser_refresh_files_used();
 				});
 
 				$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").on("click", function(ev)

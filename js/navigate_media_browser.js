@@ -402,12 +402,12 @@ function navigate_media_browser_refresh_files_used()
     });
 
     // 5. clean array
-    files_used = files_used.filter (function (v, i, a) { return a.indexOf (v) == i });
+    files_used = files_used.filter(function (v, i, a) { return a.indexOf (v) == i });
 
     // 6. put a mark on each file used
     for(i in files_used)
     {
-        if(!files_used[i] || files_used[i]=="")
+        if(!files_used[i] || files_used[i]=="" || files_used[i]==0)
             continue;
 
         $("#navigate_media_browser_items")

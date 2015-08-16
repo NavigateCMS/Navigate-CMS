@@ -904,8 +904,7 @@ class layout
 		$html[] = '</div>';
 	
 		$this->add_content(implode("", $html));
-			
-		//$this->add_script($mbrowser);	
+
 		$this->add_script('
 			$.getScript("js/navigate_media_browser.js");
 			$("#navigate_media_browser_upload_button").on("click", navigate_media_browser_files_uploader);

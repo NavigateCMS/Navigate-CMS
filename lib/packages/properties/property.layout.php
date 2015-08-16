@@ -151,6 +151,7 @@ function navigate_property_layout_field($property)
 		
 		case 'option':
             $options = $property->options;
+
             if(is_string($options))
                 $options = mb_unserialize($options);
             else if(is_object($options))
