@@ -52,25 +52,6 @@ $(window).on('load', function()
 	$('.voice').css('display', 'block');
 	$('.extruder.top .content').css('border-radius', 'none');
 
-	$('.navigate-plus-link img').hover(
-		function()	{	$(this).attr('src', 'img/icons/misc/plus_black-32.png'); },
-		function()	{	$(this).attr('src', 'img/icons/misc/plus_blue-32.png');  }		
-	);
-
-    $('.navigate-favorites-link img').hover(
-        function()	{	$(this).attr('src', 'img/icons/misc/heart_black-32.png'); },
-        function()	{	$(this).attr('src', 'img/icons/misc/heart_blue-32.png');  }
-    );
-	
-	$('.navigate-help-link img').hover(
-		function()	{	$(this).attr('src', 'img/icons/misc/help_black-32.png'); },
-		function()	{	$(this).attr('src', 'img/icons/misc/help_blue-32.png');	 }		
-	);
-
-	$('.navigate-logout-link img').hover(
-		function()	{	$(this).attr('src', 'img/icons/misc/power_black-32.png'); },
-		function()	{	$(this).attr('src', 'img/icons/misc/power_blue-32.png');  }		
-	);
 
     // recent items list
 	$('#navigate-recent-items-link').on('mouseenter', function()
