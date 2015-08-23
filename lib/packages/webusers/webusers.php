@@ -50,7 +50,7 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 				
-					$DB->queryLimit('id,avatar,username,fullname,groups,joindate,blocked',
+					$DB->queryLimit('id,avatar,username,email,fullname,groups,joindate,blocked',
 									'nv_webusers', 
 									$where, 
 									$orderby, 
@@ -86,7 +86,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.$dataset[$i]['username'].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
-                            2 	=> '<div class="list-row" data-blocked="'.$dataset[$i]['blocked'].'">'.$dataset[$i]['username'].'</div>',
+                            2 	=> '<div class="list-row" data-blocked="'.$dataset[$i]['blocked'].'" title="'.$dataset[$i]['email'].'">'.$dataset[$i]['username'].'</div>',
 							3	=> $dataset[$i]['fullname'],
 							4	=> implode("<br />", $wug),
 							5 	=> core_ts2date($dataset[$i]['joindate'], true),
