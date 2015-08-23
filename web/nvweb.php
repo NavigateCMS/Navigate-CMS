@@ -87,11 +87,29 @@ try
 	if(isset($_REQUEST['lang']))
 		$session['lang'] = $_REQUEST['lang'];
 
-
     // load dictionary, extensions and bind events (as soon as possible)
     $dictionary = nvweb_dictionary_load();
 
+	// global data across webgets
+	$current = array(
+		'lang' 				=> $session['lang'],
+		'route' 			=> $route,
+		'object'			=> '',
+		'template' 			=> '',
+		'category' 			=> '',
+		'webuser'  			=> '',
+		'plugins'           => '',
+		'plugins_called'    => '',
+		'delayed_nvlists'   => array(),
+		'delayed_nvsearches'=> array(),
+		'navigate_session' 	=> !empty($_SESSION['APP_USER#'.APP_UNIQUE]),
+		'html_after_body'	=> array(),
+		'js_after_body'		=> array()
+	);
+
     nvweb_plugins_load();
+
+	$current['plugins'] = $plugins;
     $events->extension_backend_bindings();
 
 	if(!empty($session['webuser']))
@@ -122,25 +140,10 @@ try
         $webuser = new webuser();
     }
 
+	$current['webuser'] = $session['webuser'];
+
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 	date_default_timezone_set($webuser->timezone? $webuser->timezone : $website->default_timezone);
-
-	// global data across webgets
-	$current = array(
-		'lang' 				=> $session['lang'],
-		'route' 			=> $route,
-		'object'			=> '',
-		'template' 			=> '',
-		'category' 			=> '',
-		'webuser'  			=> $session['webuser'],
-        'plugins'           => $plugins,
-        'plugins_called'    => '',
-        'delayed_nvlists'   => array(),
-        'delayed_nvsearches'=> array(),
-		'navigate_session' 	=> !empty($_SESSION['APP_USER#'.APP_UNIQUE]),
-		'html_after_body'	=> array(),
-		'js_after_body'		=> array()
-	);
 
 	// help developers to find problems
 	if($current['navigate_session']==1 && APP_DEBUG)

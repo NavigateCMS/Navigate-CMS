@@ -63,7 +63,10 @@ function nvweb_dictionary_load()
 	
 	// theme dictionary
 	if(!empty($theme))
+	{
+		$theme->dictionary = array(); // clear previous loaded dictionary
 		$theme->t(); // force theme dictionary load
+	}
 	
 	if(!empty($theme->dictionary))
 		$dictionary = $theme->dictionary;

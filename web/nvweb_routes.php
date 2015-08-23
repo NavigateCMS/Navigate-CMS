@@ -228,6 +228,7 @@ function nvweb_route_parse($route="")
 	global $current;
 	global $session;
     global $theme;
+	global $dictionary;
 
 	// node route types
 	if(substr($route, 0, 5)=='node/')
@@ -351,11 +352,14 @@ function nvweb_route_parse($route="")
 				
 				// set the properties found
 				
-				// get the default language for this route
+				// set the default language for this route
 				if(!isset($_REQUEST['lang']))
 				{
 					$current['lang'] 	 = $rs[0]->lang;
 					$session['lang']	 = $rs[0]->lang;
+
+					// force reloading the dictionary
+					$dictionary = nvweb_dictionary_load();
 				}
 					
 				$current['type']	 = $rs[0]->type;
