@@ -763,12 +763,20 @@ function core_filesize_curl($file)
 function core_file_curl($url, $file)
 {
     // prepare URL
+    $userAgent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)';
+
     $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_USERAGENT, $userAgent);
+	curl_setopt($ch,CURLOPT_SSL_VERIFYHOST, false);
+	curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_NOBODY, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HEADER, true);
     // on some configurations: CURLOPT_FOLLOWLOCATION cannot be activated when safe_mode is enabled or an open_basedir is set
     @curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, 'cache/cookie.curl.txt');
+    curl_setopt($ch, CURLOPT_COOKIEFILE, 'cache/cookie.curl.txt');
+
     $header = curl_exec($ch);
     curl_close($ch);
 
