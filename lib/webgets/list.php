@@ -574,6 +574,15 @@ function nvweb_list($vars=array())
 		$pages = ceil($total / $vars['items']);
 		$page = $_GET['page'];
 
+        $paginator_text_prev = '&#10092;';
+        $paginator_text_next = '&#10093;';
+
+		if(!empty($vars['paginator_prev']))
+			$paginator_text_prev = $theme->t($vars['paginator_prev']);
+
+		if(!empty($vars['paginator_next']))
+			$paginator_text_next = $theme->t($vars['paginator_next']);
+
         // keep existing URL variables except "page" and "route" (route is an internal navigate variable)
         $url_suffix = '';
         if(!is_array($_GET)) $_GET = array();
@@ -587,7 +596,7 @@ function nvweb_list($vars=array())
         {
             $out[] = '<div class="paginator">';
 
-            if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">&#10092;</a>'; // ❬
+            if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // ❬
 
             if($page == 4)
                 $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
@@ -611,7 +620,7 @@ function nvweb_list($vars=array())
             else if($page + 3 < $pages)
                 $out[] = '<span class="paginator-etc">...</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
 
-            if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">&#10093;</a>'; // ❭
+            if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
 
             $out[] = '<div style=" clear: both; "></div>';
 
