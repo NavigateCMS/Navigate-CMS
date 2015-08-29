@@ -593,12 +593,13 @@ function webusers_form($item)
 										
 	$navibars->add_tab_content_row(
         array(
-            '<label>'.t(304, 'Gender').'</label>',
+            '<label>'.t(160, 'Type').' / '.t(304, 'Gender').'</label>',
             $naviforms->buttonset(
                 'webuser-gender',
                 array(
                     'male' => '<img src="img/icons/silk/male.png" align="absbottom" /> '.t(305, 'Male'),
                     'female' => '<img src="img/icons/silk/female.png" align="absbottom" /> '.t(306, 'Female'),
+                    'company' => '<img src="img/icons/silk/building.png" align="absbottom" /> '.t(592, 'Company'),
                     '' => '<img src="img/icons/silk/help.png" align="absbottom" /> '.t(307, 'Unspecified')
                 ),
                 $item->gender

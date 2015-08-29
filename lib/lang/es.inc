@@ -590,3 +590,4 @@
 589     # América del norte
 590     # América del sur
 591     # Oceanía
+592     # Empresa
