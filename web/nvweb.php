@@ -68,7 +68,7 @@ try
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
 	define('NVWEB_OBJECT', $nvweb_absolute.'/object');
 	define('NVWEB_AJAX', $nvweb_absolute.'/nvajax');
-	define('NVWEB_THEME', $idn->encode($website->absolute_path(false)).NAVIGATE_FOLDER.'/themes/'.$theme->name);
+	define('NVWEB_THEME', NAVIGATE_PARENT.NAVIGATE_FOLDER.'/themes/'.$theme->name);
     define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
 
 	if(!isset($_SESSION['nvweb.'.$website->id]))
