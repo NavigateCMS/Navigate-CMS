@@ -10,6 +10,7 @@ function nvweb_search($vars=array())
 	global $current;
 	global $cache;
 	global $structure;
+    global $theme;
 
 	$out = array();
 
@@ -281,10 +282,20 @@ function nvweb_search($vars=array())
 		{
 			$pages = ceil($total / $vars['items']);
 			$page = $_GET['page'];
+
+            $paginator_text_prev = '&#10092;';
+            $paginator_text_next = '&#10093;';
+
+            if(!empty($vars['paginator_prev']))
+                $paginator_text_prev = $theme->t($vars['paginator_prev']);
+
+            if(!empty($vars['paginator_next']))
+                $paginator_text_next = $theme->t($vars['paginator_next']);
+
+
+            $out[] = '<div class="paginator">';
 			
-			$out[] = '<div class="paginator">';
-			
-			if($page > 1) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page - 1).'" rel="prev">&lt;&lt;</a>';
+			if($page > 1) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page - 1).'" rel="prev">'.$paginator_text_prev.'</a>';
 			
 			if($page == 4) 
 				$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page=1">1</a>';
@@ -308,7 +319,7 @@ function nvweb_search($vars=array())
 			else if($page + 3 < $pages)
 				$out[] = '<span class="paginator-etc">...</span><a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.$pages.'">'.$pages.'</a>';
 			
-			if($page < $pages) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page + 1).'" rel="next">&gt;&gt;</a>';
+			if($page < $pages) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page + 1).'" rel="next">'.$paginator_text_next.'</a>';
 			
 			$out[] = '<div style=" clear: both; "></div>';
 			
