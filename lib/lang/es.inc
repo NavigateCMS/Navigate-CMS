@@ -587,3 +587,6 @@
 586     # Mismo tamaño (recortado)
 587     # Todo el espacio disponible
 588     # Reemplazar imagen
+589     # América del norte
+590     # América del sur
+591     # Oceanía

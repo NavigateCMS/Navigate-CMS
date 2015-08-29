@@ -587,3 +587,6 @@
 586     # Mateixa mida (tallant)
 587     # Tot l'ample disponible
 588     # Reemplaçar imatge
+589     # Amèrica del nord
+590     # Amèrica del sud
+591     # Oceania

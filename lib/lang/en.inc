@@ -587,3 +587,6 @@
 586     # Same width & height (cropped)
 587     # Full available width
 588     # Replace image
+589     # North America
+590     # South America
+591     # Oceania

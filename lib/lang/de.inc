@@ -587,3 +587,6 @@
 586     # gleiche Breite und Höhe (geerntet)
 587     # volle verfügbare Breite
 588     # Bild ersetzen
+589     # Nordamerika
+590     # Südamerika
+591     # Ozeanien
