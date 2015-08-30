@@ -1182,6 +1182,39 @@ class website
         return $locales;
     }
 
+	public function homepage()
+	{
+		// return homepage relative path depending on the active language
+		global $current;
+
+		$homepage_routes = $this->homepage_from_structure(true);    // want all possible homepage paths (language based)
+		if(is_array($homepage_routes))
+		{
+			if(isset($current) && !empty($current['lang']))
+				$homepage = $homepage_routes[$current['lang']];
+
+			if(empty($homepage))
+				$homepage = array_shift($homepage_routes);
+		}
+		else
+			$homepage = $homepage_routes;
+
+		return $homepage;
+	}
+
+    public function homepage_from_structure($all_languages=false)
+    {
+        $homepage_relative_url = $this->homepage;
+        if(is_numeric($homepage_relative_url))
+        {
+            $homepage_relative_url = path::loadElementPaths('structure', $homepage_relative_url);
+	        if(!$all_languages)
+                $homepage_relative_url = array_shift($homepage_relative_url);
+        }
+
+        return $homepage_relative_url;
+    }
+
     public function quicksearch($text)
     {
         $like = ' LIKE '.protect('%'.$text.'%');
