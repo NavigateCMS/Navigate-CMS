@@ -591,3 +591,7 @@
 590     # América del sur
 591     # Oceanía
 592     # Empresa
+593     # Añadir hijo
+594     # Definir como página de inicio
+595     # Ahora mismo la página de inicio está definida como un elemento de la estructura que permite la redirección multi-idioma.
+596     # ¿Quieres introducir una ruta fija para la página de inicio?

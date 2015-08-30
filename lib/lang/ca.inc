@@ -591,3 +591,7 @@
 590     # Amèrica del sud
 591     # Oceania
 592     # Empresa
+593     # Afegir fill
+594     # Definir com a pàgina d'inici
+595     # Ara mateix la pàgina d'inici està definida com un element de l'estructura que permet la redirecció multi-idioma.
+596     # Vols introduir una ruta fixa per a la pàgina d'inici?

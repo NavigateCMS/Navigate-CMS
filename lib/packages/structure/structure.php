@@ -84,7 +84,15 @@ function run()
 			echo json_encode($ok);
 			core_terminate();
 			break;
-			
+
+		case "homepager":
+			$node = $_REQUEST['node'];
+			$website->homepage = $node;
+			$ok = $website->save();
+			echo json_encode($ok);
+			core_terminate();
+			break;
+
 		case 4: // remove 
 			if(!empty($_REQUEST['id']))
 			{
@@ -223,14 +231,27 @@ function structure_tree($hierarchy)
 	
 	$navibars->title(t(16, 'Structure'));
 
-	$navibars->add_actions(	array(	'<a href="#" onclick="javascript: navigate_structure_expand(); "><img height="16" align="absmiddle" width="16" src="img/icons/silk/arrow_out.png"> '.t(295, 'Expand all').'</a>'	));
+	$navibars->add_actions(
+		array(
+			'<a href="#" onclick="javascript: navigate_structure_expand(); ">
+				<img height="16" align="absmiddle" width="16" src="img/icons/silk/arrow_out.png"> '.t(295, 'Expand all').'
+			</a>'
+		)
+	);
 
-	$navibars->add_actions(	array(	'<a href="?fid=structure&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			'<a href="?fid=structure&act=edit">
+				<img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'
+			</a>',
+			'search_form'
+		)
+	);
 	
 	$navitree->setURL('?fid=structure&act=edit&id=');
 	$navitree->addURL('?fid=structure&act=edit&parent=');
 	$navitree->orderURL('?fid=structure&act=3');
+	$navitree->homepagerURL('?fid=structure&act=homepager');
 
 	$access = array(		0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
 							1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',

@@ -591,3 +591,7 @@
 590     # Südamerika
 591     # Ozeanien
 592     # Unternehmen
+593     # Neuen Kind
+594     # Als Startseite festlegen
+595     # Im Augenblick ist die Homepage von einem Strukturelement, das Multi-Language-Umleitung ermöglicht gesetzt.
+596     # Möchten Sie einen festen Pfad für die Homepage eingeben?

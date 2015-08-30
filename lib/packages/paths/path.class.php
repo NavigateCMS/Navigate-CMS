@@ -122,8 +122,8 @@ class path
 					        FROM nv_paths 
 				           WHERE type = '.protect($type).'
 			                 AND object_id = '.protect($object_id).'
-							 AND website = '.$website->id);		
-		
+							 AND website = '.$website->id);
+
 	    if(!$ok) throw new Exception($DB->get_last_error());
     
 		$data = $DB->result();

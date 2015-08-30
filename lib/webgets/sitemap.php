@@ -20,7 +20,7 @@ function nvweb_sitemap($vars=array())
             // HOMEPAGE
 
             $out[] = '  <url>';
-            $out[] = '      <loc>'.NVWEB_ABSOLUTE.$website->homepage.'</loc>';
+            $out[] = '      <loc>'.NVWEB_ABSOLUTE.$website->homepage().'</loc>';
             $out[] = '      <lastmod>'.date(DATE_W3C, time()).'</lastmod>';
             $out[] = '      <changefreq>daily</changefreq>';
             $out[] = '      <priority>1</priority>';

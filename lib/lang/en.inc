@@ -591,3 +591,7 @@
 590     # South America
 591     # Oceania
 592     # Company
+593     # Add new child
+594     # Set as homepage
+595     # Right now the homepage is set from a structure element which allows multi language redirect.
+596     # Do you want to enter a fixed path for the homepage?

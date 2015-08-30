@@ -71,9 +71,16 @@ function run()
 					for($i=0; $i < count($dataset); $i++)
 					{
 						$homepage = 'http://';
+						$homepage_relative_url = $dataset[$i]['homepage'];
+						if(is_numeric($homepage_relative_url))
+						{
+							$homepage_relative_url = path::loadElementPaths('structure', $homepage_relative_url);
+							$homepage_relative_url = array_shift($homepage_relative_url);
+						}
+
 						if(!empty($dataset[$i]['subdomain']))
 							$homepage .= $dataset[$i]['subdomain'].'.';
-						$homepage .= $dataset[$i]['domain'].$dataset[$i]['folder'].$dataset[$i]['homepage'];
+						$homepage .= $dataset[$i]['domain'].$dataset[$i]['folder'].$homepage_relative_url;
 
                         $favicon = '';
                         if(!empty($dataset[$i]['favicon']))
@@ -384,17 +391,74 @@ function websites_form($item)
 											$naviforms->textfield('folder', $item->folder),
 											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /new-website</span>' ));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(187, 'Homepage').'</label>',
-											$naviforms->autocomplete('homepage', @$item->homepage, '?fid='.$_REQUEST['fid'].'&wid='.$item->id.'&act=5'),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /en/home</span>' ));
+	$homepage_url = "";
+	if(!empty($item->homepage))
+		$homepage_url = $item->homepage_from_structure();
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(187, 'Homepage').'</label>',
+			$naviforms->hidden('homepage_from_structure', (is_numeric($item->homepage)? $item->homepage : "")),
+			$naviforms->autocomplete('homepage', $homepage_url, '?fid='.$_REQUEST['fid'].'&wid='.$item->id.'&act=5'),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /en/home</span>'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(
         '<div class="subcomment"><img src="img/icons/silk/house.png" align="absmiddle" /> <span id="navigate-website-home-url"></span></div>'
     ));
 
+	$layout->add_content('
+		<div id="homepage_change_dialog" style="display: none;">
+			'.t(595, "Right now the homepage is set from a structure element which allows multilanguage redirecting.").'
+			<br /><br />
+			'.t(596, "Do you want to enter a fixed path for the homepage?").'
+		</div>
+	');
+
 	$layout->add_script('
-		$("#subdomain,#domain,#folder,#homepage").bind("keyup", navigate_website_update_home_url);
-		$("#protocol").bind("change", navigate_website_update_home_url);
+		$("#homepage").on("click keydown", function(ev)
+		{
+			if($("#homepage_from_structure").val()!="")
+			{
+				$("#homepage_change_dialog").dialog({
+					title: "'.t(59, "Confirmation").'",
+					modal: true,
+					width: 400,
+					height: 150,
+					buttons: [
+					    {
+					      text: "'.t(190, "Ok").'",
+					      icons: {  primary: "ui-icon-check"    },
+					      click: function()
+					      {
+					            $("#homepage_from_structure").val("");
+					            $("#homepage").focus();
+					            $("#homepage_change_dialog").dialog("close");
+					      }
+					    },
+					    {
+					      text: "'.t(58, "Cancel").'",
+					      icons: { primary: "ui-icon-close" },
+					      click: function()
+					      {
+			                 setTimeout(
+			                    function()
+			                    {
+	                                $("div.ui-widget-overlay").hide();
+			                        $("#homepage").blur();
+		                        }, 100
+	                         );
+					         $("#homepage_change_dialog").dialog("close");
+					      }
+					    }
+					]
+				});
+			}
+		});
+
+		$("#subdomain,#domain,#folder,#homepage").on("keyup", navigate_website_update_home_url);
+		$("#protocol").on("change", navigate_website_update_home_url);
 
 		function navigate_website_update_home_url()
 		{

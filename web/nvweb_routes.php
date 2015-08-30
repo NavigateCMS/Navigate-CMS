@@ -289,7 +289,7 @@ function nvweb_route_parse($route="")
 		// redirect to home page of the current website
 		case 'nvweb.home':
 		case 'nv.home':
-			header('location: '.NVWEB_ABSOLUTE.$website->homepage);
+			header('location: '.NVWEB_ABSOLUTE.$website->homepage());
 			nvweb_clean_exit();
 			break;
 
@@ -298,7 +298,7 @@ function nvweb_route_parse($route="")
         case '':
         case '/':
             if(empty($route) || $route=='/')
-                $route = substr($website->homepage, 1); // remove first slash
+                $route = substr($website->homepage(), 1); // remove first slash
             // don't break, continue to default case (url has a route)
 
         // no special route, look for the path on navigate routing table
@@ -316,7 +316,7 @@ function nvweb_route_parse($route="")
                 switch($website->wrong_path_action)
                 {
                     case 'homepage':
-                        header('location: '.NVWEB_ABSOLUTE.$website->homepage);
+                        header('location: '.NVWEB_ABSOLUTE.$website->homepage());
                         nvweb_clean_exit();
                         break;
 

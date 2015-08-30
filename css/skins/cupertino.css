@@ -763,7 +763,7 @@ table.treeTable
     user-select: none;
 }
 
-.table_adder
+.navitree_table_adder
 {
 	float: right;
 	cursor: pointer;
@@ -771,7 +771,16 @@ table.treeTable
 	z-index: 100;
 }
 
-.table_reorder
+.navitree_table_homepager
+{
+	float: right;
+	cursor: pointer;
+	display: block;
+	margin-right: 10px;
+	z-index: 100;
+}
+
+.navitree_table_reorder
 {
 	float: right;
 	cursor: pointer;

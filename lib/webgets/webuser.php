@@ -106,7 +106,7 @@ function nvweb_webuser($vars=array())
             break;
 
         case 'signout_link':
-            $out = NVWEB_ABSOLUTE.$website->homepage.'?webuser_signout';
+            $out = NVWEB_ABSOLUTE.$website->homepage().'?webuser_signout';
             break;
 
         case 'newsletter_subscribe':

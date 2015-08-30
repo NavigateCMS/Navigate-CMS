@@ -5,6 +5,7 @@ class navitree
 	public $url;
 	public $addUrl;
 	public $orderUrl;
+	public $homepagerUrl;
 	public $hierarchy;
 	public $columns;
 	public $treeColumn;
@@ -35,7 +36,12 @@ class navitree
 	public function orderURL($url)
 	{
 		$this->orderUrl = $url;
-	}		
+	}
+
+	public function homepagerURL($url)
+	{
+		$this->homepagerUrl = $url;
+	}
 	
 	public function setData($hierarchy)
 	{
@@ -56,13 +62,15 @@ class navitree
 
 	public function nodeToRow($node, $parent=-1)
 	{
+		global $website;
+
 		$html = array();
 		
 		if($parent > -1)
-			$html[] = '<tr id="node-'.$node->id.'" class="child-of-node-'.$parent.' droppable">';
+			$html[] = '<tr id="node-'.$node->id.'" data-node-id="'.$node->id.'" data-node-parent="'.$parent.'" data-node-children="'.count($node->children).'" class="child-of-node-'.$parent.' droppable">';
 		else
 		{
-			$html[] = '<tr id="node-'.$node->id.'" class="droppable">';	
+			$html[] = '<tr id="node-'.$node->id.'" data-node-id="'.$node->id.'"  data-node-parent="'.$parent.'" data-node-children="'.count($node->children).'" class="droppable">';
 		}
 		
 		foreach($this->columns as $col)
@@ -126,6 +134,10 @@ class navitree
 						if($node->parent < 0)	// website item
 						{
 							$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/world.png" align="absmiddle" /> '.$node->label.'</td>';
+						}
+						else if(!empty($this->homepagerUrl) && $website->homepage == $node->id)
+						{
+							$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/house.png" align="absmiddle" /> '.$value.'</td>';
 						}
 						else
 						{						
@@ -200,16 +212,19 @@ class navitree
 					{
 						if($(this).hasClass("ui-state-highlight")) return true;
 						$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
-						$(".table_adder").remove();
-						$(".table_reorder").remove();					  
-						$(this).addClass("ui-state-highlight");	  
+						$(".navitree_table_adder").remove();
+						$(".navitree_table_homepager").remove();
+						$(".navitree_table_reorder").remove();
+						$(this).addClass("ui-state-highlight");
 						if(navitree_mode=="reorder") return true;
 											
-						$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" class=\"table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
-						
+						$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" title=\"'.t(593, "Add new child").'\" class=\"navitree_table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
+						if('.(!empty($this->homepagerUrl)? 'true' : 'false').')
+							$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set has homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
+
 						if($(this).hasClass("parent"))
 						{						
-							$(this).find("td").eq(1).append("<a href=\"#\" class=\"table_reorder\" onclick=\"navitree_reorder($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/arrow_switch.png\" /></a>");
+							$(this).find("td").eq(1).append("<a href=\"#\" class=\"navitree_table_reorder\" title=\"'.t(438, "Order").'\" onclick=\"navitree_reorder($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/arrow_switch.png\" /></a>");
 						}
 					});';
 
@@ -261,7 +276,7 @@ class navitree
 						navitree_cookie_update = true;
 					}
 					
-					$(".expander").live("click", function()
+					$(".treetable").on("click", ".expander", function()
 					{
 						if(navitree_cookie_update)
 							setTimeout(navitree_save_branch_status, 200);
@@ -348,6 +363,38 @@ class navitree
 					function navitree_reorder_cancel()
 					{
 						window.location.reload();	
+					}
+
+					function navitree_homepager(el)
+					{
+						var tr = $(el).parent("tr");
+						var node_id = tr.data("node-id");
+						$.post(
+							"'.$this->homepagerUrl.'",
+							{
+								node: node_id
+							},
+							function(result)
+							{
+								if(result == "true")
+								{
+									tr.parents("table.treeTable").find("tr").not(":first").not(":first").each(function()
+									{
+										var icon = $(this).find("img.silk-sprite").first();
+										icon.removeClass("silk-house silk-page_white silk-folder");
+										if($(this).data("node-children") > 0)
+											icon.addClass("silk-folder");
+										else
+											icon.addClass("silk-page_white");
+									});
+									tr.find("img.silk-sprite").first().removeClass("silk-page_white silk-folder").addClass("silk-house").effect("pulsate");
+								}
+								else
+								{
+									navigate_notification(result, true);
+								}
+							}
+						);
 					}
 				';		
 		
