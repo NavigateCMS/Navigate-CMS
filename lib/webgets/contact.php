@@ -125,12 +125,25 @@ function nvweb_contact($vars=array())
                 // create e-mail message and send it
                 $message = nvweb_contact_generate($fields);
 
+	            // prepare any attachment to be sent
+	            $attachments = array();
+	            foreach($fields as $field => $label)
+	            {
+		            if(isset($_FILES[$field]) && $_FILES[$field]['error']==0)
+		            {
+			            $attachments[] = array(
+				            'file' => $_FILES[$field]['tmp_name'],
+				            'name' => $_FILES[$field]['name']
+			            );
+		            }
+	            }
+
                 $subject = $vars['subject'];
                 if(!empty($subject))
                     $subject = ' | '.$theme->t($subject);
                 $subject = $website->name.$subject;
 
-                $sent = nvweb_send_email($subject, $message, $website->contact_emails);
+                $sent = nvweb_send_email($subject, $message, $website->contact_emails, $attachments);
 
                 if($sent)
                 {
@@ -224,6 +237,9 @@ function nvweb_contact_generate($fields)
             }
             else
                 $value = nl2br($_REQUEST[$field]);
+
+	        if(empty($value) && isset($_FILES[$field]))
+		        $value = $_FILES[$field]['name'];
 
             $out[] = '<div style="margin: 25px 0px 10px 0px;">';
             $out[] = '    <div style="color: #595959; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
