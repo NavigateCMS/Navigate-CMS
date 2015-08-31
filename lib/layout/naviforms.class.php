@@ -109,9 +109,9 @@ class naviforms
 	public function checkbox($name, $checked=false)
 	{
 		if($checked)
-			$out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" checked="checked" />';
+			$out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" checked="checked" /><label for="'.$name.'"></label>';
 		else
-			$out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" />';
+			$out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" /><label for="'.$name.'"></label>';
 			
 		return $out;
 	}

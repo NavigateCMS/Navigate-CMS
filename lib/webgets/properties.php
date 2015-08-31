@@ -539,6 +539,23 @@ function nvweb_properties_render($property, $vars)
             $out = $property->value;
             break;
 
+        case 'country':
+	        $return = @$vars['return'];
+	        switch($return)
+	        {
+		        case 'name':
+			        $countries = property::countries();
+					$out = $countries[$property->value];
+			        break;
+
+		        case 'id':
+	            case 'code':
+		        default:
+			        $out = $property->value;
+			        break;
+	        }
+            break;
+
         case 'item':
             $return = @$vars['return'];
 
