@@ -673,6 +673,84 @@ a.navigate-content-actions-selected
 }
 
 
+/* CHECKBOX STYLING */
+/* Thanks to Geoffrey Crofte http://codepen.io/CreativeJuiz/ */
+
+/* Base for label styling */
+[type="checkbox"]:not(:checked),
+[type="checkbox"]:checked {
+	position: absolute;
+	left: -9999px;
+}
+[type="checkbox"]:not(:checked) + label,
+[type="checkbox"]:checked + label {
+	position: relative;
+	padding-left: 25px;
+	cursor: pointer;
+}
+
+/* checkbox aspect */
+[type="checkbox"]:not(:checked) + label:before,
+[type="checkbox"]:checked + label:before {
+	content: '';
+	position: absolute;
+	left:0; top: 2px;
+	width: 15px; height: 15px;
+	border-radius: 3px;
+
+	background: #E8EDFF;
+	background-image: url("../../img/skins/background_menu_items.png");
+	border: solid 1px #ccc;
+	color: #116;
+	outline: none;
+}
+/* checked mark aspect */
+[type="checkbox"]:not(:checked) + label:after,
+[type="checkbox"]:checked + label:after {
+	content: '✔';
+	position: absolute;
+	top: 0; left: 4px;
+	font-size: 13px;
+	color: #116;
+	transition: all .2s;
+	outline: none;
+}
+/* checked mark aspect changes */
+[type="checkbox"]:not(:checked) + label:after {
+	opacity: 0;
+	transform: scale(0);
+}
+[type="checkbox"]:checked + label:after {
+	opacity: 1;
+	transform: scale(1);
+}
+/* disabled checkbox */
+[type="checkbox"]:disabled:not(:checked) + label:before,
+[type="checkbox"]:disabled:checked + label:before {
+	box-shadow: none;
+	border-color: #bbb;
+	background-color: #ddd;
+}
+[type="checkbox"]:disabled:checked + label:after {
+	color: #999;
+}
+[type="checkbox"]:disabled + label {
+	color: #aaa;
+}
+/* accessibility */
+[type="checkbox"]:checked:focus + label:before,
+[type="checkbox"]:not(:checked):focus + label:before {
+	border: 1px dotted #44A7E8;
+}
+
+/* hover style just for information */
+label:hover:before {
+	border: 1px solid #44A7E8!important;
+}
+
+
+
+
 /* BOX TABLE */
 
 .box-table
