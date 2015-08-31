@@ -21,12 +21,12 @@ class property
 		// option
 		// multiple option
 		// boolean
-		// text (multi)
-		// textarea (multi)
+		// text (multilanguage)
+		// textarea (default multilanguage)
 		// Date
 		// Date & Time
-		// Link (multi)
-		// Image (optional multi)
+		// Link (default multilanguage)
+		// Image (optional multilanguage)
 		// File
         // Color
 		// Comment
@@ -34,8 +34,8 @@ class property
 		// Country
 		// Coordinates
         // Video
-        // Source code (optional multi)
-        // Rich text area (multi)
+        // Source code (optional multilanguage)
+        // Rich text area (default multilanguage)
         // Web user groups
         // Category (Structure entry)
         // Categories (Multiple structure entries)
@@ -719,10 +719,16 @@ class property
                 );
 
 				// set the dictionary for the multilanguage properties
+                $default_language = '';
+                if($property->multilanguage == 'false' || $property->multilanguage === false)
+                    $default_language = $website->languages_list[0];
+
 				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true')
 				{
 					foreach($website->languages_list as $lang)
 					{
+                        if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                            $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
 						$dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
 					}					
 				}
@@ -733,7 +739,11 @@ class property
                         $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].
                                     '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'].
                                     '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-target'];
+
                         $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
+
+                        if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                            $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $dictionary[$lang]['property-'.$property->id.'-'.$default_language];
                     }
                 }
             /*
@@ -841,13 +851,35 @@ class property
             );
 
             // set the dictionary for the multilanguage properties
-            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true')
+            $default_language = '';
+            if($property->multilanguage == 'false' || $property->multilanguage === false)
+                $default_language = $website->languages_list[0];
+
+            if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true')
             {
                 foreach($website->languages_list as $lang)
                 {
-                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$lang];
+                    if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                        $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
+
+                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
                 }
             }
+            else if($property->type == 'link')
+            {
+                foreach($website->languages_list as $lang)
+                {
+                    $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].
+                        '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'].
+                        '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-target'];
+
+                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
+
+                    if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $dictionary[$lang]['property-'.$property->id.'-'.$default_language];
+                }
+            }
+
    		}
 
    		if(!empty($dictionary))

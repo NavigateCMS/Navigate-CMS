@@ -31,7 +31,7 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
         $property_rows = implode("\n", $property_rows);
 
         // language selector (only if it's a multilanguage website and we have almost one multilanguage property)
-        if(count($website->languages) > 1 && strpos($property_rows, 'lang="') !== false)
+        if(count($website->languages) > 1 && strpos($property_rows, 'lang="'.$website->languages_list[1].'"') !== false)
         {
             $website_languages_selector = $website->languages();
             $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
@@ -72,7 +72,10 @@ function navigate_property_layout_field($property)
 
 	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")) || $property->multilanguage=='true')
 	{
-        $property->multilanguage = 'true';
+		if(!isset($property->multilanguage) || $property->multilanguage !== false || $property->multilanguage == "false")
+            $property->multilanguage = 'true';
+		else
+			$property->multilanguage = 'false';
 
         if(is_object($property->value))
             $property->value = (array)$property->value;
@@ -196,9 +199,17 @@ function navigate_property_layout_field($property)
 			
 		case 'country': 				
 			$options = property::countries();
+
+			$country_codes = array_keys($options);
+			$country_names = array_values($options);
+
+			// include "country not defined" item
+			array_unshift($country_codes, '');
+			array_unshift($country_names, '('.t(307, "Unspecified").')');
+
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property->name.'</label>';			
-			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), strtoupper($property->value));
+			$field[] = $naviforms->selectfield("property-".$property->id, $country_codes, $country_names, strtoupper($property->value));
             if(!empty($property->helper))
                 $field[] = '<div class="subcomment">'.$theme->t($property->helper).'</div>';
 			$field[] = '</div>';			
@@ -336,6 +347,7 @@ function navigate_property_layout_field($property)
 			break;
 			
 		case 'textarea':
+
 			foreach($langs as $lang)
 			{
 				if(!is_array($property->value))
@@ -346,18 +358,23 @@ function navigate_property_layout_field($property)
 						$property->value[$lang_value] = $ovalue;
 				}
 
-                $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+				$style = "";
+				if(!empty($property->width))
+					$style = ' width: '.$property->width.'px; ';
 
-               	$style = "";
-                if(!empty($property->width))
-                	$style = ' width: '.$property->width.'px; ';
+				$language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+				if($property->multilanguage == 'false')
+					$language_info = '';
 
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
 				$field[] = '<label>'.$property->name.' '.$language_info.'</label>';
 				$field[] = $naviforms->textarea("property-".$property->id."-".$lang, $property->value[$lang], 4, 48, $style);
                 if(!empty($property->helper))
                     $field[] = '<div class="subcomment">'.$theme->t($property->helper).'</div>';
-				$field[] = '</div>';			
+				$field[] = '</div>';
+
+				if($property->multilanguage == 'false')
+					break;
 			}		
 			break;
 
@@ -373,6 +390,8 @@ function navigate_property_layout_field($property)
                 }
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+	            if($property->multilanguage == 'false')
+		            $language_info = '';
 
                 $width = NULL;
                 if(!empty($property->width))
@@ -384,6 +403,9 @@ function navigate_property_layout_field($property)
                 if(!empty($property->helper))
                     $field[] = '<div class="subcomment">'.$theme->t($property->helper).'</div>';
                 $field[] = '</div>';
+
+	            if($property->multilanguage == 'false')
+		            break;
             }
             break;
 
@@ -476,6 +498,8 @@ function navigate_property_layout_field($property)
                 }
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
+				if($property->multilanguage == 'false')
+					$language_info = '';
 
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'" style="margin-bottom: 0px;">';
 				$field[] = '<label>'.$property->name.' '.$language_info.'</label>';
@@ -505,6 +529,9 @@ function navigate_property_layout_field($property)
                 if(!empty($property->helper))
                     $field[] = '<div class="subcomment">'.$theme->t($property->helper).'</div>';
                 $field[] = '</div>';
+
+				if($property->multilanguage == 'false')
+					break;
 			}		
 			break;
 			
