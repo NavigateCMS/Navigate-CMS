@@ -620,12 +620,13 @@ function websites_form($item)
         else
             $select_locale   = $naviforms->selectfield('language-locale[]', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
 
+	    $uid = uniqid();
         $table->addRow($p, array(
             array('content' => $select_language, 'align' => 'left'),
             array('content' => '<div style=" white-space: nowrap; "><input type="text" name="language-code[]" value="'.$ldef['language'].'" style="width: 30px;" /></div>', 'align' => 'left'),
-            array('content' => '<input type="checkbox" name="language-variant[]" value="1" '.($variant? 'checked="checked"': '').' style="float:left;" /> <input type="text" name="language-variant-code[]" value="'.$ldef['variant'].'" style="width: 75px;" />', 'align' => 'left'),
+            array('content' => '<input type="checkbox" name="language-variant[]" id="language-variant['.$uid.']" value="1" '.($variant? 'checked="checked"': '').' style="float:left;" class="raw-checkbox" /> <input type="text" name="language-variant-code[]" value="'.$ldef['variant'].'" style="width: 75px;" />', 'align' => 'left'),
             array('content' => $select_locale, 'align' => 'left'),
-            array('content' => '<input type="hidden" name="language-published[]" value="'.($published? '1' : '0').'" /><input type="checkbox" value="'.$lcode.'" '.($published? 'checked="checked"': '').' onclick=" if($(this).is(\':checked\')) { $(this).prev().val(1); } else { $(this).prev().val(0); }; " />', 'align' => 'center'),
+            array('content' => '<input type="hidden" name="language-published[]" value="'.($published? '1' : '0').'" /><input type="checkbox" id="language-published['.$uid.']" value="'.$lcode.'" '.($published? 'checked="checked"': '').' onclick=" if($(this).is(\':checked\')) { $(this).prev().val(1); } else { $(this).prev().val(0); }; " /><label for="language-published['.$uid.']"></label>', 'align' => 'center'),
             array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_websites_language_remove(this);" />', 'align' => 'center')
         ));
     }
@@ -659,14 +660,14 @@ function websites_form($item)
                 $(this).prev().trigger("click");
         });
 
-        $(\'select[name="language-id[]"]\').live("change", function()
+        $("#website_languages_table").on("change", \'select[name="language-id[]"]\', function()
         {
             var input = $(this).parent().next().find("input");
             $(input).val($(this).val());
             $(input).effect("highlight", {}, 2000);
         });
 
-        $(\'input[name="language-variant[]"]\').live("change", function()
+        $("#website_languages_table").on("change", \'input[name="language-variant[]"]\', function()
         {
             if($(this).is(":checked"))
                 $(this).next().removeClass("ui-state-disabled");
@@ -676,8 +677,24 @@ function websites_form($item)
 
         $("#websites-languages-add").on("click", function()
         {
-            var tr = $("#website_languages_table").find("tr").eq(1).clone();
-            $(tr).attr("id", new Date().getTime());
+            var tr = $("#website_languages_table").find("tr").eq(1).clone();            
+            var tsid = new Date().getTime();
+            $(tr).attr("id", tsid);
+            
+            $(tr).find("input,label").each(function()
+		    {
+		        if($(this).attr("id"))
+		        {
+		            var new_name = ($(this).attr("id").split("["))[0];
+		            $(this).attr("id", new_name + "[" + tsid + "]");
+		        }
+		
+		        if($(this).attr("for"))
+		        {
+		            var new_name = ($(this).attr("for").split("["))[0];
+		            $(this).attr("for", new_name + "[" + tsid + "]");
+		        }
+		    });
 
             $("#website_languages_table").find("tbody:last").append(tr);
             $("#website_languages_table").tableDnD({

@@ -193,10 +193,11 @@ $current_version = update::latest_installed();
             </div>
 
             <div class="navigate-form-row">
-                <input type="checkbox" name="login-remember" id="login-remember" value="1" /> <span onclick="$('#login-remember').trigger('click');" style=" margin-left: 3px; margin-top: 2px; position: absolute; "><?php echo t(406, 'Remember me');?></span>
+                <input type="checkbox" name="login-remember" id="login-remember" value="1" />
+                <label onclick="$('#login-remember').trigger('click');" style=" margin-left: 3px; margin-top: 2px; position: absolute; "><?php echo t(406, 'Remember me');?></label>
             </div>
 
-            <div class="navigate-form-row" id="login-button" style=" margin-top: 20px; font-size: 15px; ">
+            <div class="navigate-form-row" id="login-button" style=" margin-top: 48px; font-size: 15px; ">
                 <button style=" background: none; border: none; color: transparent; display: block; float: left; "><?php echo t(3, 'Enter');?></button>
                 <a href="#" style=" color: #2E476E; font-size: 10px; line-height: 30px; float: right; text-decoration: none;"><?php echo t(407, 'Forgot password?');?></a>
             </div>

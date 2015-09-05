@@ -610,7 +610,7 @@ function templates_form($item)
 					array('content' => $properties[$p]->name, 'align' => 'left'),
 					array('content' => $types[$properties[$p]->type], 'align' => 'left'),
 					array('content' => $element_types[$properties[$p]->element], 'align' => 'left'),					
-					array('content' => '<input type="checkbox" name="property-enabled[]" value="'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),						
+					array('content' => '<input type="checkbox" name="property-enabled[]" class="raw-checkbox" value="'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),
 				));
 		}
 
@@ -832,7 +832,7 @@ function templates_form($item)
                                            // insert
                                            var checked = "";
                                            if(data.enabled) checked = \' checked="checked" \';
-                                           var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td>\'+navigate_templates_element_types[data.element]+\'</td><td align="center"><input name="property-enabled[]" type="checkbox" value="\'+data.id+\'" \'+checked+\' /></td></tr>\';
+                                           var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td>\'+navigate_templates_element_types[data.element]+\'</td><td align="center"><input name="property-enabled[]" class="raw-checkbox" type="checkbox" value="\'+data.id+\'" \'+checked+\' /></td></tr>\';
                                            $("#template_properties_table").find("tbody:last").append(tr);
                                            $("#template_properties_table").find("tr:last").bind("dblclick", function() { navigate_templates_edit_property(this); });
                                            $("#template_properties_table").tableDnD(

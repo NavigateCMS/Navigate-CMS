@@ -1080,7 +1080,8 @@ $links_icons = 'fontawesome';
                                 empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="'.$tlinks['icon'][$key].'" style="width: 54px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" style="width: 200px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" style="width: 200px;" />', 'align' => 'left'),
-                                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />', 'align' => 'left'),
+                                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
+                                                    <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />', 'align' => 'left'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                             )
                         );
@@ -1094,7 +1095,9 @@ $links_icons = 'fontawesome';
                         empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="" style="width: 54px;" />', 'align' => 'left'),
                         array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
                         array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
-                        array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />', 'align' => 'left'),
+                        array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
+                                            <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
+                                'align' => 'left'),
                         array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                     )
                 );
@@ -1588,7 +1591,10 @@ $links_icons = 'fontawesome';
 			$table->addRow($block->id, array(
 				array('content' => $block->id, 'align' => 'left'),
 				array('content' => $block->title, 'align' => 'left'),
-                array('content' => '<input type="checkbox" name="blocks-order-fixed['.$block->id.']" value="1" '.(($block->fixed=='1')? 'checked="checked"' : '').' />', 'align' => 'center')
+                array('content' => '<input type="checkbox" name="blocks-order-fixed['.$block->id.']" id="blocks-order-fixed['.$block->id.']" value="1" '.(($block->fixed=='1')? 'checked="checked"' : '').' />
+                                    <label for="blocks-order-fixed['.$block->id.']" />',
+	                  'align' => 'center'
+                )
 			));
 		}	
 		
@@ -1915,7 +1921,9 @@ function blocks_type_form($item)
             $table->addRow($properties[$p]->id, array(
                 array('content' => $properties[$p]->name, 'align' => 'left'),
                 array('content' => $types[$properties[$p]->type], 'align' => 'left'),
-                array('content' => '<input type="checkbox" name="property-enabled[]" value="'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),
+                array('content' => '<input type="checkbox" name="property-enabled[]" value="'.$properties[$p]->id.'" id="block-type-property-enabled-'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />
+                                    <label for="block-type-property-enabled-'.$properties[$p]->id.'"></label>',
+	                  'align' => 'center'),
             ));
         }
 
@@ -2108,7 +2116,7 @@ function blocks_type_form($item)
                                            var checked = "";
 
                                            if(data.enabled) checked = \' checked="checked" \';
-                                           var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td align="center"><input name="property-enabled[]" type="checkbox" value="\'+data.id+\'" \'+checked+\' /></td></tr>\';
+                                           var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td align="center"><input name="property-enabled[]" id="block-type-property-enabled-'.$properties[$p]->id.'" type="checkbox" value="\'+data.id+\'" \'+checked+\' /><label for="block-type-property-enabled-\'+data.id+\'"></label></td></tr>\';
                                            $("#block_properties_table").find("tbody:last").append(tr);
                                            $("#block_properties_table").find("tr:last").bind("dblclick", function() { navigate_block_edit_property(this); });
                                            $("#block_properties_table").tableDnD(
