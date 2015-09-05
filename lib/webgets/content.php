@@ -1,6 +1,8 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
 
+nvweb_webget_load("list");
+
 function nvweb_content($vars=array())
 {
 	global $website;
@@ -316,7 +318,7 @@ function nvweb_content_date_format($format="", $ts)
 	return $out;
 }
 
-function nvweb_content_items($categories=array(), $only_published=false, $max=NULL, $embedding = true)
+function nvweb_content_items($categories=array(), $only_published=false, $max=NULL, $embedding=true, $order='date')
 {
     global $website;
     global $DB;
@@ -326,17 +328,17 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
     if(!is_array($categories))
         $categories = array(intval($categories));
 
-    $where = ' website = '.$website->id.'
-               AND category IN ('.implode(",", $categories).')
-               AND embedding = '.($embedding? '1' : '0');
+    $where = ' i.website = '.$website->id.'
+               AND i.category IN ('.implode(",", $categories).')
+               AND i.embedding = '.($embedding? '1' : '0');
 
     if($only_published)
-        $where .= ' AND (date_published = 0 OR date_published < '.core_time().')
-                    AND (date_unpublish = 0 OR date_unpublish > '.core_time().')';
+        $where .= ' AND (i.date_published = 0 OR i.date_published < '.core_time().')
+                    AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')';
 
     // status (0 public, 1 private (navigate cms users), 2 hidden)
     $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
-    $where .= ' AND permission <= '.$permission;
+    $where .= ' AND i.permission <= '.$permission;
 
     // access permission (0 public, 1 web users only, 2 unidentified users, 3 selected web user groups)
     $access = 2;
@@ -351,24 +353,33 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
             {
                 if(empty($wg))
                     continue;
-                $access_groups[] = 'groups LIKE "%g'.$wg.'%"';
+                $access_groups[] = 'i.groups LIKE "%g'.$wg.'%"';
             }
             if(!empty($access_groups))
-                $access_extra = ' OR (access = 3 AND ('.implode(' OR ', $access_groups).'))';
+                $access_extra = ' OR (i.access = 3 AND ('.implode(' OR ', $access_groups).'))';
         }
     }
 
-    $where .= ' AND (access = 0 OR access = '.$access.$access_extra.')';
+    $where .= ' AND (i.access = 0 OR i.access = '.$access.$access_extra.')';
 
     if(!empty($max))
         $limit = 'LIMIT '.$max;
 
+    $orderby = nvweb_list_get_orderby($order);
+	$orderby = str_replace(", IFNULL(s.position,0) ASC", "", $orderby); // remove s. order used exclusively at nvweb_list
+
     $DB->query('
-            SELECT *, COALESCE(NULLIF(date_to_display, 0), date_created) as pdate
-            FROM nv_items
-            WHERE '.$where.'
-            ORDER BY pdate ASC
-            '.$limit
+        SELECT i.*, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate, d.text as title
+        FROM nv_items i
+         LEFT JOIN nv_webdictionary d ON
+         	   d.website = i.website
+			   AND d.node_type = "item"
+			   AND d.subtype = "title"
+			   AND d.node_id = i.id
+			   AND d.lang = '.protect($current['lang']).'
+        WHERE '.$where.'
+        '.$orderby.'
+        '.$limit
     );
 
     $rs = $DB->result();
