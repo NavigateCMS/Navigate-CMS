@@ -375,13 +375,13 @@ class website
 	public function insert()
 	{
 		global $DB;
-			
+
 		$ok = $DB->execute('
 		    INSERT INTO nv_websites
             (	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
                 languages, languages_published,
                 aliases, date_format, tinymce_css, resize_uploaded_images,
-                comments_enabled_for, comments_default_moderator, share_files_media_browser
+                comments_enabled_for, comments_default_moderator, share_files_media_browser,
                 additional_scripts, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
                 homepage, default_timezone, metatag_description, metatag_keywords, metatags,
@@ -389,44 +389,81 @@ class website
             )
             VALUES
             ( 0,
-              '.protect($this->name).',
-              '.protect($this->protocol).',
-              '.protect($this->subdomain).',
-              '.protect($this->domain).',
-              '.protect($this->folder).',
-              '.protect($this->redirect_to).',
-              '.protect($this->wrong_path_action).',
-              '.protect($this->languages).',
-              '.protect($this->languages_published).',
-              '.protect(json_encode($this->aliases)).',
-              '.protect($this->date_format).',
-              '.protect($this->tinymce_css).',
-              '.protect($this->resize_uploaded_images).',
-              '.protect($this->comments_enabled_for).',
-              '.protect($this->comments_default_moderator).',
-              '.protect($this->share_files_media_browser).',
-              '.protect($this->additional_scripts).',
-              '.protect($this->permission).',
-              '.protect($this->mail_mailer).',
-              '.protect($this->mail_server).',
-              '.protect($this->mail_port).',
-              '.protect($this->mail_security).',
-              '.protect($this->mail_user).',
-              '.protect($this->mail_address).',
-              '.protect($this->mail_password).',
-              '.protect(serialize($this->contact_emails)).',
-              '.protect($this->homepage).',
-              '.protect($this->default_timezone).',
-              '.protect(json_encode($this->metatag_description)).',
-              '.protect(json_encode($this->metatag_keywords)).',
-              '.protect(json_encode($this->metatags)).',
-              '.protect($this->favicon).',
-              '.protect($this->theme).',
-              '.protect(json_encode($this->theme_options)).'
-            )'
+              :name,
+              :protocol,
+              :subdomain,
+              :domain,
+              :folder,
+              :redirect_to,
+              :wrong_path_action,
+              :languages,
+              :languages_published,
+              :aliases,
+              :date_format,
+              :tinymce_css,
+              :resize_uploaded_images,
+              :comments_enabled_for,
+              :comments_default_moderator,
+              :share_files_media_browser,
+              :additional_scripts,
+              :permission,
+              :mail_mailer,
+              :mail_server,
+              :mail_port,
+              :mail_security,
+              :mail_user,
+              :mail_address,
+              :mail_password,
+              :contact_emails,
+              :homepage,
+              :default_timezone,
+              :metatag_description,
+              :metatag_keywords,
+              :metatags,
+              :favicon,
+              :theme,
+              :theme_options
+            )',
+			array(
+				":name" => $this->name,
+				":protocol" => $this->protocol,
+				":subdomain" => $this->subdomain,
+				":domain" => $this->domain,
+				":folder" => $this->folder,
+				":redirect_to" => $this->redirect_to,
+				":wrong_path_action" => $this->wrong_path_action,
+				":languages" => $this->languages,
+				":languages_published" => $this->languages_published,
+				":aliases" => json_encode($this->aliases),
+				":date_format" => $this->date_format,
+				":tinymce_css" => $this->tinymce_css,
+				":resize_uploaded_images" => $this->resize_uploaded_images,
+				":comments_enabled_for" => $this->comments_enabled_for,
+				":comments_default_moderator" => $this->comments_default_moderator,
+				":share_files_media_browser" => $this->share_files_media_browser,
+				":additional_scripts" => $this->additional_scripts,
+				":permission" => $this->permission,
+				":mail_mailer" => $this->mail_mailer,
+				":mail_server" => $this->mail_server,
+				":mail_port" => $this->mail_port,
+				":mail_security" => $this->mail_security,
+				":mail_user" => $this->mail_user,
+				":mail_address" => $this->mail_address,
+				":mail_password" => (is_null($this->mail_password)? '' : $this->mail_password),
+				":contact_emails" => serialize($this->contact_emails),
+				":homepage" => $this->homepage,
+				":default_timezone" => $this->default_timezone,
+				":metatag_description" => json_encode($this->metatag_description),
+				":metatag_keywords" => json_encode($this->metatag_keywords),
+				":metatags" => json_encode($this->metatags),
+				":favicon" => $this->favicon,
+				":theme" => (is_null($this->theme)? '' : $this->theme),
+				":theme_options" => json_encode($this->theme_options)
+			)
         );
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		// finally we create the private folder
 		$this->id = $DB->get_last_id();
