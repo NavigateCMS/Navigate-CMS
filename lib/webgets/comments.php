@@ -230,13 +230,32 @@ function nvweb_comments($vars=array())
                     ),
                     array(
                         'footer' =>
-                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=10&act=2&tab=5&id='.$element->id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
+                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid=10&act=2&tab=5&id='.$element->id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
                             '<a style=" color: #008830" href="'.nvweb_self_url().'?nv_approve_comment&id='.$comment->id.'&hash='.$hash.'">'.t(258, "Publish").'</a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
                             '<a style=" color: #FF0090" href="'.nvweb_self_url().'?nv_remove_comment&id='.$comment->id.'&hash='.$hash.'">'.t(525, "Remove comment (without confirmation)").'</a>'
                     )
                 ));
+
+                // trying to implement One-Click actions (used in Google GMail)
+                // You need to be registered with Google first: https://developers.google.com/gmail/markup/registering-with-google
+                $one_click_actions = '
+                    <script type="application/ld+json">
+                    {
+                        "@context": "http://schema.org",
+                        "@type": "EmailMessage",
+                        "potentialAction":
+                        {
+                            "@type": "ViewAction",
+                            "name": "'.$webgets[$webget]['translations']['review_comments'].'",
+                            "url": "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid=10&act=2&tab=5&id='.$element->id.'"
+                        }
+                    }
+                    </script>
+				';
+
+				$message = '<html><head>'.$one_click_actions.'</head><body>'.$message.'</body></html>';
 
                 foreach($website->contact_emails as $contact_address)
                     nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address);
