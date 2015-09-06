@@ -87,7 +87,7 @@ class property
         $this->multilanguage= ($_REQUEST['property-multilanguage']=='1'? 'true' : '');
         $this->helper       = $_REQUEST['property-helper'];
 
-		if($this->type == 'date' || $this->type == 'datetime')
+		if(($this->type == 'date' || $this->type == 'datetime') && !empty($this->dvalue))
 			$this->dvalue	= 	core_date2ts($this->dvalue);
 
         if(empty($this->type))
@@ -299,7 +299,7 @@ class property
             ':options' => serialize($this->options),
             ':dvalue' => $this->dvalue,
             ':multilanguage' => $this->multilanguage,
-            ':helper' => $this->helper,
+            ':helper' => (is_null($this->helper)? '' : $this->helper),
             ':position' => intval($this->position),
             ':enabled' => $this->enabled
           )

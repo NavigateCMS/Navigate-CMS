@@ -349,11 +349,12 @@ function run()
 
         case 'block_type_edit':
 		case 82: // edit/create block type		
-			$dataset = block::custom_types();
+
 			$item = NULL;
             $position = NULL;
             $max_id = 0;
-			
+
+			$dataset = block::custom_types();
 			for($i=0; $i < count($dataset); $i++)
 			{
                 if($dataset[$i]['id'] > $max_id)
@@ -366,38 +367,47 @@ function run()
 				}
 			}
 
-    		if(isset($_REQUEST['form-sent']))
+			if(empty($item))
 			{
-				if(empty($item))
-					$item = array('id' => $max_id + 1);
-
-				$item['type'] = $_REQUEST['type'];
-				$item['title'] = $_REQUEST['title'];
-                $item['code'] = $_REQUEST['code'];
-				$item['width'] = $_REQUEST['width'];
-				$item['height'] = $_REQUEST['height'];
-				$item['order'] = $_REQUEST['order'];
-				$item['maximum'] = $_REQUEST['maximum'];
-				$item['notes'] = pquotes($_REQUEST['notes']);
-
-				if(!is_null($position))
-					$dataset[$position] = $item;
-                else
-                    $dataset[] = $item;
-
-				try
-				{
-					// save
-					$ok = block::types_update($dataset);
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
-				}
-				catch(Exception $e)
-				{
-					$layout->navigate_notification($e->getMessage(), true, true);	
-				}
+				$layout->navigate_notification(t(599, "Sorry, can't display a theme block type info."));
+				$out = blocks_types_list();
 			}
-			
-			$out = blocks_type_form($item);
+			else
+			{
+	            if(isset($_REQUEST['form-sent']))
+				{
+					if(empty($item))
+						$item = array('id' => $max_id + 1);
+
+					$item['type'] = $_REQUEST['type'];
+					$item['title'] = $_REQUEST['title'];
+	                $item['code'] = $_REQUEST['code'];
+					$item['width'] = $_REQUEST['width'];
+					$item['height'] = $_REQUEST['height'];
+					$item['order'] = $_REQUEST['order'];
+					$item['maximum'] = $_REQUEST['maximum'];
+					$item['notes'] = pquotes($_REQUEST['notes']);
+
+					if(!is_null($position))
+						$dataset[$position] = $item;
+	                else
+	                    $dataset[] = $item;
+
+					try
+					{
+						// save
+						$ok = block::types_update($dataset);
+						$layout->navigate_notification(t(53, "Data saved successfully."), false);
+					}
+					catch(Exception $e)
+					{
+						$layout->navigate_notification($e->getMessage(), true, true);
+					}
+				}
+
+				$out = blocks_type_form($item);
+			}
+
 			break;
 
         case 'block_type_delete':
@@ -1649,7 +1659,7 @@ function blocks_types_list()
         )
     );
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=82"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
 									'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
 								));
 
@@ -1657,7 +1667,7 @@ function blocks_types_list()
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=block_types_json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=82&id=');
+	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=block_type_edit&id=');
 	
 	$navitable->addCol("ID", 'id', "80", "true", "left");
     $navitable->addCol(t(491, 'Class'), 'type', "80", "true", "left");
@@ -1765,7 +1775,7 @@ function blocks_type_form($item)
 
 	$navibars->add_actions(
         array(
-            (!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=82"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+            (!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 			'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
         )
     );
@@ -1921,7 +1931,7 @@ function blocks_type_form($item)
             $table->addRow($properties[$p]->id, array(
                 array('content' => $properties[$p]->name, 'align' => 'left'),
                 array('content' => $types[$properties[$p]->type], 'align' => 'left'),
-                array('content' => '<input type="checkbox" name="property-enabled[]" value="'.$properties[$p]->id.'" id="block-type-property-enabled-'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />
+                array('content' => '<input type="checkbox" name="property-enabled[]" value="'.$properties[$p]->id.'" disabled="disabled" id="block-type-property-enabled-'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />
                                     <label for="block-type-property-enabled-'.$properties[$p]->id.'"></label>',
 	                  'align' => 'center'),
             ));
@@ -2116,9 +2126,9 @@ function blocks_type_form($item)
                                            var checked = "";
 
                                            if(data.enabled) checked = \' checked="checked" \';
-                                           var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td align="center"><input name="property-enabled[]" id="block-type-property-enabled-'.$properties[$p]->id.'" type="checkbox" value="\'+data.id+\'" \'+checked+\' /><label for="block-type-property-enabled-\'+data.id+\'"></label></td></tr>\';
+                                           var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td align="center"><input name="property-enabled[]" id="block-type-property-enabled-\'+data.id+\'" type="checkbox" disabled="disabled" value="\'+data.id+\'" \'+checked+\' /><label for="block-type-property-enabled-\'+data.id+\'"></label></td></tr>\';
                                            $("#block_properties_table").find("tbody:last").append(tr);
-                                           $("#block_properties_table").find("tr:last").bind("dblclick", function() { navigate_block_edit_property(this); });
+                                           $("#block_properties_table").find("tr:last").on("dblclick", function() { navigate_block_edit_property(this); });
                                            $("#block_properties_table").tableDnD(
                                             {
                                                 onDrop: function(table, row)

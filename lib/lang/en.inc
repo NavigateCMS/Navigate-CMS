@@ -597,3 +597,4 @@
 596     # Do you want to enter a fixed path for the homepage?
 597     # Share files in Media browser
 598     # Only between websites of the current Navigate CMS installation
+599     # Sorry, can't display a theme block type info.
