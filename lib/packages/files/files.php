@@ -1080,8 +1080,6 @@ function files_media_browser($limit = 50, $offset = 0)
 	global $DB;
     global $website;
 
-    // TODO: check user access permission to different websites
-
     // access & permissions string helpers
     $access = array(
         0 => '', //<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
@@ -1106,142 +1104,146 @@ function files_media_browser($limit = 50, $offset = 0)
     else
         $ws->load($wid);
 
-	$media = (empty($_REQUEST['media'])? 'image' : $_REQUEST['media']);
-	$text = $_REQUEST['text'];
-
-	$out = array();
-
-    $limit = $offset + $limit;
-    $offset = 0;
-    $total = 0;
-
-    $order = $_REQUEST['order'];
-    switch($order)
-    {
-        case 'name_ASC':
-            $order = ' name ASC';
-            break;
-
-        case 'name_DESC':
-            $order = ' name DESC';
-            break;
-
-        case 'date_added_ASC':
-            $order = ' date_added ASC';
-            break;
-
-        case 'date_added_DESC':
-        default:
-            $order = ' date_added DESC';
-    }
-	
-	if($media=='folder')
+	// check if the chosen website allows sharing its files (or it's the current website)
+	if( $ws->id == $website->id || $ws->share_files_media_browser == '1' )
 	{
-		$parent = 0;
-		$files = file::filesOnPath($_REQUEST['parent'], $wid, $order);
-		if($_REQUEST['parent'] > 0)	// add "back" special folder
+		$media = (empty($_REQUEST['media'])? 'image' : $_REQUEST['media']);
+		$text = $_REQUEST['text'];
+
+		$out = array();
+
+	    $limit = $offset + $limit;
+	    $offset = 0;
+	    $total = 0;
+
+	    $order = $_REQUEST['order'];
+	    switch($order)
+	    {
+	        case 'name_ASC':
+	            $order = ' name ASC';
+	            break;
+
+	        case 'name_DESC':
+	            $order = ' name DESC';
+	            break;
+
+	        case 'date_added_ASC':
+	            $order = ' date_added ASC';
+	            break;
+
+	        case 'date_added_DESC':
+	        default:
+	            $order = ' date_added DESC';
+	    }
+
+		if($media=='folder')
 		{
-			$previous = $DB->query_single(
-                'parent',
-                'nv_files',
-                ' id = '.$_REQUEST['parent'].' AND website = '.$wid
-            );
-			array_unshift(
-                $files,
-                json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}')
-            );
+			$parent = 0;
+			$files = file::filesOnPath($_REQUEST['parent'], $wid, $order);
+			if($_REQUEST['parent'] > 0)	// add "back" special folder
+			{
+				$previous = $DB->query_single(
+	                'parent',
+	                'nv_files',
+	                ' id = '.$_REQUEST['parent'].' AND website = '.$wid
+	            );
+				array_unshift(
+	                $files,
+	                json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}')
+	            );
+			}
+
+	        $total = count($files);
+	        $files_shown = array();
+	        for($i=$offset; $i+$offset < $limit; $i++)
+	        {
+	            if(empty($files[$i])) break;
+
+	            // search by text in a folder
+	            if(!empty($text))
+	                if(stripos($files[$i]->name, $text)===false) continue;
+
+	            $files_shown[] = $files[$i];
+	        }
 		}
-
-        $total = count($files);
-        $files_shown = array();
-        for($i=$offset; $i+$offset < $limit; $i++)
-        {
-            if(empty($files[$i])) break;
-
-            // search by text in a folder
-            if(!empty($text))
-                if(stripos($files[$i]->name, $text)===false) continue;
-
-            $files_shown[] = $files[$i];
-        }
-	}
-    else if($media=='youtube')
-    {
-        //list($files_shown, $total) = files_youtube_search($offset, $limit, $text, $order);
-    }
-	else
-    {
-		list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text, $order);
-    }
-
-	foreach($files_shown as $f)
-	{
-        $website_root = $ws->absolute_path(true).'/object';
-        if(empty($website_root))
-            $website_root = NVWEB_OBJECT;
-        $download_link = $website_root.'?id='.$f->id.'&disposition=attachment';
-
-        if($f->type == 'image')
-		{
-            $f->title = json_decode($f->title, true);
-            $f->description = json_decode($f->description, true);
-
-			$icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&width=75&height=75';
-			$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
-			               mediatype="'.$f->type.'"
-			               mimetype="'.$f->mime.'"
-			               image-width="'.$f->width.'"
-			               image-height="'.$f->height.'"
-			               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
-			               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
-			               download-link="'.$download_link.'"
-			               id="file-'.$f->id.'">
-			               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-			               <img src="'.$icon.'" title="'.$f->name.'" />
-                      </div>';
-		}
-        else if($f->type == 'youtube')
-        {
-            $out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
-			               mediatype="'.$f->type.'"
-			               mimetype="'.$f->mime.'"
-			               image-width="'.$f->width.'"
-			               image-height="'.$f->height.'"
-			               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
-			               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
-			               download-link="'.$download_link.'"
-			               id="file-youtube#'.$f->id.'">
-			               <img src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
-			               <span>'.$f->title.'</span>
-                      </div>';
-        }
+	    else if($media=='youtube')
+	    {
+	        //list($files_shown, $total) = files_youtube_search($offset, $limit, $text, $order);
+	    }
 		else
+	    {
+			list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text, $order);
+	    }
+
+		foreach($files_shown as $f)
 		{
-			$icon = navibrowse::mimeIcon($f->mime, $f->type);
-			$navipath = file::getFullPathTo($f->id);
-			$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
-			               mediatype="'.$f->type.'"
-			               mimetype="'.$f->mime.'"
-			               navipath="'.$navipath.'"
-			               download-link="'.$download_link.'"
-			               id="file-'.$f->id.'">
-			               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-			               <img src="'.$icon.'" width="50" height="50" />
-                           <span style="clear: both; display: block; height: 0px;"></span>'.
-                           $f->name.'
-                       </div>';
+	        $website_root = $ws->absolute_path(true).'/object';
+	        if(empty($website_root))
+	            $website_root = NVWEB_OBJECT;
+	        $download_link = $website_root.'?id='.$f->id.'&disposition=attachment';
+
+	        if($f->type == 'image')
+			{
+	            $f->title = json_decode($f->title, true);
+	            $f->description = json_decode($f->description, true);
+
+				$icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&width=75&height=75';
+				$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
+				               mediatype="'.$f->type.'"
+				               mimetype="'.$f->mime.'"
+				               image-width="'.$f->width.'"
+				               image-height="'.$f->height.'"
+				               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+				               download-link="'.$download_link.'"
+				               id="file-'.$f->id.'">
+				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
+				               <img src="'.$icon.'" title="'.$f->name.'" />
+	                      </div>';
+			}
+	        else if($f->type == 'youtube')
+	        {
+	            $out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
+				               mediatype="'.$f->type.'"
+				               mimetype="'.$f->mime.'"
+				               image-width="'.$f->width.'"
+				               image-height="'.$f->height.'"
+				               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
+				               download-link="'.$download_link.'"
+				               id="file-youtube#'.$f->id.'">
+				               <img src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
+				               <span>'.$f->title.'</span>
+	                      </div>';
+	        }
+			else
+			{
+				$icon = navibrowse::mimeIcon($f->mime, $f->type);
+				$navipath = file::getFullPathTo($f->id);
+				$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
+				               mediatype="'.$f->type.'"
+				               mimetype="'.$f->mime.'"
+				               navipath="'.$navipath.'"
+				               download-link="'.$download_link.'"
+				               id="file-'.$f->id.'">
+				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
+				               <img src="'.$icon.'" width="50" height="50" />
+	                           <span style="clear: both; display: block; height: 0px;"></span>'.
+	                           $f->name.'
+	                       </div>';
+			}
 		}
+
+		if($total > $limit + $offset)
+		{
+			$out[] = '<div class="ui-corner-all" id="file-more">
+	                    <img src="'.NAVIGATE_URL.'/img/icons/ricebowl/actions/forward.png" width="32" height="32"  style="margin-top: 14px;" />'.
+	                    t(234, 'More elements').'
+	                  </div>';
+		}
+
+		echo implode("\n", $out);
 	}
-	
-	if($total > $limit + $offset)
-	{
-		$out[] = '<div class="ui-corner-all" id="file-more">
-                    <img src="'.NAVIGATE_URL.'/img/icons/ricebowl/actions/forward.png" width="32" height="32"  style="margin-top: 14px;" />'.
-                    t(234, 'More elements').'
-                  </div>';
-	}
-	
-	echo implode("\n", $out);
 	
 	session_write_close();
 	$DB->disconnect();

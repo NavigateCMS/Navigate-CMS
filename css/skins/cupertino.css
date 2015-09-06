@@ -784,6 +784,14 @@ label:hover:before
 	border: 1px solid #44A7E8!important;
 }
 
+[type="checkbox"]:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label + span.navigate-form-row-info
+{
+	margin-left: 24px;
+	margin-top: 3px;
+	display: inline-block;
+	height: auto;
+}
+
 
 
 

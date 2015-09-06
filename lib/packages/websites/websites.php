@@ -479,8 +479,8 @@ function websites_form($item)
 	if(!empty($item->theme))
 	{
 		$navibars->add_tab_content_row(array(
-            '<label>'.t(368, 'Theme').' <a href="?fid=8&act=themes"><img height="16" align="absmiddle" width="16" src="img/icons/silk/rainbow.png" /></a></label>',
-			'<strong>'.$theme->title.'</strong>'
+            '<label>'.t(368, 'Theme').'</label>',
+			'<strong><a href="?fid=8&act=themes"><img height="16" width="16" align="absmiddle" src="img/icons/silk/rainbow.png" /></a> '.$theme->title.'</strong>'
 		));
 	}
 
@@ -876,8 +876,15 @@ function websites_form($item)
         )
     );
 
-    // default comment options for elements
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(597, 'Share files in media browser').'</label>',
+			$naviforms->checkbox('share_files_media_browser', ($item->share_files_media_browser=='1')),
+			'<span class="navigate-form-row-info">'.t(598, 'Only between websites of the current Navigate CMS installation').'</span>'
+		)
+	);
 
+    // default comment options for elements
     $navibars->add_tab_content_row(array(
             '<label>'.t(252, 'Comments enabled for').'</label>',
             $naviforms->selectfield('comments_enabled_for',

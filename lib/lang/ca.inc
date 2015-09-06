@@ -595,3 +595,5 @@
 594     # Definir com a pàgina d'inici
 595     # Ara mateix la pàgina d'inici està definida com un element de l'estructura que permet la redirecció multi-idioma.
 596     # Vols introduir una ruta fixa per a la pàgina d'inici?
+597     # Compartir fitxers a la finestra Multimedia
+598     # Només entre llocs web d'aquesta instal·lació de Navigate CMS

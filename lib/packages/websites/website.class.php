@@ -17,6 +17,7 @@ class website
     public $resize_uploaded_images;	// what to do with the uploaded images, 0 => keep original files, "yy" px => autoresize to yy pixels
     public $comments_enabled_for;
     public $comments_default_moderator;
+    public $share_files_media_browser;
 	public $additional_scripts;
 	public $permission;	//  0 => public | 1 => private | 2 => only navigate users
 	public $block_types;
@@ -88,6 +89,7 @@ class website
 		$this->resize_uploaded_images       = $main->resize_uploaded_images;
         $this->comments_enabled_for         = $main->comments_enabled_for;
         $this->comments_default_moderator   = $main->comments_default_moderator;
+		$this->share_files_media_browser    = $main->share_files_media_browser;
 
 		$this->additional_scripts           = $main->additional_scripts;
 		$this->permission		= $main->permission;
@@ -142,6 +144,7 @@ class website
 
         $this->comments_enabled_for         =   intval($_REQUEST['comments_enabled_for']);
         $this->comments_default_moderator   =   $_REQUEST['comments_default_moderator'];
+		$this->share_files_media_browser    =   intval($_REQUEST['share_files_media_browser']);
 
 		$this->additional_scripts     = $_REQUEST['additional_scripts'];
 		$this->homepage			= $_REQUEST['homepage'];		
@@ -378,7 +381,7 @@ class website
             (	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
                 languages, languages_published,
                 aliases, date_format, tinymce_css, resize_uploaded_images,
-                comments_enabled_for, comments_default_moderator,
+                comments_enabled_for, comments_default_moderator, share_files_media_browser
                 additional_scripts, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
                 homepage, default_timezone, metatag_description, metatag_keywords, metatags,
@@ -401,6 +404,7 @@ class website
               '.protect($this->resize_uploaded_images).',
               '.protect($this->comments_enabled_for).',
               '.protect($this->comments_default_moderator).',
+              '.protect($this->share_files_media_browser).',
               '.protect($this->additional_scripts).',
               '.protect($this->permission).',
               '.protect($this->mail_mailer).',
@@ -490,6 +494,7 @@ class website
                     resize_uploaded_images = ?,
                     comments_enabled_for = ?,
 					comments_default_moderator = ?,
+					share_files_media_browser = ?,
                     additional_scripts = ?,
                     permission = ?,
                     mail_mailer = ?,
@@ -525,6 +530,7 @@ class website
                 $this->resize_uploaded_images,
                 $this->comments_enabled_for,
                 $this->comments_default_moderator,
+                $this->share_files_media_browser,
                 $this->additional_scripts,
                 $this->permission,
                 $this->mail_mailer,

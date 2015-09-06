@@ -847,10 +847,13 @@ class layout
 
         $naviforms = new naviforms();
 		
-		$DB->query('SELECT *
-					  FROM nv_websites
-					 WHERE 1 = 1
-					 ORDER BY name ASC');
+		$DB->query('
+			SELECT *
+			  FROM nv_websites
+			 WHERE id = '.$website->id.'
+			    OR (share_files_media_browser = 1 AND id <> '.$website->id.')
+			 ORDER BY name ASC
+		');
 		$websites = $DB->result();	
 	
 		$html = array();
@@ -859,14 +862,14 @@ class layout
 		$html[] = '	<form action="#"> ';
 		
 		// website selector
-		$html[] = '		<a href="#" id="navigate_media_browser_website" class="uibutton"><img src="img/icons/silk/world.png" sprite="true" align="left" /> <span class="ui-icon ui-icon-triangle-1-s"></span></a>';
 		$html[] = '		<input id="media_browser_website" type="hidden" />';
+		$html[] = '		<a href="#" id="navigate_media_browser_website" class="uibutton"><img src="img/icons/silk/world.png" sprite="true" align="left" /> <span class="ui-icon ui-icon-triangle-1-s"></span></a>';
 		$html[] = '		<div id="navigate_media_browser_website_list" class="ui-dialog ui-widget ui-corner-all">
 		                    <div id="navigate_media_browser_website_list_wrapper">';
-
 		foreach($websites as $ws)
+		{
 			$html[]	= '		    <div website_id="'.$ws->id.'" class="uibutton" title="'.htmlspecialchars($ws->name).'">'.$ws->name.'</div>';
-
+		}
 		$html[] = '		    </div>
 		                </div>';
 

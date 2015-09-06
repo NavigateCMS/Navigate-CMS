@@ -595,3 +595,5 @@
 594     # Als Startseite festlegen
 595     # Im Augenblick ist die Homepage von einem Strukturelement, das Multi-Language-Umleitung ermöglicht gesetzt.
 596     # Möchten Sie einen festen Pfad für die Homepage eingeben?
+597     # Gemeinsame Nutzung von Dateien im Media-Browser
+598     # Nur zwischen den Websites der aktuellen Navigate CMS-Installation

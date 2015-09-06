@@ -595,3 +595,5 @@
 594     # Set as homepage
 595     # Right now the homepage is set from a structure element which allows multi language redirect.
 596     # Do you want to enter a fixed path for the homepage?
+597     # Share files in Media browser
+598     # Only between websites of the current Navigate CMS installation
