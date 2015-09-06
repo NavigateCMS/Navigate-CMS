@@ -410,10 +410,14 @@ function navigate_media_browser_refresh_files_used()
         if(!files_used[i] || files_used[i]=="" || files_used[i]==0)
             continue;
 
-        $("#navigate_media_browser_items")
-            .find("#file-" + files_used[i])
-            .find(".file-access-icons")
-            .append('<img align="absmiddle" class="file-used" title="'+navigate_t(580, "Used in this page")+'" src="img/icons/silk/tick.png">');
+		// ignore default theme images including a slash
+		if(files_used[i].indexOf('/') < 0)
+		{
+			$("#navigate_media_browser_items")
+				.find("#file-" + files_used[i])
+				.find(".file-access-icons")
+				.append('<img align="absmiddle" class="file-used" title="'+navigate_t(580, "Used in this page")+'" src="img/icons/silk/tick.png">');
+		}
     }
 }
 
