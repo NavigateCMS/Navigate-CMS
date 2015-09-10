@@ -233,8 +233,11 @@ function structure_tree($hierarchy)
 
 	$navibars->add_actions(
 		array(
-			'<a href="#" onclick="javascript: navigate_structure_expand(); ">
+			'<a href="#" onclick="javascript: navigate_structure_expand();" data-action="nv_structure_expand">
 				<img height="16" align="absmiddle" width="16" src="img/icons/silk/arrow_out.png"> '.t(295, 'Expand all').'
+			</a>',
+			'<a href="#" onclick="javascript: navigate_structure_collapse();" style="display: none;"  data-action="nv_structure_collapse">
+				<img height="16" align="absmiddle" width="16" src="img/icons/silk/arrow_in.png"> '.t(508, 'Collapse').'
 			</a>'
 		)
 	);
@@ -369,11 +372,31 @@ function structure_tree($hierarchy)
 				parents = $(".parent").length;
 				$(".parent").expand();
 			}
-		}	
+
+			// change action to collapse
+			$("a[data-action=\"nv_structure_collapse\"]").css("display", "block");
+			$("a[data-action=\"nv_structure_expand\"]").css("display", "none");
+		}
+
+		function navigate_structure_collapse()
+		{
+			$(".parent.expanded").each(function()
+			{
+				if($(this).data("node-id") == 0)
+					return;
+
+				$(".child-of-node-" + $(this).data("node-id")).removeClass("expanded").addClass("collapsed").css("display", "none");
+				$("#node-" + $(this).data("node-id")).addClass("collapsed").removeClass("expanded");
+			});
+
+			// change action to expand
+			$("a[data-action=\"nv_structure_collapse\"]").css("display", "none");
+			$("a[data-action=\"nv_structure_expand\"]").css("display", "block");
+		}
+
 	');
 
 	return $navibars->generate();
-	
 }
 
 function structure_form($item)
