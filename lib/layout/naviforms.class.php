@@ -412,9 +412,9 @@ class naviforms
                 theme_advanced_font_sizes: "8px=8px,9px=9px,10px=10px,11px=11px,12px=12px,13px=13px,14px=14px,15px=15px,16px=16px,17px=17px,18px=18px,20px=20px,24px=24px,26px=26px,28px=28px,30px=30px,32px=32px,36px=36px",
 
                 content_css: "'.$content_css.'",
-                valid_elements: "*[*]",
-                custom_elements: "nv,code,pre,nvlist,figure,article,nav,i",
-                extended_valid_elements: "nv[*],pre[*],code[*],nvlist[*],figure[*],article[*],nav[*],i[*]",
+                valid_elements: "*[*],+a[*],+p[*],#i",
+                custom_elements: "nv,code,pre,nvlist,figure,article,nav",
+                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+figure[*],+article[*],+nav[*],+i[*]",
                 //encoding: "xml",
                 relative_urls: false,
                 convert_urls: true,
@@ -422,8 +422,9 @@ class naviforms
                 remove_linebreaks: true,
                 paste_text_sticky: true,
                 paste_text_sticky_default: true,
+                allow_html_in_named_anchor: true,
                 disk_cache: true,
-                valid_children: "+a[div|p|li],+body[style|script],+code[nv|nvlist]",
+                valid_children: "+a[div|p|li],+body[style|script|nv|nvlist],+code[nv|nvlist]",
                 width: ($("#'.$name.'").width()) + "px",
                 height: $("#'.$name.'").height() + "px",
                 oninit: function()
