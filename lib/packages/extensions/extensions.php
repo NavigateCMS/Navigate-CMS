@@ -408,6 +408,7 @@ function extensions_options($extension, $saved=null)
 {
     global $layout;
     global $website;
+    global $events;
 
     $layout = null;
     $layout = new layout('navigate');
@@ -472,11 +473,18 @@ function extensions_options($extension, $saved=null)
 
         if($property->type == 'function')
         {
-            if(!function_exists($option->value))
+            $fname = $option->dvalue;
+            if(empty($fname))
+                $fname = $option->function;
+
+            // load the extension source code, if not already done
+            extension::include_php($extension->code);
+
+            if(!function_exists($fname))
                 continue;
 
             call_user_func(
-                $option->value,
+                $fname,
                 array(
                     'extension' => $extension,
                     'navibars' => $navibars,
@@ -508,10 +516,16 @@ function extensions_dialog($extension, $function, $params)
     $layout = null;
     $layout = new layout('navigate');
 
-    if(function_exists($function))
-        call_user_func($function, $params);
+	// load the extension source code, if not already done
+    extension::include_php($extension->code);
 
-    $out = $layout->generate();
+    if(function_exists($function))
+    {
+        call_user_func($function, $params);
+        $out = $layout->generate();
+    }
+    else
+        $out = 'ERROR: "'.$function.'" function does not exist!';
 
     return $out;
 }
