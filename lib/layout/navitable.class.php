@@ -416,8 +416,9 @@ class navitable
 		$html[] = 'viewrecords: true,';		// display the number of total records in the pager bar
 		$html[] = 'rowNum: "30",';			
 		$html[] = 'rowList: [10,15,20,30,50,100],';
-		$html[] = 'scroll: 1,';			
-		
+		$html[] = 'scroll: 1,';
+		$html[] = 'iconSet: "fontAwesome",';
+
 		$html[] = 'loadonce: false,';
 
         if($this->click_action == 'redirect')

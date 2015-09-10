@@ -266,7 +266,7 @@ function run()
 			{
 				$item->load(intval($_REQUEST['id']));
 			}
-				
+
 			if(isset($_REQUEST['form-sent']))
 			{
 				$item->load_from_post();
@@ -746,15 +746,18 @@ function items_list()
 
         if($("#jqgh_items_list_category button").length < 1)
         {
-            $("#jqgh_items_list_category").prepend("<button>");
-            $("#jqgh_items_list_category button").button({
-                icons: { primary: "ui-icon-gear" },
-                text: false
-            }).css({
-                "float": "right",
-                "margin-top": "0px",
-                "padding": "3px 0px"
-            }).on("click", items_list_choose_categories);
+            $("#jqgh_items_list_category").prepend("<button><i class=\"fa fa-bars\"></i></button>");
+            $("#jqgh_items_list_category button")
+            	.button()
+            	.css(
+            	{
+                	"float": "right",
+                	"margin-top": "0px",
+                	"padding": "0px"
+            	})
+            	.on("click", items_list_choose_categories);
+
+            $("#jqgh_items_list_category span.ui-button-text").css({"padding-top": "0", "padding-bottom": "0"});
         }
     ');
 
@@ -1181,7 +1184,7 @@ function items_form($item)
                 (empty($item->id)? '1' : intval($item->embedding)),
                 "navigate_change_association();"
             ),
-            '<span id="embedding_info" class="ui-icon ui-icon-lightbulb" style="float: left;"></span>'
+            '<span id="embedding_info" class="ui-icon ui-icon-info" style="float: left; margin-left: -4px;"></span>'
         ),
         'div_category_embedded'
     );
@@ -1190,7 +1193,7 @@ function items_form($item)
         array(
             '<label>'.t(22, 'Elements').'</label>',
             '<button style="float: left;">'.t(171, 'Order').'</button>',
-            '<span id="order_info" class="ui-icon ui-icon-info" style="float: left;"></span>',
+            '<span id="order_info" class="ui-icon ui-icon-info" style="float: left; margin-left: 2px;"></span>',
             '<div id="items_order_window" style="display: none;"></div>'
         ),
         'div_category_order'
