@@ -175,6 +175,7 @@ class property
        	$this->dvalue = $theme_option->dvalue;	// default value
        	$this->multilanguage = $theme_option->multilanguage;
        	$this->helper = $theme_option->helper;
+        $this->function = $theme_option->function;
        	$this->position = 0;
        	$this->enabled = 1;
 
@@ -210,6 +211,7 @@ class property
        	$this->dvalue = $object->dvalue;	// default value
        	$this->multilanguage = $object->multilanguage;
        	$this->helper = $object->helper;
+        $this->function = $object->function;
        	$this->position = 0;
        	$this->enabled = 1;
 
@@ -665,7 +667,7 @@ class property
 //			if(!$property_empty)
 //			{		
 				// multilanguage property?
-				if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true')
+				if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
 					$_REQUEST['property-'.$property->id] = '[dictionary]';
 				
 				// date/datetime property?
@@ -720,17 +722,18 @@ class property
 
 				// set the dictionary for the multilanguage properties
                 $default_language = '';
-                if($property->multilanguage == 'false' || $property->multilanguage === false)
+                if($property->multilanguage === 'false' || $property->multilanguage === false)
                     $default_language = $website->languages_list[0];
 
-				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true')
+				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
 				{
 					foreach($website->languages_list as $lang)
 					{
                         if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
                             $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
-						$dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
-					}					
+
+                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
+					}
 				}
                 else if($property->type == 'link')
                 {
@@ -798,7 +801,7 @@ class property
                 $value = $properties_assoc[$property->id];
 
             // multilanguage property?
-            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true')
+            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
                 $values_dict = $properties_assoc[$property->name];
                 if(empty($values_dict))
@@ -852,10 +855,10 @@ class property
 
             // set the dictionary for the multilanguage properties
             $default_language = '';
-            if($property->multilanguage == 'false' || $property->multilanguage === false)
+            if($property->multilanguage === 'false' || $property->multilanguage === false)
                 $default_language = $website->languages_list[0];
 
-            if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true')
+            if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
                 foreach($website->languages_list as $lang)
                 {
@@ -927,7 +930,7 @@ class property
         $value = $property_value;
 
         // multilanguage property?
-        if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || $property->multilanguage=='true')
+        if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || $property->multilanguage=='true' || $property->multilanguage===true)
         {
             $values_dict = $value;
             $value = '[dictionary]';
