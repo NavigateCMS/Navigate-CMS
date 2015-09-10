@@ -102,12 +102,11 @@ class events
             {
                 foreach($extensions[$e]['bindings'] as $binding)
                 {
-                    include_once(NAVIGATE_PATH.'/plugins/'.$extensions[$e]['code'].'/'.$extensions[$e]['code'].'.php');
+                    extension::include_php($extensions[$e]['code']);
                     $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
                 }
             }
         }
     }
 }
-
 ?>

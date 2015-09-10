@@ -302,6 +302,11 @@ class extension
 
         return $latest_update;
     }
-}
 
+    public static function include_php($extension_code)
+    {
+        if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php'))
+            include_once(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php');
+    }
+}
 ?>
