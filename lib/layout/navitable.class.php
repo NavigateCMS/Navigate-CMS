@@ -488,7 +488,7 @@ class navitable
             "#'.$this->id.'-pager",
             {
                 add: '.($this->add_action && !empty($this->edit_url)? 'true' : 'false').',
-                edit: '.(($this->click_action=='redirect')? 'false' : 'true').',
+                edit: '.(($this->click_action=='jqform')? 'true' : 'false').',
                 del: '.($this->delete_action? 'true' : 'false').',
                 search:'.(!empty($this->search_action)? 'true' : 'false').',
                 searchtext:"'.t(41, 'Search').' ",

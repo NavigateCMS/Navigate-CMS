@@ -599,3 +599,4 @@
 598     # Nur zwischen den Websites der aktuellen Navigate CMS-Installation
 599     # Sorry, kann nicht ein Thema Bausteintyp Informationen angezeigt werden soll.
 600     # Aktie
+601     # Import

@@ -599,3 +599,4 @@
 598     # Només entre llocs web d'aquesta instal·lació de Navigate CMS
 599     # No és posible mostrar la informació d'un tipus de bloc d'un tema.
 600     # Compartir
+601     # Importar
