@@ -329,7 +329,7 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             var max_width = $('#' + editor_id + '_ifr').contents().find('body').width();
             var or_styles = '';
 
-            if($(inst.selection.getContent({format: 'raw'})).is('img'))
+            if($($.parseHTML(inst.selection.getContent({format: 'raw'}))).is('img'))
             {
                 // if tinyMCE has something selected and it is an image, read its dimensions and apply them to the new image
                 var max_width = $(inst.selection.getContent({format: 'raw'})).width();
@@ -517,8 +517,10 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 			if(selection_content=='')
                 selection_content = '[' + navigate_t(82, "File") + ']';
 
-            if($(selection_content).is("A"))
+            if($($.parseHTML(selection_content)).is("A"))
+            {
                 selection_content = $(selection_content).text();
+            }
 
 			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline"> ' + selection_content + '</a>';
 	}
