@@ -679,6 +679,7 @@ class layout
                 58: "'.t(58, 'Cancel').'",
                 59: "'.t(59, 'Confirmation').'",
                 82: "'.t(82, 'File').'",
+                92: "'.t(92, 'Close').'",
                 141: "'.t(141, 'Folder').'",
                 185: "'.t(185, 'Searching elements').'",
                 189: "'.t(189, 'Copy from').'",
@@ -688,6 +689,7 @@ class layout
                 262: "'.t(262, 'Error uploading file').'",
                 270: "'.t(270, 'Auto-save in progress').'",
                 271: "'.t(271, 'Auto-save completed').'",
+                274: "'.t(274, 'Preview').'",
                 286: "'.t(286, 'Drag to reorder. Double click a item to set a caption.').'",
                 334: "'.t(334, 'Description').'",
                 368: "'.t(368, 'Theme').'",
@@ -706,6 +708,8 @@ class layout
                 496: "'.t(496, 'You can only select {number} items').'",
                 499: "'.t(499, 'Open').'",
                 500: "'.t(500, 'Rename').'",
+                501: "'.t(501, 'Previous').'",
+                502: "'.t(502, 'Next').'",
                 580: "'.t(580, 'Used in this page').'",
                 581: "'.t(581, 'None').'",
                 582: "'.t(582, "defalt").'",
@@ -714,7 +718,8 @@ class layout
                 585: "'.t(585, "Same width & height (scaled)").'",
                 586: "'.t(586, "Same width & height (cropped)").'",
                 587: "'.t(587, "Full available width").'",
-                588: "'.t(588, "Replace image").'"
+                588: "'.t(588, "Replace image").'",
+                601: "'.t(601, "Import").'"
             };
         ');
 

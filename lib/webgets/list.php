@@ -1183,6 +1183,12 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         $property_definition = $item->property_definition($property_name);
         $condition_value = $tag['attributes']['property_value'];
 
+        if(in_array($property_definition->type, array('image', "file")))
+        {
+            if($property_value == '0')
+                $property_value = "";
+        }
+
         // process special comparing values
         switch($property_definition->type)
         {
