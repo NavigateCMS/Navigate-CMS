@@ -92,6 +92,10 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			$width = intval(@$_REQUEST['width']) + 0;
 			$height = intval(@$_REQUEST['height']) + 0;
 
+		    // check size requested and ignore the empty values (or equal to zero)
+		    if(empty($width)) $width = "";
+		    if(empty($height)) $height = "";
+
             // get target quality (only for jpeg thumbnails!)
             $quality = $_REQUEST['quality'];
             if(empty($quality))
@@ -153,7 +157,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
             if(!$cached)
             {
                 $range = 0;
-                $size = $item->size;
+                $size = filesize($path);
 
                 if(isset($_SERVER['HTTP_RANGE']))
                 {
