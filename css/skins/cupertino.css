@@ -676,7 +676,7 @@ a.navigate-content-actions-selected
 /* CHECKBOX STYLING */
 /* Thanks to Geoffrey Crofte http://codepen.io/CreativeJuiz/ */
 
-.navigate-form-row table td [type="checkbox"]:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label
+.navigate-form-row table td [type="checkbox"]:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label
 {
 	width: auto;
 	vertical-align: middle;
@@ -687,22 +687,22 @@ a.navigate-content-actions-selected
 }
 
 /* Base for label styling */
-[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible),
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible)
+[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox),
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox)
 {
 	position: absolute;
 	left: -9999px;
 }
-[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label,
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label {
+[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label,
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label {
 	position: relative;
 	padding-left: 25px;
 	cursor: pointer;
 }
 
 /* checkbox aspect */
-[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:before,
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:before {
+[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before,
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before {
 	content: '';
 	position: absolute;
 	left:0; top: 2px;
@@ -716,15 +716,15 @@ a.navigate-content-actions-selected
 	outline: none;
 }
 
-td[align="center"] [type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:before,
-td[align="center"] [type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:before
+td[align="center"] [type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before,
+td[align="center"] [type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before
 {
 	left: -8px;
 }
 
 /* checked mark aspect */
-[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:after,
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:after
+[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:after,
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:after
 {
 	content: '✔';
 	position: absolute;
@@ -735,19 +735,19 @@ td[align="center"] [type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-h
 	outline: none;
 }
 
-td[align="center"] [type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:after,
-td[align="center"] [type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:after
+td[align="center"] [type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:after,
+td[align="center"] [type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:after
 {
 	left: -5px;
 }
 
 /* checked mark aspect changes */
-[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:after
+[type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:after
 {
 	opacity: 0;
 	transform: scale(0);
 }
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:after
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:after
 {
 	opacity: 1;
 	transform: scale(1);
@@ -772,8 +772,8 @@ td[align="center"] [type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-h
 }
 
 /* accessibility */
-[type="checkbox"]:checked:focus:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:before,
-[type="checkbox"]:not(:checked):focus:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label:before
+[type="checkbox"]:checked:focus:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before,
+[type="checkbox"]:not(:checked):focus:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before
 {
 	border: 1px dotted #44A7E8;
 }
@@ -784,14 +784,13 @@ label:hover:before
 	border: 1px solid #44A7E8!important;
 }
 
-[type="checkbox"]:not(.raw-checkbox):not(.ui-helper-hidden-accessible) + label + span.navigate-form-row-info
+[type="checkbox"]:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label + span.navigate-form-row-info
 {
 	margin-left: 24px;
 	margin-top: 3px;
 	display: inline-block;
 	height: auto;
 }
-
 
 
 
