@@ -793,9 +793,11 @@ class property
                 continue;
 
             $values_dict = array();
+            $value = '';
 
             // we try to find the property value by "property name", if empty then we try to find it via "property id"
-            $value = $properties_assoc[$property->name];
+            if(isset($properties_assoc[$property->name]))
+                $value = $properties_assoc[$property->name];
 
             if(empty($value))
                 $value = $properties_assoc[$property->id];
@@ -803,8 +805,10 @@ class property
             // multilanguage property?
             if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
-                $values_dict = $properties_assoc[$property->name];
-                if(empty($values_dict))
+	            if(isset($properties_assoc[$property->name]))
+                    $values_dict = $properties_assoc[$property->name];
+
+	            if(empty($values_dict))
                     $values_dict = $properties_assoc[$property->id];
 
                 $value = '[dictionary]';
@@ -823,26 +827,28 @@ class property
             if($property->type=='boolean' && empty($value))
                 $value = 0;
 
-               // remove the old element
-            $DB->execute('DELETE FROM nv_properties_items
-                            WHERE property_id = '.protect($property->id).'
-                              AND element = '.protect($item_type).'
-                              AND node_id = '.protect($item_id).'
-                              AND website = '.$website->id);
+           // remove the old element
+            $DB->execute('
+				DELETE FROM nv_properties_items
+                	  WHERE property_id = '.protect($property->id).'
+                        AND element = '.protect($item_type).'
+                        AND node_id = '.protect($item_id).'
+                        AND website = '.$website->id
+            );
 
             // now we insert a new row
             $DB->execute('
-				    INSERT INTO nv_properties_items
-					    (id, website, property_id, element, node_id, name, value)
-					VALUES
-					    (   0,
-							:website,
-							:property_id,
-							:type,
-							:item_id,
-							:name,
-							:value
-                        )',
+			    INSERT INTO nv_properties_items
+				    (id, website, property_id, element, node_id, name, value)
+				VALUES
+				    (   0,
+						:website,
+						:property_id,
+						:type,
+						:item_id,
+						:name,
+						:value
+                    )',
                 array(
                     ':website' => $website->id,
                     ':property_id' => $property->id,
@@ -855,34 +861,19 @@ class property
 
             // set the dictionary for the multilanguage properties
             $default_language = '';
-            if($property->multilanguage === 'false' || $property->multilanguage === false)
+            if(isset($property->multilanguage) && ($property->multilanguage === 'false' || $property->multilanguage === false))
                 $default_language = $website->languages_list[0];
 
-            if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+            if(in_array($property->type, array('text', 'textarea', 'rich_textarea', 'link')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
                 foreach($website->languages_list as $lang)
                 {
                     if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
-                        $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
-
-                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
+	                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$default_language];
+	                else
+	                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$lang];
                 }
             }
-            else if($property->type == 'link')
-            {
-                foreach($website->languages_list as $lang)
-                {
-                    $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].
-                        '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'].
-                        '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-target'];
-
-                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
-
-                    if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
-                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $dictionary[$lang]['property-'.$property->id.'-'.$default_language];
-                }
-            }
-
    		}
 
    		if(!empty($dictionary))
