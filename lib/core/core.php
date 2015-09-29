@@ -226,8 +226,10 @@ function core_ts2date($timestamp, $time=false)
 	
 	if(!$time) $format = str_replace('H:i', '', $format);
 
-    if(empty($user->timezone))
-        $user->timezone = 'UTC';
+    $user_timezone = 'UTC';
+
+    if(!empty($user->timezone))
+        $user_timezone = $user->timezone;
 
 	$date = new DateTime();		
 	if(version_compare(PHP_VERSION, '5.3.0') < 0)
@@ -239,7 +241,7 @@ function core_ts2date($timestamp, $time=false)
 	else
 	{
 		$date->setTimestamp(intval($timestamp));
-		$date->setTimezone(new DateTimeZone($user->timezone));
+		$date->setTimezone(new DateTimeZone($user_timezone));
 	}
 	
 	return $date->format($format);
