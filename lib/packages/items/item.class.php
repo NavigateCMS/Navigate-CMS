@@ -291,11 +291,11 @@ class item
                 ":date_unpublish" => intval($this->date_unpublish),
                 ":date_created" => $this->date_created,
                 ":date_modified" => $this->date_modified,
-                ":author" => $this->author,
+                ":author" => (is_null($this->author)? '' : $this->author),
                 ":galleries" => serialize($this->galleries),
                 ":comments_enabled_to" => $this->comments_enabled_to,
                 ":comments_moderator" => $this->comments_moderator,
-                ":access" => $this->access,
+                ":access" => (is_null($this->access)? 0 : $this->access),
                 ":groups" => $groups,
                 ":permission" => $this->permission,
                 ":views" => 0,
@@ -596,35 +596,42 @@ class item
 	{
 		global $DB;
 		global $website;
-		
-		$like = ' LIKE '.protect('%'.$text.'%');
-		
-		// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
-		
-		$DB->query('SELECT DISTINCT (nvw.node_id)
-					 FROM nv_webdictionary nvw
-					 WHERE nvw.node_type = "item" 
-					   AND nvw.website = '.$website->id.' 
-					   AND nvw.text '.$like, 'array');
-						   
-		$dict_ids = $DB->result("node_id");
-		
-		// all columns to look for	
-		$cols[] = 'i.id' . $like;
-		
-		/* INEFFICIENT WAY
-		$cols[] = 'i.id IN ( SELECT nvw.node_id 
-							 FROM nv_webdictionary nvw
-							 WHERE nvw.node_type = "item" AND
-								   nvw.text '.$like.'
-							)' ;
-		*/
-		if(!empty($dict_ids))
-			$cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
-			
-		$where = ' AND ( ';	
-		$where.= implode( ' OR ', $cols); 
-		$where .= ')';
+
+		$where = '';
+		$search = explode(" ", $text);
+		$search = array_filter($search);
+		sort($search);
+		foreach($search as $text)
+		{
+			$like = ' LIKE '.protect('%'.$text.'%');
+
+			// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
+
+			$DB->query('SELECT DISTINCT (nvw.node_id)
+						 FROM nv_webdictionary nvw
+						 WHERE nvw.node_type = "item"
+						   AND nvw.website = '.$website->id.'
+						   AND nvw.text '.$like, 'array');
+
+			$dict_ids = $DB->result("node_id");
+
+			// all columns to look for
+			$cols[] = 'i.id' . $like;
+
+			/* INEFFICIENT WAY
+			$cols[] = 'i.id IN ( SELECT nvw.node_id
+								 FROM nv_webdictionary nvw
+								 WHERE nvw.node_type = "item" AND
+									   nvw.text '.$like.'
+								)' ;
+			*/
+			if(!empty($dict_ids))
+				$cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
+
+			$where .= ' AND ( ';
+			$where .= implode( ' OR ', $cols);
+			$where .= ')';
+		}
 		
 		return $where;
 	}
