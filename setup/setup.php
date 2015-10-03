@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.8.8');
+	define('APP_VERSION', '1.9.0');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -61,9 +61,9 @@ $lang = navigate_install_load_language();
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php echo APP_NAME;?> v<?php echo APP_VERSION;?> - <?php echo $lang['install'];?></title>
-        <script language="javascript" type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
-        <script language="javascript" type="text/javascript" src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/cupertino/jquery-ui.css" type="text/css" />
+        <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1.11.3/jquery.min.js"></script>
+        <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/cupertino/jquery-ui.min.css" type="text/css" />
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo navigate_favicon(); ?>">
         <style type="text/css">
             html
@@ -138,15 +138,16 @@ $lang = navigate_install_load_language();
     <br />
 </div>
 
-</body>
-
-<script language="javascript" type="text/javascript">
-$(window).bind('load', function() 
-{
-	$("#tabs").tabs();
-	$("button, input:submit, .ui-button").button();
-});
+<script language="javascript">
+    $(window).load(function()
+    {
+        $("#tabs").tabs();
+        $("button, input:submit, .ui-button").button();
+    });
 </script>
+
+
+</body>
 
 </html>
 
@@ -257,12 +258,12 @@ function navigate_install_requirements()
         <input type="submit" value="<?php echo $lang['proceed_step_2'];?>" />
     </form>    
     <script language="javascript" type="text/javascript">
-		$('#install_language').bind('change', function()
+		$('#install_language').on('change', function()
 		{
 			window.location = '?lang=' + $(this).val();
 		});
 
-        $('input[name="NAVIGATE_FOLDER"]').bind('keyup', function()
+        $('input[name="NAVIGATE_FOLDER"]').on('keyup', function()
         {
             // remove invalid characters
             var tmp = $(this).val();
@@ -539,7 +540,8 @@ function navigate_install_configuration()
                                 select = this.element.hide(),
                                 selected = select.children( ":selected" ),
                                 value = selected.val() ? selected.text() : "";
-                            var input = this.input = $( "<input>" )
+
+                            this.input = $( "<input>" )
                                 .insertAfter( select )
                                 .val( value )
                                 .autocomplete(
@@ -579,7 +581,10 @@ function navigate_install_configuration()
                                 .addClass( "ui-widget" )	// ui-widget-content ui-corner-left" );
                                 .css({'position': 'absolute'});
 
-                            input.data( "autocomplete" )._renderItem = function( ul, item ) {
+                            var input = this.input;
+
+                            input.data( "ui-autocomplete" )._renderItem = function( ul, item )
+                            {
                                 return $( "<li></li>" )
                                     .data( "item.autocomplete", item )
                                     .append( "<a>" + item.label + "</a>" )
@@ -623,7 +628,7 @@ function navigate_install_configuration()
 		
 		verify_database();
 		
-		$('#tabs-2').find('select,input').not('#PDO_DATABASE').bind('change', verify_database);
+		$('#tabs-2').find('select,input').not('#PDO_DATABASE').on('change', verify_database);
 
         $('#pdo_driver').on('change', function()
         {
