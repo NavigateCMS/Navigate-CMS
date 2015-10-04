@@ -769,13 +769,17 @@ function blocks_form($item)
 			$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
         )
     );
-										
-	$navibars->add_tab_content_row(
-        array(
-            '<label>'.t(168, 'Notes').'</label>',
-			$naviforms->textarea('notes', $item->notes)
-        )
-    );
+
+	// Notes field is deprecated, but we keep on showing the existing Notes
+	if(!empty($item->notes))
+	{
+		$navibars->add_tab_content_row(
+	        array(
+	            '<label>'.t(168, 'Notes').'</label>',
+				$naviforms->textarea('notes', $item->notes)
+	        )
+	    );
+	}
 
     $navibars->add_tab_content_row(
         array(
