@@ -95,6 +95,15 @@ function navigate_media_browser()
                     afterAll: navigate_media_browser_reload
                 }
             );
+
+            $("#navigate-media-browser").on("scroll", function()
+            {
+                $("#file-more", "#navigate-media-browser").each(function()
+                {
+                    if(navigate_element_visible(this))
+                        $(this).trigger("click");
+                });
+            });
 		}
 	}).dialogExtend(
 	{
@@ -696,6 +705,7 @@ function navigate_media_browser_reload()
 			
 			$("#file-more").on("click", function()
 			{
+                $(this).off("click");
                 $(this).html('<figure class="navigatecms_loader"></figure>');
                 navigate_media_browser_offset += navigate_media_browser_limit;
 				navigate_media_browser_reload();
