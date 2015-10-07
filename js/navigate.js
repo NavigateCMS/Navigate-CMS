@@ -1341,7 +1341,7 @@ function navigate_query_parameter(name, url)
 	return results[1] || 0;
 }
 
-// Thanks! Taken from http://stackoverflow.com/questions/487073/jquery-check-if-element-is-visible-after-scroling
+// Thanks! Taken from http://stackoverflow.com/questions/487073/jquery-check-if-element-is-visible-after-scrolling
 function navigate_element_visible(elem)
 {
     var docViewTop = $(window).scrollTop();

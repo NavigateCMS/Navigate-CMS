@@ -195,14 +195,14 @@ class navibrowse
 			
 			if($item->type=='folder')
 			{
-				$html[] = '<div class="navibrowse-folder ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'">';
+				$html[] = '<div class="navibrowse-folder ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
 				$html[] = '		<img src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';	
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';				
 				$html[] = '</div>';	
 			}
 			else
 			{
-				$html[] = '<div class="navibrowse-file ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'">';
+				$html[] = '<div class="navibrowse-file ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
                 $html[] = '     <div class="navibrowse-file-access-icons">'.$permissions[$item->permission].$access[$item->access].'</div>';
 				$html[] = '		<img src="'.$icon.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';

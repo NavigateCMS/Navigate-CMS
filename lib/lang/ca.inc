@@ -453,7 +453,7 @@
 452     # No s'ha pogut enviar el correu electrònic; si us plau contacti amb l'administrador
 453     # No s'ha trobat aquest nom d'usuari o adreça de correu
 454     # S'ha enviat un correu electrònic a la seva adreça amb un enllaç de confirmació.
-455     # La seva nova contrassenya ha estat actividad.
+455     # La seva nova contrassenya ha estat activada.
 456     # Editar a Navigate CMS
 457     # Informació
 458     # Editar a la página
