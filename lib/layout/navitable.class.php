@@ -38,11 +38,17 @@ class navitable
         $this->after_select_callback = '';
         $this->after_right_click_col = '';
         $this->default_fid = $_REQUEST['fid'];
+		$this->quicksearch_url = '';
 	}
 	
 	public function setURL($url)
 	{
 		$this->url = $url;	
+	}
+
+	public function setQuickSearchURL($url)
+	{
+		$this->quicksearch_url = $url;
 	}
 	
 	public function setTitle($title)
@@ -671,9 +677,12 @@ class navitable
 			$html[] = '}';
 		}
 
-        $this->quicksearch_url = '?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=';
-        if(strpos($this->default_fid, 'ext_')===0)
-            $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
+		if(empty($this->quicksearch_url))
+		{
+	        $this->quicksearch_url = '?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=';
+	        if(strpos($this->default_fid, 'ext_')===0)
+	            $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
+		}
 
 		$html[] = 'function navitable_quicksearch(text)';
 		$html[] = '{';
