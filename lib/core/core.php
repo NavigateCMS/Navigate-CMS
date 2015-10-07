@@ -223,7 +223,10 @@ function core_ts2date($timestamp, $time=false)
 	global $user;
 	
 	$format = $user->date_format;
-	
+
+    if(empty($format))
+        $format = "Y-m-d H:i";
+
 	if(!$time) $format = str_replace('H:i', '', $format);
 
     $user_timezone = 'UTC';
