@@ -494,7 +494,7 @@ function extensions_options($extension, $saved=null)
         }
         else
         {
-            $navibars->add_tab_content(navigate_property_layout_field($property));
+            $navibars->add_tab_content(navigate_property_layout_field($property, $extension));
         }
     }
 

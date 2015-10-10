@@ -52,12 +52,16 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
 	return implode("\n", $out);	
 }
 
-function navigate_property_layout_field($property)
+function navigate_property_layout_field($property, $object="")
 {
 	global $website;
 	global $layout;
     global $theme;
     global $DB;
+
+	// object used for translations (theme or extension)
+	if(empty($object))
+		$object = $theme;
 
 	$naviforms = new naviforms();
 	$langs = $website->languages_list;
@@ -71,8 +75,8 @@ function navigate_property_layout_field($property)
         $property->multilanguage = 'false';
 
 	$property_name = $property->name;
-	if(!empty($theme))
-		$property_name = $theme->t($property_name);
+	if(!empty($object))
+		$property_name = $object->t($property_name);
 
 	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")) || $property->multilanguage=='true')
 	{
@@ -122,8 +126,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -150,8 +154,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -164,8 +168,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';
@@ -180,10 +184,10 @@ function navigate_property_layout_field($property)
                 $options = (array)$options;
 
             // translate each option text
-            if(!empty($theme))
+            if(!empty($object))
             {
                 foreach($options as $value => $text)
-                    $options[$value] = $theme->t($text);
+                    $options[$value] = $object->t($text);
             }
 
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
@@ -192,8 +196,8 @@ function navigate_property_layout_field($property)
             if(!empty($property->helper))
             {
 	            $helper_text = $property->helper;
-	            if(!empty($theme))
-		            $helper_text = $theme->t($helper_text);
+	            if(!empty($object))
+		            $helper_text = $object->t($helper_text);
                 $field[] = '<div class="subcomment">'.$helper_text.'</div>';
             }
 			$field[] = '</div>';			
@@ -207,10 +211,10 @@ function navigate_property_layout_field($property)
                 $options = (array)$options;
 
             // translate each option text
-            if(!empty($theme))
+            if(!empty($object))
             {
                 foreach($options as $value => $text)
-                    $options[$value] = $theme->t($text);
+                    $options[$value] = $object->t($text);
             }
 
             $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
@@ -219,8 +223,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -242,8 +246,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -268,8 +272,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';		
@@ -382,8 +386,8 @@ function navigate_property_layout_field($property)
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;
-					if(!empty($theme))
-						$helper_text = $theme->t($helper_text);
+					if(!empty($object))
+						$helper_text = $object->t($helper_text);
 					$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 				}
 				$field[] = '</div>';
@@ -391,7 +395,6 @@ function navigate_property_layout_field($property)
 			break;
 			
 		case 'textarea':
-
 			foreach($langs as $lang)
 			{
 				if(!is_array($property->value))
@@ -416,8 +419,8 @@ function navigate_property_layout_field($property)
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;
-					if(!empty($theme))
-						$helper_text = $theme->t($helper_text);
+					if(!empty($object))
+						$helper_text = $object->t($helper_text);
 					$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 				}
 				$field[] = '</div>';
@@ -452,8 +455,8 @@ function navigate_property_layout_field($property)
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
-		            if(!empty($theme))
-			            $helper_text = $theme->t($helper_text);
+		            if(!empty($object))
+			            $helper_text = $object->t($helper_text);
 		            $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
                 $field[] = '</div>';
@@ -470,8 +473,8 @@ function navigate_property_layout_field($property)
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;
-		        if(!empty($theme))
-			        $helper_text = $theme->t($helper_text);
+		        if(!empty($object))
+			        $helper_text = $object->t($helper_text);
 		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	        }
             $field[] = '</div>';
@@ -484,8 +487,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -498,8 +501,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';					
@@ -514,8 +517,8 @@ function navigate_property_layout_field($property)
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
-		            if(!empty($theme))
-			            $helper_text = $theme->t($helper_text);
+		            if(!empty($object))
+			            $helper_text = $object->t($helper_text);
 		            $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
                 $field[] = '</div>';
@@ -540,8 +543,8 @@ function navigate_property_layout_field($property)
 	                if(!empty($property->helper))
 	                {
 		                $helper_text = $property->helper;
-		                if(!empty($theme))
-			                $helper_text = $theme->t($helper_text);
+		                if(!empty($object))
+			                $helper_text = $object->t($helper_text);
 		                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	                }
                     $field[] = '</div>';
@@ -608,8 +611,8 @@ function navigate_property_layout_field($property)
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;
-					if(!empty($theme))
-						$helper_text = $theme->t($helper_text);
+					if(!empty($object))
+						$helper_text = $object->t($helper_text);
 					$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 				}
                 $field[] = '</div>';
@@ -628,8 +631,8 @@ function navigate_property_layout_field($property)
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
-		            if(!empty($theme))
-			            $helper_text = $theme->t($helper_text);
+		            if(!empty($object))
+			            $helper_text = $object->t($helper_text);
 		            $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
                 $field[] = '</div>';
@@ -654,8 +657,8 @@ function navigate_property_layout_field($property)
 	                if(!empty($property->helper))
 	                {
 		                $helper_text = $property->helper;
-		                if(!empty($theme))
-			                $helper_text = $theme->t($helper_text);
+		                if(!empty($object))
+			                $helper_text = $object->t($helper_text);
 		                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	                }
                     $field[] = '</div>';
@@ -670,8 +673,8 @@ function navigate_property_layout_field($property)
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;
-		        if(!empty($theme))
-			        $helper_text = $theme->t($helper_text);
+		        if(!empty($object))
+			        $helper_text = $object->t($helper_text);
 		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	        }
             $field[] = '</div>';
@@ -684,8 +687,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';						
@@ -695,8 +698,8 @@ function navigate_property_layout_field($property)
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property_name.'</label>';
 			$comment_text = $property->value;
-			if(!empty($theme))
-				$comment_text = $theme->t($property->value);
+			if(!empty($object))
+				$comment_text = $object->t($property->value);
 			$field[] = '<div class="subcomment" style="clear: none;">'.$comment_text.'</div>';
 			$field[] = '</div>';								
 			break;
@@ -714,8 +717,8 @@ function navigate_property_layout_field($property)
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
-				if(!empty($theme))
-					$helper_text = $theme->t($helper_text);
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
             $field[] = '</div>';
@@ -737,8 +740,8 @@ function navigate_property_layout_field($property)
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;
-		        if(!empty($theme))
-			        $helper_text = $theme->t($helper_text);
+		        if(!empty($object))
+			        $helper_text = $object->t($helper_text);
 		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	        }
             $field[] = '</div>';
@@ -812,8 +815,8 @@ function navigate_property_layout_field($property)
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;
-		        if(!empty($theme))
-			        $helper_text = $theme->t($helper_text);
+		        if(!empty($object))
+			        $helper_text = $object->t($helper_text);
 		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	        }
             $field[] = '</div>';
@@ -886,8 +889,8 @@ function navigate_property_layout_field($property)
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;
-		        if(!empty($theme))
-			        $helper_text = $theme->t($helper_text);
+		        if(!empty($object))
+			        $helper_text = $object->t($helper_text);
 		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	        }
             $field[] = '</div>';
