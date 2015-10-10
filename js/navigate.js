@@ -255,7 +255,10 @@ function navigate_window_resize()
 function navigate_status(text, img, status, percentage)
 {
 	var ns = $("#navigate-status-info");
-	
+
+	if(text=="ready")
+		text = navigate_lang_dictionary[42]; // ready
+
 	if(img=='loader')	img = 'img/loader.gif';
 	if(img=='ready')	img = 'img/icons/silk/record_green.png';
     if(img=='error')	img = 'img/icons/silk/error.png';
@@ -760,7 +763,12 @@ function navigate_hide_context_menus()
     setTimeout(function()
     {
         //$('select.select2').select2('close'); // should not be necessary, maybe fixed in 3.4.2?
-        $(".ui-menu").fadeOut('fast');
+        $(".ui-menu").each(function()
+        {
+            $(this).trigger('menuclose');
+            $(this).fadeOut('fast');
+        });
+
     }, 50);
 }
 
