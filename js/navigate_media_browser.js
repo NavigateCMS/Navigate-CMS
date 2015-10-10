@@ -32,7 +32,7 @@ function navigate_media_browser()
 		position: [13, 1],
 		height: 154,
 		width: $("#navigate-content").width() - 6,
-        minWidth: 580,
+        minWidth: 500,
 		resize: function()
 		{
 			$("#navigate_media_browser_items").height($(this).height() - 30);
@@ -120,18 +120,6 @@ function navigate_media_browser()
 			return false;	
 		}
 	});
-	
-	$("#media_browser_search input").on("focus", function()
-	{
-		if($("#media_browser_search input").val() == (navigate_lang_dictionary[41] + "...")) // Search
-			$("#media_browser_search input").val("");
-	});
-	
-	$("#media_browser_search input").on("blur", function()
-	{
-		if($("#media_browser_search input").val()=="")
-			$("#media_browser_search input").val(navigate_lang_dictionary[41] + "..."); // Search
-	});
 
 	$("#media_browser_search img").on("click", function()
 	{
@@ -178,6 +166,9 @@ function navigate_media_browser_refresh()
 
             setTimeout(function()
             {
+                $('#contextmenu-mediabrowser').data("file-type", $(trigger).data("mediatype"));
+                $('#contextmenu-mediabrowser').data("file-id", $(trigger).data("file-id"));
+
                 $('#contextmenu-mediabrowser').menu();
 
                 var xpos = e.clientX;
@@ -263,9 +254,12 @@ function navigate_media_browser_refresh()
         navigate_hide_context_menus();
         var trigger = $(this);
 
-        setTimeout(function()
+		setTimeout(function()
         {
-            $('#contextmenu-images').menu();
+			$('#contextmenu-images').data("file-type", $(trigger).data("mediatype"));
+			$('#contextmenu-images').data("file-id", $(trigger).data("file-id"));
+
+			$('#contextmenu-images').menu();
 
             var xpos = e.clientX;
             var ypos = e.clientY;
@@ -665,8 +659,7 @@ function navigate_media_browser_reload()
         .prepend('<i class="ui-icon '+icon+'" />');
 	
 	var text = $("#media_browser_search input").val();
-	if(!text || text==(navigate_lang_dictionary[41] + "...")) text = ""; // Search
-				
+
 	navigate_status(navigate_lang_dictionary[185] + "...", "loader"); // Searching elements
 
     if(media=='folder')
@@ -713,7 +706,7 @@ function navigate_media_browser_reload()
 			
 			$("#navigate_media_browser_items div.draggable-folder").on("dblclick", function()
 			{
-				$("#media_browser_search input").val(navigate_lang_dictionary[41] + "..."); // search
+				$("#media_browser_search input").val("");
 				navigate_media_browser_parent = $(this).attr("id").substr(5);
 				navigate_media_browser_set_folder(navigate_media_browser_parent, $(this).attr("navipath"));
 				navigate_media_browser_reload();
@@ -912,7 +905,7 @@ function navigate_media_browser_select_type( event, ui )
         .prepend('<i class="ui-icon '+icon+'" />');
 
     // force items refresh
-    $("#media_browser_search input").val(navigate_lang_dictionary[41] + "..."); // Search
+    $("#media_browser_search input").val("");
     navigate_media_browser_offset = 0;
     navigate_media_browser_reload();
     navigate_media_browser_save_position();

@@ -347,12 +347,24 @@ function files_browser($parent, $search="")
 	global $layout;
 	global $DB;
 	global $website;
+    global $events;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
 	$navibrowse = new navibrowse('files');
 	
 	$navibars->title(t(89, 'Files'));
+
+    // we attach an event to "files" which will be fired by navibars to put an extra button (if necessary)
+    $extra_actions = array();
+    $events->add_actions(
+        'files',
+        array(
+            'navibrowse' => &$navibrowse,
+            'navibars' => &$navibars
+        ),
+        $extra_actions
+    );
 
 	$navibars->add_actions(
         array(
@@ -415,6 +427,33 @@ function files_browser($parent, $search="")
             true
         );
     ');
+
+
+    // CONTEXT MENU
+
+	// extensions: add new contextmenu functions
+	$extra_contextmenu_actions = array();
+	$events->trigger(
+		"files",
+		"contextmenu",
+		array(
+			'navibars' => &$navibars,
+			'actions' => &$extra_contextmenu_actions
+		)
+	);
+	if(!empty($extra_contextmenu_actions))
+		array_unshift($extra_contextmenu_actions, '<hr />');
+
+    $navibars->add_content('
+        <ul id="navigate-files-contextmenu" style="display: none;">
+            <li action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>
+            <li action="rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, "Rename").'</a></li>
+            <li action="duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
+            <li action="delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
+            '.implode("\n", $extra_contextmenu_actions).'
+        </ul>
+    ');
+
 
 	// PLUPLOAD
 	$navibars->add_content('<div id="navigate-files-uploader"></div>');
@@ -1196,6 +1235,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               download-link="'.$download_link.'"
+				               data-file-id="'.$f->id.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 				               <img src="'.$icon.'" title="'.$f->name.'" />
@@ -1211,6 +1251,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               download-link="'.$download_link.'"
+				               data-file-id="'.$f->id.'"
 				               id="file-youtube#'.$f->id.'">
 				               <img src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
 				               <span>'.$f->title.'</span>
@@ -1225,9 +1266,10 @@ function files_media_browser($limit = 50, $offset = 0)
 				               mimetype="'.$f->mime.'"
 				               navipath="'.$navipath.'"
 				               download-link="'.$download_link.'"
+				               data-file-id="'.$f->id.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-				               <img src="'.$icon.'" width="50" height="50" />
+				               <img src="'.$icon.'" width="50" height="50" title="'.$f->name.'" />
 	                           <span style="clear: both; display: block; height: 0px;"></span>'.
 	                           $f->name.'
 	                       </div>';

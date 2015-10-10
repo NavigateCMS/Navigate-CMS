@@ -851,6 +851,7 @@ class layout
 	{	
 		global $DB;
         global $website;
+		global $events;
 
         $naviforms = new naviforms();
 		
@@ -903,7 +904,7 @@ class layout
         $html[] = '         </select>';
 
 		// search box
-		$html[] = '		    <div id="media_browser_search"><input type="text" value="'.t(41, 'Search').'..." name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
+		$html[] = '		    <div id="media_browser_search"><input type="text" value="" placeholder="'.t(41, 'Search').'..." name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
 		$html[] = 		'</div>';
 		
 		$html[] = '		<div id="navigate_media_browser_items"></div>';
@@ -920,6 +921,18 @@ class layout
 			$("#navigate_media_browser_upload_button").on("click", navigate_media_browser_files_uploader);
 		');
 
+		// extensions: add new contextmenu functions
+		$extra_contextmenu_actions = array();
+		$events->trigger(
+			"media_browser",
+			"contextmenu",
+			array(
+				'actions' => &$extra_contextmenu_actions
+			)
+		);
+		if(!empty($extra_contextmenu_actions))
+			array_unshift($extra_contextmenu_actions, '<hr />');
+
         $this->add_content('
             <ul id="contextmenu-images" style="display: none" class="ui-corner-all">
                 <li id="contextmenu-images-download_link"><a href="#"><span class="ui-icon ui-icon-clipboard"></span>'.t(154, "Download link").'</a></li>
@@ -928,6 +941,7 @@ class layout
                 <li id="contextmenu-images-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
                 <li id="contextmenu-images-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
                 <li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
+                '.implode("\n", $extra_contextmenu_actions).'
             </ul>
             <ul id="contextmenu-mediabrowser"  style="display: none" class="ui-corner-all">
                 <li id="contextmenu-mediabrowser-create_folder"><a href="#"><span class="ui-icon ui-icon-folder-collapsed"></span>'.t(561, "Create a new folder").'</a></li>
