@@ -185,11 +185,25 @@ try
     $html = nvweb_template_parse_lists($html);
 	$html = nvweb_template_parse($html);
 
+	// if the content has added any nv tag, process them
+	if(strpos($html, '{{nv ')!==false || strpos($html, '<nv '))
+	{
+		$html = nvweb_template_parse_special($html);
+		$html = nvweb_template_parse_lists($html);
+		$html = nvweb_template_parse($html);
+	}
+
     // if we have a delayed nv list we need to parse it now
     if(!empty($current['delayed_nvlists']) || !empty($current['delayed_nvsearches']))
     {
         $html = nvweb_template_parse_lists($html, true);
-        $html = nvweb_template_parse($html);
+
+	    if(strpos($html, '{{nv ')!==false || strpos($html, '<nv '))
+	    {
+		    $html = nvweb_template_parse_special($html);
+		    $html = nvweb_template_parse_lists($html);
+		    $html = nvweb_template_parse($html);
+	    }
     }
 
     $html = nvweb_template_oembed_parse($html);
