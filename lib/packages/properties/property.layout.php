@@ -161,7 +161,7 @@ function navigate_property_layout_field($property, $object="")
 			$field[] = '</div>';			
 			break;			
 
-		case 'boolean': 				
+		case 'boolean':
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property_name.'</label>';
 			$field[] = $naviforms->checkbox("property-".$property->id, ($property->value=='1'));

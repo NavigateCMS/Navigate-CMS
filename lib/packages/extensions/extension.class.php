@@ -34,9 +34,11 @@ class extension
         $this->settings = array(); // default
 
         // now retrieve extension configuration for the active website
-        $DB->query('    SELECT * FROM nv_extensions
-                        WHERE website = '.protect($this->website).'
-                          AND extension = '.protect($this->code));
+        $DB->query('
+          SELECT * FROM nv_extensions
+          WHERE website = '.protect($this->website).'
+            AND extension = '.protect($this->code)
+        );
 
         $row = $DB->first();
 
@@ -92,6 +94,12 @@ class extension
 
                     case 'coordinates':
                         $value = $_REQUEST['property-'.$extension_option->id.'-latitude'].'#'.$_REQUEST['property-'.$extension_option->id.'-longitude'];
+                        break;
+
+                    case 'boolean':
+                        $value = 0;
+                        if($_REQUEST['property-'.$extension_option->id]=='1')
+                            $value = 1;
                         break;
 
                     default:
@@ -160,8 +168,10 @@ class extension
         {
             core_remove_folder(NAVIGATE_PATH.'/plugins/'.$this->code);
 
-            $ok = $DB->execute('DELETE FROM nv_extensions
-                                WHERE id = '.protect($this->id));
+            $ok = $DB->execute('
+                DELETE FROM nv_extensions
+                 WHERE id = '.protect($this->id)
+            );
         }
 
         return $ok;

@@ -1056,8 +1056,6 @@ function blocks_form($item)
                     }
                 }
 
-$links_icons = 'fontawesome';
-
                 $table = new naviorderedtable("trigger_links_table_".$lang);
                 $table->setWidth("600px");
                 $table->setHiddenInput("trigger-links-table-order-".$lang);
