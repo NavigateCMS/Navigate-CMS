@@ -600,3 +600,4 @@
 599     # No és posible mostrar la informació d'un tipus de bloc d'un tema.
 600     # Compartir
 601     # Importar
+602     # Editar idioma

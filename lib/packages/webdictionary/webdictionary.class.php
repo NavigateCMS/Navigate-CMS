@@ -137,13 +137,14 @@ class webdictionary
 			else
 				$node_id_filter = '';			
 			
-			$DB->execute(' DELETE FROM nv_webdictionary 
-							WHERE subtype = '.protect($this->subtype).'
-							  AND node_type = '.protect($this->node_type).'
-							  AND theme = '.protect($this->theme).'
-							  AND website = '.$website->id.
-							  $node_id_filter
-					);
+			$DB->execute('
+ 				DELETE FROM nv_webdictionary
+				WHERE subtype = '.protect($this->subtype).'
+				  AND node_type = '.protect($this->node_type).'
+				  AND theme = '.protect($this->theme).'
+				  AND website = '.$website->id.
+				  $node_id_filter
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -157,9 +158,13 @@ class webdictionary
 		if(empty($this->node_id)) 
 		{
 			// we need to find what is the next node_id available for this subtype
-			$tmp = $DB->query_single('MAX(node_id)', 'nv_webdictionary', ' subtype = '.protect($this->subtype).'
-																       AND node_type = '.protect($this->node_type).'
-																	   AND website = '.$website->id);
+			$tmp = $DB->query_single(
+				'MAX(node_id)',
+				'nv_webdictionary',
+				' subtype = '.protect($this->subtype).'
+				       AND node_type = '.protect($this->node_type).'
+					   AND website = '.$website->id
+			);
 
 			$this->node_id = intval($tmp) + 1;
 		}
@@ -271,6 +276,71 @@ class webdictionary
                 );
 			}
 		}
+	}
+
+	public static function save_translations_post($language)
+	{
+		global $DB;
+		global $website;
+		global $theme;
+
+		$errors = array();
+
+		foreach($_POST as $key => $text)
+		{
+			if(substr($key, 0, strlen($language.'-'))==($language.'-'))
+			{
+				$key = substr($key, strlen($language.'-'));
+
+				if(is_numeric($key))
+				{
+					// remove old entry, if exists
+					$DB->execute('
+		                DELETE FROM nv_webdictionary
+						WHERE node_id = '.protect($key).'
+						  AND node_type = '.protect('global').'
+						  AND lang = '.protect($language).'
+						  AND website = '.$website->id.'
+						LIMIT 1
+					');
+				}
+				else
+				{
+					// remove old entry, if exists
+					$DB->execute('
+		                DELETE FROM nv_webdictionary
+						WHERE subtype = '.protect($key).'
+						  AND node_type = '.protect("theme").'
+						  AND theme = '.protect($theme->name).'
+						  AND lang = '.protect($language).'
+						  AND website = '.$website->id.'
+						LIMIT 1
+					');
+				}
+
+				// insert new value
+				$ok = $DB->execute('
+				    INSERT INTO nv_webdictionary
+                    (	id,	website, node_type, theme, node_id, subtype, lang, `text`)
+                    VALUES
+                    (	0, :website, :node_type, :theme, :node_id, :subtype, :lang, :text )',
+					array(
+						':website' => $website->id,
+						':node_type' => (is_numeric($key)? 'global' : 'theme'),
+						':theme' => (is_numeric($key)? '' : $theme->name),
+						':node_id' => (is_numeric($key)? $key : 0),
+						':subtype' => (is_numeric($key)? '' : $key),
+						':lang' => $language,
+						':text' => $text
+					)
+				);
+
+				if(!$ok)
+					$errors[] = $DB->get_last_error();
+			}
+		}
+
+		return (empty($errors)? true : $errors);
 	}
 
     public function backup($type='json')

@@ -600,3 +600,4 @@
 599     # Sorry, kann nicht ein Thema Bausteintyp Informationen angezeigt werden soll.
 600     # Aktie
 601     # Import
+602     # Edit sprache

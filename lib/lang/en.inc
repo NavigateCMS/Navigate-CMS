@@ -600,3 +600,4 @@
 599     # Sorry, can't display a theme block type info.
 600     # Share
 601     # Import
+602     # Edit language

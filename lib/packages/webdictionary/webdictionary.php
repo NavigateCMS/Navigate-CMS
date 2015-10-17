@@ -103,6 +103,19 @@ function run()
 				}
 			}
 			break;
+
+		case 'edit_language':
+			if($_REQUEST['form-sent']=='true')
+			{
+				$status = webdictionary::save_translations_post($_REQUEST['code']);
+				if($status=='true')
+					$layout->navigate_notification(t(53, "Data saved successfully."), false);
+				else
+					$layout->navigate_notification(implode('<br />', $status), true, true);
+			}
+
+			$out = webdictionary_edit_language_form($_REQUEST['code']);
+			break;
 		
 		case 0: // list / search result
 		default:			
@@ -115,20 +128,38 @@ function run()
 
 function webdictionary_list()
 {
+	global $events;
+	global $website;
+
 	$navibars = new navibars();
 	$navitable = new navitable("webdictionary_list");
 	
 	$navibars->title(t(21, 'Dictionary'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	if(count($website->languages) > 0)
+	{
+		foreach($website->languages as $wslg_code => $wslg)
+			$wslg_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.language::name_by_code($wslg_code).'</a>';
+
+		$events->add_actions(
+			'blocks',
+			array(
+				'item' => null,
+				'navibars' => &$navibars
+			),
+			$wslg_links,
+			'<a class="content-actions-submenu-trigger" href="#"><img height="16" align="absmiddle" width="16" src="img/icons/silk/comment_edit.png"> '.t(602, 'Edit language').' &#9662;</a>'
+		);
+	}
+
+	$navibars->add_actions(
+		array(
+			'<a href="?fid='.$_REQUEST['fid'].'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 		
-	//$navibars->add_tab(t(51, "List"));
-	
-	//$navitable->setTitle('Diccionari');	
-	//$navitable->setURL(NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=1');
-	
 	if($_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
 	
@@ -152,7 +183,6 @@ function webdictionary_list()
 
 function webdictionary_form($item)
 {
-	global $user;
 	global $DB;
 	global $website;
 	global $theme;
@@ -373,6 +403,120 @@ function webdictionary_search($where, $orderby, $offset, $max)
 	$dataset = array_slice($dataset, $offset, $max);
 	
 	return array($dataset, $total);
+}
+
+function webdictionary_edit_language_form($code)
+{
+	global $DB;
+	global $website;
+	global $theme;
+	global $events;
+
+	$navibars = new navibars();
+	$naviforms = new naviforms();
+
+	$navibars->title(t(21, 'Dictionary').' / '.t(602, 'Edit language'));
+
+	$navibars->add_actions(
+		array(
+			'<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+		)
+	);
+
+	$navibars->add_actions(
+		array(
+			'<a href="?fid=webdictionary&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+		)
+	);
+
+	$navibars->form();
+
+	$navibars->add_tab(t(188, "Translate"));
+
+	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+
+	$origin = "";
+	foreach($website->languages_list as $l)
+	{
+		if($l==$code)
+			continue;
+		else
+		{
+			$origin = $l;
+			break;
+		}
+	}
+
+	// retrieve original theme translations, if any
+	$theme->get_translations();
+	$dict_dest = array();
+	foreach($theme->dictionaries as $otext)
+	{
+		if($otext['lang'] == $code)
+		{
+			$dict_dest[$otext['node_id']] = $otext['text'];
+		}
+	}
+
+	// retrieve existing database dictionary translations
+	$DB->query('
+		SELECT *
+		  FROM nv_webdictionary
+		 WHERE (node_type = "global")
+		    OR (node_type = "theme" AND theme= "'.$theme->name.'")
+    ');
+
+	$db_trans = $DB->result();
+
+	foreach($db_trans as $otext)
+	{
+		$text_id = $otext->node_id;
+		if($otext->node_type == "theme")
+			$text_id = $otext->subtype;
+
+		if($otext->lang == $code)
+		{
+			$dict_dest[$text_id] = $otext->text;
+		}
+		else if($otext->lang == $origin && $otext->node_type == "global")
+		{
+			array_push(
+				$theme->dictionaries,
+				array(
+					"node_id" => $text_id,
+					"text" => $otext->text,
+					"lang" => $otext->lang
+				)
+			);
+		}
+	}
+
+	// generate table
+
+	$table = '<table class="box-table">';
+	$table.= '<tr><th>'.t(237, "Code").'</th><th>'.language::name_by_code($origin).'</th><th>'.language::name_by_code($code).'</th></tr>';
+
+	foreach($theme->dictionaries as $otext)
+	{
+		if($otext['lang'] == $origin)
+		{
+			$translation = $dict_dest[$otext['node_id']];
+
+			$table.= '
+				<tr>
+					<td>'.$otext['node_id'].'</textarea></td>
+					<td><textarea rows="2" cols="60" disabled="disabled">'.$otext['text'].'</textarea></td>
+					<td><textarea name="'.$code.'-'.$otext['node_id'].'" rows="2" cols="60">'.$translation.'</textarea></td>
+				</tr>
+			';
+		}
+	}
+
+	$table.= '</table>';
+
+	$navibars->add_tab_content($table);
+
+	return $navibars->generate();
 }
 
 ?>
