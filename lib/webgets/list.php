@@ -537,7 +537,7 @@ function nvweb_list($vars=array())
         }
 
 
-        // now, parse the common nvlist tags (selfclosing tags)
+        // now, parse the (remaining) common nvlist tags (selfclosing tags)
         $template_tags_processed = 0;
         $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8'); // selfclosing = true
         while(!empty($template_tags))
