@@ -1,7 +1,7 @@
 {
     "facebook_page": "Página de Facebook",
     "twitter_page": "Página de Twitter",
-    "feed_url": "Ruta hilo notícias",
+    "feed_url": "Ruta hilo noticias",
     "logo": "Logo (máx. 600 x 100 px)",
     "default": "Estilo por defecto",
     "alternative": "Estilo alternativo",
