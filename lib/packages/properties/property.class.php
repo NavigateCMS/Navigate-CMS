@@ -818,7 +818,12 @@ class property
                 $value = implode(',', $value);
 
             if($property->type=='coordinates')
-                $value = $value['latitude'].'#'.$value['longitude'];
+            {
+                if(is_array($value))
+                    $value = $value['latitude'].'#'.$value['longitude'];
+
+                // if it isn't an array, then we suppose it already has the right format
+            }
 
             if($property->type=='webuser_groups' && !empty($value))
                 $value = 'g'.implode(',g', $value);
