@@ -83,7 +83,7 @@ class website
         $this->wrong_path_action= $main->wrong_path_action;
 
 		$this->languages		    = mb_unserialize($main->languages);
-		$this->languages_published  = mb_unserialize($main->languages_published);
+		$this->languages_published  = array_filter(mb_unserialize($main->languages_published));
 		$this->date_format		    = $main->date_format;
 		$this->tinymce_css		    = $main->tinymce_css;
 		$this->resize_uploaded_images       = $main->resize_uploaded_images;
