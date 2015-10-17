@@ -298,9 +298,9 @@ function run()
 		case 4: // remove 
 			if(!empty($_REQUEST['id']))
 			{			
-				$item->load(intval($_REQUEST['id']));	
-				
-				if($item->delete() > 0)
+				$item->load(intval($_REQUEST['id']));
+
+				if(!empty($item->id) && $item->delete() > 0)
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
 					$out = items_list();
@@ -308,7 +308,10 @@ function run()
 				else
 				{
 					$layout->navigate_notification(t(56, 'Unexpected error.'), false);
-					$out = items_form($item);
+					if(!empty($item->id))
+						$out = items_form($item);
+					else
+						$out = items_list();
 				}
 				
 				users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
@@ -515,7 +518,7 @@ function run()
             if(!empty($_REQUEST['template']))
                 $template_filter = ' AND nvi.template = "'.$_REQUEST['template'].'" ';
 
-            $DB->query('SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as label, nvw.text as value
+            $DB->query('SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as label, nvw.text as value
 						  FROM nv_webdictionary nvw, nv_items nvi
 						 WHERE nvw.node_type = "item"
 						   AND nvw.node_id = nvi.id
