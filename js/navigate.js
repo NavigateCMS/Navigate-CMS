@@ -291,10 +291,13 @@ function navigate_status(text, img, status, percentage)
 function navigate_notification(text, sticky)
 {
 	$.jGrowl.defaults.position = "center";
+	$.jGrowl.defaults.closerTemplate = '<div><i class="fa fa-trash fa-lg"></i></div>';
+
     if(!sticky || sticky=="" || sticky==null)
         sticky = false;
 
-	$.jGrowl(text,
+	$.jGrowl(
+        text,
         {
             life: 4000,
             sticky: sticky,
