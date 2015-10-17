@@ -114,63 +114,114 @@ function nvweb_conditional($vars=array())
     $item_html = $vars['template'];
 
     // now, parse the conditional tags (with html source code inside)
-    if($vars['by']=='property')
+    switch($vars['by'])
     {
-        $property_value = NULL;
-        $property_name = $vars['property_name'];
-        if(empty($vars['property_name']))
-            $property_name = $vars['property_id'];
+        case 'property':
+            $property_value = NULL;
+            $property_name = $vars['property_name'];
+            if(empty($vars['property_name']))
+                $property_name = $vars['property_id'];
 
-        if($vars['property_scope'] == "element")
-        {
-            $property_value = $item->property($property_name);
-        }
-        else if($vars['property_scope'] == "structure")
-        {
-            $property = nvweb_properties(array('mode' => 'structure', 'property' => $property_name, 'return' => 'object'));
-            if(!empty($property))
-                $property_value = $property->value;
-        }
-        else if($vars['property_scope'] == "website")
-        {
-            $property_value = $website->theme_options->{$property_name};
-        }
-        else
-        {
-            // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
-            // element
-            $property_value = $item->property($property_name);
-
-            if(!$item->property_exists($property_name))
+            if($vars['property_scope'] == "element")
             {
-                // structure
+                $property_value = $item->property($property_name);
+            }
+            else if($vars['property_scope'] == "structure")
+            {
                 $property = nvweb_properties(array('mode' => 'structure', 'property' => $property_name, 'return' => 'object'));
                 if(!empty($property))
                     $property_value = $property->value;
-                else
+            }
+            else if($vars['property_scope'] == "website")
+            {
+                $property_value = $website->theme_options->{$property_name};
+            }
+            else
+            {
+                // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
+                // element
+                $property_value = $item->property($property_name);
+
+                if(!$item->property_exists($property_name))
                 {
-                    // website
-                    if(isset($website->theme_options->{$property_name}))
-                        $property_value = $website->theme_options->{$property_name};
+                    // structure
+                    $property = nvweb_properties(array('mode' => 'structure', 'property' => $property_name, 'return' => 'object'));
+                    if(!empty($property))
+                        $property_value = $property->value;
                     else
-                        $property_value = '';
+                    {
+                        // website
+                        if(isset($website->theme_options->{$property_name}))
+                            $property_value = $website->theme_options->{$property_name};
+                        else
+                            $property_value = '';
+                    }
                 }
             }
-        }
 
-        // if the property is multilanguage, get the value for the current language
-        if(is_array($property_value))
-            $property_value = $property_value[$current['lang']];
+            // if the property is multilanguage, get the value for the current language
+            if(is_array($property_value))
+                $property_value = $property_value[$current['lang']];
 
-        // check the given condition
-        if(isset($vars['property_value']))
-        {
-            if( $property_value == $vars['property_value']  ||
-                ($property_value=='1' && $vars['property_value']=='true') ||
-                ($property_value=='0' && $vars['property_value']=='false')
-            )
+            // check the given condition
+            if(isset($vars['property_value']))
             {
-                // parse the contents of this condition on this round
+                if( $property_value == $vars['property_value']  ||
+                    ($property_value=='1' && $vars['property_value']=='true') ||
+                    ($property_value=='0' && $vars['property_value']=='false')
+                )
+                {
+                    // parse the contents of this condition on this round
+                    $out = $item_html;
+                }
+                else
+                {
+                    // remove this conditional html code on this round
+                    $out = '';
+                }
+            }
+            else if(isset($vars['property_empty']))
+            {
+                if($vars['property_empty']=='true')
+                {
+                    if(empty($property_value))
+                    {
+                        // parse the contents of this condition on this round
+                        $out = $item_html;
+                    }
+                    else
+                    {
+                        // remove this conditional html code on this round
+                        $out = '';
+                    }
+                }
+                else if($vars['property_empty']=='false')
+                {
+                    if(!empty($property_value))
+                    {
+                        // parse the contents of this condition on this round
+                        $out = $item_html;
+                    }
+                    else
+                    {
+                        // remove this conditional html code on this round
+                        $out = '';
+                    }
+                }
+            }
+            break;
+
+        case 'template':
+        case 'templates':
+            $templates = array();
+            if(isset($vars['templates']))
+                $templates = explode(",", $vars['templates']);
+            else if(isset($vars['template']))
+                $templates = array($vars['template']);
+
+            if(in_array($item->template, $templates))
+            {
+                // the template matches the condition, apply
                 $out = $item_html;
             }
             else
@@ -178,100 +229,72 @@ function nvweb_conditional($vars=array())
                 // remove this conditional html code on this round
                 $out = '';
             }
-        }
-        else if(isset($vars['property_empty']))
-        {
-            if($vars['property_empty']=='true')
+            break;
+
+        case 'access':
+            $access = 0;
+            switch($vars['access'])
             {
-                if(empty($property_value))
-                {
-                    // parse the contents of this condition on this round
-                    $out = $item_html;
-                }
-                else
-                {
-                    // remove this conditional html code on this round
-                    $out = '';
-                }
+                case 3:
+                case 'webuser_groups':
+                    $access = 3;
+                    break;
+
+                case 2:
+                case 'not_signed_in':
+                    $access = 2;
+                    break;
+
+                case 1:
+                case 'signed_in':
+                    $access = 1;
+                    break;
+
+                case 0:
+                case 'everyone':
+                default:
+                    $access = 0;
+                    break;
             }
-            else if($vars['property_empty']=='false')
+
+            if($item->access == $access)
+                $out = $item_html;
+            else
+                $out = '';
+
+            break;
+
+        case 'webuser':
+            if($vars['signed_in']=='true' && !empty($webuser->id))
+                $out = $item_html;
+            else if($vars['signed_in']=='false' && empty($webuser->id))
+                $out = $item_html;
+            else
+                $out = '';
+
+            break;
+
+        case 'languages':
+            if(count($website->languages_published) >= $vars['min'])
             {
-                if(!empty($property_value))
-                {
-                    // parse the contents of this condition on this round
-                    $out = $item_html;
-                }
-                else
-                {
-                    // remove this conditional html code on this round
-                    $out = '';
-                }
+                $out = $item_html;
             }
-        }
-    }
-    else if($vars['by']=='template' || $vars['by']=='templates')
-    {
-        $templates = array();
-        if(isset($vars['templates']))
-            $templates = explode(",", $vars['templates']);
-        else if(isset($vars['template']))
-            $templates = array($vars['template']);
+            else if(count($website->languages_published) <= $vars['max'])
+            {
+                $out = $item_html;
+            }
+            break;
 
-        if(in_array($item->template, $templates))
-        {
-            // the template matches the condition, apply
-            $out = $item_html;
-        }
-        else
-        {
-            // remove this conditional html code on this round
+        case 'language':
+            if($current['lang'] == $vars['lang'])
+            {
+                $out = $item_html;
+            }
+            break;
+
+        default:
+            // unknown nvlist_conditional, discard
             $out = '';
-        }
-    }
-    else if($vars['by']=='access')
-    {
-        $access = 0;
-        switch($vars['access'])
-        {
-            case 3:
-            case 'webuser_groups':
-                $access = 3;
-                break;
-
-            case 2:
-            case 'not_signed_in':
-                $access = 2;
-                break;
-
-            case 1:
-            case 'signed_in':
-                $access = 1;
-                break;
-
-            case 0:
-            case 'everyone':
-            default:
-                $access = 0;
-                break;
-        }
-
-        if($item->access == $access)
-            $out = $item_html;
-        else
-            $out = '';
-    }
-    else if($vars['by']=='webuser')
-    {
-        if($vars['signed_in']=='true' && !empty($webuser->id))
-            $out = $item_html;
-        else if($vars['signed_in']=='false' && empty($webuser->id))
-            $out = $item_html;
-        else
-            $out = '';
-    }
-    else // unknown nvlist_conditional, discard
-    {
-        $out = '';
     }
 
     // return the new html code after applying the condition
