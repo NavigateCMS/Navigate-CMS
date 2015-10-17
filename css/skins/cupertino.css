@@ -864,7 +864,7 @@ table.treeTable
 	border-bottom: solid 1px #ccc;
 }
 
-.treeTable tr ui-state-highlight
+.treeTable tr .ui-state-highlight
 {
 	
 }
@@ -873,7 +873,8 @@ table.treeTable
 {
 	padding: 5px;	
 	border-right: solid 1px #ddd;
-    line-height: 24px;
+    line-height: 25px;
+
     /* Prevents text selection */
     -webkit-touch-callout: none;
     -webkit-user-select: none;
