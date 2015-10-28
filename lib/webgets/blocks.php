@@ -436,6 +436,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
             {
                 $new_window = '';
                 $title = $tl['title'][$key];
+
                 $link = nvweb_prepare_link($link);
 
                 if($tl['new_window'][$key]=='1')

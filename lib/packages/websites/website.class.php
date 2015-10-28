@@ -1231,6 +1231,7 @@ class website
 		global $current;
 
 		$homepage_routes = $this->homepage_from_structure(true);    // want all possible homepage paths (language based)
+
 		if(is_array($homepage_routes))
 		{
 			if(isset($current) && !empty($current['lang']))

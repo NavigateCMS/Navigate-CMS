@@ -320,9 +320,16 @@ class navitable
 							
 			default:
 			case 'cn': // contains
-				$compare = $compareField.' LIKE '.protect('%'.$compareValue.'%');
-                if($returnResult)
-                    $result = (strpos($compareField, $compareValue)!==false);
+				if(!empty($compareValue) && !$returnResult)
+				{
+					$compare = $compareField.' LIKE '.protect('%'.$compareValue.'%');
+	                if($returnResult)
+	                    $result = (strpos($compareField, $compareValue)!==false);
+				}
+				else // nothing to search, ignore this filter!
+				{
+					$compare = '1 = 1';
+				}
 				break;
 		}
 
@@ -953,4 +960,5 @@ class navitable
 		return implode("\n", $html);	
 	}
 }
+
 ?>

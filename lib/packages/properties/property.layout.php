@@ -98,6 +98,7 @@ function navigate_property_layout_field($property, $object="")
 		}
 	}
 
+	// auto show/hide properties by other properties values --> "conditional": [ { "source_property_id" : [value1,"value2"] } ]
     if(!empty($property->conditional))
     {
         foreach($property->conditional as $conditional)

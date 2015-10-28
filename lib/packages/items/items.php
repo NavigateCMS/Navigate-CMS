@@ -102,7 +102,7 @@ function run()
 										$filters->rules[$r]->field = 'i.permission';
 										break;
 									default:
-								}								
+								}
 							}
 
 							$where .= navitable::jqgridsearch(json_encode($filters));
@@ -110,6 +110,7 @@ function run()
 						else	// single search
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
+
 
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS
 					                i.*, d.text as title, d.lang as language,
