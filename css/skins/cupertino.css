@@ -2048,6 +2048,12 @@ div.jGrowl div.jGrowl-closer:hover
     border-radius: 4px;
 }
 
+.ui-menu .ui-menu-item
+{
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
 .ui-menu .ui-menu-item a
 {
     overflow: hidden;
