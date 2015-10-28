@@ -456,7 +456,7 @@ function feeds_form($item)
 			if(path=="") return;			
 			if(path==last_check[$(el).id]) return;
 
-			path = path.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
+			path = path.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
 			path = path.replace(/[.\s]+/g, "_");
 
 			$(el).val(path);

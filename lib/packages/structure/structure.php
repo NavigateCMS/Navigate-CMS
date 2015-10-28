@@ -833,7 +833,7 @@ function structure_form($item)
 			if(path==last_check[$(el).id]) return;
 			if(path.indexOf("http")==0) return; // ignore paths starting with http/https
 
-			path = path.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
+			path = path.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
 			path = path.replace(/[.\s]+/g, "_");
 
 			$(el).val(path);
