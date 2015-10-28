@@ -219,8 +219,12 @@ class navitree
 						if(navitree_mode=="reorder") return true;
 											
 						$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" title=\"'.t(593, "Add new child").'\" class=\"navitree_table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
-						if('.(!empty($this->homepagerUrl)? 'true' : 'false').')
-							$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set has homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
+
+						if($(this).data("node-parent") != -1)
+						{
+							if('.(!empty($this->homepagerUrl)? 'true' : 'false').')
+								$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set has homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
+						}
 
 						if($(this).hasClass("parent"))
 						{						
