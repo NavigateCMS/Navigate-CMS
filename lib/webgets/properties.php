@@ -233,6 +233,7 @@ function nvweb_properties_render($property, $vars)
 	global $DB;
     global $session;
     global $theme;
+    global $structure;
 	
 	$out = '';
 
@@ -532,7 +533,22 @@ function nvweb_properties_render($property, $vars)
 			break;
 			
 		case 'category':
-            $out = $property->value;
+            $return = @$vars['return'];
+
+            switch($return)
+            {
+                case 'name':
+                    $out = $structure['dictionary'][$property->value];
+                    break;
+
+                case 'url':
+                case 'link':
+                    $out = nvweb_source_url('structure', $property->value);
+                    break;
+
+                default:
+                    $out = $property->value;
+            }
             break;
 
         case 'categories':
