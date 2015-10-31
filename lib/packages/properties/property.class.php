@@ -562,7 +562,7 @@ class property
 
 		// load multilanguage strings
 		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id);
-		
+
 		// load custom properties values
 		$DB->query('
 		    SELECT * FROM nv_properties_items
@@ -656,114 +656,102 @@ class property
 
 		foreach($properties as $property)
 		{
-			/* we ALWAYS SAVE the property value, even if it is empty
-			$property_empty = empty($_REQUEST['property-'.$property->id]);
-			if($property_empty) // maybe is a multilanguage property?
-			{
-				foreach($website->languages_list as $lang)
-					$property_empty = $property_empty && empty($_REQUEST['property-'.$property->id.'-'.$lang]);
-			}
-*/			// has value? (direct or multilanguage)
-//			if(!$property_empty)
-//			{		
-				// multilanguage property?
-				if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
-					$_REQUEST['property-'.$property->id] = '[dictionary]';
-				
-				// date/datetime property?
-				if($property->type=='date' || $property->type=='datetime')
-					$_REQUEST['property-'.$property->id] = core_date2ts($_REQUEST['property-'.$property->id]);
-					
-				if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
-					$_REQUEST['property-'.$property->id] = implode(',', $_REQUEST['property-'.$property->id]);		
-				
-				if($property->type=='coordinates')
-					$_REQUEST['property-'.$property->id] = $_REQUEST['property-'.$property->id.'-latitude'].'#'.$_REQUEST['property-'.$property->id.'-longitude'];
+			// we ALWAYS SAVE the property value, even if it is empty
 
-                if($property->type=='webuser_groups' && !empty($_REQUEST['property-'.$property->id]))
-                    $_REQUEST['property-'.$property->id] = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
+            // multilanguage property?
+            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+                $_REQUEST['property-'.$property->id] = '[dictionary]';
 
-                // boolean (checkbox): if not checked,  form does not send the value
-                if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
-                    $_REQUEST['property-'.$property->id] = 0;
-								
-				// remove the old element
-				$DB->execute('
-				    DELETE
-				         FROM nv_properties_items
-                        WHERE property_id = '.protect($property->id).'
-                          AND element = '.protect($item_type).'
-                          AND node_id = '.protect($item_id).'
-                          AND website = '.$website->id
-                );
+            // date/datetime property?
+            if($property->type=='date' || $property->type=='datetime')
+                $_REQUEST['property-'.$property->id] = core_date2ts($_REQUEST['property-'.$property->id]);
 
-				// now we insert a new row
-				$DB->execute('
-				    INSERT INTO nv_properties_items
-					    (id, website, property_id, element, node_id, name, value)
-					VALUES
-					    (   0,
-							:website,
-							:property_id,
-							:type,
-							:item_id,
-							:name,
-							:value
-                        )',
-                    array(
-                        ':website' => $website->id,
-                        ':property_id' => $property->id,
-                        ':type' => $item_type,
-                        ':item_id' => $item_id,
-                        ':name' => $property->name,
-                        ':value' => $_REQUEST['property-'.$property->id]
-                    )
-                );
+            if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
+                $_REQUEST['property-'.$property->id] = implode(',', $_REQUEST['property-'.$property->id]);
 
-				// set the dictionary for the multilanguage properties
-                $default_language = '';
-                if($property->multilanguage === 'false' || $property->multilanguage === false)
-                    $default_language = $website->languages_list[0];
+            if($property->type=='coordinates')
+                $_REQUEST['property-'.$property->id] = $_REQUEST['property-'.$property->id.'-latitude'].'#'.$_REQUEST['property-'.$property->id.'-longitude'];
 
-				if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
-				{
-					foreach($website->languages_list as $lang)
-					{
-                        if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
-                            $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
+            if($property->type=='webuser_groups' && !empty($_REQUEST['property-'.$property->id]))
+                $_REQUEST['property-'.$property->id] = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
 
-                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
-					}
-				}
-                else if($property->type == 'link')
+            // boolean (checkbox): if not checked,  form does not send the value
+            if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
+                $_REQUEST['property-'.$property->id] = 0;
+
+
+            // remove the old element
+            $DB->execute('
+                DELETE
+                     FROM nv_properties_items
+                    WHERE property_id = '.protect($property->id).'
+                      AND element = '.protect($item_type).'
+                      AND node_id = '.protect($item_id).'
+                      AND website = '.$website->id
+            );
+
+            // now we insert a new row
+            $DB->execute('
+                INSERT INTO nv_properties_items
+                    (id, website, property_id, element, node_id, name, value)
+                VALUES
+                    (   0,
+                        :website,
+                        :property_id,
+                        :type,
+                        :item_id,
+                        :name,
+                        :value
+                    )',
+                array(
+                    ':website' => $website->id,
+                    ':property_id' => $property->id,
+                    ':type' => $item_type,
+                    ':item_id' => $item_id,
+                    ':name' => $property->name,
+                    ':value' => $_REQUEST['property-'.$property->id]
+                )
+            );
+
+            // set the dictionary for the multilanguage properties
+            $default_language = '';
+            if($property->multilanguage === 'false' || $property->multilanguage === false)
+                $default_language = $website->languages_list[0];
+
+            if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+            {
+                foreach($website->languages_list as $lang)
                 {
-                    foreach($website->languages_list as $lang)
-                    {
-                        $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].
-                                    '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'].
-                                    '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-target'];
+                    if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                        $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
 
-                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
-
-                        if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
-                            $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $dictionary[$lang]['property-'.$property->id.'-'.$default_language];
-                    }
+                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
                 }
-            /*
-                        }
-                        else
-                        {
-                            // remove the property value assigned (if any)
-                            $DB->execute('DELETE FROM nv_properties_items
-                                                WHERE property_id = '.protect($property->id).'
-                                                  AND element = '.protect($item_type).'
-                                                  AND node_id = '.protect($item_id));
-                        }
-            */
+            }
+            else if($property->type == 'link')
+            {
+                foreach($website->languages_list as $lang)
+                {
+                    $link = $_REQUEST['property-'.$property->id.'-'.$lang.'-link'].
+                                '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-title'].
+                                '##'.$_REQUEST['property-'.$property->id.'-'.$lang.'-target'];
+
+                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
+
+                    if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $dictionary[$lang]['property-'.$property->id.'-'.$default_language];
+                }
+            }
 		}
 		
 		if(!empty($dictionary))
-			webdictionary::save_element_strings('property-'.$_REQUEST['property-element'], $item_id, $dictionary);
+        {
+            $property_element = $_REQUEST['property-element'];
+            if($item_type=='block_group_block')
+                $property_element = 'block_group_block';
+
+			webdictionary::save_element_strings('property-'.$property_element, $item_id, $dictionary);
+        }
 
         return true;
 	}
