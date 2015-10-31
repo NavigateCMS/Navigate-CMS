@@ -311,37 +311,56 @@ function nvweb_template_parse($template)
 				break;
 
             case 'theme':
-                switch($tag['attributes']['name'])
-                {
-                    case "style":
-                        switch($tag['attributes']['mode'])
-                        {
-                            case 'name':
-                                $content = $website->theme_options->style;
-                                break;
+				// compatibility with Navigate < 1.8.9
+				// deprecated! code will be removed in Navigate 2.0
+				if($tag['attributes']['name']=='url')
+				{
+					$tag['attributes']['mode'] = 'url';
+				}
+	            else if($tag['attributes']['name']=='style')
+	            {
+		            $tag['attributes']['name'] = $tag['attributes']['mode'];
+		            $tag['attributes']['mode'] = 'style';
+	            }
 
-                            case 'color':
-                            default:
-                                // return theme definition file location for the requested substyle
-                                if(!empty($website->theme_options->style))
-                                    $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['mode']};
-                                if(empty($content))
-                                {
-                                    // return first available
-                                    $theme_styles = array_keys(get_object_vars($theme->styles));
-                                    $content = $theme->styles->{$theme_styles[0]}->{$tag['attributes']['mode']};
-                                }
-                                break;
-                        }
-                        break;
+				// new syntax ("mode" first)
+	            switch($tag['attributes']['mode'])
+	            {
+		            case "style":
+			            $content = $website->theme_options->style;
 
-                    case "url":
-                        $content = $idn->encode($website->absolute_path(false));
-                        $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
-                        break;
-                }
-                break;
-				
+						if(!empty($tag['attributes']['name']))
+						{
+				            switch($tag['attributes']['name'])
+				            {
+					            case 'name':
+						            $content = $website->theme_options->style;
+						            break;
+
+					            case 'color':
+					            default:
+						            // return theme definition file location for the requested substyle
+						            if(!empty($website->theme_options->style))
+							            $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['name']};
+						            if(empty($content))
+						            {
+							            // return first available
+							            $theme_styles = array_keys(get_object_vars($theme->styles));
+							            $content = $theme->styles->{$theme_styles[0]}->{$tag['attributes']['name']};
+						            }
+						            break;
+				            }
+						}
+			            break;
+
+		            case "url":
+			            $content = $idn->encode($website->absolute_path(false));
+			            $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
+			            break;
+
+	            }
+				break;
+
 			default: 
 				//var_dump($tag['attributes']['object']);
 				break; 
