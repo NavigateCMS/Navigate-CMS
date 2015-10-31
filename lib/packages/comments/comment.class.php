@@ -50,7 +50,8 @@ class comment
 		$this->name			= $_REQUEST['comment-name'];
 		$this->email		= $_REQUEST['comment-email'];
 		$this->status		= intval($_REQUEST['comment-status']);
-		$this->message		= $_REQUEST['comment-message'];		
+		$this->message		= $_REQUEST['comment-message'];
+		$this->date_created	= (empty($_REQUEST['comment-date_created'])? '' : core_date2ts($_REQUEST['comment-date_created']));
 	}	
 	
 	
@@ -85,23 +86,26 @@ class comment
 		global $DB;	
 		global $website;
 	
-		$ok = $DB->execute(' INSERT INTO nv_comments
-								(id, website, item, user, name, email, ip, date_created, date_modified, last_modified_by, status, message)
-								VALUES 
-								( 0,
-								  '.protect($website->id).',
-								  '.protect($this->item).',
-								  '.protect($this->user).',
-								  '.protect($this->name).',
-								  '.protect($this->email).',								  
-								  '.protect(core_ip()).',								  
-								  '.protect(core_time()).',								  
-								  '.protect(0).',
-								  '.protect(0).',
-								  '.protect($this->status).',
-								  '.protect($this->message).'  
-								)');		
-				
+		$ok = $DB->execute('
+ 			INSERT INTO nv_comments
+				(id, website, item, user, name, email, ip, date_created, date_modified, last_modified_by, status, message)
+				VALUES
+				( 0, :website, :item, :user, :name, :email, :ip, :date_created, :date_modified, :last_modified_by, :status, :message)
+			',
+			array(
+				":website" => $website->id,
+				":item" => $this->item,
+				":user" => $this->user,
+				":name" => $this->name,
+				":email" => $this->email,
+				":ip" => core_ip(),
+				":date_created" => core_time(),
+				":date_modified" => 0,
+				":last_modified_by" => 0,
+				":status" => $this->status,
+				":message" => $this->message)
+		);
+
 		if(!$ok)
             throw new Exception($DB->get_last_error());
 		
@@ -130,6 +134,34 @@ class comment
               message = '.protect($this->message).'
             WHERE id = '.protect($this->id)
         );
+
+		$ok = $DB->execute('
+ 			UPDATE nv_comments
+ 			SET
+ 			  item = :item,
+              user = :user,
+              name = :name,
+              email = :email,
+              date_created = :date_created,
+              date_modified = :date_modified,
+              last_modified_by = :last_modified_by,
+              status = :status,
+              message = :message
+            WHERE id = :id
+			',
+			array(
+				":item" => $this->item,
+				":user" => $this->user,
+				":name" => $this->name,
+				":email" => $this->email,
+				":date_created" => $this->date_created,
+				":date_modified" => core_time(),
+				":last_modified_by" => $user->id,
+				":status" => $this->status,
+				":message" => $this->message,
+				":id" => $this->id
+			)
+		);
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		

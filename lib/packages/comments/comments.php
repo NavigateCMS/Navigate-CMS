@@ -464,7 +464,7 @@ function comments_form($item)
 		$navibars->add_tab_content_row(
             array(
                 '<label>'.t(226, 'Date created').'</label>',
-				core_ts2date($item->date_created, true)
+	            $naviforms->datefield('comment-date_created', $item->date_created, true)
             )
         );
 	}
