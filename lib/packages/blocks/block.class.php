@@ -231,6 +231,17 @@ class block
                                     if(empty($key_name))
                                         continue;
 
+                                    if($key_name=="link")
+                                    {
+                                        // trim & clean the links
+                                        foreach($value as $vkey => $vval)
+                                        {
+                                            $vval = trim($vval);
+                                            $vval = preg_replace("/\xE2\x80\x8B/", "", $vval); // remove "zero width space" &#8203;
+                                            $value[$vkey] = $vval;
+                                        }
+                                    }
+
                                     $this->trigger[$field][$key_lang][$key_name] = $value;
                                     break;
 
