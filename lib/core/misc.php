@@ -581,6 +581,19 @@ function php_date_to_jquery_ui_datepicker_format($dateString)
     return preg_replace($pattern,$replace,$dateString);
 }
 
+function hex2rgb($hexColor)
+{
+	$shorthand = (strlen($hexColor) == 4);
+
+	list($r, $g, $b) = $shorthand? sscanf($hexColor, "#%1s%1s%1s") : sscanf($hexColor, "#%2s%2s%2s");
+
+	return [
+		"r" => hexdec($shorthand? "$r$r" : $r),
+		"g" => hexdec($shorthand? "$g$g" : $g),
+		"b" => hexdec($shorthand? "$b$b" : $b)
+	];
+}
+
 
 /**
  * Determines if a command exists on the current environment

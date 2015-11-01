@@ -176,7 +176,7 @@ function about_layout()
 											'<a href="https://github.com/yatt/jquery.base64/" target="_blank">jQuery.base64 v2013.03.26</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://www.eyecon.ro/colorpicker/#about" target="_blank">jQuery Color Picker v23.05.2009</a><br />' ));
+											'<a href="http://vanderlee.github.io/colorpicker/" target="_blank">jQuery.colorpicker v1.1.5</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));

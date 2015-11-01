@@ -276,44 +276,58 @@ class naviforms
 		return $out;
 	}
 
-    public function colorfield($name, $value="#ffffff")
+    public function colorfield($name, $value="#ffffff",$swatches=array())
     {
         global $layout;
+        global $user;
 
-        $out = '<input type="text" class="naviforms-colorpicker-text" name="'.$name.'" id="'.$name.'" value="'.$value.'" />
+        $out = '<input type="text" class="naviforms-colorpicker-text" name="'.$name.'" id="'.$name.'" value="'.$value.'" data-previous="'.$value.'" />
                 <div id="'.$name.'-selector" class="naviforms-colorpicker-selector ui-corner-all"><div style="background: '.$value.'; "></div></div>';
 
-		$layout->add_script('$("#'.$name.'").ColorPicker(
-		    {
-                color: "'.$value.'",
-                onShow: function(colpkr)
-                {
-                    var pos = $("#'.$name.'-selector").offset();
-                    $(colpkr).css({left: pos.left + 25, top: pos.top - 3});
-                    $(colpkr).fadeIn(500);
-                    return false;
+        $swatches = array_map(function($c) { return hex2rgb($c); }, $swatches);
+
+        $swatches_js = "{";
+        for($s=0; $s < count($swatches); $s++)
+        {
+            $swatches_js .= '"'.$s.'": {r:'.($swatches[$s]['r']/255).', g:'.($swatches[$s]['g']/255).', b:'.($swatches[$s]['b']/255).'},';
+        }
+        $swatches_js.= "}";
+
+        if($swatches_js == "{}")
+            $swatches_js = "null";
+
+        $layout->add_script('
+            $("#'.$name.'").colorpicker({
+                altField: "#'.$name.'-selector > div",
+                altOnChange: true,
+                regional: "'.$user->language.'",
+                colorFormat: ["#HEX"],
+                //colorFormat: ["#rxgxbx"],
+                draggable: true,
+                parts: ["header", "map", "bar", "hex", "hsv", "rgb", "preview", "swatches", "footer"],
+                //layout: { "memory": [6,0,1,5] },
+                alpha: false,
+                showNoneButton: false,
+                position: {
+                    my: "left top",
+                    at: "right+8 top",
+                    of: "#'.$name.'-selector"
                 },
-                onHide: function(colpkr)
+                okOnEnter: true,
+                revert: true,
+                swatches: '.$swatches_js.',
+                swatchesWidth: 80,
+                open: function(event, color)
                 {
-                    $(colpkr).fadeOut(500);
-                    return false;
+                    $("#'.$name.'").data("previous", $("#'.$name.'").val());
+                    $("#'.$name.'-selector").children().css("backgroundColor", $("#'.$name.'").data("previous"));
+                    $("#'.$name.'").colorpicker("setColor", $("#'.$name.'").data("previous"));
                 },
-                onChange: function(hsb, hex, rgb)
+                cancel: function(event, color)
                 {
-                    $("#'.$name.'").val("#" + hex);
-                    $("#'.$name.'-selector").children().css("backgroundColor", "#" + hex);
+                    $("#'.$name.'").val($("#'.$name.'").data("previous"));
+                    $("#'.$name.'-selector").children().css("backgroundColor", $("#'.$name.'").data("previous"));
                 }
-            });
-
-            $("#'.$name.'-selector").bind("click", function()
-            {
-                $("#'.$name.'").ColorPickerShow();
-            });
-
-            $("#'.$name.'").bind("change", function()
-            {
-                $("#'.$name.'").ColorPickerSetColor($(this).val());
-                $("#'.$name.'-selector").children().css("backgroundColor", $(this).val());
             });
         ');
 

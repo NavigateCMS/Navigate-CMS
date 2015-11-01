@@ -470,7 +470,7 @@ function navigate_property_layout_field($property, $object="")
         case 'color':
             $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
             $field[] = '<label>'.$property_name.'</label>';
-            $field[] = $naviforms->colorfield("property-".$property->id, $property->value);
+            $field[] = $naviforms->colorfield("property-".$property->id, $property->value, @$property->options);
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;

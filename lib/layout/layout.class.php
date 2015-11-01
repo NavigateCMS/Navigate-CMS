@@ -189,8 +189,14 @@ class layout
 		$this->add_script_tag('lib/external/mediaelement/mediaelement-and-player.js');
 		$this->add_style_tag('lib/external/mediaelement/mediaelementplayer.css');
 
-        $this->add_script_tag('lib/external/colorpicker/js/colorpicker.js');
-        $this->add_style_tag('lib/external/colorpicker/css/colorpicker.css');
+		$this->add_script_tag('lib/external/colorpicker/jquery.colorpicker.js');
+		$this->add_script_tag('lib/external/colorpicker/parts/jquery.ui.colorpicker-memory.narrow.js');
+		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-en.js');
+		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-es.js');
+		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-ca.js');
+		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-de.js');
+		$this->add_style_tag('lib/external/colorpicker/jquery.colorpicker.css');
+
 
         $this->add_script_tag('lib/external/jquery.uix.multiselect/js/jquery-multiselect-2.0.js');
         $this->add_style_tag('lib/external/jquery.uix.multiselect/css/jquery-multiselect-2.0.css');

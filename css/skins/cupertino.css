@@ -673,6 +673,18 @@ a.navigate-content-actions-selected
 	font-weight: bold;	
 }
 
+.ui-dialog-titlebar-close,
+.ui-dialog-titlebar-close:hover
+{
+	width: 18px !important;
+	height: 18px;
+}
+
+.ui-dialog-titlebar-close
+{
+	border: solid 1px transparent;
+}
+
 
 /* CHECKBOX STYLING */
 /* Thanks to Geoffrey Crofte http://codepen.io/CreativeJuiz/ */
