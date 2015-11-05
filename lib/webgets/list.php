@@ -1402,7 +1402,7 @@ function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null,
     $feed->set_cache($cache_time);
     $feed->load($url);
     list($channel, $articles, $count) = $feed->parse($offset, $items, $order);
-    
+
     $items = item::convert_from_rss($articles);
 
     return array($items, $count);

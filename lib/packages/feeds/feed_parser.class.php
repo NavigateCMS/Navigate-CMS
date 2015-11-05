@@ -53,9 +53,9 @@ class feed_parser
         // define the namespaces that we are interested in
         $ns = array
         (
-                'content' => 'http://purl.org/rss/1.0/modules/content/',
-                'wfw' => 'http://wellformedweb.org/CommentAPI/',
-                'dc' => 'http://purl.org/dc/elements/1.1/'
+            'content' => 'http://purl.org/rss/1.0/modules/content/',
+            'wfw' => 'http://wellformedweb.org/CommentAPI/',
+            'dc' => 'http://purl.org/dc/elements/1.1/'
         );
 
         // obtain the articles in the feeds, and construct an array of articles
@@ -115,14 +115,16 @@ class feed_parser
             $articles[$article['timestamp']] = $article;
         }
 
-// TO DO: reorder
+// TODO: reorder items
 
         $articles = array_slice($articles, $offset, $items);
 
         // at this point, $channel contains all the metadata about the RSS feed,
         // and $articles contains an array of articles for us to repurpose
 
-        return array($channel, $articles);
+        $count = count($xml->channel->item);
+
+        return array($channel, $articles, $count);
     }
 }
 
