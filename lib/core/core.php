@@ -472,6 +472,19 @@ function core_string_clean($text="")
 }
 
 /**
+ * Cleans a string of any nv tags: <nv /> or {{nv}}
+ *
+ * @param string $text
+ * @return string
+ */
+function core_remove_nvtags($text)
+{
+    $text = preg_replace("/<nv[^>]+\>/i", "", $text);
+    $text = preg_replace("/{{nv[^>]+}}/i", "", $text);
+    return $text;
+}
+
+/**
  * Cuts a text string to a certain length; any HTML tag is removed and text is cutted without breaking words
  *
  * @param string $text

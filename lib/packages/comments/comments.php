@@ -448,7 +448,7 @@ function comments_form($item)
 									
 	$navibars->add_tab_content_row(array(
         '<label>'.t(54, 'Text').'</label>',
-        $naviforms->textarea('comment-message', $item->message, 10),
+        $naviforms->textarea('comment-message', $item->message, 10)
     ));
 									
 	if(!empty($item->ip))

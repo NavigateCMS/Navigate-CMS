@@ -164,18 +164,24 @@ function nvweb_comments($vars=array())
 				if(empty($element->comments_moderator))
                     $status = 0; // all comments auto-approved
 
+                // remove any <nv /> or {{nv}} tag
+                $comment_name = core_remove_nvtags($_REQUEST['reply-name']);
+                $comment_name = strip_tags($comment_name);
+                $comment_message = core_remove_nvtags($_REQUEST['reply-message']);
+                $comment_message = htmlentities($comment_message, ENT_COMPAT, 'UTF-8', true);
+
                 $comment = new comment();
                 $comment->id = 0;
                 $comment->website = $website->id;
                 $comment->item = $element->id;
                 $comment->user = (empty($webuser->id)? 0 : $webuser->id);
-                $comment->name = $_REQUEST['reply-name'];
-                $comment->email = $_REQUEST['reply-email'];
+                $comment->name = $comment_name;
+                $comment->email = filter_var($_REQUEST['reply-email'], FILTER_SANITIZE_EMAIL);
                 $comment->ip = core_ip();
                 $comment->date_created = core_time();
                 $comment->date_modified = 0;
                 $comment->status = $status;
-                $comment->message = htmlentities($_REQUEST['reply-message'], ENT_COMPAT, 'UTF-8', true);
+                $comment->message = $comment_message;
 
                 // trigger the "new_comment" event through the extensions system before inserting it!
                 $extensions_messages = $events->trigger('comment', 'before_insert', array('comment' => $comment));
