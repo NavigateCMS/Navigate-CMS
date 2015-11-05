@@ -42,6 +42,9 @@ $max_post = (int)(ini_get('post_max_size'));
 $memory_limit = (int)(ini_get('memory_limit'));
 define('NAVIGATE_UPLOAD_MAX_SIZE', min($max_upload, $max_post, $memory_limit));
 
+// Suppress DateTime warnings
+date_default_timezone_set(@date_default_timezone_get());
+
 include_once(NAVIGATE_PATH.'/cfg/session.php');
 
 if(!defined(APP_UNIQUE))
