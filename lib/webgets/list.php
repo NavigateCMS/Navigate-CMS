@@ -362,7 +362,15 @@ function nvweb_list($vars=array())
     }
     else if($vars['source']=='rss')
     {
-        list($rs, $total) = nvweb_list_get_from_rss($vars['url'], @$vars['cache'], $offset, $vars['items'], $permission, $order);
+        // url may be a property
+        $rss_url = $vars['url'];
+        if(strpos($vars['url'], "http")!==0)
+        {
+            $rss_url = nvweb_properties(array(
+                'property'	=> 	$vars['url']
+            ));
+        }
+        list($rs, $total) = nvweb_list_get_from_rss($rss_url, @$vars['cache'], $offset, $vars['items'], $permission, $order);
     }
     else if($vars['source']=='twitter')
     {
@@ -1393,11 +1401,11 @@ function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null,
 
     $feed->set_cache($cache_time);
     $feed->load($url);
-    list($channel, $articles) = $feed->parse($offset, $items, $order);
-
+    list($channel, $articles, $count) = $feed->parse($offset, $items, $order);
+    
     $items = item::convert_from_rss($articles);
 
-    return array($items, count($items));
+    return array($items, $count);
 }
 
 function nvweb_list_get_from_twitter($username, $cache_time=3600, $offset, $items=10, $permission, $order)
