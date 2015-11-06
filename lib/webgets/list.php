@@ -1240,14 +1240,27 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
             case '!=':
             case 'neq':
-                $condition = ($property_value != $condition_value);
+		        if(is_numeric($property_value))
+		        {
+			        if($condition_value == 'true')          $condition_value = '1';
+			        else if($condition_value == 'false')    $condition_value = '0';
+		        }
+
+		        $condition = ($property_value != $condition_value);
                 break;
 
             case '=':
             case '==':
             case 'eq':
             default:
+		        if(is_numeric($property_value))
+		        {
+			        if($condition_value == 'true')          $condition_value = '1';
+			        else if($condition_value == 'false')    $condition_value = '0';
+		        }
+
                 $condition = ($property_value == $condition_value);
+		        break;
         }
 
         if($condition)
