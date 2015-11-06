@@ -202,6 +202,37 @@ function run()
             core_terminate();
             break;
 
+		case 'replace_urls':
+			$old = trim($_REQUEST['old']);
+			$new = trim($_REQUEST['new']);
+			$website_id = trim($_REQUEST['website']);
+
+			if(!empty($old) && !empty($new))
+			{
+				// replace occurrences in nv_webdictionary
+				$ok = $DB->execute('
+					UPDATE nv_webdictionary
+					   SET text = replace(text, :old, :new)
+					 WHERE website = :wid',
+					array(
+						':old' => $old,
+						':new' => $new,
+						':wid' => $website_id
+					)
+				);
+
+				firephp_nv::log($DB->get_last_error());
+
+				echo ($ok? 'true' : 'false');
+			}
+			else
+			{
+				echo 'false';
+			}
+
+			core_terminate();
+			break;
+
 		case 0: // list / search result
 		default:
 			$out = websites_list();
@@ -269,7 +300,11 @@ function websites_form($item)
 
     if($user->permission('websites.edit')=='true')
     {
-        $navibars->add_actions(		array(	'<a href="#" action="navigate_reset_statistics" onclick="javascript: navigate_reset_statistics();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/chart_line.png"> '.t(429, 'Reset statistics').'</a>'	));
+	    $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+
+	    $extra_actions = array();
+	    $extra_actions[] = '<a href="#" action="navigate_reset_statistics" onclick="javascript: navigate_reset_statistics();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/chart_line.png"> '.t(429, 'Reset statistics').'</a>';
+
         $layout->add_script('
             function navigate_reset_statistics()
             {
@@ -281,7 +316,8 @@ function websites_form($item)
                         modal: true,
                         title: "'.t(59, 'Confirmation').'",
                         buttons: {
-                            "'.t(190, 'Ok').'": function() {
+                            "'.t(190, 'Ok').'": function()
+                            {
                                 $(this).dialog("close");
 
                                 $.post(
@@ -293,7 +329,8 @@ function websites_form($item)
                                     }
                                 );
                             },
-                            "'.t(58, 'Cancel').'": function() {
+                            "'.t(58, 'Cancel').'": function()
+                            {
                                 $(this).dialog("close");
                             }
                         }
@@ -301,7 +338,89 @@ function websites_form($item)
             }
         ');
 
-        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+	    $extra_actions[] = '<a href="#" action="navigate_replace_urls" onclick="javascript: navigate_replace_urls();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(603, 'Replace URLs').'</a>';
+
+	    // try to find the OLD url for NAVIGATE_DOWNLOAD
+	    $old_url_guessed = "";
+	    $DB->query('
+			SELECT text
+			  FROM nv_webdictionary
+			  WHERE node_type = "item"
+			    AND website = '.$item->id.'
+			    AND text LIKE '.protect("%navigate_download.php%").'
+		    LIMIT 1
+	    ');
+	    $rs = $DB->result('text');
+	    preg_match("/<img .*?(?=src)src=\"([^\"]+)\"/si", $rs[0], $old_url_guessed);
+	    $old_url_guessed = @$old_url_guessed[1];
+	    $old_url_guessed = substr($old_url_guessed, 0, strpos($old_url_guessed, NAVIGATE_FOLDER));
+
+	    $layout->add_content('
+	        <div id="navigate_replace_urls_dialog" style="display: none;">
+	        	<div id="" class="navigate-form-row">
+					<label>'.t(604, "Old").'</label>
+					<input type="text" style=" width: 300px;" id="replace_urls_old" name="replace_urls_old" value="'.$old_url_guessed.'/" />
+				</div>
+				<div id="" class="navigate-form-row">
+					<label>'.t(605, "New").'</label>
+					<input type="text" style=" width: 300px;" id="replace_urls_new" name="replace_urls_new" value="'.NAVIGATE_PARENT.'/" />
+				</div>
+				<div class="navigate-form-row">
+					<div class="subcomment">'.t(523, "This action can NOT be undone.").'</div>
+				</div>
+	        </div>
+	    ');
+
+
+	    $layout->add_script('
+            function navigate_replace_urls()
+            {
+                $("#navigate_replace_urls_dialog").dialog({
+                        resizable: true,
+                        height: 180,
+                        width: 510,
+                        modal: true,
+                        title: "'.t(603, 'Replace URLs').'",
+                        buttons: {
+                            "'.t(190, 'Ok').'": function()
+                            {
+                                $.post(
+                                    "?fid=websites&act=replace_urls",
+                                    {
+                                        old: $("#replace_urls_old").val(),
+                                        new: $("#replace_urls_new").val(),
+                                        website: '.$item->id.'
+                                    },
+                                    function(data)
+                                    {
+                                        if(data!="true")
+				  	                        navigate_notification("'.t(56, "Unexpected error.").'");
+				                        else
+				                        {
+				  	                        navigate_notification("'.t(53, "Data successfully saved").'");
+                                            $("#navigate_replace_urls_dialog").dialog("close");
+                                        }
+                                    }
+                                );
+                            },
+                            "'.t(58, 'Cancel').'": function()
+                            {
+                                $("#navigate_replace_urls_dialog").dialog("close");
+                            }
+                        }
+                });
+            }
+        ');
+
+	    // we attach an event to "websites" which will be fired by navibars to put an extra button
+	    $events->add_actions(
+		    'websites',
+		    array(
+			    'website' => &$item,
+			    'navibars' => &$navibars
+		    ),
+		    $extra_actions
+	    );
 
         if(empty($item->id))
         {

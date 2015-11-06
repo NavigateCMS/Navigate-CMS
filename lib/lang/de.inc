@@ -601,3 +601,6 @@
 600     # Aktie
 601     # Import
 602     # Edit sprache
+603     # Ersetzen URLs
+604     # Alt
+605     # Neu

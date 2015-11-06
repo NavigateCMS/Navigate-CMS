@@ -601,3 +601,6 @@
 600     # Share
 601     # Import
 602     # Edit language
+603     # Replace URLs
+604     # Old
+605     # New
