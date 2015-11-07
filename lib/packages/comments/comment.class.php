@@ -40,7 +40,7 @@ class comment
 		$this->date_modified= $main->date_modified;		
 		$this->last_modified_by  = $main->last_modified_by;
 		$this->status		= $main->status;
-		$this->message		= $main->message;	
+		$this->message		= html_entity_decode($main->message, ENT_COMPAT, "UTF-8");
 	}
 	
 	public function load_from_post()
@@ -85,7 +85,9 @@ class comment
 	{
 		global $DB;	
 		global $website;
-	
+
+		$message = htmlentities($this->message, ENT_COMPAT, 'UTF-8', true);
+
 		$ok = $DB->execute('
  			INSERT INTO nv_comments
 				(id, website, item, user, name, email, ip, date_created, date_modified, last_modified_by, status, message)
@@ -103,7 +105,8 @@ class comment
 				":date_modified" => 0,
 				":last_modified_by" => 0,
 				":status" => $this->status,
-				":message" => $this->message)
+				":message" => $message
+			)
 		);
 
 		if(!$ok)
@@ -120,20 +123,8 @@ class comment
 	{
 		global $DB;
         global $user;
-	    
-		$ok = $DB->execute('
-		    UPDATE nv_comments
-            SET
-              item = '.protect($this->item).',
-              user = '.protect($this->user).',
-              name = '.protect($this->name).',
-              email = '.protect($this->email).',
-              date_modified = '.protect(core_time()).',
-              last_modified_by = '.$user->id.',
-              status = '.protect($this->status).',
-              message = '.protect($this->message).'
-            WHERE id = '.protect($this->id)
-        );
+
+		$message = htmlentities($this->message, ENT_COMPAT, 'UTF-8', true);
 
 		$ok = $DB->execute('
  			UPDATE nv_comments
@@ -158,7 +149,7 @@ class comment
 				":date_modified" => core_time(),
 				":last_modified_by" => $user->id,
 				":status" => $this->status,
-				":message" => $this->message,
+				":message" => $message,
 				":id" => $this->id
 			)
 		);

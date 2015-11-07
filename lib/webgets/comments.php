@@ -168,7 +168,6 @@ function nvweb_comments($vars=array())
                 $comment_name = core_remove_nvtags($_REQUEST['reply-name']);
                 $comment_name = strip_tags($comment_name);
                 $comment_message = core_remove_nvtags($_REQUEST['reply-message']);
-                $comment_message = htmlentities($comment_message, ENT_COMPAT, 'UTF-8', true);
 
                 $comment = new comment();
                 $comment->id = 0;
