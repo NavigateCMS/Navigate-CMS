@@ -7,7 +7,8 @@ class block
 	public $type;   // assigned block type name (f.e. sidebar_poll)
     public $class;  // block class (block, theme, poll...)
 	public $date_published;
-	public $date_unpublish;		
+	public $date_unpublish;
+    public $date_modified;
 	public $access;
     public $groups;
 	public $enabled;
@@ -60,6 +61,7 @@ class block
 		$this->type  			= $main->type;
 		$this->date_published	= (empty($main->date_published)? '' : $main->date_published);
 		$this->date_unpublish	= (empty($main->date_unpublish)? '' : $main->date_unpublish);
+		$this->date_modified	= (empty($main->date_modified)? '' : $main->date_modified);
 		$this->access			= $main->access;
 		$this->enabled			= $main->enabled;
 
@@ -341,7 +343,8 @@ class block
             'INSERT INTO nv_blocks
                 (id, website, type, date_published, date_unpublish,
                  position, fixed, categories, exclusions,
-                 access, groups, enabled, `trigger`, action, notes)
+                 access, groups, enabled, `trigger`, action, notes,
+                 date_modified)
                 VALUES
                 ( 0,
                   :website,
@@ -357,7 +360,8 @@ class block
                   :enabled,
                   :trigger,
                   :action,
-                  :notes
+                  :notes,
+                  :date_modified
                 )
             ',
             array(
@@ -374,7 +378,8 @@ class block
                 ':enabled'          =>  intval($this->enabled),
                 ':trigger'          =>  serialize($this->trigger),
                 ':action'           =>  serialize($this->action),
-                ':notes'            =>  (is_null($this->notes)? '' : $this->notes)
+                ':notes'            =>  (is_null($this->notes)? '' : $this->notes),
+                ':date_modified'    =>  time()
             )
         );
 
@@ -425,7 +430,8 @@ class block
                 access 			= :access,
                 groups          = :groups,
                 enabled 		= :enabled,
-                notes	 		= :notes
+                notes	 		= :notes,
+                date_modified	= :date_modified
              WHERE id = :id
                AND website = :website
             ',
@@ -444,7 +450,8 @@ class block
                 ':enabled'          =>  $this->enabled,
                 ':trigger'          =>  serialize($this->trigger),
                 ':action'           =>  serialize($this->action),
-                ':notes'            =>  $this->notes
+                ':notes'            =>  $this->notes,
+                ':date_modified'    =>  time()
             )
         );
 		

@@ -53,9 +53,11 @@ function run()
 						case 'enabled':
 							$_REQUEST['searchField'] = 'b.enabled';
 							break;
+						case 'date_modified':
 						default:
+							$_REQUEST['searchField'] = 'b.date_modified';
 					}
-								
+
 					if($_REQUEST['sidx']=='dates')
 						$_REQUEST['sidx'] = 'b.date_published';
 				
@@ -586,7 +588,7 @@ function blocks_list()
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
-	$navitable->sortBy('id');
+	$navitable->sortBy('date_modified', 'desc');
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 	$navitable->enableSearch();
@@ -844,6 +846,16 @@ function blocks_form($item)
 		    $naviforms->checkbox('enabled', $item->enabled),
 	    )
     );
+
+	if($item->date_modified > 0)
+	{
+		$navibars->add_tab_content_row(
+			array(
+				'<label>'.t(227, 'Date modified').'</label>',
+				core_ts2date($item->date_modified, true)
+			)
+		);
+	}
 
 	$navibars->add_tab(t(9, "Content"));
 
