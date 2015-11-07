@@ -84,7 +84,7 @@ function run()
 
                         $favicon = '';
                         if(!empty($dataset[$i]['favicon']))
-                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'&width=16&height=16" align="absmiddle" />';
+                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'&width=16&height=16" align="absmiddle" height="16" />';
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
@@ -991,7 +991,7 @@ function websites_form($item)
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(328, 'Favicon').'</label>',
-			$naviforms->dropbox('website-favicon', $item->favicon)
+			$naviforms->dropbox('website-favicon', $item->favicon, "image")
         )
     );
 

@@ -560,7 +560,7 @@ class naviforms
 
 		$out[] = '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$value.'" />';		
 
-		$out[] = '<div id="'.$name.'-droppable" class="navigate-droppable ui-corner-all">';
+		$out[] = '<div id="'.$name.'-droppable" class="navigate-droppable ui-corner-all" data-media="'.$media.'">';
 
 		if(!empty($value))
 		{
@@ -812,8 +812,22 @@ class naviforms
 					{
 						var file_id = $(ui.draggable).attr("id").substring(5);
 						$("#'.$name.'").val(file_id);
-						$(this).html($(ui.draggable).html());
+						var draggable_content = $(ui.draggable);
+
+						console.log(draggable_content);
+
+						if($(draggable_content).find(".file-image-wrapper").length > 0)
+						{
+						    draggable_content = $(draggable_content).find(".file-image-wrapper").html();
+                        }
+                        else
+                        {
+                            draggable_content = $(ui.draggable).html();
+                        }
+
+						$(this).html(draggable_content);
 						$(this).find("div.file-access-icons").remove();
+
 						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
 					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
                         $("#'.$name.'-droppable-info").find(".navigate-droppable-info-title").html("");

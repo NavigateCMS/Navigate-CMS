@@ -1238,7 +1238,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               data-file-id="'.$f->id.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-				               <img src="'.$icon.'" title="'.$f->name.'" />
+				               <div class="file-image-wrapper"><img src="'.$icon.'" title="'.$f->name.'" /></div>
 	                      </div>';
 			}
 	        else if($f->type == 'youtube')
@@ -1269,7 +1269,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               data-file-id="'.$f->id.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-				               <img src="'.$icon.'" width="50" height="50" title="'.$f->name.'" />
+				               <div class="file-icon-wrapper"><img src="'.$icon.'" width="50" height="50" title="'.$f->name.'" /></div>
 	                           <span style="clear: both; display: block; height: 0px;"></span>'.
 	                           $f->name.'
 	                       </div>';

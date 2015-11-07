@@ -1129,7 +1129,7 @@ table.treeTable
 #navigate_media_browser_buttons
 {
 	width: 600px;
-	height: 20;	
+	height: 20px;
 }
 
 #navigate_media_browser_buttons a
@@ -1361,6 +1361,14 @@ label.ui-state-active #navigate_media_browser_folder_path
     opacity: 0.75;
 }
 
+#navigate_media_browser_items .file-image-wrapper
+{
+	display: flex;
+	width: 80px;
+	height: 78px;
+	margin-top: 1px;
+}
+
 .navigate_media_browser_clone
 {
 	height: 78px;
@@ -1374,7 +1382,27 @@ label.ui-state-active #navigate_media_browser_folder_path
 	z-index: 9999999999;
 	background: #fff;
 	padding-top: 2px;
+	display: block;
 }
+
+.navigate_media_browser_clone.draggable-image
+{
+	display: flex;
+}
+
+.navigate_media_browser_clone .file-image-wrapper
+{
+	display: flex;
+	width: 80px;
+	height: 78px;
+}
+
+.file-image-wrapper img
+{
+	margin: auto; /* center image vertically & horizontally when parent has display: flex; */
+}
+
+
 
 .navigate-droppable-wrapper
 {
@@ -1395,6 +1423,17 @@ label.ui-state-active #navigate_media_browser_folder_path
 	overflow: hidden;
 	padding-top: 2px;
     float: left;
+	display: block;
+}
+
+.navigate-droppable[data-media="image"]
+{
+	display: flex;
+}
+
+.navigate-droppable[data-media="image"] img:first-child
+{
+	margin: auto; /* center vertical & horizontal when parent has display: flex; */
 }
 
 .navigate-droppable-hover
