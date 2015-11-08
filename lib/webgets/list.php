@@ -752,6 +752,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					$out = (!empty($item->username)? $item->username : $item->name);
 					break;
 
+                case 'website':
+                    $out = $item->url;
+                    break;
+
 				case 'message':
                     if(!empty($tag['attributes']['length']))
                         $out = core_string_cut($item->message, $tag['attributes']['length'], '&hellip;');

@@ -8,7 +8,8 @@ class comment
 	public $user;
 	public $name;
 	public $email;
-	public $ip;	
+	public $url;
+	public $ip;
 	public $date_created;
 	public $date_modified;
     public $last_modified_by;
@@ -35,7 +36,8 @@ class comment
 		$this->user			= $main->user;
    		$this->name		    = $main->name;    
    		$this->email	    = $main->email;    
-   		$this->ip		    = $main->ip;    		
+   		$this->url  	    = $main->url;
+   		$this->ip		    = $main->ip;
 		$this->date_created	= $main->date_created;
 		$this->date_modified= $main->date_modified;		
 		$this->last_modified_by  = $main->last_modified_by;
@@ -49,6 +51,7 @@ class comment
 		$this->user			= $_REQUEST['comment-user'];
 		$this->name			= $_REQUEST['comment-name'];
 		$this->email		= $_REQUEST['comment-email'];
+		$this->url		    = $_REQUEST['comment-url'];
 		$this->status		= intval($_REQUEST['comment-status']);
 		$this->message		= $_REQUEST['comment-message'];
 		$this->date_created	= (empty($_REQUEST['comment-date_created'])? '' : core_date2ts($_REQUEST['comment-date_created']));
@@ -57,8 +60,6 @@ class comment
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 		  return $this->update();
 		else
@@ -72,10 +73,11 @@ class comment
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute(' DELETE FROM nv_comments
-							WHERE id = '.intval($this->id).'
-              				LIMIT 1 '
-						);
+			$DB->execute('
+ 				DELETE FROM nv_comments
+				 WHERE id = '.intval($this->id).'
+               LIMIT 1 '
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -90,9 +92,14 @@ class comment
 
 		$ok = $DB->execute('
  			INSERT INTO nv_comments
-				(id, website, item, user, name, email, ip, date_created, date_modified, last_modified_by, status, message)
+				(	id, website, item, user, name, email, url, ip,
+					date_created, date_modified, last_modified_by,
+					status, message
+				)
 				VALUES
-				( 0, :website, :item, :user, :name, :email, :ip, :date_created, :date_modified, :last_modified_by, :status, :message)
+				( 	0, :website, :item, :user, :name, :email, :url, :ip,
+					:date_created, :date_modified, :last_modified_by,
+					:status, :message)
 			',
 			array(
 				":website" => $website->id,
@@ -100,6 +107,7 @@ class comment
 				":user" => $this->user,
 				":name" => $this->name,
 				":email" => $this->email,
+				":url" => $this->url,
 				":ip" => core_ip(),
 				":date_created" => core_time(),
 				":date_modified" => 0,
@@ -133,6 +141,7 @@ class comment
               user = :user,
               name = :name,
               email = :email,
+              url = :url,
               date_created = :date_created,
               date_modified = :date_modified,
               last_modified_by = :last_modified_by,
@@ -145,6 +154,7 @@ class comment
 				":user" => $this->user,
 				":name" => $this->name,
 				":email" => $this->email,
+				":url" => $this->url,
 				":date_created" => $this->date_created,
 				":date_modified" => core_time(),
 				":last_modified_by" => $user->id,
@@ -210,15 +220,20 @@ class comment
         global $DB;
         global $website;
 
-        $count = $DB->query_single('count(*) as total', 'nv_comments', 'website = '.protect($website->id).' AND status = 3');
+        $count = $DB->query_single(
+	        'count(*) as total',
+	        'nv_comments',
+	        'website = '.protect($website->id).' AND status = 3'
+        );
 
-        $ok = $DB->execute('DELETE FROM nv_comments
-                            WHERE website = '.protect($website->id).'
-                            AND status = 3');
+        $ok = $DB->execute('
+			DELETE FROM nv_comments
+             WHERE website = '.protect($website->id).'
+               AND status = 3'
+        );
 
         if($ok)
             return $count;
-
     }
 }
 

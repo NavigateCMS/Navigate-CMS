@@ -279,17 +279,20 @@ function comments_form($item)
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+			)
+		);
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
-
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+			)
+		);
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -318,9 +321,13 @@ function comments_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=comments&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=comments&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			(!empty($item->id)? '<a href="?fid=comments&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=comments&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 
 	$navibars->form();
 
@@ -344,9 +351,12 @@ function comments_form($item)
 		$title = $content->dictionary[$website->languages_list[0]]['title'];
 	}
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(180, 'Item').'</label>',
-											$naviforms->textfield('comment-item-text', $title),
-										));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(180, 'Item').'</label>',
+			$naviforms->textfield('comment-item-text', $title),
+		)
+	);
 																														
 	$layout->add_script('
 		$("#comment-item-text").autocomplete(
@@ -444,6 +454,11 @@ function comments_form($item)
 	$navibars->add_tab_content_row(array(
         '<label>'.t(44, 'E-Mail').'</label>',
         $naviforms->textfield('comment-email', $item->email))
+    );
+
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(177, 'Website').'</label>',
+        $naviforms->textfield('comment-url', $item->url))
     );
 									
 	$navibars->add_tab_content_row(array(
