@@ -753,7 +753,16 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					break;
 
                 case 'website':
-                    $out = $item->url;
+                    if(!empty($item->url))
+                    {
+                        $out = $item->url;
+                    }
+                    else if(!empty($item->user))
+                    {
+                        $wu = new webuser();
+                        $wu->load($item->user);
+                        $out = $wu->social_website;
+                    }
                     break;
 
 				case 'message':
