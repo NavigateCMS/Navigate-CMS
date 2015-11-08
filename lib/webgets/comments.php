@@ -12,25 +12,26 @@ function nvweb_comments($vars=array())
 	global $theme;
     global $events;
     global $session;
-	
+
 	$webget = 'comments';
 
 	if(!isset($webgets[$webget]))
 	{
 		$webgets[$webget] = array();
 
-		global $lang;		
+		global $lang;
 		if(empty($lang))
-		{		
+		{
 			$lang = new language();
 			$lang->load($current['lang']);
 		}
-		
-		// default translations		
+
+		// default translations
 		$webgets[$webget]['translations'] = array(
             'post_a_comment' => t(379, 'Post a comment'),
             'name' => t(159, 'Name'),
             'email' => t(44, 'E-Mail'),
+			'website' => t(177, 'Website'),
             'message' => t(380, 'Message'),
             'email_will_not_be_published' => t(381, 'E-Mail will not be published'),
             'submit' => t(382, 'Submit'),
@@ -42,13 +43,14 @@ function nvweb_comments($vars=array())
             'review_comments' => t(388, 'Review comments')
 		);
 
-		// theme translations 
+		// theme translations
 		// if the web theme has custom translations for this string subtypes, use it (for the user selected language)
 		/* just add the following translations to your json theme dictionary:
 
 			"post_a_comment": "Post a comment",
 			"name": "Name",
 			"email": "E-Mail",
+			"website": "Website",
 			"message": "Message",
 			"email_will_not_be_published": "E-Mail will not be published",
 			"submit": "Submit",
@@ -68,13 +70,25 @@ function nvweb_comments($vars=array())
 
 				if(!empty($theme_translation) && $theme_translation!=$code)
 					$webgets[$webget]['translations'][$code] = $theme_translation;
-			}	
+			}
 		}
 	}
 
-	if(empty($vars['alert_callback'])) $vars['alert_callback'] = 'alert';	
+    // set default callback
+	if(empty($vars['callback']))
+        $vars['callback'] = 'alert';
 
-	$out = '';
+    // check callback attributes
+    $callback = $vars['callback'];
+    if(!empty($vars['alert_callback']))
+        $callback = $vars['alert_callback'];
+
+    $callback_error = $callback;
+    if(!empty($vars['error_callback']))
+        $callback_error = $vars['error_callback'];
+
+
+    $out = '';
 
     // if the current page belongs to a structure entry
     // we need to get the associated elements to retrieve and post its comments
@@ -90,7 +104,7 @@ function nvweb_comments($vars=array())
     }
 
 	switch(@$vars['mode'])
-	{	
+	{
 		case 'process':
 
             if(isset($_GET['nv_approve_comment']))
@@ -107,16 +121,16 @@ function nvweb_comments($vars=array())
                         // hash check passed
                         $comment->status = 0;
                         $comment->save();
-                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(555, "Item has been successfully published.").'");');
+                        nvweb_after_body("js", $callback.'("'.t(555, "Item has been successfully published.").'");');
                     }
                     else
                     {
-                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(344, "Security error").'");');
+                        nvweb_after_body("js", $callback_error.'("'.t(344, "Security error").'");');
                     }
                 }
                 else
                 {
-                    nvweb_after_body("js", $vars['alert_callback'].'("'.t(56, "Unexpected error").'");');
+                    nvweb_after_body("js", $callback_error.'("'.t(56, "Unexpected error").'");');
                 }
             }
 
@@ -133,41 +147,50 @@ function nvweb_comments($vars=array())
                     {
                         // hash check passed
                         $comment->delete();
-                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(55, "Item successfully deleted").'");');
+                        nvweb_after_body("js", $callback.'("'.t(55, "Item successfully deleted").'");');
                     }
                     else
                     {
-                        nvweb_after_body("js", $vars['alert_callback'].'("'.t(344, "Security error").'");');
+                        nvweb_after_body("js", $callback_error.'("'.t(344, "Security error").'");');
                     }
                 }
                 else
                 {
-                    nvweb_after_body("js", $vars['alert_callback'].'("'.t(56, "Unexpected error").'");');
+                    nvweb_after_body("js", $callback_error.'("'.t(56, "Unexpected error").'");');
                 }
             }
 
-			if($_REQUEST['form-type']=='comment-reply')
+			if($_REQUEST['form-type']=='comment-reply' || @!empty($_POST[$vars['field-message']]))
 			{
-				// add comment	
-				if(
-                    ( (empty($_REQUEST['reply-name'])  ||  empty($_REQUEST['reply-email'])) && empty($webuser->id) )
+				// add comment
+
+				if(empty($vars['field-name']))      $vars['field-name'] = 'reply-name';
+				if(empty($vars['field-email']))     $vars['field-email'] = 'reply-email';
+				if(empty($vars['field-url']))       $vars['field-url'] = 'reply-url';
+				if(empty($vars['field-message']))   $vars['field-message'] = 'reply-message';
+
+				$comment_name = @$_REQUEST[$vars['field-name']];
+				$comment_email = @$_REQUEST[$vars['field-email']];
+				$comment_url = @$_REQUEST[$vars['field-url']];
+				$comment_message = @$_REQUEST[$vars['field-message']];
+
+				if( ( (empty($comment_name)  ||  empty($comment_email)) && empty($webuser->id) )
                     ||
-					empty($_REQUEST['reply-message'])
+					empty($comment_message)
                 )
 				{
-					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['please_dont_leave_any_field_blank'].'");');
+					nvweb_after_body("js", $callback_error.'("'.$webgets[$webget]['translations']['please_dont_leave_any_field_blank'].'");');
 					return;
 				}
 
 				$status = -1; // new comment, not approved
-
 				if(empty($element->comments_moderator))
                     $status = 0; // all comments auto-approved
 
                 // remove any <nv /> or {{nv}} tag
-                $comment_name = core_remove_nvtags($_REQUEST['reply-name']);
+                $comment_name = core_remove_nvtags($comment_name);
                 $comment_name = strip_tags($comment_name);
-                $comment_message = core_remove_nvtags($_REQUEST['reply-message']);
+                $comment_message = core_remove_nvtags($comment_message);
 
                 $comment = new comment();
                 $comment->id = 0;
@@ -175,7 +198,8 @@ function nvweb_comments($vars=array())
                 $comment->item = $element->id;
                 $comment->user = (empty($webuser->id)? 0 : $webuser->id);
                 $comment->name = $comment_name;
-                $comment->email = filter_var($_REQUEST['reply-email'], FILTER_SANITIZE_EMAIL);
+                $comment->email = filter_var($comment_email, FILTER_SANITIZE_EMAIL);
+                $comment->url = filter_var($comment_url, FILTER_SANITIZE_URL);
                 $comment->ip = core_ip();
                 $comment->date_created = core_time();
                 $comment->date_modified = 0;
@@ -183,13 +207,17 @@ function nvweb_comments($vars=array())
                 $comment->message = $comment_message;
 
                 // trigger the "new_comment" event through the extensions system before inserting it!
-                $extensions_messages = $events->trigger('comment', 'before_insert', array('comment' => $comment));
+                $extensions_messages = $events->trigger(
+                    'comment',
+                    'before_insert',
+                    array('comment' => $comment)
+                );
 
                 foreach($extensions_messages as $ext_name => $ext_result)
                 {
                     if(isset($ext_result['error']))
                     {
-                        nvweb_after_body("js", $vars['alert_callback'].'("'.$ext_result['error'].'");');
+                        nvweb_after_body("js", $callback_error.'("'.$ext_result['error'].'");');
                         return;
                     }
                 }
@@ -207,7 +235,7 @@ function nvweb_comments($vars=array())
                 $events->trigger('comment', 'after_insert', array('comment' => $comment));
 
 				if(!empty($comment->id) && $status == -1)
-					nvweb_after_body("js", $vars['alert_callback'].'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
+					nvweb_after_body("js", $callback.'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
 
                 $notify_addresses = $website->contact_emails;
 
@@ -223,15 +251,19 @@ function nvweb_comments($vars=array())
                     ),
                     array(
                         'title' => $webgets[$webget]['translations']['name'],
-                        'content' => $_REQUEST['reply-name'].@$webuser->username
+                        'content' => $comment_name.@$webuser->username
                     ),
                     array(
                         'title' => $webgets[$webget]['translations']['email'],
-                        'content' => $_REQUEST['reply-email'].@$webuser->email
+                        'content' => $comment_email.@$webuser->email
+                    ),
+	                array(
+                        'title' => $webgets[$webget]['translations']['website'],
+                        'content' => $comment_url.@$webuser->social_website
                     ),
                     array(
                         'title' => $webgets[$webget]['translations']['message'],
-                        'content' => nl2br($_REQUEST['reply-message'])
+                        'content' => nl2br($comment_message)
                     ),
                     array(
                         'footer' =>
@@ -263,7 +295,7 @@ function nvweb_comments($vars=array())
 				$message = '<html><head>'.$one_click_actions.'</head><body>'.$message.'</body></html>';
 
                 foreach($website->contact_emails as $contact_address)
-                    nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address);
+                    @nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address);
 
 			}
 			break;
@@ -369,18 +401,18 @@ function nvweb_comments($vars=array())
 
 			if(empty($vars['avatar_size']))
 				$vars['avatar_size'] = '48';
-			
+
 			if(empty($vars['date_format']))
 				$vars['date_format'] = '%d %B %Y %H:%M';
 
 			for($c=0; $c < $comments_total; $c++)
-			{		
+			{
 				$avatar = $comments[$c]->avatar;
 				if(!empty($avatar))
 					$avatar = '<img src="'.NVWEB_OBJECT.'?type=image&id='.$avatar.'" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
 				else
 					$avatar = '<img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
-								
+
 				$out .= '
 					<div class="comment">
 						<div class="comment-avatar">'.$avatar.'</div>
@@ -389,11 +421,11 @@ function nvweb_comments($vars=array())
 						<div class="comment-message">'.nl2br($comments[$c]->message).'</div>
 						<div style="clear:both"></div>
 					</div>
-				';				
-			}		
-			break;	
+				';
+			}
+			break;
 	}
-	
+
 	return $out;
 }
 
