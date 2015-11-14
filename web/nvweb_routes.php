@@ -120,28 +120,21 @@ function nvweb_load_website_by_url($url, $exit=true)
     }
 
 	// do we have a subdomain in the url?
-	if(preg_match("/^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$/", $host))
-	{
-		$domain = $host;
-		$subdomain = '';
-	}
+	preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $url, $parts);
+	$subdomain = $parts[1];
+	$domain = $host;
+	if(empty($subdomain)) // may be NULL
+		$subdomain = "";
 	else
-	{
-		$host = explode('.', $host);
-	
-        $domain = array_pop($host);
-        if(!empty($host))
-            $domain = array_pop($host) . '.' . $domain;
+		$domain = substr($host, strlen($subdomain)+1);
 
-		$subdomain = implode('.', $host);
-	}
-
-	$DB->query('SELECT id, folder
-				  FROM nv_websites
-				 WHERE subdomain = '.protect($subdomain).'
-				   AND domain = '.protect($domain).'
-				 ORDER BY folder DESC');
-				   
+	$DB->query('
+		SELECT id, folder
+		  FROM nv_websites
+		 WHERE subdomain = '.protect($subdomain).'
+		   AND domain = '.protect($domain).'
+		 ORDER BY folder DESC
+	 ');
 	$websites = $DB->result();
 
 	if(empty($websites))
@@ -200,7 +193,7 @@ function nvweb_load_website_by_url($url, $exit=true)
             }
         }
 	}
-
+	
 	// website could not be identified, just load the first available
 	if(empty($website->id))
 		$website->load();

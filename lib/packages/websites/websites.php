@@ -221,8 +221,6 @@ function run()
 					)
 				);
 
-				firephp_nv::log($DB->get_last_error());
-
 				echo ($ok? 'true' : 'false');
 			}
 			else
