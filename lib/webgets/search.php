@@ -36,7 +36,7 @@ function nvweb_search($vars=array())
             'website' => $website->id,
             'date' => time(),
             'webuser' => $wu_id,
-            'origin' => $_SERVER['HTTP_REFERER'],
+            'origin' => (empty($_SERVER['HTTP_REFERER'])? '' : $_SERVER['HTTP_REFERER']),
             'text' => $search_what,
         ));
 
