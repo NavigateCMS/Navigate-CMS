@@ -102,6 +102,8 @@ try
 		'plugins_called'    => '',
 		'delayed_nvlists'   => array(),
 		'delayed_nvsearches'=> array(),
+		'delayed_tags_pre'  => array(),
+		'delayed_tags_code'  => array(),
 		'navigate_session' 	=> !empty($_SESSION['APP_USER#'.APP_UNIQUE]),
 		'html_after_body'	=> array(),
 		'js_after_body'		=> array()
@@ -215,6 +217,7 @@ try
 	$html = str_replace('</body>', $end, $html);
 	
 	$html = nvweb_template_tweaks($html);
+	$html = nvweb_template_restore_special($html);
     $events->trigger('theme', 'after_parse', array('html' => &$html));
     $html = nvweb_plugins_event('after_parse', $html);
 

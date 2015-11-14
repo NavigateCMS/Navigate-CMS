@@ -388,11 +388,32 @@ function nvweb_template_parse($template)
 function nvweb_template_parse_special($html)
 {
 	global $website;
+	global $current;
+
+	// find <pre> and <code> tags, save its contents and leave a placeholder to restore the content later
+	$tags_pre = nvweb_tags_extract($html, 'pre', false, true, 'UTF-8');
+	for($t=count($tags_pre); $t--; $t >= 0) // need to process the tags upwards, to keep the offsets found
+	{
+		$tag = $tags_pre[$t];
+		if(empty($tag)) continue;
+		$tag_uid = uniqid('nv-tags-pre-');
+		$current['delayed_tags_pre'][$tag_uid] = $tag['full_tag'];
+		$html = substr_replace($html, '<!--#'.$tag_uid.'#-->', $tag['offset'], strlen($tag['full_tag']));
+	}
+
+	$tags_code = nvweb_tags_extract($html, 'code', false, true, 'UTF-8');
+	for($t=count($tags_code); $t--; $t >= 0) // need to process the tags upwards, to keep the offsets found
+	{
+		$tag = $tags_code[$t];
+		if(empty($tag)) continue;
+		$tag_uid = uniqid('nv-tags-code-');
+		$current['delayed_tags_code'][$tag_uid] = $tag['full_tag'];
+		$html = substr_replace($html, '<!--#'.$tag_uid.'#-->', $tag['offset'], strlen($tag['full_tag']));
+	}
 
     $changed = false;
 
 	// translate "{{nv object='list' " tags to "<nv object='list' " version
-	// TODO: EXCEPT if they are included in a <code> tag
 	preg_match_all("/{{nv\s object=[\"']list[\"'] ([^}]+)}}/ixsm", $html, $curly_tags);
 	for($c=0; $c < count($curly_tags[0]); $c++)
 	{
@@ -411,11 +432,9 @@ function nvweb_template_parse_special($html)
 	}
 
 	// translate "{{/nv}}" tags to "</nv>" version
-	// TODO: EXCEPT if they are included in a <code> tag
 	$html = str_ireplace('{{/nv}}', '</nv>', $html);
 
 	// translate "{{nvlist_conditional }}" tags to "<nvlist_conditional >" version
-	// TODO: EXCEPT if they are included in a <code> tag
 	preg_match_all("/{{nvlist_conditional \s([^}]+)}}/ixsm", $html, $curly_tags);
 	for($c=0; $c < count($curly_tags[0]); $c++)
 	{
@@ -425,11 +444,9 @@ function nvweb_template_parse_special($html)
 	}
 
 	// translate "{{/nvlist_conditional}}" tags to "</nvlist_conditional>" version
-	// TODO: EXCEPT if they are included in a <code> tag
 	$html = str_ireplace('{{/nvlist_conditional}}', '</nvlist_conditional>', $html);
 
     // translate "{{nv }}" tags to "<nv />" version
-	// TODO: EXCEPT if they are included in a <code> tag
     preg_match_all("/{{nv\s([^}]+)}}/ixsm", $html, $curly_tags);
     for($c=0; $c < count($curly_tags[0]); $c++)
     {
@@ -439,7 +456,6 @@ function nvweb_template_parse_special($html)
     }
 
     // translate "{{nvlist }}" tags to "<nvlist />" version
-	// TODO: EXCEPT if they are included in a <code> tag
     preg_match_all("/{{nvlist\s([^}]+)}}/ixsm", $html, $curly_tags);
     for($c=0; $c < count($curly_tags[0]); $c++)
     {
@@ -492,6 +508,25 @@ function nvweb_template_parse_special($html)
     }
 
     return $html;
+}
+
+function nvweb_template_restore_special($html)
+{
+	global $current;
+
+	foreach($current['delayed_tags_code'] as $tag_uid => $tag_code)
+	{
+		$html = str_replace('<!--#'.$tag_uid.'#-->', $current['delayed_tags_code'][$tag_uid], $html);
+		$current['delayed_tags_code'][$tag_uid] = NULL;
+	}
+
+	foreach($current['delayed_tags_pre'] as $tag_uid => $tag_code)
+	{
+		$html = str_replace('<!--#'.$tag_uid.'#-->', $current['delayed_tags_pre'][$tag_uid], $html);
+		$current['delayed_tags_pre'][$tag_uid] = NULL;
+	}
+
+	return $html;
 }
 
 /**
