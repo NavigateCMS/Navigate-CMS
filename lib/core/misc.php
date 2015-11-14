@@ -587,11 +587,11 @@ function hex2rgb($hexColor)
 
 	list($r, $g, $b) = $shorthand? sscanf($hexColor, "#%1s%1s%1s") : sscanf($hexColor, "#%2s%2s%2s");
 
-	return [
+	return array(
 		"r" => hexdec($shorthand? "$r$r" : $r),
 		"g" => hexdec($shorthand? "$g$g" : $g),
 		"b" => hexdec($shorthand? "$b$b" : $b)
-	];
+	);
 }
 
 
