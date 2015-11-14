@@ -249,7 +249,9 @@ function navigate_media_browser_refresh()
         });
     }
 
-    $("#navigate_media_browser_items div").not("#file-more").not(".draggable-folder").off("contextmenu").on("contextmenu", function(e)
+    $("#navigate_media_browser_items div")
+        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".draggable-folder")
+        .off("contextmenu").on("contextmenu", function(e)
     {
         navigate_hide_context_menus();
         var trigger = $(this);
