@@ -119,14 +119,24 @@ function nvweb_load_website_by_url($url, $exit=true)
         }
     }
 
-	// do we have a subdomain in the url?
-	preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $url, $parts);
-	$subdomain = $parts[1];
-	$domain = $host;
-	if(empty($subdomain)) // may be NULL
+	// the host is an IP address or a full domain?
+	$isIP = filter_var($host, FILTER_VALIDATE_IP);
+	if($isIP)
+	{
+		$domain = $host;
 		$subdomain = "";
+	}
 	else
-		$domain = substr($host, strlen($subdomain)+1);
+	{
+		// do we have a subdomain in the url?
+		preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $url, $parts);
+		$subdomain = $parts[1];
+		$domain = $host;
+		if(empty($subdomain)) // may be NULL
+			$subdomain = "";
+		else
+			$domain = substr($host, strlen($subdomain)+1);
+	}
 
 	$DB->query('
 		SELECT id, folder
@@ -193,7 +203,7 @@ function nvweb_load_website_by_url($url, $exit=true)
             }
         }
 	}
-	
+
 	// website could not be identified, just load the first available
 	if(empty($website->id))
 		$website->load();

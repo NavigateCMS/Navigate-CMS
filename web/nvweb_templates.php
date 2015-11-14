@@ -392,11 +392,10 @@ function nvweb_template_parse_special($html)
     $changed = false;
 
 	// translate "{{nv object='list' " tags to "<nv object='list' " version
+	// TODO: EXCEPT if they are included in a <code> tag
 	preg_match_all("/{{nv\s object=[\"']list[\"'] ([^}]+)}}/ixsm", $html, $curly_tags);
 	for($c=0; $c < count($curly_tags[0]); $c++)
 	{
-		firephp_nv::log($curly_tags[0]);
-
 		if(stripos($curly_tags[0], 'object="list"'))
 		{
 			$tmp = str_ireplace(array('{{nv object="list" ', '}}'), array('<nv object="list" ', '>'), $curly_tags[0][$c]);
@@ -412,9 +411,11 @@ function nvweb_template_parse_special($html)
 	}
 
 	// translate "{{/nv}}" tags to "</nv>" version
+	// TODO: EXCEPT if they are included in a <code> tag
 	$html = str_ireplace('{{/nv}}', '</nv>', $html);
 
 	// translate "{{nvlist_conditional }}" tags to "<nvlist_conditional >" version
+	// TODO: EXCEPT if they are included in a <code> tag
 	preg_match_all("/{{nvlist_conditional \s([^}]+)}}/ixsm", $html, $curly_tags);
 	for($c=0; $c < count($curly_tags[0]); $c++)
 	{
@@ -424,9 +425,11 @@ function nvweb_template_parse_special($html)
 	}
 
 	// translate "{{/nvlist_conditional}}" tags to "</nvlist_conditional>" version
+	// TODO: EXCEPT if they are included in a <code> tag
 	$html = str_ireplace('{{/nvlist_conditional}}', '</nvlist_conditional>', $html);
 
     // translate "{{nv }}" tags to "<nv />" version
+	// TODO: EXCEPT if they are included in a <code> tag
     preg_match_all("/{{nv\s([^}]+)}}/ixsm", $html, $curly_tags);
     for($c=0; $c < count($curly_tags[0]); $c++)
     {
@@ -436,6 +439,7 @@ function nvweb_template_parse_special($html)
     }
 
     // translate "{{nvlist }}" tags to "<nvlist />" version
+	// TODO: EXCEPT if they are included in a <code> tag
     preg_match_all("/{{nvlist\s([^}]+)}}/ixsm", $html, $curly_tags);
     for($c=0; $c < count($curly_tags[0]); $c++)
     {
