@@ -504,6 +504,10 @@ function nvweb_blocks_render_action($action, $trigger_html, $lang, $return_url=f
             $action = '<a href="'.$url.'" target="_blank">'.$trigger_html.'</a>';
             break;
 
+        case 'javascript':
+            $action = '<a href="javascript:void(0);" onclick="'.$action['action-javascript'][$lang].'">'.$trigger_html.'</a>';
+            break;
+
         case 'file':
             $url = NVWEB_ABSOLUTE.'/object?type=file&id='.$action['action-file'][$lang];
             $action = '<a href="'.$url.'">'.$trigger_html.'</a>';

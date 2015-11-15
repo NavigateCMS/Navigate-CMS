@@ -1163,15 +1163,17 @@ function blocks_form($item)
                                 0 => '',
                                 1 => 'web',
                                 2 => 'web-n',
-                                3 => 'file',
-                                4 => 'image'
+                                3 => 'javascript',
+                                4 => 'file',
+                                5 => 'image'
                             ),
                             array(
                                 0 => t(183, 'Do nothing'),
                                 1 => t(173, 'Open URL'),
                                 2 => t(174, 'Open URL (new window)'),
-                                3 => t(175, 'Download file'),
-                                4 => t(176, 'View image')
+                                3 => 'Javascript',
+                                4 => t(175, 'Download file'),
+                                5 => t(176, 'View image')
                             ),
                             $item->action['action-type'][$lang],
                             "navigate_blocks_action_change('".$lang."', this);"
@@ -1188,6 +1190,23 @@ function blocks_form($item)
                         ''
                     )
                 );
+
+	            $navibars->add_tab_content_row(
+                    array(
+                        '<label>Javascript</label>',
+                        $naviforms->textfield('action-javascript-'.$lang, @$item->action['action-javascript'][$lang], NULL, "navigate_blocks_action_javascript_clean_quotes('action-javascript-".$lang."');"),
+	                    '<div class="subcomment"><img src="img/icons/silk/information.png" align="absmiddle" /> '.t(606, 'Double quotes not allowed, use single quotes only').'</div>'
+                    )
+                );
+
+	            $layout->add_script('
+					function navigate_blocks_action_javascript_clean_quotes(id)
+		            {
+		                var content = $("#" + id).val();
+		                content = content.replace(\'"\', "\'");
+		                $("#" + id).val(content);
+		            }
+	            ');
 
                 $navibars->add_tab_content_row(
                     array(
@@ -1343,6 +1362,10 @@ function blocks_form($item)
 						case "web":
 						case "web-n":
 							$("#action-web-" + to).val($("#action-web-" + from).val());
+							break;
+
+						case "javascript":
+							$("#action-javascript-" + to).val($("#action-javascript-" + from).val());
 							break;
 
 						case "file":

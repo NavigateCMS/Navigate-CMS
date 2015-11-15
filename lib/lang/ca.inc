@@ -604,3 +604,4 @@
 603     # Reemplaçar URLs
 604     # Anterior
 605     # Nova
+606     # No es permeten cometes dobles, només poden usar-se cometes simples

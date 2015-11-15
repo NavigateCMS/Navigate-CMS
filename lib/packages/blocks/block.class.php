@@ -179,8 +179,8 @@ class block
             case 'block':
             case 'theme':
             default:
-                $fields_title 	= array ( 'title' );
-                $fields_trigger = array (
+                $fields_title 	= array( 'title' );
+                $fields_trigger = array(
                     'trigger-type',
                     'trigger-title',
                     'trigger-image',
@@ -192,9 +192,10 @@ class block
                     'trigger-links',
                     'trigger-content'
                 );
-                $fields_action	= array (
+                $fields_action	= array(
                     'action-type',
                     'action-web',
+                    'action-javascript',
                     'action-file',
                     'action-image'
                 );

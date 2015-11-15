@@ -604,3 +604,4 @@
 603     # Replace URLs
 604     # Old
 605     # New
+606     # Double quotes not allowed, use single quotes only

@@ -604,3 +604,4 @@
 603     # Reemplazar URLs
 604     # Anterior
 605     # Nueva
+606     # No se permiten comillas dobles, sólo pueden usarse comillas simples

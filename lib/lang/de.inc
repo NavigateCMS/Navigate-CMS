@@ -604,3 +604,4 @@
 603     # Ersetzen URLs
 604     # Alt
 605     # Neu
+606     # Anführungszeichen nicht erlaubt, verwenden Sie nur einfache Anführungszeichen
