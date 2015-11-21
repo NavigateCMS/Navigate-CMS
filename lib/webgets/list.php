@@ -871,8 +871,24 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
                 case 'thumbnail':
-                    $out = '<img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'"
-									 alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />';
+                    $thumbnail_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'];
+                    if(@$tag['attributes']['return']=='url')
+                        $out = $thumbnail_url;
+                    else
+                        $out = '<img src="'.$thumbnail_url.'" alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />';
+                    break;
+
+                case 'title':
+                    $f = new file();
+                    $f->load($item['file']);
+                    $out = $f->title[$current['lang']];
+                    break;
+
+                case 'alt':
+                case 'description':
+                    $f = new file();
+                    $f->load($item['file']);
+                    $out = $f->description[$current['lang']];
                     break;
 
                 default:
