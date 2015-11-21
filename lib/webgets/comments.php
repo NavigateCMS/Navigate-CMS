@@ -103,6 +103,7 @@ function nvweb_comments($vars=array())
         $element = $current['structure_elements'][0];
     }
 
+
 	switch(@$vars['mode'])
 	{
 		case 'process':
@@ -121,16 +122,24 @@ function nvweb_comments($vars=array())
                         // hash check passed
                         $comment->status = 0;
                         $comment->save();
-                        nvweb_after_body("js", $callback.'("'.t(555, "Item has been successfully published.").'");');
+
+                        $response = t(555, "Item has been successfully published.");
+
+                        if($callback=='inline')     $out = '<div class="comment-success">'.$response.'</div>';
+                        else                        nvweb_after_body("js", $callback.'("'.$response.'");');
                     }
                     else
                     {
-                        nvweb_after_body("js", $callback_error.'("'.t(344, "Security error").'");');
+                        $response = t(344, "Security error");
+                        if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
+                        else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
                     }
                 }
                 else
                 {
-                    nvweb_after_body("js", $callback_error.'("'.t(56, "Unexpected error").'");');
+                    $response = t(56, "Unexpected error");
+                    if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
+                    else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
                 }
             }
 
@@ -147,23 +156,28 @@ function nvweb_comments($vars=array())
                     {
                         // hash check passed
                         $comment->delete();
-                        nvweb_after_body("js", $callback.'("'.t(55, "Item successfully deleted").'");');
+                        $response = t(55, "Item successfully deleted");
+                        if($callback=='inline')     $out = '<div class="comment-success">'.$response.'</div>';
+                        else                        nvweb_after_body("js", $callback.'("'.$response.'");');
                     }
                     else
                     {
-                        nvweb_after_body("js", $callback_error.'("'.t(344, "Security error").'");');
+                        $response = t(344, "Security error");
+                        if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
+                        else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
                     }
                 }
                 else
                 {
-                    nvweb_after_body("js", $callback_error.'("'.t(56, "Unexpected error").'");');
+                    $response = t(56, "Unexpected error");
+                    if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
+                    else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
                 }
             }
 
 			if($_REQUEST['form-type']=='comment-reply' || @!empty($_POST[$vars['field-message']]))
 			{
 				// add comment
-
 				if(empty($vars['field-name']))      $vars['field-name'] = 'reply-name';
 				if(empty($vars['field-email']))     $vars['field-email'] = 'reply-email';
 				if(empty($vars['field-url']))       $vars['field-url'] = 'reply-url';
@@ -179,8 +193,11 @@ function nvweb_comments($vars=array())
 					empty($comment_message)
                 )
 				{
-					nvweb_after_body("js", $callback_error.'("'.$webgets[$webget]['translations']['please_dont_leave_any_field_blank'].'");');
-					return;
+                    $response = $webgets[$webget]['translations']['please_dont_leave_any_field_blank'];
+
+                    if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
+                    else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
+					return $out;
 				}
 
 				$status = -1; // new comment, not approved
@@ -217,8 +234,10 @@ function nvweb_comments($vars=array())
                 {
                     if(isset($ext_result['error']))
                     {
-                        nvweb_after_body("js", $callback_error.'("'.$ext_result['error'].'");');
-                        return;
+                        $response = $ext_result['error'];
+                        if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
+                        else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        return $out;
                     }
                 }
 
@@ -234,8 +253,22 @@ function nvweb_comments($vars=array())
                 // trigger the "new_comment" event through the extensions system
                 $events->trigger('comment', 'after_insert', array('comment' => $comment));
 
-				if(!empty($comment->id) && $status == -1)
-					nvweb_after_body("js", $callback.'("'.$webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'].'");');
+				if(!empty($comment->id))
+                {
+                    if($status == -1)
+                    {
+                        $response = $webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'];
+                        if($callback_error=='inline')   $out = '<div class="comment-success">'.$response.'</div>';
+                        else                            nvweb_after_body("js", $callback.'("'.$response.'");');
+                    }
+                    else
+                    {
+                        $response = $webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'];
+                        if($callback_error=='inline')   $out = '<div class="comment-success">'.$response.'</div>';
+                        else                            nvweb_after_body("js", $callback.'("'.$response.'");');
+                    }
+                }
+
 
                 $notify_addresses = $website->contact_emails;
 
@@ -296,7 +329,6 @@ function nvweb_comments($vars=array())
 
                 foreach($website->contact_emails as $contact_address)
                     @nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address);
-
 			}
 			break;
 
