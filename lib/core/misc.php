@@ -201,7 +201,7 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
  
 	$attribute_pattern = 
 		'@
-		(?P<name>\w+)							# attribute name
+		(?P<name>[a-zA-Z0-9.\-_]+)							# attribute name
 		\s*=\s*
 		(
 			(?P<quote>[\"\'])(?P<value_quoted>.*?)(?P=quote)	# a quoted value
