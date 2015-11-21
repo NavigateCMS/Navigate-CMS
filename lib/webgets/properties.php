@@ -429,7 +429,10 @@ function nvweb_properties_render($property, $vars)
             if(!empty($property->value))
             {
 			    $file = $DB->query_single('name', 'nv_files', ' id = '.protect($property->value).' AND website = '.$website->id);
-			    $out = '<a href="'.NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment">'.$file.'</a>';
+                if($vars['return']=='url')
+                    $out = NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment';
+                else
+			        $out = '<a href="'.NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment">'.$file.'</a>';
             }
 			break;
 			
