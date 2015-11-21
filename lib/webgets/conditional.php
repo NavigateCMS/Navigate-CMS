@@ -292,6 +292,37 @@ function nvweb_conditional($vars=array())
             }
             break;
 
+        case 'comments':
+            $DB->query('
+                SELECT COUNT(*) as total
+				  FROM nv_comments
+				 WHERE website = '.protect($website->id).'
+				   AND item = '.protect($item->id).'
+				   AND status = 0
+            ');
+            $rs = $DB->result();
+            $comments_count = $rs[0]->total + 0;
+
+            if(!isset($vars['allowed']))
+            {
+                if($vars['allowed']=='true' || $vars['allowed']=='1' || empty($vars['allowed']))
+                {
+                    // comments allowed to everybody (2) or registered users only (1)
+                    if( $item->comments_enabled_to == 2 ||
+                        ( $item->comments_enabled_to == 1 && !empty($webuser->id)))
+                        $out = $item_html;
+                }
+            }
+            else if(($comments_count >= intval($vars['min'])) && isset($vars['min']))
+            {
+                $out = $item_html;
+            }
+            else if(($comments_count <= intval($vars['max'])) && isset($vars['max']))
+            {
+                $out = $item_html;
+            }
+            break;
+
         default:
             // unknown nvlist_conditional, discard
             $out = '';
