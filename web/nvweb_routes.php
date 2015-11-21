@@ -20,7 +20,11 @@ function nvweb_self_url()
 	// decode %chars
 	$url = urldecode($url);
 
-    // remove last '/' in url if exists
+    // remove last '?' in url if exists
+    if(substr($url, -1)=='?')
+        $url = substr($url, 0, -1);
+
+	// remove last '/' in url if exists
     if(substr($url, -1)=='/')
         $url = substr($url, 0, -1);
 
