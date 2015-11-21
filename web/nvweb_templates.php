@@ -148,7 +148,7 @@ function nvweb_template_parse($template)
 	
 	// now parse autoclosing tags
 	$tags = nvweb_tags_extract($html, 'nv', true, true, 'UTF-8');
-	
+
 	foreach($tags as $tag)
 	{
 		$content = '';
@@ -229,6 +229,11 @@ function nvweb_template_parse($template)
                     {
                         // force loading dictionary for all elements in structure (for the current language)
                         nvweb_menu_load_dictionary();
+	                    if(!is_numeric($tag['attributes']['id']))
+	                    {
+		                    // maybe it's a property name instead of a category id
+		                    $tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
+	                    }
                         $content = $structure['dictionary'][$tag['attributes']['id']];
                     }
                     else if($tag['attributes']['type']=='item')
