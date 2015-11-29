@@ -208,6 +208,14 @@ function nvweb_properties($vars=array())
 			{
 				// TO DO
 			}
+            else
+            {
+                // unknown object type, maybe is an object managed by an extension?
+                if(!isset($properties[$current['type'].'-'.$current['object']->id]))
+					$properties[$current['type'].'-'.$current['object']->id] = property::load_properties($current['type'], $current['object']->template, $current['type'], $current['object']->id);
+
+                $current_properties = array_merge($current_properties, $properties[$current['type'].'-'.$current['object']->id]);
+            }
 
 			// now we find the property requested
 			if(!is_array($current_properties)) $current_properties = array();
@@ -484,13 +492,13 @@ function nvweb_properties_render($property, $vars)
             }
             else if($provider == 'youtube')
             {
-                $embed = file::embed('youtube', $reference);
+                $embed = file::embed('youtube', $reference, $add);
                 if(!empty($vars['part']) || $vars['part']!='embed')
                     $file->load_from_youtube($reference);
             }
             else if($provider == 'vimeo')
             {
-                $embed = file::embed('vimeo', $reference);
+                $embed = file::embed('vimeo', $reference, $add);
                 if(!empty($vars['part']) || $vars['part']!='embed')
                     $file->load_from_vimeo($reference);
             }
