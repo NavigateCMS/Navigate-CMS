@@ -237,6 +237,7 @@ function nvweb_route_parse($route="")
 	global $current;
 	global $session;
     global $theme;
+	global $events;
 	global $dictionary;
 
 	// node route types
@@ -436,6 +437,18 @@ function nvweb_route_parse($route="")
                     }
 					echo $out;
 					nvweb_clean_exit();
+				}
+				else
+				{
+					// path exists, but the object type is unknown
+					// maybe the path belongs to an extension?
+					$events->trigger(
+						'nvweb',
+						'routes',
+						array(
+							'path' => $rs[0]
+						)
+					);
 				}
 
 				$current['template'] = $current['object']->template;
