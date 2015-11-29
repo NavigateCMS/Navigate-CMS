@@ -246,13 +246,18 @@ try
 	{
         // close any previous output buffer
         // some PHP configurations open ALWAYS a buffer
-        while(ob_get_level() > 0)
-            ob_end_flush();
+		if(function_exists('ob_start'))
+		{
+	        while(ob_get_level() > 0)
+	            ob_end_flush();
 
-		// open gzip buffer
-		ob_start("ob_gzhandler");
-		echo $html;
-		ob_end_flush();
+			// open gzip buffer
+			ob_start("ob_gzhandler");
+			echo $html;
+			ob_end_flush();
+		}
+		else
+			echo $html;
 	}
 }
 catch(Exception $e)
