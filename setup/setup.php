@@ -1151,16 +1151,15 @@ function process()
 					}
 					else
 					{
+                        $create_database_privilege = false;
+                        $drop_database_privilege = false;
+
 						$stm = $db_test->query('SHOW DATABASES;');
 						$rs = $stm->fetchAll(PDO::FETCH_COLUMN, 'Database');
 						$rs = array_diff($rs, array('mysql', 'information_schema'));
-						
+
 						$stm = $db_test->query('SHOW PRIVILEGES;');
 						$privileges = $stm->fetchAll(PDO::FETCH_ASSOC);
-						
-						$create_database_privilege = false;
-                        $drop_database_privilege = false;
-
 
 						for($p=0; $p < count($privileges); $p++)
 						{
@@ -1188,7 +1187,7 @@ function process()
                             if(!$create_result)
                                 $create_database_privilege = false;
                         }
-						
+
 						$db_test = NULL;
 						
 						echo json_encode(array(
