@@ -432,6 +432,7 @@ class property
                     // if the property is not assigned to an element, we assume "item", or
                     // if the property is assigned to an element, we check it
                     // note: in this case, "element" is an alias of "item"
+
                     if( empty($element) ||
                         ($element == 'item' && empty($template_properties[$p]->element)) ||
                         ($element == 'item' && $template_properties[$p]->element=="element") ||

@@ -336,79 +336,82 @@ function websites_form($item)
             }
         ');
 
-	    $extra_actions[] = '<a href="#" action="navigate_replace_urls" onclick="javascript: navigate_replace_urls();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(603, 'Replace URLs').'</a>';
+	    if(!empty($item->id))
+	    {
+		    $extra_actions[] = '<a href="#" action="navigate_replace_urls" onclick="javascript: navigate_replace_urls();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(603, 'Replace URLs').'</a>';
 
-	    // try to find the OLD url for NAVIGATE_DOWNLOAD
-	    $old_url_guessed = "";
-	    $DB->query('
-			SELECT text
-			  FROM nv_webdictionary
-			  WHERE node_type = "item"
-			    AND website = '.$item->id.'
-			    AND text LIKE '.protect("%navigate_download.php%").'
-		    LIMIT 1
-	    ');
-	    $rs = $DB->result('text');
-	    preg_match("/<img .*?(?=src)src=\"([^\"]+)\"/si", $rs[0], $old_url_guessed);
-	    $old_url_guessed = @$old_url_guessed[1];
-	    $old_url_guessed = substr($old_url_guessed, 0, strpos($old_url_guessed, NAVIGATE_FOLDER));
+		    // try to find the OLD url for NAVIGATE_DOWNLOAD
+		    $old_url_guessed = "";
+		    $DB->query('
+				SELECT text
+				  FROM nv_webdictionary
+				  WHERE node_type = "item"
+				    AND website = '.$item->id.'
+				    AND text LIKE '.protect("%navigate_download.php%").'
+			    LIMIT 1
+		    ');
+		    $rs = $DB->result('text');
+		    preg_match("/<img .*?(?=src)src=\"([^\"]+)\"/si", $rs[0], $old_url_guessed);
+		    $old_url_guessed = @$old_url_guessed[1];
+		    $old_url_guessed = substr($old_url_guessed, 0, strpos($old_url_guessed, NAVIGATE_FOLDER));
 
-	    $layout->add_content('
-	        <div id="navigate_replace_urls_dialog" style="display: none;">
-	        	<div id="" class="navigate-form-row">
-					<label>'.t(604, "Old").'</label>
-					<input type="text" style=" width: 300px;" id="replace_urls_old" name="replace_urls_old" value="'.$old_url_guessed.'/" />
-				</div>
-				<div id="" class="navigate-form-row">
-					<label>'.t(605, "New").'</label>
-					<input type="text" style=" width: 300px;" id="replace_urls_new" name="replace_urls_new" value="'.NAVIGATE_PARENT.'/" />
-				</div>
-				<div class="navigate-form-row">
-					<div class="subcomment">'.t(523, "This action can NOT be undone.").'</div>
-				</div>
-	        </div>
-	    ');
+		    $layout->add_content('
+		        <div id="navigate_replace_urls_dialog" style="display: none;">
+		            <div id="" class="navigate-form-row">
+						<label>'.t(604, "Old").'</label>
+						<input type="text" style=" width: 300px;" id="replace_urls_old" name="replace_urls_old" value="'.$old_url_guessed.'/" />
+					</div>
+					<div id="" class="navigate-form-row">
+						<label>'.t(605, "New").'</label>
+						<input type="text" style=" width: 300px;" id="replace_urls_new" name="replace_urls_new" value="'.NAVIGATE_PARENT.'/" />
+					</div>
+					<div class="navigate-form-row">
+						<div class="subcomment">'.t(523, "This action can NOT be undone.").'</div>
+					</div>
+		        </div>
+		    ');
 
 
-	    $layout->add_script('
-            function navigate_replace_urls()
-            {
-                $("#navigate_replace_urls_dialog").dialog({
-                        resizable: true,
-                        height: 180,
-                        width: 510,
-                        modal: true,
-                        title: "'.t(603, 'Replace URLs').'",
-                        buttons: {
-                            "'.t(190, 'Ok').'": function()
-                            {
-                                $.post(
-                                    "?fid=websites&act=replace_urls",
-                                    {
-                                        old: $("#replace_urls_old").val(),
-                                        new: $("#replace_urls_new").val(),
-                                        website: '.$item->id.'
-                                    },
-                                    function(data)
-                                    {
-                                        if(data!="true")
-				  	                        navigate_notification("'.t(56, "Unexpected error.").'");
-				                        else
-				                        {
-				  	                        navigate_notification("'.t(53, "Data successfully saved").'");
-                                            $("#navigate_replace_urls_dialog").dialog("close");
-                                        }
-                                    }
-                                );
-                            },
-                            "'.t(58, 'Cancel').'": function()
-                            {
-                                $("#navigate_replace_urls_dialog").dialog("close");
-                            }
-                        }
-                });
-            }
-        ');
+		    $layout->add_script('
+	            function navigate_replace_urls()
+	            {
+	                $("#navigate_replace_urls_dialog").dialog({
+	                        resizable: true,
+	                        height: 180,
+	                        width: 510,
+	                        modal: true,
+	                        title: "'.t(603, 'Replace URLs').'",
+	                        buttons: {
+	                            "'.t(190, 'Ok').'": function()
+	                            {
+	                                $.post(
+	                                    "?fid=websites&act=replace_urls",
+	                                    {
+	                                        old: $("#replace_urls_old").val(),
+	                                        new: $("#replace_urls_new").val(),
+	                                        website: '.$item->id.'
+	                                    },
+	                                    function(data)
+	                                    {
+	                                        if(data!="true")
+					                            navigate_notification("'.t(56, "Unexpected error.").'");
+					                        else
+					                        {
+					                            navigate_notification("'.t(53, "Data successfully saved").'");
+	                                            $("#navigate_replace_urls_dialog").dialog("close");
+	                                        }
+	                                    }
+	                                );
+	                            },
+	                            "'.t(58, 'Cancel').'": function()
+	                            {
+	                                $("#navigate_replace_urls_dialog").dialog("close");
+	                            }
+	                        }
+	                });
+	            }
+	        ');
+	    }
 
 	    // we attach an event to "websites" which will be fired by navibars to put an extra button
 	    $events->add_actions(
