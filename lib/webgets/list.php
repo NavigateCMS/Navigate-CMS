@@ -900,7 +900,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
             }
             break;
 
-		case 'item':	// useful also for source="structure" (but some are nonsense (content, comments, etc)
+        case 'item':	// useful also for source="structure" (but some are nonsense: content, comments, etc)
 		default:
 			switch($tag['attributes']['value'])
 			{
@@ -915,10 +915,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 					break;
 
                 case 'author':
-                    if(!empty($current['object']->author))
+                    if(!empty($item->author))
                     {
                         $nu = new user();
-                        $nu->load($current['object']->author);
+                        $nu->load($item->author);
                         $out = $nu->username;
                         unset($nu);
                     }
