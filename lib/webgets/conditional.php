@@ -180,9 +180,9 @@ function nvweb_conditional($vars=array())
                     $out = '';
                 }
             }
-            else if(isset($vars['property_empty']))
+            else if(isset($vars['empty']) || isset($vars['property_empty']))
             {
-                if($vars['property_empty']=='true')
+                if(@$vars['empty']=='true' || @$vars['property_empty']=='true')
                 {
                     if(empty($property_value))
                     {
@@ -195,7 +195,7 @@ function nvweb_conditional($vars=array())
                         $out = '';
                     }
                 }
-                else if($vars['property_empty']=='false')
+                else if(@$vars['empty']=='false' || @$vars['property_empty']=='false')
                 {
                     if(!empty($property_value))
                     {
@@ -289,6 +289,32 @@ function nvweb_conditional($vars=array())
             if($current['lang'] == $vars['lang'])
             {
                 $out = $item_html;
+            }
+            break;
+
+        case 'gallery':
+            if($vars['empty']=='true')
+            {
+                if(empty($item->galleries[0]))
+                    $out = $item_html;
+            }
+            else if($vars['empty']=='false')
+            {
+                if(!empty($item->galleries[0]))
+                    $out = $item_html;
+            }
+            break;
+
+        case 'tags':
+            if($vars['empty']=='true')
+            {
+                if(empty($item->dictionary[$current['lang']]['tags']))
+                    $out = $item_html;
+            }
+            else if($vars['empty']=='false')
+            {
+                if(!empty($item->dictionary[$current['lang']]['tags']))
+                    $out = $item_html;
             }
             break;
 
