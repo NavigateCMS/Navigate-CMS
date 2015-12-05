@@ -41,6 +41,9 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 {
 	$error = !$user->authenticate($_POST['login-username'], $_POST['login-password']);
 
+	if(empty($error) && $user->blocked == '1')
+		$error = true;
+
 	if(!$error)
 	{
 		$_SESSION['APP_USER#'.APP_UNIQUE] = $user->id;
