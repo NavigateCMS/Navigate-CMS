@@ -341,6 +341,13 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                 var max_width = $(inst.selection.getContent({format: 'raw'})).width();
                 var max_height = $(inst.selection.getContent({format: 'raw'})).height();
 
+                // if we can have a real img object, check the dimensions applied right now
+                if($(inst.selection.getContent())[0])
+                {
+                    max_width = $(inst.selection.getContent())[0].width;
+                    max_height = $(inst.selection.getContent())[0].height;
+                }
+
                 // try an alternative method (Chrome browser work around)
                 if(max_width==0)
                     max_width = $($(inst.selection.getContent({format: 'raw'}))[0]).attr('width');
