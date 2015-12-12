@@ -181,7 +181,10 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));
 
-	$navibars->add_tab(t(29, 'Images'));	
+	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="http://scripts.incutio.com/xmlrpc/" target="_blank">Incutio XML-RPC Library for PHP v1.7.4</a><br />' ));
+
+	$navibars->add_tab(t(29, 'Images'));
 	
 	$navibars->add_tab_content_row(array(	'<label>'.t(29, 'Images').'</label>',
 											'<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">famfamfam Silk Icons 1.3 (Mark James)</a><br />'));
@@ -211,6 +214,5 @@ function about_layout()
 
     return $navibars->generate();
 }
-
 
 ?>
