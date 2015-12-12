@@ -1344,7 +1344,7 @@ function websites_form($item)
         }
 
         // common property: style
-	    
+
         // 1: get available style IDs
         $styles_values = array_keys((array)$theme->styles);
         if(!is_array($styles_values))
