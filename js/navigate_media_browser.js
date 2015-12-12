@@ -71,7 +71,7 @@ function navigate_media_browser()
             navigate_media_browser_reload();
 			
 			navigate_file_drop(
-                "#navigate_media_browser_items",
+                "#navigate-media-browser",
                 navigate_media_browser_parent,
                 {
                     uploadStarted: function(file)
