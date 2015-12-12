@@ -22,7 +22,8 @@ class navibars
 			if($search_form_pos !== false)
 			{
 				$actions[$search_form_pos] = array();
-				
+
+				// we need to suppose something here;
 				// if we are showing a list (act=0 || act=list), make an ajax call
 				// else redirect browser to the list and make the search after load
 				

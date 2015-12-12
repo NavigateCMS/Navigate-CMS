@@ -21,26 +21,6 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
-		/*
-		case 1:	// json data retrieval & operations
-			echo '  [
-						{ "data" : "A node", 
-						  "children" : 
-						  [ 
-						  	{ "data" : "Only child", 
-							  "state" : "closed",
-							  "attr" : { "id" : "5" }
-							} 
-						  ], 
-						  "state" : "open" },
-						"Ajax node"
-					]	';
-			
-			session_write_close();
-			exit;
-			break;
-		*/
-		
 		case 'load':
         case 'edit':
 		case 2: // edit/new form		
@@ -326,35 +306,39 @@ function structure_tree($hierarchy)
 	$columns[] = array(	'name'	=>	t(68, 'Status'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '8%', 	'align' => 'center', 	'options' => $permissions);
 	
 	$navitree->setColumns($columns);
-		
+
+	$layout->add_script('
+		function navitable_quicksearch(search)
+		{
+			$("#structure-'.$website->id.'").find("tr").each(function()
+			{
+				$(this).css("display", "");
+
+				if($(this).find("th").length > 0) return;
+
+				search = search.toLowerCase();
+
+				var td_string = $(this).find("td").eq(1).html().toLowerCase();
+
+				if(td_string.indexOf(search) < 0)
+					navigate_structure_hide_table_row(this);
+			});
+		};
+
+		function navigate_structure_hide_table_row(el)
+		{
+			$(el).css("display", "none");
+		}
+	');
+
 	if(!empty($_REQUEST['navigate-quicksearch']))
 	{
 		$navitree->setState('expanded');
 		$layout->add_script('
-			$("#structure").find("tr").each(function()
-			{	
-				if($(this).find("th").length > 0) return;
-				
-				var find_string = "'.$_REQUEST['navigate-quicksearch'].'";
-				find_string = find_string.toLowerCase();
-				
-				var td_string = $(this).find("td").eq(1).html().toLowerCase();
-				
-				if(td_string.indexOf(find_string) < 0)
-				{
-					navigate_structure_hide_table_row(this);
-				}
-			});
-			
-			function navigate_structure_hide_table_row(el)
-			{
-				setTimeout(function()
-				{
-					$(el).css("display", "none");	
-				}, 100);
-			}
+			$(window).on("load", function() { navitable_quicksearch("'.$_REQUEST['navigate-quicksearch'].'");});
 		');
 	}
+
 
 	$navitree->setData($hierarchy);
 
