@@ -10,7 +10,7 @@ class item
 	public $id;
 	public $association;
 	public $category;
-	public $embedding;
+	public $embedding;  // 0 => not embedded (own path), 1 => embedded (no path on item)
 	public $template;
     public $date_to_display;
 	public $date_published;
@@ -284,7 +284,7 @@ class item
                 ":website" => $website->id,
                 ":association" => (is_null($this->association)? 'free' : 'category'),
                 ":category" => (is_null($this->category)? '' : $this->category),
-                ":embedding" => (is_null($this->embedding)? '0' : '1'),
+                ":embedding" => (is_null($this->embedding)? '0' : $this->embedding),
                 ":template" => (is_null($this->template)? '' : $this->template),
                 ":date_to_display" => intval($this->date_to_display),
                 ":date_published" => intval($this->date_published),
@@ -293,8 +293,8 @@ class item
                 ":date_modified" => $this->date_modified,
                 ":author" => (is_null($this->author)? '' : $this->author),
                 ":galleries" => serialize($this->galleries),
-                ":comments_enabled_to" => $this->comments_enabled_to,
-                ":comments_moderator" => $this->comments_moderator,
+                ":comments_enabled_to" => is_null($this->comments_enabled_to)? "0" : $this->comments_enabled_to,
+                ":comments_moderator" => is_null($this->comments_moderator)? "" : $this->comments_moderator,
                 ":access" => (is_null($this->access)? 0 : $this->access),
                 ":groups" => $groups,
                 ":permission" => $this->permission,
@@ -514,6 +514,8 @@ class item
     public function link($lang)
     {
         $url = $this->paths[$lang];
+	    if(empty($url))
+		    $url = '/node/'.$this->id;
         $url = nvweb_prepare_link($url);
         return $url;
     }
