@@ -190,7 +190,7 @@ else if($_REQUEST['engine']=='pixlr')
 					$DB = new database();
 					$DB->connect();
 	
-					$file = new File();
+					$file = new file();
 					$file->load($_REQUEST['id']);
 					$file->refresh();			
 					$DB->disconnect();				
@@ -208,7 +208,6 @@ else if($_REQUEST['engine']=='pixlr')
 				core_terminate();
 			}
 			*/
-			
 		}
 	}
 	echo false;

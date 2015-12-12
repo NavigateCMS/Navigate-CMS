@@ -303,6 +303,20 @@ function nvweb_route_parse($route="")
 			nvweb_clean_exit();
 			break;
 
+		// webservice endpoint via XML-RPC calls
+		case 'xmlrpc':
+			$events->trigger(
+				'nvweb',
+				'xmlrpc',
+				array(
+					'route' => '/'.$route
+				)
+			);
+			// if no extension processes the call, use the integrated XML-RPC parser
+			nvweb_xmlrpc();
+			nvweb_clean_exit();
+			break;
+
         // empty route, we'll just load the homepage defined
         // for example: www.domain.com => www.domain.com/home (without redirection)
         case '':
@@ -721,4 +735,5 @@ function nvweb_clean_exit($url='')
 
 	exit;
 }
+
 ?>

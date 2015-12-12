@@ -21,6 +21,8 @@ require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/extensions/extension.class.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/idna_convert/idna_convert.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
+require_once(NAVIGATE_PATH.'/lib/external/php-ixr/IXR_Library.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
@@ -32,6 +34,7 @@ require_once(NAVIGATE_PATH.'/web/nvweb_routes.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_templates.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_objects.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_plugins.php');
+require_once(NAVIGATE_PATH.'/web/nvweb_xmlrpc.php');
 
 disable_magic_quotes();
 
