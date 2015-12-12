@@ -1327,12 +1327,24 @@ function websites_form($item)
                 array(
                     '<label>'.t(63, 'Languages').'</label>',
                     $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
-                )
+                ),
+	            "navigate-form-tab-theme-language_selector"
             );
+
+	        // hide languages selector if there isn't a multilanguage property
+		    $layout->add_script('
+				$(document).ready(function()
+			    {
+					if($("#navigate-form-tab-theme-language_selector").parent().find(".navigate-form-row[lang]").length < 1)
+					{
+						$("#navigate-form-tab-theme-language_selector").css("display", "none");
+					}
+			    });
+		    ');
         }
 
         // common property: style
-
+	    
         // 1: get available style IDs
         $styles_values = array_keys((array)$theme->styles);
         if(!is_array($styles_values))
