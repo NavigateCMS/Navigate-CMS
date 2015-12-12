@@ -772,7 +772,7 @@ class file
 	}
 
     // $item: file ID or file object
-	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95)
+	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95, $scale_up_force=false)
 	{
         if(is_numeric($item))
         {
@@ -860,11 +860,23 @@ class file
 				$handle->image_default_color = '#FFFFFF';
 				$handle->image_resize = true;
 				$handle->image_ratio_no_zoom_in = true;
-				$borderP= array(	floor( ($height - $size['height']) / 2 ),
-									ceil( ($width - $size['width']) / 2 ),
-									ceil( ($height - $size['height']) / 2 ),
-									floor( ($width - $size['width']) / 2 ));
+				$borderP = array(
+						floor( ($height - $size['height']) / 2 ),
+						ceil( ($width - $size['width']) / 2 ),
+						ceil( ($height - $size['height']) / 2 ),
+						floor( ($width - $size['width']) / 2 )
+				);
 				$handle->image_border = $borderP;
+
+				if($scale_up_force)
+				{
+					$handle->image_border = array();
+					if($height > width)
+						$handle->image_ratio_y = true;
+					else
+						$handle->image_ratio_x = true;
+				}
+
 				$handle->image_border_color = '#FFFFFF';
 				$handle->image_border_opacity = 0;
 			}
@@ -1113,6 +1125,7 @@ class file
     {
         global $website;
         global $user;
+	    global $DB;
 
         $file = NULL;
 
@@ -1129,6 +1142,15 @@ class file
                 $mime = file::getMime($target_name, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
 
             $target_name = rawurldecode($target_name);
+
+	        // check if the parent folder given is valid in the current website
+	        if($parent > 0)
+	        {
+		        $DB->query('SELECT id FROM nv_files WHERE website = '.$website->id.' AND id = '.$parent);
+		        $rs = $DB->result('id');
+		        if(empty($rs) || $rs[0] != $parent) // parent folder invalid, put file in the root folder
+			        $parent = 0;
+	        }
 
             $file = new file();
             $file->id = 0;
