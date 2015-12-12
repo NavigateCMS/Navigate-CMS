@@ -444,9 +444,24 @@ function extensions_options($extension, $saved=null)
         $website_languages_selector = $website->languages();
         $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
 
-        $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-            $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
-        ));
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(63, 'Languages').'</label>',
+                $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+            ),
+	        "navigate-form-language_selector"
+        );
+
+	    // hide languages selector if there isn't a multilanguage property
+	    $layout->add_script('
+			$(document).ready(function()
+		    {
+				if($("#navigate-content-tabs-1 .navigate-form-row[lang]").length < 1)
+				{
+					$("#navigate-form-language_selector").css("display", "none");
+				}
+		    });
+	    ');
     }
 
     foreach($extension->definition->options as $option)
