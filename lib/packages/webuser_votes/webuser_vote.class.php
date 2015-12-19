@@ -175,36 +175,49 @@ class webuser_vote
 		return $votes;
 	}	
 	
-	public static function update_object_votes($webuser, $object, $object_id, $value)
+	public static function update_object_votes($webuser, $object, $object_id, $value, $replace=false)
 	{
 		global $DB;
 		global $website;
-		
+		global $events;
+
+		$status = false;
 		$voted = false;
+		$webuser_vote_id = null;
 		
 		// user has voted in the past?
-		if($DB->query('SELECT * FROM nv_webuser_votes
-						WHERE webuser = '.intval($webuser).'
-						  AND object  = '.protect($object).'
-						  AND object_id = '.protect($object_id)))
+		if($DB->query('
+				SELECT *
+				  FROM nv_webuser_votes
+				 WHERE webuser = '.intval($webuser).'
+				   AND object  = '.protect($object).'
+				   AND object_id = '.protect($object_id)
+			)
+		)
 		{
 			$data = $DB->result();
 			$data = $data[0];
-			$voted = ($data->webuser == $webuser);			
+			$voted = ($data->webuser == $webuser);
+			$webuser_vote_id = $data->id;
 		}	
 
-		if($voted) // update
+		if($voted && $replace) // update
 		{
-			/*
-			$ok = $DB->execute(' UPDATE nv_webuser_votes
-									SET 
-										`value`	=  '.protect($value).',
-										date 	=  '.protect(core_time()).'
-								WHERE id = '.$data->id);
+			$ok = $DB->execute('
+ 				UPDATE nv_webuser_votes
+				   SET `value`	=  '.protect($value).',
+						date 	=  '.protect(core_time()).'
+				 WHERE id = '.$webuser_vote_id
+			);
 			
-			if(!$ok) throw new Exception($DB->get_last_error());
-			*/
-			return 'already_voted';
+			if(!$ok)
+				throw new Exception($DB->get_last_error());
+			else
+				$status = true;
+		}
+		else if($voted)
+		{
+			$status = 'already_voted';
 		}
 		else	// insert
 		{
@@ -215,12 +228,29 @@ class webuser_vote
 			$wv->object_id = $object_id;
 			$wv->value 	 = $value;
 			$wv->insert();
+			$webuser_vote_id = $wv->id;
+			$status = true;
 		}
 		
 		// now update the object score
-		webuser_vote::update_object_score($object, $object_id);
+		if($status === true)
+			webuser_vote::update_object_score($object, $object_id);
+
+		$events->trigger(
+			'webuser',
+			'vote',
+			array(
+				'status' => $status,
+				'webuser_vote_id' => $webuser_vote_id,
+				'webuser' => $webuser,
+				'object' => $object,
+				'object_id' => $object_id,
+				'value' => $value,
+				'replace' => $replace
+			)
+		);
 		
-		return true;		
+		return $status;
 	}
 	
 	public static function update_object_score($object, $object_id)
@@ -233,6 +263,9 @@ class webuser_vote
 			'structure'	=>	'nv_structure',
 			'product' => 'nv_products'
 		);
+
+		if(empty($table[$object]))
+			return false;
 		
 		$DB->execute('
 			UPDATE '.$table[$object].' 
@@ -268,15 +301,20 @@ class webuser_vote
 		if(empty($object) || empty($object_id))
 			return;
 		
-		$DB->execute('DELETE FROM nv_webuser_votes
-						    WHERE object = '.protect($object).'
-							  AND object_id = '.protect($object_id));
+		$DB->execute('
+			DELETE FROM nv_webuser_votes
+			      WHERE object = '.protect($object).'
+				    AND object_id = '.protect($object_id)
+		);
 							  
 		$table = array(
 			'item'	=>	'nv_items',
 			'structure'	=>	'nv_structure',
 			'product' => 'nv_products'
 		);
+
+		if(empty($table['object']))
+			return;
 		
 		$DB->execute('
 			UPDATE '.$table[$object].' 

@@ -36,7 +36,14 @@ function nvweb_votes_event($event, $html)
 			}
 			else
 			{
-				$status = webuser_vote::update_object_votes($webuser->id, $_POST['object'], $_POST['object_id'], $_POST['score']);
+				$status = webuser_vote::update_object_votes(
+					$webuser->id,
+					$_POST['object'],
+					$_POST['object_id'],
+					$_POST['score'],
+					true
+				);
+
 				if($status==='already_voted')
 					echo json_encode(array('error' => 'already_voted'));
 				else if($status===true)
