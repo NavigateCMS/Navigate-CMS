@@ -909,7 +909,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
 				case 'title':
-					$out = $item->dictionary[$current['lang']]['title'];
+                    $lang = $current['lang'];
+                    if(!empty($tag['attributes']['lang']))
+                        $lang = $tag['attributes']['lang'];
+					$out = $item->dictionary[$lang]['title'];
                     if(!empty($tag['attributes']['length']))
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $tag['attributes']['length']);
 					break;
