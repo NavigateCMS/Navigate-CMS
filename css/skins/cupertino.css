@@ -538,7 +538,8 @@ a.navigate-content-actions-selected
 	border: solid 1px #ccc;	
 }
 
-/* FORMULARIS */
+
+/* FORMS */
 
 .navigate-form-row
 {
@@ -683,6 +684,20 @@ a.navigate-content-actions-selected
 .ui-dialog-titlebar-close
 {
 	border: solid 1px transparent;
+}
+
+.navigate-form-row-property-action
+{
+	vertical-align: top;
+}
+
+.navigate-form-row  span.mceEditor
+{
+    display: block;
+    height: auto !important;
+    width: auto !important;
+	float: left;
+	overflow: auto;
 }
 
 

@@ -15,6 +15,7 @@ function run()
 	global $layout;
 	global $DB;
 	global $website;
+	global $theme;
 		
 	$out = '';
 	$item = new structure();
@@ -57,9 +58,10 @@ function run()
 				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
 		
 			$out = structure_form($item);
-			break;	
-			
-		case 3: // reorder
+			break;
+
+		case 3:
+		case "reorder":
 			$ok = structure::reorder($_REQUEST['parent'], $_REQUEST['children_order']);
 			echo json_encode($ok);
 			core_terminate();
@@ -73,7 +75,8 @@ function run()
 			core_terminate();
 			break;
 
-		case 4: // remove 
+		case 4:
+		case "remove":
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -91,7 +94,8 @@ function run()
 				}
 			}
 			break;
-			
+
+
 		case 95: // free path checking
 			
 			$path = $_REQUEST['path'];
@@ -139,6 +143,81 @@ function run()
 			echo json_encode(array('rows' => $rows, 'total' => $total));
 			core_terminate();					
 			break;
+
+		case "search_by_title":  // json search title request (for "copy from" properties dialog)
+			$DB->query('
+				SELECT node_id as id, text as label, text as value
+					  FROM nv_webdictionary
+					 WHERE node_type = "structure"
+					   AND subtype = "title"
+					   AND lang = '.protect($_REQUEST['lang']).'
+					   AND website = '.$website->id.'
+					   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+			      ORDER BY text ASC
+				     LIMIT 30',
+					'array'
+			);
+
+			echo json_encode($DB->result());
+
+			core_terminate();
+			break;
+
+		case "copy_from_template_zones":
+            // return template properties for a structure id
+			$item = new structure();
+			$item->load(intval($_REQUEST['id']));
+			$template = new template();
+			$template->load($item->template);
+
+			$zones = array();
+
+			for($ps=0; $ps < count($template->properties); $ps++)
+			{
+				// ignore non structure properties
+				if(!isset($template->properties[$ps]->element) || $template->properties[$ps]->element != 'structure')
+					continue;
+
+				// ignore non-textual properties
+				if(!in_array($template->properties[$ps]->type, array("text", "textarea", "rich_textarea")))
+					continue;
+
+				$title = $template->properties[$ps]->name;
+				if(!empty($theme))
+					$title = $theme->t($title);
+
+				$zones[] = array(
+		            'type' => 'property',
+		            'code' => $template->properties[$ps]->id,
+		            'title' => $title
+	            );
+			}
+
+			echo json_encode($zones);
+
+			core_terminate();
+			break;
+
+		case "raw_zone_content": // return raw item contents
+
+			if($_REQUEST['zone'] == 'property')
+			{
+				$DB->query('SELECT text
+							  FROM nv_webdictionary
+							 WHERE node_type = "property-structure"
+							   AND subtype = '.protect('property-'.$_REQUEST['section'].'-'.$_REQUEST['lang']).'
+							   AND lang = '.protect($_REQUEST['lang']).'
+							   AND website = '.$website->id.'
+							   AND node_id = '.protect($_REQUEST['node_id']),
+							'array');
+
+				$data = $DB->first();
+				echo $data['text'];
+			}
+
+			core_terminate();
+			break;
+
 			
 		case 'votes_reset':
 			webuser_vote::remove_object_votes('structure', intval($_REQUEST['id']));

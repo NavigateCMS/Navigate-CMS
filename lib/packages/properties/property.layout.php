@@ -47,6 +47,8 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
         $out[] = $property_rows;
 
         $out[] = '</div>';
+
+	    navigate_property_layout_scripts();
     }
 	
 	return implode("\n", $out);	
@@ -417,6 +419,7 @@ function navigate_property_layout_field($property, $object="")
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
 				$field[] = '<label>'.$property_name.' '.$language_info.'</label>';
 				$field[] = $naviforms->textarea("property-".$property->id."-".$lang, $property->value[$lang], 4, 48, $style);
+				$field[] = '<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;
@@ -453,6 +456,7 @@ function navigate_property_layout_field($property, $object="")
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                 $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
                 $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang], $width);
+	            $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
@@ -515,6 +519,7 @@ function navigate_property_layout_field($property, $object="")
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
                 $field[] = '<label>'.$property_name.'</label>';
                 $field[] = $naviforms->scriptarea("property-".$property->id, $property->value);
+	            $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
@@ -541,6 +546,7 @@ function navigate_property_layout_field($property, $object="")
                     $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                     $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
                     $field[] = $naviforms->scriptarea("property-".$property->id."-".$lang, $property->value[$lang]);
+	                $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	                if(!empty($property->helper))
 	                {
 		                $helper_text = $property->helper;
@@ -905,6 +911,77 @@ function navigate_property_layout_field($property, $object="")
 	}
 	
 	return implode("\n", $field);
+}
+
+function navigate_property_layout_scripts()
+{
+	global $layout;
+	global $website;
+
+	$ws_languages = $website->languages();
+	$default_language = array_keys($ws_languages);
+    $default_language = $default_language[0];
+
+	$naviforms = new naviforms();
+
+	$layout->add_content('
+		<div id="navigate-properties-copy-from-dialog" style=" display: none; ">
+			<div class="navigate-form-row">
+				<label>'.t(191, 'Source').'</label>
+				'.$naviforms->buttonset(
+					'navigate_properties_copy_from_dialog_type',
+					array(
+						'language'   => t(46, 'Language'),
+						'item'	    => t(180, 'Item'),
+						'structure'	=> t(16, 'Structure')
+					),
+					'0',
+					"navigate_properties_copy_from_change_origin(this);"
+				).'
+			</div>
+			<div class="navigate-form-row" style=" display: none; ">
+				<label>'.t(46, 'Language').'</label>
+				'.$naviforms->selectfield(
+					'navigate_properties_copy_from_language_selector',
+					array_keys($ws_languages),
+					array_values($ws_languages),
+					$default_language,
+					"navigate_properties_copy_from_change_language(this);"
+				).'
+			</div>
+
+			<div class="navigate-form-row" style=" display: none; ">
+				<label>'.t(67, 'Title').'</label>
+				'.$naviforms->textfield('navigate_properties_copy_from_item_title').'
+				<button id="navigate_properties_copy_from_item_reload"><i class="fa fa-repeat"></i></button>
+				'.$naviforms->hidden('navigate_properties_copy_from_item_id', '').'
+			</div>
+
+			<div class="navigate-form-row" style=" display: none; ">
+				<label>'.t(67, 'Title').'</label>
+				'.$naviforms->textfield('navigate_properties_copy_from_structure_title').'
+				<button id="navigate_properties_copy_from_structure_reload"><i class="fa fa-repeat"></i></button>
+				'.$naviforms->hidden('navigate_properties_copy_from_structure_id', '').'
+			</div>
+
+			<div class="navigate-form-row" style=" display: none; ">
+				<label>'.t(239, 'Section').'</label>
+				'.$naviforms->select_from_object_array('navigate_properties_copy_from_section', array(), 'code', 'name', '').'
+			</div>
+		</div>
+	');
+
+	$layout->add_script('
+		$.getScript("lib/packages/properties/properties.js", function()
+		{
+			$(".navigate-form-row-property-action").on("click", function(e)
+			{
+				e.stopPropagation();
+				e.preventDefault();
+				navigate_properties_copy_from_dialog(this);
+			});
+		});
+	');
 }
 
 ?>

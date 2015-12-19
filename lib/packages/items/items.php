@@ -11,10 +11,10 @@ require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	global $website;
+	global $theme;
 		
 	$out = '';
 	$item = new item();
@@ -389,27 +389,29 @@ function run()
 							  
 			core_terminate();		
 			break;
-			
+
+		case "search_by_title":
 		case 91: // json search title request (for "copy from" dialog)
 			$DB->query('SELECT node_id as id, text as label, text as value
 						  FROM nv_webdictionary
 						 WHERE node_type = "item"
 						   AND subtype = "title"
 						   AND lang = '.protect($_REQUEST['lang']).'
-						   AND website = '.$website->id.' 
+						   AND website = '.$website->id.'
 						   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
 				      ORDER BY text ASC
 					     LIMIT 30',
 						'array');
-						
+
 			echo json_encode($DB->result());
-							  
+
 			core_terminate();
 			break;
-			
-		case 92: // return raw item contents
-		
-			if(empty($_REQUEST['section'])) $_REQUEST['section'] = 'main';
+
+		case "raw_zone_content": // return raw item contents
+
+			if(empty($_REQUEST['section']))
+				$_REQUEST['section'] = 'main';
 		
 			if($_REQUEST['history']=='true')
 			{
@@ -423,7 +425,7 @@ function run()
 				$data = $DB->first();				
 				echo $data['text'];		
 			}
-			else
+			else if($_REQUEST['zone'] == 'section')
 			{		
 				$DB->query('SELECT text
 							  FROM nv_webdictionary
@@ -437,11 +439,26 @@ function run()
 				$data = $DB->first();				
 				echo $data['text'];
 			}
+			else if($_REQUEST['zone'] == 'property')
+			{
+				$DB->query('SELECT text
+							  FROM nv_webdictionary
+							 WHERE node_type = "property-item"
+							   AND subtype = '.protect('property-'.$_REQUEST['section'].'-'.$_REQUEST['lang']).'
+							   AND lang = '.protect($_REQUEST['lang']).'
+							   AND website = '.$website->id.'
+							   AND node_id = '.protect($_REQUEST['node_id']),
+							'array');
+
+				$data = $DB->first();
+				echo $data['text'];
+			}
 							  
 			core_terminate();
 			break;
-			
-		case 93: // return raw template content
+
+		// return raw template content
+		case 93:
 			$DB->query('SELECT file
 						  FROM nv_templates
 						 WHERE enabled = 1
@@ -456,20 +473,50 @@ function run()
 			core_terminate();
 			break;	
 			
-		case 94:
-        case "template_sections":
-            // return template sections for a content id
+		case "copy_from_template_zones":
+            // return template sections and (textarea) properties for a content id
 			$item = new item();
 			$item->load(intval($_REQUEST['id']));
 			$template = $item->load_template();
 
+			$zones = array();
             for($ts=0; $ts < count($template->sections); $ts++)
             {
-                if($template->sections[$ts]['name']=='#main#')
-                    $template->sections[$ts]['name'] = t(238, 'Main content');
+	            $title = $template->sections[$ts]['name'];
+				if(!empty($theme))
+					$title = $theme->t($title);
+
+	            if($title == '#main#')
+		            $title = t(238, 'Main content');
+	            $zones[] = array(
+		            'type' => 'section',
+		            'code' => $template->sections[$ts]['code'],
+		            'title' => $title
+	            );
             }
 
-			echo json_encode($template->sections);
+			for($ps=0; $ps < count($template->properties); $ps++)
+			{
+				// ignore structure properties
+				if(isset($template->properties[$ps]->element) && $template->properties[$ps]->element != 'item')
+					continue;
+
+				// ignore non-textual properties
+				if(!in_array($template->properties[$ps]->type, array("text", "textarea", "rich_textarea")))
+					continue;
+
+				$title = $template->properties[$ps]->name;
+				if(!empty($theme))
+					$title = $theme->t($title);
+
+				$zones[] = array(
+		            'type' => 'property',
+		            'code' => $template->properties[$ps]->id,
+		            'title' => $title
+	            );
+			}
+
+			echo json_encode($zones);
 							  
 			core_terminate();
 			break;						
@@ -930,7 +977,7 @@ function items_form($item)
         )
     );
 
-	// Languages
+	// languages
     $ws_languages = $website->languages();
 
 	$navibars->form('', 'fid=items&act=edit&id='.$item->id);
@@ -1417,7 +1464,9 @@ function items_form($item)
                             (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>',
                             '<br />'
-                        )
+                        ),
+						'',
+						'lang="'.$lang.'"'
                     );
 				}
 				else if($section['editor']=='html')	// html source code (codemirror)
@@ -1432,7 +1481,9 @@ function items_form($item)
                             (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>',
                             '<br />'
-                        )
+                        ),
+						'',
+						'lang="'.$lang.'"'
                     );
 				}
 				else	// plain textarea (raw)
@@ -1447,7 +1498,9 @@ function items_form($item)
                             '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
                             (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>'
-                        )
+                        ),
+						'',
+						'lang="'.$lang.'"'
                     );
 				}
 			}
@@ -1513,7 +1566,7 @@ function items_form($item)
 					<label>'.t(191, 'Source').'</label>
 					'.$naviforms->buttonset(	'navigate_items_copy_from_type', 
 												array( 'language' => t(46, 'Language'),
-													   'template' => t(79, 'Template'),
+													   //'template' => t(79, 'Template'),
 													   'item'	  => t(180, 'Item')
 													 ),
 												'0',
@@ -2091,11 +2144,9 @@ function items_form($item)
 								interactive: true
 							}
 						});
-
-					});					
-			
+					}
+				);
 			');
-			
 		}		
 
         $nvweb_preview = NAVIGATE_PARENT.NAVIGATE_FOLDER.'/web/nvweb.php?preview=true&wid='.$website->id.'&route=';
