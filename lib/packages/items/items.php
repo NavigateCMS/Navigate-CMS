@@ -1378,9 +1378,12 @@ function items_form($item)
 	{									
 		$navibars->add_tab(t(9, "Content"));	// tab #2
 		
-		$navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-												$naviforms->buttonset('language_selector', $ws_languages, $website->languages_list[0], "navigate_items_select_language(this);")
-											));	
+		$navibars->add_tab_content_row(
+			array(
+				'<label>'.t(63, 'Languages').'</label>',
+				$naviforms->buttonset('language_selector', $ws_languages, $website->languages_list[0], "navigate_items_select_language(this);")
+			)
+		);
 		
 		$template = $item->load_template();
 
@@ -1390,9 +1393,12 @@ function items_form($item)
 		{
 			$navibars->add_tab_content('<div class="language_fields" id="language_fields_'.$lang.'" style=" display: none; ">');
 			
-			$navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-													$naviforms->textfield('title-'.$lang, @$item->dictionary[$lang]['title'])
-												));		
+			$navibars->add_tab_content_row(
+				array(
+					'<label>'.t(67, 'Title').'</label>',
+					$naviforms->textfield('title-'.$lang, @$item->dictionary[$lang]['title'])
+				)
+			);
 
 			$open_live_site = '';												
 			if(!empty($item->paths[$lang]))
@@ -1508,19 +1514,38 @@ function items_form($item)
 			if($template->tags==1 || $template->tags=='true')
 			{
 				$tags_copy_select = '';
+				$tags_copy_select_pre = '';
+				$tags_copy_select_after = '';
 				if(count($website->languages_list) > 1)
-                    $tags_copy_select = $naviforms->selectfield('', array_keys($ws_languages), array_values($ws_languages), '', '', false, '', ' width: 150px; ', false);
-					//$tags_copy_select = $naviforms->select_from_object_array('', $website->languages_list, 'code', 'name', '', ' width: auto; ', array($lang));
-				
+				{
+                    $tags_copy_select = $naviforms->selectfield(
+		                    '',
+		                    array_keys($ws_languages),
+		                    array_values($ws_languages),
+		                    '',
+		                    '',
+		                    false,
+		                    '',
+		                    ' width: 150px; ',
+		                    false
+                    );
+
+					$tags_copy_select = '
+						<div style=" position: relative; margin-left: 600px; margin-top: -57px; width: 200px; height: 68px; ">
+							<a href="javascript: void();" class="uibutton" title="'.t(189, "Copy from").'..."
+							   onclick=" $(\'#tags-'.$lang.'\').importTags($(\'#tags-\' + $(this).next().val()).val()); $(\'#tags-'.$lang.'\').removeTag();">
+								<img src="img/icons/silk/page_white_copy.png" width="16" height="16" align="absmiddle" style=" cursor: pointer; " />
+							</a>&nbsp;'.
+							$tags_copy_select.'
+						</div>
+					';
+				}
+
 				$navibars->add_tab_content_row(
                     array(
                         '<label>'.t(265, 'Tags').'</label>',
                         $naviforms->textfield('tags-'.$lang, @$item->dictionary[$lang]['tags']),		// foo,bar,baz
-                        (empty($tags_copy_select)? '' : '<div style=" position: relative; margin-left: 600px; margin-top: -57px; width: 200px; height: 68px; ">'),
-                        (empty($tags_copy_select)? '' : '<img src="img/icons/misc/locale.png" width="16" height="16" align="absmiddle"
-                              style=" cursor: pointer; " onclick=" $(\'#tags-'.$lang.'\').importTags($(\'#tags-\' + $(this).next().val()).val()); $(\'#tags-'.$lang.'\').removeTag();" />'),
-                        $tags_copy_select,
-                        (empty($tags_copy_select)? '' : '</div>')
+                        $tags_copy_select
                     )
                 );
 			}
@@ -1637,7 +1662,7 @@ function items_form($item)
 			</div>
 		');
 		
-		// script will be binded to onload event at the end of this php function (after getScript is done)
+		// script will be bound to onload event at the end of this php function (after getScript is done)
 		$onload_language = $_REQUEST['tab_language'];
 		if(empty($onload_language))
 			$onload_language = $website->languages_list[0];
@@ -1730,7 +1755,6 @@ function items_form($item)
 			// script#6
 			
 			$layout->add_script('
-
 				$("#items-gallery-elements .navigate-droppable").live("dblclick", function()
 				{
 					var id = $(this).attr("id");
@@ -1777,7 +1801,6 @@ function items_form($item)
 						height: 300
 					});	
 				});
-			
 			');
 						
 			$captions_form = '
