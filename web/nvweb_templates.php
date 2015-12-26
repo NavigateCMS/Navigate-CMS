@@ -818,7 +818,7 @@ function nvweb_country_language()
 		{
 			foreach($langs as $language_browser => $val)
 			{
-				foreach($website->languages_list as $language_available)
+				foreach($website->languages_published as $language_available)
 				{
 					if($language_available == $language_browser)
 					{

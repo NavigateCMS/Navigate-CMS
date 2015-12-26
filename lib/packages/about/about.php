@@ -77,7 +77,7 @@ function about_layout()
 											'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.20</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.9.0</a><br />' ));
+											'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.11.0</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.12</a><br />' ));

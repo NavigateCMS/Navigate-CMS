@@ -544,7 +544,7 @@ class navitable
                                         complete: function()
                                         {
                                             // reload table (with or without success)
-                                            $("#'.$this->id.'").trigger("reloadGrid");
+                                            $("#'.$this->id.'").trigger("reloadGrid", [{current:true}]);
                                         },
                                         type: "post",
                                         url: "'.$this->delete_url.'"
@@ -793,7 +793,7 @@ class navitable
                                                 if(result=='true')
                                                 {
                                                     $(grid_note).fadeOut();
-                                                    $('#".$this->id."').trigger('reloadGrid');
+                                                    $('#".$this->id."').trigger('reloadGrid', [{current:true}]);
                                                 }
                                             }
                                         );
@@ -815,7 +815,7 @@ class navitable
                                             {
                                                 $(container).parent().remove();
                                                 $('#' + row_id).find('.grid_note_edit').trigger('click');
-                                                $('#".$this->id."').trigger('reloadGrid');
+                                                $('#".$this->id."').trigger('reloadGrid', [{current:true}]);
                                             }
                                         });
                                     });
