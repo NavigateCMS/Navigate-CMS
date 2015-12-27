@@ -26,22 +26,17 @@ class language
 		$this->code = $data->code;
 		$this->name = $data->name;
 		$this->file = $data->nv_dictionary;
-			
-		$langdata = @file_get_contents(NAVIGATE_PATH.'/'.$this->file);
-		$langdata = explode("\n", $langdata);
-		
-		if(empty($langdata))
-		{
-			// failsafe language
-			$this->lang = array(); 
+		$this->lang = array();
+
+		$xliff = simplexml_load_file(NAVIGATE_PATH.'/'.$this->file);
+
+		if(empty($xliff))   // just use the default language (English)
 			return;
-		}
-		
-		foreach($langdata as $langline)
+
+		foreach($xliff->file[0]->unit as $unit)
 		{
-			$langline = explode('#', $langline, 2);
-			if(empty($langline[1])) continue;
-			$this->lang[trim($langline[0])] = trim($langline[1]);
+			$lid = intval($unit->attributes()->id);
+			$this->lang[$lid] = (string)$unit->segment->target;
 		}
 	}
 

@@ -1,0 +1,3647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-US" trgLang="ca-ES">
+	<file>
+		<unit id="0">
+			<segment>
+				<source>Navigate</source>
+				<target>Navigate</target>
+			</segment>
+		</unit>
+		<unit id="1">
+			<segment>
+				<source>User</source>
+				<target>Usuari</target>
+			</segment>
+		</unit>
+		<unit id="2">
+			<segment>
+				<source>Password</source>
+				<target>Contrassenya</target>
+			</segment>
+		</unit>
+		<unit id="3">
+			<segment>
+				<source>Enter</source>
+				<target>Accedir</target>
+			</segment>
+		</unit>
+		<unit id="4">
+			<segment>
+				<source>Login incorrect.</source>
+				<target>Dades d'identificació incorrectes.</target>
+			</segment>
+		</unit>
+		<unit id="5">
+			<segment>
+				<source>Log out</source>
+				<target>Tancar sessió</target>
+			</segment>
+		</unit>
+		<unit id="6">
+			<segment>
+				<source>Loading</source>
+				<target>Carregant</target>
+			</segment>
+		</unit>
+		<unit id="7">
+			<segment>
+				<source>Configuration</source>
+				<target>Configuració</target>
+			</segment>
+		</unit>
+		<unit id="8">
+			<segment>
+				<source>Web</source>
+				<target>Web</target>
+			</segment>
+		</unit>
+		<unit id="9">
+			<segment>
+				<source>Content</source>
+				<target>Contingut</target>
+			</segment>
+		</unit>
+		<unit id="10">
+			<segment>
+				<source>Shop</source>
+				<target>Botiga</target>
+			</segment>
+		</unit>
+		<unit id="11">
+			<segment>
+				<source>Multimedia</source>
+				<target>Multimedia</target>
+			</segment>
+		</unit>
+		<unit id="12">
+			<segment>
+				<source>Tools</source>
+				<target>Eines</target>
+			</segment>
+		</unit>
+		<unit id="13">
+			<segment>
+				<source>/*/</source>
+				<target>phpMyAdmin</target>
+			</segment>
+		</unit>
+		<unit id="14">
+			<segment>
+				<source>Preferences</source>
+				<target>Preferències</target>
+			</segment>
+		</unit>
+		<unit id="15">
+			<segment>
+				<source>Users</source>
+				<target>Usuaris</target>
+			</segment>
+		</unit>
+		<unit id="16">
+			<segment>
+				<source>Structure</source>
+				<target>Estructura</target>
+			</segment>
+		</unit>
+		<unit id="17">
+			<segment>
+				<source>Permissions</source>
+				<target>Permisos</target>
+			</segment>
+		</unit>
+		<unit id="18">
+			<segment>
+				<source>Home</source>
+				<target>Inici</target>
+			</segment>
+		</unit>
+		<unit id="19">
+			<segment>
+				<source>Structure</source>
+				<target>Estructura</target>
+			</segment>
+		</unit>
+		<unit id="20">
+			<segment>
+				<source>Templates</source>
+				<target>Plantilles</target>
+			</segment>
+		</unit>
+		<unit id="21">
+			<segment>
+				<source>Dictionary</source>
+				<target>Diccionari</target>
+			</segment>
+		</unit>
+		<unit id="22">
+			<segment>
+				<source>Elements</source>
+				<target>Elements</target>
+			</segment>
+		</unit>
+		<unit id="23">
+			<segment>
+				<source>Blocks</source>
+				<target>Blocs</target>
+			</segment>
+		</unit>
+		<unit id="24">
+			<segment>
+				<source>Web users</source>
+				<target>Usuaris web</target>
+			</segment>
+		</unit>
+		<unit id="25">
+			<segment>
+				<source>Products</source>
+				<target>Productes</target>
+			</segment>
+		</unit>
+		<unit id="26">
+			<segment>
+				<source>Orders</source>
+				<target>Comandes</target>
+			</segment>
+		</unit>
+		<unit id="27">
+			<segment>
+				<source>Rates</source>
+				<target>Tarifes</target>
+			</segment>
+		</unit>
+		<unit id="28">
+			<segment>
+				<source>Shipping</source>
+				<target>Ports</target>
+			</segment>
+		</unit>
+		<unit id="29">
+			<segment>
+				<source>Images</source>
+				<target>Imatges</target>
+			</segment>
+		</unit>
+		<unit id="30">
+			<segment>
+				<source>Videos</source>
+				<target>Vídeos</target>
+			</segment>
+		</unit>
+		<unit id="31">
+			<segment>
+				<source>Audio</source>
+				<target>Audio</target>
+			</segment>
+		</unit>
+		<unit id="32">
+			<segment>
+				<source>Documents</source>
+				<target>Documents</target>
+			</segment>
+		</unit>
+		<unit id="33">
+			<segment>
+				<source>Newsletters</source>
+				<target>Butlletins</target>
+			</segment>
+		</unit>
+		<unit id="34">
+			<segment>
+				<source>Save</source>
+				<target>Guardar</target>
+			</segment>
+		</unit>
+		<unit id="35">
+			<segment>
+				<source>Delete</source>
+				<target>Esborrar</target>
+			</segment>
+		</unit>
+		<unit id="36">
+			<segment>
+				<source>Media</source>
+				<target>Media</target>
+			</segment>
+		</unit>
+		<unit id="37">
+			<segment>
+				<source>/*/</source>
+				<target>NaviM+</target>
+			</segment>
+		</unit>
+		<unit id="38">
+			<segment>
+				<source>Create</source>
+				<target>Crear</target>
+			</segment>
+		</unit>
+		<unit id="39">
+			<segment>
+				<source>List</source>
+				<target>Llistar</target>
+			</segment>
+		</unit>
+		<unit id="40">
+			<segment>
+				<source>History</source>
+				<target>Historial</target>
+			</segment>
+		</unit>
+		<unit id="41">
+			<segment>
+				<source>Search</source>
+				<target>Cercar</target>
+			</segment>
+		</unit>
+		<unit id="42">
+			<segment>
+				<source>Ready</source>
+				<target>Preparat</target>
+			</segment>
+		</unit>
+		<unit id="43">
+			<segment>
+				<source>Main</source>
+				<target>Principal</target>
+			</segment>
+		</unit>
+		<unit id="44">
+			<segment>
+				<source>E-Mail</source>
+				<target>E-Mail</target>
+			</segment>
+		</unit>
+		<unit id="45">
+			<segment>
+				<source>Profile</source>
+				<target>Perfil</target>
+			</segment>
+		</unit>
+		<unit id="46">
+			<segment>
+				<source>Language</source>
+				<target>Idioma</target>
+			</segment>
+		</unit>
+		<unit id="47">
+			<segment>
+				<source>Blocked</source>
+				<target>Bloquejat</target>
+			</segment>
+		</unit>
+		<unit id="48">
+			<segment>
+				<source>Leave empty to keep current value</source>
+				<target>Deixar buit per mantenir el valor actual</target>
+			</segment>
+		</unit>
+		<unit id="49">
+			<segment>
+				<source>Decimal separator</source>
+				<target>Separador decimal</target>
+			</segment>
+		</unit>
+		<unit id="50">
+			<segment>
+				<source>Date format</source>
+				<target>Format de data</target>
+			</segment>
+		</unit>
+		<unit id="51">
+			<segment>
+				<source>List</source>
+				<target>Llista</target>
+			</segment>
+		</unit>
+		<unit id="52">
+			<segment>
+				<source>(new)</source>
+				<target>(nou)</target>
+			</segment>
+		</unit>
+		<unit id="53">
+			<segment>
+				<source>Data successfully saved</source>
+				<target>Dades guardades correctament</target>
+			</segment>
+		</unit>
+		<unit id="54">
+			<segment>
+				<source>Text</source>
+				<target>Text</target>
+			</segment>
+		</unit>
+		<unit id="55">
+			<segment>
+				<source>Item successfully deleted</source>
+				<target>Element esborrat correctament</target>
+			</segment>
+		</unit>
+		<unit id="56">
+			<segment>
+				<source>Unexpected error</source>
+				<target>Error inesperat</target>
+			</segment>
+		</unit>
+		<unit id="57">
+			<segment>
+				<source>Do you really want to delete the item?</source>
+				<target>Realment vol esborrar l'element?</target>
+			</segment>
+		</unit>
+		<unit id="58">
+			<segment>
+				<source>Cancel</source>
+				<target>Cancel·lar</target>
+			</segment>
+		</unit>
+		<unit id="59">
+			<segment>
+				<source>Confirmation</source>
+				<target>Confirmació</target>
+			</segment>
+		</unit>
+		<unit id="60">
+			<segment>
+				<source>Do you really want to delete the selected items?</source>
+				<target>Realmente vol esborrar els elements escollits?</target>
+			</segment>
+		</unit>
+		<unit id="61">
+			<segment>
+				<source>Tree</source>
+				<target>Arbre</target>
+			</segment>
+		</unit>
+		<unit id="62">
+			<segment>
+				<source>Statistics</source>
+				<target>Estadístiques</target>
+			</segment>
+		</unit>
+		<unit id="63">
+			<segment>
+				<source>Languages</source>
+				<target>Idiomes</target>
+			</segment>
+		</unit>
+		<unit id="64">
+			<segment>
+				<source>Published</source>
+				<target>Publicat</target>
+			</segment>
+		</unit>
+		<unit id="65">
+			<segment>
+				<source>Enabled</source>
+				<target>Activat</target>
+			</segment>
+		</unit>
+		<unit id="66">
+			<segment>
+				<source>Priority</source>
+				<target>Prioritat</target>
+			</segment>
+		</unit>
+		<unit id="67">
+			<segment>
+				<source>Title</source>
+				<target>Títol</target>
+			</segment>
+		</unit>
+		<unit id="68">
+			<segment>
+				<source>Status</source>
+				<target>Estat</target>
+			</segment>
+		</unit>
+		<unit id="69">
+			<segment>
+				<source>Published</source>
+				<target>Publicada</target>
+			</segment>
+		</unit>
+		<unit id="70">
+			<segment>
+				<source>Private</source>
+				<target>Privada</target>
+			</segment>
+		</unit>
+		<unit id="71">
+			<segment>
+				<source>Closed</source>
+				<target>Tancada</target>
+			</segment>
+		</unit>
+		<unit id="72">
+			<segment>
+				<source>Drag the rows to assign priorities</source>
+				<target>Arrossegui les files per determinar la prioritat</target>
+			</segment>
+		</unit>
+		<unit id="73">
+			<segment>
+				<source>Children</source>
+				<target>Fills</target>
+			</segment>
+		</unit>
+		<unit id="74">
+			<segment>
+				<source>Paths</source>
+				<target>Rutes</target>
+			</segment>
+		</unit>
+		<unit id="75">
+			<segment>
+				<source>Path</source>
+				<target>Ruta</target>
+			</segment>
+		</unit>
+		<unit id="76">
+			<segment>
+				<source>Visible</source>
+				<target>Visible</target>
+			</segment>
+		</unit>
+		<unit id="77">
+			<segment>
+				<source>Properties</source>
+				<target>Propietats</target>
+			</segment>
+		</unit>
+		<unit id="78">
+			<segment>
+				<source>Category</source>
+				<target>Categoria</target>
+			</segment>
+		</unit>
+		<unit id="79">
+			<segment>
+				<source>Template</source>
+				<target>Plantilla</target>
+			</segment>
+		</unit>
+		<unit id="80">
+			<segment>
+				<source>Permission</source>
+				<target>Permís</target>
+			</segment>
+		</unit>
+		<unit id="81">
+			<segment>
+				<source>Hidden</source>
+				<target>Amagada</target>
+			</segment>
+		</unit>
+		<unit id="82">
+			<segment>
+				<source>File</source>
+				<target>Fitxer</target>
+			</segment>
+		</unit>
+		<unit id="83">
+			<segment>
+				<source>Leave blank to disable</source>
+				<target>Deixar en blanc per a inhabilitar</target>
+			</segment>
+		</unit>
+		<unit id="84">
+			<segment>
+				<source>Parent</source>
+				<target>Pare</target>
+			</segment>
+		</unit>
+		<unit id="85">
+			<segment>
+				<source>Publish date</source>
+				<target>Data de publicació</target>
+			</segment>
+		</unit>
+		<unit id="86">
+			<segment>
+				<source>Date</source>
+				<target>Data</target>
+			</segment>
+		</unit>
+		<unit id="87">
+			<segment>
+				<source>Association</source>
+				<target>Associació</target>
+			</segment>
+		</unit>
+		<unit id="88">
+			<segment>
+				<source>Galleries</source>
+				<target>Galeries</target>
+			</segment>
+		</unit>
+		<unit id="89">
+			<segment>
+				<source>Files</source>
+				<target>Fitxers</target>
+			</segment>
+		</unit>
+		<unit id="90">
+			<segment>
+				<source>Unpublish date</source>
+				<target>Data de despublicació</target>
+			</segment>
+		</unit>
+		<unit id="91">
+			<segment>
+				<source>Day of month</source>
+				<target>Dia del mes</target>
+			</segment>
+		</unit>
+		<unit id="92">
+			<segment>
+				<source>Close</source>
+				<target>Tancar</target>
+			</segment>
+		</unit>
+		<unit id="93">
+			<segment>
+				<source>Hour</source>
+				<target>Hora</target>
+			</segment>
+		</unit>
+		<unit id="94">
+			<segment>
+				<source>Minute</source>
+				<target>Minut</target>
+			</segment>
+		</unit>
+		<unit id="95">
+			<segment>
+				<source>Month</source>
+				<target>Mes</target>
+			</segment>
+		</unit>
+		<unit id="96">
+			<segment>
+				<source>Second</source>
+				<target>Segon</target>
+			</segment>
+		</unit>
+		<unit id="97">
+			<segment>
+				<source>Timezone</source>
+				<target>Zona horària</target>
+			</segment>
+		</unit>
+		<unit id="98">
+			<segment>
+				<source>Select a date</source>
+				<target>Esculli una data</target>
+			</segment>
+		</unit>
+		<unit id="99">
+			<segment>
+				<source>Year</source>
+				<target>Any</target>
+			</segment>
+		</unit>
+		<unit id="100">
+			<segment>
+				<source>Free</source>
+				<target>Lliure</target>
+			</segment>
+		</unit>
+		<unit id="101">
+			<segment>
+				<source>January</source>
+				<target>Gener</target>
+			</segment>
+		</unit>
+		<unit id="102">
+			<segment>
+				<source>February</source>
+				<target>Febrer</target>
+			</segment>
+		</unit>
+		<unit id="103">
+			<segment>
+				<source>March</source>
+				<target>Març</target>
+			</segment>
+		</unit>
+		<unit id="104">
+			<segment>
+				<source>April</source>
+				<target>Abril</target>
+			</segment>
+		</unit>
+		<unit id="105">
+			<segment>
+				<source>May</source>
+				<target>Maig</target>
+			</segment>
+		</unit>
+		<unit id="106">
+			<segment>
+				<source>June</source>
+				<target>Juny</target>
+			</segment>
+		</unit>
+		<unit id="107">
+			<segment>
+				<source>July</source>
+				<target>Juliol</target>
+			</segment>
+		</unit>
+		<unit id="108">
+			<segment>
+				<source>August</source>
+				<target>Agost</target>
+			</segment>
+		</unit>
+		<unit id="109">
+			<segment>
+				<source>September</source>
+				<target>Setembre</target>
+			</segment>
+		</unit>
+		<unit id="110">
+			<segment>
+				<source>October</source>
+				<target>Octubre</target>
+			</segment>
+		</unit>
+		<unit id="111">
+			<segment>
+				<source>November</source>
+				<target>Novembre</target>
+			</segment>
+		</unit>
+		<unit id="112">
+			<segment>
+				<source>December</source>
+				<target>Desembre</target>
+			</segment>
+		</unit>
+		<unit id="113">
+			<segment>
+				<source>Jan</source>
+				<target>Gen</target>
+			</segment>
+		</unit>
+		<unit id="114">
+			<segment>
+				<source>Feb</source>
+				<target>Feb</target>
+			</segment>
+		</unit>
+		<unit id="115">
+			<segment>
+				<source>Mar</source>
+				<target>Mar</target>
+			</segment>
+		</unit>
+		<unit id="116">
+			<segment>
+				<source>Apr</source>
+				<target>Abr</target>
+			</segment>
+		</unit>
+		<unit id="117">
+			<segment>
+				<source>May</source>
+				<target>Mai</target>
+			</segment>
+		</unit>
+		<unit id="118">
+			<segment>
+				<source>Jun</source>
+				<target>Jun</target>
+			</segment>
+		</unit>
+		<unit id="119">
+			<segment>
+				<source>Jul</source>
+				<target>Jul</target>
+			</segment>
+		</unit>
+		<unit id="120">
+			<segment>
+				<source>Aug</source>
+				<target>Ago</target>
+			</segment>
+		</unit>
+		<unit id="121">
+			<segment>
+				<source>Sep</source>
+				<target>Set</target>
+			</segment>
+		</unit>
+		<unit id="122">
+			<segment>
+				<source>Oct</source>
+				<target>Oct</target>
+			</segment>
+		</unit>
+		<unit id="123">
+			<segment>
+				<source>Nov</source>
+				<target>Nov</target>
+			</segment>
+		</unit>
+		<unit id="124">
+			<segment>
+				<source>Dec</source>
+				<target>Des</target>
+			</segment>
+		</unit>
+		<unit id="125">
+			<segment>
+				<source>Monday</source>
+				<target>Dilluns</target>
+			</segment>
+		</unit>
+		<unit id="126">
+			<segment>
+				<source>Tuesday</source>
+				<target>Dimarts</target>
+			</segment>
+		</unit>
+		<unit id="127">
+			<segment>
+				<source>Wednesday</source>
+				<target>Dimecres</target>
+			</segment>
+		</unit>
+		<unit id="128">
+			<segment>
+				<source>Thursday</source>
+				<target>Dijous</target>
+			</segment>
+		</unit>
+		<unit id="129">
+			<segment>
+				<source>Friday</source>
+				<target>Divendres</target>
+			</segment>
+		</unit>
+		<unit id="130">
+			<segment>
+				<source>Saturday</source>
+				<target>Dissabte</target>
+			</segment>
+		</unit>
+		<unit id="131">
+			<segment>
+				<source>Sunday</source>
+				<target>Diumenge</target>
+			</segment>
+		</unit>
+		<unit id="132">
+			<segment>
+				<source>Mon</source>
+				<target>Dl.</target>
+			</segment>
+		</unit>
+		<unit id="133">
+			<segment>
+				<source>Tue</source>
+				<target>Dt.</target>
+			</segment>
+		</unit>
+		<unit id="134">
+			<segment>
+				<source>Wed</source>
+				<target>Dm.</target>
+			</segment>
+		</unit>
+		<unit id="135">
+			<segment>
+				<source>Thu</source>
+				<target>Dj.</target>
+			</segment>
+		</unit>
+		<unit id="136">
+			<segment>
+				<source>Fri</source>
+				<target>Dv.</target>
+			</segment>
+		</unit>
+		<unit id="137">
+			<segment>
+				<source>Sat</source>
+				<target>Ds.</target>
+			</segment>
+		</unit>
+		<unit id="138">
+			<segment>
+				<source>Sun</source>
+				<target>Dg.</target>
+			</segment>
+		</unit>
+		<unit id="139">
+			<segment>
+				<source>Back</source>
+				<target>Enrera</target>
+			</segment>
+		</unit>
+		<unit id="140">
+			<segment>
+				<source>Load</source>
+				<target>Carregar</target>
+			</segment>
+		</unit>
+		<unit id="141">
+			<segment>
+				<source>Folder</source>
+				<target>Carpeta</target>
+			</segment>
+		</unit>
+		<unit id="142">
+			<segment>
+				<source>Select files</source>
+				<target>Escollir fitxers</target>
+			</segment>
+		</unit>
+		<unit id="143">
+			<segment>
+				<source>Add files to upload queue and push the button to start the process</source>
+				<target>Afegeixi fitxers a la cua de pujada i premi el botó per a iniciar la càrrega</target>
+			</segment>
+		</unit>
+		<unit id="144">
+			<segment>
+				<source>Filename</source>
+				<target>Nom del fitxer</target>
+			</segment>
+		</unit>
+		<unit id="145">
+			<segment>
+				<source>Size</source>
+				<target>Tamany</target>
+			</segment>
+		</unit>
+		<unit id="146">
+			<segment>
+				<source>Select files</source>
+				<target>Escollir fitxers</target>
+			</segment>
+		</unit>
+		<unit id="147">
+			<segment>
+				<source>Start upload</source>
+				<target>Iniciar càrrega</target>
+			</segment>
+		</unit>
+		<unit id="148">
+			<segment>
+				<source>Stop current upload</source>
+				<target>Aturar càrrega actual</target>
+			</segment>
+		</unit>
+		<unit id="149">
+			<segment>
+				<source>Start upload queue</source>
+				<target>Iniciar cua de càrrega</target>
+			</segment>
+		</unit>
+		<unit id="150">
+			<segment>
+				<source>Drag and drop files here</source>
+				<target>Arrossegui fitxers aquí</target>
+			</segment>
+		</unit>
+		<unit id="151">
+			<segment>
+				<source>The selected items will be permanently deleted.</source>
+				<target>Els elements escollits seran esborrats i no podran ser recuperats.</target>
+			</segment>
+		</unit>
+		<unit id="152">
+			<segment>
+				<source>Continue</source>
+				<target>Continuar</target>
+			</segment>
+		</unit>
+		<unit id="153">
+			<segment>
+				<source>Embedding link</source>
+				<target>Enllaç d'integració</target>
+			</segment>
+		</unit>
+		<unit id="154">
+			<segment>
+				<source>Download link</source>
+				<target>Enllaç de descàrrega</target>
+			</segment>
+		</unit>
+		<unit id="155">
+			<segment>
+				<source>Width</source>
+				<target>Ample</target>
+			</segment>
+		</unit>
+		<unit id="156">
+			<segment>
+				<source>Height</source>
+				<target>Alt</target>
+			</segment>
+		</unit>
+		<unit id="157">
+			<segment>
+				<source>Image</source>
+				<target>Imatge</target>
+			</segment>
+		</unit>
+		<unit id="158">
+			<segment>
+				<source>Thumbnail</source>
+				<target>Miniatura</target>
+			</segment>
+		</unit>
+		<unit id="159">
+			<segment>
+				<source>Name</source>
+				<target>Nom</target>
+			</segment>
+		</unit>
+		<unit id="160">
+			<segment>
+				<source>Type</source>
+				<target>Tipus</target>
+			</segment>
+		</unit>
+		<unit id="161">
+			<segment>
+				<source>Generic</source>
+				<target>Genèric</target>
+			</segment>
+		</unit>
+		<unit id="162">
+			<segment>
+				<source>Embedding</source>
+				<target>Incrustació</target>
+			</segment>
+		</unit>
+		<unit id="163">
+			<segment>
+				<source>Embedded</source>
+				<target>Incrustat</target>
+			</segment>
+		</unit>
+		<unit id="164">
+			<segment>
+				<source>Own path</source>
+				<target>Ruta pròpia</target>
+			</segment>
+		</unit>
+		<unit id="165">
+			<segment>
+				<source>The full content is shown in category view. Ex. "Who we are"</source>
+				<target>El contingut complet es mostra a la vista de categoria. Ex. "Qui som?"</target>
+			</segment>
+		</unit>
+		<unit id="166">
+			<segment>
+				<source>Content is accessed via its own path. Ex. "News"</source>
+				<target>S'accedeix al contingut a través d'una ruta independent. Ex. "Notícies"</target>
+			</segment>
+		</unit>
+		<unit id="167">
+			<segment>
+				<source>Types</source>
+				<target>Tipus</target>
+			</segment>
+		</unit>
+		<unit id="168">
+			<segment>
+				<source>Notes</source>
+				<target>Notes</target>
+			</segment>
+		</unit>
+		<unit id="169">
+			<segment>
+				<source>You can leave a field blank to keep the size free</source>
+				<target>Pot deixar en blanc un camp per a no limitar la mida</target>
+			</segment>
+		</unit>
+		<unit id="170">
+			<segment>
+				<source>Edit</source>
+				<target>Editar</target>
+			</segment>
+		</unit>
+		<unit id="171">
+			<segment>
+				<source>Order</source>
+				<target>Ordenar</target>
+			</segment>
+		</unit>
+		<unit id="172">
+			<segment>
+				<source>Action</source>
+				<target>Acció</target>
+			</segment>
+		</unit>
+		<unit id="173">
+			<segment>
+				<source>Follow URL</source>
+				<target>Seguir URL</target>
+			</segment>
+		</unit>
+		<unit id="174">
+			<segment>
+				<source>Open URL (new window)</source>
+				<target>Obrir URL (nova finestra)</target>
+			</segment>
+		</unit>
+		<unit id="175">
+			<segment>
+				<source>Download file</source>
+				<target>Descarregar fitxer</target>
+			</segment>
+		</unit>
+		<unit id="176">
+			<segment>
+				<source>Watch image</source>
+				<target>Veure imatge</target>
+			</segment>
+		</unit>
+		<unit id="177">
+			<segment>
+				<source>Website</source>
+				<target>Lloc web</target>
+			</segment>
+		</unit>
+		<unit id="178">
+			<segment>
+				<source>Services</source>
+				<target>Serveis</target>
+			</segment>
+		</unit>
+		<unit id="179">
+			<segment>
+				<source>Thumbnails</source>
+				<target>Miniatures</target>
+			</segment>
+		</unit>
+		<unit id="180">
+			<segment>
+				<source>Item</source>
+				<target>Element</target>
+			</segment>
+		</unit>
+		<unit id="181">
+			<segment>
+				<source>Hidden</source>
+				<target>Ocult</target>
+			</segment>
+		</unit>
+		<unit id="182">
+			<segment>
+				<source>Rollover image</source>
+				<target>Imatge activa</target>
+			</segment>
+		</unit>
+		<unit id="183">
+			<segment>
+				<source>Do nothing</source>
+				<target>No fer res</target>
+			</segment>
+		</unit>
+		<unit id="184">
+			<segment>
+				<source>Web page</source>
+				<target>Pàgina web</target>
+			</segment>
+		</unit>
+		<unit id="185">
+			<segment>
+				<source>Searching items</source>
+				<target>Cercant elements</target>
+			</segment>
+		</unit>
+		<unit id="186">
+			<segment>
+				<source>Adobe Flash</source>
+				<target>Adobe Flash</target>
+			</segment>
+		</unit>
+		<unit id="187">
+			<segment>
+				<source>Home page</source>
+				<target>Pàgina inicial</target>
+			</segment>
+		</unit>
+		<unit id="188">
+			<segment>
+				<source>Translate</source>
+				<target>Traduir</target>
+			</segment>
+		</unit>
+		<unit id="189">
+			<segment>
+				<source>Copy from</source>
+				<target>Copiar de</target>
+			</segment>
+		</unit>
+		<unit id="190">
+			<segment>
+				<source>Ok</source>
+				<target>Acceptar</target>
+			</segment>
+		</unit>
+		<unit id="191">
+			<segment>
+				<source>Source</source>
+				<target>Origen</target>
+			</segment>
+		</unit>
+		<unit id="192">
+			<segment>
+				<source>Double click on a row to edit it</source>
+				<target>Faci doble clic sobre una fila per a editar-la</target>
+			</segment>
+		</unit>
+		<unit id="193">
+			<segment>
+				<source>Value</source>
+				<target>Valor</target>
+			</segment>
+		</unit>
+		<unit id="194">
+			<segment>
+				<source>Option</source>
+				<target>Opció</target>
+			</segment>
+		</unit>
+		<unit id="195">
+			<segment>
+				<source>Text area</source>
+				<target>Àrea de text</target>
+			</segment>
+		</unit>
+		<unit id="196">
+			<segment>
+				<source>Date and time</source>
+				<target>Data y hora</target>
+			</segment>
+		</unit>
+		<unit id="197">
+			<segment>
+				<source>Link</source>
+				<target>Enllaç</target>
+			</segment>
+		</unit>
+		<unit id="198">
+			<segment>
+				<source>Product</source>
+				<target>Artícle</target>
+			</segment>
+		</unit>
+		<unit id="199">
+			<segment>
+				<source>Default value</source>
+				<target>Valor per defecte</target>
+			</segment>
+		</unit>
+		<unit id="200">
+			<segment>
+				<source>Options</source>
+				<target>Opcions</target>
+			</segment>
+		</unit>
+		<unit id="201">
+			<segment>
+				<source>One line per option, following the format: value#title</source>
+				<target>Una línia per cada opció, seguint el format: valor#títol</target>
+			</segment>
+		</unit>
+		<unit id="202">
+			<segment>
+				<source>Enter only the value</source>
+				<target>Escrigui només el valor</target>
+			</segment>
+		</unit>
+		<unit id="203">
+			<segment>
+				<source>Same value for all languages</source>
+				<target>El mateix valor per a tots els idiomes</target>
+			</segment>
+		</unit>
+		<unit id="204">
+			<segment>
+				<source>File ID</source>
+				<target>ID del fitxer</target>
+			</segment>
+		</unit>
+		<unit id="205">
+			<segment>
+				<source>Comment</source>
+				<target>Comentari</target>
+			</segment>
+		</unit>
+		<unit id="206">
+			<segment>
+				<source>Boolean</source>
+				<target>Booleà</target>
+			</segment>
+		</unit>
+		<unit id="207">
+			<segment>
+				<source>Default timezone</source>
+				<target>Zona horària per defecte</target>
+			</segment>
+		</unit>
+		<unit id="208">
+			<segment>
+				<source>/*/</source>
+				<target>Data actual aplicant l'ajust</target>
+			</segment>
+		</unit>
+		<unit id="209">
+			<segment>
+				<source>Minutes</source>
+				<target>Minuts</target>
+			</segment>
+		</unit>
+		<unit id="210">
+			<segment>
+				<source>Gallery</source>
+				<target>Galeria</target>
+			</segment>
+		</unit>
+		<unit id="211">
+			<segment>
+				<source>Multiple option</source>
+				<target>Opció múltiple</target>
+			</segment>
+		</unit>
+		<unit id="212">
+			<segment>
+				<source>Write values separated by commas</source>
+				<target>Escrigui els valors escollits separant-los amb comes</target>
+			</segment>
+		</unit>
+		<unit id="213">
+			<segment>
+				<source>Image caption</source>
+				<target>Text de la imatge</target>
+			</segment>
+		</unit>
+		<unit id="214">
+			<segment>
+				<source>Product</source>
+				<target>Producte</target>
+			</segment>
+		</unit>
+		<unit id="215">
+			<segment>
+				<source>Credits</source>
+				<target>Crèdits</target>
+			</segment>
+		</unit>
+		<unit id="216">
+			<segment>
+				<source>Created by</source>
+				<target>Creat per</target>
+			</segment>
+		</unit>
+		<unit id="217">
+			<segment>
+				<source>Tested by</source>
+				<target>Provat per</target>
+			</segment>
+		</unit>
+		<unit id="218">
+			<segment>
+				<source>External libraries</source>
+				<target>Llibreries externes</target>
+			</segment>
+		</unit>
+		<unit id="219">
+			<segment>
+				<source>Copyright</source>
+				<target>Copyright</target>
+			</segment>
+		</unit>
+		<unit id="220">
+			<segment>
+				<source>Version</source>
+				<target>Versió</target>
+			</segment>
+		</unit>
+		<unit id="221">
+			<segment>
+				<source>Jump to</source>
+				<target>Saltar a</target>
+			</segment>
+		</unit>
+		<unit id="222">
+			<segment>
+				<source>Rating</source>
+				<target>Valoració</target>
+			</segment>
+		</unit>
+		<unit id="223">
+			<segment>
+				<source>Default value 5 stars, if you want a different value: default_value#number_of_stars</source>
+				<target>Per defecte 5 estrelles, si vol un número diferent: valor_defecte#número_estrelles</target>
+			</segment>
+		</unit>
+		<unit id="224">
+			<segment>
+				<source>Country</source>
+				<target>País</target>
+			</segment>
+		</unit>
+		<unit id="225">
+			<segment>
+				<source>Alpha-2 country code</source>
+				<target>Codi alpha-2 del país</target>
+			</segment>
+		</unit>
+		<unit id="226">
+			<segment>
+				<source>Creation date</source>
+				<target>Data de creació</target>
+			</segment>
+		</unit>
+		<unit id="227">
+			<segment>
+				<source>Modification date</source>
+				<target>Data de modificació</target>
+			</segment>
+		</unit>
+		<unit id="228">
+			<segment>
+				<source>Subdomain</source>
+				<target>Subdomini</target>
+			</segment>
+		</unit>
+		<unit id="229">
+			<segment>
+				<source>Domain</source>
+				<target>Domini</target>
+			</segment>
+		</unit>
+		<unit id="230">
+			<segment>
+				<source>Ex.</source>
+				<target>Ex.</target>
+			</segment>
+		</unit>
+		<unit id="231">
+			<segment>
+				<source>Server</source>
+				<target>Servidor</target>
+			</segment>
+		</unit>
+		<unit id="232">
+			<segment>
+				<source>Port</source>
+				<target>Port</target>
+			</segment>
+		</unit>
+		<unit id="233">
+			<segment>
+				<source>Address</source>
+				<target>Adreça</target>
+			</segment>
+		</unit>
+		<unit id="234">
+			<segment>
+				<source>More elements</source>
+				<target>Més elements</target>
+			</segment>
+		</unit>
+		<unit id="235">
+			<segment>
+				<source>File saved successfully.</source>
+				<target>Fitxer guardat correctament.</target>
+			</segment>
+		</unit>
+		<unit id="236">
+			<segment>
+				<source>Sections</source>
+				<target>Seccions</target>
+			</segment>
+		</unit>
+		<unit id="237">
+			<segment>
+				<source>Code</source>
+				<target>Codi</target>
+			</segment>
+		</unit>
+		<unit id="238">
+			<segment>
+				<source>Main content</source>
+				<target>Contingut principal</target>
+			</segment>
+		</unit>
+		<unit id="239">
+			<segment>
+				<source>Section</source>
+				<target>Secció</target>
+			</segment>
+		</unit>
+		<unit id="240">
+			<segment>
+				<source>Functions</source>
+				<target>Funcions</target>
+			</segment>
+		</unit>
+		<unit id="241">
+			<segment>
+				<source>Web sites</source>
+				<target>Llocs web</target>
+			</segment>
+		</unit>
+		<unit id="242">
+			<segment>
+				<source>Icon</source>
+				<target>Icona</target>
+			</segment>
+		</unit>
+		<unit id="243">
+			<segment>
+				<source>Profiles</source>
+				<target>Perfils</target>
+			</segment>
+		</unit>
+		<unit id="244">
+			<segment>
+				<source>Menus</source>
+				<target>Menús</target>
+			</segment>
+		</unit>
+		<unit id="245">
+			<segment>
+				<source>Notes</source>
+				<target>Notes</target>
+			</segment>
+		</unit>
+		<unit id="246">
+			<segment>
+				<source>Avatar</source>
+				<target>Avatar</target>
+			</segment>
+		</unit>
+		<unit id="247">
+			<segment>
+				<source>Registration date</source>
+				<target>Data de registre</target>
+			</segment>
+		</unit>
+		<unit id="248">
+			<segment>
+				<source>Birth date</source>
+				<target>Data de naixement</target>
+			</segment>
+		</unit>
+		<unit id="249">
+			<segment>
+				<source>Newsletter</source>
+				<target>Butlletí electrònic</target>
+			</segment>
+		</unit>
+		<unit id="250">
+			<segment>
+				<source>Comments</source>
+				<target>Comentaris</target>
+			</segment>
+		</unit>
+		<unit id="251">
+			<segment>
+				<source>Private</source>
+				<target>Privat</target>
+			</segment>
+		</unit>
+		<unit id="252">
+			<segment>
+				<source>Comments enabled for</source>
+				<target>Comentaris actius per a</target>
+			</segment>
+		</unit>
+		<unit id="253">
+			<segment>
+				<source>Nobody</source>
+				<target>Ningú</target>
+			</segment>
+		</unit>
+		<unit id="254">
+			<segment>
+				<source>Everybody</source>
+				<target>Tothom</target>
+			</segment>
+		</unit>
+		<unit id="255">
+			<segment>
+				<source>Moderator</source>
+				<target>Moderador</target>
+			</segment>
+		</unit>
+		<unit id="256">
+			<segment>
+				<source>Leave blank to accept all comments</source>
+				<target>Deixar en blanc per a acceptar tots els comentaris</target>
+			</segment>
+		</unit>
+		<unit id="257">
+			<segment>
+				<source>To revise</source>
+				<target>Per revisar</target>
+			</segment>
+		</unit>
+		<unit id="258">
+			<segment>
+				<source>Publish</source>
+				<target>Publicar</target>
+			</segment>
+		</unit>
+		<unit id="259">
+			<segment>
+				<source>Unpublish</source>
+				<target>Despublicar</target>
+			</segment>
+		</unit>
+		<unit id="260">
+			<segment>
+				<source>Drag and drop files to upload them</source>
+				<target>Arrossegui i deixi anar fitxers per a carregar-los</target>
+			</segment>
+		</unit>
+		<unit id="261">
+			<segment>
+				<source>Uploading</source>
+				<target>Carregant</target>
+			</segment>
+		</unit>
+		<unit id="262">
+			<segment>
+				<source>Error uploading file</source>
+				<target>Error carregant fitxer</target>
+			</segment>
+		</unit>
+		<unit id="263">
+			<segment>
+				<source>Contact e-mails</source>
+				<target>Correus electrònics de contacte</target>
+			</segment>
+		</unit>
+		<unit id="264">
+			<segment>
+				<source>One item per row</source>
+				<target>Una entrada per línia</target>
+			</segment>
+		</unit>
+		<unit id="265">
+			<segment>
+				<source>Labels</source>
+				<target>Etiquetes</target>
+			</segment>
+		</unit>
+		<unit id="266">
+			<segment>
+				<source>Author</source>
+				<target>Autor/a</target>
+			</segment>
+		</unit>
+		<unit id="267">
+			<segment>
+				<source>Editor</source>
+				<target>Editor</target>
+			</segment>
+		</unit>
+		<unit id="268">
+			<segment>
+				<source>Raw</source>
+				<target>Sense format</target>
+			</segment>
+		</unit>
+		<unit id="269">
+			<segment>
+				<source>HTML code</source>
+				<target>Codi HTML</target>
+			</segment>
+		</unit>
+		<unit id="270">
+			<segment>
+				<source>Auto save in progress</source>
+				<target>Guardant automàticament</target>
+			</segment>
+		</unit>
+		<unit id="271">
+			<segment>
+				<source>Auto save completed</source>
+				<target>Guardat automàtic completat</target>
+			</segment>
+		</unit>
+		<unit id="272">
+			<segment>
+				<source>Video</source>
+				<target>Vídeo</target>
+			</segment>
+		</unit>
+		<unit id="273">
+			<segment>
+				<source>Auto save</source>
+				<target>Autoguardat</target>
+			</segment>
+		</unit>
+		<unit id="274">
+			<segment>
+				<source>Preview</source>
+				<target>Previsualitzar</target>
+			</segment>
+		</unit>
+		<unit id="275">
+			<segment>
+				<source>Recent elements</source>
+				<target>Elements recents</target>
+			</segment>
+		</unit>
+		<unit id="276">
+			<segment>
+				<source>Recent comments</source>
+				<target>Comentaris recents</target>
+			</segment>
+		</unit>
+		<unit id="277">
+			<segment>
+				<source>Most seen elements</source>
+				<target>Elements més vistos</target>
+			</segment>
+		</unit>
+		<unit id="278">
+			<segment>
+				<source>Web summary</source>
+				<target>Resum de la web</target>
+			</segment>
+		</unit>
+		<unit id="279">
+			<segment>
+				<source>Pages available</source>
+				<target>Pàgines disponibles</target>
+			</segment>
+		</unit>
+		<unit id="280">
+			<segment>
+				<source>Page views</source>
+				<target>Pàgines vistes</target>
+			</segment>
+		</unit>
+		<unit id="281">
+			<segment>
+				<source>Comments to revise</source>
+				<target>Comentaris per revisar</target>
+			</segment>
+		</unit>
+		<unit id="282">
+			<segment>
+				<source>Untitled</source>
+				<target>Sense títol</target>
+			</segment>
+		</unit>
+		<unit id="283">
+			<segment>
+				<source>Show in menus</source>
+				<target>Es mostra als menús</target>
+			</segment>
+		</unit>
+		<unit id="284">
+			<segment>
+				<source>Africa</source>
+				<target>Àfrica</target>
+			</segment>
+		</unit>
+		<unit id="285">
+			<segment>
+				<source>Update</source>
+				<target>Actualitzar</target>
+			</segment>
+		</unit>
+		<unit id="286">
+			<segment>
+				<source>Drag to reorder. Double click to assign image captions.</source>
+				<target>Arrossegui per a reordenar. Faci doble clic per a assignar títols a la imatge.</target>
+			</segment>
+		</unit>
+		<unit id="287">
+			<segment>
+				<source>Protocol</source>
+				<target>Protocol</target>
+			</segment>
+		</unit>
+		<unit id="288">
+			<segment>
+				<source>Secure site (requires certificate)</source>
+				<target>Lloc segur (requereix certificat)</target>
+			</segment>
+		</unit>
+		<unit id="289">
+			<segment>
+				<source>Update Navigate</source>
+				<target>Actualitzar Navigate</target>
+			</segment>
+		</unit>
+		<unit id="290">
+			<segment>
+				<source>Current version</source>
+				<target>Versió actual</target>
+			</segment>
+		</unit>
+		<unit id="291">
+			<segment>
+				<source>Last version</source>
+				<target>Última versió</target>
+			</segment>
+		</unit>
+		<unit id="292">
+			<segment>
+				<source>Available updates</source>
+				<target>Actualitzacions disponibles</target>
+			</segment>
+		</unit>
+		<unit id="293">
+			<segment>
+				<source>Application successfully updated</source>
+				<target>Actualitzat correctament.</target>
+			</segment>
+		</unit>
+		<unit id="294">
+			<segment>
+				<source>Error updating.</source>
+				<target>Error actualitzant.</target>
+			</segment>
+		</unit>
+		<unit id="295">
+			<segment>
+				<source>Expand all</source>
+				<target>Expandir tot</target>
+			</segment>
+		</unit>
+		<unit id="296">
+			<segment>
+				<source>Top pages</source>
+				<target>Pàgines més vistes</target>
+			</segment>
+		</unit>
+		<unit id="297">
+			<segment>
+				<source>Coordinates</source>
+				<target>Coordenades</target>
+			</segment>
+		</unit>
+		<unit id="298">
+			<segment>
+				<source>Latitude</source>
+				<target>Latitut</target>
+			</segment>
+		</unit>
+		<unit id="299">
+			<segment>
+				<source>Longitude</source>
+				<target>Longitut</target>
+			</segment>
+		</unit>
+		<unit id="300">
+			<segment>
+				<source>Map</source>
+				<target>Mapa</target>
+			</segment>
+		</unit>
+		<unit id="301">
+			<segment>
+				<source>Double click on a place to set the coordinates</source>
+				<target>Faci doble clic en un indret per establir les coordenades</target>
+			</segment>
+		</unit>
+		<unit id="302">
+			<segment>
+				<source>Help</source>
+				<target>Ajuda</target>
+			</segment>
+		</unit>
+		<unit id="303">
+			<segment>
+				<source>Manual update</source>
+				<target>Actualització manual</target>
+			</segment>
+		</unit>
+		<unit id="304">
+			<segment>
+				<source>Gender</source>
+				<target>Sexe</target>
+			</segment>
+		</unit>
+		<unit id="305">
+			<segment>
+				<source>Male</source>
+				<target>Masculí</target>
+			</segment>
+		</unit>
+		<unit id="306">
+			<segment>
+				<source>Female</source>
+				<target>Femení</target>
+			</segment>
+		</unit>
+		<unit id="307">
+			<segment>
+				<source>Unspecified</source>
+				<target>No especificat</target>
+			</segment>
+		</unit>
+		<unit id="308">
+			<segment>
+				<source>Personal</source>
+				<target>Personal</target>
+			</segment>
+		</unit>
+		<unit id="309">
+			<segment>
+				<source>Social</source>
+				<target>Social</target>
+			</segment>
+		</unit>
+		<unit id="310">
+			<segment>
+				<source>America</source>
+				<target>Amèrica</target>
+			</segment>
+		</unit>
+		<unit id="311">
+			<segment>
+				<source>Antartica</source>
+				<target>Antàrtida</target>
+			</segment>
+		</unit>
+		<unit id="312">
+			<segment>
+				<source>Arctic</source>
+				<target>Àrtic</target>
+			</segment>
+		</unit>
+		<unit id="313">
+			<segment>
+				<source>Asia</source>
+				<target>Àsia</target>
+			</segment>
+		</unit>
+		<unit id="314">
+			<segment>
+				<source>Atlantic</source>
+				<target>Atlàntic</target>
+			</segment>
+		</unit>
+		<unit id="315">
+			<segment>
+				<source>Europe</source>
+				<target>Europa</target>
+			</segment>
+		</unit>
+		<unit id="316">
+			<segment>
+				<source>Indian</source>
+				<target>Índic</target>
+			</segment>
+		</unit>
+		<unit id="317">
+			<segment>
+				<source>Pacific</source>
+				<target>Pacífic</target>
+			</segment>
+		</unit>
+		<unit id="318">
+			<segment>
+				<source>Zip code</source>
+				<target>Codi postal</target>
+			</segment>
+		</unit>
+		<unit id="319">
+			<segment>
+				<source>Location</source>
+				<target>Localitat</target>
+			</segment>
+		</unit>
+		<unit id="320">
+			<segment>
+				<source>Phone</source>
+				<target>Telèfon</target>
+			</segment>
+		</unit>
+		<unit id="321">
+			<segment>
+				<source>Allowed</source>
+				<target>Permès</target>
+			</segment>
+		</unit>
+		<unit id="322">
+			<segment>
+				<source>Jump to another branch</source>
+				<target>Saltar a una altra branca</target>
+			</segment>
+		</unit>
+		<unit id="323">
+			<segment>
+				<source>Jump to an element</source>
+				<target>Saltar a un element</target>
+			</segment>
+		</unit>
+		<unit id="324">
+			<segment>
+				<source>New window</source>
+				<target>Nova finestra</target>
+			</segment>
+		</unit>
+		<unit id="325">
+			<segment>
+				<source>Branch</source>
+				<target>Branca</target>
+			</segment>
+		</unit>
+		<unit id="326">
+			<segment>
+				<source>Web feeds</source>
+				<target>Fonts web</target>
+			</segment>
+		</unit>
+		<unit id="327">
+			<segment>
+				<source>Extensions</source>
+				<target>Extensions</target>
+			</segment>
+		</unit>
+		<unit id="328">
+			<segment>
+				<source>Favicon</source>
+				<target>Favicon</target>
+			</segment>
+		</unit>
+		<unit id="329">
+			<segment>
+				<source>Backups</source>
+				<target>Còpies de seguretat</target>
+			</segment>
+		</unit>
+		<unit id="330">
+			<segment>
+				<source>Categories</source>
+				<target>Categories</target>
+			</segment>
+		</unit>
+		<unit id="331">
+			<segment>
+				<source>Format</source>
+				<target>Format</target>
+			</segment>
+		</unit>
+		<unit id="332">
+			<segment>
+				<source>Views</source>
+				<target>Vistes</target>
+			</segment>
+		</unit>
+		<unit id="333">
+			<segment>
+				<source>Recommended</source>
+				<target>Recomanat</target>
+			</segment>
+		</unit>
+		<unit id="334">
+			<segment>
+				<source>Description</source>
+				<target>Descripció</target>
+			</segment>
+		</unit>
+		<unit id="335">
+			<segment>
+				<source>Entries</source>
+				<target>Entrades</target>
+			</segment>
+		</unit>
+		<unit id="336">
+			<segment>
+				<source>Display</source>
+				<target>Mostrar</target>
+			</segment>
+		</unit>
+		<unit id="337">
+			<segment>
+				<source>Summary</source>
+				<target>Resum</target>
+			</segment>
+		</unit>
+		<unit id="338">
+			<segment>
+				<source>Uploaded %d/%d files</source>
+				<target>Carregats %d/%d fitxers</target>
+			</segment>
+		</unit>
+		<unit id="339">
+			<segment>
+				<source>N/A</source>
+				<target>No disponible</target>
+			</segment>
+		</unit>
+		<unit id="340">
+			<segment>
+				<source>File extension error</source>
+				<target>Error en la extensió del fitxer</target>
+			</segment>
+		</unit>
+		<unit id="341">
+			<segment>
+				<source>File size error</source>
+				<target>Error en la mida del fitxer</target>
+			</segment>
+		</unit>
+		<unit id="342">
+			<segment>
+				<source>Init error</source>
+				<target>Error d'inicialització</target>
+			</segment>
+		</unit>
+		<unit id="343">
+			<segment>
+				<source>HTTP Error</source>
+				<target>Error HTTP</target>
+			</segment>
+		</unit>
+		<unit id="344">
+			<segment>
+				<source>Security error</source>
+				<target>Error de segurertat</target>
+			</segment>
+		</unit>
+		<unit id="345">
+			<segment>
+				<source>Generic error</source>
+				<target>Error genèric</target>
+			</segment>
+		</unit>
+		<unit id="346">
+			<segment>
+				<source>IO error</source>
+				<target>Error d'entrada/sortida</target>
+			</segment>
+		</unit>
+		<unit id="347">
+			<segment>
+				<source>Stop upload</source>
+				<target>Aturar càrrega</target>
+			</segment>
+		</unit>
+		<unit id="348">
+			<segment>
+				<source>Add files</source>
+				<target>Afegir fitxers</target>
+			</segment>
+		</unit>
+		<unit id="349">
+			<segment>
+				<source>Start upload</source>
+				<target>Iniciar càrrega</target>
+			</segment>
+		</unit>
+		<unit id="350">
+			<segment>
+				<source>%d files queued</source>
+				<target>%d fitxers a la cua</target>
+			</segment>
+		</unit>
+		<unit id="351">
+			<segment>
+				<source>New update available!</source>
+				<target>Nova actualització disponible!</target>
+			</segment>
+		</unit>
+		<unit id="352">
+			<segment>
+				<source>Votes</source>
+				<target>Vots</target>
+			</segment>
+		</unit>
+		<unit id="353">
+			<segment>
+				<source>Score</source>
+				<target>Nota</target>
+			</segment>
+		</unit>
+		<unit id="354">
+			<segment>
+				<source>Reset</source>
+				<target>Reiniciar</target>
+			</segment>
+		</unit>
+		<unit id="355">
+			<segment>
+				<source>Votes reset</source>
+				<target>Vots reiniciats</target>
+			</segment>
+		</unit>
+		<unit id="356">
+			<segment>
+				<source>last 90 days</source>
+				<target>últims 90 dies</target>
+			</segment>
+		</unit>
+		<unit id="357">
+			<segment>
+				<source>User votes</source>
+				<target>Vots dels usuaris</target>
+			</segment>
+		</unit>
+		<unit id="358">
+			<segment>
+				<source>Hidden to everybody</source>
+				<target>No es mostra a ningú</target>
+			</segment>
+		</unit>
+		<unit id="359">
+			<segment>
+				<source>Visible only to Navigate CMS users</source>
+				<target>Només visible per a usuaris de Navigate CMS</target>
+			</segment>
+		</unit>
+		<unit id="360">
+			<segment>
+				<source>Visible to everybody</source>
+				<target>Es mostra a tothom</target>
+			</segment>
+		</unit>
+		<unit id="361">
+			<segment>
+				<source>Web users only</source>
+				<target>Només usuaris registrats</target>
+			</segment>
+		</unit>
+		<unit id="362">
+			<segment>
+				<source>Not signed in</source>
+				<target>No registrats</target>
+			</segment>
+		</unit>
+		<unit id="363">
+			<segment>
+				<source>Users who have not yet signed up or signed in</source>
+				<target>Usuaris que encara no s'han registrat o identificat</target>
+			</segment>
+		</unit>
+		<unit id="364">
+			<segment>
+				<source>Access</source>
+				<target>Accés</target>
+			</segment>
+		</unit>
+		<unit id="365">
+			<segment>
+				<source>Install</source>
+				<target>Instal·lar</target>
+			</segment>
+		</unit>
+		<unit id="366">
+			<segment>
+				<source>Log</source>
+				<target>Registre</target>
+			</segment>
+		</unit>
+		<unit id="367">
+			<segment>
+				<source>Themes</source>
+				<target>Temes</target>
+			</segment>
+		</unit>
+		<unit id="368">
+			<segment>
+				<source>Theme</source>
+				<target>Tema</target>
+			</segment>
+		</unit>
+		<unit id="369">
+			<segment>
+				<source>More on</source>
+				<target>Més a</target>
+			</segment>
+		</unit>
+		<unit id="370">
+			<segment>
+				<source>Demo</source>
+				<target>Demo</target>
+			</segment>
+		</unit>
+		<unit id="371">
+			<segment>
+				<source>Installing a new theme removes the settings of the old one.</source>
+				<target>Instal·lar un nou tema reemplaça la configuració de l'anterior.</target>
+			</segment>
+		</unit>
+		<unit id="372">
+			<segment>
+				<source>The list of available block types may change and also the properties assigned to items could be lost.</source>
+				<target>La llista de tipus de blocs disponibles es pot perdre així com les propietats assignades a elements.</target>
+			</segment>
+		</unit>
+		<unit id="373">
+			<segment>
+				<source>Are you sure you want to continue?</source>
+				<target>Realment vol continuar?</target>
+			</segment>
+		</unit>
+		<unit id="374">
+			<segment>
+				<source>Item installed successfully.</source>
+				<target>Element instal·lat correctament.</target>
+			</segment>
+		</unit>
+		<unit id="375">
+			<segment>
+				<source>Blog</source>
+				<target>Blog</target>
+			</segment>
+		</unit>
+		<unit id="376">
+			<segment>
+				<source>Blog entry</source>
+				<target>Entrada de blog</target>
+			</segment>
+		</unit>
+		<unit id="377">
+			<segment>
+				<source>Contact</source>
+				<target>Contacte</target>
+			</segment>
+		</unit>
+		<unit id="378">
+			<segment>
+				<source>License</source>
+				<target>Llicència</target>
+			</segment>
+		</unit>
+		<unit id="379">
+			<segment>
+				<source>Post a comment</source>
+				<target>Escriure un comentari</target>
+			</segment>
+		</unit>
+		<unit id="380">
+			<segment>
+				<source>Message</source>
+				<target>Missatge</target>
+			</segment>
+		</unit>
+		<unit id="381">
+			<segment>
+				<source>E-Mail will not be published</source>
+				<target>El correu electrònic no serà mostrat</target>
+			</segment>
+		</unit>
+		<unit id="382">
+			<segment>
+				<source>Submit</source>
+				<target>Enviar</target>
+			</segment>
+		</unit>
+		<unit id="383">
+			<segment>
+				<source>Sign in or Sign up to post a comment</source>
+				<target>Identifiqueu o Registreu-vos per a escriure un comentari</target>
+			</segment>
+		</unit>
+		<unit id="384">
+			<segment>
+				<source>Comments on this entry are closed</source>
+				<target>Els comentaris per a aquesta entrada estan tancats</target>
+			</segment>
+		</unit>
+		<unit id="385">
+			<segment>
+				<source>Please don't leave any field blank</source>
+				<target>Si us plau, no deixi cap camp en blanc</target>
+			</segment>
+		</unit>
+		<unit id="386">
+			<segment>
+				<source>Your comment has been received and will be published shortly</source>
+				<target>El seu comentari ha estat rebut i serà publicat pròximament</target>
+			</segment>
+		</unit>
+		<unit id="387">
+			<segment>
+				<source>New comment</source>
+				<target>Nou comentari</target>
+			</segment>
+		</unit>
+		<unit id="388">
+			<segment>
+				<source>Review comments</source>
+				<target>Revisar comentaris</target>
+			</segment>
+		</unit>
+		<unit id="389">
+			<segment>
+				<source>Backspace key protection</source>
+				<target>Protecció de tecla Retrocés</target>
+			</segment>
+		</unit>
+		<unit id="390">
+			<segment>
+				<source>Test</source>
+				<target>Provar</target>
+			</segment>
+		</unit>
+		<unit id="391">
+			<segment>
+				<source>Trying to send a test e-mail...</source>
+				<target>Intentant enviar un correu de prova...</target>
+			</segment>
+		</unit>
+		<unit id="392">
+			<segment>
+				<source>E-Mail sent</source>
+				<target>Missatge enviat</target>
+			</segment>
+		</unit>
+		<unit id="393">
+			<segment>
+				<source>Standard banner sizes</source>
+				<target>Tamanys publicitaris estàndard</target>
+			</segment>
+		</unit>
+		<unit id="394">
+			<segment>
+				<source>Fixed</source>
+				<target>Fix</target>
+			</segment>
+		</unit>
+		<unit id="395">
+			<segment>
+				<source>"Fixed" assigns a static position when the order is random</source>
+				<target>"Fix" determina una posició estàtica quan l'ordre és aleatori</target>
+			</segment>
+		</unit>
+		<unit id="396">
+			<segment>
+				<source>All categories</source>
+				<target>Totes les categories</target>
+			</segment>
+		</unit>
+		<unit id="397">
+			<segment>
+				<source>Maximum</source>
+				<target>Màxim</target>
+			</segment>
+		</unit>
+		<unit id="398">
+			<segment>
+				<source>Minimum</source>
+				<target>Mínim</target>
+			</segment>
+		</unit>
+		<unit id="399">
+			<segment>
+				<source>Random</source>
+				<target>Aleatori</target>
+			</segment>
+		</unit>
+		<unit id="400">
+			<segment>
+				<source>Enter 0 to display all</source>
+				<target>Escrigui 0 per a mostrar-los tots</target>
+			</segment>
+		</unit>
+		<unit id="401">
+			<segment>
+				<source>Your browser does not support HTML5</source>
+				<target>El seu navegador no integra HTML5</target>
+			</segment>
+		</unit>
+		<unit id="402">
+			<segment>
+				<source>Please select fewer files</source>
+				<target>Si us plau, esculli un número més petit de fitxers</target>
+			</segment>
+		</unit>
+		<unit id="403">
+			<segment>
+				<source>File too large</source>
+				<target>Fitxer massa gran</target>
+			</segment>
+		</unit>
+		<unit id="404">
+			<segment>
+				<source>Order by</source>
+				<target>Ordenar per</target>
+			</segment>
+		</unit>
+		<unit id="405">
+			<segment>
+				<source>Selection</source>
+				<target>Selecció</target>
+			</segment>
+		</unit>
+		<unit id="406">
+			<segment>
+				<source>Remember me</source>
+				<target>Recordar-me</target>
+			</segment>
+		</unit>
+		<unit id="407">
+			<segment>
+				<source>Forgot password?</source>
+				<target>Ha oblidat la contrassenya?</target>
+			</segment>
+		</unit>
+		<unit id="408">
+			<segment>
+				<source>Order is only used on lists ordered by priority</source>
+				<target>L'ordre només s'utilitza en llistes ordenades per prioritat</target>
+			</segment>
+		</unit>
+		<unit id="409">
+			<segment>
+				<source>Size</source>
+				<target>Mida</target>
+			</segment>
+		</unit>
+		<unit id="410">
+			<segment>
+				<source>Begin backup</source>
+				<target>Iniciar còpia de seguretat</target>
+			</segment>
+		</unit>
+		<unit id="411">
+			<segment>
+				<source>Task progress</source>
+				<target>Progrés de la tasca</target>
+			</segment>
+		</unit>
+		<unit id="412">
+			<segment>
+				<source>Restore</source>
+				<target>Restaurar</target>
+			</segment>
+		</unit>
+		<unit id="413">
+			<segment>
+				<source>Waiting to begin</source>
+				<target>Esperant per a començar</target>
+			</segment>
+		</unit>
+		<unit id="414">
+			<segment>
+				<source>Exporting database</source>
+				<target>Exportant base de dades</target>
+			</segment>
+		</unit>
+		<unit id="415">
+			<segment>
+				<source>Copying themes and templates</source>
+				<target>Copiant temes i plantilles</target>
+			</segment>
+		</unit>
+		<unit id="416">
+			<segment>
+				<source>Copying extensions</source>
+				<target>Copiant extensions</target>
+			</segment>
+		</unit>
+		<unit id="417">
+			<segment>
+				<source>Copying uploads</source>
+				<target>Copiant fitxers carregats</target>
+			</segment>
+		</unit>
+		<unit id="418">
+			<segment>
+				<source>Creating archive</source>
+				<target>Creant fitxer comprimit</target>
+			</segment>
+		</unit>
+		<unit id="419">
+			<segment>
+				<source>Process complete</source>
+				<target>Procés completat</target>
+			</segment>
+		</unit>
+		<unit id="420">
+			<segment>
+				<source>Estimated size</source>
+				<target>Mida estimada</target>
+			</segment>
+		</unit>
+		<unit id="421">
+			<segment>
+				<source>Created on</source>
+				<target>Data de creació</target>
+			</segment>
+		</unit>
+		<unit id="422">
+			<segment>
+				<source>Uploading to server</source>
+				<target>Transferint al servidor</target>
+			</segment>
+		</unit>
+		<unit id="423">
+			<segment>
+				<source>Refresh</source>
+				<target>Comprovar</target>
+			</segment>
+		</unit>
+		<unit id="424">
+			<segment>
+				<source>Preparing process</source>
+				<target>Preparant procés</target>
+			</segment>
+		</unit>
+		<unit id="425">
+			<segment>
+				<source>Order the elements of a category (unless the template forces other sorting)</source>
+				<target>Ordenar els elementos d'una categoría (excepte quan la plantilla força una altra ordenació)</target>
+			</segment>
+		</unit>
+		<unit id="426">
+			<segment>
+				<source>Enter "1" for true, "0" for false</source>
+				<target>Introdueixi "1" per cert, "0" per fals</target>
+			</segment>
+		</unit>
+		<unit id="427">
+			<segment>
+				<source>TLS/SSL required</source>
+				<target>TLS/SSL requerit</target>
+			</segment>
+		</unit>
+		<unit id="428">
+			<segment>
+				<source>(no category)</source>
+				<target>(sense categoria)</target>
+			</segment>
+		</unit>
+		<unit id="429">
+			<segment>
+				<source>Reset statistics</source>
+				<target>Reiniciar estadístiques</target>
+			</segment>
+		</unit>
+		<unit id="430">
+			<segment>
+				<source>Do you really want to remove all statistics of this website?</source>
+				<target>Realment vol esborrar totes les estadístiques d'aquest lloc web?</target>
+			</segment>
+		</unit>
+		<unit id="431">
+			<segment>
+				<source>Style</source>
+				<target>Estil</target>
+			</segment>
+		</unit>
+		<unit id="432">
+			<segment>
+				<source>Read only mode</source>
+				<target>Mode de només lectura</target>
+			</segment>
+		</unit>
+		<unit id="433">
+			<segment>
+				<source>Resize uploaded images</source>
+				<target>Mida imatges carregades</target>
+			</segment>
+		</unit>
+		<unit id="434">
+			<segment>
+				<source>Keep original file</source>
+				<target>Conservar fitxer original</target>
+			</segment>
+		</unit>
+		<unit id="435">
+			<segment>
+				<source>Maximum width or height</source>
+				<target>Ample o alt màxim</target>
+			</segment>
+		</unit>
+		<unit id="436">
+			<segment>
+				<source>Used as a class in HTML elements</source>
+				<target>Usat com una classe en elements HTML</target>
+			</segment>
+		</unit>
+		<unit id="437">
+			<segment>
+				<source>Block</source>
+				<target>Bloc</target>
+			</segment>
+		</unit>
+		<unit id="438">
+			<segment>
+				<source>Order</source>
+				<target>Ordenació</target>
+			</segment>
+		</unit>
+		<unit id="439">
+			<segment>
+				<source>Error loading theme</source>
+				<target>Error carregant el tema</target>
+			</segment>
+		</unit>
+		<unit id="440">
+			<segment>
+				<source>Error saving the data, please do an external backup of your changes to prevent data loss</source>
+				<target>Error guardant les dades, si us plau faci una còpia externa dels canvis que ha realitzat per a evitar pèrdues de dades</target>
+			</segment>
+		</unit>
+		<unit id="441">
+			<segment>
+				<source>Color</source>
+				<target>Color</target>
+			</segment>
+		</unit>
+		<unit id="442">
+			<segment>
+				<source>Hexadecimal color code</source>
+				<target>Codi de color hexadecimal</target>
+			</segment>
+		</unit>
+		<unit id="443">
+			<segment>
+				<source>All</source>
+				<target>Tots</target>
+			</segment>
+		</unit>
+		<unit id="444">
+			<segment>
+				<source>You left some required fields blank.</source>
+				<target>Ha deixat alguns camps requerits en blanc.</target>
+			</segment>
+		</unit>
+		<unit id="445">
+			<segment>
+				<source>Your contact request has been sent. We will contact you shortly.</source>
+				<target>La seva sol·licitud de contacte ha estat enviada. Aviat ens posarem en contacte amb vosté.</target>
+			</segment>
+		</unit>
+		<unit id="446">
+			<segment>
+				<source>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</source>
+				<target>Ho sentim. La seva sol·licitud de contacte no ha pogut ser entregada. Si us plau, torni-ho a intentar o esculli una altra via per a contactar amb nosaltres.</target>
+			</segment>
+		</unit>
+		<unit id="447">
+			<segment>
+				<source>Portfolio</source>
+				<target>Col·lecció</target>
+			</segment>
+		</unit>
+		<unit id="448">
+			<segment>
+				<source>Portfolio item</source>
+				<target>Element de col·lecció</target>
+			</segment>
+		</unit>
+		<unit id="449">
+			<segment>
+				<source>Enter your Navigate CMS username or e-mail address</source>
+				<target>Introdueixi el seu nom d'usuari de Navigate CMS o la seva adreça de correu electrònic</target>
+			</segment>
+		</unit>
+		<unit id="450">
+			<segment>
+				<source>Click on the link below to change your password</source>
+				<target>Faci clic en l'enllaç inferior per a canviar la seva contrassenya</target>
+			</segment>
+		</unit>
+		<unit id="451">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</source>
+				<target>Aquest és un correu automàtic enviat com a resultat d'un procés de petició de canvi de contrassenya. Si ha rebut aquest correu per error simplement ignori'l.</target>
+			</segment>
+		</unit>
+		<unit id="452">
+			<segment>
+				<source>E-mail could not be sent; please contact the administrator</source>
+				<target>No s'ha pogut enviar el correu electrònic; si us plau contacti amb l'administrador</target>
+			</segment>
+		</unit>
+		<unit id="453">
+			<segment>
+				<source>Couldn't find this username or e-mail address</source>
+				<target>No s'ha trobat aquest nom d'usuari o adreça de correu</target>
+			</segment>
+		</unit>
+		<unit id="454">
+			<segment>
+				<source>An e-mail with a confirmation link has been sent to your e-mail account.</source>
+				<target>S'ha enviat un correu electrònic a la seva adreça amb un enllaç de confirmació.</target>
+			</segment>
+		</unit>
+		<unit id="455">
+			<segment>
+				<source>Your new password has been activated.</source>
+				<target>La seva nova contrassenya ha estat activada.</target>
+			</segment>
+		</unit>
+		<unit id="456">
+			<segment>
+				<source>Edit in Navigate CMS</source>
+				<target>Editar a Navigate CMS</target>
+			</segment>
+		</unit>
+		<unit id="457">
+			<segment>
+				<source>Information</source>
+				<target>Informació</target>
+			</segment>
+		</unit>
+		<unit id="458">
+			<segment>
+				<source>Edit in place</source>
+				<target>Editar a la página</target>
+			</segment>
+		</unit>
+		<unit id="459">
+			<segment>
+				<source>Settings</source>
+				<target>Ajustos</target>
+			</segment>
+		</unit>
+		<unit id="460">
+			<segment>
+				<source>Disable</source>
+				<target>Desactivar</target>
+			</segment>
+		</unit>
+		<unit id="461">
+			<segment>
+				<source>Install from file</source>
+				<target>Instal·lar des d'un fitxer</target>
+			</segment>
+		</unit>
+		<unit id="462">
+			<segment>
+				<source>Enable</source>
+				<target>Activar</target>
+			</segment>
+		</unit>
+		<unit id="463">
+			<segment>
+				<source>Update available</source>
+				<target>Actualització disponible</target>
+			</segment>
+		</unit>
+		<unit id="464">
+			<segment>
+				<source>Favorite</source>
+				<target>Preferit</target>
+			</segment>
+		</unit>
+		<unit id="465">
+			<segment>
+				<source>Favorites</source>
+				<target>Preferits</target>
+			</segment>
+		</unit>
+		<unit id="466">
+			<segment>
+				<source>Spam</source>
+				<target>No desitjat (Spam)</target>
+			</segment>
+		</unit>
+		<unit id="467">
+			<segment>
+				<source>Scope</source>
+				<target>Àmbit</target>
+			</segment>
+		</unit>
+		<unit id="468">
+			<segment>
+				<source>Integer</source>
+				<target>Enter</target>
+			</segment>
+		</unit>
+		<unit id="469">
+			<segment>
+				<source>String</source>
+				<target>Cadena</target>
+			</segment>
+		</unit>
+		<unit id="470">
+			<segment>
+				<source>System</source>
+				<target>Sistema</target>
+			</segment>
+		</unit>
+		<unit id="471">
+			<segment>
+				<source>Variant</source>
+				<target>Variant</target>
+			</segment>
+		</unit>
+		<unit id="472">
+			<segment>
+				<source>Add</source>
+				<target>Afegir</target>
+			</segment>
+		</unit>
+		<unit id="473">
+			<segment>
+				<source>Region</source>
+				<target>Regió</target>
+			</segment>
+		</unit>
+		<unit id="474">
+			<segment>
+				<source>Server locale</source>
+				<target>Locale al servidor</target>
+			</segment>
+		</unit>
+		<unit id="475">
+			<segment>
+				<source>Export</source>
+				<target>Exportar</target>
+			</segment>
+		</unit>
+		<unit id="476">
+			<segment>
+				<source>Copy to clipboard</source>
+				<target>Copiar al portapapers</target>
+			</segment>
+		</unit>
+		<unit id="477">
+			<segment>
+				<source>Duplicate</source>
+				<target>Duplicar</target>
+			</segment>
+		</unit>
+		<unit id="478">
+			<segment>
+				<source>Item duplicated successfully.</source>
+				<target>Element duplicat correctament.</target>
+			</segment>
+		</unit>
+		<unit id="479">
+			<segment>
+				<source>Structure entry</source>
+				<target>Entrada a estructura</target>
+			</segment>
+		</unit>
+		<unit id="480">
+			<segment>
+				<source>Export sample content</source>
+				<target>Exportar contingut d'exemple</target>
+			</segment>
+		</unit>
+		<unit id="481">
+			<segment>
+				<source>Select all</source>
+				<target>Seleccionar tot</target>
+			</segment>
+		</unit>
+		<unit id="482">
+			<segment>
+				<source>All sample files should be placed in a folder. Navigate CMS will also add files used in contents.</source>
+				<target>Tots els fitxers d'exemple hauran d'estar a una carpeta. Navigate CMS afegirà tots els fitxers utilitzats als continguts.</target>
+			</segment>
+		</unit>
+		<unit id="483">
+			<segment>
+				<source>Do you really want to import the default website for the selected theme?</source>
+				<target>Realment vol importar el lloc web per defecte del tema escollit?</target>
+			</segment>
+		</unit>
+		<unit id="484">
+			<segment>
+				<source>Demo website</source>
+				<target>Web demo</target>
+			</segment>
+		</unit>
+		<unit id="485">
+			<segment>
+				<source>Aliases</source>
+				<target>Alternatives</target>
+			</segment>
+		</unit>
+		<unit id="486">
+			<segment>
+				<source>Alias</source>
+				<target>Àlies</target>
+			</segment>
+		</unit>
+		<unit id="487">
+			<segment>
+				<source>Real URL</source>
+				<target>Adreça real</target>
+			</segment>
+		</unit>
+		<unit id="488">
+			<segment>
+				<source>Rich textarea</source>
+				<target>Àrea de text amb estils</target>
+			</segment>
+		</unit>
+		<unit id="489">
+			<segment>
+				<source>Source code</source>
+				<target>Codi fuente</target>
+			</segment>
+		</unit>
+		<unit id="490">
+			<segment>
+				<source>ID of the file or public video URL</source>
+				<target>ID del fitxer o URL pública del vídeo</target>
+			</segment>
+		</unit>
+		<unit id="491">
+			<segment>
+				<source>Class</source>
+				<target>Classe</target>
+			</segment>
+		</unit>
+		<unit id="492">
+			<segment>
+				<source>No matches found</source>
+				<target>No s'han trobat resultats</target>
+			</segment>
+		</unit>
+		<unit id="493">
+			<segment>
+				<source>Loading more results...</source>
+				<target>Carregant més dades...</target>
+			</segment>
+		</unit>
+		<unit id="494">
+			<segment>
+				<source>Searching...</source>
+				<target>Cercant...</target>
+			</segment>
+		</unit>
+		<unit id="495">
+			<segment>
+				<source>Please enter at least {number} characters</source>
+				<target>Si us plau, introduexi un mínim de {number} caràcters</target>
+			</segment>
+		</unit>
+		<unit id="496">
+			<segment>
+				<source>You can only select {number} items</source>
+				<target>Només pot escollir {number} elements</target>
+			</segment>
+		</unit>
+		<unit id="497">
+			<segment>
+				<source>Do you really want to erase this data?</source>
+				<target>Realment vol eliminar les dades?</target>
+			</segment>
+		</unit>
+		<unit id="498">
+			<segment>
+				<source>Additional scripts</source>
+				<target>Scripts addicionals</target>
+			</segment>
+		</unit>
+		<unit id="499">
+			<segment>
+				<source>Open</source>
+				<target>Obrir</target>
+			</segment>
+		</unit>
+		<unit id="500">
+			<segment>
+				<source>Rename</source>
+				<target>Canviar nom</target>
+			</segment>
+		</unit>
+		<unit id="501">
+			<segment>
+				<source>Previous</source>
+				<target>Anterior</target>
+			</segment>
+		</unit>
+		<unit id="502">
+			<segment>
+				<source>Next</source>
+				<target>Següent</target>
+			</segment>
+		</unit>
+		<unit id="503">
+			<segment>
+				<source>Now</source>
+				<target>Ara</target>
+			</segment>
+		</unit>
+		<unit id="504">
+			<segment>
+				<source>Time</source>
+				<target>Hora</target>
+			</segment>
+		</unit>
+		<unit id="505">
+			<segment>
+				<source>Redirect to</source>
+				<target>Redirigir a</target>
+			</segment>
+		</unit>
+		<unit id="506">
+			<segment>
+				<source>Groups</source>
+				<target>Grups</target>
+			</segment>
+		</unit>
+		<unit id="507">
+			<segment>
+				<source>Deselect all</source>
+				<target>Deseleccionar tot</target>
+			</segment>
+		</unit>
+		<unit id="508">
+			<segment>
+				<source>Collapse</source>
+				<target>Plegar</target>
+			</segment>
+		</unit>
+		<unit id="509">
+			<segment>
+				<source>Expand</source>
+				<target>Desplegar</target>
+			</segment>
+		</unit>
+		<unit id="510">
+			<segment>
+				<source>Selected items</source>
+				<target>Elements seleccionats</target>
+			</segment>
+		</unit>
+		<unit id="511">
+			<segment>
+				<source>Available items</source>
+				<target>Elements disponibles</target>
+			</segment>
+		</unit>
+		<unit id="512">
+			<segment>
+				<source>Selected web user groups</source>
+				<target>Selecció de grups d'usuaris web</target>
+			</segment>
+		</unit>
+		<unit id="513">
+			<segment>
+				<source>Metatags</source>
+				<target>Metatags</target>
+			</segment>
+		</unit>
+		<unit id="514">
+			<segment>
+				<source>Additional headers</source>
+				<target>Capçaleres adicionals</target>
+			</segment>
+		</unit>
+		<unit id="515">
+			<segment>
+				<source>Not found paths</source>
+				<target>Les rutes no trobades</target>
+			</segment>
+		</unit>
+		<unit id="516">
+			<segment>
+				<source>Show a blank page</source>
+				<target>Mostren una pàgina en blanc</target>
+			</segment>
+		</unit>
+		<unit id="517">
+			<segment>
+				<source>Redirect to home page</source>
+				<target>Redirigeixen a la pàgina d'inici</target>
+			</segment>
+		</unit>
+		<unit id="518">
+			<segment>
+				<source>Use the 404 template of a theme (if exists)</source>
+				<target>Fan servir la plantilla 404 d'un tema (si existeix)</target>
+			</segment>
+		</unit>
+		<unit id="519">
+			<segment>
+				<source>Send a 404 HTTP error header</source>
+				<target>Envien una capçalera d'error HTTP 404</target>
+			</segment>
+		</unit>
+		<unit id="520">
+			<segment>
+				<source>No website found; a default one has been created.</source>
+				<target>Cap lloc web trobat; se n'ha creat un per defecte.</target>
+			</segment>
+		</unit>
+		<unit id="521">
+			<segment>
+				<source>Extra</source>
+				<target>Extra</target>
+			</segment>
+		</unit>
+		<unit id="522">
+			<segment>
+				<source>Remove Spam</source>
+				<target>Esborrar Spam</target>
+			</segment>
+		</unit>
+		<unit id="523">
+			<segment>
+				<source>This action can NOT be undone.</source>
+				<target>Aquesta operació no podrà desfer-se.</target>
+			</segment>
+		</unit>
+		<unit id="524">
+			<segment>
+				<source>Items removed successfully</source>
+				<target>Elements esborrats correctament</target>
+			</segment>
+		</unit>
+		<unit id="525">
+			<segment>
+				<source>Remove comment (without confirmation)</source>
+				<target>Esborrar comentari (sense confirmació)</target>
+			</segment>
+		</unit>
+		<unit id="526">
+			<segment>
+				<source>Translations</source>
+				<target>Traduccions</target>
+			</segment>
+		</unit>
+		<unit id="527">
+			<segment>
+				<source>Marketplace</source>
+				<target>Mercat</target>
+			</segment>
+		</unit>
+		<unit id="528">
+			<segment>
+				<source>Available</source>
+				<target>Disponibles</target>
+			</segment>
+		</unit>
+		<unit id="529">
+			<segment>
+				<source>It has not been possible to download the item from the marketplace.</source>
+				<target>No ha estat possible descarregar l'objecte des de la botiga.</target>
+			</segment>
+		</unit>
+		<unit id="530">
+			<segment>
+				<source>You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.</source>
+				<target>Haurà de visitar la seva zona privada a la botiga per a descarregar el fitxer, llavors fer servir el botó <strong>Instal·lar des de fitxer</strong> que trobarà a la barra d'accions de la dreta.</target>
+			</segment>
+		</unit>
+		<unit id="531">
+			<segment>
+				<source>Sorry for the inconvenience.</source>
+				<target>Disculpi les molèsties.</target>
+			</segment>
+		</unit>
+		<unit id="532">
+			<segment>
+				<source>Navigate CMS Marketplace</source>
+				<target>Botiga de Navigate CMS</target>
+			</segment>
+		</unit>
+		<unit id="533">
+			<segment>
+				<source>Find element by title</source>
+				<target>Trobar un element per títol</target>
+			</segment>
+		</unit>
+		<unit id="534">
+			<segment>
+				<source>You can only select elements which have their own path (no category embedded elements)</source>
+				<target>Només pot escollir elements que tinguin ruta pròpia (no elements incrustats a una categoria)</target>
+			</segment>
+		</unit>
+		<unit id="535">
+			<segment>
+				<source>Find user by name</source>
+				<target>Trobar un usuari per nom</target>
+			</segment>
+		</unit>
+		<unit id="536">
+			<segment>
+				<source>Keywords</source>
+				<target>Paraules clau</target>
+			</segment>
+		</unit>
+		<unit id="537">
+			<segment>
+				<source>Can't remove the theme because it is currently being used by another website.</source>
+				<target>No es pot esborrar el tema perquè actualment està essent utilitzat per un altre lloc web.</target>
+			</segment>
+		</unit>
+		<unit id="538">
+			<segment>
+				<source>Private comment</source>
+				<target>Comentari privat</target>
+			</segment>
+		</unit>
+		<unit id="539">
+			<segment>
+				<source>Document</source>
+				<target>Document</target>
+			</segment>
+		</unit>
+		<unit id="540">
+			<segment>
+				<source>Focal point</source>
+				<target>Punt focal</target>
+			</segment>
+		</unit>
+		<unit id="541">
+			<segment>
+				<source>Your email has been successfully subscribed to the newsletter.</source>
+				<target>El seu correu electrònic ha estat correctament subscrit al butlletí.</target>
+			</segment>
+		</unit>
+		<unit id="542">
+			<segment>
+				<source>There was a problem subscribing your email to the newsletter.</source>
+				<target>Hi ha hagut un problema subscribint el seu correu electrònic al butlletí.</target>
+			</segment>
+		</unit>
+		<unit id="543">
+			<segment>
+				<source>Block type</source>
+				<target>Tipus de bloc</target>
+			</segment>
+		</unit>
+		<unit id="544">
+			<segment>
+				<source>Block groups</source>
+				<target>Grups de blocs</target>
+			</segment>
+		</unit>
+		<unit id="545">
+			<segment>
+				<source>Content author</source>
+				<target>Autor del contingut</target>
+			</segment>
+		</unit>
+		<unit id="546">
+			<segment>
+				<source>Actions</source>
+				<target>Accions</target>
+			</segment>
+		</unit>
+		<unit id="547">
+			<segment>
+				<source>Multi language</source>
+				<target>Multi-idioma</target>
+			</segment>
+		</unit>
+		<unit id="548">
+			<segment>
+				<source>Method</source>
+				<target>Mètode</target>
+			</segment>
+		</unit>
+		<unit id="549">
+			<segment>
+				<source>Links</source>
+				<target>Enllaços</target>
+			</segment>
+		</unit>
+		<unit id="550">
+			<segment>
+				<source>Help text</source>
+				<target>Text d'ajuda</target>
+			</segment>
+		</unit>
+		<unit id="551">
+			<segment>
+				<source>Date to display</source>
+				<target>Data a mostrar</target>
+			</segment>
+		</unit>
+		<unit id="552">
+			<segment>
+				<source>Exclusions</source>
+				<target>Exclusions</target>
+			</segment>
+		</unit>
+		<unit id="553">
+			<segment>
+				<source>Fragments</source>
+				<target>Fragments</target>
+			</segment>
+		</unit>
+		<unit id="554">
+			<segment>
+				<source>Hide</source>
+				<target>Amagar</target>
+			</segment>
+		</unit>
+		<unit id="555">
+			<segment>
+				<source>Item has been successfully published.</source>
+				<target>L'element ha estat publicat correctament.</target>
+			</segment>
+		</unit>
+		<unit id="556">
+			<segment>
+				<source>Block from group</source>
+				<target>Bloc del grup</target>
+			</segment>
+		</unit>
+		<unit id="557">
+			<segment>
+				<source>Poll</source>
+				<target>Enquesta</target>
+			</segment>
+		</unit>
+		<unit id="558">
+			<segment>
+				<source>Question</source>
+				<target>Pregunta</target>
+			</segment>
+		</unit>
+		<unit id="559">
+			<segment>
+				<source>Answers</source>
+				<target>Respostes</target>
+			</segment>
+		</unit>
+		<unit id="560">
+			<segment>
+				<source>Vote</source>
+				<target>Votar</target>
+			</segment>
+		</unit>
+		<unit id="561">
+			<segment>
+				<source>Create a new folder</source>
+				<target>Crear nova carpeta</target>
+			</segment>
+		</unit>
+		<unit id="562">
+			<segment>
+				<source>Results</source>
+				<target>Resultats</target>
+			</segment>
+		</unit>
+		<unit id="563">
+			<segment>
+				<source>Last seen</source>
+				<target>Última visita</target>
+			</segment>
+		</unit>
+		<unit id="564">
+			<segment>
+				<source>%s seconds ago</source>
+				<target>fa %s segons</target>
+			</segment>
+		</unit>
+		<unit id="565">
+			<segment>
+				<source>one minute ago</source>
+				<target>fa un minut</target>
+			</segment>
+		</unit>
+		<unit id="566">
+			<segment>
+				<source>%m minutes ago</source>
+				<target>fa %m minuts</target>
+			</segment>
+		</unit>
+		<unit id="567">
+			<segment>
+				<source>an hour ago</source>
+				<target>fa una hora</target>
+			</segment>
+		</unit>
+		<unit id="568">
+			<segment>
+				<source>%h hours ago</source>
+				<target>fa %h hores</target>
+			</segment>
+		</unit>
+		<unit id="569">
+			<segment>
+				<source>yesterday</source>
+				<target>ahir</target>
+			</segment>
+		</unit>
+		<unit id="570">
+			<segment>
+				<source>%d days ago</source>
+				<target>fa %d dies</target>
+			</segment>
+		</unit>
+		<unit id="571">
+			<segment>
+				<source>a week ago</source>
+				<target>fa una setmana</target>
+			</segment>
+		</unit>
+		<unit id="572">
+			<segment>
+				<source>%w weeks ago</source>
+				<target>fa %w setmanes</target>
+			</segment>
+		</unit>
+		<unit id="573">
+			<segment>
+				<source>a month ago</source>
+				<target>fa un mes</target>
+			</segment>
+		</unit>
+		<unit id="574">
+			<segment>
+				<source>%m months ago</source>
+				<target>fa %m mesos</target>
+			</segment>
+		</unit>
+		<unit id="575">
+			<segment>
+				<source>one year ago</source>
+				<target>fa un any</target>
+			</segment>
+		</unit>
+		<unit id="576">
+			<segment>
+				<source>%y years ago</source>
+				<target>fa %y anys</target>
+			</segment>
+		</unit>
+		<unit id="577">
+			<segment>
+				<source>Latest modifications</source>
+				<target>Últimes modificacions</target>
+			</segment>
+		</unit>
+		<unit id="578">
+			<segment>
+				<source>Could not connect to check updates</source>
+				<target>No s'ha pogut connectar per a comprovar les actualitzacions</target>
+			</segment>
+		</unit>
+		<unit id="579">
+			<segment>
+				<source>Latest searches</source>
+				<target>Últimes cerques</target>
+			</segment>
+		</unit>
+		<unit id="580">
+			<segment>
+				<source>Used in this page</source>
+				<target>S'utilitza en aquesta pàgina</target>
+			</segment>
+		</unit>
+		<unit id="581">
+			<segment>
+				<source>None</source>
+				<target>Cap</target>
+			</segment>
+		</unit>
+		<unit id="582">
+			<segment>
+				<source>default</source>
+				<target>per defecte</target>
+			</segment>
+		</unit>
+		<unit id="583">
+			<segment>
+				<source>Same width</source>
+				<target>Mateixa amplada</target>
+			</segment>
+		</unit>
+		<unit id="584">
+			<segment>
+				<source>Same height</source>
+				<target>Mateixa alçada</target>
+			</segment>
+		</unit>
+		<unit id="585">
+			<segment>
+				<source>Same width &amp; height (scaled)</source>
+				<target>Mateixa mida (escalant)</target>
+			</segment>
+		</unit>
+		<unit id="586">
+			<segment>
+				<source>Same width &amp; height (cropped)</source>
+				<target>Mateixa mida (tallant)</target>
+			</segment>
+		</unit>
+		<unit id="587">
+			<segment>
+				<source>Full available width</source>
+				<target>Tot l'ample disponible</target>
+			</segment>
+		</unit>
+		<unit id="588">
+			<segment>
+				<source>Replace image</source>
+				<target>Reemplaçar imatge</target>
+			</segment>
+		</unit>
+		<unit id="589">
+			<segment>
+				<source>North America</source>
+				<target>Amèrica del nord</target>
+			</segment>
+		</unit>
+		<unit id="590">
+			<segment>
+				<source>South America</source>
+				<target>Amèrica del sud</target>
+			</segment>
+		</unit>
+		<unit id="591">
+			<segment>
+				<source>Oceania</source>
+				<target>Oceania</target>
+			</segment>
+		</unit>
+		<unit id="592">
+			<segment>
+				<source>Company</source>
+				<target>Empresa</target>
+			</segment>
+		</unit>
+		<unit id="593">
+			<segment>
+				<source>Add new child</source>
+				<target>Afegir fill</target>
+			</segment>
+		</unit>
+		<unit id="594">
+			<segment>
+				<source>Set as homepage</source>
+				<target>Definir com a pàgina d'inici</target>
+			</segment>
+		</unit>
+		<unit id="595">
+			<segment>
+				<source>Right now the homepage is set from a structure element which allows multi language redirect.</source>
+				<target>Ara mateix la pàgina d'inici està definida com un element de l'estructura que permet la redirecció multi-idioma.</target>
+			</segment>
+		</unit>
+		<unit id="596">
+			<segment>
+				<source>Do you want to enter a fixed path for the homepage?</source>
+				<target>Vols introduir una ruta fixa per a la pàgina d'inici?</target>
+			</segment>
+		</unit>
+		<unit id="597">
+			<segment>
+				<source>Share files in Media browser</source>
+				<target>Compartir fitxers a la finestra Multimedia</target>
+			</segment>
+		</unit>
+		<unit id="598">
+			<segment>
+				<source>Only between websites of the current Navigate CMS installation</source>
+				<target>Només entre llocs web d'aquesta instal·lació de Navigate CMS</target>
+			</segment>
+		</unit>
+		<unit id="599">
+			<segment>
+				<source>Sorry, can't display a theme block type info.</source>
+				<target>No és posible mostrar la informació d'un tipus de bloc d'un tema.</target>
+			</segment>
+		</unit>
+		<unit id="600">
+			<segment>
+				<source>Share</source>
+				<target>Compartir</target>
+			</segment>
+		</unit>
+		<unit id="601">
+			<segment>
+				<source>Import</source>
+				<target>Importar</target>
+			</segment>
+		</unit>
+		<unit id="602">
+			<segment>
+				<source>Edit language</source>
+				<target>Editar idioma</target>
+			</segment>
+		</unit>
+		<unit id="603">
+			<segment>
+				<source>Replace URLs</source>
+				<target>Reemplaçar URLs</target>
+			</segment>
+		</unit>
+		<unit id="604">
+			<segment>
+				<source>Old</source>
+				<target>Anterior</target>
+			</segment>
+		</unit>
+		<unit id="605">
+			<segment>
+				<source>New</source>
+				<target>Nova</target>
+			</segment>
+		</unit>
+		<unit id="606">
+			<segment>
+				<source>Double quotes not allowed, use single quotes only</source>
+				<target>No es permeten cometes dobles, només poden usar-se cometes simples</target>
+			</segment>
+		</unit>
+	</file>
+</xliff>
