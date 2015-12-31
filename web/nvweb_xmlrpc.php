@@ -207,7 +207,8 @@ function nvweb_xmlrpc()
 					   )
 				');
 
-				$category = $DB->result('id')[0];
+				$category = $DB->result('id');
+				$category = $category[0];
 				if(!isset($post['post_type']) || empty($post['post_type']))
 					$post['post_type'] = 'post';
 			}
