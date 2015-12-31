@@ -112,7 +112,7 @@ class webdictionary
 				$node_id_filter = '';
 
 			$DB->execute('DELETE FROM nv_webdictionary 
-								WHERE website = '.$website->id.' 
+								WHERE website = '.protect($this->website).'
 								  AND subtype = '.protect($this->subtype).'
 								  AND theme = '.protect($this->theme).' 
 								  AND node_type = '.protect($this->node_type).
@@ -142,7 +142,7 @@ class webdictionary
 				WHERE subtype = '.protect($this->subtype).'
 				  AND node_type = '.protect($this->node_type).'
 				  AND theme = '.protect($this->theme).'
-				  AND website = '.$website->id.
+				  AND website = '.protect($this->website).
 				  $node_id_filter
 			);
 		}
@@ -154,6 +154,9 @@ class webdictionary
 	{
 		global $DB;
 		global $website;
+
+		if(empty($this->website))
+			$this->website = $website->id;
 		
 		if(empty($this->node_id)) 
 		{
@@ -163,7 +166,7 @@ class webdictionary
 				'nv_webdictionary',
 				' subtype = '.protect($this->subtype).'
 				       AND node_type = '.protect($this->node_type).'
-					   AND website = '.$website->id
+					   AND website = '.$this->website
 			);
 
 			$this->node_id = intval($tmp) + 1;
@@ -173,24 +176,23 @@ class webdictionary
 		foreach($this->text as $lang => $text)
 		{
 			if(empty($text)) continue;
-			
-			if(!empty($this->theme))
-				$node_id = 0;
-			else
-				$node_id = $this->node_id;
-						
-			$ok = $DB->execute(' INSERT INTO nv_webdictionary
-									(id, website, node_type, node_id, theme, subtype, lang, `text`)
-									VALUES 
-									( 0,
-									  '.protect($website->id).',
-									  '.protect($this->node_type).',
-									  '.protect($node_id).',
-									  '.protect($this->theme).',
-									  '.protect($this->subtype).',
-									  '.protect($lang).',
-									  '.protect($text).'								  
-									)');
+
+			$ok = $DB->execute('
+ 				INSERT INTO nv_webdictionary
+					(id, website, node_type, node_id, theme, subtype, lang, `text`)
+				VALUES
+					( 0, :website, :node_type, :node_id, :theme, :subtype, :lang, :text)
+				',
+				array(
+					":website" => $this->website,
+					":node_type" => $this->node_type,
+					":node_id" => !empty($this->theme)? 0 : $this->node_id,
+					":theme" => $this->theme,
+					":subtype" => $this->subtype,
+					":lang" => $lang,
+					":text" => $text
+				)
+			);
 			
 			if(!$ok) throw new Exception($DB->get_last_error());
 		}
@@ -219,10 +221,12 @@ class webdictionary
 	{
 		global $DB;
 		
-		$DB->query('SELECT subtype, lang, text
-					  FROM nv_webdictionary 
-					 WHERE node_type = '.protect($node_type).'
-					   AND node_id = '.protect($node_id));				
+		$DB->query('
+			SELECT subtype, lang, text
+			  FROM nv_webdictionary
+			 WHERE node_type = '.protect($node_type).'
+			   AND node_id = '.protect($node_id)
+		);
 				
 		$data = $DB->result();
 		
@@ -237,19 +241,23 @@ class webdictionary
 		return $dictionary;	
 	}
 
-	public static function save_element_strings($node_type, $node_id, $dictionary)
+	public static function save_element_strings($node_type, $node_id, $dictionary, $website_id=null)
 	{
 		global $DB;
 		global $website;
-		
-	    if(empty($node_id)) throw new Exception('ERROR webdictionary: No ID!');
+
+		if(empty($website_id))
+			$website_id = $website->id;
+
+	    if(empty($node_id))
+		    throw new Exception('ERROR webdictionary: No ID! ['.$node_type.']');
 
 		// delete old entries
 		$DB->execute('
 		    DELETE FROM nv_webdictionary
              WHERE node_type = '.protect($node_type).'
                AND node_id = '.protect($node_id).'
-               AND website = '.$website->id
+               AND website = '.$website_id
         );
 							  
 		// and now insert the new values
@@ -261,19 +269,21 @@ class webdictionary
 			{	
 				// NO error checking
 				$DB->execute('
-				    INSERT INTO nv_webdictionary
-                    (	id,	website, node_type, theme, node_id, subtype, lang, `text`)
-                    VALUES
-                    (	0,
-                        '.protect($website->id).',
-                        '.protect($node_type).',
-                        "",
-                        '.protect($node_id).',
-                        '.protect($subtype).',
-                        '.protect($lang).',
-                        '.protect($litem).'
-                    )'
-                );
+	                INSERT INTO nv_webdictionary
+						(id, website, node_type, node_id, theme, subtype, lang, `text`)
+					VALUES
+						( 0, :website, :node_type, :node_id, :theme, :subtype, :lang, :text)
+					',
+					array(
+						":website" => $website_id,
+						":node_type" => $node_type,
+						":node_id" => $node_id,
+						":theme" => "",
+						":subtype" => $subtype,
+						":lang" => $lang,
+						":text" => $litem
+					)
+				);
 			}
 		}
 	}

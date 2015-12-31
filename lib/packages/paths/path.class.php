@@ -52,16 +52,16 @@ class path
 	public function delete()
 	{
 		global $DB;
-		global $website;
 
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute(' DELETE FROM nv_paths 
-							WHERE id = '.intval($this->id).'
-							  AND website = '.$website->id.'
-              				LIMIT 1 '
-						);
+			$DB->execute('
+ 				DELETE FROM nv_paths
+			     WHERE id = '.intval($this->id).'
+				   AND website = '.$this->website.'
+              	 LIMIT 1'
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -72,18 +72,23 @@ class path
 		global $DB;
 		global $website;
 	    
-		$ok = $DB->execute(' INSERT INTO nv_paths
-								(id, website, type, object_id, lang, path, cache_file, cache_expires)
-								VALUES 
-								( 0,
-								  '.$website->id.',								  
-								  '.protect($this->type).',
-								  '.protect($this->object_id).',
-								  '.protect($this->lang).',
-								  '.protect($path).',
-								  '.protect($cache_file).',
-				                  '.protect($cache_expires).'								  
-								)');
+		$ok = $DB->execute('
+ 			INSERT INTO nv_paths
+			(id, website, type, object_id, lang, path, cache_file, cache_expires)
+			VALUES
+			( 0, :website, :type, :object_id, :lang, :path, :cache_file, :cache_expires)
+			',
+			array(
+		    	"type" => $this->type,
+				"object_id" => $this->object_id,
+				"lang" => $this->lang,
+				"path" => $this->path,
+				"cache_file" => $this->cache_file,
+				"cache_expires" => $this->cache_expires,
+                "id" => $this->id,
+			    "website" => empty($this->website)? $website->id : $this->website
+			)
+		);
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
@@ -97,17 +102,23 @@ class path
 		global $DB;
 		global $website;
 	    
-		$ok = $DB->execute(' UPDATE nv_paths
-								SET 
-								  type = '.protect($this->type).',
-								  object_id = '.protect($this->object_id).',
-								  lang = '.protect($this->lang).',
-								  path = '.protect($this->path).',
-								  cache_file = '.protect($this->cache_file).',
-                 				  cache_expires'.protect($this->cache_expires).'
-                 				WHERE id = '.protect($this->id).'
-								  AND website = '.$website->id);
-		
+		$ok = $DB->execute('
+ 			UPDATE nv_paths
+			   SET type = :type, object_id = :object_id, lang = :lang,
+			   	   path = :path, cache_file = :cache_file, cache_expires = :cache_expires,
+			   	   id = :id, website = :website',
+			array(
+		    	"type" => $this->type,
+				"object_id" => $this->object_id,
+				"lang" => $this->lang,
+				"path" => $this->path,
+				"cache_file" => $this->cache_file,
+				"cache_expires" => $this->cache_expires,
+                "id" => $this->id,
+			    "website" => $this->website
+			)
+		);
+
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
 		return true;
@@ -118,11 +129,13 @@ class path
 		global $DB;
 		global $website;
 		
-		$ok = $DB->query('SELECT *
-					        FROM nv_paths 
-				           WHERE type = '.protect($type).'
-			                 AND object_id = '.protect($object_id).'
-							 AND website = '.$website->id);
+		$ok = $DB->query('
+			SELECT *
+			  FROM nv_paths
+			 WHERE type = '.protect($type).'
+			   AND object_id = '.protect($object_id).'
+			   AND website = '.$website->id
+		);
 
 	    if(!$ok) throw new Exception($DB->get_last_error());
     
@@ -139,18 +152,23 @@ class path
 		return $out;	
 	}
 
-	public static function saveElementPaths($type, $object_id, $paths)
+	public static function saveElementPaths($type, $object_id, $paths, $website_id=null)
 	{
 		global $DB;
 		global $website;
+
+		if(empty($website_id))
+			$website_id = $website->id;
 		
 	    if(empty($object_id)) throw new Exception('ERROR path: No ID!');
 
 		// delete old entries
-		$DB->execute('DELETE FROM nv_paths 
-							WHERE type = '.protect($type).'
-							  AND object_id = '.protect($object_id).'
-							  AND website = '.$website->id);
+		$DB->execute('
+			DELETE FROM nv_paths
+			WHERE type = '.protect($type).'
+			  AND object_id = '.protect($object_id).'
+			  AND website = '.$website_id
+		);
 
         if(!is_array($paths))
             return;
@@ -160,18 +178,20 @@ class path
 		{
     	  	if(empty($path)) continue;
     
-			$ok = $DB->execute(' INSERT INTO nv_paths
-									(id, website, type, object_id, lang, path, cache_file, cache_expires)
-									VALUES 
-									( 0,
-									  '.$website->id.',
-									  '.protect($type).',
-									  '.protect($object_id).',
-									  '.protect($lang).',
-									  '.protect($path).',
-									  "",
-									  ""								  
-									)');
+			$ok = $DB->execute('
+ 				INSERT INTO nv_paths
+				(id, website, type, object_id, lang, path, cache_file, cache_expires)
+				VALUES
+				( 0, :website, :type, :object_id, :lang, :path, "", "" )
+				',
+				array(
+					':website' => $website_id,
+					':type' => $type,
+					':object_id' => $object_id,
+					':lang' => $lang,
+					':path' => $path
+				)
+			);
   			
   			if(!$ok) throw new Exception($DB->get_last_error());
 		}
@@ -185,7 +205,11 @@ class path
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_paths WHERE website = '.protect($website->id), 'object');
+        $DB->query('
+			SELECT * FROM nv_paths
+			WHERE website = '.protect($website->id),
+	        'object'
+        );
         $out = $DB->result();
 
         if($type='json')

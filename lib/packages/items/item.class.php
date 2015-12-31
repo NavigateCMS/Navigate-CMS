@@ -214,10 +214,10 @@ class item
 		if(!empty($this->id))
 		{
 			// remove dictionary elements
-			webdictionary::save_element_strings('item', $this->id, array());
+			webdictionary::save_element_strings('item', $this->id, array(), $this->website);
 			
 			// remove path elements
-			path::saveElementPaths('item', $this->id, array());
+			path::saveElementPaths('item', $this->id, array(), $this->website);
 			
 			// remove all votes assigned to element
 			webuser_vote::remove_object_votes('item', $this->id);
@@ -229,7 +229,7 @@ class item
 			$DB->execute('
 			    DELETE FROM nv_items
 				 WHERE id = '.intval($this->id).'
-				   AND website = '.$website->id
+				   AND website = '.$this->website
             );
 		}
 		
@@ -265,6 +265,9 @@ class item
         if($groups == 'g')
             $groups = '';
 
+		if(empty($this->website))
+			$this->website = $website->id;
+
         $ok = $DB->execute('
             INSERT INTO nv_items
                 (id, website, association, category, embedding, template,
@@ -281,8 +284,8 @@ class item
              ',
             array(
                 ":id" => 0,
-                ":website" => $website->id,
-                ":association" => (is_null($this->association)? 'free' : 'category'),
+                ":website" => $this->website,
+                ":association" => (is_null($this->association)? 'free' : $this->association),
                 ":category" => (is_null($this->category)? '' : $this->category),
                 ":embedding" => (is_null($this->embedding)? '0' : $this->embedding),
                 ":template" => (is_null($this->template)? '' : $this->template),
@@ -308,9 +311,9 @@ class item
 		
 		$this->id = $DB->get_last_id();
 				
-		webdictionary::save_element_strings('item', $this->id, $this->dictionary);
-		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary);
-   		path::saveElementPaths('item', $this->id, $this->paths);		
+		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
+		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
+   		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
 		
 		return true;
 	}
@@ -361,31 +364,31 @@ class item
                 ":association"	    => $this->association,
                 ":category" 	    => $this->category,
                 ":embedding"        => $this->embedding,
-                ":template" 	    =>  $this->template,
-                ":date_to_display"	=>   $this->date_to_display,
-                ":date_published"	=>   $this->date_published,
-                ":date_unpublish"	=>   $this->date_unpublish,
-                ":date_modified"    =>   $this->date_modified,
-                ":author"   	    =>   $this->author,
-                ":galleries"        =>  serialize($this->galleries),
+                ":template" 	    => $this->template,
+                ":date_to_display"	=> $this->date_to_display,
+                ":date_published"	=> $this->date_published,
+                ":date_unpublish"	=> $this->date_unpublish,
+                ":date_modified"    => $this->date_modified,
+                ":author"   	    => $this->author,
+                ":galleries"        => serialize($this->galleries),
                 ":comments_enabled_to"  => $this->comments_enabled_to,
                 ":comments_moderator"   => $this->comments_moderator,
-                ":access"	        =>  $this->access,
-                ":groups"           =>  $groups,
-                ":permission" 	    =>  $this->permission,
-                ":views" 	        =>  $this->views,
-                ":votes" 	        =>  $this->votes,
-                ":score" 	        =>  $this->score,
-                ":id"               =>   $this->id,
-                ":website"          =>   $website->id
+                ":access"	        => $this->access,
+                ":groups"           => $groups,
+                ":permission" 	    => $this->permission,
+                ":views" 	        => $this->views,
+                ":votes" 	        => $this->votes,
+                ":score" 	        => $this->score,
+                ":id"               => $this->id,
+                ":website"          => $this->website
             )
         );
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 
-		webdictionary::save_element_strings('item', $this->id, $this->dictionary);
-		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary);
-   		path::saveElementPaths('item', $this->id, $this->paths);		
+		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
+		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
+   		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
 				
 		return true;
 	}

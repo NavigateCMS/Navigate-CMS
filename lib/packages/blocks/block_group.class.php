@@ -74,10 +74,11 @@ class block_group
 
 		if(!empty($this->id))
 		{
-			$DB->execute('DELETE FROM nv_block_groups
-								WHERE id = '.intval($this->id).'
-						  		  AND website = '.$website->id
-						);
+			$DB->execute('
+				DELETE FROM nv_block_groups
+			     WHERE id = '.intval($this->id).'
+				   AND website = '.$website->id
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -95,7 +96,7 @@ class block_group
                 ( 0, :website, :code, :title, :notes, :blocks )
             ',
             array(
-                ':website'          =>  $website->id,
+                ':website'          =>  empty($this->website)? $website->id : $this->website,
                 ':code'             =>  $this->code,
                 ':title'            =>  $this->title,
                 ':notes'            =>  $this->notes,

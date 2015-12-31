@@ -58,16 +58,23 @@ class template
 		$this->enabled		= $main->enabled;						
 	}
 	
-	public function load_from_theme($id)
+	public function load_from_theme($id, $theme_name=null)
 	{
 		global $theme;
 		global $website;
 
-		$template = NULL;
-		for($t=0; $t < count($theme->templates); $t++)
+		$ws_theme = $theme;
+		if(empty($ws_theme) && !empty($theme_name))
 		{
-			if($theme->templates[$t]->type == $id)
-				$template = $theme->templates[$t];	
+			$ws_theme = new theme();
+			$ws_theme->load($theme_name);
+		}
+
+		$template = NULL;
+		for($t=0; $t < count($ws_theme->templates); $t++)
+		{
+			if($ws_theme->templates[$t]->type == $id)
+				$template = $ws_theme->templates[$t];
 		}
 
 		if(!$template) return;
@@ -86,14 +93,13 @@ class template
             'statistics' => 1,
             'permission' => 0,
             'enabled' => 1,
-            'properties' => array(
-            )
+            'properties' => array()
         );
 
 		$this->id			= $template->type;
-		$this->website		= $website->id;		
-		$this->title  		= $theme->template_title($template->type);
-		$this->file			= NAVIGATE_PATH.'/themes/'.$theme->name.'/'.$template->file;
+		$this->website		= $website->id;
+		$this->title  		= $ws_theme->template_title($template->type);
+		$this->file			= NAVIGATE_PATH.'/themes/'.$ws_theme->name.'/'.$template->file;
 		$this->sections		= (isset($template->sections)? json_decode(json_encode($template->sections), true) : $defaults['sections']);
 		$this->gallery		= (isset($template->gallery)? $template->gallery : $defaults['gallery']);
 		$this->comments		= (isset($template->comments)? $template->comments : $defaults['comments']);
@@ -110,7 +116,7 @@ class template
             {
                 $poptions = array();
                 foreach($this->properties[$p]->options as $key => $value)
-                    $poptions[$key] = $theme->t($value);
+                    $poptions[$key] = $ws_theme->t($value);
 
                 $this->properties[$p]->options = $poptions;
             }

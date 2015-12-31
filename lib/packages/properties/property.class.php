@@ -46,9 +46,11 @@ class property
 		global $DB;
 		global $website;
 		
-		if($DB->query('SELECT * FROM nv_properties 
-						WHERE id = '.intval($id).'
-						  AND website = '.$website->id))
+		if($DB->query('
+            SELECT * FROM nv_properties
+			 WHERE id = '.intval($id).'
+			   AND website = '.$website->id)
+        )
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data); // there will be as many entries as languages enabled
@@ -293,7 +295,7 @@ class property
               :enabled
             )',
           array(
-            ':website' => $website->id,
+            ':website' => empty($this->website)? $website->id : $this->website,
             ':element' => $this->element,
             ':template' => $this->template,
             ':name' => $this->name,
@@ -346,7 +348,7 @@ class property
                 ':position' => intval($this->position),
                 ':enabled' => $this->enabled,
                 ':id' => $this->id,
-                ':website' => $website->id
+                ':website' => $this->website
             )
         );
 		
@@ -355,13 +357,16 @@ class property
 		return true;
 	}	
 		
-	public static function elements($template, $element="")
+	public static function elements($template, $element="", $website_id=null)
 	{
 		global $DB;
 		global $website;
         global $theme;
 
         $data = array();
+
+        if(empty($website_id))
+            $website_id = $website->id;
 
         if(is_numeric($template))
         {
@@ -371,12 +376,15 @@ class property
             else
                 $element = ' AND element != "block"';
 
-            if($DB->query('SELECT *
-                           FROM nv_properties
-                           WHERE template = '.protect($template).'
-                           '.$element.'
-                             AND website = '.$website->id.'
-                           ORDER BY position ASC, id ASC'))
+            if($DB->query('
+                   SELECT *
+                   FROM nv_properties
+                   WHERE template = '.protect($template).'
+                   '.$element.'
+                     AND website = '.$website_id.'
+                   ORDER BY position ASC, id ASC'
+                )
+            )
             {
                 $data = $DB->result();
             }
@@ -417,7 +425,15 @@ class property
             {
                 // properties of a theme template
                 $theme_template = new template();
-                $theme_template->load_from_theme($template);
+                if(!empty($website_id))
+                {
+                    // force loading website information
+                    $ws = new website();
+                    $ws->load($website_id);
+                    $ws_theme = $ws->theme;
+                }
+
+                $theme_template->load_from_theme($template, $ws_theme);
 
                 $template_properties = $theme_template->properties;
 
@@ -763,15 +779,18 @@ class property
     // dates => timestamps
     // coordinates (ID => array("latitude" => ..., "longitude" => ...)
     // change only the given properties, not the other existing ones
-    public static function save_properties_from_array($item_type, $item_id, $template, $properties_assoc=array())
+    public static function save_properties_from_array($item_type, $item_id, $template, $properties_assoc=array(), $ws=null)
    	{
    		global $DB;
    		global $website;
 
+        if(empty($ws))
+            $ws = $website;
+
    		$dictionary = array();
 
    		// load properties associated with the element type
-   		$properties = property::elements($template, $item_type);
+   		$properties = property::elements($template, $item_type, $ws->id);
 
         if(!is_array($properties))
             $properties = array();
@@ -792,7 +811,10 @@ class property
                 $value = $properties_assoc[$property->id];
 
             // multilanguage property?
-            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+            if( in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) ||
+                @$property->multilanguage=='true' ||
+                @$property->multilanguage===true
+            )
             {
 	            if(isset($properties_assoc[$property->name]))
                     $values_dict = $properties_assoc[$property->name];
@@ -827,7 +849,7 @@ class property
                 	  WHERE property_id = '.protect($property->id).'
                         AND element = '.protect($item_type).'
                         AND node_id = '.protect($item_id).'
-                        AND website = '.$website->id
+                        AND website = '.$ws->id
             );
 
             // now we insert a new row
@@ -844,7 +866,7 @@ class property
 						:value
                     )',
                 array(
-                    ':website' => $website->id,
+                    ':website' => $ws->id,
                     ':property_id' => $property->id,
                     ':type' => $item_type,
                     ':item_id' => $item_id,
@@ -856,11 +878,11 @@ class property
             // set the dictionary for the multilanguage properties
             $default_language = '';
             if(isset($property->multilanguage) && ($property->multilanguage === 'false' || $property->multilanguage === false))
-                $default_language = $website->languages_list[0];
+                $default_language = $ws->languages_list[0];
 
             if(in_array($property->type, array('text', 'textarea', 'rich_textarea', 'link')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
-                foreach($website->languages_list as $lang)
+                foreach($ws->languages_list as $lang)
                 {
                     if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
 	                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$default_language];
@@ -871,7 +893,7 @@ class property
    		}
 
    		if(!empty($dictionary))
-   			webdictionary::save_element_strings('property-'.$item_type, $item_id, $dictionary);
+   			webdictionary::save_element_strings('property-'.$item_type, $item_id, $dictionary, $ws->id);
 
        return true;
    	}

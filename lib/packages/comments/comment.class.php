@@ -102,7 +102,7 @@ class comment
 					:status, :message)
 			',
 			array(
-				":website" => $website->id,
+				":website" => empty($this->website)? $website->id : $this->website,
 				":item" => $this->item,
 				":user" => $this->user,
 				":name" => $this->name,
@@ -192,7 +192,11 @@ class comment
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_comments WHERE website = '.protect($website->id), 'object');
+        $DB->query('
+			SELECT * FROM nv_comments
+			 WHERE website = '.protect($website->id),
+	        'object'
+        );
         $out = $DB->result();
 
         if($type='json')
@@ -209,7 +213,8 @@ class comment
         $pending_comments = $DB->query_single(
             'COUNT(*)',
             'nv_comments',
-            ' website = '.protect($website->id).' AND status = -1'
+            ' website = '.protect($website->id).' AND
+              status = -1'
         );
 
         return $pending_comments;

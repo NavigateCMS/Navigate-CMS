@@ -306,7 +306,7 @@ class block
 
 		if(!empty($this->id))
 		{
-			webdictionary::save_element_strings('block', $this->id, array());
+			webdictionary::save_element_strings('block', $this->id, array(), $this->website);
 			
 			$DB->execute('DELETE FROM nv_blocks
 								WHERE id = '.intval($this->id).'
@@ -321,6 +321,9 @@ class block
 	{
 		global $DB;
 		global $website;
+
+        if(empty($this->website))
+            $this->website = $website->id;
 
         if(!is_array($this->categories))
             $this->categories = array();
@@ -366,7 +369,7 @@ class block
                 )
             ',
             array(
-                ':website'          =>  $website->id,
+                ':website'          =>  $this->website,
                 ':type'             =>  $this->type,
                 ':date_published'   =>  intval($this->date_published),
                 ':date_unpublish'   =>  intval($this->date_unpublish),
@@ -388,7 +391,7 @@ class block
 		
 		$this->id = $DB->get_last_id();
 		
-		webdictionary::save_element_strings('block', $this->id, $this->dictionary);
+		webdictionary::save_element_strings('block', $this->id, $this->dictionary, $this->website);
 		
 		return true;
 	}
@@ -396,7 +399,6 @@ class block
 	public function update()
 	{
 		global $DB;
-		global $website;
 
         if(!is_array($this->categories))
             $this->categories = array();
@@ -456,14 +458,15 @@ class block
             )
         );
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+            throw new Exception($DB->get_last_error());
 
-		webdictionary::save_element_strings('block', $this->id, $this->dictionary);
+		webdictionary::save_element_strings('block', $this->id, $this->dictionary, $this->website);
 		
 		return true;
 	}
 
-    // TODO: in Navigate 1.9 add more block types (modes)
+    // TODO: in Navigate 2.0 add more block types (modes)
     public static function modes()
     {
         $modes = array(

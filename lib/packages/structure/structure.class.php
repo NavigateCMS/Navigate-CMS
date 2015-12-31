@@ -126,22 +126,22 @@ class structure
 	public function delete()
 	{
 		global $DB;
-		global $website;
 
 		if(!empty($this->id))
 		{
 			// remove dictionary elements
 			webdictionary::save_element_strings('structure', $this->id, array());
 			// remove path elements
-			path::saveElementPaths('structure', $this->id, array());
+			path::saveElementPaths('structure', $this->id, array(), $this->website);
 			// remove all votes assigned to the element
 			webuser_vote::remove_object_votes('structure', $this->id);			
 			
-			$DB->execute('DELETE FROM nv_structure
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id.' 
-								LIMIT 1'
-						);
+			$DB->execute('
+				DELETE FROM nv_structure
+					WHERE id = '.intval($this->id).'
+					  AND website = '.$this->website.'
+					LIMIT 1'
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -152,13 +152,17 @@ class structure
 		global $DB;
 		global $website;
 
+		if(empty($this->website))
+			$this->website = $website->id;
+
         if(empty($this->position))
         {
-            // find the next free position on the same parent (after all exsiting children)
-            $DB->query('SELECT MAX(position) as max_position
-                          FROM nv_structure
-                         WHERE parent = '.protect($this->parent).'
-                           AND website = '.protect($website->id)
+            // no position given, so find the first position free in the same parent (after all existing children)
+            $DB->query('
+				SELECT MAX(position) as max_position
+                  FROM nv_structure
+                 WHERE parent = '.protect($this->parent).'
+                   AND website = '.protect($this->website)
             );
 
             $max = $DB->result('max_position');
@@ -177,35 +181,44 @@ class structure
         if($groups == 'g')
             $groups = '';
 
-        $ok = $DB->execute(' INSERT INTO nv_structure
-								(id, website, parent, position, access, groups, permission,
-								 icon, metatags, template, date_published, date_unpublish, 
-								 visible, views, votes, score)
-								VALUES
-								( 0,
-								  '.$website->id.', 
-								  '.protect($this->parent).',
-								  '.protect($this->position).',
-								  '.protect($this->access).',
-								  '.protect($groups).',
-								  '.protect($this->permission).',
-								  '.protect($this->icon).',
-								  '.protect($this->metatags).',
-								  '.protect($this->template).',
-								  '.protect($this->date_published).',
-								  '.protect($this->date_unpublish).',
-								  '.protect($this->visible).',
-								  0,
-								  0,
-								  0								  								  
-								)');
-			
-		if(!$ok) throw new Exception($DB->get_last_error());
+        $ok = $DB->execute('
+			INSERT INTO nv_structure
+				(	id, website, parent, position, access, groups, permission,
+					icon, metatags, template, date_published, date_unpublish,
+					visible, views, votes, score
+				)
+				VALUES
+				(	0, :website, :parent, :position, :access, :groups, :permission,
+					:icon, :metatags, :template, :date_published, :date_unpublish,
+					:visible, :views, :votes, :score
+				)
+			',
+            array(
+	            ":website" => $this->website,
+	            ":parent" => $this->parent,
+	            ":position" => $this->position,
+	            ":access" => $this->access,
+	            ":groups" => $groups,
+	            ":permission" => $this->permission,
+				":icon" => $this->icon,
+				":metatags" => $this->metatags,
+				":template" => $this->template,
+				":date_published" => $this->date_published,
+				":date_unpublish" => $this->date_unpublish,
+				":visible" => $this->visible,
+				":views" => 0,
+				":votes" => 0,
+				":score" => 0
+            )
+        );
+
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
-		
-		webdictionary::save_element_strings('structure', $this->id, $this->dictionary);
-   		path::saveElementPaths('structure', $this->id, $this->paths);
+
+		webdictionary::save_element_strings('structure', $this->id, $this->dictionary, $this->website);
+   		path::saveElementPaths('structure', $this->id, $this->paths, $this->website);
 		
 		return true;
 	}
@@ -227,29 +240,39 @@ class structure
         if($groups == 'g')
             $groups = '';
 
-		$ok = $DB->execute(' UPDATE nv_structure
-								SET 
-									parent = '.protect($this->parent).',
-									position = '.protect($this->position).',
-									access = '.protect($this->access).',
-									groups = '.protect($groups).',
-									permission = '.protect($this->permission).',
-									icon = '.protect($this->icon).',
-									metatags = '.protect($this->metatags).',
-									date_published	=   '.protect($this->date_published).',
-									date_unpublish	=   '.protect($this->date_unpublish).',										
-									template = '.protect($this->template).',
-									visible = '.protect($this->visible).',
-									views = '.protect($this->views).',
-									votes = '.protect($this->votes).',
-									score = '.protect($this->score).'
-							  WHERE id = '.intval($this->id).'
-							    AND website = '.$website->id);
+		$ok = $DB->execute('
+ 			UPDATE nv_structure
+			   SET  parent = :parent, position = :position, access = :access, groups = :groups,
+			   		permission = :permission, icon = :icon, metatags = :metatags,
+					date_published = :date_published, date_unpublish = :date_unpublish,
+					template = :template, visible = :visible, views = :views, votes = :votes, score = :score
+			 WHERE id = :id
+			   AND website = :website
+		   ',
+			array(
+				":id" => $this->id,
+				":website" => $this->website,
+	            ":parent" => $this->parent,
+	            ":position" => $this->position,
+	            ":access" => $this->access,
+	            ":groups" => $groups,
+	            ":permission" => $this->permission,
+				":icon" => $this->icon,
+				":metatags" => $this->metatags,
+				":template" => $this->template,
+				":date_published" => $this->date_published,
+				":date_unpublish" => $this->date_unpublish,
+				":visible" => $this->visible,
+				":views" => $this->views,
+				":votes" => $this->votes,
+				":score" => $this->score
+			)
+		);
 			      
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
-		webdictionary::save_element_strings('structure', $this->id, $this->dictionary);
-		path::saveElementPaths('structure', $this->id, $this->paths);
+		webdictionary::save_element_strings('structure', $this->id, $this->dictionary, $this->website);
+		path::saveElementPaths('structure', $this->id, $this->paths, $this->website);
 		return true;
 	}
 

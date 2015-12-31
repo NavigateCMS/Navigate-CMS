@@ -105,8 +105,8 @@ class file
 		$this->height		= $main->height;
 
 		$this->focalpoint	= $main->focalpoint;
-        $this->title        = json_decode($main->title, true);
-        $this->description  = json_decode($main->description, true);
+        $this->title        = is_array($main->title)? $main->title : json_decode($main->title, true);
+        $this->description  = is_array($main->description)? $main->description : json_decode($main->description, true);
 
         $this->date_added	= $main->date_added;
 		$this->uploaded_by	= $main->uploaded_by;	
@@ -281,12 +281,17 @@ class file
             folder/flash
             folder/documents
     */
-    public static function create_folder($name, $type="folder/generic", $parent=0)
+    public static function create_folder($name, $type="folder/generic", $parent=0, $wid=0)
     {
         global $user;
+	    global $website;
+
+	    if(empty($wid))
+		    $wid = $website->id;
 
         $file = new file();
         $file->id = 0;
+	    $file->website = $wid;
         $file->mime = $type;
         $file->type = 'folder';
         $file->parent = intval($parent);
@@ -364,6 +369,9 @@ class file
         if(!isset($this->uploaded_by))
             $this->uploaded_by = '';
 
+		if(empty($this->website))
+			$this->website = $website->id;
+
         $ok = $DB->execute('
             INSERT INTO nv_files
             (   id, website, type, parent, name, size, mime,
@@ -372,30 +380,30 @@ class file
                 permission, access, groups, enabled)
             VALUES
             ( 0,
-              :website_id, :type, :parent, :fname, :size, :mime,
+              :website, :type, :parent, :fname, :size, :mime,
               :width, :height, :focalpoint,
               :title, :description,
               :date_added, :uploaded_by,
               :permission, :access, :groups, :enabled
             )',
             array(
-                  ":website_id" => $website->id,
-                  ":type" => $this->type,
-                  ":parent" => $this->parent,
-                  ":fname" => $this->name,
-                  ":size" => $this->size,
-                  ":mime" => $this->mime,
-                  ":width" => intval($this->width),
-                  ":height" => intval($this->height),
-                  ":focalpoint" => (empty($this->focalpoint)? '' : $this->focalpoint),
-                  ":title" => json_encode($this->title),
-                  ":description" => json_encode($this->description),
-                  ":date_added" => $this->date_added,
-                  ":uploaded_by" => $this->uploaded_by,
-                  ":permission" => intval($this->permission),
-                  ":access" => intval($this->access),
-                  ":groups" => $groups,
-                  ":enabled" => intval($this->enabled)
+				":website" => $this->website,
+				":type" => $this->type,
+				":parent" => $this->parent,
+				":fname" => $this->name,
+				":size" => $this->size,
+				":mime" => $this->mime,
+				":width" => intval($this->width),
+				":height" => intval($this->height),
+				":focalpoint" => (empty($this->focalpoint)? '' : $this->focalpoint),
+				":title" => json_encode($this->title),
+				":description" => json_encode($this->description),
+				":date_added" => $this->date_added,
+				":uploaded_by" => $this->uploaded_by,
+				":permission" => intval($this->permission),
+				":access" => intval($this->access),
+				":groups" => $groups,
+				":enabled" => intval($this->enabled)
             )
         );
 			
@@ -447,7 +455,7 @@ class file
           ',
           array(
                 ":id" => $this->id,
-                ":website_id" => $website->id,
+                ":website_id" => $this->website,
                 ":type" => $this->type,
                 ":parent" => $this->parent,
                 ":fname" => $this->name,

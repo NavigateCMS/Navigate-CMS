@@ -2,10 +2,13 @@
 
 class webdictionary_history
 {
-	public static function save_element_strings($node_type, $node_id, $dictionary, $autosave=false)
+	public static function save_element_strings($node_type, $node_id, $dictionary, $autosave=false, $website_id=null)
 	{
 		global $DB;
 		global $website;
+
+		if(empty($website_id))
+			$website_id = $website->id;
 
         $changed = false;
 
@@ -22,49 +25,57 @@ class webdictionary_history
 				{			
 					if($litem=='<p><br _mce_bogus="1"></p>') continue;	// tinymce empty contents, no need to save it
 				
-					// has text been changed since last save?
-					
-					$last_litem = $DB->query_single('`text`', 'nv_webdictionary_history', ' node_id = '.protect($node_id).' AND
-																							website = '.protect($website->id).' AND
-																							lang = '.protect($lang).' AND
-																							subtype = '.protect($subtype).' AND
-																							node_type = '.protect($node_type).' AND
-																							autosave = '.protect(($autosave)? '1' : '0').'
-																							ORDER BY date_created DESC ');
+					// has the text been changed since last save?
+					$last_litem = $DB->query_single(
+						'`text`',
+						'nv_webdictionary_history',
+						'   node_id = '.protect($node_id).' AND
+							website = '.protect($website_id).' AND
+							lang = '.protect($lang).' AND
+							subtype = '.protect($subtype).' AND
+							node_type = '.protect($node_type).' AND
+							autosave = '.protect(($autosave)? '1' : '0').'
+						 ORDER BY date_created DESC
+						'
+					);
 																							
 					if($last_litem != $litem)
 					{
                         $changed = true;
 
-						$time = core_time();
-						
 						// autocleaning
 						if($autosave) 
 						{
 							// remove previous autosaved elements
-							$DB->execute('DELETE FROM nv_webdictionary_history 
-												WHERE node_id = '.protect($node_id).' AND
-													  website = '.protect($website->id).' AND
-														 lang = '.protect($lang).' AND
-													  subtype = '.protect($subtype).' AND
-													node_type = '.protect($node_type).' AND
-													 autosave = 1 AND
-												 date_created < '.(core_time() - 86400 * 7));
+							$DB->execute('
+								DELETE FROM nv_webdictionary_history
+								WHERE node_id = '.protect($node_id).' AND
+									  website = '.protect($website_id).' AND
+										 lang = '.protect($lang).' AND
+									  subtype = '.protect($subtype).' AND
+									node_type = '.protect($node_type).' AND
+									 autosave = 1 AND
+								 date_created < '.(core_time() - 86400 * 7)
+							);
 						}
-					
-						$DB->execute('INSERT INTO nv_webdictionary_history
-										(	id,	website, node_type, node_id, subtype, lang, `text`, date_created, autosave)
-										VALUES
-										(	0,
-											'.$website->id.',
-											'.protect($node_type).',
-											'.protect($node_id).',
-											'.protect($subtype).',
-											'.protect($lang).',
-											'.protect($litem).',
-											'.protect(core_time()).',
-											'.protect(($autosave)? '1' : '0').'
-										)');
+
+						$DB->execute('
+			                INSERT INTO nv_webdictionary_history
+								(id, website, node_type, node_id, subtype, lang, `text`, date_created, autosave)
+							VALUES
+								( 0, :website, :node_type, :node_id, :subtype, :lang, :text, :date_created, :autosave)
+							',
+							array(
+								":website" => $website_id,
+								":node_type" => $node_type,
+								":node_id" => $node_id,
+								":subtype" => $subtype,
+								":lang" => $lang,
+								":text" => $litem,
+								":date_created" => core_time(),
+								":autosave" => ($autosave)? '1' : '0'
+							)
+						);
 					}
 				}
 			}
@@ -78,12 +89,13 @@ class webdictionary_history
 		global $DB;
 		
 		// load all webdictionary history elements and keep only the latest
-				
-		$DB->query('SELECT subtype, lang, text
-					  FROM nv_webdictionary_history
-					 WHERE node_type = '.protect($node_type).'
-					   AND node_id = '.protect($node_id).'
-					 ORDER BY date_created ASC');							 
+		$DB->query('
+			SELECT subtype, lang, text
+			  FROM nv_webdictionary_history
+			 WHERE node_type = '.protect($node_type).'
+			   AND node_id = '.protect($node_id).'
+			 ORDER BY date_created ASC'
+		);
 				
 		$data = $DB->result();
 		
@@ -105,7 +117,11 @@ class webdictionary_history
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_webdictionary_history WHERE website = '.protect($website->id), 'object');
+        $DB->query('
+			SELECT * FROM nv_webdictionary_history
+			WHERE website = '.protect($website->id),
+	        'object'
+        );
 
         if($type='json')
             $out = json_encode($DB->result());
