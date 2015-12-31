@@ -52,7 +52,7 @@
     "chmod_failed":"Ändern der Dateirechte fehlgeschlagen!",
     "configure_your_server":"Bitte konfiguriere deinen Web-Server so, dass Navigate CMS deine Website generieren kann.",
     "apache_config":"Apache-Konfiguration",
-    "copy_htaccess":"Kopiere die Datei navigate\/web\/.htaccess in das Root-Verzeichnis der Site (\/www\/.htaccess)",
+    "copy_htaccess":"Kopiere die Datei navigate/web/.htaccess in das Root-Verzeichnis der Site (/www/.htaccess)",
     "do_it_for_me":"Erledige das für mich!",
     "htaccess_overwritten":"Wenn .htaccess existiert, wird die Datei ÜBERSCHRIEBEN.",
     "unknown_server": "Unbekannter Web-Server vorgefunden",
@@ -65,5 +65,8 @@
     "database_will_be_emptied":"Warnung: Die Tabellen der Datenbank werden vor dem Importieren GELÖSCHT",
     "database_create_allowed": "Du bist berechtigt eine neue Datenbank auf dem Server zu erstellen",
     "database_create_not_allowed": "Du bist NICHT berechtigt eine neue Datenbank auf dem Server zu erstellen",
-    "navigatecms_website_collection":"Lass dir die Sammlung von Website-Themes und Extensions, die es auf der Navigate CMS Homepage gibt, nicht entgehen!"
+    "navigatecms_website_collection":"Lass dir die Sammlung von Website-Themes und Extensions, die es auf der Navigate CMS Homepage gibt, nicht entgehen!",
+	"theme": "Theme",
+	"theme_default_install": "Installieren Sie das Standard-Theme",
+	"not_selected": "nicht ausgewählt"
 }

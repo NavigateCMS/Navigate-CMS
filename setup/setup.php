@@ -11,20 +11,29 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.9.0');
+	define('APP_VERSION', '1.9.1');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
 }
 else
 {
-    // save session values, when including common.php a new session will be created
-    $session_values = json_encode($_SESSION);
-	include(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php');
-	include(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/common.php');
+    // save session values... when including common.php a new session will be created and then the values must be restored
+	$session_values = json_encode($_SESSION);
+
+	include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php');
+	include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/common.php');
+    if(file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/lib/packages/themes/theme.class.php'))
+	    include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/lib/packages/themes/theme.class.php');
     define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
-    // restore session values
-    $_SESSION = json_decode($session_values, true);
+
+	// restore session values
+	if(!isset($_SESSION['NAVIGATE-SETUP']))
+        $_SESSION = json_decode($session_values, true);
+	else if(!is_array($_SESSION['NAVIGATE-SETUP']))
+	{
+		$_SESSION['NAVIGATE-SETUP'] = unserialize($_SESSION['NAVIGATE-SETUP']);
+	}
 }
 
 if($_REQUEST['step']=='cleaning')
@@ -32,6 +41,7 @@ if($_REQUEST['step']=='cleaning')
     // remove installation files
     @unlink('navigate.sql');
     @unlink('package.zip');
+    @unlink(NAVIGATE_PATH.'/themes/ocean.zip');
     @unlink(NAVIGATE_PATH.'/cfg/globals.setup.php');
     @unlink('setup.php');
 
@@ -99,6 +109,126 @@ $lang = navigate_install_load_language();
             .ui-progressbar-value { background-image: url(http://tools.navigatecms.com/object?id=132&disposition=inline); }
             .ui-widget 			{ font-family: Verdana; font-size: 11px; }
             .ui-widget input, .ui-widget select, .ui-widget button	{ font-family: Verdana; font-size: 11px; }
+
+	        /* CHECKBOX STYLING     Thanks to Geoffrey Crofte http://codepen.io/CreativeJuiz/ */
+			div [type="checkbox"]:not(.ui-helper-hidden-accessible) + label
+			{
+				width: auto;
+				vertical-align: middle;
+				display: inline-block;
+				float: none;
+				margin-top: 0px;
+				padding-left: 0;
+				font-weight: normal;
+			}
+
+			/* Base for label styling */
+			[type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible),
+			[type="checkbox"]:checked:not(.ui-helper-hidden-accessible)
+			{
+				position: absolute;
+				left: -9999px;
+			}
+			[type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible) + label,
+			[type="checkbox"]:checked:not(.ui-helper-hidden-accessible) + label {
+				position: relative;
+				padding-left: 25px;
+				cursor: pointer;
+			}
+
+			/* checkbox aspect */
+			[type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible) + label:before,
+			[type="checkbox"]:checked:not(.ui-helper-hidden-accessible) + label:before {
+				content: '';
+				position: absolute;
+				left:0;
+				top: 0px;
+				width: 15px;
+				height: 15px;
+				border-radius: 3px;
+				background: #fff;
+				border: solid 1px #ccc;
+				color: #116;
+				outline: none;
+				font-weight: bold;
+			}
+
+			td[align="center"] [type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible) + label:before,
+			td[align="center"] [type="checkbox"]:checked:not(.ui-helper-hidden-accessible) + label:before
+			{
+				left: -8px;
+			}
+
+			/* checked mark aspect */
+			[type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible) + label:after,
+			[type="checkbox"]:checked:not(.ui-helper-hidden-accessible) + label:after
+			{
+				content: '✔';
+				position: absolute;
+				top: -1px;
+				left: 3px;
+				font-size: 13px;
+				color: #116;
+				transition: all .2s;
+				outline: none;
+			}
+
+			td[align="center"] [type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible) + label:after,
+			td[align="center"] [type="checkbox"]:checked:not(.ui-helper-hidden-accessible) + label:after
+			{
+				left: -5px;
+			}
+
+			/* checked mark aspect changes */
+			[type="checkbox"]:not(:checked):not(.ui-helper-hidden-accessible) + label:after
+			{
+				opacity: 0;
+				transform: scale(0);
+			}
+			[type="checkbox"]:checked:not(.ui-helper-hidden-accessible) + label:after
+			{
+				opacity: 1;
+				transform: scale(1);
+			}
+			/* disabled checkbox */
+			[type="checkbox"]:disabled:not(:checked):not(.ui-helper-hidden-accessible) + label:before,
+			[type="checkbox"]:disabled:checked:not(.ui-helper-hidden-accessible) + label:before
+			{
+				box-shadow: none;
+				border-color: #bbb;
+				background-color: #ddd;
+			}
+
+			[type="checkbox"]:disabled:checked + label:after
+			{
+				color: #999;
+			}
+
+			[type="checkbox"]:disabled + label
+			{
+				color: #aaa;
+			}
+
+			/* accessibility */
+			[type="checkbox"]:checked:focus:not(.ui-helper-hidden-accessible) + label:before,
+			[type="checkbox"]:not(:checked):focus:not(.ui-helper-hidden-accessible) + label:before
+			{
+				border: 1px dotted #44A7E8;
+			}
+
+			/* hover style just for information */
+			label:hover:before
+			{
+				border: 1px solid #44A7E8!important;
+			}
+
+			[type="checkbox"]:not(.ui-helper-hidden-accessible) + label + span.navigate-form-row-info
+			{
+				margin-left: 24px;
+				margin-top: 3px;
+				display: inline-block;
+				height: auto;
+			}
         </style>
     </head>
 
@@ -188,7 +318,7 @@ function navigate_install_requirements()
         	<select id="install_language" name="install_language">
             	<option value="en-en_US" <?php echo ($_SESSION['navigate_install_lang']=='en')? 'selected="selected"' : '';?>>English</option>
                 <option value="es-es_ES" <?php echo ($_SESSION['navigate_install_lang']=='es')? 'selected="selected"' : '';?>>Español</option>
-                <option value="de-de_DE" <?php echo ($_SESSION['navigate_install_lang']=='de')? 'selected="selected"' : '';?>>German</option>
+                <option value="de-de_DE" <?php echo ($_SESSION['navigate_install_lang']=='de')? 'selected="selected"' : '';?>>Deutsch</option>
                 <option value="ca-ca_ES" <?php echo ($_SESSION['navigate_install_lang']=='ca')? 'selected="selected"' : '';?>>Català</option>
             </select>
         </div>
@@ -380,14 +510,19 @@ function navigate_install_configuration()
 			$globals = str_replace('{APP_VERSION}', 		APP_VERSION, $globals);
 
 			$ok = file_put_contents('.'.$defaults['NAVIGATE_FOLDER'].'/cfg/globals.php', $globals);
-			
+
 			if($ok)
 			{
-				$_SESSION['NAVIGATE-SETUP']['ADMIN_USERNAME'] = $_REQUEST['ADMIN_USERNAME'];
-				$_SESSION['NAVIGATE-SETUP']['ADMIN_PASSWORD'] = $_REQUEST['ADMIN_PASSWORD'];
-                $_SESSION['NAVIGATE-SETUP']['ADMIN_EMAIL']    = $_REQUEST['ADMIN_EMAIL'];
+				$_SESSION['NAVIGATE-SETUP'] = serialize(
+					array(
+						'ADMIN_USERNAME' => $_REQUEST['ADMIN_USERNAME'],
+						'ADMIN_PASSWORD' => $_REQUEST['ADMIN_PASSWORD'],
+						'ADMIN_EMAIL' => $_REQUEST['ADMIN_EMAIL'],
+						'DEFAULT_THEME' => $_REQUEST['DEFAULT_THEME']
+					)
+				);
 				session_write_close();
-				
+
 				?>
                 <script language="javascript" type="text/javascript">
 					window.location.replace('?step=4');
@@ -422,6 +557,11 @@ function navigate_install_configuration()
                     <div class="field-help-text"><?php echo $lang['app_owner_detail'];?></div>
                 </div>
                 <input type="hidden" name="APP_REALM" value="NaviWebs-NaviGate" />
+	            <br />
+	            <div>
+                    <label><?php echo $lang['theme'];?></label>
+                    <input style=" width: auto; " type="checkbox" name="DEFAULT_THEME" id="DEFAULT_THEME" value="ocean" checked="checked" /><label for="DEFAULT_THEME"><?php echo $lang['theme_default_install'];?>: <strong>Ocean</strong></label>
+                </div>
                 <br />
                 <div>
                 	<label><?php echo $lang['admin'];?></label>
@@ -444,14 +584,12 @@ function navigate_install_configuration()
                 <br />
 				<div>
                     <label>&nbsp;</label>
-                    <input style=" width: auto; " type="checkbox" name="NAVIGATECMS_UPDATES" value="true" <?php echo ($defaults['NAVIGATECMS_UPDATES']? 'checked="checked"' : '');?> />
-                    <?php echo $lang['check_updates'];?>
+                    <input style=" width: auto; " type="checkbox" name="NAVIGATECMS_UPDATES" id="NAVIGATECMS_UPDATES" value="true" <?php echo ($defaults['NAVIGATECMS_UPDATES']? 'checked="checked"' : '');?> /><label for="NAVIGATECMS_UPDATES"><?php echo $lang['check_updates'];?></label>
                 </div>
 				<div>
                     <label>&nbsp;</label>
-                    <input style=" width: auto; " type="checkbox" name="NAVIGATECMS_STATS" value="true" <?php echo ($defaults['NAVIGATECMS_STATS']? 'checked="checked"' : '');?> />
-                    <?php echo $lang['app_statistics'];?>
-                </div>                
+                    <input style=" width: auto; " type="checkbox" name="NAVIGATECMS_STATS" id="NAVIGATECMS_STATS" value="true" <?php echo ($defaults['NAVIGATECMS_STATS']? 'checked="checked"' : '');?> /><label for="NAVIGATECMS_STATS"><?php echo $lang['app_statistics'];?></label>
+                </div>
             </div>
             <!--
             <div id="tabs-2">
@@ -873,7 +1011,12 @@ function navigate_install_create_database()
 				<div class="navigate-install-database-account" style=" display: none; ">
                     <label><?php echo $lang['account_create'];?></label>
                     <div class="progressbar"></div>
-                </div>              
+                </div>
+                <br />
+				<div class="navigate-install-default-theme" style=" display: none; ">
+                    <label><?php echo $lang['theme_default_install'];?></label>
+                    <div class="progressbar"></div>
+                </div>
 			</div>
         </div>
         <br />
@@ -949,15 +1092,38 @@ function navigate_install_create_database()
 			 if(!data || data.error)
 			 {
 	 			$('.navigate-install-database-account').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
-				$('input[type=submit]').next().show();
 			 }
 			 else
 			 {
 				$('.navigate-install-database-account').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
-				$('input[type=submit]').show();
+				install_default_theme();
 			 }
 		  }
 		});			
+	}
+
+    function install_default_theme()
+	{
+		$('.navigate-install-default-theme').show();
+
+		$.ajax({
+		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=install_default_theme',
+		  dataType: 'json',
+		  data: {},
+		  success: function(data)
+		  {
+			 if(!data || data.error)
+			 {
+	 			$('.navigate-install-default-theme').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
+				$('input[type=submit]').next().show();
+			 }
+			 else
+			 {
+				$('.navigate-install-default-theme').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
+				$('input[type=submit]').show();
+			 }
+		  }
+		});
 	}
 	</script>
 	<?php
@@ -1303,76 +1469,71 @@ function process()
                 // create default website details
                 $website = new website();
                 $website->create_default();
-                $website->theme = 'ocean';
-
-                $website->languages = array(
-                    'en' => array('language' => 'en', 'variant' => '', 'code' => 'en', 'system_locale' => 'ENU_USA'),
-                    'es' => array('language' => 'es', 'variant' => '', 'code' => 'es', 'system_locale' => 'ESN_ESP')
-                );
-                $website->languages_published = array('en', 'es');
-                $website->homepage = '/en/home';
-                $website->metatag_description = array(
-                    'en' => 'Ocean theme - Free with every Navigate CMS installation package',
-                    'es' => 'Tema Ocean - Incluido gratis en cada instalación de Navigate CMS'
-                );
-
-                $website->metatag_keywords = array(
-                    'en' => 'keyword 1,keyword 2,keyword 3',
-                    'es' => 'palabra 1,palabra2'
-                );
-
-                $website->metatags = array(
-                    'en' => '<meta name="author" content="Naviwebs" />',
-                    'es' => '<meta name="author" content="Naviwebs" />'
-                );
-
-                $website->theme_options = array(
-                    'style' => 'blue',
-                    'facebook_page' => 'http://www.facebook.com/Naviwebs',
-                    'twitter_page' => 'https://twitter.com/#NavigateCMS',
-                    'feed_url' => array(
-                        'en' => '/en/rss',
-                        'es' => '/es/rss'
-                    ),
-                    'logo' => 'img/logo-ocean.png',
-                    'home_portfolio_category' => 4,
-                    'footer_latest_entries' => 6,
-                    'footer_card_name' => 'Ocean Company',
-                    'footer_card_logo' => 'img/logo-ocean.png',
-                    'footer_card_text' => array(
-                        'en' => "Naviwebs Road,
-25864 Navigate
-555 333 212
-info@navigatecms.com",
-                        'es' => "Plaza Naviwebs,
-25864 Navigate
-555 333 212
-info@navigatecms.com"
-                    ),
-                    'footer_link_1' => array(
-                        'en' => 'http://www.naviwebs.com##Naviwebs',
-                        'es' => 'http://www.naviwebs.com##Naviwebs',
-                    ),
-                    'footer_link_2' => array(
-                        'en' => 'http://www.navigatecms.com##Navigate CMS',
-                        'es' => 'http://www.navigatecms.com##Navigate CMS'
-                    ),
-                    'footer_link_3' => array(
-                        'en' => '##',
-                        'es' => '##'
-                    ),
-                    'footer_link_4' => array(
-                        'en' => '##',
-                        'es' => '##'
-                    )
-                );
-                $website->update();
+                $_SESSION['NAVIGATE-SETUP']['WEBSITE_DEFAULT'] = $website->id;
 
 				echo json_encode(array('ok' => $lang['done']));	
 			}
 			catch(Exception $e)
 			{
 				echo json_encode(array('error' => $e->getMessage()));	
+			}
+			exit;
+
+			break;
+
+
+        case 'install_default_theme':
+			try
+			{
+				$DB = new database();
+				if(!$DB->connect())
+					die(json_encode(array('error' => $DB->get_last_error())));
+
+				if(@$_SESSION['NAVIGATE-SETUP']['DEFAULT_THEME']=='ocean')
+				{
+                    $website = new website();
+                    $website->load($_SESSION['NAVIGATE-SETUP']['WEBSITE_DEFAULT']);
+
+					$website->theme = 'ocean';
+                    $website->languages = array(
+                        'en' => array(
+                            'language' => 'en',
+                            'variant' => '',
+                            'code' => 'en',
+                            'system_locale' => 'en_US.utf8'
+                        ),
+                        'es' => array(
+                            'language' => 'es',
+                            'variant' => '',
+                            'code' => 'es',
+                            'system_locale' => 'es_ES.utf8'
+                        )
+                    );
+                    $website->languages_published = array('en', 'es');
+                    $website->save();
+
+					$zip = new ZipArchive();
+					$zip_open_status = $zip->open(NAVIGATE_PATH.'/themes/ocean.zip');
+					if($zip_open_status === TRUE)
+					{
+						$zip->extractTo(NAVIGATE_PATH.'/themes/ocean');
+						$zip->close();
+						$theme = new theme();
+						$theme->load('ocean');
+						$theme->import_sample($website);
+					}
+
+	                echo json_encode(array('ok' => $lang['done']));
+				}
+                else
+                {
+                    // user does not want to install the default theme
+                    echo json_encode(array('ok' => $lang['not_selected']));
+                }
+			}
+			catch(Exception $e)
+			{
+				echo json_encode(array('error' => $e->getMessage()));
 			}
 			exit;
 
@@ -1536,7 +1697,10 @@ function navigate_install_load_language()
 			'database_will_be_emptied'	=>	'Warning: Database tables will be REMOVED before importing',
 			'database_create_allowed' 	=>	'You are allowed to create a new database in the server',
 			'database_create_not_allowed' =>'You are NOT allowed to create a new database in the server',
-			'navigatecms_website_collection'=>	'Don\'t miss the collection of website themes and extensions available at Navigate CMS website!'
+			'navigatecms_website_collection'=>	'Don\'t miss the collection of website themes and extensions available at Navigate CMS website!',
+			'theme'                     =>  'Theme',
+			'theme_default_install'     =>  'Install the default theme',
+			'not_selected'              =>  'Not selected'
 		);
 	}
 
