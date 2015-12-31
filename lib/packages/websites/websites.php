@@ -1367,14 +1367,20 @@ function websites_form($item)
         $property->type = 'option';
         $property->options = serialize($styles);
         $property->value = $item->theme_options->style;
-        $navibars->add_tab_content(navigate_property_layout_field($property));
+        $navibars->add_tab_content(
+		        navigate_property_layout_field($property)
+        );
 
         foreach($theme->options as $theme_option)
         {
             $property = new property();
             $property->load_from_theme($theme_option, $item->theme_options->{$theme_option->id});
-            $navibars->add_tab_content(navigate_property_layout_field($property));
+            $navibars->add_tab_content(
+		            navigate_property_layout_field($property)
+            );
         }
+
+	    navigate_property_layout_scripts();
     }
 
     $events->trigger(
