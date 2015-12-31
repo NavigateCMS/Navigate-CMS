@@ -1,5 +1,5 @@
 <?php
-/* Navigate MAKE DISTRIBUTION v1.4 */
+/* Navigate MAKE DISTRIBUTION v1.5 */
 /* 		created by: Naviwebs   http://www.naviwebs.com	*/
 /* creates a distribution package for Navigate */
 /* Requirements: installed and functional copy of Navigate */
@@ -14,7 +14,7 @@
 			nv_languages
 			nv_menus
 			nv_profiles
-    4/ Dump default Ocean theme content
+    4/ Ignore default theme content in development environment (Ocean / Theme Kit)
 	5/ Pack folders and files in "package.zip"
 		include: (root)
 				 cache
@@ -27,7 +27,7 @@
 				 plugins
 				 private
                     sessions (empty folder)
-                    oembed (empty folder
+                    oembed (empty folder)
 				 web
 	6/ Repack SQL, logo, setup.php and package.zip as Navigate.zip
 	7/ Remove temporary files
@@ -79,23 +79,15 @@ foreach($tables as $table)
 	$sql[] = $create_table.';';
 }
 
-// TO DO: clean AUTO_INCREMENT=3 DEFAULT	-->	AUTO_INCREMENT=0 DEFAULT
-
-/*	4/ Dump main table rows
-			nv_countries
-			nv_functions
-			nv_languages
-			nv_menus
-			nv_profiles
-			nv_updates
-*/
-
-$tables = array('nv_countries',
-				'nv_functions',
-				'nv_languages',
-				'nv_menus',
-				'nv_profiles',
-				'nv_updates');
+//	3/ Dump main table rows
+$tables = array(
+    'nv_countries',
+	'nv_functions',
+	'nv_languages',
+	'nv_menus',
+	'nv_profiles',
+	'nv_updates'
+);
 				
 foreach($tables as $table)
 {
@@ -118,85 +110,7 @@ foreach($tables as $table)
 	}	
 }
 
-/*  5/ Dump default Ocean theme content
-        nv_structure
-        nv_items
-        nv_comments
-        nv_blocks
-        nv_webdictionary
-        nv_properties_items
-        nv_paths
-        nv_notes
-        nv_feeds
-        nv_files (ids 119, 160..172)
-        nv_websites (removing private data!)
-*/
-
-$tables = array(
-    'nv_items',
-    'nv_structure',
-    'nv_comments',
-    'nv_blocks',
-    'nv_webdictionary',
-    'nv_properties_items',
-    'nv_paths',
-    'nv_notes',
-    'nv_feeds',
-    'nv_files'
-);
-
-foreach($tables as $table)
-{
-    $extra = '';
-    if($table=='nv_files')
-        $extra .= ' WHERE (id = 119) OR (id >= 160 AND id <= 172) OR (id = 190 OR id = 189 OR id = 188)';
-
-    $DB->query('SELECT * FROM '.$table.$extra, 'array');
-    $rs = $DB->result();
-
-    $rcount = 0;
-    foreach($rs as $row)
-    {
-        if($table=='nv_websites') // remove real private data
-        {
-            $row['domain'] = '';
-            $row['folder'] = '';
-            $row['default_timezone'] = 'UTC';
-            $row['mail_server'] = '';
-            $row['mail_port'] = '';
-            $row['mail_security'] = '';
-            $row['mail_user'] = '';
-            $row['mail_address'] = '';
-            $row['mail_password'] = '';
-            $row['contact_emails'] = '';
-        }
-
-        if($table=='nv_items') // remove real private data
-        {
-            $row['author'] = '';
-        }
-
-        $row = array_values($row);
-        //$row = array_map(protect, $row);
-        $row = array_map(function($in) {
-            if(substr($in, 0, 1)=='{') // json encoding
-            {
-                $out = "'".str_replace('"', '\\"', $in)."'";
-                $out = str_replace('\u', '\\\u', $out);
-            }
-            else
-                $out = protect($in);
-            return $out;
-        }, $row);
-        $row = implode(',', $row);
-        if($rcount % 500 == 0)
-            $sql[] = 'INSERT INTO '.$table.' VALUES ('.$row.');';
-        else
-            $sql[count($sql)-1] = rtrim($sql[count($sql)-1], ';').', ('.$row.');';
-
-        $rcount++;
-    }
-}
+//  4/ Ignore default theme content in development environment -- leave data tables blank
 
 // remove development paths
 $sql = str_replace(NAVIGATE_PARENT.NAVIGATE_FOLDER, "{#!NAVIGATE_FOLDER!#}", $sql);
@@ -215,7 +129,7 @@ file_put_contents('distribution/navigate.sql', $sql);
 				 js
 				 lib
 				 plugins (at least "votes plugin" and "webuser_account_lite")
-				 private (ocean files [161..172])
+				 private [deprecated] (ocean files [161..172])
 				 web
 */				 
 
@@ -240,21 +154,9 @@ foreach($navigate_files as $file)
 	if(substr($file, 0, strlen('setup/'))=='setup/') continue;
 	if(substr($file, 0, strlen('docs/'))=='docs/') continue;
 	if(substr($file, 0, strlen('updates/'))=='updates/') continue;
-    if(substr($file, 0, strlen('private/'))=='private/')
-    {
-        if(!in_array(basename($file), array(
-            '119',  '161',  '162',  '163',  '164',  '165',
-            '166',  '167',  '168',  '169',  '170',  '171',
-            '172',  '188',  '189',  '190'
-            )
-        ))
-            continue;
-    }
-	if(substr($file, 0, strlen('themes/'))=='themes/')
-    {
-        if(substr($file, 0, strlen('themes/ocean/'))!='themes/ocean/')
-            continue;
-    }
+    if(substr($file, 0, strlen('private/'))=='private/') continue;
+    if(substr($file, 0, strlen('themes/'))=='themes/') continue;
+    // from 1.9.1, do not include ANY private file
 
     /* all files under plugins/ are safe to be added
     if(substr($file, 0, strlen('plugins/'))=='plugins/')
@@ -292,6 +194,10 @@ $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/sessions/.htaccess')
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/oembed/.htaccess'), 'private/oembed/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/web/.htaccess.example'), 'web/.htaccess.example');
 $zipfile->addFile('', 'updates/empty.txt');
+
+// 1.9.1, include ocean theme zipped to be installed optionally
+// in nvcms 2.0, replace ocean with theme kit
+$zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/themes/ocean.zip'), 'themes/ocean.zip');
 
 $contents = $zipfile->file();
 file_put_contents("distribution/package.zip", $contents);
