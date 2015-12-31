@@ -206,10 +206,7 @@ class website
             $this->metatags[$lcode]	= $_REQUEST['metatags-'.$lcode];
         }
 
-        $this->languages		    = serialize($this->languages); // already sorted
-        $this->languages_published  = serialize($this->languages_published);
-
-        // Website aliases
+        // website aliases
         $this->aliases = array();
         if(empty($_POST['website-aliases-alias']))
             $_POST['website-aliases-alias'] = array();
@@ -360,7 +357,7 @@ class website
                     'homepage' => $this->homepage,
                     'theme' => $this->theme,
                     'emails' => serialize($this->contact_emails),
-                    'languages' => $this->languages_published,
+                    'languages' => serialize($this->languages_published),
                     'permission' => $this->permission,
                     'author_name' => $user->username,
                     'author_email' => $user->email,
@@ -432,8 +429,8 @@ class website
 				":folder" => $this->folder,
 				":redirect_to" => $this->redirect_to,
 				":wrong_path_action" => (is_null($this->wrong_path_action)? '' : $this->wrong_path_action),
-				":languages" => $this->languages,
-				":languages_published" => $this->languages_published,
+				":languages" => (is_array($this->languages)? serialize($this->languages) : $this->languages),
+				":languages_published" => (is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
 				":aliases" => json_encode($this->aliases),
 				":date_format" => $this->date_format,
 				":tinymce_css" => (is_null($this->tinymce_css)? '' : $this->tinymce_css),
@@ -491,7 +488,7 @@ class website
                     'homepage' => $this->homepage,
                     'theme' => $this->theme,
                     'emails' => serialize($this->contact_emails),
-                    'languages' => $this->languages_published,
+                    'languages' => serialize($this->languages_published),
                     'permission' => $this->permission,
                     'author_name' => $user->username,
                     'author_email' => $user->email,
@@ -506,12 +503,6 @@ class website
 	public function update()
 	{
 		global $DB;
-
-        if(is_array($this->languages))
-            $this->languages = serialize($this->languages);
-
-        if(is_array($this->languages_published))
-            $this->languages_published = serialize($this->languages_published);
 
         $ok = $DB->execute('
             UPDATE nv_websites
@@ -559,8 +550,8 @@ class website
                 $this->folder,
                 $this->redirect_to,
                 $this->wrong_path_action,
-                $this->languages,
-                $this->languages_published,
+                (is_array($this->languages)? serialize($this->languages) : $this->languages),
+				(is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
                 json_encode($this->aliases),
                 $this->date_format,
                 $this->tinymce_css,
@@ -617,7 +608,7 @@ class website
                     'homepage' => $this->homepage,
                     'theme' => $this->theme,
                     'emails' => serialize($this->contact_emails),
-                    'languages' => $this->languages_published,
+                    'languages' => serialize($this->languages_published),
                     'permission' => $this->permission,
                     'author_name' => $user->username,
                     'author_email' => $user->email,
@@ -690,17 +681,16 @@ class website
         $this->languages = array();
         $this->languages_published = array();
 
-        $this->languages['en'] = array(
-            'language' => 'en',
-            'variant' => '',
-            'code' => 'en',
-            'system_locale' => ''
+        $this->languages = array(
+	        'en' => array(
+	            'language' => 'en',
+	            'variant' => '',
+	            'code' => 'en',
+	            'system_locale' => 'en_US.utf8'
+	        )
         );
 
-        $this->languages_published[] = 'en';
-
-        $this->languages		    = serialize($this->languages);
-        $this->languages_published  = serialize($this->languages_published);
+	    $this->languages_published = array('en');
 
         $this->aliases = array();
         $this->theme_options = array();

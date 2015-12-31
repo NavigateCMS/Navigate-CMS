@@ -89,10 +89,10 @@ class theme
 		return $data;
 	}
 	
-	public function template_title($type, $add_theme_name = true)
-	{		
+	public function template_title($type, $add_theme_name=true)
+	{
 		$out = $this->t($type);
-	
+
 		if($out==$type)
 		{
 			$types = theme::types();
@@ -126,8 +126,11 @@ class theme
             // if we are in Navigate CMS, user has the default language
             // if we call this function from the website, the session has the default language
             $current_language = $session['lang'];
-            if(empty($current_language) && !empty($webuser)) $current_language = $webuser->language;
-            if(empty($current_language) && !empty($user)) $current_language = $user->language;
+            if(empty($current_language) && !empty($webuser))
+                $current_language = $webuser->language;
+
+            if(empty($current_language) && !empty($user))
+                $current_language = $user->language;
 
 			foreach($theme_languages as $lcode => $lfile)
 			{
@@ -141,16 +144,21 @@ class theme
 				$this->dictionary = (array)json_decode($json);
 
             // maybe we have a custom translation added in navigate / webdictionary ?
-            $DB->query('SELECT subtype, lang, text
-                          FROM nv_webdictionary
-                         WHERE website = '.$website->id.'
-                           AND node_type = "theme"
-                           AND lang = '.protect($current_language).'
-                           AND theme = '.protect($this->name));
-            $rs = $DB->result();
+            if(!empty($website->id))
+            {
+                $DB->query('
+                  SELECT subtype, lang, text
+                    FROM nv_webdictionary
+                   WHERE website = '.$website->id.'
+                     AND node_type = "theme"
+                     AND lang = '.protect($current_language).'
+                     AND theme = '.protect($this->name)
+                );
+                $rs = $DB->result();
 
-            for($r=0; $r < count($rs); $r++)
-                $this->dictionary[$rs[$r]->subtype] = $rs[$r]->text;
+                for($r=0; $r < count($rs); $r++)
+                    $this->dictionary[$rs[$r]->subtype] = $rs[$r]->text;
+            }
 		}
 
 		if(is_string($code))
@@ -270,11 +278,13 @@ class theme
         return $out;
     }
 
-    public function import_sample()
+    public function import_sample($ws=null)
     {
         global $website;
         global $DB;
-        global $theme;
+
+        if(is_null($ws))
+            $ws = $website;
 
         if(!file_exists(NAVIGATE_PATH.'/themes/'.$this->name.'/'.$this->name.'_sample.zip'))
             throw new Exception(t(56, 'Unexpected error'));
@@ -298,21 +308,23 @@ class theme
         $wlangs = unserialize(file_get_contents($ptf.'/languages.serialized'));
         foreach($wlangs as $lcode => $loptions)
         {
-            if(!in_array($lcode, $website->languages))
-                $website->languages[$lcode] = $loptions;
+            if(!is_array($ws->languages) || !in_array($lcode, array_keys($ws->languages)))
+                $ws->languages[$lcode] = $loptions;
         }
 
         // theme options
-        $toptions = unserialize(file_get_contents($ptf.'/theme_options.serialized'));
-        $website->theme_options = $toptions;
+        $toptions = unserialize(
+	        file_get_contents($ptf.'/theme_options.serialized')
+        );
+        $ws->theme_options = $toptions;
 
-        $website->save();
+        $ws->save();
 
         // files
         $files = array();
         $files_or = unserialize(file_get_contents($ptf.'/files.serialized'));
 
-        $theme_files_parent = file::create_folder($this->name);
+        $theme_files_parent = file::create_folder($this->name, "folder/generic", 0, $ws->id);
 
         foreach($files_or as $f)
         {
@@ -323,12 +335,12 @@ class theme
             $files[$f->id] = new file();
             $files[$f->id]->load_from_resultset(array($f));
             $files[$f->id]->id = 0;
-            $files[$f->id]->website = $website->id;
+            $files[$f->id]->website = $ws->id;
             $files[$f->id]->parent = $theme_files_parent;
             $files[$f->id]->insert();
 
             // finally copy the sample file
-            @copy($ptf.'/files/'.$f->id, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$files[$f->id]->id);
+            @copy($ptf.'/files/'.$f->id, NAVIGATE_PRIVATE.'/'.$ws->id.'/files/'.$files[$f->id]->id);
         }
 
         // structure
@@ -336,9 +348,10 @@ class theme
         $structure_or = unserialize(file_get_contents($ptf.'/structure.serialized'));
 
         // hide existing structure entries
-        $DB->execute('UPDATE nv_structure
-                         SET permission = 2, visible = 0
-                         WHERE website = '.$website->id
+        $DB->execute('
+            UPDATE nv_structure
+               SET permission = 2, visible = 0
+             WHERE website = '.$ws->id
         );
 
         foreach($structure_or as $category)
@@ -348,7 +361,7 @@ class theme
 
             $old_category_id = $category->id;
             $category->id = 0;
-            $category->website = $website->id;
+            $category->website = $ws->id;
             // if this category has a parent != root, update the parent id with the new value given
             if($category->parent > 0)
                 $category->parent = $structure[$category->parent]->id;
@@ -357,6 +370,7 @@ class theme
 
             $structure[$old_category_id] = $category;
         }
+
 
         // items
         $items = array();
@@ -370,12 +384,13 @@ class theme
 
             $old_item_id = $item->id;
             $item->id = 0;
-            $item->website = $website->id;
+            $item->website = $ws->id;
+
             // if this category has a parent != root, update the parent id with the new value given
             if($item->category > 0)
                 $item->category = $structure[$item->category]->id;
 
-            $item->dictionary = theme::import_sample_parse_dictionary($item->dictionary, $files);
+            $item->dictionary = theme::import_sample_parse_dictionary($item->dictionary, $files, $ws);
 
             // gallery images (correct FILE ids)
             if(!empty($item->galleries))
@@ -408,7 +423,7 @@ class theme
 
             $old_block_id = $block->id;
             $block->id = 0;
-            $block->website = $website->id;
+            $block->website = $ws->id;
 
             // update structure entries (if used)
             if(!empty($block->categories))
@@ -443,10 +458,10 @@ class theme
                 foreach(@$block->trigger['trigger-flash'] as $lang => $file)
                     $block->trigger['trigger-flash'][$lang] = $files[$file]->id;
 
-            $block->trigger['trigger-content'] = theme::import_sample_parse_array($block->trigger['trigger-content'], $files);
-            $block->trigger['trigger-html'] = theme::import_sample_parse_array($block->trigger['trigger-html'], $files);
+            $block->trigger['trigger-content'] = theme::import_sample_parse_array($block->trigger['trigger-content'], $files, $ws);
+            $block->trigger['trigger-html'] = theme::import_sample_parse_array($block->trigger['trigger-html'], $files, $ws);
 
-            $block->dictionary = theme::import_sample_parse_dictionary($block->dictionary, $files);
+            $block->dictionary = theme::import_sample_parse_dictionary($block->dictionary, $files, $ws);
 
             $block->insert();
 
@@ -465,7 +480,7 @@ class theme
 
             $old_block_group_id = $block_group->id;
             $block_group->id = 0;
-            $block_group->website = $website->id;
+            $block_group->website = $ws->id;
 
             // fix block IDs in group
             $new_selection = array();
@@ -495,7 +510,7 @@ class theme
                 continue;
 
             $comment->id = 0;
-            $comment->website = $website->id;
+            $comment->website = $ws->id;
             $comment->item = $items[$comment->item]->id;
             $comment->ip = '';
             $comment->insert();
@@ -515,6 +530,88 @@ class theme
             }
         }
 
+        // translate website options; check for forced multilanguage options!
+	    $theme_options = array();
+        for($toi=0; $toi < count($ws->theme_options); $toi++)
+        {
+            $to = $ws->theme_options[$toi];
+
+            if(empty($to->dvalue))
+                continue;
+
+            switch($to->type)
+            {
+                case 'file':
+                case 'image':
+					if(in_array($to->multilanguage, array('true', '1')))
+					{
+						foreach($to->dvalue as $olang => $oval)
+						{
+							if(isset($files[$oval]->id))
+								$to->value[$olang] = $files[$oval]->id;
+						}
+					}
+					else
+					{
+						if(isset($files[$to->dvalue]->id))
+							$to->value = $files[$to->dvalue]->id;
+					}
+                    break;
+
+                case 'category':
+					if(in_array($to->multilanguage, array('true', '1')))
+					{
+						foreach($to->dvalue as $olang => $oval)
+						{
+							if(isset($structure[$oval]->id))
+								$to->value[$olang] = $structure[$oval]->id;
+						}
+					}
+					else
+					{
+						if(isset($structure[$to->dvalue]->id))
+                            $to->value = $structure[$to->dvalue]->id;
+					}
+                    break;
+
+                case 'categories':
+					if(in_array($to->multilanguage, array('true', '1')))
+					{
+						foreach($to->dvalue as $olang => $oval)
+						{
+							$property_categories_old = explode(',', $oval);
+		                    $property_categories_new = array();
+		                    foreach($property_categories_old as $oc)
+		                        $property_categories_new[] = $structure[$oc]->id;
+
+		                    $to->value[$olang] = implode(',', $property_categories_new);
+						}
+					}
+					else
+					{
+	                    $property_categories_old = explode(',', $to->dvalue);
+	                    $property_categories_new = array();
+	                    foreach($property_categories_old as $oc)
+	                        $property_categories_new[] = $structure[$oc]->id;
+
+						$to->value = implode(',', $property_categories_new);
+					}
+                    break;
+
+                default:
+                    // we don't need to change this type of value
+            }
+
+	        // convert theme option definition to website option value
+	        $theme_options[$to->id] = $to->dvalue;
+            if(isset($to->value))
+	            $theme_options[$to->id] = $to->value;
+        }
+
+	    $ws->theme_options = $theme_options;
+
+        $ws->save();
+
         // properties
         // array ('structure' => ..., 'item' => ..., 'block' => ...)
         $properties = unserialize(file_get_contents($ptf.'/properties.serialized'));
@@ -526,6 +623,9 @@ class theme
             else if($el=='item')                $real = $items;
             else if($el=='block')               $real = $blocks;
             else if($el=='block_group_block')   $real = $block_groups;
+
+            if(!is_array($properties[$el]))
+                continue;
 
             foreach($properties[$el] as $el_id => $el_properties)
             {
@@ -546,21 +646,57 @@ class theme
                     {
                         case 'file':
                         case 'image':
-                            if(isset($files[$property->value]->id))
-                                $property->value = $files[$property->value]->id;
+							if(in_array($property->multilanguage, array('true', '1')))
+							{
+								foreach($property->value as $plang => $pval)
+								{
+									if(isset($files[$pval]->id))
+										$property->value[$plang] = $files[$pval]->id;
+								}
+							}
+							else
+							{
+                                if(isset($files[$property->value]->id))
+                                    $property->value = $files[$property->value]->id;
+							}
                             break;
 
                         case 'category':
-                            if(isset($structure[$property->value]->id))
-                                $property->value = $structure[$property->value]->id;
+							if(in_array($property->multilanguage, array('true', '1')))
+							{
+								foreach($property->value as $plang => $pval)
+								{
+									if(isset($structure[$pval]->id))
+										$property->value[$plang] = $structure[$pval]->id;
+								}
+							}
+							else
+							{
+	                            if(isset($structure[$property->value]->id))
+	                                $property->value = $structure[$property->value]->id;
+							}
                             break;
 
                         case 'categories':
-                            $property_categories_old = explode(',', $property->value);
-                            $property_categories_new = array();
-                            foreach($property_categories_old as $oc)
-                                $property_categories_new[] = $structure[$oc]->id;
-                            $property->value = implode(',', $property_categories_new);
+							if(in_array($property->multilanguage, array('true', '1')))
+							{
+								foreach($property->value as $plang => $pval)
+								{
+									$property_categories_old = explode(',', $pval);
+				                    $property_categories_new = array();
+				                    foreach($property_categories_old as $oc)
+				                        $property_categories_new[] = $structure[$oc]->id;
+				                    $property->value[$plang] = implode(',', $property_categories_new);
+								}
+							}
+							else
+							{
+	                            $property_categories_old = explode(',', $property->value);
+	                            $property_categories_new = array();
+	                            foreach($property_categories_old as $oc)
+	                                $property_categories_new[] = $structure[$oc]->id;
+	                            $property->value = implode(',', $property_categories_new);
+							}
                             break;
 
                         default:
@@ -578,13 +714,12 @@ class theme
                     else
                         $template = $real[$el_id]->template;
 
-                    property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative);
+                    property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative, $ws);
                 }
             }
         }
 
         core_remove_folder($ptf);
-
     }
 
     public static function export_sample($a_categories, $a_items, $a_block_groups, $a_blocks, $a_comments, $folder)
@@ -832,20 +967,23 @@ class theme
         return array($dictionary, $files);
     }
 
-    public static function import_sample_parse_dictionary($dictionary, $files=array())
+    public static function import_sample_parse_dictionary($dictionary, $files=array(), $ws=null)
     {
         if(is_array($dictionary))
         {
             foreach($dictionary as $language => $foo)
-                $dictionary[$language] = theme::import_sample_parse_array($dictionary[$language], $files);
+                $dictionary[$language] = theme::import_sample_parse_array($dictionary[$language], $files, $ws);
         }
 
         return $dictionary;
     }
 
-    public static function import_sample_parse_array($dictionary, $files=array())
+    public static function import_sample_parse_array($dictionary, $files=array(), $ws=null)
     {
         global $website;
+
+	    if(empty($ws))
+		    $ws = $website;
 
         if(!is_array($dictionary))
             return $dictionary;
@@ -870,10 +1008,10 @@ class theme
                 $content = substr_replace($content, $files[$file_id]->id, $matches[$m][1], strlen('%7B%7BNAVIGATE_FILE%7D'.$file_id.'%7D'));
             }
 
-            $content = str_replace('%7B%7BNVWEB_WID%7D%7D', $website->id, $content);
+            $content = str_replace('%7B%7BNVWEB_WID%7D%7D', $ws->id, $content);
             $content = str_replace('url://{{NAVIGATE_DOWNLOAD}}', NAVIGATE_DOWNLOAD, $content);
-            $content = str_replace('url://{{WEBSITE_ABSOLUTE_PATH}}', $website->absolute_path(), $content);
-            $content = str_replace('url://{{THEME_ABSOLUTE_PATH}}', NAVIGATE_PARENT.NAVIGATE_FOLDER.'/themes/'.$website->theme, $content);
+            $content = str_replace('url://{{WEBSITE_ABSOLUTE_PATH}}', $ws->absolute_path(), $content);
+            $content = str_replace('url://{{THEME_ABSOLUTE_PATH}}', NAVIGATE_PARENT.NAVIGATE_FOLDER.'/themes/'.$ws->theme, $content);
 
             $dictionary[$entry] = $content;
         }
