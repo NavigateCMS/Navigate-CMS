@@ -2,8 +2,8 @@
 // +------------------------------------------------------------------------+
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Naviwebs 2010-2013. All rights reserved.                 |
-// | Last modified 21/12/2013                                               |
+// | Copyright (c) Naviwebs 2010-2016. All rights reserved.                 |
+// | Last modified 03/01/2016                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
