@@ -777,7 +777,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     if(empty($tag['attributes']['format']) && !empty($tag['attributes']['date_format']))
                         $tag['attributes']['format'] = $tag['attributes']['date_format'];
 
-                    if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
+                    if(!empty($tag['attributes']['format'])) // custom date format
                         $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_created);
                     else
                         $out = date($website->date_format.' H:i', $item->date_created);
@@ -932,7 +932,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 				case 'date':
                 case 'date_post':
-					if(!empty($tag['attributes']['format'])) // NON-STANDARD date formats
+					if(!empty($tag['attributes']['format'])) // custom date format
 						$out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
 					else
 						$out = date($website->date_format, $item->date_to_display);

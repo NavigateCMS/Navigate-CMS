@@ -308,7 +308,7 @@ function nvweb_content_date_format($format="", $ts)
         $out = date($website->date_format, $ts);
     else if(strpos($format, '%day')!==false || strpos($format, '%month')!==false || strpos($format, '%year4'))
     {
-        // deprecated: used until Navigate CMS 1.6.7
+        // deprecated: used until Navigate CMS 1.6.7; to be removed in Navigate CMS 2.0
         $out = str_replace('%br', '<br />', $format);
         $out = str_replace('%day', date("d", $ts), $out);
         $out = str_replace('%month_abr', Encoding::toUTF8(strtoupper(strftime("%b", $ts))), $out);

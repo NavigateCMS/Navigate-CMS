@@ -1251,8 +1251,8 @@
 		</unit>
 		<unit id="208">
 			<segment>
-				<source>/*/</source>
-				<target>/*/</target>
+				<source>Remove all content</source>
+				<target>Remove all content</target>
 			</segment>
 		</unit>
 		<unit id="209">
