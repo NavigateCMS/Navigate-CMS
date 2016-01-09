@@ -305,7 +305,13 @@ class theme
         }
 
         // website languages (add website included languages)
-        $wlangs = unserialize(file_get_contents($ptf.'/languages.serialized'));
+        if(file_exists($ptf.'/languages.var_export'))
+            eval('$wlangs = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/languages.var_export')).';');
+        else
+            $wlangs = unserialize(file_get_contents($ptf.'/languages.serialized'));
+
+        if(!is_array($wlangs))  $wlangs = array();
+
         foreach($wlangs as $lcode => $loptions)
         {
             if(!is_array($ws->languages) || !in_array($lcode, array_keys($ws->languages)))
@@ -313,16 +319,21 @@ class theme
         }
 
         // theme options
-        $toptions = unserialize(
-	        file_get_contents($ptf.'/theme_options.serialized')
-        );
+        if(file_exists($ptf.'/theme_options.var_export'))
+            eval('$toptions = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/theme_options.var_export')).';');
+        else
+            $toptions = unserialize(file_get_contents($ptf.'/theme_options.serialized'));
+
         $ws->theme_options = $toptions;
 
         $ws->save();
 
         // files
         $files = array();
-        $files_or = unserialize(file_get_contents($ptf.'/files.serialized'));
+        if(file_exists($ptf.'/files.var_export'))
+            eval('$files_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/files.var_export')).';');
+        else
+            $files_or = unserialize(file_get_contents($ptf.'/files.serialized'));
 
         $theme_files_parent = file::create_folder($this->name, "folder/generic", 0, $ws->id);
 
@@ -345,7 +356,10 @@ class theme
 
         // structure
         $structure = array();
-        $structure_or = unserialize(file_get_contents($ptf.'/structure.serialized'));
+        if(file_exists($ptf.'/structure.var_export'))
+            eval('$structure_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/structure.var_export')).';');
+        else
+            $structure_or = unserialize(file_get_contents($ptf.'/structure.serialized'));
 
         // hide existing structure entries
         $DB->execute('
@@ -374,7 +388,10 @@ class theme
 
         // items
         $items = array();
-        $items_or = unserialize(file_get_contents($ptf.'/items.serialized'));
+        if(file_exists($ptf.'/items.var_export'))
+            eval('$items_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/items.var_export')).';');
+        else
+            $items_or = unserialize(file_get_contents($ptf.'/items.serialized'));
 
         foreach($items_or as $item)
         {
@@ -413,7 +430,13 @@ class theme
 
         // blocks
         $blocks = array();
-        $blocks_or = unserialize(file_get_contents($ptf.'/blocks.serialized'));
+        if(file_exists($ptf.'/blocks.var_export'))
+            eval('$blocks_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/blocks.var_export')).';');
+        else
+            $blocks_or = mb_unserialize(file_get_contents($ptf.'/blocks.serialized'));
+
+        if(!is_array($blocks_or))
+            $blocks_or = array();
 
         foreach($blocks_or as $block)
         {
@@ -470,7 +493,10 @@ class theme
 
         // block_groups
         $block_groups = array();
-        $block_groups_or = unserialize(file_get_contents($ptf.'/block_groups.serialized'));
+        if(file_exists($ptf.'/block_groups.var_export'))
+            eval('$block_groups_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/block_groups.var_export')).';');
+        else
+            $block_groups_or = unserialize(file_get_contents($ptf.'/block_groups.serialized'));
 
         foreach($block_groups_or as $block_group)
         {
@@ -502,7 +528,10 @@ class theme
 
 
         // comments
-        $comments_or = unserialize(file_get_contents($ptf.'/comments.serialized'));
+        if(file_exists($ptf.'/comments.var_export'))
+            eval('$comments_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/comments.var_export')).';');
+        else
+            $comments_or = unserialize(file_get_contents($ptf.'/comments.serialized'));
 
         foreach($comments_or as $comment)
         {
@@ -611,10 +640,13 @@ class theme
 	    $ws->theme_options = $theme_options;
 
         $ws->save();
-
+        
         // properties
         // array ('structure' => ..., 'item' => ..., 'block' => ...)
-        $properties = unserialize(file_get_contents($ptf.'/properties.serialized'));
+        if(file_exists($ptf.'/properties.var_export'))
+            eval('$properties = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/properties.var_export')).';');
+        else
+            $properties = unserialize(file_get_contents($ptf.'/properties.serialized'));
         $elements_with_properties = array('structure', 'item', 'block', 'block_group_block');
 
         foreach($elements_with_properties as $el)
@@ -812,7 +844,6 @@ class theme
             $tmp = new block();
             $tmp->load($a_blocks[$i]);
 
-            //$properties['block'][$tmp->id] = property::load_properties_associative('block', $tmp->type, 'block', $tmp->id);
             $properties['block'][$tmp->id] = property::load_properties('block', $tmp->type, 'block', $tmp->id);
             list($tmp->dictionary, $files) = theme::export_sample_parse_dictionary($tmp->dictionary, $files);
             list($tmp->trigger['trigger-content'], $files) = theme::export_sample_parse_array($tmp->trigger['trigger-content'], $files);
@@ -859,15 +890,16 @@ class theme
         }
 
         $zip = new zipfile();
-        $zip->addFile(serialize($website->languages), 'languages.serialized');
-        $zip->addFile(serialize($theme->options), 'theme_options.serialized');
-        $zip->addFile(serialize($categories), 'structure.serialized');
-        $zip->addFile(serialize($items), 'items.serialized');
-        $zip->addFile(serialize($block_groups), 'block_groups.serialized');
-        $zip->addFile(serialize($blocks), 'blocks.serialized');
-        $zip->addFile(serialize($comments), 'comments.serialized');
-        $zip->addFile(serialize($files), 'files.serialized');
-        $zip->addFile(serialize($properties), 'properties.serialized');
+        $zip->addFile(var_export($website->languages, true), 'languages.var_export');
+        $zip->addFile(var_export($theme->options, true), 'theme_options.var_export');
+        $zip->addFile(var_export($categories, true), 'structure.var_export');
+        $zip->addFile(var_export($items, true), 'items.var_export');
+        $zip->addFile(var_export($block_groups, true), 'block_groups.var_export');
+        $zip->addFile(var_export($blocks, true), 'blocks.var_export');
+        $zip->addFile(var_export($blocks, true), 'blocks.var_export');
+        $zip->addFile(var_export($comments, true), 'comments.var_export');
+        $zip->addFile(var_export($files, true), 'files.var_export');
+        $zip->addFile(var_export($properties, true), 'properties.var_export');
 
         foreach($files as $file)
             $zip->addFile(file_get_contents($file->absolute_path()), 'files/'.$file->id);
