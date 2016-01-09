@@ -104,10 +104,10 @@ class comment
 			array(
 				":website" => empty($this->website)? $website->id : $this->website,
 				":item" => $this->item,
-				":user" => $this->user,
-				":name" => $this->name,
-				":email" => $this->email,
-				":url" => $this->url,
+				":user" => empty($this->user)? "" : $this->user,
+				":name" => empty($this->name)? "" : $this->name,
+				":email" => empty($this->email)? "" : $this->email,
+				":url" => empty($this->url)? "" : $this->url,
 				":ip" => core_ip(),
 				":date_created" => core_time(),
 				":date_modified" => 0,
@@ -151,10 +151,10 @@ class comment
 			',
 			array(
 				":item" => $this->item,
-				":user" => $this->user,
-				":name" => $this->name,
-				":email" => $this->email,
-				":url" => $this->url,
+				":user" => empty($this->user)? "" : $this->user,
+				":name" => empty($this->name)? "" : $this->name,
+				":email" => empty($this->email)? "" : $this->email,
+				":url" => empty($this->url)? "" : $this->url,
 				":date_created" => $this->date_created,
 				":date_modified" => core_time(),
 				":last_modified_by" => $user->id,
@@ -240,6 +240,16 @@ class comment
         if($ok)
             return $count;
     }
+
+	public static function __set_state(array $obj)
+	{
+		$tmp = new comment();
+		foreach($obj as $key => $val)
+			$tmp->$key = $val;
+
+		return $tmp;
+	}
+
 }
 
 ?>

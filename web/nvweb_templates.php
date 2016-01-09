@@ -1189,9 +1189,9 @@ function nvweb_webget_load($webget_name)
  * @param array $attachments
  * @return bool
  */
-function nvweb_send_email($subject, $message, $recipients=array(), $attachments=array())
+function nvweb_send_email($subject, $message, $recipients=array(), $attachments=array(), $quiet=false)
 {	
-	return navigate_send_email($subject, $message, $recipients, $attachments);
+	return navigate_send_email($subject, $message, $recipients, $attachments, $quiet);
 }
 
 

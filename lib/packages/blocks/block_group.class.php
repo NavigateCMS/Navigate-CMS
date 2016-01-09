@@ -195,6 +195,16 @@ class block_group
 
         return $out;
     }
+
+	public static function __set_state(array $obj)
+	{
+		$tmp = new block_group();
+		foreach($obj as $key => $val)
+			$tmp->$key = $val;
+
+		return $tmp;
+	}
+
 		
 }
 

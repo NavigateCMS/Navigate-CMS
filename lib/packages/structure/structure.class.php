@@ -551,6 +551,16 @@ class structure
 
         return $out;
     }
+
+	public static function __set_state(array $obj)
+	{
+		$tmp = new structure();
+		foreach($obj as $key => $val)
+			$tmp->$key = $val;
+
+		return $tmp;
+	}
+
 }
 
 ?>

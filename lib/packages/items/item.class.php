@@ -647,7 +647,6 @@ class item
         global $website;
 
         $out = array();
-
         $DB->query('SELECT * FROM nv_items WHERE website = '.protect($website->id), 'object');
 
         if($type='json')
@@ -655,6 +654,16 @@ class item
 
         return $out;
     }
+
+	public static function __set_state(array $obj)
+	{
+		$tmp = new item();
+		foreach($obj as $key => $val)
+			$tmp->$key = $val;
+
+		return $tmp;
+	}
+
 }
 
 ?>

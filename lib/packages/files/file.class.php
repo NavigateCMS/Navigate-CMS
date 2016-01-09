@@ -25,7 +25,7 @@ class file
     public $groups;
 	public $permission;
 	public $enabled;
-	
+
 	public function load($id)
 	{
 		global $DB;
@@ -2260,5 +2260,14 @@ class file
 
         return $out;
     }
+
+	public static function __set_state(array $obj)
+	{
+		$tmp = new file();
+		foreach($obj as $key => $val)
+			$tmp->$key = $val;
+
+		return $tmp;
+	}
 }
 ?>

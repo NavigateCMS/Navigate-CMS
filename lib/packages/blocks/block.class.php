@@ -756,5 +756,15 @@ class block
 
         return $nv_fontawesome_classes;
     }
+
+    public static function __set_state(array $obj)
+	{
+		$tmp = new block();
+		foreach($obj as $key => $val)
+			$tmp->$key = $val;
+
+		return $tmp;
+	}
+
 }
 ?>
