@@ -6,7 +6,7 @@
  * @copyright All rights reserved to each function author.
  * @author Various (PHP Community)
  * @license GPLv2 License
- * @version 1.2 2014-11-29 10:18
+ * @version 1.3 2016-01-05 19:48
  * @note if you are the creator of one of this functions and your name is not here send an email to info@navigatecms.com to be properly credited :)
  *
  */
@@ -57,17 +57,20 @@ function mb_unserialize($var)
  */
 function disable_magic_quotes()
 {
-	if(get_magic_quotes_gpc())
+	if(function_exists("get_magic_quotes_gpc"))
 	{
-		function stripslashes_gpc(&$value)
+		if(get_magic_quotes_gpc())
 		{
-			$value = stripslashes($value);
-		}
+			function stripslashes_gpc(&$value)
+			{
+				$value = stripslashes($value);
+			}
 
-		array_walk_recursive($_GET, 'stripslashes_gpc');
-		array_walk_recursive($_POST, 'stripslashes_gpc');
-		array_walk_recursive($_COOKIE, 'stripslashes_gpc');
-		array_walk_recursive($_REQUEST, 'stripslashes_gpc');
+			array_walk_recursive($_GET, 'stripslashes_gpc');
+			array_walk_recursive($_POST, 'stripslashes_gpc');
+			array_walk_recursive($_COOKIE, 'stripslashes_gpc');
+			array_walk_recursive($_REQUEST, 'stripslashes_gpc');
+		}
 	}
 }
 

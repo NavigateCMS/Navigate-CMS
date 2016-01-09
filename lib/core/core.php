@@ -343,9 +343,10 @@ function core_time()
  * @param string $body
  * @param mixed $recipients An e-mail address string or an array of recipients [name => address, name => ...]
  * @param array $attachments Files or data to be attached. [0][file => "/path/to/file", name => "name_of_the_file_in_the_email"]... [1][data => "binary data", name => "name_of_the_file_in_the_email"]
+ * @param boolean $quiet  $attachments Files or data to be attached. [0][file => "/path/to/file", name => "name_of_the_file_in_the_email"]... [1][data => "binary data", name => "name_of_the_file_in_the_email"]
  * @return boolean True if the mail has been sent, false otherwise
  */
-function navigate_send_email($subject, $body, $recipients=array(), $attachments=array())
+function navigate_send_email($subject, $body, $recipients=array(), $attachments=array(), $quiet=false)
 {
 	global $website;
 
@@ -432,12 +433,14 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
     }
     catch (phpmailerException $e)
     {
-        echo $e->errorMessage(); //Pretty error messages from PHPMailer
+        if(!$quiet)
+            echo $e->errorMessage(); //Pretty error messages from PHPMailer
         $ok = false;
     }
     catch (Exception $e)
     {
-        echo $e->getMessage(); //Boring error messages from anything else!
+        if(!$quiet)
+            echo $e->getMessage(); //Boring error messages from anything else!
         $ok = false;
     }
 

@@ -328,7 +328,7 @@ function nvweb_comments($vars=array())
 				$message = '<html><head>'.$one_click_actions.'</head><body>'.$message.'</body></html>';
 
                 foreach($website->contact_emails as $contact_address)
-                    @nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address);
+                    @nvweb_send_email($website->name.' | '.$webgets[$webget]['translations']['new_comment'], $message, $contact_address, null, true);
 			}
 			break;
 
