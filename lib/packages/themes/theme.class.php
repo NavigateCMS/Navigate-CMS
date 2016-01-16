@@ -640,7 +640,7 @@ class theme
 	    $ws->theme_options = $theme_options;
 
         $ws->save();
-        
+
         // properties
         // array ('structure' => ..., 'item' => ..., 'block' => ...)
         if(file_exists($ptf.'/properties.var_export'))

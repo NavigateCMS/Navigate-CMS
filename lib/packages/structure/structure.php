@@ -51,11 +51,13 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
-				
-				users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 			}
 			else
-				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
 		
 			$out = structure_form($item);
 			break;
@@ -475,7 +477,10 @@ function structure_form($item)
 	
 	$layout->navigate_media_browser();	// we can use media browser in this function
 	
-	$navibars->title(t(16, 'Structure'));
+	if(empty($item->id))
+		$navibars->title(t(16, 'Structure').' / '.t(38, 'Create'));
+	else
+		$navibars->title(t(16, 'Structure').' / '.t(170, 'Edit').' ['.$item->id.']');
 
 	$navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
 
