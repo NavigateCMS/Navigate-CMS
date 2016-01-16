@@ -286,7 +286,7 @@ class item
              ',
             array(
                 ":id" => 0,
-                ":website" => (is_null($this->website)? $website->id : $this->website),
+                ":website" => $this->website,
                 ":association" => (is_null($this->association)? 'free' : $this->association),
                 ":category" => (is_null($this->category)? '' : $this->category),
                 ":embedding" => (is_null($this->embedding)? '0' : $this->embedding),
@@ -309,14 +309,27 @@ class item
             )
         );
 			
-		if(!$ok) throw new Exception($DB->get_last_error());
-		
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
+
 		$this->id = $DB->get_last_id();
-				
+
+		// when item is embedded to a category, set the default title
+		if($this->embedding==1 && !empty($this->category))
+		{
+			$cat = new structure();
+			$cat->load($this->category);
+			if(!empty($cat->dictionary))
+			{
+				foreach($cat->dictionary as $cat_lang => $cat_text)
+					$this->dictionary[$cat_lang]['title'] = $cat_text['title'];
+			}
+		}
+
 		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
-		
+
 		return true;
 	}
 	
