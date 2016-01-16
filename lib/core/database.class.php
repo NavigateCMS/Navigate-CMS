@@ -222,7 +222,7 @@ class database
 		$this->lastAffectedRows = NULL;
 		$this->lastError = '';
         $this->lastResult = '';
-		
+
 		try
 		{
 			if(empty($prepared))

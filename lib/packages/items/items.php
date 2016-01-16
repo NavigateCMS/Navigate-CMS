@@ -305,6 +305,7 @@ function run()
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
 					$out = items_list();
+					users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 				}
 				else
 				{
@@ -314,8 +315,6 @@ function run()
 					else
 						$out = items_list();
 				}
-				
-				users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 			}
 			break;
 

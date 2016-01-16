@@ -8,6 +8,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/webuser_votes/webuser_vote.class.php')
 class item
 {
 	public $id;
+	public $website;
 	public $association;
 	public $category;
 	public $embedding;  // 0 => not embedded (own path), 1 => embedded (no path on item)
@@ -67,6 +68,7 @@ class item
 		$main = $rs[0];
 		
 		$this->id				= $main->id;
+		$this->website   		= $main->website;
 		$this->association 		= $main->association;
 		$this->category			= $main->category;
 		$this->embedding		= $main->embedding;		
@@ -211,7 +213,7 @@ class item
 		global $DB;
 		global $website;
 
-		if(!empty($this->id))
+		if(!empty($this->id) && !empty($this->website))
 		{
 			// remove dictionary elements
 			webdictionary::save_element_strings('item', $this->id, array(), $this->website);
@@ -284,7 +286,7 @@ class item
              ',
             array(
                 ":id" => 0,
-                ":website" => $this->website,
+                ":website" => (is_null($this->website)? $website->id : $this->website),
                 ":association" => (is_null($this->association)? 'free' : $this->association),
                 ":category" => (is_null($this->category)? '' : $this->category),
                 ":embedding" => (is_null($this->embedding)? '0' : $this->embedding),
@@ -300,7 +302,7 @@ class item
                 ":comments_moderator" => is_null($this->comments_moderator)? "" : $this->comments_moderator,
                 ":access" => (is_null($this->access)? 0 : $this->access),
                 ":groups" => $groups,
-                ":permission" => $this->permission,
+                ":permission" => (is_null($this->permission)? '' : $this->permission),
                 ":views" => 0,
                 ":votes" => 0,
                 ":score" => 0
@@ -384,7 +386,8 @@ class item
             )
         );
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 
 		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
