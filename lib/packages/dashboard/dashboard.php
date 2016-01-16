@@ -186,7 +186,7 @@ function dashboard_create()
 	
 	
 	/* RECENT COMMENTS */
-	$comments_limit = max(5, $stats['comments_torevise']);
+	$comments_limit = 25;
 	
 	$DB->query('SELECT nvc.*, nvwu.username, nvwu.avatar
 				  FROM nv_comments nvc
