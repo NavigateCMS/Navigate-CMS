@@ -131,8 +131,8 @@ class layout
 		$this->add_script_tag('lib/external/jgrowl/jquery.jgrowl.min.js');
 		$this->add_style_tag('lib/external/jgrowl/jquery.jgrowl.css');
 
-        $this->add_script_tag('lib/external/select2/select2.js');
-        $this->add_style_tag('lib/external/select2/select2.css');
+        $this->add_script_tag('lib/external/select2/js/select2.full.js');
+        $this->add_style_tag('lib/external/select2/css/select2.css');
 
         $this->add_script_tag('js/plugins/jquery.tablednd.js');
 
@@ -380,7 +380,10 @@ class layout
 
         // select2 translation (if not english)
         if($user->language != 'en')
-            $out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/select2/select2_locale_'.$user->language.'.js"></script>';
+        {
+            $out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/select2/js/i18n/'.$user->language.'.js"></script>';
+            $out[] = '<script language="javascript">$.fn.select2.defaults.set("language", "'.$user->language.'");</script>';
+        }
 
         $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/font-awesome/css/font-awesome.min.css" />';
 
@@ -1038,7 +1041,7 @@ class layout
                     $("#permissions-dialog-webuser-groups-field").show();
                     if($("#contextmenu-permissions-dialog").is(":visible"))
                     {
-                        $("#contextmenu-permissions-dialog").dialog("option", "width", "962");
+                        $("#contextmenu-permissions-dialog").dialog("option", "width", "970");
                         $("#contextmenu-permissions-dialog").dialog("option", "height", "424");
                     }
                 }
@@ -1047,7 +1050,7 @@ class layout
                     $("#permissions-dialog-webuser-groups-field").hide();
                     if($("#contextmenu-permissions-dialog").is(":visible"))
                     {
-                        $("#contextmenu-permissions-dialog").dialog("option", "width", "610");
+                        $("#contextmenu-permissions-dialog").dialog("option", "width", "620");
                         $("#contextmenu-permissions-dialog").dialog("option", "height", "200");
                     }
                 }

@@ -150,7 +150,7 @@ function run()
             break;
 
         case 'json_find_webuser': // json find webuser by name (for "user" autocomplete)
-            $DB->query('SELECT id, username
+            $DB->query('SELECT id, username as text
 						  FROM nv_webusers
 						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
 				      ORDER BY username ASC
@@ -159,7 +159,7 @@ function run()
 
             $rows = $DB->result();
             $total = $DB->foundRows();
-            echo json_encode(array('rows' => $rows, 'total' => $total));
+            echo json_encode(array('items' => $rows, 'totalCount' => $total));
 
             core_terminate();
             break;
@@ -389,61 +389,62 @@ function comments_form($item)
 		});
 	');	
 
-    if(!empty($item->user))
-        $webuser = $DB->query_single('username', 'nv_webusers', ' id = '.$item->user);
 
-    $navibars->add_tab_content_row(array(
+	$webuser_id = '';
+	if(!empty($item->user))
+	{
+		$webuser_username = $DB->query_single('username', 'nv_webusers', ' id = '.$item->user);
+		if(!empty($webuser_username))
+		{
+			$webuser_username = array($webuser_username);
+			$webuser_id = array($item->user);
+		}
+	}
+
+	$navibars->add_tab_content_row(array(
         '<label>'.t(1, 'User').'</label>',
-        $naviforms->textfield('comment-user-text', $webuser),
-        $naviforms->hidden('comment-user', $item->user),
-        '<span style="display: none;" id="comment-user-helper">'.t(535, "Find user by name").'</span>'
-    ));
+		$naviforms->selectfield('comment-user', $webuser_id, $webuser_username, $item->user, null, false, null, null, false),
+        '<span style="display: none;" id="item-comments_moderator-helper">'.t(535, "Find user by name").'</span>'
+	));
 
     $layout->add_script('
-        $("#comment-user-text").select2(
+        $("#comment-user").select2(
         {
             placeholder: $("#comment-user-helper").text(),
             minimumInputLength: 1,
             ajax: {
                 url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'" + "&act=json_find_webuser",
                 dataType: "json",
-                quietMillis: 100,
-                data: function (term, page)
-                {   // page is the one-based page number tracked by Select2
+                delay: 100,
+                data: function (params)
+                {
                     return {
-                        username: term,
+                        username: params.term,
                         nd: new Date().getTime(),
                         page_limit: 30, // page size
-                        page: page // page number
+                        page: params.page // page number
                     };
                 },
-                results: function (data, page)
-                {
-                    var more = (page * 5) < data.total; // whether or not there are more results available
-                    // notice we return the value of more so Select2 knows if more results can be loaded
-                    return {results: data.rows, more: more};
+		        processResults: function (data, params)
+		        {
+		            params.page = params.page || 1;
+		            return {
+						results: data.items,
+						pagination: { more: (params.page * 30) < data.total_count }
+					};
                 }
             },
-            formatResult: function(row) { return row.username; },
-            formatSelection: function(row) { return row.username + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
+            templateSelection: function(row)
+			{
+				if(row.id)
+					return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+				else
+					return row.text;
+			},
+			escapeMarkup: function (markup) { return markup; },
             triggerChange: true,
-            allowClear: true,
-            initSelection : function (element, callback)
-            {
-                var data = {
-                    id: $("#comment-user").val(),
-                    username: element.val()
-                };
-
-                callback(data);
-            }
+            allowClear: true
         });
-
-        $("#comment-user-text").on("change", function(e)
-        {
-            $("#comment-user").val(e.val);
-        });
-
     ');
 
 	$navibars->add_tab_content_row(array(

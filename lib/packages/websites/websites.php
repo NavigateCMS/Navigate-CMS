@@ -1118,11 +1118,21 @@ function websites_form($item)
     else if(!empty($item->comments_default_moderator))
         $webuser_name = $DB->query_single('username', 'nv_users', ' id = '.intval($item->comments_default_moderator));
 
+	$moderator_id = array('c_author');
+	$moderator_username = array('{'.t(545, 'Content author').'}');
+	if(!empty($item->comments_default_moderator))
+	{
+        if($item->comments_default_moderator!='c_author')
+        {
+            $moderator_username[] = $DB->query_single('username', 'nv_users', ' id = '.intval($item->comments_default_moderator));
+	        $moderator_id[] = $item->comments_default_moderator;
+        }
+	}
+
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(255, 'Moderator').'</label>',
-            $naviforms->textfield('comments_default_moderator-text', $webuser_name),
-            $naviforms->hidden('comments_default_moderator', $item->comments_default_moderator),
+	        $naviforms->selectfield('comments_default_moderator', $moderator_id, $moderator_username, $item->comments_default_moderator, null, false, null, null, false),
             '<span style="display: none;" id="comments_default_moderator-helper">'.t(535, "Find user by name").'</span>',
             '<div class="subcomment"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(256, 'Leave blank to accept all comments').'</div>'
         )
@@ -1130,44 +1140,44 @@ function websites_form($item)
 
     $layout->add_script('
         // comments moderator autocomplete
-        $("#comments_default_moderator-text").select2(
+        $("#comments_default_moderator").select2(
         {
             placeholder: $("#comments_default_moderator-helper").text(),
             minimumInputLength: 0,
             ajax: {
                 url: "?fid=items&act=json_find_user",
                 dataType: "json",
-                quietMillis: 100,
-                data: function (term, page)
-                {   // page is the one-based page number tracked by Select2
-                    return {
-                        username: term,
-                        nd: new Date().getTime(),
-                        page_limit: 30, // page size
-                        page: page // page number
-                    };
-                },
-                results: function (data, page)
-                {
-                    data.rows.unshift({id: "c_author", username: "{'.t(545, 'Content author').'}" });
-                    var more = (page * 5) < data.total; // whether or not there are more results available
-                    // notice we return the value of more so Select2 knows if more results can be loaded
-                    return {results: data.rows, more: more};
-                }
+                delay: 100,
+                data: function (params)
+		        {
+		            return {
+		                username: params.term,
+		                nd: new Date().getTime(),
+		                page_limit: 30, // page size
+		                page: params.page // page number
+		            };
+		        },
+		        processResults: function (data, params)
+		        {
+		            params.page = params.page || 1;
+		            data.items.unshift({id: "c_author", text: "{'.t(545, 'Content author').'}" });
+		            data.total_count++;
+		            return {
+						results: data.items,
+						pagination: { more: (params.page * 30) < data.total_count }
+					};
+		        }
             },
-            formatResult: function(row) { return row.username; },
-            formatSelection: function(row) { return row.username + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
+            templateSelection: function(row)
+			{
+				if(row.id && row.id != "c_author")
+					return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+				else
+					return row.text;
+			},
+			escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
             triggerChange: true,
-            allowClear: true,
-            initSelection : function (element, callback)
-            {
-                var data = {
-                    id: $("#comments_default_moderator").val(),
-                    username: element.val()
-                };
-
-                callback(data);
-            }
+            allowClear: true
         });
 
         $("#comments_default_moderator-text").on("change", function(e)

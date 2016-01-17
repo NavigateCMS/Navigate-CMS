@@ -126,8 +126,6 @@ class item
         {
             $this->comments_enabled_to 	= intval($_REQUEST['item-comments_enabled_to']);
             $this->comments_moderator 	= intval($_REQUEST['item-comments_moderator']);
-            if(empty($_REQUEST['item-comments_moderator-text']))
-                $this->comments_moderator   =   0;
         }
 
 		// language strings and options

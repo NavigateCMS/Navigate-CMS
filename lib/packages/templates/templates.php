@@ -733,10 +733,10 @@ function templates_form($item)
 					   {
 						   $("#property-id-span").html(data.id);
 						   $("#property-id").val(data.id);
-						   $("#property-element").select2("val", data.element);
+						   $("#property-element").val(data.element);
 						   $("#property-template").val(data.template);
 						   $("#property-name").val(data.name);
-						   $("#property-type").select2("val", data.type);
+						   $("#property-type").val(data.type);
 						   $("#property-options").val(data.options);
 						   $("#property-dvalue").val(data.dvalue);
 						   $("#property-helper").val(data.helper);

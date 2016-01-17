@@ -410,9 +410,13 @@ function feeds_form($item)
             )
         );
 
-		$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-												'<div class="subcomment"><sup>*</sup> '.t(83, 'Leave blank to disable this item').'</div>',
-											));	
+		$navibars->add_tab_content_row(
+			array(
+				'<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span>
+				'.t(83, 'Leave blank to disable this item').
+				'</div>'
+			)
+		);
 
 		$navibars->add_tab_content_row(array(	'<label>'.t(334, 'Description').'</label>',
 												$naviforms->textarea('description-'.$lang_code, @$item->dictionary[$lang_code]['description'])

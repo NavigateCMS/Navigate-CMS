@@ -123,26 +123,28 @@ function run()
             // find items by its title
             // the items must have its own path (free OR not embedded to a category)
 
-			$DB->query('SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as label, nvw.text as value
-						  FROM nv_webdictionary nvw, nv_items nvi
-						 WHERE nvw.node_type = "item"
-						   AND nvw.node_id = nvi.id
-						   AND nvw.subtype = "title"
-						   AND (	nvi.association = "free" OR 
-						   			(nvi.association = "category" AND nvi.embedding=0)
-						   )
-						   AND nvw.lang = '.protect($_REQUEST['lang']).'
-						   AND nvw.website = '.$website->id.' 
-						   AND nvw.website = nvi.website 
-						   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
-				      ORDER BY nvw.text ASC
-					     LIMIT '.intval($_REQUEST['page_limit']).'
-					     OFFSET '.(intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
-						'array');
+			$DB->query('
+				SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as text
+				  FROM nv_webdictionary nvw, nv_items nvi
+				 WHERE nvw.node_type = "item"
+				   AND nvw.node_id = nvi.id
+				   AND nvw.subtype = "title"
+				   AND (	nvi.association = "free" OR
+				            (nvi.association = "category" AND nvi.embedding=0)
+				   )
+				   AND nvw.lang = '.protect($_REQUEST['lang']).'
+				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = nvi.website
+				   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+		      ORDER BY nvw.text ASC
+			     LIMIT '.intval($_REQUEST['page_limit']).'
+			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
+				'array'
+			);
 
             $rows = $DB->result();
             $total = $DB->foundRows();
-			echo json_encode(array('rows' => $rows, 'total' => $total));
+			echo json_encode(array('items' => $rows, 'totalCount' => $total));
 			core_terminate();					
 			break;
 
@@ -817,25 +819,23 @@ function structure_form($item)
         );
 
 		// load item title if action was "jump to an element"				
+		$jump_item_id = '';
+		$jump_item_title = '';
 		if(!empty($item->dictionary[$lang_code]['action-jump-item']))
 		{
 			$tmp = new Item();
 			$tmp->load($item->dictionary[$lang_code]['action-jump-item']);
-			$item_title = $tmp->dictionary[$lang_code]['title'];
+			$jump_item_title = array($tmp->dictionary[$lang_code]['title']);
+			$jump_item_id = array($item->dictionary[$lang_code]['action-jump-item']);
 		}
-
-        /*
-		$navibars->add_tab_content_row(array(	'<label>'.t(180, 'Item').' ['.t(67, 'Title').']</label>',
-												$naviforms->textfield('action-jump-item_title-'.$lang_code, $item_title),
-												$naviforms->hidden('action-jump-item-'.$lang_code, $item->dictionary[$lang_code]['action-jump-item'])
-										));
-        */
         $navibars->add_tab_content_row(array(
             '<label>'.t(180, 'Item').' ['.t(67, 'Title').']</label>',
-			$naviforms->textfield('action-jump-item_title-'.$lang_code, $item_title),
-			$naviforms->hidden('action-jump-item-'.$lang_code, $item->dictionary[$lang_code]['action-jump-item']),
-            '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.t(534, "You can only select elements which have their own path (no category embedded elements)").'</div>'
+			$naviforms->selectfield('action-jump-item-'.$lang_code, $jump_item_id, $jump_item_title, $item->dictionary[$lang_code]['action-jump-item'], null, false, null, null, false),
+            '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.
+                t(534, "You can only select elements which have their own path (no category embedded elements)").
+            '</div>'
 		));
+
 
 		$categories_list = structure::hierarchyList($hierarchy, $item->dictionary[$lang_code]['action-jump-branch'], $lang_code);
 
@@ -989,64 +989,57 @@ function structure_form($item)
 	
 		}
 		
-		$(window).bind("load", function()
+		$(window).on("load", function()
 		{
 			for(al in active_languages)
 			{
 				navigate_structure_path_check($("#path-" + active_languages[al]));
 				
-				$("#path-" + active_languages[al]).bind("focus", function()
+				$("#path-" + active_languages[al]).on("focus", function()
 				{
 					if($(this).val() == "")
 						navigate_structure_path_generate($(this));
 				});
 
-                $("#action-jump-item_title-" + active_languages[al]).select2(
+                $("#action-jump-item-" + active_languages[al]).select2(
                 {
                     placeholder: "'.t(533, "Find element by title").'",
                     minimumInputLength: 1,
                     ajax: {
                         url: NAVIGATE_APP + "?fid=" + navigate_query_parameter(\'fid\') + "&act=json_find_item",
                         dataType: "json",
-                        quietMillis: 100,
-                        data: function (term, page)
-                        {   // page is the one-based page number tracked by Select2
-                            return {
-                                "title": term,
-                                "lang": $("input[name=\"language_selector\"]:checked").val(),
-                                nd: new Date().getTime(),
-                                page_limit: 30, // page size
-                                page: page // page number
-						    };
-                        },
-                        results: function (data, page)
+                        delay: 100,
+                        data: function(params)
                         {
-                            // data = { rows: [], total: 45 }
-                            var more = (page * 5) < data.total; // whether or not there are more results available
-                            // notice we return the value of more so Select2 knows if more results can be loaded
-                            return {results: data.rows, more: more};
-                        }
+	                        return {
+				                title: params.term,
+				                lang: $("input[name=\"language_selector\"]:checked").val(),
+				                nd: new Date().getTime(),
+				                page_limit: 30, // page size
+				                page: params.page // page number
+				            };
+                        },
+                        processResults: function (data, params)
+				        {
+				            params.page = params.page || 1;
+				            return {
+								results: data.items,
+								pagination: { more: (params.page * 30) < data.total_count }
+							};
+				        }
                     },
-                    formatResult: function(row) { return row.label; },
-                    formatSelection: function(row) { return row.label + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
+                    templateSelection: function(row)
+					{
+						if(row.id)
+							return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+						else
+							return row.text;
+					},
+					escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
                     triggerChange: true,
-                    allowClear: true,
-                    initSelection : function (element, callback)
-                    {
-                        var data = {
-                            id: $("#action-jump-item-" + $("input[name=\"language_selector\"]:checked").val()).val(),
-                            label: element.val(),
-                            value: element.val()
-                        };
-                        callback(data);
-                    }
+                    allowClear: true
                 });
 
-                $("#action-jump-item_title-" + active_languages[al]).on("change", function(e)
-                {
-					$("#action-jump-item-" + $("input[name=\"language_selector\"]:checked").val()).val(e.val);
-                });
-				
 				navigate_structure_action_change(active_languages[al], $("#action-type-" + active_languages[al]));
 			}
 		});

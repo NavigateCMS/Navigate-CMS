@@ -8,7 +8,7 @@ html
 	background-color: #fff; 
 	margin: 0; 
 	padding: 0; 
-	font-family: Verdana;
+	font-family: Verdana, sans-serif;
 	font-size: 11px;
 	overflow: hidden;
 }
@@ -605,11 +605,12 @@ a.navigate-content-actions-selected
 .navigate-form-row input
 {
 	font-weight: normal;
-	padding: 3px;	
+	padding: 4px 3px 3px 5px;
 	margin-left: 0px;
 	background: #E8EDFF;
 	background-image: url("../../img/skins/background_menu_items.png");	
 	border: solid 1px #ccc;
+	border-radius: 1px;
 	color: #116;
 	width: 400px;
 }
@@ -634,10 +635,10 @@ a.navigate-content-actions-selected
 	/*background-image: url("../../img/skins/background_menu_items.png");*/
 	border: solid 1px #ccc;
 	color: #116;
-	height:20px;
+	height: 24px;
 	margin-left:0;
-	padding:1px 0 0;
-	width:408px;
+	padding: 1px 0 0 3px;
+	width: 410px;
 }
 
 .navigate-form-row option
@@ -653,9 +654,9 @@ a.navigate-content-actions-selected
 	color: #116;
 	height:auto;
 	margin-left:0;
-	padding:1px 0 0;
 	width: 400px;
 	padding: 3px;
+	border-radius: 1px;
 }
 
 
@@ -1705,7 +1706,10 @@ ul.connectedSortable li
 /* JQuery Cupertino Modifications (v1.8.5) */
 .ui-widget { font-family: Verdana, sans-serif; font-size: 1em; }
 .ui-widget .ui-widget { font-size: 1em; }
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button { font-family: Verdana, sans-serif; font-size: 1em; }
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button
+{
+	font-family: Verdana, sans-serif; font-size: 1em;
+}
 
 
 /* navigate panels */
@@ -1768,7 +1772,8 @@ div.tagsinput
 	border: solid 1px #ccc;
 	color: #116;
 	width: 400px;
-	font-family: Verdana;
+	font-family: Verdana, sans-serif;
+	border-radius: 1px;
 }
 
 div.tagsinput span.tag 
@@ -1791,7 +1796,7 @@ div.tagsinput span.tag a
 
 div.tagsinput input 
 { 
-	font-family: Verdana;
+	font-family: Verdana, sans-serif;
 	color: #2779AA; 
 	font-size: 12px;
 }
@@ -2001,103 +2006,70 @@ div.jGrowl div.jGrowl-closer:hover
 
 
 /* select2 styles -- jQuery UI Cupertino */
-.select2-container .select2-choice
+
+.navigate-form-row span.select2
 {
-    /* to match navigate input fields width */
-    width: 398px;
+	height: auto;
 }
 
-.select2-container .select2-choice,
-.select2-container .select2-choice:focus,
-.select2-container.select2-drop-above .select2-choice
+.select2-container .select2-selection--single
 {
-    background: url("../../img/skins/background_menu_items.png") repeat scroll 0 0 #E8EDFF;
-    border: 1px solid #CCCCCC;
-    color: #111166;
-    box-shadow: none;
-    height: 24px;
+	height: 25px;
+	border-radius: 2px;
+
+	background: #e8edff url("../../img/skins/background_menu_items.png") repeat scroll 0 0;
+    border: 1px solid #ccc;
+    font-weight: normal;
 }
 
-/*
-.select2-container.select2-drop-above .select2-choice
+.select2-container--default .select2-selection--single .select2-selection__rendered
 {
-    background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3;
-    color: #FFFFFF;
-    font-weight: bold;
-}
-*/
-
-.select2-container .select2-choice span
-{
-    height: 24px;
+	height: 23px;
+	line-height: 24px;
+    color: #116;
+	padding-left: 6px;
 }
 
-.select2-container .select2-choice div {
-    background: url("../../img/skins/background_menu_items.png") repeat scroll 0 0 #E8EDFF;
-    border-left: 1px solid #ccc;
+.select2-container--default .select2-selection--single .select2-selection__arrow
+{
+	height: 22px;
 }
 
-
-.select2-results
+.select2-container--open .select2-dropdown
 {
-    margin: 0px 4px 4px 0;
+	background: #E8EDFF;
+    border-color: #ccc;
+	box-shadow: 0 4px 5px rgba(0, 0, 0, 0.15);
 }
 
-.select2-highlighted
+.select2-container--default .select2-results__option--highlighted[aria-selected]
 {
-    background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3 !important;
+	background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3 !important;
     color: #FFFFFF;
 }
 
-.select2-input
+.select2-container--default .select2-results__option[aria-selected="true"]
 {
-    min-height: 24px;
+	background: url("../../img/skins/background_menu_items.png") repeat scroll 0 0 #E8EDFF;
 }
 
-.select2-drop
+.select2-search--dropdown .select2-search__field
 {
-    background-color: #E8EDFF;
-    color: #111166;
-    z-index: 10000 !important;
-}
-.select2-search
-{
-    margin: 3px 0 0;
+	padding: 2px;
+	font-size: 11px;
+	background-color: #fcfcfc;
+	color: #777;
 }
 
-.select2-search input
+.select2-container--default .select2-selection--single .select2-selection__clear
 {
-    font-family: sans-serif;
-    min-height: 21px;
-    padding: 4px 20px 2px 5px;
-    background: #fff url('../../lib/external/select2/select2.png') no-repeat 100% -24px;
-    background: url('../../lib/external/select2/select2.png') no-repeat 100% -24px, -webkit-gradient(linear, left bottom, left top, color-stop(0.85, white), color-stop(0.99, #eeeeee));
-    background: url('../../lib/external/select2/select2.png') no-repeat 100% -24px, -webkit-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-    background: url('../../lib/external/select2/select2.png') no-repeat 100% -24px, -moz-linear-gradient(center bottom, white 85%, #eeeeee 99%);
-    background: url('../../lib/external/select2/select2.png') no-repeat 100% -24px, -o-linear-gradient(bottom, white 85%, #eeeeee 99%);
-    background: url('../../lib/external/select2/select2.png') no-repeat 100% -24px, -ms-linear-gradient(top, #ffffff 85%, #eeeeee 99%);
-    background: url('../../lib/external/select2/select2.png') no-repeat 100% -24px, linear-gradient(top, #ffffff 85%, #eeeeee 99%);
-    opacity: 0.7;
+	color: #555;
 }
 
-.select2-container .select2-choice .select2-arrow
+.select2-results__option
 {
-    background: transparent;
-    border-left: 1px solid #CCC;
+	color: #116;
 }
-
-.select2-drop-active,
-.select2-drop.select2-drop-above.select2-drop-active
-{
-    border-color: #bbc;
-}
-
-.select2-results .select2-no-results, .select2-results .select2-searching, .select2-results .select2-selection-limit
-{
-    background-color: #E8EDFF;
-    padding: 5px;
-}
-
 
 
 .navi-ui-widget-shadow

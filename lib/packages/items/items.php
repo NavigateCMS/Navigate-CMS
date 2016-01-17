@@ -543,16 +543,18 @@ function run()
 			break;
 
 		case 'json_find_user': // json find user by name request (for "moderator" autocomplete)
-			$DB->query('SELECT id, username
-						  FROM nv_users
-						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').' 
-				      ORDER BY username ASC
-					     LIMIT 30',
-						'array');
+			$DB->query('
+				SELECT id, username as text
+				  FROM nv_users
+				 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
+		      ORDER BY username ASC
+			     LIMIT 30',
+				'array
+			');
 						
 			$rows = $DB->result();
             $total = $DB->foundRows();
-            echo json_encode(array('rows' => $rows, 'total' => $total));
+            echo json_encode(array('items' => $rows, 'total_count' => $total));
 							  
 			core_terminate();
 			break;
@@ -565,23 +567,24 @@ function run()
             if(!empty($_REQUEST['template']))
                 $template_filter = ' AND nvi.template = "'.$_REQUEST['template'].'" ';
 
-            $DB->query('SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as label, nvw.text as value
-						  FROM nv_webdictionary nvw, nv_items nvi
-						 WHERE nvw.node_type = "item"
-						   AND nvw.node_id = nvi.id
-						   '.$template_filter.'
-						   AND nvw.subtype = "title"
-						   AND nvw.website = '.$website->id.'
-						   AND nvw.website = nvi.website
-						   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
-				      ORDER BY nvw.text ASC
-					     LIMIT '.intval($_REQUEST['page_limit']).'
-					     OFFSET '.(intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
+            $DB->query('
+				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
+				  FROM nv_webdictionary nvw, nv_items nvi
+				 WHERE nvw.node_type = "item"
+				   AND nvw.node_id = nvi.id
+				   '.$template_filter.'
+				   AND nvw.subtype = "title"
+				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = nvi.website
+				   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+		      ORDER BY nvw.text ASC
+			     LIMIT '.intval($_REQUEST['page_limit']).'
+			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
                 'array');
 
             $rows = $DB->result();
             $total = $DB->foundRows();
-            echo json_encode(array('rows' => $rows, 'total' => $total));
+            echo json_encode(array('items' => $rows, 'totalCount' => $total));
             core_terminate();
             break;
 			
@@ -1525,7 +1528,7 @@ function items_form($item)
 		                    '',
 		                    false,
 		                    '',
-		                    ' width: 150px; ',
+		                    ' width: auto; position: absolute; margin-top: 1px; ',
 		                    false
                     );
 
@@ -1858,30 +1861,39 @@ function items_form($item)
 		{
 			$navibars->add_tab(t(250, "Comments"));	 // tab #5
 			
-			$navibars->add_tab_content_row(array(	'<label>'.t(252, 'Comments enabled to').'</label>',
-													$naviforms->selectfield('item-comments_enabled_to', 
-														array(
-                                                            0 => 0,
-                                                            1 => 1,
-                                                            2 => 2
-														),
-														array(
-                                                            0 => t(253, 'Nobody'),
-                                                            1 => t(24, 'Registered users'),
-                                                            2 => t(254, 'Everyone')
-														),
-														$item->comments_enabled_to
-													)
-												)
-											);
+			$navibars->add_tab_content_row(
+				array(
+						'<label>'.t(252, 'Comments enabled to').'</label>',
+						$naviforms->selectfield('item-comments_enabled_to',
+							array(
+                                0 => 0,
+                                1 => 1,
+                                2 => 2
+							),
+							array(
+                                0 => t(253, 'Nobody'),
+                                1 => t(24, 'Registered users'),
+                                2 => t(254, 'Everyone')
+							),
+							$item->comments_enabled_to
+						)
+				)
+			);
 
+			$moderator_id = '';
 			if(!empty($item->comments_moderator))
-				$webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->comments_moderator);
-		
+			{
+				$moderator_username = $DB->query_single('username', 'nv_users', ' id = '.$item->comments_moderator);
+				if(!empty($moderator_username))
+				{
+					$moderator_username = array($moderator_username);
+					$moderator_id = array($item->comments_moderator);
+				}
+			}
+
 			$navibars->add_tab_content_row(array(
                 '<label>'.t(255, 'Moderator').'</label>',
-				$naviforms->textfield('item-comments_moderator-text', $webuser),
-                $naviforms->hidden('item-comments_moderator', $item->comments_moderator),
+				$naviforms->selectfield('item-comments_moderator', $moderator_id, $moderator_username, $item->comments_moderator, null, false, null, null, false),
                 '<span style="display: none;" id="item-comments_moderator-helper">'.t(535, "Find user by name").'</span>',
 				'<div class="subcomment"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(256, 'Leave blank to accept all comments').'</div>'
 			));

@@ -22,7 +22,7 @@ $(window).on('load', function()
     });
     jQuery.longclick.duration = 1000; // default longlick duration
 
-    $(".select2").each(function(i, el)
+    $(".select2").not(".select2-container").each(function(i, el)
     {
         navigate_selector_upgrade(el);
     });
@@ -772,7 +772,6 @@ function navigate_hide_context_menus()
 {
     setTimeout(function()
     {
-        //$('select.select2').select2('close'); // should not be necessary, maybe fixed in 3.4.2?
         $(".ui-menu").each(function()
         {
             $(this).trigger('menuclose');
@@ -1465,36 +1464,15 @@ $.fn.buttonsetv = function()
 
 function navigate_selector_upgrade(el)
 {
+    // check if the element has already select2 applied
+	if($(el).hasClass("select2-container"))
+		return;
+
     // if width was applied, prepare Select2 component to use it instead of its default width
     var width = $(el)[0].style.width;
 
     $(el).select2(
         {
-            formatNoMatches: function ()
-            {
-                return navigate_lang_dictionary[492]; /*"No matches found"*/
-            },
-            formatInputTooShort: function (input, min)
-            {
-                var n = min - input.length;
-                var text = navigate_lang_dictionary[495]; // Please enter at least {number} characters
-                text.replace(/{number}/, min);
-                return text;
-            },
-            formatSelectionTooBig: function (limit)
-            {
-                var text = navigate_lang_dictionary[496]; // You can only select {number} items
-                text.replace(/{number}/, limit);
-                return text;
-            },
-            formatLoadMore: function (pageNumber)
-            {
-                return navigate_lang_dictionary[493]; /*"Loading more results..."*/
-            },
-            formatSearching: function ()
-            {
-                return navigate_lang_dictionary[494]; /*"Searching..."*/
-            },
             selectOnBlur: true
         }
     );
@@ -1523,9 +1501,9 @@ function navigate_selector_upgrade(el)
                         {
                             $(el).append($('<option>', { value: new_value, text: new_value, selected: true }));
                             if($(el).attr('multiselect'))
-                                $(el).select2("val", $(el).select2("val").concat(new_value));
+                                $(el).val($(el).val().concat(new_value));
                             else
-                                $(el).select2("val", new_value);
+                                $(el).val(new_value);
                         }
                         $( this ).dialog( "close" );
                     }

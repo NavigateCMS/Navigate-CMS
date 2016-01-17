@@ -1323,7 +1323,7 @@ function blocks_form($item)
 
 										if(input_name)
 										{
-											$("input[name=\""+input_name+"\"]").select2("val", input_value);
+											$("input[name=\""+input_name+"\"]").val(input_value).trigger("change");
 											$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("span:first").html("<i class=\"fa fa-fw fa-2x "+input_value+"\"></i>");
 										}
 									}
@@ -1416,8 +1416,8 @@ function blocks_form($item)
                 $layout->add_script('
 					$(window).on("load", function()
 					{
-						$("#trigger-type-'.$alang.'").select2("val", "'.$item->trigger['trigger-type'][$alang].'");
-						$("#action-type-'.$alang.'").select2("val", "'.$item->action['action-type'][$alang].'");
+						$("#trigger-type-'.$alang.'").val("'.$item->trigger['trigger-type'][$alang].'");
+						$("#action-type-'.$alang.'").val("'.$item->action['action-type'][$alang].'");
 						navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));
 
 						links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();

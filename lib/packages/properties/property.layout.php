@@ -801,10 +801,13 @@ function navigate_property_layout_field($property, $object="")
 
         case 'item':
 
-            $item_title = '';
+            $property_item_title = '';
+			$property_item_id = '';
+			firephp_nv::log($property);
+
             if(!empty($property->value))
             {
-                $item_title = $DB->query_single(
+                $property_item_title = $DB->query_single(
                     'text',
                     'nv_webdictionary',
                     '   node_type = "item" AND
@@ -813,12 +816,13 @@ function navigate_property_layout_field($property, $object="")
                         subtype = "title" AND
                         lang = "'.$website->languages_published[0].'"'
                 );
+	            $property_item_title = array($property_item_title);
+	            $property_item_id = array($property->value);
             }
 
             $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
             $field[] = '<label>'.$property_name.'</label>';
-            $field[] = $naviforms->textfield("property-selector-".$property->id, $item_title);
-            $field[] = $naviforms->hidden("property-".$property->id, $property->value);
+			$field[] = $naviforms->selectfield("property-".$property->id, $property_item_id, $property_item_title, $property->value, null, false, null, null, false);
 	        if(!empty($property->helper))
 	        {
 		        $helper_text = $property->helper;
@@ -829,50 +833,44 @@ function navigate_property_layout_field($property, $object="")
             $field[] = '</div>';
 
             $layout->add_script('
-                $("#property-selector-'.$property->id.'").select2(
+                $("#property-'.$property->id.'").select2(
                 {
                     placeholder: "'.t(533, "Find element by title").'",
                     minimumInputLength: 1,
                     ajax: {
                         url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item",
                         dataType: "json",
-                        quietMillis: 100,
-                        data: function (term, page)
-                        {   // page is the one-based page number tracked by Select2
-                            return {
-                                "title": term,
-                                nd: new Date().getTime(),
-                                template: "'.$property->item_template.'",
-                                page_limit: 30, // page size
-                                page: page // page number
-						    };
-                        },
-                        results: function (data, page)
-                        {
-                            // data = { rows: [], total: 45 }
-                            var more = (page * 5) < data.total; // whether or not there are more results available
-                            // notice we return the value of more so Select2 knows if more results can be loaded
-                            return {results: data.rows, more: more};
-                        }
-                    },
-                    formatResult: function(row) { return row.label; },
-                    formatSelection: function(row) { return row.label + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>"; },
-                    triggerChange: true,
-                    allowClear: true,
-                    initSelection : function (element, callback)
-                    {
-                        var data = {
-                            id: $("#property-'.$property->id.'").val(),
-                            label: element.val(),
-                            value: element.val()
-                        };
-                        callback(data);
-                    }
-                });
+                        delay: 100,
 
-                $("#property-selector-'.$property->id.'").on("change", function(e)
-                {
-					$("#property-'.$property->id.'").val(e.val);
+                        data: function(params)
+                        {
+	                        return {
+				                title: params.term,
+				                template: "'.$property->item_template.'",
+				                nd: new Date().getTime(),
+				                page_limit: 30, // page size
+				                page: params.page // page number
+				            };
+                        },
+                        processResults: function (data, params)
+				        {
+				            params.page = params.page || 1;
+				            return {
+								results: data.items,
+								pagination: { more: (params.page * 30) < data.total_count }
+							};
+				        }
+                    },
+                    templateSelection: function(row)
+					{
+						if(row.id)
+							return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+						else
+							return row.text;
+					},
+					escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                    triggerChange: true,
+                    allowClear: true
                 });
             ');
 
