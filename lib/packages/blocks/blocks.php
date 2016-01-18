@@ -1101,9 +1101,12 @@ function blocks_form($item)
                         $table->addRow(
                             uniqid('trigger-links-table-row-'),
                             array(
-                                empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="'.$tlinks['icon'][$key].'" style="width: 54px;" />', 'align' => 'left'),
-                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" style="width: 200px;" />', 'align' => 'left'),
-                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" style="width: 200px;" />', 'align' => 'left'),
+	                            ( empty($links_icons)?
+	                                array('content' => '-', 'align' => 'center') :
+	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlinks['icon'][$key].'" style="width: 190px;"></select>', 'align' => 'left')
+                                ),
+                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" style="width: 250px;" />', 'align' => 'left'),
+                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" style="width: 300px;" />', 'align' => 'left'),
                                 array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
                                                     <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />', 'align' => 'left'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
@@ -1116,9 +1119,12 @@ function blocks_form($item)
                 $table->addRow(
                     "trigger-links-table-row-model-".$lang,
                     array(
-                        empty($links_icons)? array('content' => '-', 'align' => 'center') : array('content' => '<input type="text" name="trigger-links-table-icon-'.$lang.'['.$uid.']" value="" style="width: 54px;" />', 'align' => 'left'),
-                        array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
-                        array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" style="width: 200px;" />', 'align' => 'left'),
+	                    ( empty($links_icons)?
+                            array('content' => '-', 'align' => 'center') :
+                            array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="" style="width: 190px;"></select>', 'align' => 'left')
+                        ),
+                        array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" style="width: 250px;" />', 'align' => 'left'),
+                        array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" style="width: 300px;" />', 'align' => 'left'),
                         array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
                                             <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
                                 'align' => 'left'),
@@ -1307,6 +1313,7 @@ function blocks_form($item)
 						case "links":
 							// remove previous links (if any)
 							$("#trigger-links-" + to).find("tr").not("#trigger-links-table-row-model-" + to).not(":first").remove();
+
 							// copy each link in the origin language
 							$("#trigger-links-" + from).find("tr").not("#trigger-links-table-row-model-" + from).not(":first").each(function()
 							{
@@ -1318,14 +1325,11 @@ function blocks_form($item)
 									{
 										// select2 field
 
-										var input_name = $("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("input.select2-offscreen:last").attr("name");
-										var input_value = $(this).find("input.select2-offscreen:last").val();
+										var input_name = $("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("select").attr("name");
+										var input_value = $(this).find("select").val();
 
 										if(input_name)
-										{
-											$("input[name=\""+input_name+"\"]").val(input_value).trigger("change");
-											$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("span:first").html("<i class=\"fa fa-fw fa-2x "+input_value+"\"></i>");
-										}
+											$("select[name=\""+input_name+"\"]").val(input_value).trigger("change");
 									}
 									else
 									{
@@ -1389,7 +1393,6 @@ function blocks_form($item)
             if($links_icons == 'fontawesome')
             {
                 $fontawesome_classes = block::fontawesome_list();
-                array_unshift($fontawesome_classes, '');
                 $fontawesome_classes = array_map(
                     function($v)
                     {
@@ -1397,8 +1400,6 @@ function blocks_form($item)
                         $x->id = $v;
                         if(!empty($v))
                             $x->text = substr($v, 3);
-                        else
-                            $x->text = '';
                         return $x;
                     },
                     $fontawesome_classes
@@ -1427,22 +1428,17 @@ function blocks_form($item)
 						// prepare select2 to select icons
 						if('.($links_icons=='fontawesome'? 'true' : 'false').')
 						{
-							$("[id^=trigger_links_table_").find("tr").each(function()
+							$("[id^=trigger_links_table_").find("tr").each(function(i, tr)
 							{
 								// do not apply select2 to head row
-								if(!$(this).find("input")) return;
+								if(!$(tr).find("select"))
+									return;
 
 								// do not apply select2 to model row
-								if($(this).attr("id") && ($(this).attr("id")).indexOf("table-row-model") > 0) return;
-								navigate_blocks_trigger_links_table_icon_selector(this);
+								if($(tr).attr("id") && ($(this).attr("id")).indexOf("table-row-model") > 0)
+									return;
 
-								// display icon value on load
-								if($(this).find("td:first").find("input:last").val()!="")
-								{
-									$(this).find("a.select2-choice:first")
-										.find("span.select2-chosen:first")
-										.html("<i class=\"fa fa-fw fa-2x "+$(this).find("td:first").find("input:last").val()+"\"></i>");
-								}
+								navigate_blocks_trigger_links_table_icon_selector(tr);
 							});
 						}
 					});

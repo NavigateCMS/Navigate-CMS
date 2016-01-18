@@ -803,7 +803,6 @@ function navigate_property_layout_field($property, $object="")
 
             $property_item_title = '';
 			$property_item_id = '';
-			firephp_nv::log($property);
 
             if(!empty($property->value))
             {
