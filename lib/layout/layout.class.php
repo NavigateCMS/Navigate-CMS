@@ -45,7 +45,7 @@ class layout
         if($this->type == 'navigate')
         {
             if(!empty($website->name))
-                $wtitle = ' | '.$website->name;
+                $wtitle = $website->name.' | ';
 
             $out[] = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
             $out[] = '<meta name="viewport" content="user-scalable=no">';
@@ -64,7 +64,7 @@ class layout
             {
                 //$out[] = '<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">';
                 $out[] = '<link rel="shortcut icon" type="image/png" href="img/navigate-isotype-16x16.png">';
-                $out[] = '<title>'.APP_NAME.$wtitle.'</title>';
+                $out[] = '<title>'.$wtitle.APP_NAME.'</title>';
             }
         }
         
