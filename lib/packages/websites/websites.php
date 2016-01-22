@@ -221,12 +221,26 @@ function run()
 					)
 				);
 
+				// replace occurrences in nv_blocks (triggers & actions)
+				$ok = $DB->execute('
+					UPDATE nv_blocks
+					   SET `trigger` = replace(`trigger`, :old, :new),
+					   	   `action` = replace(`action`, :old, :new)
+					 WHERE website = :wid',
+					array(
+						':old' => $old,
+						':new' => $new,
+						':wid' => $website_id
+					)
+				);
+
 				echo ($ok? 'true' : 'false');
 			}
 			else
 			{
 				echo 'false';
 			}
+			core_terminate();
 			break;
 
 		case 'remove_content':
@@ -412,14 +426,13 @@ function websites_form($item)
 		        </div>
 		    ');
 
-
 		    $layout->add_script('
 	            function navigate_replace_urls()
 	            {
 	                $("#navigate_replace_urls_dialog").dialog({
 	                        resizable: true,
 	                        height: 180,
-	                        width: 510,
+	                        width: 520,
 	                        modal: true,
 	                        title: "'.t(603, 'Replace URLs').'",
 	                        buttons: {
