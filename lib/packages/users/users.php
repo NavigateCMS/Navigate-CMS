@@ -352,13 +352,22 @@ function users_form($item)
 											$naviforms->textfield('user-username', $item->username),
 										));						
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(2, 'Password').'</label>',
-												'<input type="password" name="user-password" value="" size="32" />',
-												'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' ));
-											
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(2, 'Password').'</label>',
+			'<input type="password" name="user-password" value="" size="32" autocomplete="off" />',
+			'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>'
+		)
+	);
+	// force removing the browser saved password
+	$layout->add_script('
+		setTimeout(function() {
+			$("input[name=user-password]").val("");
+		}, 10);
+	');
+
 	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',
 											'<input type="text" name="user-email" value="'.$item->email.'" size="64" />' ));
-
 				
 	// Profile selector
 	$DB->query('SELECT id, name FROM nv_profiles');		

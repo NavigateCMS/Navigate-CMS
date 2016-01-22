@@ -528,7 +528,13 @@ function webusers_form($item)
 		'<input type="password" name="webuser-password" autocomplete="off" value="" size="32" />',
 		'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' )
     );
-											
+	// force removing the browser saved password
+	$layout->add_script('
+		setTimeout(function() {
+			$("input[name=webuser-password]").val("");
+		}, 10);
+	');
+
 	$navibars->add_tab_content_row(array(
         '<label>'.t(44, 'E-Mail').'</label>',
         $naviforms->textfield('webuser-email', $item->email))
@@ -572,13 +578,14 @@ function webusers_form($item)
     $webuser_groups = webuser_group::all_in_array();
 
     $navibars->add_tab_content_row(
-        array(  '<label>'.t(506, "Groups").'</label>',
-                $naviforms->multiselect(
-                    'webuser-groups',
-                    array_keys($webuser_groups),
-                    array_values($webuser_groups),
-                    $item->groups
-                )
+        array(
+	        '<label>'.t(506, "Groups").'</label>',
+            $naviforms->multiselect(
+                'webuser-groups',
+                array_keys($webuser_groups),
+                array_values($webuser_groups),
+                $item->groups
+            )
         )
     );
 
