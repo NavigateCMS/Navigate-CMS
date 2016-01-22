@@ -515,10 +515,11 @@ function extensions_options($extension, $saved=null)
 
     $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$navibars->generate().'</div>');
     $layout->navigate_additional_scripts();
+    navigate_property_layout_scripts(); // add javascript to enable special buttons and functions (Copy from, etc.)
     $layout->add_script('
         $("html").css("background", "transparent");
     ');
-
+    
     $out = $layout->generate();
 
     return $out;

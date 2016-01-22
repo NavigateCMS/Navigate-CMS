@@ -391,16 +391,18 @@ function run()
 
 		case "search_by_title":
 		case 91: // json search title request (for "copy from" dialog)
-			$DB->query('SELECT node_id as id, text as label, text as value
-						  FROM nv_webdictionary
-						 WHERE node_type = "item"
-						   AND subtype = "title"
-						   AND lang = '.protect($_REQUEST['lang']).'
-						   AND website = '.$website->id.'
-						   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
-				      ORDER BY text ASC
-					     LIMIT 30',
-						'array');
+			$DB->query('
+				SELECT node_id as id, text as label, text as value
+				  FROM nv_webdictionary
+				 WHERE node_type = "item"
+				   AND subtype = "title"
+				   AND lang = '.protect($_REQUEST['lang']).'
+				   AND website = '.$website->id.'
+				   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+		      ORDER BY text ASC
+			     LIMIT 20',
+				'array'
+			);
 
 			echo json_encode($DB->result());
 
