@@ -182,6 +182,9 @@ function about_layout()
 											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="http://luis-almeida.github.io/unveil/" target="_blank">jQuery Unveil v2014.05.29</a><br />' ));
+
+	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://scripts.incutio.com/xmlrpc/" target="_blank">Incutio XML-RPC Library for PHP v1.7.4</a><br />' ));
 
 	$navibars->add_tab(t(29, 'Images'));

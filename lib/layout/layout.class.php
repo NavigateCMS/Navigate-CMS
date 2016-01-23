@@ -90,12 +90,12 @@ class layout
 		$this->add_script_tag('js/jquery-ui.js');
 		$this->add_script_tag('js/jquery-ui-i18n.min.js');
 
-    	$this->add_script_tag('js/plugins/jquery.dialogextend.js');
-
-		$this->add_script_tag('js/plugins/browserdetect.js');		
-		// $this->add_script_tag('js/jquery.corner.js');
+		$this->add_script_tag('js/plugins/browserdetect.js');
 
 		$this->add_script_tag('lib/external/jquery-noselect/jquery.noselect.js');
+
+        $this->add_script_tag('js/plugins/jquery.dialogextend.js');
+		$this->add_script_tag('js/plugins/jquery.unveil.js');
 
 		$this->add_script_tag('js/tags-input/jquery.tagsinput.js');		
 		$this->add_style_tag('js/tags-input/jquery.tagsinput.css');
