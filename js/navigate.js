@@ -7,9 +7,9 @@ var navigate_form_properties_language_selected = null;
 var navigate_menu_unselect_timer = null;
 
 //var $P = new PHP_JS();
-
 $(window).on('load', function()
 {
+    $("#navigate-menu").css('opacity', 1);
     $("button, input:submit, a.uibutton, div.uibutton").button();
     $(".buttonset").buttonset();
     $(".buttonset").find('label').on('click', function()

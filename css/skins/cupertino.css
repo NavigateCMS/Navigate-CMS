@@ -275,7 +275,7 @@ img
 	text-shadow: #6374AB 3px 3px 2px; /* #fda700 */		
 }
 
-#navigate-menu, #navigate-menu-installation
+#navigate-menu-installation
 {
 	top: 0;
 	margin-top: 65px;
@@ -298,9 +298,11 @@ img
 	top: 0;
 	margin-top: 65px;
 	height: 70px;
-	/* height: 33px; */
+	opacity: 0;
 	overflow: hidden;
 	z-index: 100;
+	padding: 2px;
+	transition: all 0.3s;
 }
 
 #navigate-menu > ul
