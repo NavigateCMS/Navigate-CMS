@@ -140,8 +140,9 @@ function nvweb_webuser($vars=array())
                     {
                         // create a new webuser account with that email
                         $username = substr($email, 0, strpos($email, '@')); // left part of the email
+
                         // if proposed username already exists,
-                        // use the email as username
+                        // use the full email as username
                         // ** if the email already exists, the subscribe process only updates the newsletter setting!
                         $wu_id = $DB->query_single(
                             'id',
@@ -152,7 +153,7 @@ function nvweb_webuser($vars=array())
 
                         if(!empty($wu_id))
                         {
-                            // oops, user already exists... try another username -- the email
+                            // oops, user already exists... try another username -- the full email address
                             $wu_id = $DB->query_single(
                                 'id',
                                 'nv_webusers',
@@ -167,7 +168,7 @@ function nvweb_webuser($vars=array())
                             }
                             else
                             {
-                                // nope, email is already used (this code should never execute**)
+                                // nope, email is already used (this code should never execute **)
                                 $username = uniqid($username.'-');
                             }
                         }

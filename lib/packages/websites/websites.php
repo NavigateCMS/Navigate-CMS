@@ -1288,10 +1288,17 @@ function websites_form($item)
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(2, 'Password').'</label>',
-			'<input type="password" name="mail_password" id="mail_password"  value="" size="32" />',
+			'<input type="password" name="mail_password" id="mail_password" autocomplete="off"  value="" size="32" />',
 			'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>'
         )
     );
+
+	 // force removing the browser saved password
+	$layout->add_script('
+		setTimeout(function() {
+			$("input[name=mail_password]").val("");
+		}, 10);
+	');
 
 
 	if(empty($item->contact_emails))	$item->contact_emails = array();

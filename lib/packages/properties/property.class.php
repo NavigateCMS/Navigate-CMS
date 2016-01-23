@@ -696,6 +696,11 @@ class property
             if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
                 $_REQUEST['property-'.$property->id] = 0;
 
+            // item (select2): if no selection, the form does not send a value (HTML);
+            // if we don't set an empty value, Navigate would take that as non-existant field and would set the default value,
+            // which is different as the user may really want to set "empty" as the value
+            if($property->type=='item' && !isset($_REQUEST['property-'.$property->id]))
+                $_REQUEST['property-'.$property->id] = "";
 
             // remove the old element
             $DB->execute('
