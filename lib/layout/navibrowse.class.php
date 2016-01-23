@@ -188,11 +188,12 @@ class navibrowse
 
 		foreach($this->items as $item)
 		{
+			$icon = $this->mimeIcon($item->mime, $item->type);
+
+			$thumbnail = '';
 			if($item->type == 'image')
-				$icon = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
-			else
-				$icon = $this->mimeIcon($item->mime, $item->type);
-			
+				$thumbnail = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
+
 			if($item->type=='folder')
 			{
 				$html[] = '<div class="navibrowse-folder ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
@@ -204,7 +205,7 @@ class navibrowse
 			{
 				$html[] = '<div class="navibrowse-file ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
                 $html[] = '     <div class="navibrowse-file-access-icons">'.$permissions[$item->permission].$access[$item->access].'</div>';
-				$html[] = '		<img src="'.$icon.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
+				$html[] = '		<img src="'.$icon.'" data-src="'.$thumbnail.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
 				$html[] = '</div>';					
 			}
@@ -225,9 +226,11 @@ class navibrowse
 			<div id="navibrowse-folder-tree-dialog">
 				<div class="navibrowse_folder_tree" style=" width: 90%; "><img src="img/icons/silk/folder_home.png" align="absmiddle" />  '.t(18, 'Home').$folders_tree.'</div>
 			</div>
-		';			
+		';
 		
 		$html[] = '<script language="javascript" type="text/javascript">';
+
+		$html[] = '$(window).on("load", function() { $(".navibrowse-file img").unveil(); });';
 
 //		$html[] = '$(".navibrowse-file, .navibrowse-folder").on("mouseover", function() { $(this).css("opacity", 0.7); });';
 //		$html[] = '$(".navibrowse-file, .navibrowse-folder").on("mouseout", function() { $(this).css("opacity", 1); });';
