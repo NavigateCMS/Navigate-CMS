@@ -147,7 +147,10 @@ class website
 		$this->share_files_media_browser    =   intval($_REQUEST['share_files_media_browser']);
 
 		$this->additional_scripts     = $_REQUEST['additional_scripts'];
-		$this->homepage			= $_REQUEST['homepage'];		
+
+		if(empty($_REQUEST['homepage_from_structure']))
+			$this->homepage			= $_REQUEST['homepage'];
+
 		$this->permission		= intval($_REQUEST['permission']);
 		$this->default_timezone	= $_REQUEST['default_timezone'];
 		

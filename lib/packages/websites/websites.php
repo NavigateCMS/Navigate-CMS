@@ -903,7 +903,7 @@ function websites_form($item)
             var tsid = new Date().getTime();
             $(tr).attr("id", tsid);
             
-            $(tr).find("input,label").each(function()
+            $(tr).find("input,label,select").each(function()
 		    {
 		        if($(this).attr("id"))
 		        {
@@ -928,8 +928,8 @@ function websites_form($item)
 
             navigate_naviorderedtable_website_languages_table_reorder();
 
-            $(tr).find("td:first").find("a,div").remove();
-            $(tr).find("td").eq(3).find("a,div").remove();
+            $(tr).find("td:first").find("a,div,span").remove();
+            $(tr).find("td").eq(3).find("a,div,span").remove();
 
             navigate_selector_upgrade($(tr).find("td:first").find("select"));
 

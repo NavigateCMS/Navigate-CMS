@@ -227,7 +227,7 @@ class navibrowse
 				<div class="navibrowse_folder_tree" style=" width: 90%; "><img src="img/icons/silk/folder_home.png" align="absmiddle" />  '.t(18, 'Home').$folders_tree.'</div>
 			</div>
 		';
-		
+
 		$html[] = '<script language="javascript" type="text/javascript">';
 
 		$html[] = '$(window).on("load", function() { $(".navibrowse-file img").unveil(); });';
