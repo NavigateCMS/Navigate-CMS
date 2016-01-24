@@ -247,16 +247,22 @@ function nvweb_properties_render($property, $vars)
 
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
-	if(!isset($property->value)) $property->value = $property->dvalue;
-	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")))
+    // if this property is null (no value assigned (null), (empty) is a value!)
+    // get the default value
+	if(!isset($property->value))
+        $property->value = $property->dvalue;
+
+    // check multilanguage properties, where the value can be saved in a language but may be (null) in another language
+	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")) || $property->multilanguage == 'true')
 	{
+        // cast variable as array
         if(is_object($property->value))
             $property->value = (array)$property->value;
 
 		if(!isset($property->value) || !isset($property->value[$current['lang']]))
-			$property->value[$current['lang']] = $property->dvalue;
+			$property->value[$current['lang']] = $property->dvalue->{$current['lang']};
 	}
-	
+
 	switch($property->type)
 	{
 		case 'value':
