@@ -7,6 +7,7 @@ class webuser
 	public $username;
 	public $password;
 	public $email;
+	public $email_verification_date;
     public $groups;
 	public $fullname;
 	public $gender; // male / female / (empty)
@@ -95,6 +96,7 @@ class webuser
 		$this->username		= $main->username;
 		$this->password		= $main->password;
    		$this->email	    = $main->email;    
+   		$this->email_verification_date  = $main->email_verification_date;
 		$this->fullname		= $main->fullname;
 		$this->gender		= $main->gender;		
 		$this->avatar		= $main->avatar;		
@@ -169,15 +171,17 @@ class webuser
 		if(!empty($this->id))
 		{
             // remove all social profiles
-            $DB->execute(' DELETE FROM nv_webuser_profiles
-							WHERE webuser = '.intval($this->id)
+            $DB->execute('
+ 				DELETE FROM nv_webuser_profiles
+				 WHERE webuser = '.intval($this->id)
             );
 
             // finally remove webuser account
-            $DB->execute(' DELETE FROM nv_webusers
-							WHERE id = '.intval($this->id).'
-              				LIMIT 1 '
-						);
+            $DB->execute('
+ 				DELETE FROM nv_webusers
+				 WHERE id = '.intval($this->id).'
+              	 LIMIT 1 '
+			);
 
             $events->trigger(
                 'webuser',
@@ -213,13 +217,15 @@ class webuser
 		    INSERT INTO nv_webusers
                 (	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
                     language, country, timezone, address, zipcode, location, phone, social_website,
-                    joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, blocked
+                    joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, blocked,
+                    email_verification_date
                 )
                 VALUES 
                 (
                     :id, :website, :username, :password, :email, :groups, :fullname, :gender, :avatar, :birthdate,
                     :language, :country, :timezone, :address, :zipcode, :location, :phone, :social_website,
-                    :joindate, :lastseen, :newsletter, :private_comment, :activation_key, :cookie_hash, :blocked
+                    :joindate, :lastseen, :newsletter, :private_comment, :activation_key, :cookie_hash, :blocked,
+                    :email_verification_date
                 )',
             array(
                 ":id" => 0,
@@ -246,7 +252,8 @@ class webuser
                 ":private_comment" => is_null($this->private_comment)? '' : $this->private_comment,
                 ":activation_key" => is_null($this->activation_key)? '' : $this->activation_key,
                 ":cookie_hash" => is_null($this->cookie_hash)? '' : $this->cookie_hash,
-                ":blocked" => is_null($this->blocked)? '0' : $this->blocked
+                ":blocked" => is_null($this->blocked)? '0' : $this->blocked,
+	            ":email_verification_date" => is_null($this->email_verification_date)? '' : $this->email_verification_date
             )
         );							
 				
@@ -307,7 +314,8 @@ class webuser
                   private_comment = :private_comment,
                   activation_key = :activation_key,
                   cookie_hash = :cookie_hash,
-                  blocked = :blocked
+                  blocked = :blocked,
+                  email_verification_date = :email_verification_date
                 WHERE id = :id
             ',
             array(
@@ -334,7 +342,8 @@ class webuser
                 ':activation_key' => $this->activation_key,
                 ':cookie_hash' => $this->cookie_hash,
                 ':blocked' => $this->blocked,
-                ':id' => $this->id
+                ':id' => $this->id,
+	            ':email_verification_date' => $this->email_verification_date
             )
         );
 
@@ -433,6 +442,38 @@ class webuser
             );
         }
     }
+
+	public static function email_verification($email, $hash)
+	{
+		global $DB;
+
+		$status = false;
+
+		$DB->query('
+			SELECT id, activation_key
+			  FROM nv_webusers
+			 WHERE email = '.protect($email).'
+			   AND activation_key = '.protect($hash).'
+		');
+		$rs = $DB->first();
+
+		if(!empty($rs->id))
+		{
+			$wu = new webuser();
+			$wu->load($rs->id);
+
+			if($wu->blocked==1 && empty($wu->password) && empty($wu->email_verification_date))
+			{
+				// email is confirmed through a newsletter subscribe request
+				$wu->email_verification_date = time();
+				$wu->blocked = 0;
+				$wu->activation_key = "";
+				$status = $wu->save();
+			}
+		}
+
+		return $status;
+	}
 
 	public function quicksearch($text)
 	{

@@ -209,6 +209,7 @@ try
     }
 
     $html = nvweb_template_oembed_parse($html);
+	$html = nvweb_template_processes($html);
 
 	$end = nvweb_after_body('html');
 	$end.= nvweb_after_body('js');

@@ -535,9 +535,14 @@ function webusers_form($item)
 		}, 10);
 	');
 
-	$navibars->add_tab_content_row(array(
-        '<label>'.t(44, 'E-Mail').'</label>',
-        $naviforms->textfield('webuser-email', $item->email))
+	$navibars->add_tab_content_row(
+		array(
+            '<label>'.t(44, 'E-Mail').'</label>',
+            $naviforms->textfield('webuser-email', $item->email),
+			($item->email_verification_date > 0)?
+					'<span class="navigate-form-row-info" title="'.core_ts2date($item->email_verification_date, true).'"><img src="img/icons/silk/tick.png" align="absmiddle" /> '.t(37, "E-Mail confirmed").'</span>' :
+					''
+		)
     );
 
 	if(!empty($item->joindate))

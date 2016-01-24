@@ -225,8 +225,8 @@
 		</unit>
 		<unit id="37">
 			<segment>
-				<source>/*/</source>
-				<target>NaviM+</target>
+				<source>E-Mail confirmed</source>
+				<target>Correo electrónico confirmado</target>
 			</segment>
 		</unit>
 		<unit id="38">
@@ -2710,7 +2710,7 @@
 		<unit id="451">
 			<segment>
 				<source>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</source>
-				<target>Este es un correo automático enviado como resultado de un proceso de petición de cambio de contraseña. Si has recibido este correo por error simplemente ignóralo.</target>
+				<target>Este es un correo automático enviado como resultado de un proceso de petición de cambio de contraseña. Si ha recibido este correo por error simplemente ignórelo.</target>
 			</segment>
 		</unit>
 		<unit id="452">
@@ -2728,13 +2728,13 @@
 		<unit id="454">
 			<segment>
 				<source>An e-mail with a confirmation link has been sent to your e-mail account.</source>
-				<target>Se ha enviado un correo electrónico a tu cuenta con un enlace de confirmación.</target>
+				<target>Se ha enviado un correo electrónico a su cuenta con un enlace de confirmación.</target>
 			</segment>
 		</unit>
 		<unit id="455">
 			<segment>
 				<source>Your new password has been activated.</source>
-				<target>Tu nueva contraseña ha sido activada.</target>
+				<target>Su nueva contraseña ha sido activada.</target>
 			</segment>
 		</unit>
 		<unit id="456">
@@ -3250,7 +3250,7 @@
 		<unit id="541">
 			<segment>
 				<source>Your email has been successfully subscribed to the newsletter.</source>
-				<target>Tu correo electrónico ha sido correctamente suscrito al boletín.</target>
+				<target>Su correo electrónico ha sido correctamente suscrito al boletín.</target>
 			</segment>
 		</unit>
 		<unit id="542">
@@ -3641,6 +3641,18 @@
 			<segment>
 				<source>Double quotes not allowed, use single quotes only</source>
 				<target>No se permiten comillas dobles, sólo pueden usarse comillas simples</target>
+			</segment>
+		</unit>
+		<unit id="607">
+			<segment>
+				<source>Click on the link below to confirm your account</source>
+				<target>Haga clic en el enlace inferior para confirmar su cuenta</target>
+			</segment>
+		</unit>
+		<unit id="608">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
+				<target>Este es un correo automático enviado como resultado de un proceso de petición de suscripción al boletín. Si ha recibido este correo por error simplemente ignórelo.</target>
 			</segment>
 		</unit>
 	</file>

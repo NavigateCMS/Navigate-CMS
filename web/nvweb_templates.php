@@ -118,7 +118,7 @@ function nvweb_after_body($type="js", $code="")
 				array_unshift($current[$type.'_after_body'], '<script language="javascript" type="text/javascript">');
 				$current[$type.'_after_body'][] = '</script>';
 			}
-			return implode("\n", $current[$type.'_after_body']);	
+			return implode("\n", $current[$type.'_after_body']);
 		}
 	}
 	else
@@ -280,12 +280,15 @@ function nvweb_template_parse($template)
 							$content = '';
 						else
 						{
-							$content = $DB->query_single('text', 'nv_webdictionary', ' 
-																   node_type = "structure" 
-															   AND subtype = "title"
-															   AND node_id = '.$tmp.' 
-															   AND lang = '.protect($current['lang']).'
-															   AND website = '.$website->id);								
+							$content = $DB->query_single(
+								'text',
+								'nv_webdictionary', '
+									   node_type = "structure"
+								   AND subtype = "title"
+								   AND node_id = '.$tmp.'
+								   AND lang = '.protect($current['lang']).'
+								   AND website = '.$website->id
+							);
 						}
 						break;
 						
@@ -370,7 +373,7 @@ function nvweb_template_parse($template)
 				//var_dump($tag['attributes']['object']);
 				break; 
 		}
-		
+
 		$html = str_replace($tag['full_tag'], $content, $html);
 	}
 
@@ -1149,6 +1152,45 @@ function nvweb_template_oembed_cache($provider, $oembed_url, $minutes=43200)
         $response = json_decode($response);
 
     return $response;
+}
+
+
+function nvweb_template_processes($html)
+{
+	global $session;
+	global $theme;
+
+	if(isset($session['nv.webuser/verify:email_confirmed']))
+	{
+		unset($session['nv.webuser/verify:email_confirmed']);
+
+		$text = $theme->t("subscribed_ok");
+		if(empty($text) || $text=="subscribed_ok")
+			$text = t(37, "E-Mail confirmed");
+
+		nvweb_after_body(
+			"html",
+			'<div id="nv_webuser_verify_email_confirmed" style=" transition: all 1s; text-align: center; width: 40%; margin: -48px 30% 0 30%; top: 50%; color: #555; position: fixed; z-index: 1000000; background: rgba(240, 255, 240, 0.7); box-shadow: 0 0 7px -2px #777;  ">
+				<span style="vertical-align: middle; font-size: 200%; ">&#10003;</span>
+				&nbsp;&nbsp;
+				<span style="font-size: 125%; vertical-align: middle; ">'.$text.'</span>
+			</div>'
+		);
+
+		nvweb_after_body(
+			"js",
+			'setTimeout(function() {
+				document.getElementById("nv_webuser_verify_email_confirmed").style.opacity = 0;
+				setTimeout(function()
+				{
+					document.getElementById("nv_webuser_verify_email_confirmed").style.display = "none";
+				},
+				1000);
+			}, 8000);'
+		);
+	}
+
+	return $html;
 }
 
 

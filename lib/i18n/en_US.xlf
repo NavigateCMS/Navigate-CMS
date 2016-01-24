@@ -225,8 +225,8 @@
 		</unit>
 		<unit id="37">
 			<segment>
-				<source>/*/</source>
-				<target>/*/</target>
+				<source>E-Mail confirmed</source>
+				<target>E-Mail confirmed</target>
 			</segment>
 		</unit>
 		<unit id="38">
@@ -3641,6 +3641,18 @@
 			<segment>
 				<source>Double quotes not allowed, use single quotes only</source>
 				<target>Double quotes not allowed, use single quotes only</target>
+			</segment>
+		</unit>
+		<unit id="607">
+			<segment>
+				<source>Click on the link below to confirm your account</source>
+				<target>Click on the link below to confirm your account</target>
+			</segment>
+		</unit>
+		<unit id="608">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
+				<target>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</target>
 			</segment>
 		</unit>
 	</file>

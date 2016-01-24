@@ -225,8 +225,8 @@
 		</unit>
 		<unit id="37">
 			<segment>
-				<source>/*/</source>
-				<target>NaviM+</target>
+				<source>E-Mail confirmed</source>
+				<target>Correu electrònic confirmat</target>
 			</segment>
 		</unit>
 		<unit id="38">
@@ -3641,6 +3641,18 @@
 			<segment>
 				<source>Double quotes not allowed, use single quotes only</source>
 				<target>No es permeten cometes dobles, només poden usar-se cometes simples</target>
+			</segment>
+		</unit>
+		<unit id="607">
+			<segment>
+				<source>Click on the link below to confirm your account</source>
+				<target>Faci clic sobre l'enllaç inferior per a confirmar el seu compte</target>
+			</segment>
+		</unit>
+		<unit id="608">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
+				<target>Aquest és un correu automàtic enviat com a resultat d'un procés de petició de suscripció al butlletí. Si ha rebut aquest correu per error simplement ignori'l.</target>
 			</segment>
 		</unit>
 	</file>

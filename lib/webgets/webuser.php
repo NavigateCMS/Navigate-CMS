@@ -25,15 +25,21 @@ function nvweb_webuser($vars=array())
         $webgets[$webget]['translations'] = array(
             'login_incorrect' => t(4, 'Login incorrect.'),
             'subscribed_ok' => t(541, 'Your email has been successfully subscribed to the newsletter.'),
-            'subscribe_error' => t(542, 'There was a problem subscribing your email to the newsletter.')
+            'subscribe_error' => t(542, 'There was a problem subscribing your email to the newsletter.'),
+            'email_confirmation' => t(454, "An e-mail with a confirmation link has been sent to your e-mail account."),
+            'click_to_confirm_account' => t(607, "Click on the link below to confirm your account"),
+            'email_confirmation_notice' => t(608, "This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.")
         );
 
         // theme translations
         // if the web theme has custom translations for this string subtypes, use it (for the user selected language)
         /* just add the following translations to your json theme dictionary:
-            "login_incorrect": "Login incorrect."
-            "subscribed_ok": "Your email has been successfully subscribed to the newsletter."
-            "subscribe_error": "There was a problem subscribing your email to the newsletter."
+            "login_incorrect": "Login incorrect.",
+            "subscribed_ok": "Your email has been successfully subscribed to the newsletter.",
+            "subscribe_error": "There was a problem subscribing your email to the newsletter.",
+            "email_confirmation" => "An e-mail with a confirmation link has been sent to your e-mail account.",
+            "click_to_confirm_account" => "Click on the link below to confirm your account",
+            "email_confirmation_notice" => "This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it."
         */
         if(!empty($website->theme) && method_exists($theme, 't'))
         {
@@ -129,14 +135,19 @@ function nvweb_webuser($vars=array())
                           AND website = '.$website->id
                     );
 
+                    $wu = new webuser();
+
                     if(!empty($wu_id))
                     {
-                        $wu = new webuser();
                         $wu->load($wu_id);
-                        $wu->newsletter = 1;
-                        $ok = $wu->save();
+                        if($wu->blocked == 0)
+                        {
+                            $wu->newsletter = 1;
+                            $ok = $wu->save();
+                        }
                     }
-                    else
+
+                    if(empty($wu_id) || ($wu->blocked==1 && !empty($wu->activation_key)))
                     {
                         // create a new webuser account with that email
                         $username = substr($email, 0, strpos($email, '@')); // left part of the email
@@ -172,20 +183,47 @@ function nvweb_webuser($vars=array())
                                 $username = uniqid($username.'-');
                             }
                         }
+                        else
+                        {
+                            // new sign up
+                            $wu->id = 0;
+                            $wu->website = $website->id;
+                            $wu->email = $email;
+                            $wu->newsletter = 1;
+                            $wu->language = $current['lang']; // infer the webuser language by the active website language
+                            $wu->username = $username;
+                            $wu->blocked = 1;
+                        }
 
-                        $wu = new webuser();
-                        $wu->id = 0;
-                        $wu->website = $website->id;
-                        $wu->email = $email;
-                        $wu->newsletter = 1;
-                        $wu->language = $current['lang']; // infer the webuser language by the active website language
-                        $wu->username = $username;
+                        $wu->activation_key = md5($wu->email . rand(1, 9999999));
                         $ok = $wu->save();
+
+                        // send a message to verify the new user's email
+                        $email_confirmation_link = $website->absolute_path().'/nv.webuser/verify?email='.$wu->email.'&hash='.$wu->activation_key;
+                        $message = navigate_compose_email(array(
+                            array(
+                                'title' => $website->name,
+                                'content' => $webgets[$webget]['translations']['click_to_confirm_account'].
+                                            '<br />'.
+                                            '<a href="'.$email_confirmation_link.'">'.$email_confirmation_link.'</a>'
+                            ),
+                            array(
+                                'footer' =>
+                                    $webgets[$webget]['translations']['email_confirmation_notice'].
+                                    '<br />'.
+                                    '<a href="'.$website->absolute_path().$website->homepage().'">'.$website->name.'</a>'
+                            )
+                        ));
+
+                        @nvweb_send_email($website->name, $message, $wu->email);
+                        $pending_confirmation = true;
                     }
                 }
 
                 $message = $webgets[$webget]['translations']['subscribe_error'];
-                if($ok)
+                if($pending_confirmation)
+                    $message = $webgets[$webget]['translations']['email_confirmation'];
+                else if($ok)
                     $message = $webgets[$webget]['translations']['subscribed_ok'];
 
                 if(empty($vars['notify']))

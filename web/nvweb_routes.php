@@ -263,6 +263,18 @@ function nvweb_route_parse($route="")
         case 'nvsearch':
             $current['template'] = 'search';
             break;
+
+		case 'nv.webuser/verify':
+			$hash = $_REQUEST['hash'];
+			$email = filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL);
+			if(!empty($hash) && !empty($email))
+			{
+				$ok = webuser::email_verification($email, $hash);
+				if($ok)
+					$session['nv.webuser/verify:email_confirmed'] = time();
+			}
+			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage());
+			break;
 			
 		case 'node':
 			if($node > 0)

@@ -225,8 +225,8 @@
 		</unit>
 		<unit id="37">
 			<segment>
-				<source>/*/</source>
-				<target>NaviM+</target>
+				<source>E-Mail confirmed</source>
+				<target>E-Mail bestätigen</target>
 			</segment>
 		</unit>
 		<unit id="38">
@@ -3641,6 +3641,18 @@
 			<segment>
 				<source>Double quotes not allowed, use single quotes only</source>
 				<target>Anführungszeichen nicht erlaubt, verwenden Sie nur einfache Anführungszeichen</target>
+			</segment>
+		</unit>
+		<unit id="607">
+			<segment>
+				<source>Click on the link below to confirm your account</source>
+				<target>Klicken Sie auf den Link unten, um Ihr Konto zu bestätigen</target>
+			</segment>
+		</unit>
+		<unit id="608">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
+				<target>Dies ist eine automatische E-Mail als Folge einer Petition Prozess Newsletter-Abonnement gesendet. Wenn Sie diese E-Mail irrtümlich erhalten haben, einfach ignorieren.</target>
 			</segment>
 		</unit>
 	</file>
