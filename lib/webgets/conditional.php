@@ -32,7 +32,9 @@ function nvweb_conditional($vars=array())
     }
     else
     {
-        $categories = array($current['object']->id);
+        $categories = array();
+        if(!empty($current['object']->id))
+            $categories = array($current['object']->id);
 
         if(isset($vars['categories']))
         {
@@ -74,6 +76,12 @@ function nvweb_conditional($vars=array())
         $rs = NULL;
 
         $access_extra_items = str_replace('s.', 'i.', $access_extra);
+
+        if(empty($categories))
+        {
+            // force executing the query; search in all categories
+            $categories = nvweb_menu_get_children(array(0));
+        }
 
         // default source for retrieving items
         $DB->query('
@@ -329,21 +337,21 @@ function nvweb_conditional($vars=array())
             $rs = $DB->result();
             $comments_count = $rs[0]->total + 0;
 
-            if(!isset($vars['allowed']))
+            if(isset($vars['allowed']))
             {
                 if($vars['allowed']=='true' || $vars['allowed']=='1' || empty($vars['allowed']))
                 {
-                    // comments allowed to everybody (2) or registered users only (1)
+                    // comments allowed to everybody (2) or to registered users only (1)
                     if( $item->comments_enabled_to == 2 ||
                         ( $item->comments_enabled_to == 1 && !empty($webuser->id)))
                         $out = $item_html;
                 }
             }
-            else if(($comments_count >= intval($vars['min'])) && isset($vars['min']))
+            else if(isset($vars['min']) && ($comments_count >= intval($vars['min'])))
             {
                 $out = $item_html;
             }
-            else if(($comments_count <= intval($vars['max'])) && isset($vars['max']))
+            else if(isset($vars['max']) && ($comments_count <= intval($vars['max'])))
             {
                 $out = $item_html;
             }
