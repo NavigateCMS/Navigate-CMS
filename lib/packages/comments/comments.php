@@ -528,7 +528,7 @@ function comments_form($item)
     );
 
     $events->trigger(
-        'comments',
+        'comment',
         'edit',
         array(
             'comment' => &$item,

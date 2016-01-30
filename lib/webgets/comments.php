@@ -251,7 +251,13 @@ function nvweb_comments($vars=array())
                     $current['object'] = $element;
 
                 // trigger the "new_comment" event through the extensions system
-                $events->trigger('comment', 'after_insert', array('comment' => $comment));
+                $events->trigger(
+                    'comment',
+                    'after_insert',
+                    array(
+                        'comment' => &$comment
+                    )
+                );
 
 				if(!empty($comment->id))
                 {
