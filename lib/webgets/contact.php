@@ -25,12 +25,12 @@ function nvweb_contact($vars=array())
 		
 		// default translations		
 		$webgets[$webget]['translations'] = array(
-				'name' => t(159, 'Name'),
-				'email' => t(44, 'E-Mail'),
-				'message' => t(380, 'Message'),
-                'fields_blank' => t(444, 'You left some required fields blank.'),
-                'contact_request_sent' => t(445, 'Your contact request has been sent. We will contact you shortly.'),
-                'contact_request_failed' => t(446, 'We\'re sorry. Your contact request could not be sent. Please try again or find another way to contact us.')
+            'name' => t(159, 'Name'),
+            'email' => t(44, 'E-Mail'),
+            'message' => t(380, 'Message'),
+            'fields_blank' => t(444, 'You left some required fields blank.'),
+            'contact_request_sent' => t(445, 'Your contact request has been sent. We will contact you shortly.'),
+            'contact_request_failed' => t(446, 'We\'re sorry. Your contact request could not be sent. Please try again or find another way to contact us.')
 		);
 
 		// theme translations 

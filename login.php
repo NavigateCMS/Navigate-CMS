@@ -187,12 +187,12 @@ $current_version = update::latest_installed();
             <div class="navigate-form-row">
                 <label style=" padding-top: 6px; margin-bottom: 6px; font-size: 15px; "><?php echo t(1, 'User');?></label>
                 <br />
-                <input type="text" value="" size="32" name="login-username" id="login-username" style=" width: 280px; font-size: 20px; " />
+                <input type="text" value="" size="32" name="login-username" id="login-username" style=" width: 278px; font-size: 20px; " />
             </div>
             <div class="navigate-form-row">
                 <label style=" padding-top: 6px; margin-bottom: 6px; font-size: 15px; "><?php echo t(2, 'Password');?></label>
                 <br />
-                <input type="password" value="" size="32" name="login-password" id="login-password"  style=" width: 280px; font-size: 20px; " />
+                <input type="password" value="" size="32" name="login-password" id="login-password"  style=" width: 278px; font-size: 20px; " />
             </div>
 
             <div class="navigate-form-row">
