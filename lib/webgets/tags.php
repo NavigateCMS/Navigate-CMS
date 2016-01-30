@@ -12,6 +12,11 @@ function nvweb_tags($vars=array())
 	switch($vars['mode'])
 	{
 		case 'top':
+            $search_url = nvweb_source_url('theme', 'search');
+            if($search_url == $website->absolute_path())
+                $search_url = NVWEB_ABSOLUTE.'/nvtags';
+
+            $search_url .= '?q=';
 
             $categories = array();
             if(!empty($vars['categories']))
@@ -34,11 +39,11 @@ function nvweb_tags($vars=array())
                     continue;
 
                 if($vars['tag']=='li')
-                    $out[] = '<li><a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a></li>';
+                    $out[] = '<li><a href="'.$search_url.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a></li>';
                 else if($vars['tag']=='span')
                     $out[] = '<span count="'.$times.'" '.$extra.'>'.$tag.'</span>'.$vars['separator'];
                 else
-                    $out[] = '<a href="'.NVWEB_ABSOLUTE.'/nvtags?q='.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a>'.$vars['separator'];
+                    $out[] = '<a href="'.$search_url.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a>'.$vars['separator'];
             }
             $out = implode("\n", $out);
 			break;
