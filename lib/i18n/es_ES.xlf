@@ -3655,5 +3655,11 @@
 				<target>Este es un correo automático enviado como resultado de un proceso de petición de suscripción al boletín. Si ha recibido este correo por error simplemente ignórelo.</target>
 			</segment>
 		</unit>
+		<unit id="609">
+			<segment>
+				<source>Click a day of the month selected to update the value</source>
+				<target>Haga click en un día del mes seleccionado para actualizar el valor</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

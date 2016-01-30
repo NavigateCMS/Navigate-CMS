@@ -3655,5 +3655,11 @@
 				<target>Aquest és un correu automàtic enviat com a resultat d'un procés de petició de suscripció al butlletí. Si ha rebut aquest correu per error simplement ignori'l.</target>
 			</segment>
 		</unit>
+		<unit id="609">
+			<segment>
+				<source>Click a day of the month selected to update the value</source>
+				<target>Fac clic en un dia del mes sel·leccionat per actualitzar el valor</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

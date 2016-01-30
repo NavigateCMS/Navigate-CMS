@@ -3655,5 +3655,11 @@
 				<target>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</target>
 			</segment>
 		</unit>
+		<unit id="609">
+			<segment>
+				<source>Click a day of the month selected to update the value</source>
+				<target>Click a day of the month selected to update the value</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

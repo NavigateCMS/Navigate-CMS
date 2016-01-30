@@ -252,25 +252,73 @@ class naviforms
 		if(!$hour)
         {
             $format = str_replace('H:i', '', $format);
-            $layout->add_script('$("#'.$name.'").datepicker(
-            {
-                '.$translations.'
-                dateFormat: "'.trim($format).'",
-                changeMonth: true,
-                changeYear: true
-            });');
+            $layout->add_script('
+                $("#'.$name.'").datepicker(
+                {
+                    '.$translations.'
+                    dateFormat: "'.trim($format).'",
+                    changeMonth: true,
+                    changeYear: true
+                });
+            ');
         }
         else
         {
             $format = str_replace('H:i', '', $format);
-            $layout->add_script('$("#'.$name.'").datetimepicker(
-            {
-                '.$translations.'
-                dateFormat: "'.trim($format).'",
-                timeFormat: "HH:mm",
-                changeMonth: true,
-                changeYear: true
-            });');
+            $layout->add_script('
+                navigatecms.forms.datepicker["'.$name.'"] = $("#'.$name.'").datetimepicker(
+                {
+                    '.$translations.'
+                    dateFormat: "'.trim($format).'",
+                    timeFormat: "HH:mm",
+                    changeMonth: true,
+                    changeYear: true,
+                    timezone: null,
+                    onClose: function()
+                    {
+                        if(navigatecms.forms.datepicker["'.$name.'"].qtip_obj)
+						{
+							navigatecms.forms.datepicker["'.$name.'"].qtip_obj.qtip("hide");
+							navigatecms.forms.datepicker["'.$name.'"].qtip_obj.qtip("disable");
+						}
+                    },
+                    onChangeMonthYear: function(year, month, instance)
+                    {
+						setTimeout(function()
+						{
+							if(navigatecms.forms.datepicker["'.$name.'"].qtip_obj)
+							{
+								navigatecms.forms.datepicker["'.$name.'"].qtip_obj.qtip("hide");
+								navigatecms.forms.datepicker["'.$name.'"].qtip_obj.qtip("disable");
+							}
+							else
+							{
+	                            navigatecms.forms.datepicker["'.$name.'"].qtip_obj = $("table.ui-datepicker-calendar").qtip(
+								{
+								    content: "'.t(609, "Click a day of the month selected to update the value", null, true).'",
+									overwrite: true,
+									show: true,
+							        hide:
+							        {
+								        event: "unfocus"
+						            },
+							        style:
+							        {
+								        tip: true,
+								        width: 200,
+								        classes: "qtip-cream"
+							        },
+							        position:
+							        {
+								        at: "center right",
+								        my: "bottom left"
+							        }
+						        });
+					        }
+                        }, 100);
+                    }
+                });
+            ');
         }
 
 		return $out;

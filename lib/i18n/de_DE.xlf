@@ -3655,5 +3655,11 @@
 				<target>Dies ist eine automatische E-Mail als Folge einer Petition Prozess Newsletter-Abonnement gesendet. Wenn Sie diese E-Mail irrtümlich erhalten haben, einfach ignorieren.</target>
 			</segment>
 		</unit>
+		<unit id="609">
+			<segment>
+				<source>Click a day of the month selected to update the value</source>
+				<target>Klicken Sie auf einen Tag des Monats ausgewählt, um den Wert zu aktualisieren</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>
