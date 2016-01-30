@@ -137,7 +137,7 @@ function about_layout()
 											'<a href="https://code.google.com/a/apache-extras.org/p/phpmailer/" target="_blank">PHP Mailer v5.2.2</a><br />'));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://craigsworks.com/projects/qtip2/" target="_blank">qTip2 (14 Dec 2012)</a><br />'));
+											'<a href="http://qtip2.com" target="_blank">qTip2 v2.2.1</a><br />'));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://phlymail.com/en/downloads/idna-convert.html" target="_blank">Net_IDNA v0.9.0</a><br />'));
@@ -158,7 +158,7 @@ function about_layout()
 											'<a href="https://github.com/weixiyen/jquery-filedrop" target="_blank">jQuery FileDrop v0.1.0 (2014/03/14)</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.5.3</a><br />' ));
+											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.6.1</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="https://github.com/tzuryby/jquery.hotkeys" target="_blank">jQuery HotKeys v2d51e3a (May 20 2012)</a><br />' ));

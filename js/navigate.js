@@ -1,4 +1,10 @@
-var navigatecms = {};
+var navigatecms = {
+    forms: {
+        datepicker: {
+
+        }
+    }
+};
 var navigate_menu_current_tab;
 var navigate_lang_dictionary = Array();
 var navigate_codemirror_instances = Array();
