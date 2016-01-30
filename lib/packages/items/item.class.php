@@ -240,6 +240,7 @@ class item
 	{
 		global $DB;
 		global $website;
+		global $events;
 		
 		$this->date_created  = core_time();		
 		$this->date_modified = core_time();
@@ -328,6 +329,14 @@ class item
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
 
+		$events->trigger(
+			'item',
+			'save',
+			array(
+				'item' => $this
+			)
+		);
+
 		return true;
 	}
 	
@@ -335,6 +344,7 @@ class item
 	{
 		global $DB;
 		global $website;
+		global $events;
 			
 		$this->date_modified = core_time();
 
@@ -403,7 +413,15 @@ class item
 		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
-				
+
+		$events->trigger(
+			'item',
+			'save',
+			array(
+				'item' => $this
+			)
+		);
+
 		return true;
 	}
 
