@@ -61,7 +61,18 @@ function nvweb_liveedit($vars=array())
 
         $out[] = '<div id="navigate_liveedit_bar" style="display: none;">';
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'" target="_blank"><img src="'.NAVIGATE_URL.'/img/navigatecms/navigatecms_logo_52x24_white.png" width="52" height="24" /></a>';
-        $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/page_add.png" /> '.t(38, 'Create').'</a>';
+
+        $out[] = '
+            <div>
+                <ul class="navigate_liveedit_bar_menu">
+                    <li><a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=blocks&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/brick.png" /> '.t(437, 'Block').'</a></li>
+                    <li><a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=structure&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/sitemap_color.png" /> '.t(479, 'Structure entry').'</a></li>
+                    <li><a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/page.png" /> '.t(180, 'Item').'</a></li>
+                </ul>
+                <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=create" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/page_add.png" /> '.t(38, 'Create').'</a>
+            </div>
+        ';
+
         $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments" target="_blank"><img src="'.NAVIGATE_URL.'/img/icons/silk/comments.png" /> '.$comments.'</a>';
         //$out[] = '  <div id="navigate_liveedit_bar_liveedit_button"><img src="'.NAVIGATE_URL.'/img/icons/silk/shape_square_select.png" /> '.t(458, 'Edit in place').'</div>';
 

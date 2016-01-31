@@ -22,8 +22,8 @@
     display: none;
 }
 
-#navigate_liveedit_bar div,
-#navigate_liveedit_bar a
+#navigate_liveedit_bar > div,
+#navigate_liveedit_bar > a
 {
     float: left;
     padding: 0 5px;
@@ -37,11 +37,27 @@
     cursor: pointer;
     text-decoration: none;
     font-family: Tahoma;
+    margin: 0;
 }
 
-#navigate_liveedit_bar div:hover,
-#navigate_liveedit_bar a:hover,
-#navigate_liveedit_bar .active
+#navigate_liveedit_bar > div > a
+{
+    padding: 0;
+    height: 28px;
+    border: none;
+    color: #eee;
+    display: block;
+    line-height: 28px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: Tahoma;
+    margin: 0;
+}
+
+#navigate_liveedit_bar > div:hover,
+#navigate_liveedit_bar > a:hover,
+#navigate_liveedit_bar > .active,
+.navigate_liveedit_bar_menu li:hover
 {
     background: #002048; /* Old browsers */
     background: -moz-linear-gradient(top,  #002048 0%, #174570 100%); /* FF3.6+ */
@@ -53,7 +69,7 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#002048', endColorstr='#174570',GradientType=0 ); /* IE6-9 */
 }
 
-#navigate_liveedit_bar img
+#navigate_liveedit_bar > img
 {
     vertical-align: middle;
     display: inline-block;
@@ -87,4 +103,50 @@
 {
     color: #fff;
     font-family: Tahoma;
+}
+
+.navigate_liveedit_bar_menu li,
+.navigate_liveedit_bar_menu li a
+{
+    list-style: none;
+    font-size: 10px;
+    color: #eee;
+    display: block;
+    border-bottom: solid 1px #174570;
+    padding: 0 5px;
+}
+
+
+.navigate_liveedit_bar_menu
+{
+    display: none;
+
+    position: absolute;
+    border-right: solid 1px #174570;
+    border-left: solid 1px #174570;
+    border-top: solid 1px #174570;
+
+    border-radius: 4px 4px 0 0;
+
+    color: #eee;
+    line-height: 24px;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: Tahoma;
+    margin: 0 0 0 -6px;
+    bottom: 28px;
+
+    background: #174570; /* Old browsers */
+    background: -moz-linear-gradient(top,  #174570 0%, #002048 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#174570), color-stop(100%,#002048)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #174570 0%,#002048 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #174570 0%,#002048 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #174570 0%,#002048 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #174570 0%,#002048 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#174570', endColorstr='#002048',GradientType=0 ); /* IE6-9 */
+}
+
+#navigate_liveedit_bar div:hover .navigate_liveedit_bar_menu
+{
+    display: block;
 }
