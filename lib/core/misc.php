@@ -632,4 +632,26 @@ function command_exists($command)
     return false;
 }
 
+
+/**
+ * Creates a "slug" from a UTF-8 string
+ *
+ * source: http://stackoverflow.com/questions/7530238/convert-ascii-and-utf-8-to-non-special-characters-with-one-function
+ *
+ * @param string $input The string to convert
+ * @return string The generated slug
+ */
+function slug($input)
+{
+    $string = html_entity_decode($input, ENT_COMPAT, "UTF-8");
+
+    $oldLocale = setlocale(LC_CTYPE, '0');
+
+    setlocale(LC_CTYPE, 'en_US.UTF-8');
+    $string = iconv("UTF-8", "ASCII//TRANSLIT", $string);
+
+    setlocale(LC_CTYPE, $oldLocale);
+
+    return strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $string));
+}
 ?>

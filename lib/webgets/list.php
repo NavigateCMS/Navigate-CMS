@@ -671,6 +671,18 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
 					break;
 
+
+                case 'slug':
+                    if($source=='structure' || $source=='category')
+					    $out = $structure['dictionary'][$item->id];
+                    else
+                        $out = $structure['dictionary'][$item->category];
+
+                    // remove spaces, special chars, etc.
+                    $out = core_string_clean($out);
+                    $out = slug($out);
+                    break;
+
 				case 'property':
                     $id = $item->id;
                     if($source!='structure' && $source!='category')
@@ -695,9 +707,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 				case 'url':
 				case 'path':
                     if($source=='structure' || $source=='category')
-                        $out = nvweb_prepare_link($structure['routes'][$item->id]);
+                        $out = $structure['routes'][$item->id];
                     else
-                        $out = nvweb_prepare_link($structure['routes'][$item->category]);
+                        $out = $structure['routes'][$item->category];
+
+                    $out = nvweb_prepare_link($out);
 					break;
 
                 case 'id':
@@ -908,11 +922,27 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     $out = $item->id;
                     break;
 
-				case 'title':
+                case 'slug':
                     $lang = $current['lang'];
+
                     if(!empty($tag['attributes']['lang']))
                         $lang = $tag['attributes']['lang'];
+
+                    $out = $item->dictionary[$lang]['title'];
+
+                    // remove spaces, special chars, etc.
+                    $out = core_string_clean($out);
+                    $out = slug($out);
+                    break;
+
+				case 'title':
+                    $lang = $current['lang'];
+
+                    if(!empty($tag['attributes']['lang']))
+                        $lang = $tag['attributes']['lang'];
+
 					$out = $item->dictionary[$lang]['title'];
+
                     if(!empty($tag['attributes']['length']))
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $tag['attributes']['length']);
 					break;
