@@ -170,6 +170,64 @@ class navibrowse
 		if($this->parent > 0)
 			$html[] = '	<a href="?fid='.$_REQUEST['fid'].'&parent='.$this->previous.'"><img src="img/icons/silk/folder_up.png" width="16px" height="16px" align="absbottom" /> '.t(139, 'Back').'</a>';
 		$html[] = '	<a href="#" onclick="navibrowse_folder_tree_dialog('.$this->parent.');"><img src="img/icons/silk/application_side_tree.png" width="16px" height="16px" align="absbottom" /> '.t(75, 'Path').': '.$this->path.'</a>';
+
+		$html[] = '
+			<div style="float: right;">
+				<i class="fa fa-filter"></i>
+	            <select id="navibrowse-filter-type" name="navibrowse-filter-type">
+					<option value="" selected="selected">('.t(443, "All").')</option>
+					<option value="folder">'.t(141, "Folder").'</option>
+					<option value="image">'.t(157, 'Image').'</option>
+					<option value="audio">'.t(31, 'Audio').'</option>
+					<option value="document">'.t(539, 'Document').'</option>
+					<option value="video">'.t(30, 'Video').'</option>
+				</select>
+			</div>
+		';
+
+		$layout->add_script('
+			$("#navibrowse-filter-type").select2({
+			    placeholder: "'.t(160, "Type").'",
+			    allowClear: true,
+		        minimumResultsForSearch: Infinity,
+		        width: 150,
+		        templateResult: navibrowse_filter_type_render,
+		        templateSelection: navibrowse_filter_type_render
+		    });
+
+		    function navibrowse_filter_type_render(opt)
+	        {
+				if(!opt.id) { return opt.text; }
+
+				var icon = "fa-file";
+				switch(opt.element.value)
+				{
+					case "folder":      icon = "fa-folder-o";       break;
+					case "image":       icon = "fa-image";          break;
+					case "audio":       icon = "fa-music";          break;
+					case "document":    icon = "fa-file-text-o";    break;
+					case "video":       icon = "fa-video-camera";   break;
+				}
+
+				var html = $(\'<span><i class="fa fa-fw \'+icon+\'"></i> \' + opt.text + \'</span>\');
+				return html;
+	        }
+
+		    $("#navibrowse-filter-type").on("change", function () {
+				$(".navibrowse-items > div").show();
+				if($("#navibrowse-filter-type").val() != "")
+				{
+					$(".navibrowse-items > div").each(function()
+					{
+						if($(this).data("file-type") == $("#navibrowse-filter-type").val())
+							$(this).show();
+						else
+							$(this).hide();
+					});
+				}
+		    });
+		');
+
 		$html[] = '</div>';
 		
 		$html[] = '<div class="navibrowse-items">';		
