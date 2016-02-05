@@ -400,11 +400,12 @@ class structure
 		
 		if(!is_array($selected))
 			$selected = array($selected);
-		
+
 		foreach($hierarchy as $node)
 		{	
 			$li_class = '';
 			$post_html = structure::hierarchyList($node->children, $selected, $lang);
+
 			if(strpos($post_html, 'class="active"')!==false) $li_class = ' class="open" ';
 					
 			if(empty($html)) $html[] = '<ul>';
@@ -413,6 +414,20 @@ class structure
                 $title = $node->label;
             else
                 $title = $node->dictionary[$lang]['title'];
+
+			if(empty($title))
+			{
+				foreach($node->dictionary as $lkey => $lval)
+				{
+					if(!empty($lval['title']) && $lval['title'] != '[ ? ]')
+					{
+						$title  = '<span style="opacity: 0.8;">'.$lval['title'].' <img align="absmiddle" src="img/icons/silk/comment.png" class="silk-sprite" /><i>'.$lkey.'</i></span>';
+						break;
+					}
+				}
+				if(empty($title)) // no translation for ANY language, so just add a placeholder
+					$title = '<span style="opacity: 0.75;"><i class="fa fa-fw fa-language"></i> #'.$node->id.'</span>';
+			}
 
 			if(in_array($node->id, $selected))
 				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span class="active">'.$title.'</span>';
@@ -562,5 +577,4 @@ class structure
 	}
 
 }
-
 ?>

@@ -319,15 +319,17 @@ function structure_tree($hierarchy)
 	$navitree->orderURL('?fid=structure&act=3');
 	$navitree->homepagerURL('?fid=structure&act=homepager');
 
-	$access = array(		0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
-							1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
-							2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
-                            3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
+	$access = array(
+		0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
+		1 => '<img src="img/icons/silk/lock.png" align="absmiddle" title="'.t(361, 'Web users only').'" />',
+		2 => '<img src="img/icons/silk/user_gray.png" align="absmiddle" title="'.t(363, 'Users who have not yet signed up or signed in').'" />',
+        3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
 	);	
 	
-	$permissions = array(	0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
-							1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(70, 'Private'),
-							2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
+	$permissions = array(
+		0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
+		1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(70, 'Private'),
+		2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
 	);
 
     /* LANGUAGE SELECTOR */
@@ -336,7 +338,7 @@ function structure_tree($hierarchy)
 
     foreach($website->languages_list as $lang)
     {
-        $lang_selector[] = '<li><a href="#" language="'.$lang.'">'.language::name_by_code($lang).'</a></li>';
+        $lang_selector[] = '<li><a href="#" language="'.$lang.'"><span class="ui-icon ui-icon-carat-1-e"></span> '.language::name_by_code($lang).'</a></li>';
     }
 
     $navitree->setLanguages($website->languages_list);
@@ -1326,4 +1328,5 @@ function structure_form($item)
 
     return $navibars->generate();
 }
+
 ?>
