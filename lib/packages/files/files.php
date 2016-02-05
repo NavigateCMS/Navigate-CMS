@@ -693,31 +693,6 @@ function files_browser($parent, $search="")
 		});
 	');
 
-	
-	// trying to allow file upload by drag and drop on full window
-	/*
-	$layout->add_script('
-		$(function() 
-		{
-			var uploader_zone = new plupload.Uploader(
-			{
-				runtimes : "html5,flash,silverlight",
-				max_file_size : "50mb",
-				chunk_size : "1mb",
-				unique_names : true,
-				drop_element: "navigate-content",			
-				url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
-		
-				// Flash settings
-				flash_swf_url : "'.NAVIGATE_URL.'/js/plupload/js/Moxie.swf",
-		
-				// Silverlight settings
-				silverlight_xap_url : "'.NAVIGATE_URL.'/js/plupload/js/Moxie.xap"
-
-			});		 
-		});	
-	');
-	*/	
 	return $navibars->generate();
 	
 }
