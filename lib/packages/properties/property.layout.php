@@ -634,7 +634,7 @@ function navigate_property_layout_field($property, $object="")
             {
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
                 $field[] = '<label>'.$property_name.'</label>';
-                $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue);
+                $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue, @$property->options);
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
@@ -800,7 +800,6 @@ function navigate_property_layout_field($property, $object="")
             break;
 
         case 'item':
-
             $property_item_title = '';
 			$property_item_id = '';
 
@@ -840,7 +839,6 @@ function navigate_property_layout_field($property, $object="")
                         url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item",
                         dataType: "json",
                         delay: 100,
-
                         data: function(params)
                         {
 	                        return {

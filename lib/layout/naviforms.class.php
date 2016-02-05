@@ -41,7 +41,7 @@ class naviforms
 
 		$out = array();
 		if($multiple)
-			$out[] = '<select name="'.$id.'[]" id="'.$id.'" onchange="'.$onChange.'" multiple="multiple" style=" height: 100px; '.$style.' " >';
+			$out[] = '<select name="'.$id.'[]" id="'.$id.'" onchange="'.$onChange.'" multiple="multiple" style=" height: 100px; '.$style.' ">';
 		else
 			$out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" onchange="'.$onChange.'" style="'.$style.'">';
 
@@ -596,11 +596,11 @@ class naviforms
 		return $out;
 	}
 	
-	public function dropbox($name, $value=0, $media="", $disabled=false, $default_value=null)
+	public function dropbox($name, $value=0, $media="", $disabled=false, $default_value=null, $options=array())
 	{
 		global $layout;
 		global $website;
-		
+
 		$out = array();
         $out[] = '<div id="'.$name.'-droppable-wrapper" class="navigate-droppable-wrapper">';
 
@@ -642,30 +642,70 @@ class naviforms
 			$out[] = '<div class="navigate-droppable-cancel"><img src="img/icons/silk/cancel.png" /></div>';
             if($media=='image')
             {
-                if(!empty($default_value))
-                {
-                    $default_value_html = '<img src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$default_value.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
-                    $out[] = '<div class="navigate-droppable-create">
-                                <img src="img/icons/silk/add.png" />
-                                <ul class="navigate-droppable-create-contextmenu">
-                                    <li action="default"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(199, "Default value").'</a></li>
-                                </ul>
-                                <div class="navigate-droppable-create-default_value">'.$default_value_html.'</div>
-                              </div>';
+                if($options == 'a:0:{}')
+                    $options = array();
 
-                    // "create" context menu actions
+                if(empty($options) && !empty($default_value))
+                    $options = array($default_value => t(199, "Default value"));
+                else
+                    $options = (array)$options;
+
+                if(!empty($options))
+                {
+                    $out[] = '
+                        <div class="navigate-droppable-create">
+                            <img src="img/icons/silk/add.png" />
+                        </div>
+                    ';
+
+                    // "create" context menu actions (image picker)
+                    $layout->add_content('
+                        <ul id="'.$name.'-image_picker" class="navigate-image-picker navi-ui-widget-shadow">
+                            '.implode("\n", array_map(
+                                function($k, $v)
+                                {
+                                    global $website;
+                                    global $theme;
+
+                                    if(!empty($theme))
+                                        $v = $theme->t($v);
+
+                                    return '
+                                        <li data-value="'.$k.'"  data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=75&amp;height=75">
+                                            <a href="#">
+                                                <img title="'.$v.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=48&amp;height=48" />
+                                                <span>'.$v.'</span>
+                                            </a>
+                                        </li>
+                                    ';
+                                },
+                                array_keys($options),
+                                array_values($options)
+                            )).'
+                        </ul>
+                    ');
+
                     $layout->add_script('
-                        $("#'.$name.'-droppable").parent()
-                            .find(".navigate-droppable-create")
-                            .find(".navigate-droppable-create-contextmenu li[action=default]")
-                            .on("click", function()
+                        $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").on(
+                        "click",
+                        function(ev)
+				        {
+                            navigate_hide_context_menus();
+                            setTimeout(function()
                             {
-                                $("#'.$name.'").val("'.$default_value.'");
-                                $("#'.$name.'-droppable").html($("#'.$name.'-droppable").parent().find(".navigate-droppable-create-default_value").html());
-                                $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
-                                $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
-                            }
-                        );
+                                $("#'.$name.'-image_picker").menu();
+                                $("#'.$name.'-image_picker").css({left: ev.pageX, top: ev.pageY});
+                                $("#'.$name.'-image_picker").show();
+
+                                $("#'.$name.'-image_picker li").off().on("click", function()
+                                {
+                                    $("#'.$name.'").val($(this).data("value"));
+                                    $("#'.$name.'-droppable").html("<img src=\"" + $(this).data("src") + "\" />");
+                                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
+                                    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
+                                });
+                            }, 100);
+                        });
                     ');
 
                     $contextmenu = true;
@@ -860,8 +900,6 @@ class naviforms
 						$("#'.$name.'").val(file_id);
 						var draggable_content = $(ui.draggable);
 
-						console.log(draggable_content);
-
 						if($(draggable_content).find(".file-image-wrapper").length > 0)
 						{
 						    draggable_content = $(draggable_content).find(".file-image-wrapper").html();
@@ -918,8 +956,7 @@ class naviforms
 
         $out = array();
 
-        // check available dropdown_tree extensions or just use the default
-
+        // TODO: check available dropdown_tree extensions or just use the default
         $out[] = '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$selected_value.'" />';
 
         $path = "";
