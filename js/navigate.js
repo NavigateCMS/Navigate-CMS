@@ -1527,7 +1527,8 @@ function navigate_selector_upgrade(el)
 
     $(el).select2(
         {
-            selectOnBlur: true
+            selectOnBlur: true,
+            minimumResultsForSearch: 6
         }
     );
 

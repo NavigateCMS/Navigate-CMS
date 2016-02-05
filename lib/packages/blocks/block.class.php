@@ -20,6 +20,7 @@ class block
     public $fixed;
     public $categories;
     public $exclusions;
+    public $elements; // selection or exclusions in a JSON object
 
     public $properties;
 
@@ -91,6 +92,7 @@ class block
         $this->fixed	        = $main->fixed;
         $this->categories		= array_filter(explode(',', $main->categories));
         $this->exclusions		= array_filter(explode(',', $main->exclusions));
+        $this->elements         = json_decode($main->elements, true);
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
@@ -136,6 +138,12 @@ class block
             $this->categories 	= array();
             $this->exclusions 	= array();
         }
+
+        $this->elements = array();
+        if(!empty($_REQUEST['elements_selection']) && $_REQUEST['elements_display'][0] != 'all')
+        $this->elements = array(
+            $_REQUEST['elements_display'][0] => $_REQUEST['elements_selection']
+        );
 
 		$this->dictionary		= array();	// for titles
 		$this->trigger			= array();
@@ -308,10 +316,11 @@ class block
 		{
 			webdictionary::save_element_strings('block', $this->id, array(), $this->website);
 			
-			$DB->execute('DELETE FROM nv_blocks
-								WHERE id = '.intval($this->id).'
-						  		  AND website = '.$website->id
-						);
+			$DB->execute('
+              DELETE FROM nv_blocks
+			   WHERE id = '.intval($this->id).' AND
+                     website = '.$website->id
+            );
 		}
 		
 		return $DB->get_affected_rows();		
@@ -346,7 +355,7 @@ class block
         $ok = $DB->execute(
             'INSERT INTO nv_blocks
                 (id, website, type, date_published, date_unpublish,
-                 position, fixed, categories, exclusions,
+                 position, fixed, categories, exclusions, elements,
                  access, groups, enabled, `trigger`, action, notes,
                  date_modified)
                 VALUES
@@ -359,6 +368,7 @@ class block
                   :fixed,
                   :categories,
                   :exclusions,
+                  :elements,
                   :access,
                   :groups,
                   :enabled,
@@ -377,6 +387,7 @@ class block
                 ':fixed'            =>  intval($this->fixed),
                 ':categories'       =>  implode(',', $this->categories),
                 ':exclusions'       =>  implode(',', $this->exclusions),
+                ':elements'         =>  json_encode($this->elements),
                 ':access'           =>  intval($this->access),
                 ':groups'           =>  $groups,
                 ':enabled'          =>  intval($this->enabled),
@@ -428,6 +439,7 @@ class block
                 fixed	        = :fixed,
                 categories		= :categories,
                 exclusions		= :exclusions,
+                elements        = :elements,
                 `trigger` 		= :trigger,
                 `action` 		= :action,
                 access 			= :access,
@@ -448,6 +460,7 @@ class block
                 ':fixed'            =>  $this->fixed,
                 ':categories'       =>  implode(',', $this->categories),
                 ':exclusions'       =>  implode(',', $this->exclusions),
+                ':elements'         =>  json_encode($this->elements),
                 ':access'           =>  $this->access,
                 ':groups'           =>  $groups,
                 ':enabled'          =>  $this->enabled,
@@ -466,7 +479,7 @@ class block
 		return true;
 	}
 
-    // TODO: in Navigate 2.0 add more block types (modes)
+    // TODO: add more block types (modes) in Navigate 2.0
     public static function modes()
     {
         $modes = array(
@@ -689,11 +702,14 @@ class block
 		
 		// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
 		
-		$DB->query('SELECT DISTINCT (nvw.node_id)
-					 FROM nv_webdictionary nvw
-					 WHERE nvw.node_type = "block" AND
-						   nvw.text '.$like.' AND
-						   nvw.website = '.$website->id, 'array');
+		$DB->query('
+            SELECT DISTINCT (nvw.node_id)
+              FROM nv_webdictionary nvw
+             WHERE nvw.node_type = "block" AND
+                   nvw.text '.$like.' AND
+                   nvw.website = '.$website->id,
+            'array'
+        );
 						   
 		$dict_ids = $DB->result("node_id");
 		
@@ -701,15 +717,7 @@ class block
 		$cols[] = 'b.id' . $like;
 		$cols[] = 'b.type' . $like;
 		$cols[] = 'b.notes' . $like;		
-		
-		/* INEFFICIENT WAY
-		$cols[] = 'i.id IN ( SELECT nvw.node_id 
-							 FROM nv_webdictionary nvw
-							 WHERE nvw.node_type = "item" AND
-								   nvw.text '.$like.'
-							)' ;
-		*/
-		
+
 		if(!empty($dict_ids))
 			$cols[] = 'b.id IN ('.implode(',', $dict_ids).')';
 			
@@ -727,7 +735,12 @@ class block
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_blocks WHERE website = '.protect($website->id), 'object');
+        $DB->query('
+            SELECT *
+            FROM nv_blocks
+            WHERE website = '.protect($website->id),
+            'object'
+        );
         $out = $DB->result();
 
         if($type='json')

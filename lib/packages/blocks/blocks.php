@@ -509,27 +509,6 @@ function run()
             core_terminate();
             break;
 
-        case 'grid_note_background':
-            grid_notes::background('block', $_REQUEST['id'], $_REQUEST['background']);
-            core_terminate();
-            break;
-
-        case 'grid_notes_comments':
-            $comments = grid_notes::comments('block', $_REQUEST['id'], false);
-            echo json_encode($comments);
-            core_terminate();
-            break;
-
-        case 'grid_notes_add_comment':
-            echo grid_notes::add_comment('block', $_REQUEST['id'], $_REQUEST['comment'], $_REQUEST['background']);
-            core_terminate();
-            break;
-
-        case 'grid_note_remove':
-            echo grid_notes::remove($_REQUEST['id']);
-            core_terminate();
-            break;
-		
 		case 0: // list / search result
 		default:			
 			$out = blocks_list();
@@ -592,7 +571,8 @@ function blocks_list()
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 	$navitable->enableSearch();
-	$navitable->enableDelete();	
+	$navitable->enableDelete();
+	$navitable->setGridNotesObjectName("block");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
 	$navitable->addCol(t(160, 'Type'), 'type', "120", "true", "center");	
@@ -1448,7 +1428,6 @@ function blocks_form($item)
   	}
 
 
-
     if(!empty($item->type))
     {
         // we need to know if the block is defined in the active theme or in the database (numeric ID)
@@ -1470,7 +1449,7 @@ function blocks_form($item)
         }
     }
 
-    $navibars->add_tab(t(330, "Categories"));
+    $navibars->add_tab(t(336, "Display"));
 
     $default_value = 1;
     if(!empty($item->categories))
@@ -1490,11 +1469,7 @@ function blocks_form($item)
             $default_value
         )
     ));
-/*
-	$navibars->add_tab_content_row(array(	'<label>'.t(396, 'All categories').'</label>',
-											$naviforms->checkbox('all_categories', empty($item->categories)),
-										));	
-*/
+
 	$hierarchy = structure::hierarchy(0);
 	$categories_list = structure::hierarchyList($hierarchy, $item->categories);
 	$exclusions_list = structure::hierarchyList($hierarchy, $item->exclusions);
@@ -1598,7 +1573,108 @@ function blocks_form($item)
 
 		navigate_blocks_all_categories_switch();
 		
-	');	
+	');
+
+	$elements_display = "all";
+	if(!empty($item->elements['exclusions']))
+		$elements_display = "exclusions";
+	else if(!empty($item->elements['selection']))
+		$elements_display = "selection";
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(22, 'Elements').' '.t(428, '(no category)').'</label>',
+        $naviforms->buttonset(
+            'elements_display',
+            array(
+                'all' => t(443, 'All'),
+                'selection' => t(405, 'Selection'),
+                'exclusions' => t(552, 'Exclusions')
+            ),
+            $elements_display,
+            "navigate_blocks_elements_display_change(this)"
+        )
+    ));
+
+	$layout->add_script('
+		function navigate_blocks_elements_display_change(el)
+		{
+			el = $(el).prev();
+			if($(el).val()=="all")
+				$("#elements_selection_wrapper").hide();
+			else
+				$("#elements_selection_wrapper").show();
+		}
+
+		navigate_blocks_elements_display_change($("label[for=elements_display_'.$elements_display.']"));
+	');
+
+	$items_ids = array_values($item->elements);
+	$items_ids = $items_ids[0];
+	if(empty($items_ids))
+		$items_ids = array();
+	$items_titles = array();
+	for($i=0; $i < count($items_ids); $i++)
+	{
+		$item_title = $DB->query_single(
+            'text',
+            'nv_webdictionary',
+            '   node_type = "item" AND
+                website = "'.$website->id.'" AND
+                node_id = "'.$items_ids[$i].'" AND
+                subtype = "title" AND
+                lang = "'.$website->languages_published[0].'"'
+        );
+
+		$items_titles[$i] = $item_title;
+	}
+
+	$navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+	        $naviforms->selectfield("elements_selection", $items_ids, $items_titles, $items_ids, null, true, null, null, false)
+        ),
+		"elements_selection_wrapper"
+    );
+
+	$layout->add_script('
+		$("#elements_selection").select2({
+			placeholder: "'.t(533, "Find element by title").'",
+	        minimumInputLength: 1,
+	        ajax: {
+	            url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item",
+	            dataType: "json",
+	            delay: 100,
+
+	            data: function(params)
+	            {
+	                return {
+		                title: params.term,
+		                association: "free",
+		                nd: new Date().getTime(),
+		                page_limit: 30, // page size
+		                page: params.page // page number
+		            };
+	            },
+	            processResults: function (data, params)
+		        {
+		            params.page = params.page || 1;
+		            return {
+						results: data.items,
+						pagination: { more: (params.page * 30) < data.total_count }
+					};
+		        }
+	        },
+	        templateSelection: function(row)
+			{
+				if(row.id)
+					return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+				else
+					return row.text;
+			},
+			escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+	        triggerChange: true
+		});
+	');
 
 							
 	if(!empty($item->type))

@@ -693,6 +693,8 @@ function nvweb_blocks_render_poll_results($object)
 
 function nvweb_block_enabled($object)
 {
+    global $current;
+
 	$enabled = ($object->enabled=='1');
 	$enabled = $enabled && (empty($object->date_published) || ($object->date_published < core_time()));
 	$enabled = $enabled && (empty($object->date_unpublish) || ($object->date_unpublish > core_time()));
@@ -719,8 +721,27 @@ function nvweb_block_enabled($object)
 		
 		$enabled = $enabled && $access;
 	}
+
+    // selection/exclusion of free association items (category filter is already integrated in the query)
+    if($current['type']=='item' && $current['object']->association == "free")
+    {
+        $elements = @json_decode($object->elements, true);
+        if(!empty($elements))
+        {
+            if(!empty($elements['selection']))
+            {
+                if(!in_array($current['id'], $elements['selection']))
+                    $enabled = false;
+            }
+
+            if(!empty($elements['exclusions']))
+            {
+                if(in_array($current['id'], $elements['exclusions']))
+                    $enabled = false;
+            }
+        }
+    }
 	
 	return $enabled;
 }
-
 ?>
