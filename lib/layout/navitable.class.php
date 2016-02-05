@@ -22,6 +22,7 @@ class navitable
     public $after_select_callback;
     public $after_right_click_col;
     public $default_fid;
+	public $grid_notes_object_name;
 
 	public function __construct($id="")	
 	{
@@ -393,15 +394,20 @@ class navitable
 	{
 		$this->initial_url = $url;	
 	}
+
+	public function setGridNotesObjectName($object_name)
+	{
+		$this->grid_notes_object_name = $object_name;
+	}
 	
 	public function generate()
 	{
 		global $layout;
 		global $user;
 
-        $grid_notes_control = '?fid='.$this->default_fid.'&act=';
-        if(strpos($this->default_fid, 'ext_')===0)
-            $grid_notes_control = '?fid='.$this->default_fid.'&mode=';
+		if(empty($this->grid_notes_object_name))
+			$this->grid_notes_object_name = $this->default_fid;
+        $grid_notes_control = '?fid=grid_notes&object='.$this->grid_notes_object_name.'&act=';
 
 		$html = array();
 
@@ -960,5 +966,4 @@ class navitable
 		return implode("\n", $html);	
 	}
 }
-
 ?>

@@ -17,7 +17,7 @@ require_once(NAVIGATE_PATH.'/lib/layout/navitree.class.php');
 require_once(NAVIGATE_PATH.'/lib/layout/navibrowse.class.php');
 require_once(NAVIGATE_PATH.'/lib/layout/navigrid.class.php');
 require_once(NAVIGATE_PATH.'/lib/layout/menu_layout.class.php');
-require_once(NAVIGATE_PATH.'/lib/layout/grid_notes.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/grid_notes/grid_notes.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/websites/website.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/themes/theme.class.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_routes.php');

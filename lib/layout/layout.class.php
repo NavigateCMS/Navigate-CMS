@@ -775,10 +775,7 @@ class layout
     {
         global $user;
 
-        $grid_control_url = "?fid=".$_REQUEST['fid']."&act=";
-
-        if($_REQUEST['fid']=='extensions')
-            $grid_control_url = "?fid=extensions&extension=".$_REQUEST['extension']."&act=run&mode=";
+        $grid_control_url = "?fid=grid_notes&object=".$element_type."&act=";
 
         $this->add_script("
             function navigate_display_notes_dialog()
@@ -1270,4 +1267,5 @@ class layout
 		return $html;
     }
 }
+
 ?>

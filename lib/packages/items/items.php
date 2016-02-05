@@ -566,8 +566,12 @@ function run()
             // any language
 
             $template_filter = '';
-            if(!empty($_REQUEST['template']))
-                $template_filter = ' AND nvi.template = "'.$_REQUEST['template'].'" ';
+
+	        if(!empty($_REQUEST['template']))
+                $template_filter = ' AND nvi.template = '.protect($_REQUEST['template']).' ';
+
+	        if(!empty($_REQUEST['association']))
+                $template_filter = ' AND nvi.association = '.protect($_REQUEST['association']).' ';
 
             $DB->query('
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
@@ -600,23 +604,26 @@ function run()
 			switch($_REQUEST['opt'])
 			{
 				case 'publish':
-					$DB->execute('UPDATE nv_comments
-									 SET status = 0
-									WHERE website = '.$website->id.'
-									  AND id = '.$_REQUEST['id']);
+					$DB->execute('
+						UPDATE nv_comments
+						   SET status = 0
+						 WHERE website = '.$website->id.' AND
+						       id = '.$_REQUEST['id']);
 					break;
 					
 				case 'unpublish':
-					$DB->execute('UPDATE nv_comments
-									 SET status = 1
-									WHERE website = '.$website->id.'
-									  AND id = '.$_REQUEST['id']);					
+					$DB->execute('
+						UPDATE nv_comments
+						   SET status = 1
+						 WHERE website = '.$website->id.' AND
+						       id = '.$_REQUEST['id']);
 					break;
 					
 				case 'delete':
-					$DB->execute('DELETE FROM nv_comments
-									WHERE website = '.$website->id.'
-									  AND id = '.$_REQUEST['id']);				
+					$DB->execute('
+						DELETE FROM nv_comments
+						 WHERE website = '.$website->id.' AND
+							   id = '.$_REQUEST['id']);
 					break;
 			}
 		
@@ -724,27 +731,6 @@ function run()
             core_terminate();
             break;
 
-        case 'grid_note_background':
-            grid_notes::background('item', $_REQUEST['id'], $_REQUEST['background']);
-            core_terminate();
-            break;
-
-        case 'grid_notes_comments':
-            $comments = grid_notes::comments('item', $_REQUEST['id'], false);
-            echo json_encode($comments);
-            core_terminate();
-            break;
-
-        case 'grid_notes_add_comment':
-            echo grid_notes::add_comment('item', $_REQUEST['id'], $_REQUEST['comment'], $_REQUEST['background']);
-            core_terminate();
-            break;
-
-        case 'grid_note_remove':
-            echo grid_notes::remove($_REQUEST['id']);
-            core_terminate();
-            break;
-		
 		case 0: // list / search result
 		default:			
 			$out = items_list();
@@ -780,6 +766,7 @@ function items_list()
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 	$navitable->enableSearch();
 	$navitable->enableDelete();
+	$navitable->setGridNotesObjectName("item");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
 	$navitable->addCol(t(67, 'Title'), 'title', "320", "true", "left");
@@ -905,25 +892,47 @@ function items_form($item)
 	else
 		$navibars->title(t(22, 'Items').' / '.t(170, 'Edit').' ['.$item->id.']');	
 
-	$navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();" title="Ctrl+M"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+	$navibars->add_actions(
+		array(
+			'<a href="#" onclick="javascript: navigate_media_browser();" title="Ctrl+M">
+				<img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'
+			</a>'
+		)
+	);
 
     if(!empty($item->id))
     {
         $notes = grid_notes::comments('item', $item->id);
-        $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_display_notes_dialog();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'	));
+        $navibars->add_actions(
+	        array(
+	            '<a href="#" onclick="javascript: navigate_display_notes_dialog();">
+					<span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span>
+					<img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'
+				</a>'
+	        )
+        );
     }
 
 	if(empty($item->id))
 	{
 		$navibars->add_actions(
-            array(	'<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>' )
+            array(
+	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
+				</a>'
+            )
         );
 	}
 	else
 	{
 		$navibars->add_actions(
-            array(	'<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-                    '<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            array(
+	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
+				</a>',
+                '<a href="#" onclick="navigate_delete_dialog();">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'
+				</a>'
             )
         );
 
@@ -1179,38 +1188,6 @@ function items_form($item)
         ),
         'div_category_tree'
     );
-
-    /*
-	$navibars->add_tab_content($naviforms->hidden('category', $item->category));
-
-	$navibars->add_tab_content_row(array(	'<label>'.t(78, 'Category').'</label>',
-											'<div class="category_tree"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
-										),
-									'div_category_tree');
-
-	$layout->add_script('
-		$(".category_tree ul:first").kvaTree({
-					imgFolder: "js/kvatree/img/",
-					dragdrop: false,
-					background: "#f2f5f7",
-					onClick: function(event, node)
-					{
-						if($("input[name=category]").val()==$(node).attr("value"))
-						{
-							// already selected, dissasociate
-							$("input[name=category]").val("");
-							$(".category_tree").find(".active").removeClass("active");
-							return false;
-						}
-						else
-						{
-							$("input[name=category]").val($(node).attr("value"));
-                            navigate_item_category_change($(node).attr("value"));
-						}
-					}
-				});
-	');
-    */
 
     $layout->add_script('
         function navigate_item_category_change(id)
@@ -1498,13 +1475,37 @@ function items_form($item)
 				}
 				else	// plain textarea (raw)
 				{
+					$translate_menu = '';
+                    if(!empty($translate_extensions))
+                    {
+                        $translate_extensions_titles = array();
+                        $translate_extensions_actions = array();
+
+                        foreach($translate_extensions as $te)
+                        {
+                            if($te['enabled']=='0') continue;
+                            $translate_extensions_titles[] = $te['title'];
+                            $translate_extensions_actions[] = 'javascript: navigate_textarea_translate_'.$te['code'].'(\'section-'.$section['code'].'-'.$lang.'\', \''.$lang.'\');';
+                        }
+
+                        if(!empty($translate_extensions_actions))
+                        {
+                            $translate_menu = $naviforms->splitbutton(
+                                'translate_'.$lang,
+                                '<img src="img/icons/silk/comment.png" align="absmiddle"> '.t(188, 'Translate'),
+                                $translate_extensions_actions,
+                                $translate_extensions_titles
+                            );
+                        }
+                    }
+
 					$navibars->add_tab_content_row(
                         array(
                             '<label>'.template::section_name($section['name']).'</label>',
                             $naviforms->textarea('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], 8, 48, ' width: '.$section['width'].'px'),
                             '<div style="clear:both; margin-top:5px; margin-bottom: 10px; ">',
                             '<label>&nbsp;</label>',
-                            '<button onclick="navigate_textarea_translate($(\'#section-'.$section['code'].'-'.$lang.'\'), \''.$lang.'\'); return false;"><img src="img/icons/silk/comment.png" align="absmiddle"> '.t(188, 'Translate').'</button> ',
+	                        $translate_menu,
                             '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
                             (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>'

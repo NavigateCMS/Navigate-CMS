@@ -256,7 +256,7 @@ class backup
         include_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/feeds/feed.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
-        include_once(NAVIGATE_PATH.'/lib/layout/grid_notes.class.php');
+        include_once(NAVIGATE_PATH.'/lib/packages/grid_notes/grid_notes.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/menus/menu.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
         include_once(NAVIGATE_PATH.'/lib/packages/profiles/profile.class.php');

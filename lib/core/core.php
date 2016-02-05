@@ -126,21 +126,37 @@ function core_load_function($fid)
 {
 	global $DB;
     global $menu_layout;
-	
-    if(is_numeric($fid))
-        $where = 'id = '.intval($fid);
-    else
-        $where = 'codename = '.protect($fid);
 
-	$DB->query('SELECT * 
-				  FROM nv_functions
-				 WHERE '.$where.'
-				   AND enabled = 1');	
-				  
-	$func = $DB->first();
+    // check if fid is an internal function
+    // or we need to retrieve its information from the database
+    switch($fid)
+    {
+        case 'grid_notes':
+            $func = new stdClass();
+            $func->id = 'grid_notes';
+            $func->codename = 'grid_notes';
+            $func->category = 'content';
+            $func->icon = '';
+            $func->lid = '';
+            $func->enabled = 1;
+            break;
 
-    if(!$menu_layout->function_is_displayed($func->id))
-        $func = false;
+        default:
+            if(is_numeric($fid))
+                $where = 'id = '.intval($fid);
+            else
+                $where = 'codename = '.protect($fid);
+
+            $DB->query('SELECT *
+                          FROM nv_functions
+                         WHERE '.$where.'
+                           AND enabled = 1');
+
+            $func = $DB->first();
+
+            if(!$menu_layout->function_is_displayed($func->id))
+                $func = false;
+    }
 
     return $func;
 }
@@ -997,5 +1013,4 @@ function navigate_compose_email($data, $style = array('background' => '#E5F1FF',
 
     return $body;
 }
-
 ?>
