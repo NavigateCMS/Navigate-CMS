@@ -341,7 +341,7 @@ function nvweb_comments($vars=array())
 		case 'reply':
 			if($element->comments_enabled_to==2 && empty($webuser->id))
 			{
-				// Post a comment (unsigned users)
+				// Post a comment form (unsigned users)
 				$out = '
 					<div class="comments-reply">
 						<div><div class="comments-reply-info">'.$webgets[$webget]['translations']['post_a_comment'].'</div></div>
@@ -358,7 +358,13 @@ function nvweb_comments($vars=array())
 					</div>
 				';
 
-                $extensions_messages = $events->trigger('comment', 'reply_extra_fields', array('html' => &$out));
+                $extensions_messages = $events->trigger(
+                    'comment',
+                    'reply_extra_fields',
+                    array(
+                        'html' => &$out
+                    )
+                );
                 // add any extra field generated
                 if(!empty($extensions_messages))
                 {
@@ -380,7 +386,7 @@ function nvweb_comments($vars=array())
 			}
 			else if($element->comments_enabled_to > 0 && !empty($webuser->id))
 			{
-				// Post a comment (signed in users)
+				// Post a comment form (signed in users)
                 if(empty($vars['avatar_size']))
                     $vars['avatar_size'] = 32;
 
@@ -395,7 +401,7 @@ function nvweb_comments($vars=array())
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
 							<div class="comments-reply-field"><label style="display: none;">&nbsp;</label> <img src="'.$avatar_url.'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
-							<br/>
+							<br />
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
 							<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->
 							<div class="comments-reply-field-submit"><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>

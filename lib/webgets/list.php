@@ -1241,6 +1241,8 @@ function nvweb_list_find_closing_conditional_tag($html, $offset)
 
 function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total)
 {
+    global $current;
+
     $out = '';
 
     if($tag['attributes']['by']=='property')
@@ -1461,6 +1463,32 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             $out = $item_html;
         else
             $out = '';
+    }
+    else if($tag['attributes']['by']=='gallery')
+    {
+        if($tag['attributes']['empty']=='true')
+        {
+            if(empty($item->galleries[0]))
+                $out = $item_html;
+        }
+        else if($tag['attributes']['empty']=='false')
+        {
+            if(!empty($item->galleries[0]))
+                $out = $item_html;
+        }
+    }
+    else if($tag['attributes']['by']=='tags')
+    {
+        if($tag['attributes']['empty']=='true')
+        {
+            if(empty($item->dictionary[$current['lang']]['tags']))
+                $out = $item_html;
+        }
+        else if($tag['attributes']['empty']=='false')
+        {
+            if(!empty($item->dictionary[$current['lang']]['tags']))
+                $out = $item_html;
+        }
     }
     else // unknown nvlist_conditional, discard
     {
