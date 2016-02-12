@@ -69,32 +69,36 @@ function navigate_media_browser()
             $('select[name="media_browser_order"]').imageselectmenu( "updateIcon" );
 
             navigate_media_browser_reload();
-			
-			navigate_file_drop(
-                "#navigate-media-browser",
-                navigate_media_browser_parent,
-                {
-                    uploadStarted: function(file)
+
+            // user is allowed to upload files, otherwise the upload_button won't be inserted
+            if($("#navigate_media_browser_upload_button").length > 0)
+            {
+                navigate_file_drop(
+                    "#navigate-media-browser",
+                    navigate_media_browser_parent,
                     {
-                        /*
-                        var div_id = 'upload-'+phpjs_sha1(file.name);
-                        $('#navigate_media_browser_items').prepend('<div id="'+div_id+'" class="ui-corner-all" style="display: none;"></div>');
-                        $('#'+div_id).append('<figure class="navigatecms_loader"></figure>');
-                        $('#'+div_id).append('<span style="clear: both; display: block; height: 0px;">'+file.name+'</span>');
-                        $('#navigate_media_browser_items .draggable-folder:last').after($('#'+div_id));
-                        $('#'+div_id).show();
-                        */
-                    },
-                    afterOne: function(file)
-                    {
-                        /*
-                        var div_id = 'upload-'+phpjs_sha1(file.name);
-                        $('#'+div_id).find('figure').remove();
-                        */
-                    },
-                    afterAll: navigate_media_browser_reload
-                }
-            );
+                        uploadStarted: function(file)
+                        {
+                            /*
+                            var div_id = 'upload-'+phpjs_sha1(file.name);
+                            $('#navigate_media_browser_items').prepend('<div id="'+div_id+'" class="ui-corner-all" style="display: none;"></div>');
+                            $('#'+div_id).append('<figure class="navigatecms_loader"></figure>');
+                            $('#'+div_id).append('<span style="clear: both; display: block; height: 0px;">'+file.name+'</span>');
+                            $('#navigate_media_browser_items .draggable-folder:last').after($('#'+div_id));
+                            $('#'+div_id).show();
+                            */
+                        },
+                        afterOne: function(file)
+                        {
+                            /*
+                            var div_id = 'upload-'+phpjs_sha1(file.name);
+                            $('#'+div_id).find('figure').remove();
+                            */
+                        },
+                        afterAll: navigate_media_browser_reload
+                    }
+                );
+            }
 
             $("#navigate-media-browser").on("scroll", function()
             {
@@ -644,6 +648,8 @@ function navigate_media_browser_delete(element)
             {
                 if(data=='1')
                     $(element).fadeOut();
+				else
+					navigate_notification(data);
             }
         }
     );
@@ -732,11 +738,15 @@ function navigate_media_browser_set_folder(folder_id, path)
     navigate_media_browser_folderpath = path;
 
 	navigate_media_browser_save_position();
-	
-	navigate_file_drop("#navigate_media_browser_items", navigate_media_browser_parent, 
-	{ 
-		afterAll: navigate_media_browser_reload							
-	});	
+
+    // user is allowed to upload files, otherwise the upload_button won't be inserted
+    if($("#navigate_media_browser_upload_button").length > 0)
+    {
+        navigate_file_drop("#navigate_media_browser_items", navigate_media_browser_parent,
+        {
+            afterAll: navigate_media_browser_reload
+        });
+    }
 }
 
 function navigate_media_browser_save_position()

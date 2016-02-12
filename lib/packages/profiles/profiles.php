@@ -1,6 +1,7 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/menus/menu.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/profiles/profile.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php');
 
 function run()
 {
@@ -113,109 +114,6 @@ function run()
 				}
 			}
 			break;
-
-        case 'permissions':
-            $page   = intval($_REQUEST['page']);
-            $max	= intval($_REQUEST['rows']);
-            $profile_id = intval($_REQUEST['profile']);
-            $offset = ($page - 1) * $max;
-
-            $naviforms = new naviforms();
-
-            $prf_obj = new profile();
-            $prf_obj->load($profile_id);
-
-            $permissions_definitions = permission::get_definitions();
-
-            $permissions_values = permission::get_values('profile', $prf_obj, $permissions_definitions);
-
-            $permissions_definitions = array_merge(
-                $permissions_definitions['system'],
-                $permissions_definitions['functions'],
-                $permissions_definitions['extensions']);
-
-            $out = array();
-
-            $iRow = 0;
-
-            for($i=0; $i < count($permissions_definitions); $i++)
-            {
-                $control = '';
-                $type = '';
-                $scope = t(470, 'System');
-
-                if($permissions_definitions[$i]['scope']=='functions')
-                    $scope = t(240, 'Functions');
-                else if($permissions_definitions[$i]['scope']=='extensions')
-                    $scope = t(327, 'Extensions');
-
-                switch($permissions_definitions[$i]['type'])
-                {
-                    case 'boolean':
-                        $type = t(206, 'Boolean');
-                        $control = $naviforms->buttonset(
-                            $permissions_definitions[$i]['name'],
-                            array(
-                                'true' => '<span class="ui-icon ui-icon-circle-check"></span>',
-                                'false' => '<span class="ui-icon ui-icon-circle-close"></span>'),
-                            $permissions_values[$permissions_definitions[$i]['name']],
-                            "navigate_permission_change_boolean(this);"
-                        );
-                        break;
-
-                    case 'integer':
-                        $type = t(468, 'Integer');
-                        $control = $naviforms->textfield(
-                            $permissions_definitions[$i]['name'],
-                            $permissions_values[$permissions_definitions[$i]['name']],
-                            '99%',
-                            'navigate_permission_change_text(this);'
-                        );
-                        break;
-
-                    case 'string':
-                    default:
-                        $type = t(469, 'String');
-                        $control = $naviforms->textfield(
-                            $permissions_definitions[$i]['name'],
-                            $permissions_values[$permissions_definitions[$i]['name']],
-                            '99%',
-                            'navigate_permission_change_text(this);'
-                        );
-                        break;
-                }
-
-                // search filters
-                if(!empty($_REQUEST['filters']))
-                {
-                    $include = navitable::jqgridCheck(
-                        array(
-                            'name' => $permissions_definitions[$i]['name'],
-                            'scope' => $scope,
-                            'type' => $type,
-                            'value' => $permissions_values[$permissions_definitions[$i]['name']]
-                        ),
-                        $_REQUEST['filters']
-                    );
-
-                    if(!$include)
-                        continue;
-                }
-
-                $out[$iRow] = array(
-                    0	=> $permissions_definitions[$i]['name'],
-                    1	=> '<span class="ui-icon ui-icon-float ui-icon-info" title="'.$permissions_definitions[$i]['description'].'"></span> <span title="'.$permissions_definitions[$i]['description'].'">'.$permissions_definitions[$i]['name'].'</span>',
-                    2	=> $scope,
-                    3   => $type,
-                    4   => $control //$permissions_values[$permissions_definitions[$i]['name']]
-                );
-
-                $iRow++;
-            }
-
-            navitable::jqgridJson($out, $page, $offset, $max, count($out));
-            core_terminate();
-            break;
 					
 		case 0: // list / search result
 		default:			
@@ -233,9 +131,13 @@ function profiles_list()
 	
 	$navibars->title(t(243, 'Profiles'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 	
 	if($_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
@@ -271,17 +173,20 @@ function profiles_form($item)
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+			)
+		);
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
-
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+			)
+		);
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -310,9 +215,13 @@ function profiles_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=profiles&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=profiles&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			(!empty($item->id)? '<a href="?fid=profiles&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=profiles&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 
 	$navibars->form();
 
@@ -321,12 +230,19 @@ function profiles_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(159, 'Name').'</label>',
-											$naviforms->textfield('name', $item->name),
-										));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(159, 'Name').'</label>',
+			$naviforms->textfield('name', $item->name),
+		)
+	);
 
     $navibars->add_tab_content_row(array(	'<label>'.t(334, 'Description').'</label>',
         $naviforms->textarea('description', $item->description),
@@ -375,11 +291,13 @@ function profiles_form($item)
 
 	//$navibars->add_tab_content('<pre>'.print_r($item->menus, true).'</pre>');
 	$navibars->add_tab_content($naviforms->hidden("profile-menu", implode('#', $item->menus)));	
-	$navibars->add_tab_content_row(array(	'<label>'.t(244, 'Menus').'</label>',
-											implode("\n", $sortable_profile),
-											implode("\n", $sortable_unassigned)
-										)
-									);
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(244, 'Menus').'</label>',
+			implode("\n", $sortable_profile),
+			implode("\n", $sortable_unassigned)
+		)
+	);
 
     $layout->add_script('
 		$("#sortable_profile").sortable({
@@ -416,7 +334,7 @@ function profiles_form($item)
 
     $navitable = new navitable("permissions_list");
 
-    $navitable->setURL('?fid=profiles&act=permissions&profile='.$item->id);
+    $navitable->setURL('?fid=permissions&act=list&object=profile&object_id='.$item->id);
     $navitable->setDataIndex('name');
     $navitable->enableSearch();
     $navitable->disableSelect();
@@ -429,64 +347,15 @@ function profiles_form($item)
         'type' => 'custom'
     ));
 
-    $navitable->setLoadCallback('
-        $("#permissions_list").find(".buttonset").each(function(i, el)
-        {
-            $(el).buttonset();
-            $(el).css("white-space", "normal");
-            $(el).children(".ui-button").css({"float": "left", "height": "24px", "margin": "2px 0px 2px"});
-        });
-    ');
-
     $layout->add_script('
-        var navigate_permissions_changes = {};
-
-        function navigate_permission_change_boolean(el)
-		{
-			var code = $(el).attr("for");
-			// code is a string like this: navigatecms.privacy_mode_true
-            var value = code.substr(code.lastIndexOf("_") + 1);
-            code = code.substr(0, code.lastIndexOf("_"));
-
-            navigate_permissions_changes[code] = value;
-            navigate_permissions_update();
-
-            /* ajax-save routine [unused]
-            $(el).parents(".buttonset").addClass("ui-state-disabled").css("padding", "0px");
-            //$(el).parents(".buttonset").buttonset("disable");
-            // save new permission value
-            $.post(
-                "?fid=users&act=permission_set",
-                {
-                    name: code,
-                    value: value,
-                    user_id: '.$item->id.'
-                },
-                function()
-                {
-                    $(el).parents(".buttonset").removeClass("ui-state-disabled");
-                }
-            );
-            */
-		}
-
-		function navigate_permission_change_text(el)
-		{
-		    var code = $(el).attr("name");
-		    var value = $(el).val();
-
-		    navigate_permissions_changes[code] = value;
-            navigate_permissions_update();
-		}
-
-		function navigate_permissions_update()
-		{
-            var changes = phpjs_json_encode(navigate_permissions_changes);
-            $("#navigate_permissions_changes").val(changes);
-		}
+		$.getScript("lib/packages/permissions/permissions.js");
 	');
 
+    $navitable->setLoadCallback("navigate_permissions_list_callback(this);");
+
     $navibars->add_tab_content($navitable->generate());
+
+	$navibars->add_content(navigate_permissions_structure_selector());
 
     return $navibars->generate();
 }

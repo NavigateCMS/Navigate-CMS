@@ -103,6 +103,7 @@ class item
 	public function load_from_post()
 	{
 		global $website;
+		global $user;
 
 		$this->association		= $_REQUEST['association'][0];
 		$this->category			= intval($_REQUEST['category']);
@@ -119,7 +120,8 @@ class item
         if($this->access < 3)
             $this->groups = array();
 
-		$this->permission		= intval($_REQUEST['permission']);	
+		if($user->permission("items.publish") != 'false')
+			$this->permission = intval($_REQUEST['permission']);
 
         // if comment settings were not visible, keep the original values
         if(isset($_REQUEST['item-comments_enabled_to']))
@@ -209,7 +211,10 @@ class item
 	public function delete()
 	{
 		global $DB;
-		global $website;
+		global $user;
+
+		if($user->permission("items.delete") == 'false')
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
 		if(!empty($this->id) && !empty($this->website))
 		{
@@ -241,6 +246,10 @@ class item
 		global $DB;
 		global $website;
 		global $events;
+		global $user;
+
+		if($user->permission("items.create") == 'false')
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 		
 		$this->date_created  = core_time();		
 		$this->date_modified = core_time();
@@ -268,6 +277,12 @@ class item
 
 		if(empty($this->website))
 			$this->website = $website->id;
+
+		if($user->permission("items.publish") == 'false')
+		{
+			if($this->permission == 0)
+				$this->permission = 1;
+		}
 
         $ok = $DB->execute('
             INSERT INTO nv_items
@@ -345,7 +360,11 @@ class item
 		global $DB;
 		global $website;
 		global $events;
-			
+		global $user;
+
+		if($user->permission("items.edit") == 'false' && $this->author != $user->id)
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+
 		$this->date_modified = core_time();
 
         $groups = '';
@@ -697,5 +716,4 @@ class item
 	}
 
 }
-
 ?>

@@ -686,7 +686,7 @@ class navitable
 			$html[] = 'function '.$this->id.'_dclick(rowid, iRow, iCol, e)';
 			$html[] = '{';
 			$html[] = '		navigate_unselect_text();	';
-			$html[] = '		if('.$this->click_action.') '.$this->click_action.'(rowid); ';
+			$html[] = '		if(typeof('.$this->click_action.')!="undefined") '.$this->click_action.'(rowid); ';
 			$html[] = '}';
 		}
 
@@ -966,4 +966,5 @@ class navitable
 		return implode("\n", $html);	
 	}
 }
+
 ?>

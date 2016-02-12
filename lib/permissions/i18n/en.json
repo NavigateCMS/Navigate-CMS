@@ -1,0 +1,14 @@
+{
+	"navigatecms.privacy_mode": "Hide Navigate CMS logo and favicon",
+	"navigatecms.display_version": "Display Navigate CMS version in status bar",
+    "websites.edit": "Allow creating and editing websites",
+    "websites.delete": "Allow deleting websites",
+    "items.create": "Allow creating new items",
+	"items.edit": "Allow editing items",
+    "items.delete": "Allow deleting items",
+    "items.publish": "Allow publishing items",
+    "files.upload": "Allow uploading files",
+    "files.delete": "Allow deleting files",
+	"structure.categories.allowed": "Categories where the user is allowed to create content (empty means all)",
+	"structure.categories.excluded": "Categories where the user is NOT allowed to create content (empty means none)"
+}

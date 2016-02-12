@@ -3141,8 +3141,8 @@
 		</unit>
 		<unit id="523">
 			<segment>
-				<source>This action can NOT be undone.</source>
-				<target>This action can NOT be undone.</target>
+				<source>This action can NOT be undone</source>
+				<target>This action can NOT be undone</target>
 			</segment>
 		</unit>
 		<unit id="524">
@@ -3249,14 +3249,14 @@
 		</unit>
 		<unit id="541">
 			<segment>
-				<source>Your email has been successfully subscribed to the newsletter.</source>
-				<target>Your email has been successfully subscribed to the newsletter.</target>
+				<source>Your email has been successfully subscribed to the newsletter</source>
+				<target>Your email has been successfully subscribed to the newsletter</target>
 			</segment>
 		</unit>
 		<unit id="542">
 			<segment>
-				<source>There was a problem subscribing your email to the newsletter.</source>
-				<target>There was a problem subscribing your email to the newsletter.</target>
+				<source>There was a problem subscribing your email to the newsletter</source>
+				<target>There was a problem subscribing your email to the newsletter</target>
 			</segment>
 		</unit>
 		<unit id="543">
@@ -3333,8 +3333,8 @@
 		</unit>
 		<unit id="555">
 			<segment>
-				<source>Item has been successfully published.</source>
-				<target>Item has been successfully published.</target>
+				<source>Item has been successfully published</source>
+				<target>Item has been successfully published</target>
 			</segment>
 		</unit>
 		<unit id="556">
@@ -3597,8 +3597,8 @@
 		</unit>
 		<unit id="599">
 			<segment>
-				<source>Sorry, can't display a theme block type info.</source>
-				<target>Sorry, can't display a theme block type info.</target>
+				<source>Sorry, can't display a theme block type info</source>
+				<target>Sorry, can't display a theme block type info</target>
 			</segment>
 		</unit>
 		<unit id="600">
@@ -3659,6 +3659,24 @@
 			<segment>
 				<source>Click a day of the month selected to update the value</source>
 				<target>Click a day of the month selected to update the value</target>
+			</segment>
+		</unit>
+		<unit id="610">
+			<segment>
+				<source>Sorry, you are not allowed to execute the requested function</source>
+				<target>Sorry, you are not allowed to execute the requested function</target>
+			</segment>
+		</unit>
+		<unit id="611">
+			<segment>
+				<source>Choose</source>
+				<target>Choose</target>
+			</segment>
+		</unit>
+		<unit id="612">
+			<segment>
+				<source>Manages all websites</source>
+				<target>Manages all websites</target>
 			</segment>
 		</unit>
 	</file>

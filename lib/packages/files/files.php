@@ -109,8 +109,16 @@ function run()
                     break;
 
                 case 'delete':
-                    $item->load($_REQUEST['id']);
-                    echo json_encode($item->delete());
+					try
+					{
+                        $item->load($_REQUEST['id']);
+	                    $status = $item->delete();
+                        echo json_encode($status);
+					}
+					catch(Exception $e)
+					{
+						echo $e->getMessage();
+					}
                     break;
 
                 case 'permissions':
@@ -348,6 +356,7 @@ function files_browser($parent, $search="")
 	global $DB;
 	global $website;
     global $events;
+    global $user;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -370,7 +379,9 @@ function files_browser($parent, $search="")
         array(
             '<a href="#" onclick="navigate_files_uploader();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_white_get.png"> '.t(140, 'Upload').'</a>',
             '<a href="#" onclick="navigate_files_edit_folder();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_add.png"> '.t(141, 'Folder').'</a>',
-            '<a href="#" onclick="navigate_files_remove();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            ($user->permission("files.delete")=='true'?
+			    '<a href="#" onclick="navigate_files_remove();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>' :
+                '')
         )
     );
 
@@ -449,105 +460,107 @@ function files_browser($parent, $search="")
             <li action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>
             <li action="rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, "Rename").'</a></li>
             <li action="duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
-            <li action="delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
+            '.($user->permission("files.delete")=="true"? '<li action="delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>' : '').'
             '.implode("\n", $extra_contextmenu_actions).'
         </ul>
     ');
 
+	if($user->permission("files.upload")=="true")
+	{
+		// PLUPLOAD
+		$navibars->add_content('<div id="navigate-files-uploader"></div>');
 
-	// PLUPLOAD
-	$navibars->add_content('<div id="navigate-files-uploader"></div>');
-
-	$layout->add_script(' 
-		plupload.addI18n(
-		{
-			"Select files" : "'.t(142, 'Select files').'",
-			"Add files to the upload queue and click the start button." : "'.t(143, 'Add files to the upload queue and click the start button.').'",
-			"Filename" : "'.t(144, 'Filename').'",
-			"Status" : "'.t(68, 'Status').'",
-			"Size" : "'.t(145, 'Size').'",
-			"Add files" : "'.t(146, 'Select files').'",
-			"Start upload":"'.t(147, 'Start upload').'",
-			"Stop current upload" : "'.t(148, 'Stop current upload').'",
-			"Start uploading queue" : "'.t(149, 'Start uploading queue').'",
-			"Drag files here." : "'.t(150, 'Drag files here.').'",
-			"Uploaded %d/%d files": "'.t(338, 'Uploaded %d/%d files').'",
-			"N/A": "'.t(339, 'N/A').'",
-			"File extension error.": "'.t(340, 'File extension error').'",
-			"File size error.": "'.t(341, 'File size error').'",
-			"Init error.": "'.t(342, 'Init error').'",
-			"HTTP Error.": "'.t(343, 'HTTP Error').'",
-			"Security error.": "'.t(344, 'Security error').'",
-			"Generic error.": "'.t(345, 'Generic error').'",
-			"IO error.": "'.t(346, 'IO error').'",
-			"Stop Upload": "'.t(347, 'Stop upload').'",
-			"Add Files": "'.t(348, 'Add files').'",
-			"Start Upload": "'.t(349, 'Start upload').'",
-			"%d files queued": "'.t(350, '%d files queued').'"
-		});
-	');
-	
-	$layout->add_script('
-		function navigate_files_uploader()
-		{
-			$("#navigate-files-uploader").plupload(
+		$layout->add_script('
+			plupload.addI18n(
 			{
-				// General settings
-		        runtimes : "html5,flash,silverlight",
-				url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
-				max_file_size : "'.NAVIGATE_UPLOAD_MAX_SIZE.'mb",
-				chunk_size : "384kb",
-				unique_names: false,
-				sortable: false,
-				rename: true,
-				preinit: attachCallbacks,
-				flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
-		        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap"
+				"Select files" : "'.t(142, 'Select files').'",
+				"Add files to the upload queue and click the start button." : "'.t(143, 'Add files to the upload queue and click the start button.').'",
+				"Filename" : "'.t(144, 'Filename').'",
+				"Status" : "'.t(68, 'Status').'",
+				"Size" : "'.t(145, 'Size').'",
+				"Add files" : "'.t(146, 'Select files').'",
+				"Start upload":"'.t(147, 'Start upload').'",
+				"Stop current upload" : "'.t(148, 'Stop current upload').'",
+				"Start uploading queue" : "'.t(149, 'Start uploading queue').'",
+				"Drag files here." : "'.t(150, 'Drag files here.').'",
+				"Uploaded %d/%d files": "'.t(338, 'Uploaded %d/%d files').'",
+				"N/A": "'.t(339, 'N/A').'",
+				"File extension error.": "'.t(340, 'File extension error').'",
+				"File size error.": "'.t(341, 'File size error').'",
+				"Init error.": "'.t(342, 'Init error').'",
+				"HTTP Error.": "'.t(343, 'HTTP Error').'",
+				"Security error.": "'.t(344, 'Security error').'",
+				"Generic error.": "'.t(345, 'Generic error').'",
+				"IO error.": "'.t(346, 'IO error').'",
+				"Stop Upload": "'.t(347, 'Stop upload').'",
+				"Add Files": "'.t(348, 'Add files').'",
+				"Start Upload": "'.t(349, 'Start upload').'",
+				"%d files queued": "'.t(350, '%d files queued').'"
 			});
-	
-			function attachCallbacks(Uploader) 
+		');
+
+		$layout->add_script('
+			function navigate_files_uploader()
 			{
-				Uploader.bind("FileUploaded", function(Up, File, Response) 
+				$("#navigate-files-uploader").plupload(
 				{
-					$.ajax(
-					{
-						async: true,
-						url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=json&op=upload",
-						success: function(data)
-						{
-		
-						},
-						type: "post",
-						dataType: "json",
-						data: {
-						    tmp_name: "{{BASE64}}",
-						    name: File.name,
-						    parent: '.$parent.'
-						}
-					});
+					// General settings
+			        runtimes : "html5,flash,silverlight",
+					url : "'.NAVIGATE_URL.'/navigate_upload.php?session_id='.session_id().'",
+					max_file_size : "'.NAVIGATE_UPLOAD_MAX_SIZE.'mb",
+					chunk_size : "384kb",
+					unique_names: false,
+					sortable: false,
+					rename: true,
+					preinit: attachCallbacks,
+					flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
+			        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap"
 				});
-			}
 
-            $("#navigate-files-uploader").dialog(
-            {
-                title: "'.t(142, 'Select files').'",
-                height: 355,
-                width: 650,
-                modal: true,
-                close: function()
-                {
-                    window.location.reload();
-                }
-            });
+				function attachCallbacks(Uploader)
+				{
+					Uploader.bind("FileUploaded", function(Up, File, Response)
+					{
+						$.ajax(
+						{
+							async: true,
+							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=json&op=upload",
+							success: function(data)
+							{
 
-            $(".plupload_wrapper").removeClass("plupload_scroll");
+							},
+							type: "post",
+							dataType: "json",
+							data: {
+							    tmp_name: "{{BASE64}}",
+							    name: File.name,
+							    parent: '.$parent.'
+							}
+						});
+					});
+				}
 
-            $("#navigate-files-uploader").on("mouseenter", function()
-            {
-                $("div.plupload input").css("z-index","99999");
-            });
-	    }'
-    );
+	            $("#navigate-files-uploader").dialog(
+	            {
+	                title: "'.t(142, 'Select files').'",
+	                height: 355,
+	                width: 650,
+	                modal: true,
+	                close: function()
+	                {
+	                    window.location.reload();
+	                }
+	            });
+
+	            $(".plupload_wrapper").removeClass("plupload_scroll");
+
+	            $("#navigate-files-uploader").on("mouseenter", function()
+	            {
+	                $("div.plupload input").css("z-index","99999");
+	            });
+		    }'
+	    );
+	}
 						 
 	$layout->add_script('
 		function navigate_files_remove(elements)
@@ -700,9 +713,9 @@ function files_browser($parent, $search="")
 function files_item_properties($item)
 {
 	global $user;
-	global $DB;
 	global $website;
 	global $layout;
+	global $user;
 
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -713,11 +726,22 @@ function files_item_properties($item)
 
 	//$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/clipboard.png"> NaviM+</a>'));
 								
-	$navibars->add_actions(	array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-									'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>' ));
+	$navibars->add_actions(
+		array(
+			'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+			($user->permission("files.delete")=="true"?
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>' :
+				''
+			)
+		)
+	);
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_up.png"> '.t(139, 'Back').'</a>',
-									'search_form' ));								
+	$navibars->add_actions(
+		array(
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/folder_up.png"> '.t(139, 'Back').'</a>',
+			'search_form'
+		)
+	);
 										
 	$delete_html = array();
 	$delete_html[] = '<script language="javascript" type="text/javascript">';
@@ -744,7 +768,10 @@ function files_item_properties($item)
 										url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id='.$item->id.'",
 										success: function(data)
 										{
-											window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";	
+											if(data=="true")
+												window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";
+											else
+												navigate_notification(data);
 										}
 									});
 									$(this).dialog("close");								
@@ -1265,7 +1292,6 @@ function files_media_browser($limit = 50, $offset = 0)
 	session_write_close();
 	$DB->disconnect();
 	exit;
-		
 }
 
 ?>

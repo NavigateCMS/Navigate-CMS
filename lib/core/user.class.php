@@ -5,6 +5,7 @@ class user
 	public $username;
 	public $password;
 	public $email;
+	public $websites;
 	public $profile;
 	public $language;
 	public $timezone;
@@ -90,8 +91,9 @@ class user
 		$this->username 		 = $rs->username;
 		$this->password 		 = $rs->password;
 		$this->email			 = $rs->email;
+		$this->websites			 = json_decode($rs->websites, true);
 		$this->profile			 = $rs->profile;
-		$this->language			 = $rs->language;	
+		$this->language			 = $rs->language;
 		$this->timezone			 = $rs->timezone;				
 		$this->decimal_separator = $rs->decimal_separator;
 		$this->date_format		 = $rs->date_format;
@@ -123,13 +125,18 @@ class user
 		$this->username 		 = $_REQUEST['user-username'];
 		$this->email			 = $_REQUEST['user-email'];
 		$this->profile			 = intval($_REQUEST['user-profile']);
-		$this->language			 = $_REQUEST['user-language'];	
+		$this->language			 = $_REQUEST['user-language'];
 		$this->timezone			 = $_REQUEST['user-timezone'];			
 		$this->decimal_separator = $_REQUEST['user-decimal_separator'];
 		$this->date_format		 = $_REQUEST['user-date_format'];
 		$this->skin     		 = $_REQUEST['user-skin'];
 		$this->blocked			 = ($_REQUEST['user-blocked']=='1'? '1' : '0');
-		
+
+		if(@$_REQUEST['user-all-websites']=='1')
+			$this->websites			 = '';
+		else
+			$this->websites			 = $_REQUEST['user-websites'];
+
 		if(!empty($_REQUEST['user-password']))
 			$this->set_password($_REQUEST['user-password']);
 	}
@@ -210,7 +217,7 @@ class user
 		$ok = $DB->execute(
             'INSERT INTO nv_users
                 (id, username, password, email, language, timezone,
-                profile, date_format, decimal_separator, skin, blocked,
+                websites, profile, date_format, decimal_separator, skin, blocked,
                 attempts, cookie_hash, activation_key)
                 VALUES
                 ( 0,
@@ -219,6 +226,7 @@ class user
                   :email,
                   :language,
                   :timezone,
+                  :websites,
                   :profile,
                   :date_format,
                   :decimal_separator,
@@ -234,6 +242,7 @@ class user
                 ':email'             =>  $this->email,
                 ':language'          =>  $this->language,
                 ':timezone'          =>  $this->timezone,
+                ':websites'          =>  (empty($this->websites)? '' : json_encode($this->websites)),
                 ':profile'           =>  $this->profile,
                 ':date_format'       =>  $this->date_format,
                 ':decimal_separator' =>  $this->decimal_separator,
@@ -262,38 +271,40 @@ class user
 		
 		if(empty($this->id)) return false;
 
-        $ok =  $DB->execute('  UPDATE nv_users
-								  SET email	   = :email,
-									  username = :username,
-									  password = :password,
-									  language = :language,
-									  timezone = :timezone,
-									  profile  = :profile,
-									  date_format  = :date_format,
-									  decimal_separator = :decimal_separator,
-									  skin = :skin,
-									  blocked  = :blocked,
-									  attempts = :attempts,
-									  cookie_hash = :cookie_hash,
-									  activation_key = :activation_key
-								WHERE id = :id',
-                            array(':language' => $this->language,
-                                  ':id' => $this->id,
-                                  ':email' => $this->email,
-                                  ':username' => $this->username,
-                                  ':password' => $this->password,
-                                  ':timezone' => $this->timezone,
-                                  ':profile' => $this->profile,
-                                  ':date_format' => $this->date_format,
-                                  ':decimal_separator' => $this->decimal_separator,
-                                  ':skin' => $this->skin,
-                                  ':blocked' => $this->blocked,
-                                  ':attempts' => $this->attempts,
-                                  ':cookie_hash' => $this->cookie_hash,
-                                  ':activation_key' => $this->activation_key
-                            )
+        $ok =  $DB->execute('
+  			UPDATE nv_users
+			  SET email	   = :email,
+				  username = :username,
+				  password = :password,
+				  language = :language,
+				  timezone = :timezone,
+				  websites = :websites,
+				  profile  = :profile,
+				  date_format  = :date_format,
+				  decimal_separator = :decimal_separator,
+				  skin = :skin,
+				  blocked  = :blocked,
+				  attempts = :attempts,
+				  cookie_hash = :cookie_hash,
+				  activation_key = :activation_key
+			WHERE id = :id',
+            array(':language' => $this->language,
+              ':id' => $this->id,
+              ':email' => $this->email,
+              ':username' => $this->username,
+              ':password' => $this->password,
+              ':timezone' => $this->timezone,
+              ':websites' =>  (empty($this->websites)? '' : json_encode($this->websites)),
+              ':profile' => $this->profile,
+              ':date_format' => $this->date_format,
+              ':decimal_separator' => $this->decimal_separator,
+              ':skin' => $this->skin,
+              ':blocked' => $this->blocked,
+              ':attempts' => $this->attempts,
+              ':cookie_hash' => $this->cookie_hash,
+              ':activation_key' => $this->activation_key
+            )
         );
-
 
         if(!$ok)
 			throw new Exception($DB->get_last_error());
@@ -310,12 +321,14 @@ class user
      */
     public function permission($name)
     {
-        // first call, we need to load the current user permissions
+	    global $website;
+
+	    // first call, we need to load the current user permissions
         if(empty($this->permissions))
         {
             $this->permissions = array();
             $this->permissions['definitions'] = permission::get_definitions();
-            $this->permissions['values'] = permission::get_values('user', $this, $this->permissions['definitions']);
+            $this->permissions['values'] = permission::get_values('user', $this, $this->permissions['definitions'], $website->id);
         }
 
         return $this->permissions['values'][$name];
@@ -449,5 +462,4 @@ class user
     }
 
 }
-
 ?>

@@ -54,6 +54,8 @@ class layout
 
             if(@$_REQUEST['navigate_privacy']=='true' || $user->permission('navigatecms.privacy_mode')=='true')
                 $_SESSION['navigate_privacy'] = true;
+	        else
+		        $_SESSION['navigate_privacy'] = false;
 
             if(@$_SESSION['navigate_privacy'])
             {
@@ -862,6 +864,7 @@ class layout
 		global $DB;
         global $website;
 		global $events;
+		global $user;
 
         $naviforms = new naviforms();
 		
@@ -891,7 +894,8 @@ class layout
 		$html[] = '		    </div>
 		                </div>';
 
-        $html[] = ' 	<div id="navigate_media_browser_upload_button" class="uibutton"><img src="img/icons/silk/page_white_get.png" width="16" height="16" /></div>';
+		if($user->permission("files.upload")=="true")
+            $html[] = ' 	<div id="navigate_media_browser_upload_button" class="uibutton"><img src="img/icons/silk/page_white_get.png" width="16" height="16" /></div>';
 
 		// resource type selector
 		$html[] = ' 	<div id="navigate_media_browser_buttons" >';
@@ -950,7 +954,7 @@ class layout
                 <li id="contextmenu-images-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
                 <li id="contextmenu-images-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
                 <li id="contextmenu-images-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
-                <li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>
+                '.($user->permission("files.delete")=="true"? '<li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>' : '').'
                 '.implode("\n", $extra_contextmenu_actions).'
             </ul>
             <ul id="contextmenu-mediabrowser"  style="display: none" class="ui-corner-all">

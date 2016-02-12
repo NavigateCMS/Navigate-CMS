@@ -46,6 +46,10 @@ if(!empty($_SESSION['website_active']))
 else	
 	$website->load(); // load the first available
 
+
+// force loading user permissions before desconnecting from the database
+$foo = $user->permission("foo");
+
 session_write_close();
 $DB->disconnect();
 
@@ -84,50 +88,52 @@ $maxFileAge = 24 * 60 * 60; // Temp file age in seconds (1 day)
 
 //file_put_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/files/out.txt', print_r($_FILES, true));
 
-
 // filedrop drag'n'drop engine	
 if($_REQUEST['engine']=='filedrop')
-{		
-	$tmpfilename = tempnam($targetDir, "upload-");
-	$tmpfilename = basename($tmpfilename);
-
-	if(count($_FILES) > 0) 
+{
+	if($user->permission("files.upload")=="true")
 	{
-		if(!file_exists($_FILES['upload']['tmp_name'])) 
-			die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Uploaded file missing."}, "id" : "id"}');
-			
-		if(empty($_SERVER['HTTP_ACCEPT_CHARSET']))
-			$_SERVER['HTTP_ACCEPT_CHARSET'] = 'UTF-8';
-			
-		$original_filename = mb_convert_encoding($_FILES['upload']['name'], 'UTF-8', $_SERVER['HTTP_ACCEPT_CHARSET']);
-			
-		if(move_uploaded_file($_FILES['upload']['tmp_name'], $targetDir.'/'.$tmpfilename ) ) 
-		{
-			echo json_encode(array("filename" => $original_filename, 'temporal' => $tmpfilename));
-		}
-		navigate_upload_remove_temporary($targetDir, $maxFileAge);
-		core_terminate();
-	} 
-	else if(isset($_GET['up'])) 
-	{
-		if(isset($_GET['base64'])) 
-		{
-			$content = base64_decode(file_get_contents('php://input'));
-		} 
-		else 
-		{
-			$content = file_get_contents('php://input');
-		}
+		$tmpfilename = tempnam($targetDir, "upload-");
+		$tmpfilename = basename($tmpfilename);
 
-		$headers = getallheaders();
-		$headers = array_change_key_case($headers, CASE_UPPER);
-		
-		if( file_put_contents( $targetDir.'/'.$tmpfilename, $content ) ) 
+		if(count($_FILES) > 0)
 		{
-			echo json_encode(array("filename" => $headers['UP-FILENAME'], 'temporal' => $tmpfilename));
+			if(!file_exists($_FILES['upload']['tmp_name']))
+				die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Uploaded file missing."}, "id" : "id"}');
+
+			if(empty($_SERVER['HTTP_ACCEPT_CHARSET']))
+				$_SERVER['HTTP_ACCEPT_CHARSET'] = 'UTF-8';
+
+			$original_filename = mb_convert_encoding($_FILES['upload']['name'], 'UTF-8', $_SERVER['HTTP_ACCEPT_CHARSET']);
+
+			if(move_uploaded_file($_FILES['upload']['tmp_name'], $targetDir.'/'.$tmpfilename ) )
+			{
+				echo json_encode(array("filename" => $original_filename, 'temporal' => $tmpfilename));
+			}
+			navigate_upload_remove_temporary($targetDir, $maxFileAge);
+			core_terminate();
 		}
-		navigate_upload_remove_temporary($targetDir, $maxFileAge);			
-		core_terminate();
+		else if(isset($_GET['up']))
+		{
+			if(isset($_GET['base64']))
+			{
+				$content = base64_decode(file_get_contents('php://input'));
+			}
+			else
+			{
+				$content = file_get_contents('php://input');
+			}
+
+			$headers = getallheaders();
+			$headers = array_change_key_case($headers, CASE_UPPER);
+
+			if( file_put_contents( $targetDir.'/'.$tmpfilename, $content ) )
+			{
+				echo json_encode(array("filename" => $headers['UP-FILENAME'], 'temporal' => $tmpfilename));
+			}
+			navigate_upload_remove_temporary($targetDir, $maxFileAge);
+			core_terminate();
+		}
 	}
 }
 else if($_REQUEST['engine']=='picnik')
@@ -198,16 +204,6 @@ else if($_REQUEST['engine']=='pixlr')
 					core_terminate();
 				}
 			}
-			
-			/*
-			if(file_exists($_FILES['image']['tmp_name']) && filesize($_FILES['image']['tmp_name']) > 0 && $_FILES['image']['error'] == '0')
-			{
-				unlink($targetDir.'/'.$_REQUEST['id']);
-				move_uploaded_file($_FILES['image']['tmp_name'], $targetDir.'/'.$_REQUEST['id']);
-				echo true;
-				core_terminate();
-			}
-			*/
 		}
 	}
 	echo false;
@@ -215,85 +211,87 @@ else if($_REQUEST['engine']=='pixlr')
 }
 
 
-// plupload engine
-
-// Get parameters
-$chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
-$chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
-$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
-
-// Clean the fileName for security reasons
-$fileName = base64_encode($fileName);
-
-// Remove old temp files
-if (is_dir($targetDir) && ($dir = opendir($targetDir))) 
+// plUpload engine
+if($user->permission("files.upload")=="true")
 {
-	navigate_upload_remove_temporary($targetDir, $maxFileAge);
-} 
-else
-	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+	// Get parameters
+	$chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
+	$chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
+	$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-// Look for the content type header
-if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
-	$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+	// Clean the fileName for security reasons
+	$fileName = base64_encode($fileName);
 
-if (isset($_SERVER["CONTENT_TYPE"]))
-	$contentType = $_SERVER["CONTENT_TYPE"];
+	// Remove old temp files
+	if (is_dir($targetDir) && ($dir = opendir($targetDir)))
+	{
+		navigate_upload_remove_temporary($targetDir, $maxFileAge);
+	}
+	else
+		die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
 
-if (strpos($contentType, "multipart") !== false) 
-{
-	if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) 
+	// Look for the content type header
+	if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
+		$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+
+	if (isset($_SERVER["CONTENT_TYPE"]))
+		$contentType = $_SERVER["CONTENT_TYPE"];
+
+	if (strpos($contentType, "multipart") !== false)
+	{
+		if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
+		{
+			// Open temp file
+			$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, ($chunk == 0 ? "wb" : "ab"));
+			if ($out)
+			{
+				// Read binary input stream and append it to temp file
+				$in = fopen($_FILES['file']['tmp_name'], "rb");
+
+				if ($in)
+				{
+					while ($buff = fread($in, 4096))
+						fwrite($out, $buff);
+				}
+				else
+					die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+
+				fclose($out);
+				@unlink($_FILES['file']['tmp_name']);
+
+				// save meta file info into database (need a new db connection, we do this in the caller script)
+			}
+			else
+				die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+		}
+		else
+			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+	}
+	else
 	{
 		// Open temp file
-		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, ($chunk == 0 ? "wb" : "ab"));
-		if ($out) 
+		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
+		if ($out)
 		{
 			// Read binary input stream and append it to temp file
-			$in = fopen($_FILES['file']['tmp_name'], "rb");
+			$in = fopen("php://input", "rb");
 
-			if ($in) 
+			if ($in)
 			{
 				while ($buff = fread($in, 4096))
 					fwrite($out, $buff);
-			} 
+			}
 			else
 				die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 
 			fclose($out);
-			@unlink($_FILES['file']['tmp_name']);
-			
-			// save meta file info into database (need a new db connection, we do this in the caller script)
-		} 
+		}
 		else
 			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-	} 
-	else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
-} 
-else 
-{
-	// Open temp file
-	$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
-	if ($out) 
-	{
-		// Read binary input stream and append it to temp file
-		$in = fopen("php://input", "rb");
+	}
 
-		if ($in) 
-		{
-			while ($buff = fread($in, 4096))
-				fwrite($out, $buff);		
-		} 
-		else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-
-		fclose($out);
-	} 
-	else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-}	
-
-// Return JSON-RPC response
-die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+	// Return JSON-RPC response
+	die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+}
 	
 ?>

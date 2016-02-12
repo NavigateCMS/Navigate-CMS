@@ -274,12 +274,12 @@ class file
 	}
 
     /* folder types:
-            folder/generic
-            folder/images
-            folder/audio
-            folder/video
-            folder/flash
-            folder/documents
+		folder/generic
+		folder/images
+		folder/audio
+		folder/video
+		folder/flash
+		folder/documents
     */
     public static function create_folder($name, $type="folder/generic", $parent=0, $wid=0)
     {
@@ -314,6 +314,10 @@ class file
 	{
 		global $DB;
 		global $website;
+		global $user;
+
+		if($user->permission("files.delete")=='false')
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
 		if($this->type == 'folder')
 		{
@@ -2270,4 +2274,5 @@ class file
 		return $tmp;
 	}
 }
+
 ?>

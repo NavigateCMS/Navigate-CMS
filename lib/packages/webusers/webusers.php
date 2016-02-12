@@ -240,6 +240,7 @@ function run()
 	return $out;
 }
 
+
 function webusers_list()
 {
     global $events;
@@ -389,6 +390,7 @@ function webusers_list()
 	return $navibars->generate();
 	
 }
+
 
 function webusers_form($item)
 {
@@ -703,51 +705,6 @@ function webusers_form($item)
         )
     );
 
-    /* webuser groups management */
-    /*
-    $table = new naviorderedtable("items_order_table");
-    $table->setWidth("560px");
-    $table->setHiddenInput("items-order");
-
-    $table->addHeaderColumn('ID', 50);
-    $table->addHeaderColumn(t(159, 'Name'), 450);
-
-    $webuser_groups = webuser_group::all();
-    foreach($webuser_groups as $group)
-    {
-        $table->addRow($group->id, array(
-            array('content' => $group->id, 'align' => 'left'),
-            array('content' => $group->name, 'align' => 'left')
-        ));
-    }
-
-    $navibars->add_content('
-        <div id="navigate_webuser_groups" style="display: none;">
-            <div id="" class="navigate-form-row">
-                <label style=" width: 100px; ">'.t(159, 'Group').'</label>
-                <input type="text" style=" width: 300px;" value="" id="webuser_group-name" name="webuser_group-name" />
-                <button>'.t(472, 'Add').'</button>
-            </div>
-            <div id="navigate_webuser_groups_list">
-                '.$table->generate().'
-            </div>
-        </div>
-    ');
-    $layout->add_script('
-        function navigate_webuser_groups()
-        {
-            $("#navigate_webuser_groups").dialog({
-                title: "'.t(506, 'Groups').'",
-                width: 600,
-                height: 400,
-                modal: true
-            });
-        }
-
-        navigate_webuser_groups();
-    ');
-    */
-
 	if(!empty($item->id))
         $layout->navigate_notes_dialog('webuser', $item->id);
 
@@ -763,6 +720,7 @@ function webusers_form($item)
 											
 	return $navibars->generate();
 }
+
 
 function webuser_groups_list()
 {

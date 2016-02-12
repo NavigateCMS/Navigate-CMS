@@ -2,11 +2,12 @@
 class permission
 {
     public $id;
+    public $website;
     public $name;
     public $scope;
     public $function;
-    //public $description;
-    //public $type;
+	public $type;
+	//public $description;
     //public $dvalue;
     public $profile;
     public $user;
@@ -17,15 +18,23 @@ class permission
      *
      * @param integer $id ID of the user in the database
      */
-    public function load($name, $profile_id=0, $user_id=0)
+    public function load($name, $profile_id=0, $user_id=0, $website=null)
     {
         global $DB;
-        global $user;
 
-        if($DB->query('SELECT * FROM nv_permissions
-                         WHERE name = '.protect($name).'
-                           AND profile = '.intval($profile_id).'
-                           AND user = '.intval($user_id)))
+        $ws_query = '';
+        if(!empty($website))
+            $ws_query = ' AND website = '.protect($website);
+
+        $status = $DB->query('
+            SELECT * FROM nv_permissions
+             WHERE name = '.protect($name).'
+               AND profile = '.intval($profile_id).'
+               AND user = '.intval($user_id).
+            $ws_query
+        );
+
+        if($status)
         {
             $data = $DB->result();
             $this->load_from_resultset($data[0]);
@@ -35,13 +44,15 @@ class permission
         {
             $definition = permission::get_definition($name);
 
-            // NO permission set on database, preload with the definition
+            // NO permission set on database, create a new one using the definition
             $this->name     = $definition['name'];
+            $this->website  = $website;
             $this->scope    = $definition['scope'];
             $this->function = $definition['function'];
+            $this->type     = $definition['type'];
             $this->profile  = intval($profile_id);
             $this->user     = intval($user_id);
-            $this->value    = $definition['dvalue'];
+	        $this->value    = json_decode($definition['dvalue'], true);
         }
 
     }
@@ -57,12 +68,12 @@ class permission
         $this->name         = $rs->name;
         $this->scope        = $rs->scope;
         $this->function     = $rs->function;
-        //$this->description  = $rs->id;
-        //$this->type         = $rs->type;
+	    $this->type         = $rs->type;
+	    //$this->description  = $rs->id;
         //$this->dvalue       = $rs->id;
         $this->profile      = $rs->profile;
         $this->user         = $rs->user;
-        $this->value        = $rs->value;
+        $this->value        = json_decode($rs->value, true);
     }
 
     /**
@@ -72,8 +83,6 @@ class permission
      */
     public function save()
     {
-        global $DB;
-
         if(empty($this->id))
             return $this->insert();
         else
@@ -89,25 +98,35 @@ class permission
     {
         global $DB;
 
+	    $value = @$this->value;
+	    if(!isset($this->value))
+		    $value = "";
+	    else
+		    $value = json_encode($this->value);
+
         $ok = $DB->execute(
             'INSERT INTO nv_permissions
-                (id, name, scope, function, profile, user, value)
+                (id, website, name, scope, type, function, profile, user, value)
                 VALUES
                 ( 0,
+                  :website,
                   :name,
                   :scope,
+                  :type,
                   :function,
                   :profile,
                   :user,
                   :value
                 )',
             array(
+                ':website'   =>  $this->website,
                 ':name'      =>  $this->name,
                 ':scope'     =>  $this->scope,
-                ':function'  =>  intval($this->function),
+	            ':type'      =>  $this->type,
+	            ':function'  =>  intval($this->function),
                 ':profile'   =>  $this->profile,
                 ':user'      =>  $this->user,
-                ':value'     =>  (!isset($this->value)? '' : $this->value)
+                ':value'     =>  $value
             )
         );
 
@@ -129,38 +148,50 @@ class permission
     {
         global $DB;
 
-        if(empty($this->id)) return false;
+        if(empty($this->id))
+	        return false;
 
-        $ok =  $DB->execute('  UPDATE nv_permissions
-								  SET name       = :name,
-								      scope      = :scope,
-								      function   = :function,
-								      profile    = :profile,
-								      user       = :user,
-								      value      = :value
-								WHERE id = :id',
+        $value = @$this->value;
+	    if(!isset($this->value))
+		    $value = "";
+	    else
+		    $value = json_encode($this->value);
+
+        $ok =  $DB->execute('
+            UPDATE nv_permissions
+			   SET website    = :website,
+			       name       = :name,
+			       scope      = :scope,
+			       type		  = :type,
+			       function   = :function,
+			       profile    = :profile,
+			       user       = :user,
+			       value      = :value
+			 WHERE id = :id',
             array(
                 ':id'        =>  $this->id,
+                ':website'   =>  $this->website,
                 ':name'      =>  $this->name,
                 ':scope'     =>  $this->scope,
+                ':type'      =>  $this->type,
                 ':function'  =>  intval($this->function),
                 ':profile'   =>  $this->profile,
                 ':user'      =>  $this->user,
-                ':value'     =>  (empty($this->value)? '' : $this->value)
+                ':value'     =>  $value
             )
         );
-
 
         if(!$ok)
             throw new Exception($DB->get_last_error());
 
         return true;
-
     }
 
 
     public static function get_definitions()
     {
+        global $user;
+
         $definitions = array();
         $definitions['system'] = json_decode(file_get_contents(NAVIGATE_PATH.'/lib/permissions/navigatecms.json'), true);
         $definitions['functions'] = json_decode(file_get_contents(NAVIGATE_PATH.'/lib/permissions/functions.json'), true);
@@ -175,6 +206,26 @@ class permission
                 {
                     $definitions['extensions'][] = (array)$permission;
                 }
+            }
+        }
+
+        // get translations
+        $translations = array();
+
+        // if we are in Navigate CMS, user has the default language
+        if(file_exists(NAVIGATE_PATH.'/lib/permissions/i18n/'.$user->language.'.json'))
+        {
+            $translations = @file_get_contents(NAVIGATE_PATH.'/lib/permissions/i18n/'.$user->language.'.json');
+            if(!empty($translations))
+                $translations = json_decode($translations, true);
+        }
+
+        foreach($definitions as $type => $list)
+        {
+            for($i=0; $i < count($list); $i++)
+            {
+                if(!empty($translations[$list[$i]['name']]))
+                    $definitions[$type][$i]['description'] = $translations[$list[$i]['name']];
             }
         }
 
@@ -207,9 +258,13 @@ class permission
         return $definition;
     }
 
-    public static function get_values($who='user', $obj, $definitions=NULL)
+    public static function get_values($who='user', $obj, $definitions=NULL, $ws=null)
     {
         global $DB;
+        global $website;
+
+        if(empty($ws))
+            $ws = $website->id;
 
         // load all permission definitions: system, functions, extensions
         $scopes = array('system', 'functions', 'extensions');
@@ -220,15 +275,29 @@ class permission
         // load permissions with values set on database
         if($who=='user')
         {
-            $DB->query('SELECT * FROM nv_permissions WHERE profile = '.protect($obj->profile));
+            $DB->query('
+                SELECT *
+                FROM nv_permissions
+                WHERE profile = '.protect($obj->profile).'
+                  AND (website = 0 OR website = '.protect($ws).')'
+            );
             $permissions_profile = $DB->result();
 
-            $DB->query('SELECT * FROM nv_permissions WHERE user = '.protect($obj->id));
+            $DB->query('
+                SELECT *
+                  FROM nv_permissions
+                 WHERE user = '.protect($obj->id).'
+                   AND (website = 0 OR website = '.protect($ws).')'
+            );
             $permissions_user = $DB->result();
         }
         else if($who=='profile')
         {
-            $DB->query('SELECT * FROM nv_permissions WHERE profile = '.protect($obj->id));
+            $DB->query('
+                SELECT * FROM nv_permissions
+                 WHERE profile = '.protect($obj->id).'
+                 AND (website = 0 OR website = '.protect($ws).')'
+            );
             $permissions_profile = $DB->result();
             $permissions_user = array();
         }
@@ -248,7 +317,7 @@ class permission
                 {
                     if($permissions_profile[$pp]->name == $def['name'])
                     {
-                        $permissions[$def['name']] = $permissions_profile[$pp]->value;
+	                    $permissions[$def['name']] = json_decode($permissions_profile[$pp]->value, true);
                         break; // no need to look further
                     }
                 }
@@ -258,7 +327,7 @@ class permission
                 {
                     if($permissions_user[$pu]->name == $def['name'])
                     {
-                        $permissions[$def['name']] = $permissions_user[$pu]->value;
+                        $permissions[$def['name']] = json_decode($permissions_user[$pu]->value, true);
                         break; // no need to look further
                     }
                 }
@@ -275,8 +344,16 @@ class permission
 
         foreach($changes as $key => $value)
         {
+            $key = str_replace(array('[', ']'), '', $key);
+            $ws = null;
+            if(strpos($key, "wid") === 0)
+            {
+                list($ws, $key) = explode('.', $key, 2);
+                $ws = str_replace("wid", "", $ws);
+            }
+
             $permission = new permission();
-            $permission->load($key, intval($profile_id), intval($user_id));
+            $permission->load($key, intval($profile_id), intval($user_id), $ws);
             $permission->value = $value;
             $permission->save();
         }

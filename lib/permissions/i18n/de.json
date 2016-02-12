@@ -1,0 +1,14 @@
+{
+	"navigatecms.privacy_mode": "Hide Navigieren CMS Logo und Favicon",
+	"navigatecms.display_version": "Letzte Navigieren CMS-Version in der Statusleiste",
+    "websites.edit": "Lassen Sie die Erstellung und Bearbeitung von Websites",
+    "websites.delete": "Websites können Löschen",
+    "items.create": "lassen Sie neue Objekte zu schaffen",
+	"items.edit": "Lassen Sie Bearbeiten von Elementen",
+    "items.delete": "Lassen Sie Artikel löschen",
+    "items.publish": "Publishing-Produkte zulassen",
+    "files.upload": "Dateien erlauben das Hochladen",
+    "files.delete": "Lassen Sie das löschen von Dateien",
+    "structure.categories.allowed": "Kategorien, in denen die Benutzer erlaubt wird, Inhalte zu erstellen (leer bedeutet alle)",
+	"structure.categories.excluded": "Kategorien, in denen der Benutzer Inhalte zu erstellen NICHT erlaubt ist (Leer bedeutet keine)"
+}

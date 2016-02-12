@@ -443,8 +443,8 @@ class website
 				":share_files_media_browser" => (is_null($this->share_files_media_browser)? '' : $this->share_files_media_browser),
 				":additional_scripts" => (is_null($this->additional_scripts)? '' : $this->additional_scripts),
 				":permission" => $this->permission,
-				":mail_mailer" => (is_null($this->mail_mailer)? '' : $this->mailer),
-				":mail_server" => (is_null($this->mail_server)? '' : $this->server),
+				":mail_mailer" => (is_null($this->mail_mailer)? '' : $this->mail_mailer),
+				":mail_server" => (is_null($this->mail_server)? '' : $this->mail_server),
 				":mail_port" => (is_null($this->mail_port)? '' : $this->mail_port),
 				":mail_security" => (is_null($this->mail_security)? '' : $this->mail_security),
 				":mail_user" => (is_null($this->mail_user)? '' : $this->mail_user),
@@ -699,6 +699,13 @@ class website
         $this->theme_options = array();
 
         $this->insert();
+
+	    // add the just created website to user allowed websites (if he has a restricted list of sites)
+	    if(!empty($user->websites))
+	    {
+		    $user->websites[] = $this->id;
+		    $user->save();
+	    }
 
         return true;
     }
@@ -1252,6 +1259,23 @@ class website
         return $homepage_relative_url;
     }
 
+	public static function all()
+	{
+		global $DB;
+
+		$out = array();
+
+		$DB->query("SELECT id, name FROM nv_websites ORDER BY id ASC");
+		$rs = $DB->result();
+
+		for($i=0; $i < count($rs); $i++)
+		{
+			$out[$rs[$i]->id] = $rs[$i]->name;
+		}
+
+		return $out;
+	}
+
     public function quicksearch($text)
     {
         $like = ' LIKE '.protect('%'.$text.'%');
@@ -1268,4 +1292,5 @@ class website
         return $where;
     }
 }
+
 ?>

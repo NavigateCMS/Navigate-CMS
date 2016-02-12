@@ -27,8 +27,8 @@
 		</unit>
 		<unit id="4">
 			<segment>
-				<source>Login incorrect.</source>
-				<target>Login-Daten nicht korrekt.</target>
+				<source>Login incorrect</source>
+				<target>Login-Daten nicht korrekt</target>
 			</segment>
 		</unit>
 		<unit id="5">
@@ -1413,8 +1413,8 @@
 		</unit>
 		<unit id="235">
 			<segment>
-				<source>File saved successfully.</source>
-				<target>Datei erfolgreich gespeichert.</target>
+				<source>File saved successfully</source>
+				<target>Datei erfolgreich gespeichert</target>
 			</segment>
 		</unit>
 		<unit id="236">
@@ -2247,8 +2247,8 @@
 		</unit>
 		<unit id="374">
 			<segment>
-				<source>Item installed successfully.</source>
-				<target>Element erfolgreich installiert.</target>
+				<source>Item installed successfully</source>
+				<target>Element erfolgreich installiert</target>
 			</segment>
 		</unit>
 		<unit id="375">
@@ -3333,8 +3333,8 @@
 		</unit>
 		<unit id="555">
 			<segment>
-				<source>Item has been successfully published.</source>
-				<target>Der Artikel wurde veröffentlicht.</target>
+				<source>Item has been successfully published</source>
+				<target>Der Artikel wurde veröffentlicht</target>
 			</segment>
 		</unit>
 		<unit id="556">
@@ -3659,6 +3659,24 @@
 			<segment>
 				<source>Click a day of the month selected to update the value</source>
 				<target>Klicken Sie auf einen Tag des Monats ausgewählt, um den Wert zu aktualisieren</target>
+			</segment>
+		</unit>
+		<unit id="610">
+			<segment>
+				<source>Sorry, you are not allowed to execute the requested function.</source>
+				<target>Sie sind leider nicht die gewünschte Funktion ausführen darf.</target>
+			</segment>
+		</unit>
+		<unit id="611">
+			<segment>
+				<source>Choose</source>
+				<target>Wählen</target>
+			</segment>
+		</unit>
+		<unit id="612">
+			<segment>
+				<source>Manages all websites</source>
+				<target>Verwaltet alle Websites</target>
 			</segment>
 		</unit>
 	</file>

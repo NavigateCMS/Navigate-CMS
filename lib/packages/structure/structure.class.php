@@ -5,7 +5,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/webuser_votes/webuser_vote.class.php')
 
 class structure
 {
-	public $id; // not used
+	public $id;
 	public $website;
 	public $parent;
 	public $position;
@@ -430,9 +430,9 @@ class structure
 			}
 
 			if(in_array($node->id, $selected))
-				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span class="active">'.$title.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-selected="true"><span class="active">'.$title.'</span>';
 			else
-				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span>'.$title.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-selected="false"><span>'.$title.'</span>';
 
 			$html[] = $post_html;
 			$html[] = '</li>';
@@ -577,4 +577,5 @@ class structure
 	}
 
 }
+
 ?>

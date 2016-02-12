@@ -27,8 +27,8 @@
 		</unit>
 		<unit id="4">
 			<segment>
-				<source>Login incorrect.</source>
-				<target>Datos de identificación incorrectos.</target>
+				<source>Login incorrect</source>
+				<target>Datos de identificación incorrectos</target>
 			</segment>
 		</unit>
 		<unit id="5">
@@ -1413,8 +1413,8 @@
 		</unit>
 		<unit id="235">
 			<segment>
-				<source>File saved successfully.</source>
-				<target>Fichero guardado correctamente.</target>
+				<source>File saved successfully</source>
+				<target>Fichero guardado correctamente</target>
 			</segment>
 		</unit>
 		<unit id="236">
@@ -1762,7 +1762,7 @@
 		<unit id="293">
 			<segment>
 				<source>Application successfully updated</source>
-				<target>Actualizado correctamente.</target>
+				<target>Actualizado correctamente</target>
 			</segment>
 		</unit>
 		<unit id="294">
@@ -2247,8 +2247,8 @@
 		</unit>
 		<unit id="374">
 			<segment>
-				<source>Item installed successfully.</source>
-				<target>Elemento instalado correctamente.</target>
+				<source>Item installed successfully</source>
+				<target>Elemento instalado correctamente</target>
 			</segment>
 		</unit>
 		<unit id="375">
@@ -2871,8 +2871,8 @@
 		</unit>
 		<unit id="478">
 			<segment>
-				<source>Item duplicated successfully.</source>
-				<target>Ítem duplicado correctamente.</target>
+				<source>Item duplicated successfully</source>
+				<target>Ítem duplicado correctamente</target>
 			</segment>
 		</unit>
 		<unit id="479">
@@ -3659,6 +3659,24 @@
 			<segment>
 				<source>Click a day of the month selected to update the value</source>
 				<target>Haga click en un día del mes seleccionado para actualizar el valor</target>
+			</segment>
+		</unit>
+		<unit id="610">
+			<segment>
+				<source>Sorry, you are not allowed to execute the requested function</source>
+				<target>Lo sentimos, no está autorizado para ejecutar la función solicitada</target>
+			</segment>
+		</unit>
+		<unit id="611">
+			<segment>
+				<source>Choose</source>
+				<target>Elegir</target>
+			</segment>
+		</unit>
+		<unit id="612">
+			<segment>
+				<source>Manages all websites</source>
+				<target>Gestiona todos los sitios web</target>
 			</segment>
 		</unit>
 	</file>

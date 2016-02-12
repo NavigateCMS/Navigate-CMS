@@ -6,7 +6,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
-
 require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
 
 function run()
@@ -15,6 +14,7 @@ function run()
 	global $DB;
 	global $website;
 	global $theme;
+	global $user;
 		
 	$out = '';
 	$item = new item();
@@ -281,13 +281,12 @@ function run()
 
 					$layout->navigate_notification(t(53, "Data saved successfully."), false);
 					$item->load($item->id);
+					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 				}
 				catch(Exception $e)
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
-				
-				users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 			}
 			else
 				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
@@ -301,19 +300,33 @@ function run()
 			{			
 				$item->load(intval($_REQUEST['id']));
 
-				if(!empty($item->id) && $item->delete() > 0)
+				try
 				{
-					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
-					$out = items_list();
-					users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+					if(!empty($item->id))
+					{
+						$deleted = ($item->delete() > 0);
+						if($deleted)
+						{
+							$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
+							$out = items_list();
+							users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+						}
+					}
+
+					if(!$deleted)
+					{
+						$layout->navigate_notification(t(56, 'Unexpected error.'), false);
+						if(!empty($item->id))
+							$out = items_form($item);
+						else
+							$out = items_list();
+					}
 				}
-				else
+				catch(Exception $e)
 				{
-					$layout->navigate_notification(t(56, 'Unexpected error.'), false);
+					$layout->navigate_notification($e->getMessage(), true);
 					if(!empty($item->id))
 						$out = items_form($item);
-					else
-						$out = items_list();
 				}
 			}
 			break;
@@ -743,6 +756,7 @@ function run()
 function items_list()
 {
     global $layout;
+	global $user;
 
 	$navibars = new navibars();
 	$navitable = new navitable("items_list");
@@ -751,7 +765,7 @@ function items_list()
 
 	$navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+            ($user->permission("items.create") == 'false'? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>'),
 			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
         )
@@ -765,7 +779,8 @@ function items_list()
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 	$navitable->enableSearch();
-	$navitable->enableDelete();
+	if($user->permission("items.delete") == 'true')
+		$navitable->enableDelete();
 	$navitable->setGridNotesObjectName("item");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
@@ -917,9 +932,10 @@ function items_form($item)
 	{
 		$navibars->add_actions(
             array(
+	            ($user->permission('items.create')=='true'?
 	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
-				</a>'
+				</a>' : "")
             )
         );
 	}
@@ -927,17 +943,20 @@ function items_form($item)
 	{
 		$navibars->add_actions(
             array(
+	            (($user->permission('items.edit')=='true' || $item->author == $user->id) ?
 	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
-				</a>',
+				</a>' : ""),
+	            ($user->permission("items.delete") == 'true'?
                 '<a href="#" onclick="navigate_delete_dialog();">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'
-				</a>'
+				</a>' : "")
             )
         );
 
         $extra_actions[] = '<a href="#" onclick="navigate_items_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>';
-        $extra_actions[] = '<a href="?fid=items&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+		if($user->permission("items.create") != 'false')
+            $extra_actions[] = '<a href="?fid=items&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
 
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -1092,34 +1111,47 @@ function items_form($item)
 
         navigate_webuser_groups_visibility('.$item->access.');
     ');
-										
-	$navibars->add_tab_content_row(
-        array(
-            '<label>'.t(68, 'Status').'</label>',
-			$naviforms->selectfield(
-                'permission',
-                array(
-                        0 => 0,
-                        1 => 1,
-                        2 => 2
-                    ),
-                array(
-                        0 => t(69, 'Published'),
-                        1 => t(70, 'Private'),
-                        2 => t(81, 'Hidden')
-                    ),
-                $item->permission,
-                '',
-                false,
-                array(
+
+	$permission_options = array(
+		0 => t(69, 'Published'),
+		1 => t(70, 'Private'),
+		2 => t(81, 'Hidden')
+	);
+
+	if($user->permission("items.publish") == 'false')
+	{
+		if(!isset($item->permission))
+			$item->permission = 1;
+		$navibars->add_tab_content_row(
+	        array(
+	            '<label>'.t(68, 'Status').'</label>',
+		        $permission_options[$item->permission],
+		        $naviforms->hidden("permission", $item->permission)
+	        )
+	    );
+	}
+	else
+	{
+		$navibars->add_tab_content_row(
+	        array(
+	            '<label>'.t(68, 'Status').'</label>',
+				$naviforms->selectfield(
+	                'permission',
+                    array_keys($permission_options),
+					array_values($permission_options),
+	                $item->permission,
+	                '',
+	                false,
+	                array(
                         0 => t(360, 'Visible to everybody'),
                         1 => t(359, 'Visible only to Navigate CMS users'),
                         2 => t(358, 'Hidden to everybody')
-                )
-            )
-        )
-    );
-																		
+	                )
+	            )
+	        )
+	    );
+	}
+
 									
 	if(empty($item->id))
         $item->author = $user->id;

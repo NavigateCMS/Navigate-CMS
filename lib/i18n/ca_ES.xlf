@@ -27,8 +27,8 @@
 		</unit>
 		<unit id="4">
 			<segment>
-				<source>Login incorrect.</source>
-				<target>Dades d'identificació incorrectes.</target>
+				<source>Login incorrect</source>
+				<target>Dades d'identificació incorrectes</target>
 			</segment>
 		</unit>
 		<unit id="5">
@@ -1413,8 +1413,8 @@
 		</unit>
 		<unit id="235">
 			<segment>
-				<source>File saved successfully.</source>
-				<target>Fitxer guardat correctament.</target>
+				<source>File saved successfully</source>
+				<target>Fitxer guardat correctament</target>
 			</segment>
 		</unit>
 		<unit id="236">
@@ -1762,7 +1762,7 @@
 		<unit id="293">
 			<segment>
 				<source>Application successfully updated</source>
-				<target>Actualitzat correctament.</target>
+				<target>Actualitzat correctament</target>
 			</segment>
 		</unit>
 		<unit id="294">
@@ -2247,8 +2247,8 @@
 		</unit>
 		<unit id="374">
 			<segment>
-				<source>Item installed successfully.</source>
-				<target>Element instal·lat correctament.</target>
+				<source>Item installed successfully</source>
+				<target>Element instal·lat correctament</target>
 			</segment>
 		</unit>
 		<unit id="375">
@@ -2871,8 +2871,8 @@
 		</unit>
 		<unit id="478">
 			<segment>
-				<source>Item duplicated successfully.</source>
-				<target>Element duplicat correctament.</target>
+				<source>Item duplicated successfully</source>
+				<target>Element duplicat correctament</target>
 			</segment>
 		</unit>
 		<unit id="479">
@@ -3659,6 +3659,24 @@
 			<segment>
 				<source>Click a day of the month selected to update the value</source>
 				<target>Fac clic en un dia del mes sel·leccionat per actualitzar el valor</target>
+			</segment>
+		</unit>
+		<unit id="610">
+			<segment>
+				<source>Sorry, you are not allowed to execute the requested function</source>
+				<target>Ho sentim, no té autorització per a executar la funció sol·licitada</target>
+			</segment>
+		</unit>
+		<unit id="611">
+			<segment>
+				<source>Choose</source>
+				<target>Escollir</target>
+			</segment>
+		</unit>
+		<unit id="612">
+			<segment>
+				<source>Manages all websites</source>
+				<target>Gestiona tots els llocs web</target>
 			</segment>
 		</unit>
 	</file>

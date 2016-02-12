@@ -28,7 +28,7 @@ function nvweb_xmlrpc()
 		}
 		else
 		{
-			$websites_ids = array_filter(explode(',', $user->permission('websites.allowed')));
+			$websites_ids = $user->websites;
 			if(empty($websites_ids))
 			{
 				// get all websites
@@ -411,7 +411,7 @@ function nvweb_xmlrpc()
 
 		if(empty($error) && $user->blocked != '1')
 		{
-			$websites_ids = array_filter(explode(',', $user->permission('websites.allowed')));
+			$websites_ids = $user->websites;
 
 			if(!empty($website_id) && !empty($websites_ids))
 				$allowed = in_array($website_id, $websites_ids);
@@ -471,4 +471,5 @@ function nvweb_xmlrpc()
 		);
 	}
 }
+
 ?>

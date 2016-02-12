@@ -231,17 +231,22 @@ class extension
         $updates = @$_SESSION['extensions_updates'];
         $enabled = array();
 
-        $DB->query('SELECT extension, enabled
-                      FROM nv_extensions
-                     WHERE website = '.protect($website->id), 'array');
+        $DB->query('
+            SELECT extension, enabled
+              FROM nv_extensions
+             WHERE website = '.protect($website->id),
+            'array'
+        );
 
         $rs = $DB->result();
 
         foreach($rs as $row)
+        {
             $properties[$row['extension']] = array(
                 'enabled' => intval($row['enabled'])/*,
                 'favorite' => intval($row['favorite'])*/
             );
+        }
 
         for($t=0; $t < count($extensions); $t++)
         {
@@ -319,4 +324,5 @@ class extension
             include_once(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php');
     }
 }
+
 ?>

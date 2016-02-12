@@ -307,7 +307,6 @@ function websites_list()
 	$navibars->add_actions(
         array(
             (($user->permission('websites.edit')=='true')? '<a href="?fid='.$_REQUEST['fid'].'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-            //(($user->permission('websites.edit')=='true')? '<a href="?fid='.$_REQUEST['fid'].'&act=wizard"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').' [Wizard]</a>' : ''),
             '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
             'search_form'
         )
@@ -353,7 +352,11 @@ function websites_form($item)
 
     if($user->permission('websites.edit')=='true')
     {
-	    $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+	    $navibars->add_actions(
+		    array(
+			    '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
+		    )
+	    );
 
 	    $extra_actions = array();
 	    $extra_actions[] = '<a href="#" action="navigate_reset_statistics" onclick="javascript: navigate_reset_statistics();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/chart_line.png"> '.t(429, 'Reset statistics').'</a>';

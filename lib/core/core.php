@@ -141,6 +141,16 @@ function core_load_function($fid)
             $func->enabled = 1;
             break;
 
+        case 'permissions':
+            $func = new stdClass();
+            $func->id = 'permissions';
+            $func->codename = 'permissions';
+            $func->category = 'config';
+            $func->icon = '';
+            $func->lid = '';
+            $func->enabled = 1;
+            break;
+
         default:
             if(is_numeric($fid))
                 $where = 'id = '.intval($fid);
@@ -1013,4 +1023,5 @@ function navigate_compose_email($data, $style = array('background' => '#E5F1FF',
 
     return $body;
 }
+
 ?>

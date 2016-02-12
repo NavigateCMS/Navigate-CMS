@@ -15,12 +15,52 @@
         "type": "boolean",
         "dvalue": "true"
     },
-    {
-        "name": "websites.allowed",
+	{
+        "name": "items.create",
         "scope": "functions",
-        "function": "websites",
-        "description": "List of websites which the user can manipulate (empty for all). Separate the IDs with commas.",
-        "type": "string",
-        "dvalue": ""
+        "function": "items",
+        "description": "Allow creating new items",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+	{
+        "name": "items.edit",
+        "scope": "functions",
+        "function": "items",
+        "description": "Allow editing items",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+	{
+        "name": "items.delete",
+        "scope": "functions",
+        "function": "items",
+        "description": "Allow deleting items",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+	{
+        "name": "items.publish",
+        "scope": "functions",
+        "function": "items",
+        "description": "Allow publishing items",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "files.upload",
+        "scope": "functions",
+        "function": "files",
+        "description": "Allow uploading files",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+	{
+        "name": "files.delete",
+        "scope": "functions",
+        "function": "files",
+        "description": "Allow deleting files",
+        "type": "boolean",
+        "dvalue": "true"
     }
 ]

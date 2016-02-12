@@ -1,0 +1,14 @@
+{
+	"navigatecms.privacy_mode": "Amagar logotip de Navigate CMS i la seva icona",
+	"navigatecms.display_version": "Mostrar número de versió de Navigate CMS a la barra d'estat",
+    "websites.edit": "Permetre crear i editar llocs web",
+    "websites.delete": "Permetre eliminar llocs web",
+    "items.create": "Permetre crear elements",
+	"items.edit": "Permetre editar elements",
+    "items.delete": "Permetre eliminar elements",
+    "items.publish": "Permetre publicar elements",
+    "files.upload": "Permetre pujar fitxers",
+    "files.delete": "Permetre eliminar fitxers",
+    "structure.categories.allowed": "Categories on l'usuari pot crear contingut (buit indica arreu)",
+	"structure.categories.excluded": "Categories on l'usuari NO té permís per crear-hi contingut (buit indica enlloc)"
+}

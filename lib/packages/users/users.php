@@ -1,6 +1,8 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/profiles/profile.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php');
+
 function run()
 {
 	global $user;	
@@ -122,119 +124,6 @@ function run()
 			}
 			break;
 
-        case 'permissions':
-            $page   = intval($_REQUEST['page']);
-            $max	= intval($_REQUEST['rows']);
-            $user_id = intval($_REQUEST['user']);
-            $offset = ($page - 1) * $max;
-
-            $naviforms = new naviforms();
-
-            $usr_obj = new user();
-            $usr_obj->load($user_id);
-
-            $permissions_definitions = permission::get_definitions();
-
-            $permissions_values = permission::get_values('user', $usr_obj, $permissions_definitions);
-
-            $permissions_definitions = array_merge(
-                $permissions_definitions['system'],
-                $permissions_definitions['functions'],
-                $permissions_definitions['extensions']
-            );
-
-            $out = array();
-
-            $iRow = 0;
-
-            for($i=0; $i < count($permissions_definitions); $i++)
-            {
-                $control = '';
-                $type = '';
-                $scope = t(470, 'System');
-
-                if($permissions_definitions[$i]['scope']=='functions')
-                    $scope = t(240, 'Functions');
-                else if($permissions_definitions[$i]['scope']=='extensions')
-                    $scope = t(327, 'Extensions');
-
-                switch($permissions_definitions[$i]['type'])
-                {
-                    case 'boolean':
-                        $type = t(206, 'Boolean');
-                        $control = $naviforms->buttonset(
-                            $permissions_definitions[$i]['name'],
-                            array(
-                                'true' => '<span class="ui-icon ui-icon-circle-check"></span>',
-                                'false' => '<span class="ui-icon ui-icon-circle-close"></span>'),
-                            $permissions_values[$permissions_definitions[$i]['name']],
-                            "navigate_permission_change_boolean(this);"
-                        );
-                        break;
-
-                    case 'integer':
-                        $type = t(468, 'Integer');
-                        $control = $naviforms->textfield(
-                            $permissions_definitions[$i]['name'],
-                            $permissions_values[$permissions_definitions[$i]['name']],
-                            '99%',
-                            'navigate_permission_change_text(this);'
-                        );
-                        break;
-
-                    case 'string':
-                    default:
-                        $type = t(469, 'String');
-                        $control = $naviforms->textfield(
-                            $permissions_definitions[$i]['name'],
-                            $permissions_values[$permissions_definitions[$i]['name']],
-                            '99%',
-                            'navigate_permission_change_text(this);'
-                        );
-                        break;
-                }
-
-                // search filters
-                if(!empty($_REQUEST['filters']))
-                {
-                    $include = navitable::jqgridCheck(
-                        array(
-                            'name' => $permissions_definitions[$i]['name'],
-                            'scope' => $scope,
-                            'type' => $type,
-                            'value' => $permissions_values[$permissions_definitions[$i]['name']]
-                        ),
-                        $_REQUEST['filters']
-                    );
-
-                    if(!$include)
-                        continue;
-                }
-
-                $out[$iRow] = array(
-                    0	=> $permissions_definitions[$i]['name'],
-                    1	=> '<span class="ui-icon ui-icon-float ui-icon-info" title="'.$permissions_definitions[$i]['description'].'"></span> <span title="'.$permissions_definitions[$i]['description'].'">'.$permissions_definitions[$i]['name'].'</span>',
-                    2	=> $scope,
-                    3   => $type,
-                    4   => $control //$permissions_values[$permissions_definitions[$i]['name']]
-                );
-
-                $iRow++;
-            }
-
-            navitable::jqgridJson($out, $page, $offset, $max, count($out));
-            core_terminate();
-            break;
-
-        /* unused (change permission value via AJAX)
-        case 'permission_set':
-            $permission = new permission();
-            $permission->load($_REQUEST['name'], 0, $_REQUEST['user_id']);
-            $permission->value = $_REQUEST['value'];
-            echo $permission->save();
-            core_terminate();
-            break;
-        */
 					
 		case 0: // list / search result
 		default:			
@@ -252,9 +141,13 @@ function users_list()
 	
 	$navibars->title(t(15, 'Users'));
 
-	$navibars->add_actions(	array(	'<a href="?fid=users&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid=users&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			'<a href="?fid=users&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid=users&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 	
 	if($_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=users&act=1&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
@@ -295,17 +188,20 @@ function users_form($item)
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+			)
+		);
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
-
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+			)
+		);
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -334,9 +230,13 @@ function users_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=users&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=users&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			(!empty($item->id)? '<a href="?fid=users&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=users&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 
 	$navibars->form();
 
@@ -345,12 +245,19 @@ function users_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(1, 'User').'</label>',
-											$naviforms->textfield('user-username', $item->username),
-										));						
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(1, 'User').'</label>',
+			$naviforms->textfield('user-username', $item->username),
+		)
+	);
 
 	$navibars->add_tab_content_row(
 		array(
@@ -366,138 +273,176 @@ function users_form($item)
 		}, 10);
 	');
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',
-											'<input type="text" name="user-email" value="'.$item->email.'" size="64" />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(44, 'E-Mail').'</label>',
+			'<input type="text" name="user-email" value="'.$item->email.'" size="64" />'
+		)
+	);
 				
 	// Profile selector
 	$DB->query('SELECT id, name FROM nv_profiles');		
 	$data = $DB->result();	
 	$select = $naviforms->select_from_object_array('user-profile', $data, 'id', 'name', $item->profile);
-	$navibars->add_tab_content_row(array(	'<label>'.t(45, 'Profile').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(45, 'Profile').'</label>',
+			$select
+		)
+	);
 
 	// Language selector
 	$DB->query('SELECT code, name FROM nv_languages WHERE nv_dictionary != ""');		
 	$data = $DB->result();	
 	$select = $naviforms->select_from_object_array('user-language', $data, 'code', 'name', $item->language);
-	$navibars->add_tab_content_row(array(	'<label>'.t(46, 'Language').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(46, 'Language').'</label>',
+			$select
+		)
+	);
 											
 	$timezones = property::timezones();
 	
 	if(empty($item->timezone))
 		$item->timezone = date_default_timezone_get();	
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(97, 'Timezone').'</label>',
-											$naviforms->selectfield("user-timezone", array_keys($timezones), array_values($timezones), $item->timezone)
-										));												
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(97, 'Timezone').'</label>',
+			$naviforms->selectfield("user-timezone", array_keys($timezones), array_values($timezones), $item->timezone)
+		)
+	);
 																						
 	// Decimal separator		
-	$data = array(	0	=> json_decode('{"code": ",", "name": ", ---> 1234,25"}'),
-					1	=> json_decode('{"code": ".", "name": ". ---> 1234.25"}'),
-					2	=> json_decode('{"code": "\'", "name": "\' ---> 1234\'25"}'),
-				);
+	$data = array(
+		0	=> json_decode('{"code": ",", "name": ", ---> 1234,25"}'),
+		1	=> json_decode('{"code": ".", "name": ". ---> 1234.25"}'),
+		2	=> json_decode('{"code": "\'", "name": "\' ---> 1234\'25"}'),
+	);
 				
 	$select = $naviforms->select_from_object_array('user-decimal_separator', $data, 'code', 'name', $item->decimal_separator);
-	$navibars->add_tab_content_row(array(	'<label>'.t(49, 'Decimal separator').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(49, 'Decimal separator').'</label>',
+			$select
+		)
+	);
 											
 	// Date format
-	$data = array(	0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date(Y).'-12-31 23:59"}'),
-					1	=> json_decode('{"code": "d-m-Y H:i", "name": "31-12-'.date(Y).' 23:59"}'),
-					2	=> json_decode('{"code": "m-d-Y H:i", "name": "12-31-'.date(Y).' 23:59"}'),
-					3	=> json_decode('{"code": "Y/m/d H:i", "name": "'.date(Y).'/12/31 23:59"}'),
-					4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date(Y).' 23:59"}'),
-					5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date(Y).' 23:59"}')
-				);	
+	$data = array(
+		0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date(Y).'-12-31 23:59"}'),
+		1	=> json_decode('{"code": "d-m-Y H:i", "name": "31-12-'.date(Y).' 23:59"}'),
+		2	=> json_decode('{"code": "m-d-Y H:i", "name": "12-31-'.date(Y).' 23:59"}'),
+		3	=> json_decode('{"code": "Y/m/d H:i", "name": "'.date(Y).'/12/31 23:59"}'),
+		4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date(Y).' 23:59"}'),
+		5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date(Y).' 23:59"}')
+	);
 
 	$select = $naviforms->select_from_object_array('user-date_format', $data, 'code', 'name', $item->date_format);
-	$navibars->add_tab_content_row(array(	'<label>'.t(50, 'Date format').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(50, 'Date format').'</label>',
+			$select
+		)
+	);
 
     $navibars->add_tab_content($naviforms->hidden('user-skin', 'cupertino'));
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(47, 'Blocked').'</label>',
-											$naviforms->checkbox('user-blocked', $item->blocked),
-										));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(47, 'Blocked').'</label>',
+			$naviforms->checkbox('user-blocked', $item->blocked),
+		)
+	);
+
+	$navibars->add_tab(t(241, "Web sites"));
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(612, "Manages all websites").'</label>',
+			$naviforms->checkbox("user-all-websites", empty($item->websites))
+		)
+	);
+
+	$websites = website::all();
+	if(empty($websites))
+		$websites = array();
+    $navibars->add_tab_content_row(
+        array(
+	        '<label>'.t(405, "Selection").'</label>',
+            $naviforms->multiselect(
+                'user-websites',
+                array_keys($websites),
+                array_values($websites),
+                $item->websites
+            )
+        ),
+        "user-websites-selector",
+	    'style="display: none; padding-bottom: 16px; "'
+    );
+
+	$layout->add_script('
+		$("#user-all-websites").on("change", function()
+		{
+			$("#user-websites-selector").hide();
+			if(!$(this).is(":checked"))
+				$("#user-websites-selector").show();
+		});
+		$("#user-all-websites").trigger("change");
+	');
+
 
     $navibars->add_tab(t(17, "Permissions"));
 
     $navibars->add_tab_content($naviforms->hidden('navigate_permissions_changes', ''));
 
-    $navitable = new navitable("permissions_list");
+	$ws_tabs = '<div id="navigate-permissions-websites-tabs"><ul>';
 
-    $navitable->setURL('?fid=users&act=permissions&user='.$item->id);
-    $navitable->setDataIndex('name');
-    $navitable->enableSearch();
-    $navitable->disableSelect();
+	foreach($websites as $ws_id => $ws_name)
+	{
+		$ws_tabs .= '<li><a href="#navigate-permissions-websites-tab-'.$ws_id.'">'.$ws_name.'</a></li>';
+	}
 
-    $navitable->addCol('id', 'id', "100", "false", "left", false, "true");
-    $navitable->addCol(t(159, 'Name'), 'name', "100", "false", "left");
-    $navitable->addCol(t(467, 'Scope'), 'scope', "40", "false", "left");
-    $navitable->addCol(t(160, 'Type'), 'type', "40", "false", "left");
-    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array(
-        'type' => 'custom'
-    ));
+	$ws_tabs.= '</ul>';
 
-    $navitable->setLoadCallback('
-        $("#permissions_list").find(".buttonset").each(function(i, el)
-        {
-            $(el).buttonset();
-            $(el).css("white-space", "normal");
-            $(el).children(".ui-button").css({"float": "left", "height": "24px", "margin": "2px 0px 2px"});
-        });
-    ');
+	foreach($websites as $ws_id => $ws_name)
+	{
+		$ws_tabs .= '<div id="navigate-permissions-websites-tab-'.$ws_id.'" data-website="'.$ws_id.'">';
 
-    $layout->add_script('
-        var navigate_permissions_changes = {};
+		$navitable = new navitable("permissions_list_website_".$ws_id);
 
-        function navigate_permission_change_boolean(el)
-		{
-			var code = $(el).attr("for");
-			// code is a string like this: navigatecms.privacy_mode_true
-            var value = code.substr(code.lastIndexOf("_") + 1);
-            code = code.substr(0, code.lastIndexOf("_"));
+	    $navitable->setURL('?fid=permissions&act=list&website='.$ws_id.'&object=user&object_id='.$item->id);
+	    $navitable->setDataIndex('name');
+	    $navitable->enableSearch();
+	    $navitable->disableSelect();
 
-            navigate_permissions_changes[code] = value;
-            navigate_permissions_update();
+	    $navitable->addCol('id', 'id', "100", "false", "left", false, "true");
+	    $navitable->addCol(t(159, 'Name'), 'name', "100", "false", "left");
+	    $navitable->addCol(t(467, 'Scope'), 'scope', "40", "false", "left");
+	    $navitable->addCol(t(160, 'Type'), 'type', "40", "false", "left");
+	    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array(
+	        'type' => 'custom'
+	    ));
 
-            /* ajax-save routine [unused]
-            $(el).parents(".buttonset").addClass("ui-state-disabled").css("padding", "0px");
-            //$(el).parents(".buttonset").buttonset("disable");
-            // save new permission value
-            $.post(
-                "?fid=users&act=permission_set",
-                {
-                    name: code,
-                    value: value,
-                    user_id: '.$item->id.'
-                },
-                function()
-                {
-                    $(el).parents(".buttonset").removeClass("ui-state-disabled");
-                }
-            );
-            */
-		}
+	    $navitable->setLoadCallback("navigate_permissions_list_callback(this);");
 
-		function navigate_permission_change_text(el)
-		{
-		    var code = $(el).attr("name");
-		    var value = $(el).val();
+	    $ws_tabs .= $navitable->generate();
 
-		    navigate_permissions_changes[code] = value;
-            navigate_permissions_update();
-		}
+		$ws_tabs .= '</div>';
+	}
 
-		function navigate_permissions_update()
-		{
-            var changes = phpjs_json_encode(navigate_permissions_changes);
-            $("#navigate_permissions_changes").val(changes);
-		}
+	$ws_tabs.= '</div>';
+
+	$navibars->add_tab_content($ws_tabs);
+
+	$layout->add_script('$("#navigate-permissions-websites-tabs").tabs();');
+
+	$navibars->add_content(navigate_permissions_structure_selector());
+
+	$layout->add_script('
+		$.getScript("lib/packages/permissions/permissions.js");
 	');
-
-    $navibars->add_tab_content($navitable->generate());
 
     return $navibars->generate();
 }
