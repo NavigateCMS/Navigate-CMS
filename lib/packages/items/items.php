@@ -1686,7 +1686,7 @@ function items_form($item)
 					<label>'.t(79, 'Template').'</label>
 					<select id="navigate_items_copy_from_theme_samples_options"
 							name="navigate_items_copy_from_theme_samples_options"
-							onchange="navigate_items_copy_from_theme_samples_preview(this.value, $(this).attr(\'type\'));">
+							onchange="navigate_items_copy_from_theme_samples_preview(this.value, $(this).attr(\'type\'), $(this).find(\'option:selected\').attr(\'source\'));">
 					</select>
 				</div>
 				<div class="navigate-form-row">

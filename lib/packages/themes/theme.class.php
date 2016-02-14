@@ -57,6 +57,8 @@ class theme
 		$this->templates = (array)$theme->templates;
         $this->content_samples = (array)$theme->content_samples;
 
+        $this->content_samples_parse();
+
 		return true;
 	}
 
@@ -276,6 +278,77 @@ class theme
             }
         }
         return $out;
+    }
+
+    // add special samples if the theme is using foundation, bootstrap...
+    public function content_samples_parse()
+    {
+        global $website;
+
+        $content_samples = array();
+
+        $grid_samples = array(
+            '6,6',
+            '4,4,4',
+            '3,3,3,3',
+            '9,3', '3,9',
+            '8,4', '4,8',
+            '7,5', '5,7',
+            '6,3,3', '3,6,3', '3,3,6'
+        );
+
+        $text = 'Vis prodesset adolescens adipiscing te, usu mazim perfecto recteque at, assum putant erroribus mea in.
+        Vel facete imperdiet id, cum an libris luptatum perfecto, vel fabellas inciderint ut.';
+
+        if(!empty($this->content_samples))
+        {
+            foreach($this->content_samples as $cs)
+            {
+                switch($cs->file)
+                {
+                    case 'foundation_grid':
+                    case 'bootstrap_grid':
+                    case 'grid':
+                        $html_pre = '<html><head>';
+                        $stylesheets = explode(",", $website->content_stylesheets());
+                        foreach($stylesheets as $ss)
+                            $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
+                        $html_pre.= '</head><body><div id="navigate-theme-content-sample">';
+
+                        foreach($grid_samples as $gs)
+                        {
+                            $cols = explode(',', $gs);
+
+                            $name = "Grid &nbsp; [ ";
+
+                            $html = $html_pre.'<div class="row">';
+                            foreach($cols as $col)
+                            {
+                                $name .= $col.str_pad("", $col, "-");
+                                $scol = $col * 2;
+                                // set the small column to the closest step: 6 or 12
+                                if($scol >= 8) $scol = 12;
+                                if($scol <= 7) $scol = 6;
+
+                                $html .= '<div class="col-md-'.$col.' medium-'.$col.' col-xs-'.$scol.' small-'.$scol.' columns">'.$text.'</div>';
+                            }
+                            $name .= " ]";
+                            $html .= '</div>'; // close row
+                            $html .= '<div><p>+</p></div>'; // add extra space under the row
+                            $html .= '</div>'; // close copy enabled content
+                            $html .= '</body></html>';
+
+                            $content_samples[] = json_decode(json_encode(array('title' => $name, 'content' => $html)));
+                        }
+                        break;
+
+                    default:
+                        $content_samples[] = $cs;
+                }
+            }
+
+            $this->content_samples = $content_samples;
+        }
     }
 
     public function import_sample($ws=null)

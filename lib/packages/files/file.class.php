@@ -499,7 +499,7 @@ class file
 					   WHERE parent = '.intval($parent).'
 					     AND website = '.$wid.'
 						 AND type = "folder"
-						ORDER BY name ASC
+						ORDER BY '.$orderby.'
 					');
 					
 		$files = $DB->result();		

@@ -1120,6 +1120,7 @@ function files_media_browser($limit = 50, $offset = 0)
 {
 	global $DB;
     global $website;
+    global $user;
 
     // access & permissions string helpers
     $access = array(
@@ -1143,7 +1144,13 @@ function files_media_browser($limit = 50, $offset = 0)
         $wid = $website->id;
     }
     else
+    {
         $ws->load($wid);
+
+        // check if the current user is allowed to access the website files
+        if(!empty($user->websites) && !in_array($wid, $user->websites))
+            $ws->share_files_media_browser = false;
+    }
 
 	// check if the chosen website allows sharing its files (or it's the current website)
 	if( $ws->id == $website->id || $ws->share_files_media_browser == '1' )
