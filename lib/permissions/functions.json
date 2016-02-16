@@ -62,5 +62,93 @@
         "description": "Allow deleting files",
         "type": "boolean",
         "dvalue": "true"
+    },
+	{
+        "name": "structure.categories.allowed",
+        "scope": "functions",
+        "function": "structure",
+        "description": "Categories where the user is allowed to create content (empty means all)",
+        "type": "moption",
+		"options": "structure"
+    },
+	{
+        "name": "structure.categories.excluded",
+        "scope": "functions",
+        "function": "structure",
+        "description": "Categories where the user is NOT allowed to create content (empty means none)",
+        "type": "moption",
+		"options": "structure"
+    },
+    {
+        "name": "themes.install",
+        "scope": "functions",
+        "function": "themes",
+        "description": "Allow installing themes",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "themes.marketplace",
+        "scope": "functions",
+        "function": "themes",
+        "description": "Allow access to the marketplace",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "themes.update",
+        "scope": "functions",
+        "function": "themes",
+        "description": "Allow updating themes",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "themes.delete",
+        "scope": "functions",
+        "function": "themes",
+        "description": "Allow deleting themes",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "extensions.install",
+        "scope": "functions",
+        "function": "extensions",
+        "description": "Allow installing extensions",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "extensions.marketplace",
+        "scope": "functions",
+        "function": "extensions",
+        "description": "Allow access to the marketplace",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "extensions.update",
+        "scope": "functions",
+        "function": "extensions",
+        "description": "Allow updating extensions",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+    {
+        "name": "extensions.delete",
+        "scope": "functions",
+        "function": "extensions",
+        "description": "Allow deleting extensions",
+        "type": "boolean",
+		"dvalue": "true"
+    },
+	{
+        "name": "extensions.allowed",
+        "scope": "functions",
+        "function": "extensions",
+        "description": "Allow running the selected extensions (empty means all)",
+        "type": "moption",
+		"options": "extensions"
     }
 ]

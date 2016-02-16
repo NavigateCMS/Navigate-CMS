@@ -51,10 +51,17 @@ function run()
         */
 
         case 'remove':
-            $extension = new extension();
-            $extension->load($_REQUEST['extension']);
-            $status = $extension->delete();
-            echo json_encode($status);
+            try
+            {
+                $extension = new extension();
+                $extension->load($_REQUEST['extension']);
+                $status = $extension->delete();
+                echo json_encode($status);
+            }
+            catch(Exception $e)
+            {
+                echo $e->getMessage();
+            }
             core_terminate();
             break;
 
@@ -92,12 +99,19 @@ function run()
 
         case 'run':
             $extension = trim($_REQUEST['extension']);
-            if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php'))
+
+            $extensions_allowed = $user->permission("extensions.allowed");
+            if(!empty($extensions_allowed) && !in_array($extension, $extensions_allowed))
+                $out = t(610, "Sorry, you are not allowed to execute this function.");
+            else
             {
-                include_once(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php');
-                if(function_exists($extension.'_run'))
+                if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php'))
                 {
-                    eval('$out = '.$extension.'_run();');
+                    include_once(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php');
+                    if(function_exists($extension.'_run'))
+                    {
+                        eval('$out = '.$extension.'_run();');
+                    }
                 }
             }
             break;
@@ -105,7 +119,7 @@ function run()
         case 'install_from_hash':
             $url = base64_decode($_GET['hash']);
 
-            if(!empty($url))
+            if(!empty($url) && $user->permission("extensions.install")=="true")
             {
                 $error = false;
                 parse_str(parse_url($url, PHP_URL_QUERY), $query);
@@ -160,7 +174,7 @@ function run()
         // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
 
         case 'extension_upload':
-            if(isset($_FILES['extension-upload']) && $_FILES['extension-upload']['error']==0)
+            if(isset($_FILES['extension-upload']) && $_FILES['extension-upload']['error']==0  && $user->permission("extensions.install")=="true")
             {
                 // uncompress ZIP and copy it to the extensions dir
                 $tmp = trim(substr($_FILES['extension-upload']['name'], 0, strpos($_FILES['extension-upload']['name'], '.')));
@@ -190,7 +204,7 @@ function run()
             }
 
 		default:
-            $list = extension::list_installed();
+            $list = extension::list_installed(null, false);
 			$out = extensions_grid($list);
 			break;
 	}
@@ -202,13 +216,21 @@ function extensions_grid($list)
 {
     global $layout;
     global $website;
+    global $user;
 
     $navibars = new navibars();
     $navibars->title(t(327, 'Extensions'));
 
     $marketplace = isset($_REQUEST['marketplace']);
 
-    $navibars->add_actions(	array(	'<a href="#" id="extension-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'));
+    if($user->permission("extensions.install")=="true")
+    {
+        $navibars->add_actions(
+            array(
+                '<a href="#" id="extension-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'
+            )
+        );
+    }
 
     if(!$marketplace)
         $navibars->add_actions(	array ( 'search_form' ));
@@ -218,7 +240,7 @@ function extensions_grid($list)
     $grid->set_header('
         <div class="navibrowse-path ui-corner-all">
             <input type="checkbox" id="extension-available-button" /><label for="extension-available-button"><img src="img/icons/silk/plugin.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
-            <input type="checkbox" id="extension-marketplace-button" /><label for="extension-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
+            '.($user->permission("extensions.marketplace")=="true"? '<input type="checkbox" id="extension-marketplace-button" /><label for="extension-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>' : '').'
         </div>
 	');
 
@@ -260,10 +282,10 @@ function extensions_grid($list)
                         <button class="navigrid-extensions-info" title="'.t(457, 'Information').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></button>'.
                         //(empty($list[$i]['run'])?       '' : '<button class="navigrid-extensions-favorite" title="'.t(464, 'Favorite').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/heart_'.($list[$i]['favorite']=='1'? 'delete' : 'add').'.png"></button>').
                         (empty($list[$i]['options'])?   '' : '<button class="navigrid-extensions-settings" title="'.t(459, 'Settings').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cog.png"></button>').
-                        (empty($list[$i]['update'])?    '' : '<button class="navigrid-extensions-update" title="'.t(463, 'Update available').': '.$list[$i]['update'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></button>').
+                        (empty($list[$i]['update']) || ($user->permission("extensions.update")=="false")?    '' : '<button class="navigrid-extensions-update" title="'.t(463, 'Update available').': '.$list[$i]['update'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></button>').
                         '<button '.(($list[$i]['enabled']==='0')? 'style="display: none;"' : '').' class="navigrid-extensions-disable" title="'.t(460, 'Disable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/delete.png"></button>'.
                         '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-enable" title="'.t(462, 'Enable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"></button>'.
-                        '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-remove" title="'.t(35, 'Delete').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cross.png"></button>
+                        ($user->permission("extensions.delete")=="true"? '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-remove" title="'.t(35, 'Delete').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cross.png"></button>' : '').'
                     </div>
                 '
             );

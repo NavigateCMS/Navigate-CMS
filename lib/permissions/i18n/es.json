@@ -10,5 +10,12 @@
     "files.upload": "Permitir subir ficheros",
     "files.delete": "Permitir eliminar ficheros",
     "structure.categories.allowed": "Categorías donde el usuario tiene permitido crear contenido (vacío indica todas)",
-	"structure.categories.excluded": "Categorías donde el usuario NO tiene permitido crear contenido (vacío indica ninguna)"
+	"structure.categories.excluded": "Categorías donde el usuario NO tiene permitido crear contenido (vacío indica ninguna)",
+    "themes.install": "Permitir instalar temas",
+    "themes.marketplace": "Permitir acceso al mercado",
+    "themes.delete": "Permitir eliminar temas",
+    "extensions.install": "Permitir instalar extensiones",
+    "extensions.marketplace": "Permitir acceso al mercado",
+    "extensions.delete": "Permitir eliminar extensiones",
+    "extensions.allowed": "Permitir ejecutar las extensiones seleccionadas (vacío indica todas)"
 }

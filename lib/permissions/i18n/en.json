@@ -10,5 +10,12 @@
     "files.upload": "Allow uploading files",
     "files.delete": "Allow deleting files",
 	"structure.categories.allowed": "Categories where the user is allowed to create content (empty means all)",
-	"structure.categories.excluded": "Categories where the user is NOT allowed to create content (empty means none)"
+	"structure.categories.excluded": "Categories where the user is NOT allowed to create content (empty means none)",
+    "themes.install": "Allow installing themes",
+    "themes.marketplace": "Allow access to the marketplace",
+    "themes.delete": "Allow deleting themes",
+    "extensions.install": "Allow installing extensions",
+    "extensions.marketplace": "Allow access to the marketplace",
+    "extensions.delete": "Allow deleting extensions",
+    "extensions.allowed": "Allow running the selected extensions (empty means all)"
 }

@@ -91,19 +91,22 @@ class events
      * Automatically binds extension events to Navigate CMS modules
      * It checks the "bindings" section of every extension definition
      */
-    public function extension_backend_bindings()
+    public function extension_backend_bindings($ignore_permissions=true)
     {
         // when running inside Navigate CMS, this binds all extension events
-        $extensions = extension::list_installed();
+        $extensions = extension::list_installed(null, $ignore_permissions);
 
         for($e=0; $e < count($extensions); $e++)
         {
-            if(!empty($extensions[$e]['bindings']))
+            if($extensions[$e]['enabled'] == '1')
             {
-                foreach($extensions[$e]['bindings'] as $binding)
+                if(!empty($extensions[$e]['bindings']))
                 {
-                    extension::include_php($extensions[$e]['code']);
-                    $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
+                    foreach($extensions[$e]['bindings'] as $binding)
+                    {
+                        extension::include_php($extensions[$e]['code']);
+                        $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
+                    }
                 }
             }
         }

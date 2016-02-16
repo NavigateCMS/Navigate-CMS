@@ -24,10 +24,17 @@ function run()
             $usages = $DB->query_single('COUNT(*)', 'nv_websites', ' theme = '.protect($_REQUEST['theme']));
             if($usages == 0)
             {
-                $theme = new theme();
-                $theme->load($_REQUEST['theme']);
-                $status = $theme->delete();
-                echo json_encode($status);
+                try
+                {
+                    $theme = new theme();
+                    $theme->load($_REQUEST['theme']);
+                    $status = $theme->delete();
+                    echo json_encode($status);
+                }
+                catch(Exception $e)
+                {
+                    echo $e->getMessage();
+                }
             }
             else
             {
@@ -79,7 +86,7 @@ function run()
         case 'install_from_hash':
             $url = base64_decode($_GET['hash']);
 
-            if(!empty($url))
+            if(!empty($url) && $user->permission("themes.install")=="true")
             {
                 $error = false;
                 parse_str(parse_url($url, PHP_URL_QUERY), $query);
@@ -133,7 +140,7 @@ function run()
             // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
 
         case 'theme_upload':
-            if(isset($_FILES['theme-upload']) && $_FILES['theme-upload']['error']==0)
+            if(isset($_FILES['theme-upload']) && $_FILES['theme-upload']['error']==0 &&  $user->permission("themes.install")=="true")
             {
                 // uncompress ZIP and copy it to the themes dir
                 $tmp = trim(substr($_FILES['theme-upload']['name'], 0, strpos($_FILES['theme-upload']['name'], '.')));
@@ -200,17 +207,21 @@ function themes_grid($list)
 {
 	global $layout;
 	global $website;
+    global $user;
 	
 	$navibars = new navibars();	
 	$navibars->title(t(367, 'Themes'));
 
     $marketplace = isset($_REQUEST['marketplace']);
 
-    $navibars->add_actions(
-        array(
-            '<a href="#" id="theme-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'
-        )
-    );
+    if($user->permission("themes.install")=="true")
+    {
+        $navibars->add_actions(
+            array(
+                '<a href="#" id="theme-upload-button"><img height="16" align="absmiddle" width="16" src="img/icons/silk/package_add.png"> '.t(461, 'Install from file').'</a>'
+            )
+        );
+    }
 
     $navibars->add_actions(
         array(
@@ -223,7 +234,7 @@ function themes_grid($list)
 	$grid->set_header('
         <div class="navibrowse-path ui-corner-all">
             <input type="checkbox" id="theme-available-button" /><label for="theme-available-button"><img src="img/icons/silk/rainbow.png" width="16px" height="16px" align="absbottom" /> '.t(528, 'Available').'</label>
-            <input type="checkbox" id="theme-marketplace-button" /><label for="theme-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>
+            '.($user->permission("themes.marketplace")=="true"? '<input type="checkbox" id="theme-marketplace-button" /><label for="theme-marketplace-button"><img src="img/icons/silk/basket.png" width="16px" height="16px" align="absbottom" /> '.t(527, 'Marketplace').'</label>' : '').'
         </div>
 	');
 
@@ -297,10 +308,10 @@ function themes_grid($list)
                 'name'	=>	'<div class="navigrid-themes-title">'.$list[$t]['title'].'</div>',
                 'thumbnail' => NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/thumbnail.png',
                 'header' => '
-                    <a href="#" class="navigrid-themes-remove" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"></a>
+                    '.($user->permission("themes.delete")=="true"? '<a href="#" class="navigrid-themes-remove" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"></a>' : '').'
                     '.(file_exists(NAVIGATE_PATH.'/themes/'.$list[$t]['code'].'/'.$list[$t]['code'].'.info.html')? '<a href="#" class="navigrid-themes-info" theme="'.$list[$t]['code'].'" theme-title="'.$list[$t]['title'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></a>' : '').'
                     '.(empty($update_ver)? '' : '
-                    <a href="#" class="navigrid-themes-update" theme="'.$list[$t]['code'].'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>
+                    '.($user->permission("themes.update")=="true"? '<a href="#" class="navigrid-themes-update" theme="'.$list[$t]['code'].'" title="'.t(285, "Update").' '.$update_ver.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></a>' : '').'
                 '),
                 'footer' => '
                     '.(file_exists(NAVIGATE_PATH.'/themes/'.$list[$t]['code'].'/demo.html')? '<a href="'.NAVIGATE_URL.'/themes/'.$list[$t]['code'].'/demo.html'.'" class="uibutton navigrid-themes-button" target="_blank"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>' : '').'

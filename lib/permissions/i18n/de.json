@@ -10,5 +10,12 @@
     "files.upload": "Dateien erlauben das Hochladen",
     "files.delete": "Lassen Sie das löschen von Dateien",
     "structure.categories.allowed": "Kategorien, in denen die Benutzer erlaubt wird, Inhalte zu erstellen (leer bedeutet alle)",
-	"structure.categories.excluded": "Kategorien, in denen der Benutzer Inhalte zu erstellen NICHT erlaubt ist (Leer bedeutet keine)"
+	"structure.categories.excluded": "Kategorien, in denen der Benutzer Inhalte zu erstellen NICHT erlaubt ist (Leer bedeutet keine)",
+    "themes.install": "Lassen themen installation",
+    "themes.marketplace": "Zugang zum Markt zulassen",
+    "themes.delete": "Themen zulassen Löschen",
+    "extensions.install": "Lassen Sie Erweiterungen zu installieren",
+    "extensions.marketplace": "Zugang zum Markt zulassen",
+    "extensions.delete": "Lassen Sie das Löschen Erweiterungen",
+    "extensions.allowed": "Lassen Sie die ausgewählten Erweiterungen (leer bedeutet alle) läuft"
 }

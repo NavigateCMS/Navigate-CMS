@@ -187,7 +187,7 @@ if(!empty($wa))
 $_SESSION['website_active'] = $website->id;
 
 $events = new events();
-$events->extension_backend_bindings();
+$events->extension_backend_bindings(null, false);
 
 // no valid website found; show Create first website wizard
 if(empty($_SESSION['website_active']) && $_REQUEST['fid']!='websites')

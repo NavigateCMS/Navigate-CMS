@@ -161,8 +161,12 @@ class extension
 	public function delete()
 	{
 		global $DB;
+        global $user;
 
         $ok = false;
+
+        if($user->permission("themes.delete")=="false")
+            throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
         if(file_exists(NAVIGATE_PATH.'/plugins/'.$this->code.'/'.$this->code.'.plugin'))
         {
@@ -221,10 +225,11 @@ class extension
         return $out;
     }
 
-    public static function list_installed($type='')
+    public static function list_installed($type='', $ignore_permissions=true)
     {
         global $website;
         global $DB;
+        global $user;
 
         $extensions = glob(NAVIGATE_PATH.'/plugins/*/*.plugin');
 
@@ -248,6 +253,13 @@ class extension
             );
         }
 
+        $allowed_extensions = array();  // empty => all of them
+        if(!$ignore_permissions)
+        {
+            if(method_exists($user, "permission"))
+                $allowed_extensions = $user->permission("extensions.allowed");
+        }
+
         for($t=0; $t < count($extensions); $t++)
         {
             $extension_json = @json_decode(@file_get_contents($extensions[$t]));
@@ -255,6 +267,12 @@ class extension
 
             $code = substr($extensions[$t], strrpos($extensions[$t], '/')+1);
             $code = substr($code, 0, strpos($code, '.plugin'));
+
+            if(!empty($allowed_extensions) && !in_array($code, $allowed_extensions))
+            {
+                $extensions[$t] = null;
+                continue;
+            }
 
             if(!empty($extension_json))
             {
@@ -288,6 +306,7 @@ class extension
             $extensions = array();
 
         $extensions = array_filter($extensions);
+        sort($extensions);
 
         return $extensions;
     }

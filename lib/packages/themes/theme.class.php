@@ -64,6 +64,11 @@ class theme
 
     public function delete()
     {
+        global $user;
+
+        if($user->permission("themes.delete")=="false")
+            throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+
         $ok = false;
         if(file_exists(NAVIGATE_PATH.'/themes/'.$this->name))
         {

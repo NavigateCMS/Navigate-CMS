@@ -10,5 +10,12 @@
     "files.upload": "Permetre pujar fitxers",
     "files.delete": "Permetre eliminar fitxers",
     "structure.categories.allowed": "Categories on l'usuari pot crear contingut (buit indica arreu)",
-	"structure.categories.excluded": "Categories on l'usuari NO té permís per crear-hi contingut (buit indica enlloc)"
+	"structure.categories.excluded": "Categories on l'usuari NO té permís per crear-hi contingut (buit indica enlloc)",
+    "theme.install": "Permetre instal·lar temes",
+    "theme.marketplace": "Permetre accedir al mercat",
+    "theme.delete": "Permetre eliminar temes",
+    "extensions.install": "Permetre instal·lar extensions",
+    "extensions.marketplace": "Permetre accedir al mercat",
+    "extensions.delete": "Permetre eliminar extensions",
+    "extensions.allowed": "Permetre executar les extensions escollides (buit indica totes)"
 }

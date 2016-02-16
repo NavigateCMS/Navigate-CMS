@@ -112,7 +112,7 @@ try
     nvweb_plugins_load();
 
 	$current['plugins'] = $plugins;
-    $events->extension_backend_bindings();
+    $events->extension_backend_bindings(null, true);
 
 	if(!empty($session['webuser']))
 		$webuser->load($session['webuser']);

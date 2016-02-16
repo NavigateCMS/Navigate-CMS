@@ -267,7 +267,7 @@ function webdictionary_form($item)
     foreach($website->languages_list as $l)
         $data[$l] = language::name_by_code($l);
 
-    $translate_extensions = extension::list_installed('translate');
+    $translate_extensions = extension::list_installed('translate', false);
 
     foreach($website->languages_list as $lang)
 	{
