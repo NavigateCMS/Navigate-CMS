@@ -302,20 +302,28 @@ class structure
         return $elements;
     }
 	
-	public static function loadTree($id_parent=0)
+	public static function loadTree($id_parent=0, $ws_id=null)
 	{
 		global $DB;	
 		global $website;
 
+		if(empty($ws_id))
+			$ws_id = $website->id;
+
+		$ws = new website();
+		$ws->load($ws_id);
+
         // TODO: try to implement a cache to avoid extra database queries
-		$DB->query('  SELECT * FROM nv_structure 
-					   WHERE parent = '.intval($id_parent).'
-					     AND website = '.$website->id.' 
-					ORDER BY position ASC, id DESC');
+		$DB->query('
+            SELECT *
+              FROM nv_structure
+			 WHERE parent = '.intval($id_parent).' AND
+			       website = '.$ws->id.'
+		  ORDER BY position ASC, id DESC
+	    ');
 
 		$result = $DB->result();
-        $parent_of = array();
-		
+
 		for($i=0; $i < count($result); $i++)
 		{
 			if(empty($result[$i]->date_published)) 
@@ -334,11 +342,16 @@ class structure
 		return $result;
 	}
 	
-	public static function hierarchy($id_parent=0)
+	public static function hierarchy($id_parent=0, $ws_id=null)
 	{
 		global $website;
+		if(empty($ws_id))
+			$ws_id = $website->id;
 
-		$flang = $website->languages_list[0];
+		$ws = new website();
+		$ws->load($ws_id);
+
+		$flang = $ws->languages_list[0];
 		if(empty($flang))
             return array();
 		
@@ -349,25 +362,25 @@ class structure
             // create the virtual root structure entry (the website)
 			$obj = new structure();
 			$obj->id = 0;
-			$obj->label = $website->name;
-            $obj->_multilanguage_label = $website->name;
+			$obj->label = $ws->name;
+            $obj->_multilanguage_label = $ws->name;
 			$obj->parent = -1;
-			$obj->children = structure::hierarchy(0);
+			$obj->children = structure::hierarchy(0, $ws_id);
 
 			$tree[] = $obj;
 		}
 		else
 		{
-			$tree = structure::loadTree($id_parent);
+			$tree = structure::loadTree($id_parent, $ws_id);
 
 			for($i=0; $i < count($tree); $i++)
             {
 				$tree[$i]->dictionary = webdictionary::load_element_strings('structure', $tree[$i]->id);
-                $tree[$i]->label = $tree[$i]->dictionary[$website->languages_list[0]]['title'];
+                $tree[$i]->label = $tree[$i]->dictionary[$ws->languages_list[0]]['title'];
 
-                for($wl=0; $wl < count($website->languages_list); $wl++)
+                for($wl=0; $wl < count($ws->languages_list); $wl++)
                 {
-                    $lang = $website->languages_list[$wl];
+                    $lang = $ws->languages_list[$wl];
 
                     if(empty($tree[$i]->dictionary[$lang]['title']))
                         $tree[$i]->dictionary[$lang]['title'] = '[ ? ]';
@@ -383,7 +396,7 @@ class structure
                     $bc[$tree[$i]->id][$lang] = $tree[$i]->dictionary[$lang]['title'];
                 }
 
-                $children = structure::hierarchy($tree[$i]->id);
+                $children = structure::hierarchy($tree[$i]->id, $ws_id);
                 $tree[$i]->children = $children;
             }
 		}
@@ -391,8 +404,8 @@ class structure
 		return $tree;
 	}
 	
-	public static function hierarchyList($hierarchy, $selected=0, $lang="")
-	{		
+	public static function hierarchyList($hierarchy, $selected=0, $lang="", $ignore_permissions=false)
+	{
 		$html = array();
 				
 		if(!is_array($hierarchy))
@@ -404,10 +417,15 @@ class structure
 		foreach($hierarchy as $node)
 		{	
 			$li_class = '';
-			$post_html = structure::hierarchyList($node->children, $selected, $lang);
+			$post_html = structure::hierarchyList($node->children, $selected, $lang, $ignore_permissions);
 
-			if(strpos($post_html, 'class="active"')!==false) $li_class = ' class="open" ';
-					
+			if(strpos($post_html, 'class="active"')!==false)
+				$li_class = ' class="open" ';
+
+			// disable option if not allowed AND all of its children are not allowed either
+			if(!$ignore_permissions && !structure::category_allowed($node->id) && strpos($post_html, "ui-state-disabled") > 0)
+				$li_class = ' class="ui-state-disabled" ';
+
 			if(empty($html)) $html[] = '<ul>';
 
             if(empty($lang))
@@ -429,6 +447,11 @@ class structure
 					$title = '<span style="opacity: 0.75;"><i class="fa fa-fw fa-language"></i> #'.$node->id.'</span>';
 			}
 
+
+			if(!$ignore_permissions && !structure::category_allowed($node->id))
+				$title = '<div class="ui-state-disabled">'.$title.'</div>';
+
+
 			if(in_array($node->id, $selected))
 				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-selected="true"><span class="active">'.$title.'</span>';
 			else
@@ -440,6 +463,33 @@ class structure
 		if(!empty($html)) $html[] = '</ul>';		
 		
 		return implode("\n", $html);
+	}
+
+	public static function category_allowed($id)
+	{
+		global $user;
+
+		$allowed = true;
+
+		if(!empty($user->id))
+		{
+			$categories_allowed = $user->permission("structure.categories.allowed");
+
+			if(!empty($categories_allowed))
+			{
+				if(!in_array($id, $categories_allowed))
+					$allowed = false;
+			}
+
+			$categories_excluded = $user->permission("structure.categories.excluded");
+			if(!empty($categories_excluded))
+			{
+				if(in_array($id, $categories_excluded))
+					$allowed = false;
+			}
+		}
+
+		return $allowed;
 	}
 
     public static function hierarchyPath($hierarchy, $category)

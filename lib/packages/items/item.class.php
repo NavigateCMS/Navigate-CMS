@@ -248,7 +248,9 @@ class item
 		global $events;
 		global $user;
 
-		if($user->permission("items.create") == 'false')
+		if( $user->permission("items.create") == 'false'    ||
+			!structure::category_allowed($this->category)
+		)
 			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 		
 		$this->date_created  = core_time();		
@@ -363,6 +365,9 @@ class item
 		global $user;
 
 		if($user->permission("items.edit") == 'false' && $this->author != $user->id)
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+
+		if( !structure::category_allowed($this->category) )
 			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
 		$this->date_modified = core_time();

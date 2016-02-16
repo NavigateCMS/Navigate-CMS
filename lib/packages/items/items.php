@@ -266,6 +266,17 @@ function run()
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));
+
+				// check if the current user can edit this item
+				if($item->association=='category' && !empty($item->category))
+				{
+					if(!structure::category_allowed($item->category))
+					{
+						$layout->navigate_notification(t(610, "Sorry, you are not allowed to execute the requested function"), true);
+						$_REQUEST['act'] = 'list';
+						return run();
+					}
+				}
 			}
 
 			if(isset($_REQUEST['form-sent']))
@@ -1400,7 +1411,7 @@ function items_form($item)
 		
 		$template = $item->load_template();
 
-        $translate_extensions = extension::list_installed('translate');
+        $translate_extensions = extension::list_installed('translate', false);
 
         foreach($website->languages_list as $lang)
 		{
