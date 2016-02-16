@@ -23,8 +23,8 @@ function run()
             }
 			else if($object_type == 'profile')
 			{
-	            $prf_obj = new profile();
-	            $prf_obj->load($object_id);
+	            $object = new profile();
+	            $object->load($object_id);
 			}
 
             $permissions_definitions = permission::get_definitions();
@@ -94,12 +94,20 @@ function run()
                                     $options[$ws->id] = $ws->name;
                                 break;
 
+                            case "extensions":
+                                $options = array();
+                                $extensions = extension::list_installed(null, true);
+                                foreach($extensions as $ext)
+                                    $options[$ext['code']] = $ext['title'];
+                                break;
+
                             case "structure":
                                 $options = array();
-                                $categories_count = '';
-								if(count($permissions_values[$permissions_definitions[$i]['name']]))
-	                                $categories_count = ' ('.count($permissions_values[$permissions_definitions[$i]['name']]).')';
-                                $control = '<button data-permission-name="'.$permissions_definitions[$i]['name'].'" data-action="structure" data-value="'.$permissions_values[$permissions_definitions[$i]['name']].'"><i class="fa fa-sitemap fa-fw"></i> '.t(611, "Choose").$categories_count.'</button>';
+                                $categories = $permissions_values[$permissions_definitions[$i]['name']];
+                                if(!is_array($categories))
+                                    $categories = array();
+                                $categories = array_filter($permissions_values[$permissions_definitions[$i]['name']]);
+                                $control = '<button data-permission-name="'.$permissions_definitions[$i]['name'].'" data-action="structure" data-value="'.json_encode($categories).'" title="'.count($categories).'"><i class="fa fa-sitemap fa-fw"></i> '.t(611, "Choose").'</button>';
                                 break;
 
                             default:
@@ -148,7 +156,9 @@ function run()
 
                 $out[$iRow] = array(
                     0	=> $permissions_definitions[$i]['name'],
-                    1	=> '<div data-description="'.$permissions_definitions[$i]['description'].'"><span class="ui-icon ui-icon-float ui-icon-info"></span>&nbsp;<span>'.$permissions_definitions[$i]['name'].'</span></div>',
+                    1	=> '<div data-description="'.$permissions_definitions[$i]['description'].'">'.
+                                '<span class="ui-icon ui-icon-float ui-icon-info"></span>&nbsp;'.
+                                '<span>'.$permissions_definitions[$i]['name'].'</span></div>',
                     2	=> $scope,
                     3   => $type,
                     4   => $control //$permissions_values[$permissions_definitions[$i]['name']]

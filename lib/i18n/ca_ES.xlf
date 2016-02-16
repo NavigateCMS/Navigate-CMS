@@ -3658,13 +3658,13 @@
 		<unit id="609">
 			<segment>
 				<source>Click a day of the month selected to update the value</source>
-				<target>Fac clic en un dia del mes sel·leccionat per actualitzar el valor</target>
+				<target>Faci clic en un dia del mes sel·leccionat per actualitzar el valor</target>
 			</segment>
 		</unit>
 		<unit id="610">
 			<segment>
 				<source>Sorry, you are not allowed to execute the requested function</source>
-				<target>Ho sentim, no té autorització per a executar la funció sol·licitada</target>
+				<target>Disculpi, no està autoritzat a executar la funció sol·licitada</target>
 			</segment>
 		</unit>
 		<unit id="611">

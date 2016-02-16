@@ -21,6 +21,7 @@ class navitable
     public $disable_select;
     public $after_select_callback;
     public $after_right_click_col;
+	public $pager;
     public $default_fid;
 	public $grid_notes_object_name;
 
@@ -36,6 +37,7 @@ class navitable
 		$this->search_action = false;
         $this->disable_select = false;
         $this->load_callback = '';
+        $this->pager = true;
         $this->after_select_callback = '';
         $this->after_right_click_col = '';
         $this->default_fid = $_REQUEST['fid'];
@@ -85,6 +87,11 @@ class navitable
     {
         $this->disable_select = true;
     }
+
+	public function disableStatusBar()
+	{
+		$this->pager = false;
+	}
 
     public function setDataIndex($name)
 	{
@@ -412,7 +419,9 @@ class navitable
 		$html = array();
 
 		$html[] = '<table id="'.$this->id.'"></table>';
-		$html[] = '<div id="'.$this->id.'-pager"></div>';		
+
+		if($this->pager)
+			$html[] = '<div id="'.$this->id.'-pager"></div>';
 			
 		$html[] = '<script language="javascript" type="text/javascript">';
 
@@ -557,7 +566,8 @@ class navitable
                                     });
                                 }
                             }
-                        });
+                        }
+                    );
                 }
             },
             {},

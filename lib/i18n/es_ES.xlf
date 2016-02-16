@@ -3664,7 +3664,7 @@
 		<unit id="610">
 			<segment>
 				<source>Sorry, you are not allowed to execute the requested function</source>
-				<target>Lo sentimos, no está autorizado para ejecutar la función solicitada</target>
+				<target>Disculpe, no está autorizado a ejecutar la función solicitada</target>
 			</segment>
 		</unit>
 		<unit id="611">

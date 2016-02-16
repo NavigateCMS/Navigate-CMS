@@ -328,34 +328,69 @@ function profiles_form($item)
 			
 	');
 
-    $navibars->add_tab(t(17, "Permissions"));
+	$websites = website::all();
+	$navibars->add_tab(t(17, "Permissions"));
 
     $navibars->add_tab_content($naviforms->hidden('navigate_permissions_changes', ''));
 
-    $navitable = new navitable("permissions_list");
+	$ws_tabs = '<div id="navigate-permissions-websites-tabs"><ul>';
 
-    $navitable->setURL('?fid=permissions&act=list&object=profile&object_id='.$item->id);
-    $navitable->setDataIndex('name');
-    $navitable->enableSearch();
-    $navitable->disableSelect();
+	foreach($websites as $ws_id => $ws_name)
+	{
+		$ws_tabs .= '<li><a href="#navigate-permissions-websites-tab-'.$ws_id.'">'.$ws_name.'</a></li>';
+	}
 
-    $navitable->addCol('id', 'id', "100", "false", "left", false, "true");
-    $navitable->addCol(t(159, 'Name'), 'name', "100", "false", "left");
-    $navitable->addCol(t(467, 'Scope'), 'scope', "40", "false", "left");
-    $navitable->addCol(t(160, 'Type'), 'type', "40", "false", "left");
-    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array(
-        'type' => 'custom'
-    ));
+	$ws_tabs.= '</ul>';
 
-    $layout->add_script('
-		$.getScript("lib/packages/permissions/permissions.js");
+	foreach($websites as $ws_id => $ws_name)
+	{
+		$ws_tabs .= '<div id="navigate-permissions-websites-tab-'.$ws_id.'" data-website="'.$ws_id.'">';
+
+		$navitable = new navitable("permissions_list_website_".$ws_id);
+
+		$navitable->setURL('?fid=permissions&act=list&website='.$ws_id.'&object=profile&object_id='.$item->id);
+	    $navitable->setDataIndex('name');
+	    $navitable->disableSelect();
+		$navitable->disableStatusBar();
+
+	    $navitable->addCol('id', 'id', "100", "false", "left", false, "true");
+	    $navitable->addCol(t(159, 'Name'), 'name', "100", "false", "left");
+	    $navitable->addCol(t(467, 'Scope'), 'scope', "40", "false", "left");
+	    $navitable->addCol(t(160, 'Type'), 'type', "40", "false", "left");
+	    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array('type' => 'custom'));
+
+	    $navitable->setLoadCallback("navigate_permissions_list_callback(this);");
+
+	    $ws_tabs .= $navitable->generate();
+
+		$ws_tabs .= '</div>';
+
+		$layout->add_script('
+			$("#permissions_list_website_'.$ws_id.'").data("website", '.$ws_id.');
+		');
+
+		$navibars->add_content(navigate_permissions_structure_selector($ws_id, $ws_name));
+	}
+
+	$ws_tabs.= '</div>';
+
+	$navibars->add_tab_content($ws_tabs);
+
+	$layout->add_script('
+		$("#navigate-permissions-websites-tabs").tabs({
+			heightStyle: "fill",
+			activate: function() {
+				$(window).trigger("resize");
+			}
+		});
 	');
 
-    $navitable->setLoadCallback("navigate_permissions_list_callback(this);");
-
-    $navibars->add_tab_content($navitable->generate());
-
-	$navibars->add_content(navigate_permissions_structure_selector());
+	$layout->add_script('
+		$.getScript("lib/packages/permissions/permissions.js", function()
+		{
+			navigate_window_resize();
+		});
+	');
 
     return $navibars->generate();
 }

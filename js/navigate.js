@@ -148,7 +148,7 @@ $(window).on('load', function()
 
     $(document.body).on('mousedown', navigate_hide_context_menus);
 
-	$(window).on('resize', navigate_window_resize);
+	$(window).on('resize focus', navigate_window_resize);
     $("#navigate-content-tabs").on("tabsactivate", navigate_window_resize);
 
     setTimeout(function() { $(window).trigger('resize'); }, 30);

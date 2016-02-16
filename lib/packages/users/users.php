@@ -414,31 +414,40 @@ function users_form($item)
 
 	    $navitable->setURL('?fid=permissions&act=list&website='.$ws_id.'&object=user&object_id='.$item->id);
 	    $navitable->setDataIndex('name');
-	    $navitable->enableSearch();
 	    $navitable->disableSelect();
+		$navitable->disableStatusBar();
 
 	    $navitable->addCol('id', 'id', "100", "false", "left", false, "true");
 	    $navitable->addCol(t(159, 'Name'), 'name', "100", "false", "left");
 	    $navitable->addCol(t(467, 'Scope'), 'scope', "40", "false", "left");
 	    $navitable->addCol(t(160, 'Type'), 'type', "40", "false", "left");
-	    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array(
-	        'type' => 'custom'
-	    ));
+	    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array('type' => 'custom'));
 
 	    $navitable->setLoadCallback("navigate_permissions_list_callback(this);");
 
 	    $ws_tabs .= $navitable->generate();
 
 		$ws_tabs .= '</div>';
+
+		$layout->add_script('
+			$("#permissions_list_website_'.$ws_id.'").data("website", '.$ws_id.');
+		');
+
+		$navibars->add_content(navigate_permissions_structure_selector($ws_id, $ws_name));
 	}
 
 	$ws_tabs.= '</div>';
 
 	$navibars->add_tab_content($ws_tabs);
 
-	$layout->add_script('$("#navigate-permissions-websites-tabs").tabs();');
-
-	$navibars->add_content(navigate_permissions_structure_selector());
+	$layout->add_script('
+		$("#navigate-permissions-websites-tabs").tabs({
+			heightStyle: "fill",
+			activate: function() {
+				$(window).trigger("resize");
+			}
+		});
+	');
 
 	$layout->add_script('
 		$.getScript("lib/packages/permissions/permissions.js");

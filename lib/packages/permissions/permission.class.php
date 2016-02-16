@@ -73,6 +73,7 @@ class permission
         //$this->dvalue       = $rs->id;
         $this->profile      = $rs->profile;
         $this->user         = $rs->user;
+        $this->website      = $rs->website;
         $this->value        = json_decode($rs->value, true);
     }
 
@@ -298,6 +299,7 @@ class permission
                  WHERE profile = '.protect($obj->id).'
                  AND (website = 0 OR website = '.protect($ws).')'
             );
+
             $permissions_profile = $DB->result();
             $permissions_user = array();
         }

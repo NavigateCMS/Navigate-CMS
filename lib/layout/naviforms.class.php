@@ -976,6 +976,10 @@ class naviforms
                 select: function(event, ui)
                 {
                     var value = $(ui.item).attr("value");
+
+                    if($(ui.item).find("div:first").hasClass("ui-state-disabled"))
+                        value = $("#'.$id.'").val();
+
                     $("#'.$id.'").val(value);
                     tree_wrapper_'.md5($id).'_path(value);
                 }
