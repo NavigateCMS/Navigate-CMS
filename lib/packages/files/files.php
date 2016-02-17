@@ -578,10 +578,6 @@ function files_browser($parent, $search="")
 					modal: true,
 					buttons:
 					{
-						"'.t(58, 'Cancel').'": function()
-						{
-							$(this).dialog("close");
-						},
 						"'.t(152, 'Continue').'": function()
 						{
 							$(elements).each(function()
@@ -599,6 +595,10 @@ function files_browser($parent, $search="")
 									}
 								});
 							});
+							$(this).dialog("close");
+						},
+						"'.t(58, 'Cancel').'": function()
+						{
 							$(this).dialog("close");
 						}
 					}
@@ -664,10 +664,6 @@ function files_browser($parent, $search="")
 				modal: true,
 				buttons:
 				{
-					"'.t(58, 'Cancel').'": function()
-					{
-						$("#navigate-edit-folder").dialog("close");
-					},
 					"'.t(152, 'Continue').'": function()
 					{
 					    var op = "edit_folder";
@@ -690,6 +686,10 @@ function files_browser($parent, $search="")
 								window.location.reload();
 							}
 						});
+					},
+					"'.t(58, 'Cancel').'": function()
+					{
+						$("#navigate-edit-folder").dialog("close");
 					}
 				}
 			});
@@ -756,11 +756,7 @@ function files_item_properties($item)
 							title: "'.t(59, 'Confirmation').'",
 							buttons: 
 							{
-								"'.t(58, 'Cancel').'": function() 
-								{
-									$(this).dialog("close");
-								},
-								"'.t(35, 'Delete').'": function() 
+								"'.t(35, 'Delete').'": function()
 								{
 									$.ajax(
 									{
@@ -768,13 +764,17 @@ function files_item_properties($item)
 										url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id='.$item->id.'",
 										success: function(data)
 										{
-											if(data=="true")
+											if(data=="true" || data=="1")
 												window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";
 											else
 												navigate_notification(data);
 										}
 									});
 									$(this).dialog("close");								
+								},
+								"'.t(58, 'Cancel').'": function()
+								{
+									$(this).dialog("close");
 								}
 							}
 						});
@@ -1300,5 +1300,4 @@ function files_media_browser($limit = 50, $offset = 0)
 	$DB->disconnect();
 	exit;
 }
-
 ?>
