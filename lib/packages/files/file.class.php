@@ -628,6 +628,7 @@ class file
             'tiff' => array('image/tiff', 'image'),
             'svg' => array('image/svg+xml', 'image'),
             'ico' => array('image/x-icon', 'image'),
+            'webp' => array('image/webp', 'image'),
 
             // archives
             'zip' => array('application/zip', 'archive'),
@@ -2274,5 +2275,4 @@ class file
 		return $tmp;
 	}
 }
-
 ?>

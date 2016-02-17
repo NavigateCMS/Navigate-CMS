@@ -2481,6 +2481,7 @@ class upload {
             'gif' => 'image/gif',
             'png' => 'image/png',
             'bmp' => 'image/bmp',
+	        'webp' => 'image/webp',
             'flv' => 'video/x-flv',
             'js' => 'application/x-javascript',
             'json' => 'application/json',
@@ -3876,6 +3877,21 @@ class upload {
                                     $this->error = $this->translate('create_error', array('BMP'));
                                 } else {
                                     $this->log .= '- source image is BMP<br />';
+                                }
+                            }
+                            break;
+
+	                    case 'webp':
+                            if (!function_exists('imagecreatefromwebp')) {
+                                $this->processed = false;
+                                $this->error = $this->translate('no_create_support', array('WEBP'));
+                            } else {
+                                $image_src = @imagecreatefromwebp($this->file_src_pathname);
+                                if (!$image_src) {
+                                    $this->processed = false;
+                                    $this->error = $this->translate('create_error', array('WEBP'));
+                                } else {
+                                    $this->log .= '- source image is WEBP<br />';
                                 }
                             }
                             break;
