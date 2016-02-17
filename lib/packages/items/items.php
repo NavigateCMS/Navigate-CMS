@@ -267,6 +267,13 @@ function run()
 			{
 				$item->load(intval($_REQUEST['id']));
 
+				if($user->permission("items.edit")=="false" && $item->author != $user->id)
+				{
+					$layout->navigate_notification(t(610, "Sorry, you are not allowed to execute the requested function"), true);
+					$_REQUEST['act'] = 'list';
+					return run();
+				}
+
 				// check if the current user can edit this item
 				if($item->association=='category' && !empty($item->category))
 				{
@@ -2321,5 +2328,4 @@ function items_order($category)
 
     return implode("\n", $out);
 }
-
 ?>
