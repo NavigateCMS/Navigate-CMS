@@ -696,6 +696,7 @@ class layout
                 82: "'.t(82, 'File').'",
                 92: "'.t(92, 'Close').'",
                 141: "'.t(141, 'Folder').'",
+                152: "'.t(152, 'Continue').'",
                 170: "'.t(170, 'Edit').'",
                 185: "'.t(185, 'Searching elements').'",
                 189: "'.t(189, 'Copy from').'",
@@ -948,14 +949,20 @@ class layout
 			array_unshift($extra_contextmenu_actions, '<hr />');
 
         $this->add_content('
-            <ul id="contextmenu-images" style="display: none" class="ui-corner-all">
-                <li id="contextmenu-images-download_link"><a href="#"><span class="ui-icon ui-icon-clipboard"></span>'.t(154, "Download link").'</a></li>
-                <li id="contextmenu-images-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
-                <li id="contextmenu-images-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
-                <li id="contextmenu-images-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
-                <li id="contextmenu-images-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
-                '.($user->permission("files.delete")=="true"? '<li id="contextmenu-images-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>' : '').'
+            <ul id="contextmenu-files" style="display: none" class="ui-corner-all">
+                <li id="contextmenu-files-download_link"><a href="#"><span class="ui-icon ui-icon-clipboard"></span>'.t(154, "Download link").'</a></li>
+                <li id="contextmenu-files-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
+                <li id="contextmenu-files-duplicate"><a href="#"><span class="ui-icon ui-icon-copy"></span>'.t(477, "Duplicate").'</a></li>
+                <li id="contextmenu-files-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
+                <li id="contextmenu-files-rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, 'Rename').'</a></li>
+                <li id="contextmenu-files-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
+                '.($user->permission("files.delete")=="true"? '<li id="contextmenu-files-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>' : '').'
                 '.implode("\n", $extra_contextmenu_actions).'
+            </ul>
+            <ul id="contextmenu-mediabrowser-folders" style="display: none;">
+	            <li id="contextmenu-mediabrowser-folders-open" action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>
+	            <li id="contextmenu-mediabrowser-folders-rename" action="rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, "Rename").'</a></li>
+	            '.($user->permission("files.delete")=="true"? '<li id="contextmenu-mediabrowser-folders-delete" action="delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>' : '').'
             </ul>
             <ul id="contextmenu-mediabrowser"  style="display: none" class="ui-corner-all">
                 <li id="contextmenu-mediabrowser-create_folder"><a href="#"><span class="ui-icon ui-icon-folder-collapsed"></span>'.t(561, "Create a new folder").'</a></li>
@@ -992,6 +999,15 @@ class layout
                     </div>
                 </form>
             </div>
+			<div id="navigate-edit-file" style=" display: none; ">
+	            <form action="#" onsubmit="return false;">
+	                <input type="submit" value="" style=" display: none; " />
+	                <div class="navigate-form-row">
+	                    <label>'.t(159, 'Name').'</label>
+	                    '.$naviforms->textfield('file-name', '').'
+	                </div>
+	            </form>
+			</div>
         ');
 
         // permissions dialog

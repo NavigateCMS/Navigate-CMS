@@ -642,13 +642,13 @@ function files_browser($parent, $search="")
 		</div>
 
 		<div id="navigate-edit-file" style=" display: none; ">
-		<form action="#" onsubmit="return false;">
-			<input type="submit" value="" style=" display: none; " />
-			<div class="navigate-form-row">
-				<label>'.t(159, 'Name').'</label>
-				'.$naviforms->textfield('file-name', '').'
-			</div>
-		</form>
+            <form action="#" onsubmit="return false;">
+                <input type="submit" value="" style=" display: none; " />
+                <div class="navigate-form-row">
+                    <label>'.t(159, 'Name').'</label>
+                    '.$naviforms->textfield('file-name', '').'
+                </div>
+            </form>
 		</div>
 	');
 
@@ -1300,4 +1300,5 @@ function files_media_browser($limit = 50, $offset = 0)
 	$DB->disconnect();
 	exit;
 }
+
 ?>

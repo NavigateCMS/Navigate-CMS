@@ -194,57 +194,7 @@ function navigate_media_browser_refresh()
 
                 $("#contextmenu-mediabrowser-create_folder").off('click').on("click", function ()
                 {
-                    var name = "";
-                    var mime = "";
-                    var id = "";
-
-                    $('#navigate-edit-folder').dialog({
-                        modal: true,
-                        width: 620,
-                        height: 160,
-                        title: navigate_lang_dictionary[141], // Folder
-                        resizable: false,
-                        buttons:
-                        [
-                            {
-                                text: navigate_lang_dictionary[58], // Cancel
-                                click: function()
-                                {
-                                    $("#navigate-edit-folder").dialog("close");
-                                }
-                            },
-                            {
-                                text: navigate_lang_dictionary[190], // Ok
-                                click: function()
-                                {
-                                    var op = "edit_folder";
-                                    if(!name)
-                                        op = "create_folder";
-
-                                    $.ajax(
-                                        {
-                                            async: false,
-                                            type: "post",
-                                            data: {
-                                                name: $("#folder-name").val(),
-                                                mime: $("#folder-mime").val(),
-                                                parent: navigate_media_browser_parent
-                                            },
-                                            url: "?fid=files&act=json&id=" + id + "&op=" + op,
-                                            success: function(data)
-                                            {
-                                                navigate_media_browser_reload();
-                                                $("#navigate-edit-folder").dialog("close");
-                                            }
-                                        }
-                                    );
-                                }
-                            }
-                        ]
-                    });
-
-                    $("#folder-name").val(name);
-                    $("#folder-mime").val(mime).trigger("change");
+                    navigate_files_edit_folder();
                 });
 
             }, 250);
@@ -254,114 +204,184 @@ function navigate_media_browser_refresh()
     }
 
     $("#navigate_media_browser_items div")
-        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".draggable-folder")
-        .off("contextmenu").on("contextmenu", function(e)
-    {
-        navigate_hide_context_menus();
-        var trigger = $(this);
-
-		setTimeout(function()
+        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".draggable-folder").not(".file-access-icons")
+        .off("contextmenu")
+        .on("contextmenu", function(e)
         {
-			$('#contextmenu-images').data("file-type", $(trigger).data("mediatype"));
-			$('#contextmenu-images').data("file-id", $(trigger).data("file-id"));
+            navigate_hide_context_menus();
+            var trigger = $(this);
 
-			$('#contextmenu-images').menu();
-
-            var xpos = e.clientX;
-            var ypos = e.clientY;
-
-            if(xpos + $('#contextmenu-images').width() > $(window).width())
-                xpos -= $('#contextmenu-images').width();
-
-            $('#contextmenu-images').css({
-                "top": ypos,
-                "left": xpos,
-                "z-index": 100000,
-                "position": "absolute"
-            });
-
-            $('#contextmenu-images').addClass('navi-ui-widget-shadow');
-
-            $('#contextmenu-images').show();
-
-            $("#contextmenu-images-focalpoint").hide();
-            $("#contextmenu-images-description").hide();
-            if($(trigger).hasClass('draggable-image'))
+            setTimeout(function()
             {
-                $("#contextmenu-images-focalpoint").show();
-                $("#contextmenu-images-description").show();
-            }
+                $('#contextmenu-files').data("file-type", $(trigger).data("mediatype"));
+                $('#contextmenu-files').data("file-id", $(trigger).data("file-id"));
 
-            $("#contextmenu-images-download_link").off('click').on("click", function ()
-            {
-                var itemId = $(trigger).attr('id').substring(5);
-                var download_link = $(trigger).attr('download-link');
-                //var download_link = NAVIGATE_DOWNLOAD + '?wid=' + navigate_media_browser_website + '&id=' + itemId + '&disposition=attachment';
+                $('#contextmenu-files').menu();
 
-                $('<div><form action="#"><textarea class="navigate-copy-link-textarea" style=" width: 550px; height: 100px; ">'+download_link+'</textarea></form></div>').dialog({
-                    modal: true,
-                    title: navigate_lang_dictionary[476] + ": Ctrl+C / Cmd+C, Escape",
-                    width: 580,
-                    height: 150,
-                    open: function(event, ui)
-                    {
-                        setTimeout(function()
-                        {
-                            $('textarea.navigate-copy-link-textarea:visible').off('focus').on('focus', function(){
-                                $(this).select();
-                            });
-                            $('textarea.navigate-copy-link-textarea:visible').focus();
-                        }, 100);
-                    },
-                    close: function(event, ui)
-                    {
-                        $('textarea.navigate-copy-link-textarea:visible').parent().parent().parent().remove();
-                    }
+                var xpos = e.clientX;
+                var ypos = e.clientY;
+
+                if(xpos + $('#contextmenu-files').width() > $(window).width())
+                    xpos -= $('#contextmenu-files').width();
+
+                $('#contextmenu-files').css({
+                    "top": ypos,
+                    "left": xpos,
+                    "z-index": 100000,
+                    "position": "absolute"
                 });
-            });
 
-            $("#contextmenu-images-duplicate").off("click").on("click", function()
-            {
-                var itemId = $(trigger).attr('id').substring(5);
+                $('#contextmenu-files').addClass('navi-ui-widget-shadow');
 
-                $.ajax(
-                    {
-                        async: false,
-                        url: NAVIGATE_APP + '?fid=files&act=json&op=duplicate_file&id=' + itemId,
-                        success: function(data)
+                $('#contextmenu-files').show();
+
+                $("#contextmenu-files-focalpoint").hide();
+                $("#contextmenu-files-description").hide();
+                if($(trigger).hasClass('draggable-image'))
+                {
+                    $("#contextmenu-files-focalpoint").show();
+                    $("#contextmenu-files-description").show();
+                }
+
+                $("#contextmenu-files-download_link").off('click').on("click", function ()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+                    var download_link = $(trigger).attr('download-link');
+                    //var download_link = NAVIGATE_DOWNLOAD + '?wid=' + navigate_media_browser_website + '&id=' + itemId + '&disposition=attachment';
+
+                    $('<div><form action="#"><textarea class="navigate-copy-link-textarea" style=" width: 550px; height: 100px; ">'+download_link+'</textarea></form></div>').dialog({
+                        modal: true,
+                        title: navigate_lang_dictionary[476] + ": Ctrl+C / Cmd+C, Escape",
+                        width: 580,
+                        height: 150,
+                        open: function(event, ui)
                         {
-                            navigate_media_browser_reload();
+                            setTimeout(function()
+                            {
+                                $('textarea.navigate-copy-link-textarea:visible').off('focus').on('focus', function(){
+                                    $(this).select();
+                                });
+                                $('textarea.navigate-copy-link-textarea:visible').focus();
+                            }, 100);
+                        },
+                        close: function(event, ui)
+                        {
+                            $('textarea.navigate-copy-link-textarea:visible').parent().parent().parent().remove();
                         }
-                    }
-                );
-            });
+                    });
+                });
 
-            $("#contextmenu-images-permissions").off("click").on("click", function()
+                $("#contextmenu-files-duplicate").off("click").on("click", function()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+
+                    $.ajax(
+                        {
+                            async: false,
+                            url: NAVIGATE_APP + '?fid=files&act=json&op=duplicate_file&id=' + itemId,
+                            success: function(data)
+                            {
+                                navigate_media_browser_reload();
+                            }
+                        }
+                    );
+                });
+
+                $("#contextmenu-files-permissions").off("click").on("click", function()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+                    navigate_contextmenu_permissions_dialog(itemId, trigger);
+                });
+
+                $("#contextmenu-files-rename").off("click").on("click", function()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+                    var title = "";
+                    if($(trigger).attr("mediatype")=="image")
+                        title = $(trigger).find("div.file-image-wrapper img").attr("title");
+                    else
+                        title = $(trigger).find("div.file-icon-wrapper img").attr("title");
+
+                    navigate_files_rename(itemId, title);
+                });
+
+                $("#contextmenu-files-description").off("click").on("click", function()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+                    navigate_contextmenu_description_dialog(itemId, trigger);
+                });
+
+                $("#contextmenu-files-focalpoint").off('click').on("click", function ()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+                    navigate_media_browser_focalpoint(itemId);
+                });
+
+                $("#contextmenu-files-delete").off("click").on("click", function()
+                {
+                    navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
+                });
+            }, 250);
+
+            return false;
+        }
+    );
+
+    $("#navigate_media_browser_items div.draggable-folder")
+        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".file-access-icons")
+        .off("contextmenu")
+        .on("contextmenu", function(e)
+        {
+            navigate_hide_context_menus();
+            var trigger = $(this);
+
+            setTimeout(function()
             {
-                var itemId = $(trigger).attr('id').substring(5);
-                navigate_contextmenu_permissions_dialog(itemId, trigger);
-            });
+                $('#contextmenu-mediabrowser-folders').data("file-id", $(trigger).data("file-id"));
 
-            $("#contextmenu-images-description").off("click").on("click", function()
-            {
-                var itemId = $(trigger).attr('id').substring(5);
-                navigate_contextmenu_description_dialog(itemId, trigger);
-            });
+                $('#contextmenu-mediabrowser-folders').menu();
 
-            $("#contextmenu-images-focalpoint").off('click').on("click", function ()
-            {
-                var itemId = $(trigger).attr('id').substring(5);
-                navigate_media_browser_focalpoint(itemId);
-            });
+                var xpos = e.clientX;
+                var ypos = e.clientY;
 
-            $("#contextmenu-images-delete").off("click").on("click", function()
-            {
-                navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
-            });
-        }, 250);
+                if(xpos + $('#contextmenu-mediabrowser-folders').width() > $(window).width())
+                    xpos -= $('#contextmenu-mediabrowser-folders').width();
 
-        return false;
-    });
+                $('#contextmenu-mediabrowser-folders').css({
+                    "top": ypos,
+                    "left": xpos,
+                    "z-index": 100000,
+                    "position": "absolute"
+                });
+
+                $('#contextmenu-mediabrowser-folders').addClass('navi-ui-widget-shadow');
+
+                $('#contextmenu-mediabrowser-folders').show();
+
+                $("#contextmenu-mediabrowser-folders-open").off("click").on("click", function()
+                {
+                    $(trigger).trigger("dblclick");
+                });
+
+                $("#contextmenu-mediabrowser-folders-rename").off("click").on("click", function()
+                {
+                    var itemId = $(trigger).attr('id').substring(5);
+                    navigate_files_edit_folder(
+                        itemId,
+                        $(trigger).find("div.file-icon-wrapper img").attr("title"),
+                        $(trigger).attr("mimetype")
+                    );
+                });
+
+                $("#contextmenu-mediabrowser-folders-delete").off("click").on("click", function()
+                {
+                    navigate_contextmenu_delete_dialog(navigate_media_browser_delete, trigger);
+                });
+            }, 250);
+
+            return false;
+        }
+    );
 
     navigate_media_browser_refresh_files_used();
 }
@@ -507,6 +527,106 @@ function navigate_contextmenu_permissions_dialog(file_id, trigger)
     );
 }
 
+
+function navigate_files_edit_folder(id, name, mime)
+{
+    $('#navigate-edit-folder').dialog({
+        modal: true,
+        width: 620,
+        height: 160,
+        title: navigate_lang_dictionary[141], // Folder
+        resizable: false,
+        buttons:
+        [
+            {
+                text: navigate_lang_dictionary[58], // Cancel
+                click: function()
+                {
+                    $("#navigate-edit-folder").dialog("close");
+                }
+            },
+            {
+                text: navigate_lang_dictionary[190], // Ok
+                click: function()
+                {
+                    var op = "edit_folder";
+                    if(!name)
+                        op = "create_folder";
+
+                    $.ajax(
+                        {
+                            async: false,
+                            type: "post",
+                            data: {
+                                name: $("#folder-name").val(),
+                                mime: $("#folder-mime").val(),
+                                parent: navigate_media_browser_parent
+                            },
+                            url: "?fid=files&act=json&id=" + id + "&op=" + op,
+                            success: function(data)
+                            {
+                                navigate_media_browser_reload();
+                                $("#navigate-edit-folder").dialog("close");
+                            }
+                        }
+                    );
+                }
+            }
+        ]
+    });
+
+    $("#folder-name").val(name);
+    $("#folder-mime").val(mime).trigger("change");
+}
+
+
+
+function navigate_files_rename(id, name)
+{
+    $("#navigate-edit-file").dialog(
+        {
+            title: navigate_t(82, 'File') + ": " + name,
+            resizable: false,
+            height: 150,
+            width: 625,
+            modal: true,
+            buttons:
+            [
+                {
+                    text: navigate_t(190, 'Ok'),
+                    click: function()
+                    {
+                        $.ajax(
+                            {
+                                async: false,
+                                type: "post",
+                                data: {
+                                    name: $("#file-name").val(),
+                                    id: id
+                                },
+                                url: NAVIGATE_APP + "?fid=files&act=json&op=edit_file",
+                                success: function(data)
+                                {
+                                    navigate_media_browser_reload();
+                                    $("#navigate-edit-file").dialog("close");
+                                }
+                            });
+                    }
+                },
+                {
+                    text: navigate_t(58, 'Cancel'),
+                    click: function()
+                    {
+                        $("#navigate-edit-file").dialog("close");
+                    }
+                }
+            ]
+        }
+    );
+
+    $("#file-name").val(name);
+}
+
 function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
 {
     if(!title)
@@ -643,7 +763,7 @@ function navigate_media_browser_delete(element)
     $.ajax(
         {
             async: false,
-            url: NAVIGATE_APP + '?fid=files&act=1&op=delete&id=' + itemId,
+            url: NAVIGATE_APP + '?fid=files&act=json&op=delete&id=' + itemId,
             success: function(data)
             {
                 if(data=='1')

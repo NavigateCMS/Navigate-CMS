@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2016. All rights reserved.                 |
-// | Last modified 03/01/2016                                               |
+// | Last modified 20/02/2016                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -26,13 +26,14 @@
 // security fix: force creating a secure $_REQUEST global variable giving priority to $_POST and ignoring $_COOKIE
 $_REQUEST = array_merge($_GET, $_POST);
 
+require_once('cfg/globals.php');
+
 if(isset($_REQUEST['debug']) || APP_DEBUG)
 {
     error_reporting(E_ALL ^ E_NOTICE);
     ini_set('display_errors', 1);
 }
 
-require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
 $navigate_url = !empty($_ENV['SCRIPT_URI'])? dirname($_ENV['SCRIPT_URI']) : dirname(nvweb_self_url());
