@@ -44,6 +44,13 @@ function nvweb_list($vars=array())
             $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
             $categories = array($parent);
         }
+        else if($vars['categories']=='nvlist_parent')
+        {
+            if($vars['nvlist_parent_type'] === 'structure')
+            {
+                $categories = array($vars['nvlist_parent_item']->id);
+            }
+        }
         else if(!is_numeric($vars['categories']))
         {
             // if "categories" attribute has a comma, then we suppose it is a list of comma separated values
@@ -394,7 +401,7 @@ function nvweb_list($vars=array())
 
     $categories = array_filter($categories);
 
-	// DATA SOURCE not given or ERROR
+	// DATA SOURCE not given or ERROR ===> items
 	if((empty($vars['source']) || !is_numeric($total)) && !empty($categories))
 	{
         /*
@@ -463,7 +470,6 @@ function nvweb_list($vars=array())
 		$rs = $DB->result();
 		$total = $DB->foundRows();
 	}
-
 
     // now we have all elements that will be shown in the list
     // let's apply the nvlist template to each one
@@ -914,7 +920,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
             }
             break;
 
-        case 'item':	// useful also for source="structure" (but some are nonsense: content, comments, etc)
+        case 'item':	// useful also for source="structure" (but some are nonsense: title, comments, etc)
 		default:
 			switch($tag['attributes']['value'])
 			{
@@ -971,6 +977,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 				case 'content':
 				case 'section':
+                    if($source=='structure')
+                    {
+                        // TODO: auto load content associated?
+                    }
 					$section = $tag['attributes']['section'];
 					if(empty($section)) $section = 'main';
 					$out = $item->dictionary[$current['lang']]['section-'.$section];
