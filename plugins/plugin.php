@@ -82,7 +82,8 @@ function nv_plugin_init()
 
 		define('NVWEB_ABSOLUTE', $nvweb_absolute);
 		define('NVWEB_OBJECT', $nvweb_absolute.'/object');
-        define('NAVIGATE_URL', $nvweb_absolute.NAVIGATE_FOLDER);
+		if(!defined('NAVIGATE_URL'))
+		    define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
 
 		if(!isset($_SESSION['nvweb.'.$website->id]))
 		{
@@ -165,4 +166,5 @@ function nv_plugin_end($redirect_to="")
         header('Location: '.$redirect_to);
 	exit;
 }
+
 ?>
