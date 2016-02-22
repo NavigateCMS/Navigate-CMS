@@ -691,9 +691,13 @@ function blocks_form($item)
         )
     );
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			(!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 
     if(!empty($item->id))
         $layout->navigate_notes_dialog('block', $item->id);
@@ -724,11 +728,18 @@ function blocks_form($item)
         if($item->type == $block_types[$i]['code'])
             $block_type_width = $block_types[$i]['width'];
 
-        if(empty($block_types[$i]['width'])) $block_types[$i]['width'] = '***';
-		if(empty($block_types[$i]['height'])) $block_types[$i]['height'] = '***';		
-		
+		$block_size_helper = '';
+
+		if(!empty($block_types[$i]['width']) || !empty($block_types[$i]['height']))
+		{
+	        if(empty($block_types[$i]['width'])) $block_types[$i]['width'] = '***';
+			if(empty($block_types[$i]['height'])) $block_types[$i]['height'] = '***';
+
+			$block_size_helper = ' ('.$block_types[$i]['width'].' x '.$block_types[$i]['height'].' px)';
+		}
+
 		$block_types_keys[] = $block_types[$i]['code'];
-		$block_types_info[] = $block_types[$i]['title'].' ('.$block_types[$i]['width'].' x '.$block_types[$i]['height'].' px)';
+		$block_types_info[] = $block_types[$i]['title'].$block_size_helper;
 	}
 										
 	$navibars->add_tab_content_row(
@@ -1608,6 +1619,8 @@ function blocks_form($item)
 		navigate_blocks_elements_display_change($("label[for=elements_display_'.$elements_display.']"));
 	');
 
+	if(!is_array($item->elements))
+		$item->elements = array();
 	$items_ids = array_values($item->elements);
 	$items_ids = $items_ids[0];
 	if(empty($items_ids))

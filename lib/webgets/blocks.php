@@ -744,4 +744,5 @@ function nvweb_block_enabled($object)
 	
 	return $enabled;
 }
+
 ?>
