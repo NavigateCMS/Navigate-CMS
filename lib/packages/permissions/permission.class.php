@@ -312,7 +312,7 @@ class permission
             for($i=0; $i < count($definitions[$scope]); $i++)
             {
                 $def = $definitions[$scope][$i];
-                $permissions[$def['name']] = $def['dvalue'];
+                $permissions[$def['name']] = (isset($def['dvalue'])? $def['dvalue'] : "");
 
                 // search for a custom value on PROFILE permissions
                 for($pp=0; $pp < count($permissions_profile); $pp++)
@@ -383,4 +383,5 @@ class permission
         return $out;
     }
 }
+
 ?>

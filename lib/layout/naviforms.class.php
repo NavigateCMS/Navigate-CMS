@@ -47,6 +47,9 @@ class naviforms
 
 		for($i=0; $i < count($values); $i++)
 		{
+            if(!isset($titles[$i]))
+                $titles[$i] = "";
+
 			if( (is_array($selected_value) && in_array($values[$i], $selected_value)) ||
 				($values[$i]==$selected_value))
 				$out[] = '<option value="'.$values[$i].'" selected="selected" title="'.$titles[$i].'">'.$texts[$i].'</option>';
