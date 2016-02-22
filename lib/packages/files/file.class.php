@@ -24,6 +24,7 @@ class file
 	public $access; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
     public $groups;
 	public $permission;
+	public $system;
 	public $enabled;
 
 	public function load($id)
@@ -53,6 +54,7 @@ class file
 			$this->uploaded_by = 'system';
 			$this->permission = 0;
 			$this->enabled = 1;
+			$this->system = 0;
             $this->groups = array();
 			$this->access = 0;
 		}
@@ -303,6 +305,7 @@ class file
         $file->uploaded_by = $user->id;
         $file->permission = 0;
         $file->access = 0;
+        $file->system = 0;
         $file->enabled = 1;
 
         $file->save();
@@ -381,14 +384,14 @@ class file
             (   id, website, type, parent, name, size, mime,
                 width, height, focalpoint, title, description,
                 date_added, uploaded_by,
-                permission, access, groups, enabled)
+                permission, access, groups, system, enabled)
             VALUES
             ( 0,
               :website, :type, :parent, :fname, :size, :mime,
               :width, :height, :focalpoint,
               :title, :description,
               :date_added, :uploaded_by,
-              :permission, :access, :groups, :enabled
+              :permission, :access, :groups, :system, :enabled
             )',
             array(
 				":website" => $this->website,
@@ -407,6 +410,7 @@ class file
 				":permission" => intval($this->permission),
 				":access" => intval($this->access),
 				":groups" => $groups,
+				":system" => (isset($this->system)? $this->system : 0),
 				":enabled" => intval($this->enabled)
             )
         );
@@ -453,6 +457,7 @@ class file
                 permission	=	:permission,
                 access		=	:access,
                 groups      =   :groups,
+                system		=	:system,
                 enabled		=	:enabled
             WHERE id = :id
               AND website = :website_id
@@ -467,14 +472,15 @@ class file
                 ":mime" => $this->mime,
                 ":width" => $this->width,
                 ":height" => $this->height,
-                ":focalpoint" => $this->focalpoint,
+                ":focalpoint" => (empty($this->focalpoint)? '' : $this->focalpoint),
                 ":title" => json_encode($this->title),
                 ":description" => json_encode($this->description),
                 ":date_added" => $this->date_added,
                 ":uploaded_by" => $this->uploaded_by,
                 ":permission" => $this->permission,
-                ":access" => $this->access,
+                ":access" => (isset($this->access)? $this->access : 0),
                 ":groups" => $groups,
+	            ":system" => (isset($this->system)? $this->system : 0),
                 ":enabled" => $this->enabled
             )
         );
@@ -2275,4 +2281,5 @@ class file
 		return $tmp;
 	}
 }
+
 ?>

@@ -137,7 +137,7 @@ function navigate_media_browser()
 function navigate_media_browser_refresh()
 {
 	// drag & drop support
-	$("#navigate_media_browser_items > div").not("#file-more").not("#file-0").draggable(
+	$("#navigate_media_browser_items > div").not("#file-more").not("div[mimetype='folder/back']").draggable(
 	{ 
 		revert: true,  
 		scroll: true, 
@@ -158,9 +158,8 @@ function navigate_media_browser_refresh()
         }
 	});
 
-    // images only: .find("div[mediatype='image']") [not needed right now]
-
     $("#navigate_media_browser_items").off("contextmenu");
+
     if($('select#media_browser_type').val()=="folder")
     {
         $("#navigate_media_browser_items").on("contextmenu", function(e)
@@ -200,6 +199,35 @@ function navigate_media_browser_refresh()
             }, 250);
 
             return false;
+        });
+
+        $("#navigate_media_browser_items div.draggable-folder").droppable({
+            hoverClass: "ui-state-highlight",
+            tolerance: "pointer",
+            drop: function(event, ui)
+            {
+                var folder = $(this).attr("id").substring(5);
+                var item = $(ui.draggable).attr("id").substring(5);
+
+                $.ajax(
+                {
+                    async: false,
+                    type: "post",
+                    data: {
+                        item: item,
+                        folder: folder
+                    },
+                    url: NAVIGATE_APP + "?fid=files&act=json&op=move",
+                    success: function(data)
+                    {
+                        if(data=="true")
+                        {
+                            $(".navigate_media_browser_clone").remove();
+                            $(ui.draggable).remove();
+                        }
+                    }
+                });
+            }
         });
     }
 
