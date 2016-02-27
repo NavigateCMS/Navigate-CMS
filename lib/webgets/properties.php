@@ -474,7 +474,11 @@ function nvweb_properties_render($property, $vars)
         case 'video':
             // value may be a numeric file ID or a provider#id structure, f.e. youtube#3MteSlpxCpo
             // compatible providers: file,youtube,vimeo
-            $video_id = $property->value;
+            if(@$property->multilanguage=='true'  || $property->multilanguage=='1')
+                $video_id = $property->value[$session['lang']];
+            else
+                $video_id = $property->value;
+
             $provider = '';
             $reference = '';
 
@@ -537,6 +541,14 @@ function nvweb_properties_render($property, $vars)
 
                 case 'thumbnail':
                     $out = '<img src="'.$file->extra['thumbnail_url'].'" class="'.$vars['class'].'" '.$add.' />';
+                    break;
+
+                case 'reference':
+                    $out = $reference;
+                    break;
+
+                case 'provider':
+                    $out = $provider;
                     break;
 
                 case 'embed':
