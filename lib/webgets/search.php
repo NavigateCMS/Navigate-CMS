@@ -169,6 +169,7 @@ function nvweb_search($vars=array())
                     count($rs)
                 );
 
+
                 $item_html = str_replace(
                     $tag["full_tag"],
                     $conditional_html_output,

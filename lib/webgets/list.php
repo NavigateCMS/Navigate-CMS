@@ -1356,6 +1356,18 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         else if(isset($tag['attributes']['template']))
             $templates = array($tag['attributes']['template']);
 
+        if(empty($item->template))
+        {
+            // check if the item is embedded in a category, so we have to get the template from the category, not the item
+            if(get_class($item) == 'item' && $item->association == 'category' && $item->embedding == 1)
+			{
+				// assign template from its category
+				$item_category = new structure();
+				$item_category->load($item->category);
+				$item->template = $item_category->template;
+			}
+        }
+
         if(in_array($item->template, $templates))
         {
             // the template matches the condition, apply
