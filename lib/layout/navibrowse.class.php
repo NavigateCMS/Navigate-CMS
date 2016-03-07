@@ -186,14 +186,23 @@ class navibrowse
 		';
 
 		$layout->add_script('
-			$("#navibrowse-filter-type").select2({
-			    placeholder: "'.t(160, "Type").'",
-			    allowClear: true,
-		        minimumResultsForSearch: Infinity,
-		        width: 150,
-		        templateResult: navibrowse_filter_type_render,
-		        templateSelection: navibrowse_filter_type_render
-		    });
+			$("#navibrowse-filter-type")
+				.select2(
+				{
+				    placeholder: "'.t(160, "Type").'",
+				    allowClear: true,
+			        minimumResultsForSearch: Infinity,
+			        width: 150,
+			        templateResult: navibrowse_filter_type_render,
+			        templateSelection: navibrowse_filter_type_render
+			    })
+		        .on("select2:unselecting", function(e)
+			    {
+			        $(this).select2("val", "");
+			        $(this).val("");
+			        e.preventDefault();
+			        $(this).trigger("change");
+			    });
 
 		    function navibrowse_filter_type_render(opt)
 	        {

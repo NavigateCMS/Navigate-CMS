@@ -1528,9 +1528,18 @@ function navigate_selector_upgrade(el)
     $(el).select2(
         {
             selectOnBlur: true,
-            minimumResultsForSearch: 6
+            minimumResultsForSearch: 6,
         }
     );
+
+    // autoclose select2 after clearing
+    $(el).on("select2:unselecting", function (e)
+    {
+        $(this).select2("val", "");
+        $(this).val("");
+        e.preventDefault();
+        $(this).trigger("change");
+    });
 
     // force defined width
     if(width)
