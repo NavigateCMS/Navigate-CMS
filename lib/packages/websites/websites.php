@@ -1267,8 +1267,17 @@ function websites_form($item)
 
 	$navibars->add_tab_content_row(
         array(
-            '<label>'.t(427, 'TLS/SSL required').'</label>',
-			$naviforms->checkbox('mail_security', $item->mail_security)
+            '<label>'.t(427, 'Security protocol').'</label>',
+			$naviforms->selectfield(
+				'mail_security',
+				array(0, 1, 2),
+				array(
+					t(581, "None"),
+					"SSL / TLS",
+					"STARTTLS"
+				),
+				$item->mail_security
+			)
         )
     );
 

@@ -391,8 +391,12 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         $mail->Host       = $website->mail_server;
         $mail->SMTPAuth   = true;
         $mail->Port       = $website->mail_port;
-        if($website->mail_security=='1')
+
+        if($website->mail_security=='1')    // SSL/TLS
             $mail->SMTPSecure = "ssl";
+        if($website->mail_security=='2')    // STARTTLS
+            $mail->SMTPSecure = "tls";
+
         $mail->Username   = $website->mail_user;
         $mail->Password   = $website->mail_password;
 

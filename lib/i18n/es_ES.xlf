@@ -2565,8 +2565,8 @@
 		</unit>
 		<unit id="427">
 			<segment>
-				<source>TLS/SSL required</source>
-				<target>TLS/SSL requerido</target>
+				<source>Security protocol</source>
+				<target>Protocolo de seguridad</target>
 			</segment>
 		</unit>
 		<unit id="428">
