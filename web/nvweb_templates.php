@@ -1141,12 +1141,12 @@ function nvweb_template_oembed_cache($provider, $oembed_url, $minutes=43200)
         // request has not been cached or it has expired
         $response = core_curl_post($oembed_url, NULL, NULL, 60, "get");
 
+	    if($response=='Not found')
+		    $response = '';
+
         if(!empty($response))
             file_put_contents($file, $response);
     }
-
-    if($response=='Not found')
-        $response = '';
 
     if(!empty($response))
         $response = json_decode($response);

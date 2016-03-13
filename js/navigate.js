@@ -1859,13 +1859,17 @@ function navigate_dropbox_load_video(name, value)
 function navigate_youtube_reference_from_url(url)
 {
     var ID = '';
-    url = url.replace(/(>|<)/gi,'').split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
-    if(url[2] !== undefined) {
-        ID = url[2].split(/[^0-9a-z_]/i);
+    var yt_url = url.replace(/(>|<)/gi,'');
+    yt_url = yt_url.split(/(vi\/|v=|\/v\/|youtu\.be\/|\/embed\/)/);
+
+    if(yt_url[2] !== undefined)
+    {
+        ID = yt_url[2].split(/[^0-9a-z_\-]/i);
         ID = ID[0];
     }
-    else {
-        ID = url;
+    else
+    {
+        ID = yt_url;
     }
     return ID;
 }

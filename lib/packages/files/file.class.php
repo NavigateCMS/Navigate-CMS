@@ -201,6 +201,9 @@ class file
             $cache
         );
 
+	    if($info == 'Not found')
+		    $info = '';
+
         if(empty($info))
             return false;
 
