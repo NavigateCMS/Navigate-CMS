@@ -116,6 +116,19 @@ function nvweb_webuser($vars=array())
             break;
 
         case 'newsletter_subscribe':
+            // a page may have several forms, which one do we have to check?
+            if(!empty($vars['form']))
+            {
+                list($field_name, $field_value) = explode('=', $vars['form']);
+                if($_POST[$field_name]!=$field_value)
+                    return;
+            }
+
+            // check if this send request really comes from the website and not from a spambot
+            if(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain)
+                return;
+
+
             if(empty($vars['email_field']))
                 $vars['email_field'] = 'newsletter_email';
 
