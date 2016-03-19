@@ -635,8 +635,15 @@ class naviforms
             }
 		}
 		else
+        {
 			$out[] = '	<img src="img/icons/misc/dropbox.png" vspace="18" />';
+        }
 		$out[] = '</div>';
+
+        // set parent row as overflow:visible to let the whole contextmenu appear
+        $layout->add_script('
+            $(".navigate-droppable-wrapper").parent().css("overflow", "visible");
+        ');
 
         $contextmenu = false;
 
@@ -784,7 +791,7 @@ class naviforms
                 $out[] = '
                     <div class="navigate-droppable-create">
                         <img src="img/icons/silk/add.png" />
-                        <ul class="navigate-droppable-create-contextmenu">
+                        <ul class="navigate-droppable-create-contextmenu" data-field-id="'.$name.'">
                             <li action="default" value="'.$default_value.'"><a href="#"><span class="fa fa-lg fa-eraser"></span> '.t(199, "Default value").'</a></li>
                             <li action="youtube_url"><a href="#"><span class="fa fa-lg fa-youtube-square fa-align-center"></span> Youtube URL</a></li>
                             <li action="vimeo_url"><a href="#"><span class="fa fa-lg fa-vimeo-square fa-align-center"></span> Vimeo URL</a></li>
@@ -876,9 +883,12 @@ class naviforms
 				$("#'.$name.'-droppable").parent().find(".navigate-droppable-create").on("click", function(ev)
 				{
                     navigate_hide_context_menus();
+                    $("ul[data-context-menu-temporary-clone=true]").remove();
+
                     setTimeout(function()
                     {
                         var menu_el = $("#'.$name.'-droppable").parent().find(".navigate-droppable-create-contextmenu");
+
                         menu_el.menu();
 
                         menu_el.css({
