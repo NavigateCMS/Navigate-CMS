@@ -476,8 +476,8 @@ class naviforms
 
                 content_css: "'.$content_css.'",
                 valid_elements: "*[*],+a[*],+p[*],#i",
-                custom_elements: "nv,code,pre,nvlist,figure,article,nav",
-                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+figure[*],+article[*],+nav[*],+i[*]",
+                custom_elements: "nv,code,pre,nvlist,figure,article,header,footer,post,nav",
+                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+figure[*],+article[*],+nav[*],+i[*],+span[*],+em[*],+b[*],*[*]",
                 //encoding: "xml",
                 relative_urls: false,
                 convert_urls: true,
