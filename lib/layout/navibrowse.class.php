@@ -297,7 +297,20 @@ class navibrowse
 
 		$html[] = '<script language="javascript" type="text/javascript">';
 
-		$html[] = '$(window).on("load", function() { $(".navibrowse-file img").unveil(); });';
+		// replace placeholder images by real thumbnails after document is ready
+		$html[] = '
+			$(window).on("load", function()
+			{
+				new LazyLoad({
+				    threshold: 200,
+				    container: document.getElementById("navigate-content-safe"),
+				    elements_selector: ".navibrowse-file img",
+				    throttle: 40,
+				    data_src: "src",
+				    show_while_loading: true
+				});
+			});
+		';
 
 //		$html[] = '$(".navibrowse-file, .navibrowse-folder").on("mouseover", function() { $(this).css("opacity", 0.7); });';
 //		$html[] = '$(".navibrowse-file, .navibrowse-folder").on("mouseout", function() { $(this).css("opacity", 1); });';

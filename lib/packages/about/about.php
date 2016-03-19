@@ -182,7 +182,7 @@ function about_layout()
 											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://luis-almeida.github.io/unveil/" target="_blank">jQuery Unveil v2014.05.29</a><br />' ));
+											'<a href="http://verlok.github.io/lazyload" target="_blank">LazyLoad v:e3cd449 (Mar 10 2016)</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://scripts.incutio.com/xmlrpc/" target="_blank">Incutio XML-RPC Library for PHP v1.7.4</a><br />' ));
@@ -203,17 +203,33 @@ function about_layout()
 
     $navibars->add_tab(t(526, 'Translations'));
 
-    $navibars->add_tab_content_row(array(	'<label>English</label>',
-        '<a href="http://www.navigatecms.com">Navigate CMS</a>'));
+    $navibars->add_tab_content_row(
+	    array(
+	    '<label>English</label>',
+        '<a href="http://www.navigatecms.com">Navigate CMS</a>'
+	    )
+    );
 
-    $navibars->add_tab_content_row(array(	'<label>Català</label>',
-        '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />' ));
+    $navibars->add_tab_content_row(
+	    array(
+	    '<label>Català</label>',
+        '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />'
+	    )
+    );
 
-    $navibars->add_tab_content_row(array(	'<label>Español</label>',
-        '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />' ));
+    $navibars->add_tab_content_row(
+	    array(
+	    '<label>Español</label>',
+        '<a href="mailto:info@naviwebs.com">Marc Lobato (naviwebs.com)</a><br />'
+	    )
+    );
 
-    $navibars->add_tab_content_row(array(	'<label>Deutsch</label>',
-        '<a href="http://www.lingudora.com" target="_blank">Dominik Hlusiak (lingudora.com)</a><br />' ));
+    $navibars->add_tab_content_row(
+	    array(
+	    '<label>Deutsch</label>',
+        '<a href="http://www.lingudora.com" target="_blank">Dominik Hlusiak (lingudora.com)</a><br />'
+	    )
+    );
 
     return $navibars->generate();
 }

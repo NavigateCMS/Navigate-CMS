@@ -97,17 +97,14 @@ class layout
 		$this->add_script_tag('lib/external/jquery-noselect/jquery.noselect.js');
 
         $this->add_script_tag('js/plugins/jquery.dialogextend.js');
-		$this->add_script_tag('js/plugins/jquery.unveil.js');
+		$this->add_script_tag('js/plugins/lazyload.js');
+
 
 		$this->add_script_tag('js/tags-input/jquery.tagsinput.js');		
 		$this->add_style_tag('js/tags-input/jquery.tagsinput.css');
-		
-	/*
-		$this->add_script_tag('js/jstree/_lib/jquery.cookie.js');	
-		$this->add_script_tag('js/jstree/_lib/jquery.hotkeys.js');						
-		$this->add_script_tag('js/jstree/jquery.jstree.js');			
-	*/
-	
+
+		//  $this->add_script_tag('js/jstree/jquery.jstree.js');    // unused!
+
 		$this->add_script_tag('js/star-rating/jquery.rating.js');
 		$this->add_script_tag('js/star-rating/jquery.MetaData.js');		
 		$this->add_style_tag('js/star-rating/jquery.rating.css');
@@ -117,17 +114,12 @@ class layout
 
         $this->add_script_tag('js/plugins/jquery.filedrop.js');
 
-		//$this->add_script_tag('js/_unused/phpjs.namespaced.min.js'); only "implode" and "function_exists" used
 		$this->add_script_tag('js/plugins/jquery.ezCookie.js');
         $this->add_script_tag('js/plugins/jquery.longclick.js');
 
 		$this->add_style_tag('js/treetable/src/stylesheets/jquery.treeTable.css');
 		$this->add_script_tag('js/treetable/src/javascripts/jquery.treeTable.min.js');
-/*
-        $this->add_script_tag('lib/external/jquery-timepicker-addon/jquery-ui-sliderAccess.js');
-        $this->add_script_tag('lib/external/jquery-timepicker-addon/jquery-ui-timepicker-addon.js');
-        $this->add_style_tag('lib/external/jquery-timepicker-addon/jquery-ui-timepicker-addon.css');
-*/
+
         $this->add_script_tag('js/plugins/jquery-ui-timepicker-addon.js');
 
 		$this->add_script_tag('lib/external/jgrowl/jquery.jgrowl.min.js');
