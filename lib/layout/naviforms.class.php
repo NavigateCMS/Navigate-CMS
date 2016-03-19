@@ -335,6 +335,9 @@ class naviforms
         $out = '<input type="text" class="naviforms-colorpicker-text" name="'.$name.'" id="'.$name.'" value="'.$value.'" data-previous="'.$value.'" />
                 <div id="'.$name.'-selector" class="naviforms-colorpicker-selector ui-corner-all"><div style="background: '.$value.'; "></div></div>';
 
+        if(!is_array($swatches) || empty($swatches))
+            $swatches = array();
+
         $swatches = array_map(function($c) { return hex2rgb($c); }, $swatches);
 
         $swatches_js = "{";
@@ -681,7 +684,7 @@ class naviforms
                                         $v = $theme->t($v);
 
                                     return '
-                                        <li data-value="'.$k.'"  data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=75&amp;height=75">
+                                        <li data-value="'.$k.'" data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=75&amp;height=75">
                                             <a href="#">
                                                 <img title="'.$v.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=48&amp;height=48" />
                                                 <span>'.$v.'</span>
