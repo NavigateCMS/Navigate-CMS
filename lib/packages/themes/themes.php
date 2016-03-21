@@ -178,7 +178,11 @@ function run()
                 $ntheme->load($_REQUEST['theme']);
                 $website->theme = $ntheme->name;
                 if(!empty($ntheme->styles))
-                    $website->theme_options->style = array_shift(array_keys(get_object_vars($ntheme->styles)));
+                {
+                    $nst = get_object_vars($ntheme->styles);
+                    $nst = array_keys($nst);
+                    $website->theme_options->style = array_shift($nst);
+                }
                 else
                     $website->theme_options->style = "";
 
