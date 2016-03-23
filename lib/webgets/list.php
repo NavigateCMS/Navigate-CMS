@@ -221,7 +221,7 @@ function nvweb_list($vars=array())
         if(!empty($vars['type']))
             $bg->load_by_code($vars['type']);
 
-        if(!empty($bg))
+        if(!empty($bg) && !empty($bg->blocks))
         {
             $rs = array();
             foreach($bg->blocks as $bgb)
