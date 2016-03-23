@@ -956,7 +956,42 @@ function nvweb_template_tweaks($html)
 
 	foreach($tags as $tag)
 	{
+		if(isset($tag['attributes']['srcset']))
+		{
+			$srcset_old = explode(",", $tag['attributes']['srcset']);
+			$srcset_new = array();
+			foreach($srcset_old as $src)
+			{
+				$src = trim($src);
+				$src = explode(" ", $src);
+
+				if(substr($src[0], 0, 7)!='http://' &&
+		           substr($src[0], 0, 8)!='https://')
+				{
+		            if(substr($src[0], 0, 2)=='//')
+		                $src[0] = $website->protocol.substr($src[0], 2);
+		            else
+		                $src[0] = $website_absolute_path.'/'.$src[0];
+				}
+
+				$srcset_new[] = implode(" ", $src);
+			}
+
+			$tag['new'] = '<img ';
+			foreach($tag['attributes'] as $name => $value)
+			{
+				if($name!='srcset')
+					$tag['new'] .= $name.'="'.$value.'" ';
+				else
+					$tag['new'] .= 'srcset="'.implode(", ", $srcset_new).'" ';
+			}
+			$tag['new'] .= '/>';
+
+			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+		}
+
 		if(!isset($tag['attributes']['src'])) continue;
+
 		if(substr($tag['attributes']['src'], 0, 7)!='http://' && 
 		   substr($tag['attributes']['src'], 0, 8)!='https://' &&
 		   substr($tag['attributes']['src'], 0, 5)!='data:')

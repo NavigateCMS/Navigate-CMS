@@ -214,9 +214,10 @@ try
 	$end = nvweb_after_body('html');
 	$end.= nvweb_after_body('js');
 	$end.= "\n\n";
-	$end.= '</body>';	
+	$end.= '</body>';
+
 	$html = str_replace('</body>', $end, $html);
-	
+
 	$html = nvweb_template_tweaks($html);
 	$html = nvweb_template_restore_special($html);
     $events->trigger('theme', 'after_parse', array('html' => &$html));
