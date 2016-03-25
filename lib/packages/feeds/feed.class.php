@@ -348,8 +348,9 @@ class feed
                     if(!empty($image))
                     {
                         $fitem->image = $image;
+	                    // feedly will only display images of >450px --> http://blog.feedly.com/2015/07/31/10-ways-to-optimize-your-feed-for-feedly/
 						if(strpos($item->format, 'RSS')!==false)
-							$fitem->description = '<img src="'.$image.'&width=256"><br />'.$fitem->description;
+							$fitem->description = '<img src="'.$image.'&width=640"><br />'.$fitem->description;
 					}
 
 					//$item->author = $contents->rows[$x]->author_name;
@@ -361,8 +362,23 @@ class feed
 			// MBOX, OPML, ATOM, ATOM10, ATOM0.3, HTML, JS
 			//echo $rss->saveFeed("RSS1.0", "news/feed.xml");
 		}
+		
+		$xml = $feed->createFeed($item->format);
 
-		return $feed->createFeed($item->format);
+		if($item->format=="RSS2.0")
+		{
+			// add extra tweaks to improve the feed
+
+			$xml = str_replace('<rss ', '<rss xmlns:webfeeds="http://webfeeds.org/rss/1.0" ', $xml);
+			// also available:
+			// <webfeeds:cover image="http://yoursite.com/a-large-cover-image.png" />\n
+			// <webfeeds:accentColor>00FF00</webfeeds:accentColor>
+			$xml = str_replace('<channel>', '<channel>'."\n\t\t".'<webfeeds:related layout="card" target="browser" />', $xml);
+			$xml = str_replace('<channel>', '<channel>'."\n\t\t".'<webfeeds:logo>'.file::file_url($item->image).'</webfeeds:logo>', $xml);
+			$xml = str_replace('<channel>', '<channel>'."\n\t\t".'<webfeeds:icon>'.file::file_url($website->favicon).'</webfeeds:icon>', $xml);
+		}
+
+		return $xml;
 	}	
 
     public function backup($type='json')
