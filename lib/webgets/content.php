@@ -1,6 +1,7 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
 
+nvweb_webget_load("menu");
 nvweb_webget_load("list");
 
 function nvweb_content($vars=array())
@@ -79,6 +80,9 @@ function nvweb_content($vars=array())
             break;
 			
 		case 'structure':
+			// force loading structure data, if not already done
+			if(empty($structure))
+				nvweb_menu();
 
             $structure_id = 0;
             if($current['type']=='item')
