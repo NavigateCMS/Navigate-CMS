@@ -82,10 +82,14 @@ function nvweb_comments($vars=array())
     $callback = $vars['callback'];
     if(!empty($vars['alert_callback']))
         $callback = $vars['alert_callback'];
+	else if(!empty($vars['callback_alert']))
+		$callback = $vars['callback_alert'];
 
     $callback_error = $callback;
     if(!empty($vars['error_callback']))
         $callback_error = $vars['error_callback'];
+	else if(!empty($vars['callback_error']))
+		$callback_error = $vars['callback_error'];
 
 
     $out = '';
@@ -175,7 +179,7 @@ function nvweb_comments($vars=array())
                 }
             }
 
-			if($_REQUEST['form-type']=='comment-reply' || @!empty($_POST[$vars['field-message']]))
+			if($_REQUEST['form-type']=='comment-reply' || isset($_POST[$vars['field-message']]))
 			{
 				// add comment
 				if(empty($vars['field-name']))      $vars['field-name'] = 'reply-name';
@@ -195,8 +199,10 @@ function nvweb_comments($vars=array())
 				{
                     $response = $webgets[$webget]['translations']['please_dont_leave_any_field_blank'];
 
-                    if($callback_error=='inline')   $out = '<div class="comment-error">'.$response.'</div>';
-                    else                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                    if($callback_error=='inline')
+	                    $out = '<div class="comment-error">'.$response.'</div>';
+                    else
+	                    nvweb_after_body("js", $callback_error.'("'.$response.'");');
 					return $out;
 				}
 
