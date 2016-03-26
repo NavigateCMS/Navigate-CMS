@@ -48,6 +48,30 @@
         "dvalue": "true"
     },
     {
+        "name": "blocks.create",
+        "scope": "functions",
+        "function": "items",
+        "description": "Allow creating new blocks",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+	{
+        "name": "blocks.edit",
+        "scope": "functions",
+        "function": "items",
+        "description": "Allow editing blocks",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+	{
+        "name": "blocks.delete",
+        "scope": "functions",
+        "function": "items",
+        "description": "Allow deleting blocks",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
         "name": "files.upload",
         "scope": "functions",
         "function": "files",

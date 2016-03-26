@@ -237,6 +237,9 @@ class block
                                     $key_parts = explode("-", $key);
                                     $key_lang = array_pop($key_parts);
                                     $key_name = array_pop($key_parts);
+
+                                    if(!is_array($value))
+										$value = array($value);
                                     $value = array_filter($value);
 
                                     if(empty($key_name))
@@ -311,6 +314,10 @@ class block
 	{
 		global $DB;
 		global $website;
+		global $user;
+
+		if($user->permission("blocks.delete") == 'false')
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
 		if(!empty($this->id))
 		{
@@ -330,6 +337,10 @@ class block
 	{
 		global $DB;
 		global $website;
+		global $user;
+
+		if( $user->permission("blocks.create") == 'false' )
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
         if(empty($this->website))
             $this->website = $website->id;
@@ -410,12 +421,16 @@ class block
 	public function update()
 	{
 		global $DB;
+		global $user;
 
         if(!is_array($this->categories))
             $this->categories = array();
 
         if(!is_array($this->exclusions))
             $this->exclusions = array();
+
+		if($user->permission("blocks.edit") == 'false')
+			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
         $groups = '';
         if(is_array($this->groups))
