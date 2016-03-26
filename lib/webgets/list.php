@@ -265,15 +265,15 @@ function nvweb_list($vars=array())
                 }
                 else
                 {
-                    // is block group block type?
+                    // is block group block type (special block) or is a block type (like banners)?
                     $bgba = $theme->block_group_blocks($vars['type']);
 
-                    if(!empty($bgba[$bgb]))
+                    if(!empty($bgba[$bgb])) // there is defined a "block group block" with that type
                     {
                         $bgbo = $bgba[$bgb];
                         $rs[] = $bgbo;
                     }
-                    else // then is block type
+                    else // that type is not a special "block group block", so is a generic "block type" (a collection of blocks of the same type)
                     {
                         list($bgbos, $foo) = nvweb_blocks(array(
                             'type' => $bgb,

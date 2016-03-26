@@ -144,11 +144,12 @@ class block_group
     public static function paginated_list($offset, $limit, $order_by_field, $order_by_ascdesc)
     {
         global $DB;
+	    global $website;
 
         $DB->queryLimit(
             '*',
             'nv_block_groups',
-            '1=1',
+            'website = '.protect($website->id),
             $order_by_field.' '.$order_by_ascdesc,
             $offset,
             $limit

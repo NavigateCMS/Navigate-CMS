@@ -110,7 +110,12 @@ function run()
                     $block_types_list = array();
 
                     for($i=0; $i < count($block_types); $i++)
-                        $block_types_list[$block_types[$i]['code']] = $block_types[$i]['title'];
+                    {
+	                    if(is_numeric($block_types[$i]['id']))
+                            $block_types_list[$block_types[$i]['code']] = $block_types[$i]['title'];
+	                    else
+		                    $block_types_list[$block_types[$i]['id']] = $block_types[$i]['title'];
+                    }
 
                     $dataset = grid_notes::summary($dataset, 'block', 'id');
 									
@@ -521,6 +526,7 @@ function run()
 function blocks_list()
 {
     global $events;
+	global $user;
 
 	$navibars = new navibars();
 	$navitable = new navitable("blocks_list");
@@ -564,14 +570,15 @@ function blocks_list()
     );
 	
 	if(@$_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
+	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('date_modified', 'desc');
 	$navitable->setDataIndex('id');
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 	$navitable->enableSearch();
-	$navitable->enableDelete();
+	if($user->permission("blocks.delete") == 'true')
+		$navitable->enableDelete();
 	$navitable->setGridNotesObjectName("block");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
@@ -605,11 +612,19 @@ function blocks_form($item)
 	else
 		$navibars->title(t(23, 'Blocks').' / '.t(170, 'Edit').' ['.$item->id.']');			
 
-	$navibars->add_actions(
-        array(
-            '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
-        )
-    );
+		$navibars->add_actions(
+		array(
+			'<a href="#" onclick="javascript: navigate_media_browser();" title="Ctrl+M">
+				<img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'
+			</a>'
+		)
+	);
+
+    $layout->add_script("
+        $(document).on('keydown.Ctrl_s', function (evt) { navigate_items_tabform_submit(1); return false; } );
+        $(document).on('keydown.Ctrl_m', function (evt) { navigate_media_browser(); return false; } );
+    ");
+
 
     if(!empty($item->id))
     {
@@ -625,7 +640,10 @@ function blocks_form($item)
 	{
 		$navibars->add_actions(
             array(
-                '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+	            ($user->permission('blocks.create')=='true'?
+	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
+				</a>' : "")
             )
         );
 	}
@@ -633,8 +651,14 @@ function blocks_form($item)
 	{
 		$navibars->add_actions(
             array(
-                '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+	            (($user->permission('blocks.edit')=='true') ?
+	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
+				</a>' : ""),
+	            ($user->permission("blocks.delete") == 'true'?
+                '<a href="#" onclick="navigate_delete_dialog();">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'
+				</a>' : "")
             )
         );
 
@@ -718,7 +742,6 @@ function blocks_form($item)
         )
     );
 
-
 	$block_types = block::types();
 	$block_types_keys = array();
 	$block_types_info = array();	
@@ -738,10 +761,14 @@ function blocks_form($item)
 			$block_size_helper = ' ('.$block_types[$i]['width'].' x '.$block_types[$i]['height'].' px)';
 		}
 
-		$block_types_keys[] = $block_types[$i]['code'];
+		if(is_numeric($block_types[$i]['id']))
+			$block_types_keys[] = $block_types[$i]['code'];     // block type created via navigate interface
+		else
+			$block_types_keys[] = $block_types[$i]['id'];       // block described in theme definition
+
 		$block_types_info[] = $block_types[$i]['title'].$block_size_helper;
 	}
-										
+
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(160, 'Type').'</label>',
@@ -1781,9 +1808,14 @@ function blocks_types_list()
         )
     );
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
-								));
+	$navibars->add_actions(
+		array(
+			($user->permission("items.create") == 'true'?
+				'<a href="?fid='.$_REQUEST['fid'].'&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>'
+				: ''),
+			'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+		)
+	);
 
 
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=block_types_json');
@@ -2619,7 +2651,12 @@ function block_group_form($item)
     $layout->add_content('
         <div id="block-selection-add-block_from_group-dialog" style="display: none;">
             <form action="#" method="post" onsubmit="return false;">
-                '.$naviforms->selectfield('block-selection-add-block_from_group-dialog-type', array_keys($block_types_from_group_titles), array_values($block_types_from_group_titles)).'
+                '.$naviforms->selectfield(
+		            'block-selection-add-block_from_group-dialog-type',
+		            array_keys($block_types_from_group_titles),
+		            array_values($block_types_from_group_titles),
+		            null, null, false, null, "width: 100%;"
+	            ).'
             </form>
         </div>
     ');
@@ -2685,8 +2722,16 @@ function block_group_form($item)
     $block_types_titles = array();
     for($i=0; $i < count($block_types); $i++)
     {
-        $block_types_titles[$block_types[$i]['code']] = $block_types[$i]['title'];
-        $block_types_assoc[$block_types[$i]['code']] = $block_types[$i];
+	    if(is_numeric($block_types[$i]['id']))
+	    {
+            $block_types_titles[$block_types[$i]['code']] = $block_types[$i]['title'];
+            $block_types_assoc[$block_types[$i]['code']] = $block_types[$i];
+	    }
+	    else
+	    {
+		    $block_types_titles[$block_types[$i]['id']] = $block_types[$i]['title'];
+            $block_types_assoc[$block_types[$i]['id']] = $block_types[$i];
+	    }
     }
 
     $layout->add_script('var blocks_selection_block_types = '.json_encode($block_types_assoc));
@@ -2694,7 +2739,12 @@ function block_group_form($item)
     $layout->add_content('
         <div id="block-selection-add-block_type-dialog" style="display: none;">
             <form action="#" method="post" onsubmit="return false;">
-                '.$naviforms->selectfield('block-selection-add-block_type-dialog-type', array_keys($block_types_titles), array_values($block_types_titles)).'
+                '.$naviforms->selectfield(
+	                'block-selection-add-block_type-dialog-type',
+		            array_keys($block_types_titles),
+		            array_values($block_types_titles),
+		            null, null, false, null, "width: 100%;"
+	            ).'
             </form>
         </div>
     ');
@@ -2777,7 +2827,12 @@ function block_group_form($item)
     $layout->add_content('
         <div id="block-selection-add-block-dialog" style="display: none;">
             <form action="#" method="post" onsubmit="return false;">
-                '.$naviforms->selectfield('block-selection-add-block-dialog-type', array_keys($block_elements_titles), array_values($block_elements_titles)).'
+                '.$naviforms->selectfield(
+	                'block-selection-add-block-dialog-type',
+		            array_keys($block_elements_titles),
+		            array_values($block_elements_titles),
+		            null, null, false, null, "width: 100%;"
+	            ).'
             </form>
         </div>
     ');
