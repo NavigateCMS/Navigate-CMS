@@ -176,7 +176,7 @@ try
 
     // parse the special tag "include"
     // also convert curly brackets tags {{nv object=""}} to <nv object="" /> version
-    // we do it now because new nv tags could be added
+    // we do it now because new nv tags could be added before parsing the whole html
     $html = nvweb_template_parse_special($template->file_contents);
 
     $current['plugins_called'] = nvweb_plugins_called_in_template($html);

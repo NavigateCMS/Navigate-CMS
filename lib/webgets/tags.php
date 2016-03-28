@@ -12,6 +12,8 @@ function nvweb_tags($vars=array())
 	switch($vars['mode'])
 	{
 		case 'top':
+        case 'random':
+
             $search_url = nvweb_source_url('theme', 'search');
             if($search_url == $website->absolute_path())
                 $search_url = NVWEB_ABSOLUTE.'/nvtags';
@@ -26,7 +28,7 @@ function nvweb_tags($vars=array())
                 $categories = array_filter($categories);
             }
 
-            $tags = nvweb_tags_retrieve($vars['items'], $categories);
+            $tags = nvweb_tags_retrieve($vars['items'], $categories, $vars['mode']);
             $out = array();
 
             $extra = '';
@@ -52,7 +54,7 @@ function nvweb_tags($vars=array())
 	return $out;
 }
 
-function nvweb_tags_retrieve($maxtags="", $categories=array())
+function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top')
 {
     // TODO: implement a tags cache system to improve website render time
 
@@ -78,6 +80,7 @@ function nvweb_tags_retrieve($maxtags="", $categories=array())
             AND subtype = "tags"
             AND lang = "'.$current['lang'].'"
             '.$extra.'
+          ORDER BY RAND()
         ',
         'array'
     );
@@ -99,7 +102,16 @@ function nvweb_tags_retrieve($maxtags="", $categories=array())
         }
     }
 
-    arsort($tags);
+    switch($order)
+    {
+        case 'random':
+            // don't need to do anything! already randomized by SQL :)
+            break;
+
+        case 'top':
+        default:
+            arsort($tags);
+    }
 
     if(!empty($maxtags))
         $tags = array_slice($tags, 0, $maxtags, true);

@@ -391,7 +391,7 @@ function nvweb_menu_load_dictionary()
 		foreach($data as $item)
 		{
 			$structure['dictionary'][$item->node_id] = $item->text;
-		}			
+		}
 	}
 }
 
