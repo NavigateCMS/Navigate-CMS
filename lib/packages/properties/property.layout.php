@@ -595,12 +595,12 @@ function navigate_property_layout_field($property, $object="")
                 $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-title", $title);
                 $field[] = '<span class="navigate-form-row-info">'.t(67, 'Title').'</span>';
                 $field[] = '</div>';
-                $field[] = '<div class="navigate-form-row" lang="'.$lang.'" style="margin-bottom: 0px;">';
+                $field[] = '<div class="navigate-form-row" lang="'.$lang.'" style="margin-bottom: 0px;" nv_property="'.$property->id.'" >';
                 $field[] = '<label>&nbsp;</label>';
                 $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-link", $link);
                 $field[] = '<span class="navigate-form-row-info">'.t(197, 'Link').'</span>';
                 $field[] = '</div>';
-                $field[] = '<div class="navigate-form-row" lang="'.$lang.'">';
+                $field[] = '<div class="navigate-form-row" lang="'.$lang.'" nv_property="'.$property->id.'" >';
                 $field[] = '<label>&nbsp;</label>';
                 $field[] = $naviforms->selectfield(
                     "property-".$property->id."-".$lang."-target",
