@@ -766,6 +766,23 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     }
                     else // empty avatar
 						$out = '<img class="'.$tag['attributes']['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+
+					if($tag['attributes']['linked']=='true' && !empty($out))
+					{
+						if(!empty($item->url))
+	                    {
+	                        $comment_link = $item->url;
+	                    }
+	                    else if(!empty($item->user))
+	                    {
+	                        $wu = new webuser();
+	                        $wu->load($item->user);
+	                        $comment_link = $wu->social_website;
+	                    }
+
+						if(!empty($comment_link))
+                            $out = '<a href="'.$comment_link.'" target="_blank">'.$out.'</a>';
+					}
 					break;
 
 				case 'username':
