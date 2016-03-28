@@ -621,7 +621,7 @@ function blocks_form($item)
 	);
 
     $layout->add_script("
-        $(document).on('keydown.Ctrl_s', function (evt) { navigate_items_tabform_submit(1); return false; } );
+        $(document).on('keydown.Ctrl_s', function (evt) { navigate_tabform_submit(1); return false; } );
         $(document).on('keydown.Ctrl_m', function (evt) { navigate_media_browser(); return false; } );
     ");
 
@@ -641,7 +641,7 @@ function blocks_form($item)
 		$navibars->add_actions(
             array(
 	            ($user->permission('blocks.create')=='true'?
-	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+	            '<a href="#" onclick="navigate_tabform_submit(1);" title="Ctrl+S">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
 				</a>' : "")
             )
@@ -652,7 +652,7 @@ function blocks_form($item)
 		$navibars->add_actions(
             array(
 	            (($user->permission('blocks.edit')=='true') ?
-	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+	            '<a href="#" onclick="navigate_tabform_submit(1);" title="Ctrl+S">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
 				</a>' : ""),
 	            ($user->permission("blocks.delete") == 'true'?
