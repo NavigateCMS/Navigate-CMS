@@ -354,7 +354,24 @@ function run()
 			{
 				$item->load(intval($_REQUEST['id']));
 
-                $properties = property::load_properties_associative('item', $item->template, 'item', $item->id);
+				if($item->association == 'category' && $item->embedding == 1)
+				{
+					// get structure template
+					$category = new structure();
+					$category->load($item->category);
+
+					$properties = property::load_properties_associative(
+						'structure', $category->template,
+						'item', $item->id
+					);
+				}
+				else
+				{
+                    $properties = property::load_properties_associative(
+	                    'item', $item->template,
+	                    'item', $item->id
+                    );
+				}
 
                 // try to duplicate
                 $item->id = 0;
@@ -363,7 +380,12 @@ function run()
                 if($ok)
                 {
                     // duplicate item properties too (but don't duplicate comments)
-                    $ok = property::save_properties_from_array('item', $item->id, $item->template, $properties);
+	                if($item->association == 'category' && $item->embedding == 1)
+	                {
+		                $ok = property::save_properties_from_array('item', $item->id, $category->template, $properties);
+	                }
+	                else
+                        $ok = property::save_properties_from_array('item', $item->id, $item->template, $properties);
                 }
 
 				if($ok)

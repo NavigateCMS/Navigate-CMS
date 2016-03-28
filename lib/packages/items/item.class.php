@@ -330,7 +330,7 @@ class item
 
 		$this->id = $DB->get_last_id();
 
-		// when item is embedded to a category, set the default title
+		// when item is embedded to a category, set the default title (if not set)
 		if($this->embedding==1 && !empty($this->category))
 		{
 			$cat = new structure();
@@ -338,7 +338,10 @@ class item
 			if(!empty($cat->dictionary))
 			{
 				foreach($cat->dictionary as $cat_lang => $cat_text)
-					$this->dictionary[$cat_lang]['title'] = $cat_text['title'];
+				{
+					if(empty($this->dictionary[$cat_lang]['title']))
+						$this->dictionary[$cat_lang]['title'] = $cat_text['title'];
+				}
 			}
 		}
 
