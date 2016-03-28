@@ -80,9 +80,8 @@ function nvweb_content($vars=array())
             break;
 			
 		case 'structure':
-			// force loading structure data, if not already done
-			if(empty($structure))
-				nvweb_menu();
+			// force loading structure data
+			nvweb_menu();
 
             $structure_id = 0;
             if($current['type']=='item')

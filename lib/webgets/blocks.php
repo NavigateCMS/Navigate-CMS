@@ -369,8 +369,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 
     if(!empty($width))  $sizes.= ' width="'.$width.'" ';
 	if(!empty($height)) $sizes.= ' height="'.$type['height'].'" ';
-
-
+	
 	switch($trigger['trigger-type'][$lang])
 	{
 		case 'image':
@@ -378,30 +377,32 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 			break;
 			
 		case 'rollover':
-			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'"
-								   '.$sizes.'
-								  onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';"
-								  onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';" />';
+			$trigger_html = '
+				<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'"
+					 '.$sizes.'
+					 onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';"
+					 onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';" />';
 			break;
 			
 		case 'flash':
 			$clickTAG = '&clickTAG='.urlencode($action['action-web'][$lang]);
 		
-			$trigger_html = '<!--[if !IE]> -->
-								<object type="application/x-shockwave-flash"
-							  			data="'.NVWEB_ABSOLUTE.'/object?type=file&id='.$trigger['trigger-flash'][$lang].'&disposition=inline'.$clickTAG.'" '.$sizes.'>
-							<!-- <![endif]-->
-							<!--[if IE]>
-								<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
-									  	codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"  '.$sizes.'>
-									  		<param name="movie" value="'.NVWEB_ABSOLUTE.'/object?type=file&id='.$trigger['trigger-flash'][$lang].'&disposition=inline'.$clickTAG.'" />
-							<!-->
-							<!--dgx-->
-											<param name="menu" value="false" />
-											<p>Flash is not installed.</p>
-								</object>
-							<!-- <![endif]-->
-					';		
+			$trigger_html = '
+				<!--[if !IE]> -->
+					<object type="application/x-shockwave-flash"
+				            data="'.NVWEB_ABSOLUTE.'/object?type=file&id='.$trigger['trigger-flash'][$lang].'&disposition=inline'.$clickTAG.'" '.$sizes.'>
+				<!-- <![endif]-->
+				<!--[if IE]>
+					<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+						    codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0"  '.$sizes.'>
+						        <param name="movie" value="'.NVWEB_ABSOLUTE.'/object?type=file&id='.$trigger['trigger-flash'][$lang].'&disposition=inline'.$clickTAG.'" />
+				<!-->
+				<!--dgx-->
+								<param name="menu" value="false" />
+								<p>Flash is not installed.</p>
+					</object>
+				<!-- <![endif]-->
+			';
 					
 			// disable any action, flash do not allow being wrapped by <a>
 			$action = array();
