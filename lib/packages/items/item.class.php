@@ -303,7 +303,7 @@ class item
             array(
                 ":id" => 0,
                 ":website" => $this->website,
-                ":association" => (is_null($this->association)? 'free' : $this->association),
+                ":association" => value_or_default($this->association, 'free'),
                 ":category" => (is_null($this->category)? '' : $this->category),
                 ":embedding" => (is_null($this->embedding)? '0' : $this->embedding),
                 ":template" => (is_null($this->template)? '' : $this->template),
@@ -387,6 +387,7 @@ class item
         if($groups == 'g')
             $groups = '';
 
+
         $ok = $DB->execute(' 
             UPDATE nv_items
             SET 
@@ -415,9 +416,9 @@ class item
                 ":category" 	    => $this->category,
                 ":embedding"        => $this->embedding,
                 ":template" 	    => $this->template,
-                ":date_to_display"	=> $this->date_to_display,
-                ":date_published"	=> $this->date_published,
-                ":date_unpublish"	=> $this->date_unpublish,
+                ":date_to_display"	=> value_or_default($this->date_to_display, 0),
+                ":date_published"	=> value_or_default($this->date_published, 0),
+                ":date_unpublish"	=> value_or_default($this->date_unpublish, 0),
                 ":date_modified"    => $this->date_modified,
                 ":author"   	    => $this->author,
                 ":galleries"        => serialize($this->galleries),

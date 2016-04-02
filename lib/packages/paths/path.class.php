@@ -84,7 +84,7 @@ class path
 				"lang" => $this->lang,
 				"path" => $this->path,
 				"cache_file" => $this->cache_file,
-				"cache_expires" => $this->cache_expires,
+				"cache_expires" => value_or_default($this->cache_expires, 0),
                 "id" => $this->id,
 			    "website" => empty($this->website)? $website->id : $this->website
 			)
@@ -100,7 +100,6 @@ class path
 	public function update()
 	{
 		global $DB;
-		global $website;
 	    
 		$ok = $DB->execute('
  			UPDATE nv_paths
@@ -182,7 +181,7 @@ class path
  				INSERT INTO nv_paths
 				(id, website, type, object_id, lang, path, cache_file, cache_expires)
 				VALUES
-				( 0, :website, :type, :object_id, :lang, :path, "", "" )
+				( 0, :website, :type, :object_id, :lang, :path, "", 0 )
 				',
 				array(
 					':website' => $website_id,

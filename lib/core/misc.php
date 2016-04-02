@@ -654,4 +654,13 @@ function slug($input)
 
     return strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $string));
 }
+
+function value_or_default($value, $default="")
+{
+	if(is_null($value) || $value=="")
+		return $default;
+	else
+		return $value;
+}
+
 ?>
