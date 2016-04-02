@@ -650,6 +650,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 	global $current;
 	global $website;
 	global $structure;
+	global $DB;
 
 	$out = '';
 
@@ -747,7 +748,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 						$extra .= '&border='.$tag['attributes']['border'];
 
 					if(!empty($item->avatar))
+					{
 						$out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$item->avatar.'" width="'.$size.'px" height="'.$size.'px"/>';
+					}
 					else if(!empty($tag['attributes']['default']))
                     {
                         // the comment creator has not an avatar, but the template wants to show a default one
@@ -764,8 +767,32 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         else
                             $out = '<img class="'.$tag['attributes']['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                     }
-                    else // empty avatar
-						$out = '<img class="'.$tag['attributes']['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+                    else // empty avatar, try to get a gravatar or show a blank avatar
+                    {
+	                    $gravatar_hash = "";
+	                    $gravatar_default = 'blank';
+	                    if(!empty($tag['attributes']['gravatar_default']))
+		                    $gravatar_default = $tag['attributes']['gravatar_default'];
+
+	                    if(!empty($item->email))
+	                    {
+		                    $gravatar_hash = md5( strtolower( trim( $item->email ) ) );
+	                    }
+	                    else if(!empty($item->user))
+	                    {
+		                    $email = $DB->query_single('email', 'nv_webusers', 'id = '.protect($item->user));
+		                    if(!empty($email))
+			                    $gravatar_hash = md5( strtolower( trim( $item->email ) ) );
+	                    }
+
+	                    if(!empty($gravatar_hash) && $gravatar_default != 'none')
+	                    {
+		                    $gravatar_url = 'https://www.gravatar.com/avatar/' . $gravatar_hash . '?s='.$size.'&d='.$gravatar_default;
+		                    $out = '<img class="'.$tag['attributes']['class'].'" src="'.$gravatar_url.'" width="'.$size.'px" height="'.$size.'px"/>';
+	                    }
+						else
+							$out = '<img class="'.$tag['attributes']['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+                    }
 
 					if($tag['attributes']['linked']=='true' && !empty($out))
 					{
@@ -787,6 +814,22 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 				case 'username':
 					$out = (!empty($item->username)? $item->username : $item->name);
+					if($tag['attributes']['linked']=='true' && !empty($out))
+					{
+						if(!empty($item->url))
+	                    {
+	                        $comment_link = $item->url;
+	                    }
+	                    else if(!empty($item->user))
+	                    {
+	                        $wu = new webuser();
+	                        $wu->load($item->user);
+	                        $comment_link = $wu->social_website;
+	                    }
+
+						if(!empty($comment_link))
+                            $out = '<a href="'.$comment_link.'" target="_blank">'.$out.'</a>';
+					}
 					break;
 
                 case 'website':
@@ -996,7 +1039,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 				case 'section':
                     if($source=='structure')
                     {
-                        // TODO: auto load content associated?
+                        // TODO: auto load associated content?
                     }
 					$section = $tag['attributes']['section'];
 					if(empty($section)) $section = 'main';
