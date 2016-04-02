@@ -1785,7 +1785,9 @@ function items_form($item)
 			$gallery = '<ul id="items-gallery-elements" class="items-gallery">';
 			
 			$ids = array_keys($item->galleries[0]);
-			
+
+			//$default_img = 'data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=='; // transparent pixel
+			$default_img = 'img/icons/ricebowl/mimetypes/image.png';
 			for($g=0; $g < count($ids); $g++)
 			{
 				$f = new file();
@@ -1794,7 +1796,7 @@ function items_form($item)
 				    <li>
                         <div id="items-gallery-item-'.$ids[$g].'-droppable" class="navigate-droppable ui-corner-all">
                             <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-                            <img title="'.$ids[$g].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$ids[$g].'&amp;disposition=inline&amp;width=75&amp;height=75" />
+                            <img title="'.$ids[$g].'" src="'.$default_img.'" data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$ids[$g].'&amp;disposition=inline&amp;width=75&amp;height=75" width="75" height="75" />
                         </div>
                         <div class="navigate-droppable-cancel" style="display: block;"><img src="img/icons/silk/cancel.png" /></div>
                     </li>
@@ -1832,6 +1834,18 @@ function items_form($item)
 			// script#6
 			
 			$layout->add_script('
+				$(window).on("load", function()
+				{
+					new LazyLoad({
+					    threshold: 200,
+					    container: $("#items-gallery-elements-order").parent()[0],
+					    elements_selector: "#items-gallery-elements img",
+					    throttle: 40,
+					    data_src: "src",
+					    show_while_loading: true
+					});
+				});
+
 				$("#items-gallery-elements .navigate-droppable").live("dblclick", function()
 				{
 					var id = $(this).attr("id");
