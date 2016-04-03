@@ -125,20 +125,24 @@ class path
 		return true;
 	}	  
 
-	public static function loadElementPaths($type, $object_id)
+	public static function loadElementPaths($type, $object_id, $website_id=null)
 	{
 		global $DB;
 		global $website;
-		
+
+		if(empty($website_id))
+			$website_id = $website->id;
+
 		$ok = $DB->query('
 			SELECT *
 			  FROM nv_paths
 			 WHERE type = '.protect($type).'
 			   AND object_id = '.protect($object_id).'
-			   AND website = '.$website->id
+			   AND website = '.$website_id
 		);
 
-	    if(!$ok) throw new Exception($DB->get_last_error());
+	    if(!$ok)
+		    throw new Exception($DB->get_last_error());
     
 		$data = $DB->result();
 		if(!is_array($data)) $data = array();

@@ -316,8 +316,11 @@ class block
 		global $website;
 		global $user;
 
-		if($user->permission("blocks.delete") == 'false')
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		if(!empty($user->id))
+		{
+			if($user->permission("blocks.delete") == 'false')
+				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		}
 
 		if(!empty($this->id))
 		{
@@ -339,8 +342,11 @@ class block
 		global $website;
 		global $user;
 
-		if( $user->permission("blocks.create") == 'false' )
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		if(!empty($user->id))
+		{
+			if( $user->permission("blocks.create") == 'false' )
+				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		}
 
         if(empty($this->website))
             $this->website = $website->id;
@@ -429,8 +435,11 @@ class block
         if(!is_array($this->exclusions))
             $this->exclusions = array();
 
-		if($user->permission("blocks.edit") == 'false')
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		if(!empty($user->id))
+		{
+			if($user->permission("blocks.edit") == 'false')
+				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		}
 
         $groups = '';
         if(is_array($this->groups))

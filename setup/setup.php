@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.9.1');
+	define('APP_VERSION', '1.9.4');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -47,6 +47,16 @@ if($_REQUEST['step']=='cleaning')
 
     header('location: '.NAVIGATE_PARENT.NAVIGATE_FOLDER.'/'.NAVIGATE_MAIN);
 }
+
+/* global variables */
+global $DB;
+global $user;
+global $config;
+global $layout;
+global $website;
+global $theme;
+global $events;
+
 
 if(!empty($_REQUEST['process']))
     process();
@@ -1512,6 +1522,11 @@ function process()
                     $website->languages_published = array('en', 'es');
                     $website->save();
 
+					// default objects (first user, no events...)
+					$events = new events();
+					$user = new user();
+					$user->load(1);
+
 					$zip = new ZipArchive();
 					$zip_open_status = $zip->open(NAVIGATE_PATH.'/themes/ocean.zip');
 					if($zip_open_status === TRUE)
@@ -1520,7 +1535,7 @@ function process()
 						$zip->close();
 						$theme = new theme();
 						$theme->load('ocean');
-						$theme->import_sample($website);
+						$theme->import_sample($website, $user);
 					}
 
 	                echo json_encode(array('ok' => $lang['done']));

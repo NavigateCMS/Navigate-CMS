@@ -284,7 +284,7 @@ class webdictionary
 						":theme" => "",
 						":subtype" => $subtype,
 						":lang" => $lang,
-						":text" => $litem
+						":text" => value_or_default($litem, "")
 					)
 				);
 			}
@@ -344,7 +344,7 @@ class webdictionary
 						':node_id' => (is_numeric($key)? $key : 0),
 						':subtype' => (is_numeric($key)? '' : $key),
 						':lang' => $language,
-						':text' => $text
+						':text' => value_or_default($text, "")
 					)
 				);
 

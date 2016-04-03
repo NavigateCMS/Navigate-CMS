@@ -360,6 +360,8 @@ class theme
     {
         global $website;
         global $DB;
+	    global $user;
+	    global $events;
 
         if(is_null($ws))
             $ws = $website;
@@ -405,6 +407,7 @@ class theme
         $ws->theme_options = $toptions;
 
         $ws->save();
+
 
         // files
         $files = array();
@@ -463,7 +466,6 @@ class theme
             $structure[$old_category_id] = $category;
         }
 
-
         // items
         $items = array();
         if(file_exists($ptf.'/items.var_export'))
@@ -504,7 +506,6 @@ class theme
 
             $items[$old_item_id] = $item;
         }
-
 
         // blocks
         $blocks = array();

@@ -248,11 +248,14 @@ class item
 		global $events;
 		global $user;
 
-		if( $user->permission("items.create") == 'false'    ||
-			!structure::category_allowed($this->category)
-		)
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
-		
+		if(!empty($user->id))
+		{
+			if( $user->permission("items.create") == 'false'    ||
+				!structure::category_allowed($this->category)
+			)
+				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+		}
+
 		$this->date_created  = core_time();		
 		$this->date_modified = core_time();
 
@@ -280,11 +283,12 @@ class item
 		if(empty($this->website))
 			$this->website = $website->id;
 
-		if($user->permission("items.publish") == 'false')
+		if(!empty($user->id) && $user->permission("items.publish") == 'false')
 		{
 			if($this->permission == 0)
 				$this->permission = 1;
 		}
+
 
         $ok = $DB->execute('
             INSERT INTO nv_items
@@ -335,6 +339,7 @@ class item
 		{
 			$cat = new structure();
 			$cat->load($this->category);
+
 			if(!empty($cat->dictionary))
 			{
 				foreach($cat->dictionary as $cat_lang => $cat_text)
@@ -349,13 +354,16 @@ class item
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
 
-		$events->trigger(
-			'item',
-			'save',
-			array(
-				'item' => $this
-			)
-		);
+		if(method_exists($events, 'trigger'))
+		{
+			$events->trigger(
+				'item',
+				'save',
+				array(
+					'item' => $this
+				)
+			);
+		}
 
 		return true;
 	}

@@ -28,9 +28,8 @@ class structure
 	public function load($id)
 	{
 		global $DB;
-		global $website;
-		
-		if($DB->query('SELECT * FROM nv_structure WHERE id = '.intval($id).' AND website = '.$website->id))
+
+		if($DB->query('SELECT * FROM nv_structure WHERE id = '.intval($id)))
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data); // there will be as many entries as languages enabled
@@ -63,9 +62,9 @@ class structure
 		$this->votes		= $main->votes;
 		$this->score		= $main->score;
 		$this->views		= $main->views;			
-		
+
 		$this->dictionary	= webdictionary::load_element_strings('structure', $this->id);
-		$this->paths		= path::loadElementPaths('structure', $this->id);
+		$this->paths		= path::loadElementPaths('structure', $this->id, $this->website);
 		$this->visible		= $main->visible;
 
         // to get the array of groups first we remove the "g" character
