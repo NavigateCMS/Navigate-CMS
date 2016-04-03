@@ -61,8 +61,10 @@ class users_log
 
 		if(!empty($this->id))
 		{			
-			$DB->execute('DELETE FROM nv_users_log
-								WHERE id = '.intval($this->id));
+			$DB->execute('
+				DELETE FROM nv_users_log 
+				 WHERE id = '.intval($this->id)
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -98,23 +100,26 @@ class users_log
         }
 		
 		// prepared statement			
-		$ok = $DB->execute(' INSERT INTO nv_users_log
-								(id, `date`, user, website, `function`, item, action, item_title, data)
-								VALUES 
-								( ?, ?, ?, ?, ?, ?, ?, ?, ?	)',
-							array(
-								0,
-								core_time(),
-								$uid,
-								$wid,
-								$function,
-								$item,
-								$action,
-								(string)$item_title,
-								$encoded_data
-							));		
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_users_log
+				(id, `date`, user, website, `function`, item, action, item_title, data)
+			VALUES 
+				( ?, ?, ?, ?, ?, ?, ?, ?, ?	)',
+			array(
+				0,
+				core_time(),
+				$uid,
+				$wid,
+				$function,
+				$item,
+				$action,
+				value_or_default((string)$item_title, ""),
+				$encoded_data
+			)
+		);
 			
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 				
 		return true;
 	}
@@ -125,18 +130,20 @@ class users_log
 		global $user;
 		global $website;
 		
-		$DB->query('SELECT DISTINCT nvul.website, nvul.function, nvul.item, nvul.item_title,
-									nvf.lid as function_title, nvf.icon as function_icon							
-					FROM nv_users_log nvul, 
-						 nv_functions nvf
-					WHERE user = '.protect($user->id).'
-					  AND nvul.function = nvf.id
-					  AND nvul.item > 0
-					  AND nvul.action = "load"
-					  AND nvul.website = '.protect($website->id).'
-					  AND nvul.item_title <> ""
-					ORDER BY `date` DESC
-					LIMIT '.$limit);
+		$DB->query('
+			SELECT DISTINCT nvul.website, nvul.function, nvul.item, nvul.item_title,
+							nvf.lid as function_title, nvf.icon as function_icon							
+			FROM nv_users_log nvul, 
+				 nv_functions nvf
+			WHERE user = '.protect($user->id).'
+			  AND nvul.function = nvf.id
+			  AND nvul.item > 0
+			  AND nvul.action = "load"
+			  AND nvul.website = '.protect($website->id).'
+			  AND nvul.item_title <> ""
+			ORDER BY `date` DESC
+			LIMIT '.$limit
+		);
 
 		$rows = $DB->result();
 		

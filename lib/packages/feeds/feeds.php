@@ -136,7 +136,7 @@ function run()
 				else
 				{
 					$layout->navigate_notification(t(56, 'Unexpected error.'), false);
-					$out = webdictionary_list();
+					$out = feeds_list();
 				}
 			}
 			break;

@@ -61,19 +61,21 @@ class update
 	public function insert()
 	{
 		global $DB;
-		global $website;
 		
-		$ok = $DB->execute(' INSERT INTO nv_updates
-							(id, version, revision, date_updated, status, changelog)
-							VALUES 
-							( 0,
-							  '.protect($this->version).',
-							  '.protect($this->revision).',
-							  '.protect($this->date_updated).',
-							  '.protect($this->status).',
-							  '.protect($this->changelog).'					  
-							)');							
-			
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_updates
+				(id, version, revision, date_updated, status, changelog)
+			VALUES 
+				( 0, :version, :revision, :date_updated, :status, :changelog )',
+			array(
+				'version' => $this->version,
+				'revision' => $this->revision,
+				'date_updated' => $this->date_updated,
+				'status' => $this->status,
+				'changelog' => $this->changelog
+			)
+		);
+
 		if(!$ok)
 			throw new Exception($DB->get_last_error());
 	
@@ -87,18 +89,26 @@ class update
 		global $DB;
 		global $website;
 					
-		if(empty($this->id)) return false;			
+		if(empty($this->id))
+			return false;
 		
-		$ok = $DB->execute(' UPDATE nv_updates
-								SET 
-									version		 = '.protect($this->version).',
-									revision 	 =   '.protect($this->revision).',
-									date_updated =   '.protect($this->date_updated).',
-									status 		 =   '.protect($this->status).',
-									changelog  	 =   '.protect($this->changelog).'
-							WHERE id = '.$this->id);
-		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		$ok = $DB->execute(' 
+ 			UPDATE nv_updates
+			   SET version = :version, revision = :revision, date_updated = :date_updated, 
+			   	   status = :status, changelog = :changelog
+		     WHERE id = :id',
+			array(
+				'id' => $this->id,
+				'version' => $this->version,
+				'revision' => $this->revision,
+				'date_updated' => $this->date_updated,
+				'status' => $this->status,
+				'changelog' => $this->changelog
+			)
+		);
+
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		return true;
 	}		

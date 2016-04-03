@@ -73,13 +73,14 @@ class backup
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute('DELETE FROM nv_backups
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id
-						);
+			$DB->execute('
+				DELETE FROM nv_backups
+				WHERE id = '.intval($this->id).' AND 
+					  website = '.$website->id
+			);
 			
 			// remove backup file
-            @unlink(NAVIGATE_URL.'/private'.$this->file);
+            @unlink(NAVIGATE_URL.'/private/'.$this->file);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -92,21 +93,25 @@ class backup
 		
 		$current_version = update::latest_installed();
 
-		$ok = $DB->execute(' INSERT INTO nv_backups
-								(id, website, date_created, size, status, title, notes, file, runtime, version)
-								VALUES 
-								( 0,
-								  '.$website->id.',
-								  '.protect(time()).',  
-								  '.protect($this->size).',
-								  '.protect($this->status).',
-								  '.protect($this->title).',
-								  '.protect($this->notes).',								  
-								  '.protect($this->file).',
-								  '.protect($this->runtime).',
-								  '.protect($current_version->version.' r'.$current_version->revision).'
-								)');
-									
+		$ok = $DB->execute('
+			INSERT INTO nv_backups
+				(id, website, date_created, size, status, title, notes, file, runtime, version)
+			VALUES 
+				( 0, :website, :date_created, :size, :status, :title, :notes, :file, :runtime, :version)
+			',
+			array(
+				'website' => $website->id,
+				'date_created' => time(),
+				'size' => value_or_default($this->size, 0),
+				'status' => value_or_default($this->status, ''),
+				'title' => value_or_default($this->title, ''),
+				'notes' => value_or_default($this->notes, ''),
+				'file'  => value_or_default($this->file, ''),
+				'runtime' => value_or_default($this->runtime, 0),
+				'version' => $current_version->version.' r'.$current_version->revision
+			)
+		);
+
 		$this->id = $DB->get_last_id();
 		
 		return true;
@@ -115,20 +120,26 @@ class backup
 	public function update()
 	{
 		global $DB;
-		global $website;
 			
-		$ok = $DB->execute(' UPDATE nv_backups
-								SET 
-									size = '.protect($this->size).',
-									status = '.protect($this->status).',
-									title = '.protect($this->title).',
-									notes = '.protect($this->notes).',
-									file = '.protect($this->file).',
-									runtime = '.protect($this->runtime).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+		$ok = $DB->execute('
+			UPDATE nv_backups
+			SET size = :size, status = :status, title = :title, notes = :notes, file = :file, runtime = :runtime
+			WHERE id = :id 
+			  AND website = :website',
+			array(
+				'id' => $this->id,
+				'website' => $this->website,
+				'size' => value_or_default($this->size, 0),
+				'status' => value_or_default($this->status, ''),
+				'title' => value_or_default($this->title, ''),
+				'notes' => value_or_default($this->notes, ''),
+				'file'  => value_or_default($this->file, ''),
+				'runtime' => value_or_default($this->runtime, 0)
+			)
+		);
 							  
-		if(!$ok) throw new Exception($DB->get_last_error());					  
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		return true;
 	}		

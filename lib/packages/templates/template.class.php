@@ -205,23 +205,27 @@ class template
 		global $DB;
 		global $website;
 		
-		$ok = $DB->execute(' INSERT INTO nv_templates
-								(id, website, title, file, sections, gallery, comments, tags, statistics, permission, enabled)
-								VALUES 
-								( 0,
-								  '.$website->id.',
-								  '.protect($this->title).',
-								  '.protect($this->file).',
-								  '.protect(serialize($this->sections)).',  
-								  '.protect($this->gallery).',
-								  '.protect($this->comments).',
-								  '.protect($this->tags).',								  								  
-								  '.protect($this->statistics).',
-								  '.protect($this->permission).',
-								  '.protect($this->enabled).'						  
-								)');
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_templates
+				(id, website, title, file, sections, gallery, comments, tags, statistics, permission, enabled)
+			VALUES 
+				( 0, :website, :title, :file, :sections, :gallery, :comments, :tags, :statistics, :permission, :enabled )',
+			array(
+				':website' => value_or_default($this->website, $website->id),
+				':title' => value_or_default($this->title, ""),
+				':file' => value_or_default($this->file, ""),
+				':sections' => serialize($this->sections),
+				':gallery' => value_or_default($this->gallery, 0),
+				':comments' => value_or_default($this->comments, 0),
+				':tags' => value_or_default($this->tags, 0),
+				':statistics' => value_or_default($this->statistics, 0),
+				':permission' => value_or_default($this->permission, 0),
+				':enabled' => value_or_default($this->enabled, 0)
+			)
+		);
 			
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
 		
@@ -233,19 +237,27 @@ class template
 		global $DB;
 		global $website;
 			
-		$ok = $DB->execute(' UPDATE nv_templates
-								SET 
-									title	= '.protect($this->title).',
-									file =   '.protect($this->file).',
-									sections = '.protect(serialize($this->sections)).', 
-									gallery =   '.protect($this->gallery).',
-									comments =   '.protect($this->comments).',
-									tags =   '.protect($this->tags).',				
-								 	statistics = '.protect($this->statistics).',														
-									permission =   '.protect($this->permission).',
-									enabled =  '.protect($this->enabled).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+		$ok = $DB->execute(' 
+ 			UPDATE nv_templates
+			   SET  title = :title, file = :file, sections = :sections, gallery = :gallery,
+			    	comments = :comments, tags = :tags, statistics = :statistics, 
+			    	permission = :permission, enabled = :enabled 
+			 WHERE id = :id
+			   AND website = :website',
+			array(
+				':id' => $this->id,
+				':website' => value_or_default($this->website, $website->id),
+				':title' => value_or_default($this->title, ""),
+				':file' => value_or_default($this->file, ""),
+				':sections' => serialize($this->sections),
+				':gallery' => value_or_default($this->gallery, 0),
+				':comments' => value_or_default($this->comments, 0),
+				':tags' => value_or_default($this->tags, 0),
+				':statistics' => value_or_default($this->statistics, 0),
+				':permission' => value_or_default($this->permission, 0),
+				':enabled' => value_or_default($this->enabled, 0)
+			)
+		);
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		

@@ -158,6 +158,8 @@ function run()
             // download backup
             $item->load(intval($_REQUEST['id']));
 
+			ob_end_flush();
+
             header('Content-type: application/zip');
 			header("Content-Length: ".filesize(NAVIGATE_PRIVATE.$item->file));
 			header('Content-Disposition: attachment; filename="'.basename($item->file).'"');

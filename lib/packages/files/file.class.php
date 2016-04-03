@@ -405,7 +405,7 @@ class file
 				":mime" => $this->mime,
 				":width" => intval($this->width),
 				":height" => intval($this->height),
-				":focalpoint" => (empty($this->focalpoint)? '' : $this->focalpoint),
+				":focalpoint" => value_or_default($this->focalpoint, ''),
 				":title" => json_encode($this->title),
 				":description" => json_encode($this->description),
 				":date_added" => $this->date_added,
@@ -413,7 +413,7 @@ class file
 				":permission" => intval($this->permission),
 				":access" => intval($this->access),
 				":groups" => $groups,
-				":system" => (isset($this->system)? $this->system : 0),
+				":system" => value_or_default($this->system, 0),
 				":enabled" => intval($this->enabled)
             )
         );
@@ -475,15 +475,15 @@ class file
                 ":mime" => $this->mime,
                 ":width" => $this->width,
                 ":height" => $this->height,
-                ":focalpoint" => (empty($this->focalpoint)? '' : $this->focalpoint),
+                ":focalpoint" => value_or_default($this->focalpoint, ''),
                 ":title" => json_encode($this->title),
                 ":description" => json_encode($this->description),
                 ":date_added" => $this->date_added,
                 ":uploaded_by" => $this->uploaded_by,
                 ":permission" => $this->permission,
-                ":access" => (isset($this->access)? $this->access : 0),
+                ":access" => value_or_default($this->access, 0),
                 ":groups" => $groups,
-	            ":system" => (isset($this->system)? $this->system : 0),
+	            ":system" => value_or_default($this->system, 0),
                 ":enabled" => $this->enabled
             )
         );

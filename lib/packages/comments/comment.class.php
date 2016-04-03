@@ -102,9 +102,9 @@ class comment
 					:status, :message)
 			',
 			array(
-				":website" => empty($this->website)? $website->id : $this->website,
-				":item" => $this->item,
-				":user" => empty($this->user)? "" : $this->user,
+				":website" => value_or_default($this->website, $website->id),
+				":item" => value_or_default($this->item, 0),
+				":user" => value_or_default($this->user, 0),
 				":name" => empty($this->name)? "" : $this->name,
 				":email" => empty($this->email)? "" : $this->email,
 				":url" => empty($this->url)? "" : $this->url,
@@ -112,7 +112,7 @@ class comment
 				":date_created" => core_time(),
 				":date_modified" => 0,
 				":last_modified_by" => 0,
-				":status" => $this->status,
+				":status" => value_or_default($this->status, 0),
 				":message" => $message
 			)
 		);
@@ -150,15 +150,15 @@ class comment
             WHERE id = :id
 			',
 			array(
-				":item" => $this->item,
-				":user" => empty($this->user)? "" : $this->user,
+				":item" => value_or_default($this->item, 0),
+				":user" => value_or_default($this->user, 0),
 				":name" => empty($this->name)? "" : $this->name,
 				":email" => empty($this->email)? "" : $this->email,
 				":url" => empty($this->url)? "" : $this->url,
 				":date_created" => $this->date_created,
 				":date_modified" => core_time(),
-				":last_modified_by" => $user->id,
-				":status" => $this->status,
+				":last_modified_by" => value_or_default($user->id, 0),
+				":status" => value_or_default($this->status, 0),
 				":message" => $message,
 				":id" => $this->id
 			)

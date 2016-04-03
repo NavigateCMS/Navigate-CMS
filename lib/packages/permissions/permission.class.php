@@ -69,8 +69,6 @@ class permission
         $this->scope        = $rs->scope;
         $this->function     = $rs->function;
 	    $this->type         = $rs->type;
-	    //$this->description  = $rs->id;
-        //$this->dvalue       = $rs->id;
         $this->profile      = $rs->profile;
         $this->user         = $rs->user;
         $this->website      = $rs->website;
@@ -99,10 +97,8 @@ class permission
     {
         global $DB;
 
-	    $value = @$this->value;
-	    if(!isset($this->value))
-		    $value = "";
-	    else
+	    $value = "";
+	    if(isset($this->value))
 		    $value = json_encode($this->value);
 
         $ok = $DB->execute(
@@ -121,12 +117,12 @@ class permission
                 )',
             array(
                 ':website'   =>  $this->website,
-                ':name'      =>  $this->name,
-                ':scope'     =>  $this->scope,
-	            ':type'      =>  $this->type,
-	            ':function'  =>  intval($this->function),
-                ':profile'   =>  $this->profile,
-                ':user'      =>  $this->user,
+                ':name'      =>  value_or_default($this->name, ""),
+                ':scope'     =>  value_or_default($this->scope, ""),
+	            ':type'      =>  value_or_default($this->type, ""),
+	            ':function'  =>  value_or_default($this->function, 0),
+                ':profile'   =>  value_or_default($this->profile, 0),
+                ':user'      =>  value_or_default($this->user, 0),
                 ':value'     =>  $value
             )
         );
@@ -172,12 +168,12 @@ class permission
             array(
                 ':id'        =>  $this->id,
                 ':website'   =>  $this->website,
-                ':name'      =>  $this->name,
-                ':scope'     =>  $this->scope,
-                ':type'      =>  $this->type,
-                ':function'  =>  intval($this->function),
-                ':profile'   =>  $this->profile,
-                ':user'      =>  $this->user,
+                ':name'      =>  value_or_default($this->name, ""),
+                ':scope'     =>  value_or_default($this->scope, ""),
+	            ':type'      =>  value_or_default($this->type, ""),
+	            ':function'  =>  value_or_default($this->function, 0),
+                ':profile'   =>  value_or_default($this->profile, 0),
+                ':user'      =>  value_or_default($this->user, 0),
                 ':value'     =>  $value
             )
         );

@@ -62,17 +62,21 @@ class webuser_group
         global $DB;
         global $website;
 
-        $ok = $DB->execute(' INSERT INTO nv_webuser_groups
-								( id, website, name, code, description )
-								VALUES
-								( 0,
-								  '.protect($website->id).',
-								  '.protect($this->name).',
-								  '.protect($this->code).',
-								  '.protect($this->description).'
-								)');
+        $ok = $DB->execute(' 
+          INSERT INTO nv_webuser_groups
+		    ( id, website, name, code, description )
+		  VALUES
+		    ( 0, :website, :name, :code, :description )',
+            array(
+                'website' => value_or_default($this->website, $website->id),
+                'name' => value_or_default($this->name, ""),
+                'code' => value_or_default($this->code, ""),
+                'description' => value_or_default($this->description, "")
+            )
+        );
 
-        if(!$ok) throw new Exception($DB->get_last_error());
+        if(!$ok)
+            throw new Exception($DB->get_last_error());
 
         $this->id = $DB->get_last_id();
 
@@ -83,15 +87,21 @@ class webuser_group
     {
         global $DB;
 
-        $ok = $DB->execute(' UPDATE nv_webuser_groups
-								SET
-								  website = '.protect($this->website).',
-								  name = '.protect($this->name).',
-								  code = '.protect($this->code).',
-								  description = '.protect($this->description).'
-                 				WHERE id = '.protect($this->id));
+        $ok = $DB->execute(' 
+          UPDATE nv_webuser_groups
+            SET website = :website, name = :name, code = :code, description = :description
+            WHERE id = :id',
+            array(
+                'id' => $this->id,
+                'website' => $this->website,
+                'name' => value_or_default($this->name, ""),
+                'code' => value_or_default($this->code, ""),
+                'description' => value_or_default($this->description, "")
+            )
+        );
 
-        if(!$ok) throw new Exception($DB->get_last_error());
+        if(!$ok)
+            throw new Exception($DB->get_last_error());
 
         return true;
     }

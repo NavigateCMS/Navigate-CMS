@@ -121,36 +121,29 @@ class extension
         $settings = $this->settings;
         $settings = json_encode($settings);
 
-        if(empty($this->id))    // INSERT
+        if(empty($this->id))
         {
             $ok = $DB->execute('
                 INSERT INTO nv_extensions (id, website, extension, enabled, settings)
-                    VALUES(
-                            0,
-                            :website,
-                            :code,
-                            :enabled,
-                            :settings
-                          )',
+                    VALUES(0, :website, :code, :enabled, :settings )',
                 array(
                     ':website' => $this->website,
                     ':code' => $this->code,
-                    ':enabled' => $this->enabled,
+                    ':enabled' => value_or_default($this->enabled, 0),
                     ':settings' => $settings
                 )
             );
         }
-        else                    // UPDATE
+        else
         {
             $ok = $DB->execute('
                 UPDATE nv_extensions
-                   SET enabled = :enabled,
-                       settings = :settings
+                   SET enabled = :enabled, settings = :settings
                  WHERE id = :id',
                 array(
-                ':enabled' => $this->enabled,
-                ':settings' => $settings,
-                ':id' => $this->id
+                    ':enabled' => value_or_default($this->enabled, 0),
+                    ':settings' => $settings,
+                    ':id' => $this->id
                 )
             );
         }

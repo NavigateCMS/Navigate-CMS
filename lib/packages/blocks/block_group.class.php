@@ -96,10 +96,10 @@ class block_group
                 ( 0, :website, :code, :title, :notes, :blocks )
             ',
             array(
-                ':website'          =>  empty($this->website)? $website->id : $this->website,
-                ':code'             =>  $this->code,
-                ':title'            =>  $this->title,
-                ':notes'            =>  $this->notes,
+                ':website'          =>  value_or_default($this->website, $website->id),
+                ':code'             =>  value_or_default($this->code, ''),
+                ':title'            =>  value_or_default($this->title, ''),
+                ':notes'            =>  value_or_default($this->notes, ''),
                 ':blocks'           =>  serialize($this->blocks)
             )
         );
@@ -129,9 +129,9 @@ class block_group
             array(
                 ':id'               =>  $this->id,
                 ':website'          =>  $this->website,
-                ':code'             =>  $this->code,
-                ':title'            =>  $this->title,
-                ':notes'            =>  $this->notes,
+                ':code'             =>  value_or_default($this->code, ''),
+                ':title'            =>  value_or_default($this->title, ''),
+                ':notes'            =>  value_or_default($this->notes, ''),
                 ':blocks'           =>  serialize($this->blocks)
             )
         );
@@ -205,7 +205,6 @@ class block_group
 
 		return $tmp;
 	}
-
 		
 }
 

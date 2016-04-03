@@ -246,8 +246,8 @@ class user
                 ':profile'           =>  $this->profile,
                 ':date_format'       =>  $this->date_format,
                 ':decimal_separator' =>  $this->decimal_separator,
-                ':skin'              =>  $this->skin,
-                ':blocked'           =>  $this->blocked
+                ':skin'              =>  value_or_default($this->skin, 'cupertino'),
+                ':blocked'           =>  value_or_default($this->blocked, 0)
             )
         );
 
@@ -288,21 +288,22 @@ class user
 				  cookie_hash = :cookie_hash,
 				  activation_key = :activation_key
 			WHERE id = :id',
-            array(':language' => $this->language,
-              ':id' => $this->id,
-              ':email' => $this->email,
-              ':username' => $this->username,
-              ':password' => $this->password,
-              ':timezone' => $this->timezone,
-              ':websites' =>  (empty($this->websites)? '' : json_encode($this->websites)),
-              ':profile' => $this->profile,
-              ':date_format' => $this->date_format,
-              ':decimal_separator' => $this->decimal_separator,
-              ':skin' => $this->skin,
-              ':blocked' => $this->blocked,
-              ':attempts' => $this->attempts,
-              ':cookie_hash' => $this->cookie_hash,
-              ':activation_key' => $this->activation_key
+            array(
+	            ':language' => $this->language,
+				':id' => $this->id,
+				':email' => $this->email,
+				':username' => $this->username,
+				':password' => $this->password,
+				':timezone' => $this->timezone,
+				':websites' =>  (empty($this->websites)? '' : json_encode($this->websites)),
+				':profile' => $this->profile,
+				':date_format' => $this->date_format,
+				':decimal_separator' => $this->decimal_separator,
+				':skin' => value_or_default($this->skin, "cupertino"),
+				':blocked' => value_or_default($this->blocked, 0),
+				':attempts' => value_or_default($this->attempts, 0),
+				':cookie_hash' => value_or_default($this->cookie_hash, ""),
+				':activation_key' => value_or_default($this->activation_key, "")
             )
         );
 

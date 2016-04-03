@@ -105,10 +105,11 @@ class feed
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute('DELETE FROM nv_feeds
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id
-						);
+			$DB->execute('
+				DELETE FROM nv_feeds
+					  WHERE id = '.intval($this->id).' AND 
+					        website = '.$website->id
+			);
 
 			// remove dictionary elements
 			webdictionary::save_element_strings('feed', $this->id, array());
@@ -125,21 +126,25 @@ class feed
 		global $DB;
 		global $website;
 		
-		$ok = $DB->execute(' INSERT INTO nv_feeds
-								(id, website, categories, format, image, entries, content, views, permission, enabled)
-								VALUES 
-								( 0,
-								  '.$website->id.',
-								  '.protect(implode(',', $this->categories)).',  
-								  '.protect($this->format).',
-								  '.protect($this->image).',
-								  '.protect($this->entries).',
-								  '.protect($this->content).',								  
-								  '.protect($this->views).',
-								  '.protect($this->permission).',
-								  '.protect($this->enabled).'						  
-								)');
-									
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_feeds
+				(id, website, categories, format, image, entries, content, views, permission, enabled)
+			VALUES 
+				( 0, :website, :categories, :format, :image, :entries, :content, :views, :permission, :enabled)
+			',
+			array(
+				'website' => value_or_default($this->website, $website->id),
+				'categories' => implode(',', $this->categories),
+				'format' => $this->format,
+				'image' => value_or_default($this->image, 0),
+				'entries' => value_or_default($this->entries, 10),
+				'content' => $this->content,
+				'views' => value_or_default($this->views, 0),
+				'permission' => value_or_default($this->permission, 0),
+				'enabled' => value_or_default($this->enabled, 0)
+			)
+		);
+
 		$this->id = $DB->get_last_id();
 			
 		webdictionary::save_element_strings('feed', $this->id, $this->dictionary);
@@ -151,23 +156,28 @@ class feed
 	public function update()
 	{
 		global $DB;
-		global $website;
 		
 		if(!is_array($this->categories))
 			$this->categories = array();
 			
-		$ok = $DB->execute(' UPDATE nv_feeds
-								SET 
-									categories =   '.protect(implode(',', $this->categories)).',
-									format = '.protect($this->format).', 
-									image = '.protect($this->image).',
-									entries = '.protect($this->entries).',
-									content = '.protect($this->content).',																		
-									views =   '.protect($this->views).',
-									permission =   '.protect($this->permission).',
-									enabled =  '.protect($this->enabled).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+		$ok = $DB->execute(' 
+ 			UPDATE nv_feeds
+			  SET categories = :categories, format = :format, image = :image, entries = :entries, 
+			  	  content = :content, views = :views, permission = :permission, enabled = :enabled
+			WHERE id = :id	AND	website = :website',
+			array(
+				'id' => $this->id,
+				'website' => $this->website,
+				'categories' => implode(',', $this->categories),
+				'format' => $this->format,
+				'image' => value_or_default($this->image, 0),
+				'entries' => value_or_default($this->entries, 10),
+				'content' => $this->content,
+				'views' => value_or_default($this->views, 0),
+				'permission' => value_or_default($this->permission, 0),
+				'enabled' => value_or_default($this->enabled, 0)
+			)
+		);
 							  
 		if(!$ok) throw new Exception($DB->get_last_error());					  
 		

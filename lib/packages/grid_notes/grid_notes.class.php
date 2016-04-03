@@ -20,15 +20,16 @@ class grid_notes
             INSERT INTO nv_notes
                 (id, website, user, item_type, item_id, background, note, date_created)
                 VALUES
-                (   0,
-                    '.protect($website->id).',
-                    '.protect($user->id).',
-                    '.protect($item_type).',
-                    '.protect($item_id).',
-                    '.protect($color).',
-                    "",
-                    '.time().'
-                )'
+                (   0, :website, :user, :item_type, :item_id, :background, :note, :date_created   )',
+            array(
+                ':website' => $website->id,
+                ':user' => value_or_default($user->id, 0),
+                ':item_type' => value_or_default($item_type, ''),
+                ':item_id' => value_or_default($item_id, 0),
+                ':background' => value_or_default($color, ""),
+                ':note' => "",
+                ':date_created' => time()
+            )
         );
 
         $background = $DB->query_single(
@@ -37,7 +38,8 @@ class grid_notes
             'website = '.$website->id.'
              AND item_type = '.protect($item_type).'
              AND item_id = '.protect($item_id).'
-             ORDER BY date_created DESC');
+             ORDER BY date_created DESC'
+        );
 
 
         // TO DO: purge old grid notes when current background is empty or transparent
@@ -128,14 +130,15 @@ class grid_notes
         if($notes_only)
             $extra = ' AND gn.note != "" ';
 
-        $DB->query("    SELECT gn.*, u.username as username
-                        FROM nv_notes gn, nv_users u
-                        WHERE gn.website = ".protect($website->id)."
-                          AND gn.item_type = ".protect($item_type)."
-                          AND gn.item_id = ".protect($id)."
-                          AND gn.user = u.id ".
-                          $extra."
-                        ORDER BY gn.date_created DESC"
+        $DB->query("    
+            SELECT gn.*, u.username as username
+            FROM nv_notes gn, nv_users u
+            WHERE gn.website = ".protect($website->id)."
+              AND gn.item_type = ".protect($item_type)."
+              AND gn.item_id = ".protect($id)."
+              AND gn.user = u.id ".
+              $extra."
+            ORDER BY gn.date_created DESC"
         );
 
         $result = $DB->result();
@@ -169,15 +172,16 @@ class grid_notes
             INSERT INTO nv_notes
                 (id, website, user, item_type, item_id, background, note, date_created)
                 VALUES
-                (   0,
-                    '.protect($website->id).',
-                    '.protect($user->id).',
-                    '.protect($type).',
-                    '.protect($id).',
-                    '.protect($background).',
-                    '.protect($comment).',
-                    '.time().'
-                )'
+                (   0, :website, :user, :item_type, :item_id, :background, :note, :date_created )',
+            array(
+                ':website' => $website->id,
+                ':user' => value_or_default($user->id, 0),
+                ':item_type' => value_or_default($type, ''),
+                ':item_id' => value_or_default($id, 0),
+                ':background' => value_or_default($background, ""),
+                ':note' => value_or_default($comment, ""),
+                ':date_created' => time()
+            )
         );
 
         return 'true';
@@ -209,7 +213,11 @@ class grid_notes
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_notes WHERE website = '.protect($website->id), 'object');
+        $DB->query('
+            SELECT * FROM nv_notes 
+            WHERE website = '.protect($website->id),
+            'object'
+        );
         $out = $DB->result();
 
         if($type='json')

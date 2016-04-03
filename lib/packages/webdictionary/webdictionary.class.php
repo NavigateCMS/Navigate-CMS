@@ -47,12 +47,14 @@ class webdictionary
 			
 			// we need to load the database versions of the theme strings
 			// node_id is not used in database with theme strings
-			$DB->query('SELECT lang, text
-						  FROM nv_webdictionary 
-						 WHERE node_type = "theme"
-						   AND theme = '.protect($theme->name).'
-						   AND subtype = '.protect($this->subtype).'
-						   AND website = '.$website->id);		
+			$DB->query('
+				SELECT lang, text
+				  FROM nv_webdictionary 
+				 WHERE node_type = "theme"
+				   AND theme = '.protect($theme->name).'
+				   AND subtype = '.protect($this->subtype).'
+				   AND website = '.$website->id
+			);
 								
 			$data = $DB->result();
 			
@@ -111,13 +113,14 @@ class webdictionary
 			else
 				$node_id_filter = '';
 
-			$DB->execute('DELETE FROM nv_webdictionary 
-								WHERE website = '.protect($this->website).'
-								  AND subtype = '.protect($this->subtype).'
-								  AND theme = '.protect($this->theme).' 
-								  AND node_type = '.protect($this->node_type).
-								  $node_id_filter
-						);
+			$DB->execute('
+				DELETE FROM nv_webdictionary 
+					WHERE website = '.protect($this->website).'
+					  AND subtype = '.protect($this->subtype).'
+					  AND theme = '.protect($this->theme).' 
+					  AND node_type = '.protect($this->node_type).
+					  $node_id_filter
+			);
 		}
 		
 		// insert the new ones

@@ -58,7 +58,7 @@ class structure
 		$this->icon			= $main->icon;
 		$this->metatags  	= $main->metatags;
 		$this->date_published	= (empty($main->date_published)? '' : $main->date_published);
-		$this->date_unpublish	= (empty($main->date_unpublish)? '' : $main->date_unpublish);	
+		$this->date_unpublish	= (empty($main->date_unpublish)? '' : $main->date_unpublish);
 		
 		$this->votes		= $main->votes;
 		$this->score		= $main->score;
@@ -194,18 +194,18 @@ class structure
 				)
 			',
             array(
-	            ":website" => (is_null($this->website)? $website->id : $this->website),
-	            ":parent" => (is_null($this->parent)? '' : $this->parent),
-	            ":position" => (is_null($this->position)? '' : $this->position),
-	            ":access" => (is_null($this->access)? '' : $this->access),
+	            ":website" => value_or_default($this->website, $website->id),
+	            ":parent" => value_or_default($this->parent, 0),
+	            ":position" => value_or_default($this->position, 0),
+	            ":access" => value_or_default($this->access, 0),
 	            ":groups" => $groups,
-	            ":permission" => (is_null($this->permission)? '' : $this->permission),
-				":icon" => (is_null($this->icon)? '' : $this->icon),
-				":metatags" => (is_null($this->metatags)? '' : $this->metatags),
-				":template" => (is_null($this->template)? '' : $this->template),
-				":date_published" => (is_null($this->date_published)? '' : $this->date_published),
-				":date_unpublish" => (is_null($this->date_unpublish)? '' : $this->date_unpublish),
-				":visible" => (is_null($this->visible)? '' : $this->visible),
+	            ":permission" => value_or_default($this->permission, 0),
+				":icon" => value_or_default($this->icon, 0),
+				":metatags" => value_or_default($this->metatags, ''),
+				":template" =>  value_or_default($this->template, ''),
+				":date_published" => value_or_default($this->date_published, 0),
+				":date_unpublish" => value_or_default($this->date_unpublish, 0),
+				":visible" => value_or_default($this->visible, 0),
 				":views" => 0,
 				":votes" => 0,
 				":score" => 0
@@ -257,11 +257,11 @@ class structure
 	            ":access" => $this->access,
 	            ":groups" => $groups,
 	            ":permission" => $this->permission,
-				":icon" => (empty($this->icon)? '' : $this->icon),
-				":metatags" => (empty($this->metatags)? '' : $this->metatags),
+				":icon" => value_or_default($this->icon, ''),
+				":metatags" => value_or_default($this->metatags, ''),
 				":template" => $this->template,
-				":date_published" => $this->date_published,
-				":date_unpublish" => $this->date_unpublish,
+				":date_published" => value_or_default($this->date_published, 0),
+				":date_unpublish" => value_or_default($this->date_unpublish, 0),
 				":visible" => $this->visible,
 				":views" => $this->views,
 				":votes" => $this->votes,

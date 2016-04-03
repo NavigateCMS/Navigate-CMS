@@ -81,10 +81,11 @@ class menu
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute(' DELETE FROM nv_menus
-							WHERE id = '.intval($this->id).'
-              				LIMIT 1 '
-						);
+			$DB->execute(' 
+ 				DELETE FROM nv_menus
+					WHERE id = '.intval($this->id).'
+              		LIMIT 1 '
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -94,19 +95,23 @@ class menu
 	{
 		global $DB;
     
-		$ok = $DB->execute(' INSERT INTO nv_menus
-								(id, codename, icon, lid, notes, functions, enabled)
-								VALUES 
-								( 0,
-								  '.protect($this->codename).',
-								  '.protect($this->icon).',
-								  '.protect($this->lid).',
-								  '.protect($this->notes).',
-								  '.protect(json_encode($this->functions)).',
-								  '.protect($this->enabled).'				  
-								)');
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_menus
+				(id, codename, icon, lid, notes, functions, enabled)
+			VALUES 
+				( 0, :codename, :icon, :lid, :notes, :functions, :enabled)',
+			array(
+				'codename' => value_or_default($this->codename, ""),
+				'icon' => value_or_default($this->icon, ""),
+				'lid' => value_or_default($this->lid, 0),
+				'notes' => value_or_default($this->notes, ""),
+				'functions' => json_encode($this->functions),
+				'enabled' => value_or_default($this->enabled, 0)
+			)
+		);
 				
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
 		
@@ -117,17 +122,24 @@ class menu
 	{
 		global $DB;
 	    
-		$ok = $DB->execute(' UPDATE nv_menus
-								SET
-								  codename = '.protect($this->codename).',
-								  icon = '.protect($this->icon).',
-								  lid = '.protect($this->lid).',
-								  notes = '.protect($this->notes).',
-								  functions = '.protect(json_encode($this->functions)).',
-								  enabled = '.protect($this->enabled).'
-                 				WHERE id = '.protect($this->id));
+		$ok = $DB->execute(' 
+ 			UPDATE nv_menus
+			   SET codename = :codename, icon = :icon, lid = :lid, notes = :notes, 
+			   	   functions = :functions, enabled = :enabled
+            WHERE id = :id',
+			array(
+				'id' => $this->id,
+				'codename' => value_or_default($this->codename, ""),
+				'icon' => value_or_default($this->icon, ""),
+				'lid' => value_or_default($this->lid, 0),
+				'notes' => value_or_default($this->notes, ""),
+				'functions' => json_encode($this->functions),
+				'enabled' => value_or_default($this->enabled, 0)
+			)
+        );
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		return true;
 	}

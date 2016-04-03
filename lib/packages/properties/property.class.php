@@ -262,10 +262,11 @@ class property
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute('DELETE FROM nv_properties
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id
-						);
+			$DB->execute('
+				DELETE FROM nv_properties
+				  WHERE id = '.intval($this->id).' AND 
+				        website = '.$website->id
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -295,17 +296,17 @@ class property
               :enabled
             )',
           array(
-            ':website' => empty($this->website)? $website->id : $this->website,
+            ':website' => value_or_default($this->website, $website->id),
             ':element' => $this->element,
             ':template' => $this->template,
             ':name' => $this->name,
             ':type' => $this->type,
             ':options' => serialize($this->options),
-            ':dvalue' => $this->dvalue,
+            ':dvalue' => value_or_default($this->dvalue, ""),
             ':multilanguage' => $this->multilanguage,
-            ':helper' => (is_null($this->helper)? '' : $this->helper),
-            ':position' => intval($this->position),
-            ':enabled' => $this->enabled
+            ':helper' => value_or_default($this->helper, ''),
+            ':position' => value_or_default($this->position, 0),
+            ':enabled' => value_or_default($this->enabled, 0)
           )
         );
 			
@@ -345,8 +346,8 @@ class property
                 ':dvalue' => $this->dvalue,
                 ':multilanguage' => $this->multilanguage,
                 ':helper' => $this->helper,
-                ':position' => intval($this->position),
-                ':enabled' => $this->enabled,
+                ':position' => value_or_default($this->position, 0),
+                ':enabled' => value_or_default($this->enabled, 0),
                 ':id' => $this->id,
                 ':website' => $this->website
             )
@@ -729,7 +730,7 @@ class property
                     ':website' => $website->id,
                     ':property_id' => $property->id,
                     ':type' => $item_type,
-                    ':item_id' => $item_id,
+                    ':item_id' => value_or_default($item_id, 0),
                     ':name' => $property->name,
                     ':value' => $_REQUEST['property-'.$property->id]
                 )
@@ -874,7 +875,7 @@ class property
                     ':website' => $ws->id,
                     ':property_id' => $property->id,
                     ':type' => $item_type,
-                    ':item_id' => $item_id,
+                    ':item_id' => value_or_default($item_id, 0),
                     ':name' => $property->name,
                     ':value' => $value
                 )
@@ -967,17 +968,27 @@ class property
 
 
         // now we insert a new row
-        $DB->execute('INSERT INTO nv_properties_items
-                       (id, website, property_id, element, node_id, name, value)
-                       VALUES
-                       (0,
-                        '.$website->id.',
-                        '.protect($property->id).',
-                        '.protect($item_type).',
-                        '.protect($item_id).',
-                        '.protect($property->name).',
-                        '.protect($value).'
-                       )');
+        $DB->execute('
+			    INSERT INTO nv_properties_items
+				    (id, website, property_id, element, node_id, name, value)
+				VALUES
+				    (   0,
+						:website,
+						:property_id,
+						:type,
+						:item_id,
+						:name,
+						:value
+                    )',
+                array(
+                    ':website' => $property->website,
+                    ':property_id' => $property->id,
+                    ':type' => $item_type,
+                    ':item_id' => value_or_default($item_id, 0),
+                    ':name' => $property->name,
+                    ':value' => $value
+                )
+            );
 
         return true;
 

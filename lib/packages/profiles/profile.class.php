@@ -78,13 +78,15 @@ class profile
 
 		$ok = $DB->execute('
 		    INSERT INTO nv_profiles
-			(id, name, description, menus)
+				(id, name, description, menus)
 			VALUES
-            ( 0,
-              '.protect($this->name).',
-              '.protect($this->description).',
-              '.protect(json_encode($this->menus)).'
-            )'
+            	( 0, :name, :description, :menus )
+            ',
+			array(
+				'name' => value_or_default($this->name, ""),
+				'description' => value_or_default($this->description, ""),
+				'menus' => json_encode($this->menus)
+			)
         );
 				
 		if(!$ok)
@@ -99,14 +101,20 @@ class profile
 	{
 		global $DB;
 	    
-		$ok = $DB->execute(' UPDATE nv_profiles
-								SET
-								  name = '.protect($this->name).',
-								  description = '.protect($this->description).',
-								  menus = '.protect(json_encode($this->menus)).'
-                 				WHERE id = '.protect($this->id));
-		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		$ok = $DB->execute(' 
+ 			UPDATE nv_profiles
+			   SET name = :name, description = :description, menus = :menus
+			 WHERE id = :id',
+			array(
+				'name' => value_or_default($this->name, ""),
+				'description' => value_or_default($this->description, ""),
+				'menus' => json_encode($this->menus),
+				'id' => $this->id
+			)
+		);
+
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 
 		return true;
 	}

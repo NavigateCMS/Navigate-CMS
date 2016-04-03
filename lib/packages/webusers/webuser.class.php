@@ -237,7 +237,7 @@ class webuser
                 ":fullname" => is_null($this->fullname)? '' : $this->fullname,
                 ":gender" => is_null($this->gender)? '' : $this->gender,
                 ":avatar" => is_null($this->avatar)? '' : $this->avatar,
-                ":birthdate" => is_null($this->birthdate)? '' : $this->birthdate,
+                ":birthdate" => value_or_default($this->birthdate, 0),
                 ":language" => is_null($this->language)? '' : $this->language,
                 ":country" => is_null($this->country)? '' : $this->country,
                 ":timezone" => is_null($this->timezone)? '' : $this->timezone,
@@ -253,11 +253,12 @@ class webuser
                 ":activation_key" => is_null($this->activation_key)? '' : $this->activation_key,
                 ":cookie_hash" => is_null($this->cookie_hash)? '' : $this->cookie_hash,
                 ":blocked" => is_null($this->blocked)? '0' : $this->blocked,
-	            ":email_verification_date" => is_null($this->email_verification_date)? '' : $this->email_verification_date
+	            ":email_verification_date" => value_or_default($this->email_verification_date, 0)
             )
         );							
 				
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
 
@@ -325,9 +326,9 @@ class webuser
                 ':email' => $this->email,
                 ':groups' => $groups,
                 ':fullname' => $this->fullname,
-                ':gender' => $this->gender,
+                ':gender' => value_or_default($this->gender, ""),
                 ':avatar' => $this->avatar,
-                ':birthdate' => $this->birthdate,
+                ':birthdate' => value_or_default($this->birthdate, 0),
                 ':language' => $this->language,
                 ':lastseen' => $this->lastseen,
                 ':country' => $this->country,
@@ -343,7 +344,7 @@ class webuser
                 ':cookie_hash' => $this->cookie_hash,
                 ':blocked' => $this->blocked,
                 ':id' => $this->id,
-	            ':email_verification_date' => $this->email_verification_date
+	            ':email_verification_date' => value_or_default($this->email_verification_date, 0)
             )
         );
 
@@ -517,15 +518,18 @@ class webuser
             // an existing webuser is already signed in, but we don't have his/her social profile
             if(empty($swuser))
             {
-                $DB->execute('INSERT nv_webuser_profiles
-                                   (id, network, network_user_id, webuser, extra)
-                                   VALUES
-                                   (    0,
-                                        '.protect($network).',
-                                        '.protect($network_user_id).',
-                                        '.protect($webuser->id).',
-                                        '.protect($extra).'
-                                   )');
+                $DB->execute('
+                    INSERT nv_webuser_profiles
+                        (id, network, network_user_id, webuser, extra)
+                    VALUES
+                       (    0, :network, :network_user_id, :webuser, :extra     )',
+	                array(
+		                'network' => $network,
+		                'network_user_id' => $network_user_id,
+		                'webuser' => $webuser->id,
+		                'extra' => $extra
+	                )
+                );
             }
 
             $wuser->load($webuser->id);
@@ -543,15 +547,18 @@ class webuser
                 $wuser->blocked = 0;
                 $wuser->insert();
 
-                $DB->execute('INSERT nv_webuser_profiles
-                                   (id, network, network_user_id, webuser, extra)
-                                   VALUES
-                                   (    0,
-                                        '.protect($network).',
-                                        '.protect($network_user_id).',
-                                        '.protect($wuser->id).',
-                                        '.protect($extra).'
-                                   )');
+	            $DB->execute('
+                    INSERT nv_webuser_profiles
+                        (id, network, network_user_id, webuser, extra)
+                    VALUES
+                       (    0, :network, :network_user_id, :webuser, :extra     )',
+	                array(
+		                'network' => $network,
+		                'network_user_id' => $network_user_id,
+		                'webuser' => $wuser->id,
+		                'extra' => $extra
+	                )
+                );
             }
             else
             {

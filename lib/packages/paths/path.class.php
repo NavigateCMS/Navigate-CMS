@@ -3,6 +3,7 @@
 class path
 {
 	public $id;
+	public $website;
 	public $type;
 	public $object_id;
 	public $lang;
@@ -74,19 +75,18 @@ class path
 	    
 		$ok = $DB->execute('
  			INSERT INTO nv_paths
-			(id, website, type, object_id, lang, path, cache_file, cache_expires)
+			(id, website, type, object_id, lang, path, cache_file, cache_expires, views)
 			VALUES
-			( 0, :website, :type, :object_id, :lang, :path, :cache_file, :cache_expires)
+			( 0, :website, :type, :object_id, :lang, :path, :cache_file, :cache_expires, 0)
 			',
 			array(
-		    	"type" => $this->type,
+		    	"type" => value_or_default($this->type, ""),
 				"object_id" => $this->object_id,
 				"lang" => $this->lang,
-				"path" => $this->path,
+				"path" => value_or_default($this->path, ""),
 				"cache_file" => $this->cache_file,
 				"cache_expires" => value_or_default($this->cache_expires, 0),
-                "id" => $this->id,
-			    "website" => empty($this->website)? $website->id : $this->website
+			    "website" => value_or_default($this->website, $website->id)
 			)
 		);
 		
@@ -104,7 +104,7 @@ class path
 		$ok = $DB->execute('
  			UPDATE nv_paths
 			   SET type = :type, object_id = :object_id, lang = :lang,
-			   	   path = :path, cache_file = :cache_file, cache_expires = :cache_expires,
+			   	   path = :path, cache_file = :cache_file, cache_expires = :cache_expires, views = :views,
 			   	   id = :id, website = :website',
 			array(
 		    	"type" => $this->type,
@@ -113,12 +113,14 @@ class path
 				"path" => $this->path,
 				"cache_file" => $this->cache_file,
 				"cache_expires" => $this->cache_expires,
+				"views" => value_or_default($this->views, 0),
                 "id" => $this->id,
 			    "website" => $this->website
 			)
 		);
 
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		return true;
 	}	  

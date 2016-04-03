@@ -53,10 +53,11 @@ class webuser_vote
 
 		if(!empty($this->id))
 		{			
-			$DB->execute('DELETE FROM nv_webuser_votes
-								WHERE id = '.intval($this->id).'
-								  AND website = '.$website->id
-						);
+			$DB->execute('
+				DELETE FROM nv_webuser_votes
+				 WHERE id = '.intval($this->id).' AND
+				       website = '.$website->id
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -69,19 +70,23 @@ class webuser_vote
 		
 		$this->date = core_time();		
 		
-		$ok = $DB->execute(' INSERT INTO nv_webuser_votes
-								(id, website, webuser, object, object_id, value, date)
-								VALUES 
-								( 0,
-								  '.$website->id.',
-								  '.protect($this->webuser).',
-								  '.protect($this->object).',
-								  '.protect($this->object_id).',
-								  '.protect($this->value).',
-								  '.protect($this->date).'
-								)');						
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_webuser_votes
+				(id, website, webuser, object, object_id, value, date)
+			VALUES 
+				( 0, :website, :webuser, :object, :object_id, :value, :date )',
+			array(
+				'website' => value_or_default($this->website, $website->id),
+				'webuser' => value_or_default($this->webuser, 0),
+				'object' => $this->object,
+				'object_id' => $this->object_id,
+				'value' => $this->value,
+				'date' => value_or_default($this->date, 0)
+			)
+		);
 			
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
 				
@@ -95,17 +100,23 @@ class webuser_vote
 			
 		$this->date = core_time();		
 			
-		$ok = $DB->execute(' UPDATE nv_webuser_votes
-								SET 
-									webuser	=   '.protect($this->webuser).',
-									object	= 	'.protect($this->object).',
-									object_id	=   '.protect($this->object_id).',
-									value	=   '.protect($this->value).',
-									date 	=  '.protect($this->date).'
-							WHERE id = '.$this->id.'
-							  AND website = '.$website->id);
+		$ok = $DB->execute(' 
+ 			UPDATE nv_webuser_votes
+				SET webuser	= :webuser, object = :object, object_id = :object_id, value = :value, date = :date
+			WHERE id = :id AND website = :website',
+			array(
+				'id' => $this->id,
+				'website' => value_or_default($this->website, $website->id),
+				'webuser' => value_or_default($this->webuser, 0),
+				'object' => $this->object,
+				'object_id' => $this->object_id,
+				'value' => $this->value,
+				'date' => value_or_default($this->date, 0)
+			)
+		);
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		return true;
 	}			
@@ -115,13 +126,15 @@ class webuser_vote
 		global $DB;
 		global $website;
 		
-		$DB->query('SELECT value, COUNT(*) as votes
-					  FROM nv_webuser_votes
-		             WHERE website = '.protect($website->id).'
-					   AND object  = '.protect($object).'
- 					   AND object_id = '.protect($object_id).'
-					 GROUP BY value
-					 ORDER BY value ASC');
+		$DB->query('
+			SELECT value, COUNT(*) as votes
+			  FROM nv_webuser_votes
+             WHERE website = '.protect($website->id).'
+			   AND object  = '.protect($object).'
+               AND object_id = '.protect($object_id).'
+			 GROUP BY value
+			 ORDER BY value ASC
+		 ');
 					 
 		$data = $DB->result();
 		
@@ -155,13 +168,15 @@ class webuser_vote
 		if($since > 0)	// last x days
 			$fromDate = time() - $since*24*60*60;
 		
-		$DB->query('SELECT date, value 
-					  FROM nv_webuser_votes
-		             WHERE website = '.protect($website->id).'
-					   AND object  = '.protect($object).'
- 					   AND object_id = '.protect($object_id).' 
-					   AND date > '.$fromDate.'
-					 ORDER BY date ASC');
+		$DB->query('
+			SELECT date, value 
+			  FROM nv_webuser_votes
+             WHERE website = '.protect($website->id).'
+			   AND object  = '.protect($object).'
+               AND object_id = '.protect($object_id).' 
+			   AND date > '.$fromDate.'
+			 ORDER BY date ASC'
+		);
 					 
 		$data = $DB->result();
 		

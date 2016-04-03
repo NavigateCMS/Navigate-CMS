@@ -58,10 +58,11 @@ class nv_function
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute(' DELETE FROM nv_functions
-							WHERE id = '.intval($this->id).'
-              				LIMIT 1 '
-						);
+			$DB->execute(' 
+ 				DELETE FROM nv_functions
+				WHERE id = '.intval($this->id).'
+                LIMIT 1 '
+			);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -71,18 +72,23 @@ class nv_function
 	{
 		global $DB;
     
-		$ok = $DB->execute(' INSERT INTO nv_functions
-								(id, category, codename, icon, lid, enabled)
-								VALUES 
-								( 0,
-								  '.protect($this->category).',
-								  '.protect($this->codename).',
-								  '.protect($this->icon).',
-								  '.protect($this->lid).',
-								  '.protect($this->enabled).'				  
-								)');
+		$ok = $DB->execute(' 
+ 			INSERT INTO nv_functions
+				(id, category, codename, icon, lid, enabled)
+			VALUES 
+				( 0, :category, :codename, :icon, :lid, :enabled )',
+			array
+			(
+				'category' => value_or_default($this->category, ""),
+				'codename' => value_or_default($this->codename, ""),
+				'icon' => value_or_default($this->icon, ""),
+				'lid' => value_or_default($this->lid, 0),
+				'enabled' => value_or_default($this->enabled, 0)
+			)
+		);
 				
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+			throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
 		
@@ -93,14 +99,20 @@ class nv_function
 	{
 		global $DB;
 	    
-		$ok = $DB->execute(' UPDATE nv_functions
-								SET
-								  category = '.protect($this->category).',
-								  codename = '.protect($this->codename).',
-								  icon = '.protect($this->icon).',
-								  lid = '.protect($this->lid).',
-								  enabled = '.protect($this->enabled).'
-                 				WHERE id = '.protect($this->id));
+		$ok = $DB->execute(' 
+ 			UPDATE nv_functions
+			   SET category = :category, codename = :codename, icon = :icon,
+				  lid = :lid, enabled = :enabled
+            WHERE id = :id',
+			array(
+				'id' => $this->id,
+				'category' => value_or_default($this->category, ""),
+				'codename' => value_or_default($this->codename, ""),
+				'icon' => value_or_default($this->icon, ""),
+				'lid' => value_or_default($this->lid, 0),
+				'enabled' => value_or_default($this->enabled, 0)
+			)
+		);
 		
 		if(!$ok) throw new Exception($DB->get_last_error());
 		
