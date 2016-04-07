@@ -318,8 +318,8 @@ class theme
                         $stylesheets = explode(",", $website->content_stylesheets());
                         foreach($stylesheets as $ss)
                             $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
-                        $html_pre.= '</head><body><div id="navigate-theme-content-sample">';
-
+                        $html_pre.= '</head><body><div id="navigate-theme-content-sample" style=" width: 99%; ">';
+						
                         foreach($grid_samples as $gs)
                         {
                             $cols = explode(',', $gs);

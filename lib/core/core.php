@@ -1028,4 +1028,18 @@ function navigate_compose_email($data, $style = array('background' => '#E5F1FF',
     return $body;
 }
 
+function core_version()
+{
+	global $DB;
+	global $config;
+
+	if(!isset($config['version']))
+	{
+		$data = update::latest_installed();
+		$config['version'] = $data->version;
+		$config['revision'] = $data->revision;
+	}
+
+	return $config['version'];
+}
 ?>
