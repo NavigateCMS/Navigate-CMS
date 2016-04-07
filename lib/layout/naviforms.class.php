@@ -434,7 +434,7 @@ class naviforms
         global $theme;
 
 		$height = 400;
-
+		
 		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true).'</textarea>';
 
         $content_css = $website->content_stylesheets();

@@ -1814,45 +1814,37 @@ ul.connectedSortable li
 }
 
 
-/* jQuery tags input */
+/* jQuery Tag It! */
 
-div.tagsinput
+.navigate-form-row ul.tagit
 {
-	font-weight: normal;
-	padding: 3px;	
-	margin-left: 0px;
-	background: #E8EDFF;
-	border: solid 1px #ccc;
-	color: #116;
-	width: 400px;
-	font-family: Verdana, sans-serif;
+	max-width: 398px;
+	min-height: 100px;
+	background: #e8edff;
 	border-radius: 1px;
 }
 
-div.tagsinput span.tag 
+.navigate-form-row ul.tagit li.tagit-new
 {
-	background:url("../../css/cupertino/images/ui-bg_glass_80_d7ebf9_1x400.png") repeat-x scroll 50% 50% #D7EBF9;
-	border:1px solid #AED0EA;
-	color:#2779AA;
-	font-weight:bold;
-	font-size: 12px;
-    border-radius: 4px;
+	padding-top: 0;
 }
 
-div.tagsinput span.tag a 
-{ 
-	font-weight: bold; 
-	color: #2779AA; 
-	text-decoration:none; 
-	font-size: 12px;  
-} 
-
-div.tagsinput input 
-{ 
-	font-family: Verdana, sans-serif;
-	color: #2779AA; 
-	font-size: 12px;
+.navigate-form-row ul.tagit li.tagit-new input
+{
+	padding: 0.4em 18px 0.4em 0.5em;
+	background: transparent;
+	border: 1px solid #dddddd;
+	width: auto;
+	border-radius: 6px;
+	color: #444;
 }
+
+ul.tagit li.tagit-choice-editable
+{
+    padding: 0.4em 18px 0.4em 0.5em;
+}
+
+
 
 .video-js-box
 {

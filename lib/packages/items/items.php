@@ -7,6 +7,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/tags.php');
 
 function run()
 {
@@ -21,6 +22,7 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
+		case 'json':
 		case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
@@ -784,6 +786,17 @@ function run()
             core_terminate();
             break;
 
+		case 'json_tags_search':
+			$tags = nvweb_tags_retrieve(null, null, 'top', $_REQUEST['term'], $_REQUEST['lang']);
+
+			$tags_json = array();
+			foreach(array_keys($tags) as $tag)
+				$tags_json[] = json_decode('{ "id": "'.$tag.'", "label": "'.$tag.'", "value": "'.$tag.'" }');
+			echo json_encode($tags_json);
+
+			core_terminate();
+			break;
+
 		case 0: // list / search result
 		default:			
 			$out = items_list();
@@ -1514,7 +1527,7 @@ function items_form($item)
 					$navibars->add_tab_content_row(
                         array(
                             '<label>'.template::section_name($section['name']).'</label>',
-                            $naviforms->editorfield('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], ($section['width']+32).'px', $lang),
+                            $naviforms->editorfield('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], ($section['width']+48).'px', $lang),
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',
                             $translate_menu,
@@ -1593,6 +1606,8 @@ function items_form($item)
 				$tags_copy_select = '';
 				$tags_copy_select_pre = '';
 				$tags_copy_select_after = '';
+
+				// allow copying tags between languages?
 				if(count($website->languages_list) > 1)
 				{
                     $tags_copy_select = $naviforms->selectfield(
@@ -1609,8 +1624,8 @@ function items_form($item)
 
 					$tags_copy_select = '
 						<div style=" position: relative; margin-left: 600px; margin-top: -57px; width: 200px; height: 68px; ">
-							<a href="javascript: void();" class="uibutton" title="'.t(189, "Copy from").'..."
-							   onclick=" $(\'#tags-'.$lang.'\').importTags($(\'#tags-\' + $(this).next().val()).val()); $(\'#tags-'.$lang.'\').removeTag();">
+							<a href="#" class="uibutton" title="'.t(189, "Copy from").'..."
+							   onclick=" navigate_items_tags_copy_from_language($(this).next().val(), \''.$lang.'\'); return false; ">
 								<img src="img/icons/silk/page_white_copy.png" width="16" height="16" align="absmiddle" style=" cursor: pointer; " />
 							</a>&nbsp;'.
 							$tags_copy_select.'
@@ -1626,26 +1641,43 @@ function items_form($item)
                     )
                 );
 			}
-												
-			$layout->add_script('
-				$("#tags-'.$lang.'").tagsInput({
-					defaultText: "",
-					width: $("#tags-'.$lang.'").width(),
-					height: 100
-				});
-                $("#tags-'.$lang.'").parent().find("select").css("width", "auto");
+
+			$layout->add_script('               
+                $("#tags-'.$lang.'").tagit({
+                    removeConfirmation: true,
+                    allowSpaces: true,
+                    singleField: true,
+                    singleFieldDelimiter: ",",
+                    placeholderText: "+",
+                    autocomplete: 
+                    {
+                        delay: 0, 
+                        minLength: 1,
+                        source: "?fid=items&act=json_tags_search&lang='.$lang.'"
+                    },
+                    afterTagAdded: function(event, ui)
+                    {
+                        var tags = $(this).tagit("assignedTags");
+                        if(tags.length > 0)
+                            tags = tags.join(",");
+                        else
+                            tags = "";
+                            
+                        $("#tags-'.$lang.'").val(tags);
+                    }
+                });
 			');
-				
-			$layout->add_script('
-				var template_sections = '.json_encode($template->sections).';
-			    var theme_content_samples = '.json_encode($theme->content_samples).';
-			    var website_theme = "'.$website->theme.'";
-			');	
-			
+
 			// script#4
-	
+			
 			$navibars->add_tab_content('</div>');		
 		}
+
+		$layout->add_script('
+			var template_sections = '.json_encode($template->sections).';
+		    var theme_content_samples = '.json_encode($theme->content_samples).';
+		    var website_theme = "'.$website->theme.'";
+		');
 
 		$category = new structure();		
 		$category->paths = array();

@@ -54,7 +54,7 @@ function nvweb_tags($vars=array())
 	return $out;
 }
 
-function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top')
+function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $search='', $lang='')
 {
     // TODO: implement a tags cache system to improve website render time
 
@@ -65,20 +65,28 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top')
     $tags = array();
     $extra = '';
 
+    if(empty($lang))
+        $lang = $current['lang'];
+
     if(!empty($categories))
+    {
         $extra = ' AND
             (
                 ( node_type = "structure" AND node_id IN('.implode(',', $categories).') ) OR
                 ( node_type = "item" AND node_id IN('.implode(',', $categories).') )
             )
         ';
+    }
+
+    if(!empty($search))
+        $extra.= ' AND text LIKE '.protect('%'.$search.'%'); // note: we will need to pass another filter after exploding the tags
 
     $DB->query(
         'SELECT text FROM nv_webdictionary
           WHERE website = '.$website->id.'
             AND node_type IN("item")
             AND subtype = "tags"
-            AND lang = "'.$current['lang'].'"
+            AND lang = '.protect($lang).'
             '.$extra.'
           ORDER BY RAND()
         ',
@@ -94,6 +102,12 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top')
             $row_tags = explode(',', $row['text']);
             foreach($row_tags as $row_tag)
             {
+                if(!empty($search))
+                {
+                    if(strpos(strtolower($row_tag), strtolower($search))===false)
+                        continue;
+                }
+
                 if(isset($tags[$row_tag]))
                     $tags[$row_tag]++;
                 else

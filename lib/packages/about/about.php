@@ -140,10 +140,10 @@ function about_layout()
 											'<a href="http://qtip2.com" target="_blank">qTip2 v2.2.1</a><br />'));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://phlymail.com/en/downloads/idna-convert.html" target="_blank">Net_IDNA v0.9.0</a><br />'));
-											
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://xoxco.com/projects/code/tagsinput/" target="_blank">jQuery Tags Input v1.2.2</a><br />'));
+											'<a href="http://idnaconv.net" target="_blank">Net_IDNA v0.9.0</a><br />'));
+
+	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
+											'<a href="http://aehlke.github.com/tag-it/" target="_blank">jQuery Tag It! v2.0</a><br />'));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://code.google.com/p/cssmin/" target="_blank">CssMin v3.0.1</a><br />'));

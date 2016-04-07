@@ -1407,14 +1407,31 @@ function websites_form($item)
                 'lang="'.$lang.'"'
             );
 
-            $layout->add_script('
-                $("#metatag_keywords-'.$lang.'").tagsInput({
-                    defaultText: "",
-                    width: $("#metatag_keywords-'.$lang.'").width(),
-                    height: 100
+	        $layout->add_script('               
+                $("#metatag_keywords-'.$lang.'").tagit({
+                    removeConfirmation: true,
+                    allowSpaces: true,
+                    singleField: true,
+                    singleFieldDelimiter: ",",
+                    placeholderText: "+",
+                    autocomplete: 
+                    {
+                        delay: 0, 
+                        minLength: 1,
+                        source: "?fid=items&act=json_tags_search&lang='.$lang.'"
+                    },
+                    afterTagAdded: function(event, ui)
+                    {
+                        var tags = $(this).tagit("assignedTags");
+                        if(tags.length > 0)
+                            tags = tags.join(",");
+                        else
+                            tags = "";
+                            
+                        $("#metatag_keywords-'.$lang.'").val(tags);
+                    }
                 });
-                $("#metatag_keywords-'.$lang.'").parent().find("select").css("width", "auto");
-            ');
+			');
 
             $navibars->add_tab_content_row(
                 array(
