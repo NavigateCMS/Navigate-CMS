@@ -767,7 +767,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                         else
                             $out = '<img class="'.$tag['attributes']['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
                     }
-                    else // empty avatar, try to get a gravatar or show a blank avatar
+                    else // empty avatar, try to get a libravatar/gravatar or show a blank avatar
                     {
 	                    $gravatar_hash = "";
 	                    $gravatar_default = 'blank';
@@ -787,7 +787,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 	                    if(!empty($gravatar_hash) && $gravatar_default != 'none')
 	                    {
-		                    $gravatar_url = 'https://www.gravatar.com/avatar/' . $gravatar_hash . '?s='.$size.'&d='.$gravatar_default;
+		                    // gravatar real url: https://www.gravatar.com/avatar/
+		                    // we use libravatar to get more userbase
+		                    $gravatar_url = 'https://seccdn.libravatar.org/avatar/' . $gravatar_hash . '?s='.$size.'&d='.$gravatar_default;
 		                    $out = '<img class="'.$tag['attributes']['class'].'" src="'.$gravatar_url.'" width="'.$size.'px" height="'.$size.'px"/>';
 	                    }
 						else
