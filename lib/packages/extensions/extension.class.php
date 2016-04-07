@@ -124,13 +124,14 @@ class extension
         if(empty($this->id))
         {
             $ok = $DB->execute('
-                INSERT INTO nv_extensions (id, website, extension, enabled, settings)
-                    VALUES(0, :website, :code, :enabled, :settings )',
+                INSERT INTO nv_extensions (id, website, extension, enabled, settings, favorite)
+                    VALUES(0, :website, :code, :enabled, :settings, :favorite )',
                 array(
                     ':website' => $this->website,
                     ':code' => $this->code,
                     ':enabled' => value_or_default($this->enabled, 0),
-                    ':settings' => $settings
+                    ':settings' => $settings,
+                    ':favorite' => value_or_default($this->favorite, 0)
                 )
             );
         }
@@ -138,11 +139,12 @@ class extension
         {
             $ok = $DB->execute('
                 UPDATE nv_extensions
-                   SET enabled = :enabled, settings = :settings
+                   SET enabled = :enabled, settings = :settings, favorite = :favorite
                  WHERE id = :id',
                 array(
                     ':enabled' => value_or_default($this->enabled, 0),
                     ':settings' => $settings,
+                    ':favorite' => $this->favorite,
                     ':id' => $this->id
                 )
             );
