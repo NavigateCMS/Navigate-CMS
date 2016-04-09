@@ -704,7 +704,7 @@ function navigate_tabform_conditional_property(property_id, property_conditional
 {
     $(document).ready(function()
     {
-        var prop_check = $("#navigate-properties-form").find("[id^=property-" + property_conditional + "]").on(
+        var prop_check = $("form[name=navigate-content-form]").find("[id^=property-" + property_conditional + "]").on(
             "change keyup click blur",
             function(event)
             {

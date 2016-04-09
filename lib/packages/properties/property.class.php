@@ -178,6 +178,7 @@ class property
        	$this->multilanguage = $theme_option->multilanguage;
        	$this->helper = $theme_option->helper;
         $this->function = $theme_option->function;
+        $this->conditional = $theme_option->conditional;
        	$this->position = 0;
        	$this->enabled = 1;
 
