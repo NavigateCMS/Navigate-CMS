@@ -1039,10 +1039,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 
 				case 'content':
 				case 'section':
-                    if($source=='structure')
+                    if($source=='structure' && $tag['attributes']['source'] == 'item')
                     {
-                        // TODO: auto load associated content?
+	                    $items = nvweb_content_items($item->id, true, 1, false, 'priority'); // we force finding the first non-embedded item ordered by priority
+	                    if(empty($items))
+	                        $items = nvweb_content_items($item->id, true, 1, true, 'priority'); // find the first embedded item ordered by priority
+	                    $item = $items[0];
                     }
+
 					$section = $tag['attributes']['section'];
 					if(empty($section)) $section = 'main';
 					$out = $item->dictionary[$current['lang']]['section-'.$section];
@@ -1115,22 +1119,27 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
                     break;
 
 				case 'property':
-					$out = nvweb_properties(array(
-						'mode'		=>	(($source=='structure' || $source=='category')? 'structure' : 'item'),
-						'id'		=>	$item->id,
-						'template'	=>	$item->template,
-						'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name']),
-						'option'	=>	$tag['attributes']['option'],
-						'border'	=>	$tag['attributes']['border'],
-						'class'		=>	$tag['attributes']['class'],
-						'width'		=>	$tag['attributes']['width'],
-						'height'	=>	$tag['attributes']['height'],
-						'quality'	=>	$tag['attributes']['quality'],
-						'return'	=>  $tag['attributes']['return'],
-                        'format'	=>  $tag['attributes']['format'],
-                        'link'	    =>  $tag['attributes']['link'],
-                        'floor'	    =>  $tag['attributes']['floor']
-					));
+					if($source=='structure' && $tag['attributes']['source'] == 'item')
+                    {
+	                    $items = nvweb_content_items($item->id, true, 1, false, 'priority'); // we force finding the first non-embedded item ordered by priority
+	                    if(empty($items))
+	                        $items = nvweb_content_items($item->id, true, 1, true, 'priority'); // find the first embedded item ordered by priority
+	                    $item = $items[0];
+	                    $source = "item";
+                    }
+
+					// pass all nvlist tag parameters to properties nvweb, but some attribute/values take preference
+					$nvweb_properties_parameters = array_replace(
+						$tag['attributes'],
+						array(
+							'mode'		=>	(($source=='structure' || $source=='category')? 'structure' : 'item'),
+							'id'		=>	$item->id,
+							'template'	=>	$item->template,
+							'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name'])
+						)
+					);
+
+					$out = nvweb_properties($nvweb_properties_parameters);
 					break;
 
 				default:
@@ -1572,6 +1581,23 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         {
             if(!empty($item->dictionary[$current['lang']]['tags']))
                 $out = $item_html;
+        }
+    }
+    else if($tag['attributes']['by']=='structure')
+    {
+        if( isset($tag['attributes']['show_in_menus']) && isset($item->visible) )
+        {
+	        if($item->visible == 1 && in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
+                $out = $item_html;
+	        else if($item->visible != 1 && !in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
+		        $out = $item_html;
+	        else
+		        $out = "";
+        }
+        else
+        {
+            // no match, discard this conditional
+            $out = '';
         }
     }
     else // unknown nvlist_conditional, discard

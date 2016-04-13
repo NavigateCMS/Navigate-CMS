@@ -301,7 +301,7 @@ function navigate_install_requirements()
 
 	$checks['diskspace'] = floor(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])) / (1024*1024)) > 50;
 	$checks['server'] = true; //(stripos($_SERVER['SERVER_SOFTWARE'], 'apache')!==false);
-	$checks['php5.2'] = (version_compare(PHP_VERSION, '5.2.0') >= 0);
+	$checks['php5.3'] = (version_compare(PHP_VERSION, '5.3.0') >= 0);
 	$checks['gd'] = extension_loaded('gd');
 	//$checks['imap'] = extension_loaded('imap');
 	$checks['json'] = extension_loaded('json');
