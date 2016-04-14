@@ -35,19 +35,15 @@ function nvweb_load_website_by_url($url, $exit=true)
 {
 	global $DB;
     global $idn;
-	
+
 	$website = new website();
 	
 	$parsed = parse_url($url);
     $scheme = $parsed['scheme']; // http, https...
 	$host = $parsed['host']; // subdomain.domain.tld
 	$path = $parsed['path']; // [/folder]page
-		
-	//$query = $parsed['query']; // not really needed, already in $_GET
-    if(function_exists('idn_to_utf8'))
-        $host = idn_to_utf8($host);
-    else
-        $host = $idn->decode($host);
+
+    $host = $idn->decode($host);
 
     // look for website aliases
     $DB->query('SELECT aliases FROM nv_websites', 'array');
@@ -69,14 +65,15 @@ function nvweb_load_website_by_url($url, $exit=true)
     if(!is_array($aliases))
         $aliases = array();
 
+
     foreach($aliases as $alias => $real)
     {
         $alias_parsed = parse_url($alias);
 
         if( $alias_parsed['host'] == $host )
         {
-            // check the path section
-            if(strpos($path, $alias_parsed['path'], 0)!=0)
+	        // check the path section
+            if(strpos($path, rawurldecode($alias_parsed['path']), 0) === false)
                 continue;
 
             // alias path is included in the requested path
@@ -118,10 +115,11 @@ function nvweb_load_website_by_url($url, $exit=true)
             //        right now we only redirect to the real path
             $url = $real . $add_to_real;
 
-            header('location: '.$url);
+            header('location: '.$idn->encode($url));
             nvweb_clean_exit();
         }
     }
+
 
 	// the host is an IP address or a full domain?
 	$isIP = filter_var($host, FILTER_VALIDATE_IP);
