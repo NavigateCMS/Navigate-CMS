@@ -28,6 +28,7 @@ class item
 	public $author;
 	public $votes;
 	public $score;
+	public $position;
 
     public $dictionary;
     public $paths;
@@ -87,6 +88,7 @@ class item
 		$this->views			= $main->views;
 		$this->votes			= $main->votes;
 		$this->score			= $main->score;
+		$this->position			= $main->position;
 
 		$this->dictionary		= webdictionary::load_element_strings('item', $this->id);
 		$this->paths			= path::loadElementPaths('item', $this->id);
@@ -289,6 +291,11 @@ class item
 				$this->permission = 1;
 		}
 
+		if(empty($this->position))
+		{
+			$last_position_in_category = $DB->query_single('MAX(position)', 'nv_items', ' category = '.value_or_default($this->category, 0));
+			$default_position = $last_position_in_category + 1;
+		}
 
         $ok = $DB->execute('
             INSERT INTO nv_items
@@ -296,20 +303,20 @@ class item
                  date_to_display, date_published, date_unpublish, date_created, date_modified, author,
                  galleries, comments_enabled_to, comments_moderator,
                  access, groups, permission,
-                 views, votes, score)
+                 views, votes, score, position)
             VALUES
                 (:id, :website, :association, :category, :embedding, :template,
                  :date_to_display, :date_published, :date_unpublish, :date_created, :date_modified, :author,
                  :galleries, :comments_enabled_to, :comments_moderator,
                  :access, :groups, :permission,
-                 :views, :votes, :score)
+                 :views, :votes, :score, :position)
              ',
             array(
                 ":id" => 0,
                 ":website" => $this->website,
                 ":association" => value_or_default($this->association, 'free'),
-                ":category" => value_or_default($this->category, ''),
-                ":embedding" => value_or_default($this->embedding, '0'),
+                ":category" => value_or_default($this->category, 0),
+                ":embedding" => value_or_default($this->embedding, 0),
                 ":template" => value_or_default($this->template, ''),
                 ":date_to_display" => intval($this->date_to_display),
                 ":date_published" => intval($this->date_published),
@@ -318,14 +325,15 @@ class item
                 ":date_modified" => $this->date_modified,
                 ":author" => value_or_default($this->author, ''),
                 ":galleries" => serialize($this->galleries),
-                ":comments_enabled_to" => value_or_default($this->comments_enabled_to, "0"),
+                ":comments_enabled_to" => value_or_default($this->comments_enabled_to, 0),
                 ":comments_moderator" => value_or_default($this->comments_moderator, ""),
                 ":access" => value_or_default($this->access, 0),
                 ":groups" => $groups,
-                ":permission" => value_or_default($this->permission, ''),
+                ":permission" => value_or_default($this->permission, 0),
                 ":views" => 0,
                 ":votes" => 0,
-                ":score" => 0
+                ":score" => 0,
+	            ":position" => value_or_default($this->position, $default_position)
             )
         );
 			
@@ -416,7 +424,8 @@ class item
                 permission 	=  :permission,
                 views 	=  :views,
                 votes 	=  :votes,
-                score 	=  :score
+                score 	=  :score,
+                position = :position
             WHERE id = :id
               AND website = :website',
             array(
@@ -438,6 +447,7 @@ class item
                 ":views" 	        => $this->views,
                 ":votes" 	        => $this->votes,
                 ":score" 	        => $this->score,
+                ":position"         => value_or_default($this->position, 0),
                 ":id"               => $this->id,
                 ":website"          => $this->website
             )
@@ -731,6 +741,6 @@ class item
 
 		return $tmp;
 	}
-
+	
 }
 ?>
