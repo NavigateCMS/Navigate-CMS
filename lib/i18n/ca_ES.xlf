@@ -3679,5 +3679,11 @@
 				<target>Gestiona tots els llocs web</target>
 			</segment>
 		</unit>
+		<unit id="613">
+			<segment>
+				<source>Most used</source>
+				<target>Més emprats</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

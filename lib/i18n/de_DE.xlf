@@ -3679,5 +3679,11 @@
 				<target>Verwaltet alle Websites</target>
 			</segment>
 		</unit>
+		<unit id="613">
+			<segment>
+				<source>Most used</source>
+				<target>Am meisten benutzt</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

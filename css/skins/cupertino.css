@@ -2438,6 +2438,36 @@ div.jGrowl div.jGrowl-notification
 }
 
 
+
+.tags-ranking-dialog span
+{
+	display: inline-block;
+	padding: 4px 8px;
+	border: 1px solid #aed0ea;
+    color: #2779aa;
+	border-radius: 4px;
+	margin-right: 4px;
+	margin-bottom: 4px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.tags-ranking-dialog span.active
+{
+	opacity: .6;
+	background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3 !important;
+    color: #FFFFFF;
+	cursor: default;
+}
+
+.tags-ranking-dialog span:hover
+{
+	background: url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50% #3BAAE3 !important;
+    color: #FFFFFF;
+}
+
+
+
 /* timepicker addon styles */
 /* http://trentrichardson.com/examples/timepicker/ */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }

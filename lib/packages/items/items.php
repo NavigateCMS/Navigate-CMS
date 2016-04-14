@@ -797,6 +797,13 @@ function run()
 			core_terminate();
 			break;
 
+		case 'json_tags_ranking':
+			$tags = nvweb_tags_retrieve(100, null, 'top', null, $_REQUEST['lang']);
+			$tags = array_keys($tags);
+			echo json_encode($tags);
+			core_terminate();
+			break;
+
 		case 0: // list / search result
 		default:			
 			$out = items_list();
@@ -1633,10 +1640,20 @@ function items_form($item)
 					';
 				}
 
+				$tags_top_list = '
+					<div style=" position: relative; margin-left: 600px; margin-top: -93px; width: 200px; height: 92px; ">
+						<a href="#" class="uibutton" onclick=" navigate_items_tags_ranking(\''.$lang.'\', this); return false; ">
+							<img src="img/icons/silk/award_star_gold_3.png" width="16" height="16" align="absmiddle" style=" cursor: pointer; " />
+							'.t(613, "Most used").'
+						</a>
+					</div>
+				';
+
 				$navibars->add_tab_content_row(
                     array(
                         '<label>'.t(265, 'Tags').'</label>',
                         $naviforms->textfield('tags-'.$lang, @$item->dictionary[$lang]['tags']),		// foo,bar,baz
+	                    $tags_top_list,
                         $tags_copy_select
                     )
                 );
@@ -1663,7 +1680,21 @@ function items_form($item)
                         else
                             tags = "";
                             
-                        $("#tags-'.$lang.'").val(tags);
+                        $("#tags-'.$lang.'")
+                            .val(tags)
+                            .trigger("change");
+                    },
+                    afterTagRemoved: function(event, ui)
+                    {                    
+                        var tags = $(this).tagit("assignedTags");
+                        if(tags.length > 0)
+                            tags = tags.join(",");
+                        else
+                            tags = "";
+                            
+                        $("#tags-'.$lang.'")
+                            .val(tags)
+                            .trigger("change");
                     }
                 });
 			');
