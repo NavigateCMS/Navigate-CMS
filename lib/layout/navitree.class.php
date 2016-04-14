@@ -197,97 +197,107 @@ class navitree
 				';	
 	
 		$html[] = '<script language="javascript" type="text/javascript">';
-		$html[] = '$(window).on("load", function() { ';
+		$html[] = '
+			$(window).on("load", function() 
+			{ 
+		';
 
-		$html[] = '	$("#'.$this->id.'").treeTable(
-					{
-					  initialState: "'.$this->initialState.'",
-					  treeColumn: '.$this->treeColumn.'
-					}).css("visibility", "visible");	
-					
-					$("#'.$this->id.' tr").eq(1).expand();
-				  ';
+		$html[] = '	
+			$("#'.$this->id.'").treeTable(
+			{
+			  initialState: "'.$this->initialState.'",
+			  treeColumn: '.$this->treeColumn.'
+			}).css("visibility", "visible");	
+			
+			$("#'.$this->id.' tr").eq(1).expand();
+		';
 		
-		$html[] = '	$("table#'.$this->id.' tbody tr").on("mouseover", function()
-					{
-						if($(this).hasClass("ui-state-highlight")) return true;
-						$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
-						$(".navitree_table_adder").remove();
-						$(".navitree_table_homepager").remove();
-						$(".navitree_table_reorder").remove();
-						$(this).addClass("ui-state-highlight");
-						if(navitree_mode=="reorder") return true;
-											
-						$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" title=\"'.t(593, "Add new child").'\" class=\"navitree_table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
+		$html[] = '	
+			$("table#'.$this->id.' tbody tr").on("mouseover", function()
+			{
+				if($(this).hasClass("ui-state-highlight")) return true;
+				$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
+				$(".navitree_table_adder").remove();
+				$(".navitree_table_homepager").remove();
+				$(".navitree_table_reorder").remove();
+				$(this).addClass("ui-state-highlight");
+				if(navitree_mode=="reorder") return true;
+									
+				$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" title=\"'.t(593, "Add new child").'\" class=\"navitree_table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
 
-						if($(this).data("node-parent") != -1)
-						{
-							if('.(!empty($this->homepagerUrl)? 'true' : 'false').')
-								$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set has homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
-						}
+				if($(this).data("node-parent") != -1)
+				{
+					if('.(!empty($this->homepagerUrl)? 'true' : 'false').')
+						$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set has homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
+				}
 
-						if($(this).hasClass("parent"))
-						{						
-							$(this).find("td").eq(1).append("<a href=\"#\" class=\"navitree_table_reorder\" title=\"'.t(438, "Order").'\" onclick=\"navitree_reorder($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/arrow_switch.png\" /></a>");
-						}
-					});';
+				if($(this).hasClass("parent"))
+				{						
+					$(this).find("td").eq(1).append("<a href=\"#\" class=\"navitree_table_reorder\" title=\"'.t(438, "Order").'\" onclick=\"navitree_reorder($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/arrow_switch.png\" /></a>");
+				}
+			});
+		';
 
-		$html[] = '	$("table#'.$this->id.' tbody tr").not(":first").on("dblclick", function()
-					{
-						if(navitree_mode=="reorder") return true;
-						window.location.href = "'.$this->url.'" + $(this).find("td:first").html();
-					}); ';
+		$html[] = '	
+			$("table#'.$this->id.' tbody tr").not(":first").on("dblclick", function()
+			{
+				if(navitree_mode=="reorder") return true;
+				window.location.href = "'.$this->url.'" + $(this).find("td:first").html();
+			}); 
+		';
 
 		
 		// left arrows adjustment
-		
-		$html[] = ' $(".treeTable").on("click", function()
-                        {
-                            $(this).find(".expander").not(":first").css({"margin-left": "-19px", "padding-left": "19px"});
-                        }
-                    );';
+
+		$html[] = ' 
+			$(".treeTable").on("click", function()
+                {
+                    $(this).find(".expander").not(":first").css({"margin-left": "-19px", "padding-left": "19px"});
+                }
+            );
+        ';
 		
 		// keep open/close branch status via cookie
-		$html[] = '		
-					function navitree_save_branch_status()
+		$html[] = '	
+			function navitree_save_branch_status()
+			{
+				var expanded_ids = [];
+				$("#'.$this->id.'").find("tr.expanded").each(function()
+				{
+					expanded_ids.push($(this).attr("id"));
+				});					
+				
+				$.setCookie("navigate-tree-'.$this->id.'", expanded_ids);
+			}
+			
+			function navitree_load_branch_status()
+			{
+				navitree_cookie_update = false;
+				var expanded_ids = $.cookie("navigate-tree-'.$this->id.'");
+				
+				if(!expanded_ids)
+					$(".treeTable").trigger("click");
+				else
+				{
+					// close all
+					$("#'.$this->id.'").find("tr.expanded").find(".expander").trigger("click");				
+					// expand the branches previously open
+					for(i in expanded_ids)
 					{
-						var expanded_ids = [];
-						$("#'.$this->id.'").find("tr.expanded").each(function()
-						{
-							expanded_ids.push($(this).attr("id"));
-						});
-						
-						$.setCookie("navigate-tree-'.$this->id.'", expanded_ids);
+						$("#"+expanded_ids[i]).find(".expander").trigger("click");
 					}
-					
-					function navitree_load_branch_status()
-					{
-						navitree_cookie_update = false;
-						var expanded_ids = $.cookie("navigate-tree-'.$this->id.'");
-						
-						if(!expanded_ids)
-							$(".treeTable").trigger("click");
-						else
-						{
-							// close all
-							$("#'.$this->id.'").find("tr.expanded").find(".expander").trigger("click");				
-							// expand the branches previously open
-							for(i in expanded_ids)
-							{
-								$("#"+expanded_ids[i]).find(".expander").trigger("click");
-							}
-						}
-						navitree_cookie_update = true;
-					}
-					
-					$(".treetable").on("click", ".expander", function()
-					{
-						if(navitree_cookie_update)
-							setTimeout(navitree_save_branch_status, 200);
-					});
+				}
+				navitree_cookie_update = true;
+			}
+			
+			$(".treeTable").on("click", ".expander", function()
+			{
+				if(navitree_cookie_update)
+					setTimeout(navitree_save_branch_status, 200);
+			});
 
-					navitree_load_branch_status();
-				';		
+			navitree_load_branch_status();
+		';
 					
 		$html[] = '});';	
 						
@@ -296,111 +306,112 @@ class navitree
 		$html[] = ' var navitree_order = ""; ';
 		$html[] = ' var navitree_cookie_update = false; ';		
 						
-		$html[] = ' function navitree_reorder(el)
-					{
-						el = $(el).parent("tr");
-						$("#'.$this->id.' tr").hide();
-						$("#'.$this->id.' tr:first").show();
+		$html[] = ' 
+			function navitree_reorder(el)
+			{
+				el = $(el).parent("tr");
+				$("#'.$this->id.' tr").hide();
+				$("#'.$this->id.' tr:first").show();
 
-						$(".expander").hide();
-						$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
-						
-						$("#'.$this->id.' tr.child-of-node-" + $(el).find("td:first").html()).show();
-						
-						navitree_mode = "reorder";
-						navitree_order_trigger = $(el).find("td:first").html();
-						navitree_reorder_serialize();
-						
-						var text = "'.t(72, 'Drag any row to assign priorities').'.<br />";
-							text+= "<a href=\"#\" onclick=\"navitree_reorder_submit();\" style=\"text-decoration:none; display: block; text-align: right; \"><img height=\"16\" align=\"absbottom\" width=\"16\" src=\"img/icons/silk/accept.png\"> '.t(34, 'Save').'</a>";
-						
-						$.jGrowl.defaults.position = "center";
-						$.jGrowl(text, {
-						    sticky: true,
-                            open: function()
-                            {
-                                //setTimeout(function() { $(".jGrowl-notification").css({"background-repeat": "repeat", "width": "400px"}); }, 50);
-                            },
-							close: function()
-							{
-							    navitree_reorder_cancel();
-                            }
-                        });
-						$("#jGrowl").css({"top": "123px"});
-						
-						$("#'.$this->id.'").tableDnD(
-						{
-							onDrop: navitree_reorder_serialize
-						});															
-						
-					}
-					
-					function navitree_reorder_serialize()
+				$(".expander").hide();
+				$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
+				
+				$("#'.$this->id.' tr.child-of-node-" + $(el).find("td:first").html()).show();
+				
+				navitree_mode = "reorder";
+				navitree_order_trigger = $(el).find("td:first").html();
+				navitree_reorder_serialize();
+				
+				var text = "'.t(72, 'Drag any row to assign priorities').'.<br />";
+					text+= "<a href=\"#\" onclick=\"navitree_reorder_submit();\" style=\"text-decoration:none; display: block; text-align: right; \"><img height=\"16\" align=\"absbottom\" width=\"16\" src=\"img/icons/silk/accept.png\"> '.t(34, 'Save').'</a>";
+				
+				$.jGrowl.defaults.position = "center";
+				$.jGrowl(text, {
+				    sticky: true,
+                    open: function()
+                    {
+                        //setTimeout(function() { $(".jGrowl-notification").css({"background-repeat": "repeat", "width": "400px"}); }, 50);
+                    },
+					close: function()
 					{
-						navitree_order = "";
-								
-						$("#'.$this->id.' tr.child-of-node-" + navitree_order_trigger).each(function()
-						{
-							navitree_order += $(this).find("td:first").html() + "#";
-						});						
-					}
-					
-					function navitree_reorder_submit()
-					{
-						$.ajax(
-						{
-						  type: "POST",
-						  url: "'.$this->orderUrl.'",
-						  data: { 	parent: navitree_order_trigger, 
-						  			children_order: navitree_order 
-								},
-						  success: function(data)
-						  {
-							  if(!data.error)  navitree_reorder_cancel();
-							  else			   $(".message").html(data.error);
+					    navitree_reorder_cancel();
+                    }
+                });
+				$("#jGrowl").css({"top": "123px"});
+				
+				$("#'.$this->id.'").tableDnD(
+				{
+					onDrop: navitree_reorder_serialize
+				});															
+				
+			}
+			
+			function navitree_reorder_serialize()
+			{
+				navitree_order = "";
+						
+				$("#'.$this->id.' tr.child-of-node-" + navitree_order_trigger).each(function()
+				{
+					navitree_order += $(this).find("td:first").html() + "#";
+				});						
+			}
+			
+			function navitree_reorder_submit()
+			{
+				$.ajax(
+				{
+				  type: "POST",
+				  url: "'.$this->orderUrl.'",
+				  data: { 	parent: navitree_order_trigger, 
+				            children_order: navitree_order 
+						},
+				  success: function(data)
+				  {
+					  if(!data.error)  navitree_reorder_cancel();
+					  else			   $(".message").html(data.error);
 
-						  },
-						  dataType: "json"
-						});
-					}
-					
-					function navitree_reorder_cancel()
-					{
-						window.location.reload();	
-					}
+				  },
+				  dataType: "json"
+				});
+			}
+			
+			function navitree_reorder_cancel()
+			{
+				window.location.reload();	
+			}
 
-					function navitree_homepager(el)
+			function navitree_homepager(el)
+			{
+				var tr = $(el).parent("tr");
+				var node_id = tr.data("node-id");
+				$.post(
+					"'.$this->homepagerUrl.'",
 					{
-						var tr = $(el).parent("tr");
-						var node_id = tr.data("node-id");
-						$.post(
-							"'.$this->homepagerUrl.'",
+						node: node_id
+					},
+					function(result)
+					{
+						if(result == "true")
+						{
+							tr.parents("table.treeTable").find("tr").not(":first").not(":first").each(function()
 							{
-								node: node_id
-							},
-							function(result)
-							{
-								if(result == "true")
-								{
-									tr.parents("table.treeTable").find("tr").not(":first").not(":first").each(function()
-									{
-										var icon = $(this).find("img.silk-sprite").first();
-										icon.removeClass("silk-house silk-page_white silk-folder");
-										if($(this).data("node-children") > 0)
-											icon.addClass("silk-folder");
-										else
-											icon.addClass("silk-page_white");
-									});
-									tr.find("img.silk-sprite").first().removeClass("silk-page_white silk-folder").addClass("silk-house").effect("pulsate");
-								}
+								var icon = $(this).find("img.silk-sprite").first();
+								icon.removeClass("silk-house silk-page_white silk-folder");
+								if($(this).data("node-children") > 0)
+									icon.addClass("silk-folder");
 								else
-								{
-									navigate_notification(result, true);
-								}
-							}
-						);
+									icon.addClass("silk-page_white");
+							});
+							tr.find("img.silk-sprite").first().removeClass("silk-page_white silk-folder").addClass("silk-house").effect("pulsate");
+						}
+						else
+						{
+							navigate_notification(result, true);
+						}
 					}
-				';		
+				);
+			}
+		';
 		
 		$html[] = '</script>';		
 				
