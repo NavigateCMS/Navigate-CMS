@@ -1007,31 +1007,46 @@ function blocks_form($item)
                     )
                 );
 
+	            $block_trigger_types = array(
+		            '' => t(181, 'Hidden'),
+		            'title' => t(67, 'Title'),
+                    'image' => t(157, 'Image'),
+                    'rollover' => t(182, 'Rollover'),
+                    'video' => t(272, 'Video'),
+                    'flash' => 'Flash',
+                    'html' => 'HTML',
+                    'links' => t(549, 'Links'),
+                    'content' => t(9, 'Content')
+	            );
+
+	            // check block trigger restrictions in theme definition
+	            if(is_array($theme->blocks))
+	            {
+		            foreach($theme->blocks as $tb)
+		            {
+			            if($tb->code == $item->type && isset($tb->trigger))
+			            {
+				            if(!is_array($tb->trigger))
+					            $tb->trigger = array($tb->trigger);
+
+				            foreach($block_trigger_types as $btt_key => $btt_val)
+				            {
+					            if(empty($btt_key) || in_array($btt_key, $tb->trigger))
+					                continue;
+
+					            unset($block_trigger_types[$btt_key]);
+				            }
+
+				            $block_trigger_types = array_filter($block_trigger_types);
+			            }
+		            }
+	            }
+
                 $navibars->add_tab_content_row(array(
                         '<label>'.t(160, 'Type').'</label>',
                         $naviforms->selectfield('trigger-type-'.$lang,
-                            array(
-                                0 => '',
-                                1 => 'title',
-                                2 => 'image',
-                                3 => 'rollover',
-                                4 => 'video',
-                                5 => 'flash',
-                                6 => 'html',
-                                7 => 'links',
-                                8 => 'content'
-                            ),
-                            array(
-                                0 => t(181, 'Hidden'),
-                                1 => t(67, 'Title'),
-                                2 => t(157, 'Image'),
-                                3 => t(182, 'Rollover'),
-                                4 => t(272, 'Video'),
-                                5 => 'Flash',
-                                6 => 'HTML',
-                                7 => t(549, 'Links'),
-                                8 => t(9, 'Content')
-                            ),
+                            array_keys($block_trigger_types),
+                            array_values($block_trigger_types),
                             $item->trigger['trigger-type'][$lang],
                             "navigate_blocks_trigger_change('".$lang."', this);"
                         )

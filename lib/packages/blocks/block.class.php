@@ -794,6 +794,8 @@ class block
         return $nv_fontawesome_classes;
     }
 
+	// TODO: add other font icon libraries
+
     public static function __set_state(array $obj)
 	{
 		$tmp = new block();
