@@ -619,7 +619,7 @@ class layout
 					extruderOpacity: 1, // was 0.9 for better integration (FF 8.0 problems)
 					flapDim:100,
 					textOrientation:"bt", // or "tb" (top-bottom or bottom-top)
-					onExtOpen:function(){},
+					onExtOpen:function() {},
 					onExtContentLoad:function(){},
 					onExtClose:function(){},
 					hidePanelsOnClose:true,
@@ -632,6 +632,17 @@ class layout
 			    $("#navigate-website-selector-top").find(".flapLabel").css("padding-left", "21px");
 			    $("#navigate-website-selector-top div.flap").addClass("ui-corner-bottom");
 			    $("#navigate-website-selector-top div.flap").css("opacity", 1);
+			    $("#navigate-website-selector-top").on("click", ".silk-sprite", function(e)
+			    {
+			        setTimeout(
+			            function()
+			            {
+			                console.log("close now!");
+			                $("#navigate-website-selector-top").closeMbExtruder();
+		                }, 
+		                1000
+	                );
+			    });
 			');
 		}		
 	}

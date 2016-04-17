@@ -675,7 +675,11 @@ class navitable
             //$html[] = '	console.log(rowid); ';
             //$html[] = '	console.log(data);';
             $html[] = '     if(e && e.ctrlKey) ';
-            $html[] = ' 	{   window.open("'.$this->edit_url.'" + data.'.$this->edit_index.');  }';
+            $html[] = ' 	{   
+                                var nw = window.open("'.$this->edit_url.'" + data.'.$this->edit_index.');
+								nw.blur();
+								window.focus();
+                            }';
             $html[] = ' 	else';
 			$html[] = ' 	{   window.location.href = "'.$this->edit_url.'" + data.'.$this->edit_index.';  }';
 			//$html[] = ' 	window.location.href = "'.$this->edit_url.'" + rowid;';
