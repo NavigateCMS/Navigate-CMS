@@ -1729,20 +1729,25 @@ function items_form($item)
 			<div id="navigate_items_copy_from" style=" display: none; ">
 				<div class="navigate-form-row">
 					<label>'.t(191, 'Source').'</label>
-					'.$naviforms->buttonset(	'navigate_items_copy_from_type', 
-												array( 'language' => t(46, 'Language'),
-													   //'template' => t(79, 'Template'),
-													   'item'	  => t(180, 'Item')
-													 ),
-												'0',
-												"navigate_items_copy_from_change_origin(this);").'
+					'.$naviforms->buttonset(
+						'navigate_items_copy_from_type',
+						array(
+							'language' => t(46, 'Language'),
+							//'template' => t(79, 'Template'),
+							'item'	  => t(180, 'Item')
+						),
+						'0',
+						"navigate_items_copy_from_change_origin(this);"
+					).'
 				</div>
 				<div class="navigate-form-row" style=" display: none; ">
 					<label>'.t(46, 'Language').'</label>
-					'.$naviforms->selectfield(	'navigate_items_copy_from_language_selector', 
-												array_keys($ws_languages),
-												array_values($ws_languages),
-												$default_language).'
+					'.$naviforms->selectfield(
+						'navigate_items_copy_from_language_selector',
+						array_keys($ws_languages),
+						array_values($ws_languages),
+						$default_language
+			        ).'
 				</div>
 				<div class="navigate-form-row" style=" display: none; ">
 					<label>'.t(79, 'Template').'</label>
