@@ -754,9 +754,10 @@ class website
         return $options;
     }
 
-    public function content_stylesheets($format='tinymce')
+    public function content_stylesheets($format='tinymce', $name='content', $merge=false)
     {
         global $theme;
+	    global $website;
 
         // determine stylesheets for content (website > theme + default navigate cms)
         $content_css = array();
@@ -769,9 +770,13 @@ class website
         if(!empty($this->theme) && !empty($theme))
         {
             $style = $this->theme_options->style;
-            if(!empty($style) && !empty($theme->styles->$style->content))
+
+	        if($name=='content_selectable' && !isset($theme->styles->$style->$name))
+		        $name = 'content';
+
+            if(!empty($style) && !empty($theme->styles->$style->$name))
             {
-                $style_content_css = explode(',', $theme->styles->$style->content);
+                $style_content_css = explode(',', $theme->styles->$style->$name);
                 foreach($style_content_css as $scc)
                 {
                     if(strpos($scc, 'http')===false)
@@ -782,19 +787,51 @@ class website
             }
         }
 
-        if($format=='link_tag')
-        {
-            $content_html = '';
-            foreach($content_css as $csa)
+	    $merge = false; // MERGE option is not completely developed
+	    if($merge)
+	    {
+		    /*
+		    $css_merged_rules = '';
+		    $css_merged_file = 'cache/'.$website->id.'/editor_css.'.md5(json_encode($content_css)).'.css';
+
+		    foreach($content_css as $csa)
             {
-                if(!empty($csa))
-                    $content_html .= '<link rel="stylesheet" type="text/css" href="'.trim($csa).'" />'."\n";
+	            $css_rules = @file_get_contents($csa);
+                $css_merged_rules .= $css_rules;
             }
 
-            $content_css = $content_html;
+		    mkdir(NAVIGATE_PATH.'/cache/'.$website->id, 0755, true);
+
+		    file_put_contents(NAVIGATE_PATH.'/'.$css_merged_file, $css_merged_rules);
+
+		    if(!empty($css_merged))
+		    {
+			    if($format=='link_tag')
+				    $content_css = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/'.$css_merged_file.'" />'."\n";
+			    else
+				    $content_css = NAVIGATE_URL.'/'.$css_merged_file;
+		    }
+		    else
+			    $content_css = '';
+		    */
+	    }
+		else
+		{
+			if($format=='link_tag')
+            {
+	            $content_html = '';
+	            foreach($content_css as $csa)
+	            {
+	                if(!empty($csa))
+	                    $content_html .= '<link rel="stylesheet" type="text/css" href="'.trim($csa).'" />'."\n";
+	            }
+
+	            $content_css = $content_html;
+	        }
+	        else
+	            $content_css = implode(',', $content_css);
         }
-        else
-            $content_css = implode(',', $content_css);
+
 
         return $content_css;
     }
