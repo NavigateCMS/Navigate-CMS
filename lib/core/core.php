@@ -530,6 +530,9 @@ function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=arra
 {
     if(!empty($allowedtags))
     {
+	    if(!is_array($allowedtags))
+		    $allowedtags = array($allowedtags);
+
         $text = strip_tags($text, '<'.implode('><', $allowedtags).'>');
         $text = core_truncate_html($text, $maxlen, $morechar);
     }
