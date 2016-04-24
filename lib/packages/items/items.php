@@ -2341,12 +2341,12 @@ function items_form($item)
 		}		
 
         $nvweb_preview = NAVIGATE_PARENT.NAVIGATE_FOLDER.'/web/nvweb.php?preview=true&wid='.$website->id.'&route=';
-
+		
 		$layout->add_script('
 			function navigate_items_preview()
 			{
 				navigate_items_disable_spellcheck();
-				navigate_periodic_event_delegate(); // save current data in history
+				navigate_periodic_event_delegate(); // force saving current data in history
 				var url = "'.$nvweb_preview.'";
 				var active_language = $("input[name=\'language_selector[]\']:checked").val();
 

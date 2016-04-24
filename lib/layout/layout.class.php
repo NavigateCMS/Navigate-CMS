@@ -156,8 +156,10 @@ class layout
         $this->add_script_tag('lib/external/jquery.base64/jquery.base64.js');
         $this->add_script_tag('lib/external/jquery-truncate/jquery.truncate.js');
 
-		$this->add_script_tag('lib/external/tinymce/jquery.tinymce.js');
-		
+		// tinymce 4
+		$this->add_script_tag('lib/external/tinymce4/tinymce.min.js');
+		$this->add_script_tag('lib/external/tinymce4/jquery.tinymce.min.js');
+
 		// mb extruder
 		$this->add_style_tag('js/mbextruder/css/mbExtruder.css');
 		$this->add_script_tag('js/mbextruder/inc/jquery.mb.flipText.js');

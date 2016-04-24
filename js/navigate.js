@@ -16,7 +16,7 @@ var navigate_menu_unselect_timer = null;
 $(window).on('load', function()
 {
     $("#navigate-menu").css('opacity', 1);
-    $("button, input:submit, a.uibutton, div.uibutton").button();
+    $("button, input:submit, a.uibutton, div.uibutton").not(".mce-tinymce button").button();
     $(".buttonset").buttonset();
     $(".buttonset").find('label').on('click', function()
     {
@@ -328,12 +328,12 @@ function navigate_t(id, text)
 
 function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element)
 {
-    var inst = tinyMCE.getInstanceById(editor_id);
+    var editor = tinyMCE.get(editor_id);
 	var html = '';
     var embed_dialog = false;
 
-	var selection_active  = (inst.selection.getContent({format : 'text'})!="");
-	var selection_content = inst.selection.getContent({format: 'html'});
+	var selection_active  = (editor.selection.getContent({format : 'text'})!="");
+	var selection_content = editor.selection.getContent({format: 'html'});
 
 	switch(media)
 	{
@@ -341,34 +341,34 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             var max_width = $('#' + editor_id + '_ifr').contents().find('body').width();
             var or_styles = '';
 
-            if($($.parseHTML(inst.selection.getContent({format: 'raw'}))).is('img'))
+            if($($.parseHTML(editor.selection.getContent({format: 'raw'}))).is('img'))
             {
                 // if tinyMCE has something selected and it is an image, read its dimensions and apply them to the new image
-                var max_width = $(inst.selection.getContent({format: 'raw'})).width();
-                var max_height = $(inst.selection.getContent({format: 'raw'})).height();
+                var max_width = $(editor.selection.getContent({format: 'raw'})).width();
+                var max_height = $(editor.selection.getContent({format: 'raw'})).height();
 
                 // if we can have a real img object, check the dimensions applied right now
-                if($(inst.selection.getContent())[0])
+                if($(editor.selection.getContent())[0])
                 {
-                    max_width = $(inst.selection.getContent())[0].width;
-                    max_height = $(inst.selection.getContent())[0].height;
+                    max_width = $(editor.selection.getContent())[0].width;
+                    max_height = $(editor.selection.getContent())[0].height;
                 }
 
                 // try an alternative method (Chrome browser work around)
                 if(max_width==0)
-                    max_width = $($(inst.selection.getContent({format: 'raw'}))[0]).attr('width');
+                    max_width = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('width');
 
                 if(max_height==0)
-                    max_height = $($(inst.selection.getContent({format: 'raw'}))[0]).attr('height');
+                    max_height = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('height');
 
-                var or_styles = ' style="' + $(inst.selection.getContent({format: 'raw'}))[0].style.cssText + '" ';
+                var or_styles = ' style="' + $(editor.selection.getContent({format: 'raw'}))[0].style.cssText + '" ';
 
                 embed_dialog = true;
             }
 
             var image_width = $(element).attr("image-width");
             var image_height = $(element).attr("image-height");
-            var body_width = $(inst.contentAreaContainer).width() - 37;
+            var body_width = $(editor.contentAreaContainer).width() - 37;
 
             if(max_width==0 || max_width > image_width)
                 max_width = image_width;
@@ -537,9 +537,7 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                 selection_content = '[' + navigate_t(82, "File") + ']';
 
             if($($.parseHTML(selection_content)).is("A"))
-            {
                 selection_content = $(selection_content).text();
-            }
 
 			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline"> ' + selection_content + '</a>';
 	}
@@ -554,23 +552,24 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
     }
 	else
     {
-        tinyMCE.execInstanceCommand(editor_id, 'mceInsertContent', false, html);
-        tinyMCE.execInstanceCommand(editor_id, 'mceCleanup', false);
+        tinyMCE.get(editor_id).execCommand('mceInsertContent', false, html);
+        tinyMCE.get(editor_id).execCommand('mceCleanup', false);
     }
 }
 
 function navigate_tinymce_move_cursor_to_end(editor_id) 
 {
-    var inst = tinyMCE.getInstanceById(editor_id);
-    tinyMCE.execInstanceCommand(editor_id,"selectall", false, null);
-    if (tinyMCE.isMSIE) {
-        rng = inst.getRng();
+    var editor = tinyMCE.get(editor_id);
+    editor.execCommand("selectall", false, null);
+    if (tinyMCE.isIE)
+	{
+        rng = editor.selection.getRng();
         rng.collapse(false);
         rng.select();
     }
     else {
-        sel = inst.getSel();
-        sel.collapseToEnd();
+        sel = editor.selection();
+        sel.collapse();
     }
 }
 
@@ -579,7 +578,7 @@ function navigate_tinymce_move_cursor_to_end(editor_id)
 
 function navigate_tinymce_get_cursor_position(editor_id)
 {
-    var editor = tinyMCE.getInstanceById(editor_id);
+    var editor = tinyMCE.get(editor_id);
 
     //set a bookmark so we can return to the current position after we reset the content later
     var bm = editor.selection.getBookmark(0);
@@ -614,7 +613,7 @@ function navigate_tinymce_get_cursor_position(editor_id)
 
 function navigate_tinymce_set_cursor_position(editor_id, index)
 {
-    var editor = tinyMCE.getInstanceById(editor_id);
+    var editor = tinyMCE.get(editor_id);
 
     //get the content in the editor before we add the bookmark...
     //use the format: html to strip out any existing meta tags

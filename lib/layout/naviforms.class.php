@@ -437,66 +437,130 @@ class naviforms
 		
 		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true).'</textarea>';
 
-        $content_css = $website->content_stylesheets();
+        $content_css = $website->content_stylesheets('tinymce', 'content');
+        $content_css_selectable = $website->content_stylesheets('tinymce', 'content_selectable');
 
-        // erase cache if the server address has changed
-        $tinymce_gz = glob(NAVIGATE_PATH.'/lib/external/tinymce/*.gz');
+		/* disabled for tiny mce 4.x, problems with the compressor
+        // remove cache if the server address has changed
+        $tinymce_gz = glob(NAVIGATE_PATH.'/lib/external/tinymce4/*.gz');
 
         if(!empty($tinymce_gz))
         {
-            if(file_exists(NAVIGATE_PATH.'/lib/external/tinymce/server_name'))
+            if(file_exists(NAVIGATE_PATH.'/lib/external/tinymce4/server_name'))
             {
-                $server_name = file_get_contents(NAVIGATE_PATH.'/lib/external/tinymce/server_name');
+                $server_name = file_get_contents(NAVIGATE_PATH.'/lib/external/tinymce4/server_name');
                 if($server_name != md5($_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']))
                     @unlink($tinymce_gz[0]);
             }
-            file_put_contents(NAVIGATE_PATH.'/lib/external/tinymce/server_name', md5($_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']));
+            file_put_contents(NAVIGATE_PATH.'/lib/external/tinymce4/server_name', md5($_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']));
         }
+		*/
 
-        $layout->add_script('
+		$tinymce_language = $user->language;
+
+        $layout->add_script('    
+            tinyMCE.baseURL = "'.NAVIGATE_URL.'/lib/external/tinymce4";
             $("#'.$name.'").tinymce(
             {
-                //script_url : "'.NAVIGATE_URL.'/lib/external/tinymce/tiny_mce.js",
-                script_url : "'.NAVIGATE_URL.'/lib/external/tinymce/tiny_mce_gzip.php",
-                theme : "advanced",
-                skin: "cirkuit",
-                plugins : "pre,jqueryinlinepopups,imgmap,style,table,tableDropdown,advimage,advlink,emotions,media,searchreplace,contextmenu,paste,noneditable,visualchars,xhtmlxtras,advlist,spellchecker,loremipsum,codemagic",
-                language: "'.$user->language.'",
-
-                theme_advanced_buttons1 : "formatselect,fontselect,fontsizeselect,|,forecolor,|,backcolor,|,removeformat,visualaid,|,code,codemagic",
-                theme_advanced_buttons2 : "bold,italic,underline,strikethrough|,justifyleft,justifycenter,justifyright,justifyfull,|,outdent,indent,blockquote,|,bullist,|,sub,sup,|,loremipsum,charmap|,pre,|,help",
-                theme_advanced_buttons3 : "styleselect,|,styleprops,attribs,|,tableDropdown,|,link,unlink,anchor,hr,|,image,imgmap,media,|,spellchecker,|,undo,redo",
-
-                theme_advanced_toolbar_location : "top", // could be external
-                theme_advanced_toolbar_align : "left",
-                theme_advanced_statusbar_location : "bottom",
-                theme_advanced_resizing : true,
-
-                handle_event_callback : "navigate_tinymce_event",
-
-                //theme_advanced_fonts : "Andale Mono=\'Andale Mono\';Arial=arial,helvetica,sans-serif;Arial Black=\'Arial Black\';Book Antiqua=\'Book Antiqua\';Century Gothic=\'Century Gothic\';Comic Sans MS=\'Comic Sans MS\';Courier New=\'Courier New\';Georgia=Georgia;Helvetica=Helvetica;Impact=Impact;Symbol=Symbol;Tahoma=Tahoma;Terminal=Terminal;Times News Roman=\'Times News Roman\';Trebuchet MS=\'Trebuchet MS\';Verdana=Verdad;",
-                theme_advanced_font_sizes: "8px=8px,9px=9px,10px=10px,11px=11px,12px=12px,13px=13px,14px=14px,15px=15px,16px=16px,17px=17px,18px=18px,20px=20px,24px=24px,26px=26px,28px=28px,30px=30px,32px=32px,36px=36px",
-
-                content_css: "'.$content_css.'",
-                valid_elements: "*[*],+a[*],+p[*],#i",
-                custom_elements: "nv,code,pre,nvlist,figure,article,header,footer,post,nav",
-                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+figure[*],+article[*],+nav[*],+i[*],+span[*],+em[*],+b[*],*[*]",
-                //encoding: "xml",
-                relative_urls: false,
-                convert_urls: true,
-                remove_script_host: false,
-                remove_linebreaks: true,
-                paste_text_sticky: true,
-                paste_text_sticky_default: true,
-                allow_html_in_named_anchor: true,
-                disk_cache: true,
-                valid_children: "+a[div|p|li],+body[style|script|nv|nvlist],+code[nv|nvlist]",
+                language: "'.$tinymce_language.'",
+                
                 width: ($("#'.$name.'").width()) + "px",
                 height: $("#'.$name.'").height() + "px",
-                oninit: function()
-                {
-                    tinyMCE.get("'.$name.'").plugins.spellchecker.selectedLang = "'.$lang.'";
+                resize: "both",
+                
+                menubar: false,
+                theme: "modern",
+                skin: "navigatecms-cupertino",
+			    
+			    plugins: [
+				    "compat3x",
+				    "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak",
+				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
+				    "table directionality template textcolor paste textcolor colorpicker textpattern",
+				    "codesample, codemirror, imagetools, importcss, paste" // add fullpage to edit full HTML code with head and body tags
+				],
+				
+				external_plugins: {
+				    "loremipsum": "'.NAVIGATE_URL.'/lib/external/tinymce4/plugins/loremipsum/editor_plugin.js",
+				    "imgmap": "'.NAVIGATE_URL.'/lib/external/tinymce4/plugins/imgmap/editor_plugin.js",
+				    "style": "'.NAVIGATE_URL.'/lib/external/tinymce4/plugins/style/editor_plugin.js",
+				    "xhtmlxtras": "'.NAVIGATE_URL.'/lib/external/tinymce4/plugins/xhtmlxtras/editor_plugin.js"
+				},
+				
+				toolbar: [
+					"formatselect fontselect fontsizeselect | forecolor | backcolor | removeformat visualchars visualblocks | searchreplace code",
+                    "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent blockquote | bullist numlist | subscript superscript | loremipsum charmap nonbreaking | pre",
+                    "styleselect | styleprops attribs | table | link unlink anchor hr | image imgmap media codesample | undo redo"
+                ],
 
+				toolbar_items_size: "small",
+				
+			    browser_spellcheck : true,
+                spellchecker_language: "'.$lang.'",
+			    
+			    codemirror: {
+					path:  "'.NAVIGATE_URL.'/lib/external/codemirror",
+				    indentOnInit: true,
+                    config: {
+                        mode: "htmlmixed",
+                        lineNumbers: true
+                    },
+                    jsFiles: [
+                        "mode/htmlmixed/htmlmixed.js"
+                    ]
+				},
+				
+				image_advtab: true,
+				
+				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px", 
+                
+                content_css: "'.$content_css.'",
+                
+				style_formats_merge: true,
+                importcss_append: false,
+                importcss_file_filter: function(value) 
+                {
+                    var files = "'.$content_css_selectable.'";
+                    
+                    if(files.indexOf(",") > -1)
+                    {
+                        files = files.split(",");
+	                    for(var i=0; i<files.length; i++)
+	                    {
+	                        if(value.indexOf(files[i]) !== -1)
+	                        {
+	                            return true;
+	                        }
+	                    }
+	                    return false;
+                    }
+                    else
+                    {
+                        return (value==files);
+                    }
+                },               
+                                
+                //  https://www.tinymce.com/docs/configure/url-handling
+                convert_urls: false,
+                relative_urls: true,
+                remove_script_host: false,
+                
+                // https://www.tinymce.com/docs/configure/content-filtering/
+                valid_elements: "*[*],+a[*],+p[*],#i",
+                custom_elements: "nv,code,pre,nvlist,nvlist_conditional,figure,article,header,footer,post,nav",
+                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+nvlist_conditional[*],+figure[*],+article[*],+nav[*],+i[*],+span[*],+em[*],+b[*],*[*]",
+                valid_children: "+a[div|p|li],+body[style|script|nv|nvlist|nvlist_conditional],+code[nv|nvlist|nvlist_conditional]",
+                
+                paste_as_text: true,
+                
+                // https://www.tinymce.com/docs/configure/content-filtering/#allow_html_in_named_anchor
+                allow_html_in_named_anchor: true,          
+                
+                // events
+                handle_event_callback : "navigate_tinymce_event",
+                
+                init_instance_callback: function(editor)
+                {
                     $("#'.$name.'").parent().find("iframe").droppable(
                     {
                         drop: function(event, ui)
@@ -513,44 +577,31 @@ class naviforms
                             var mime = $(ui.draggable).attr("mimetype");
                             var web_id = "'.$website->id.'";
                             navigate_tinymce_add_content($("#'.$name.':tinymce").attr("id"), file_id, media, mime, web_id, ui.draggable);
-                            $("#'.$name.'_tbl").css("opacity", 1);
+                            $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 1);
                         },
                         over: function(event, ui)
                         {
                             if(!$(ui.draggable).attr("id")) // not a file!
                                 return;
 
-                            $("#'.$name.'_tbl").css("opacity", 0.75);
+                            $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 0.75);
                         },
                         out: function(event, ui)
                         {
-                            $("#'.$name.'_tbl").css("opacity", 1);
+                            $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 1);
                         }
                     });
 
-                    //  $($("#'.$name.'_ifr").contents()[0]).on("scroll", function(e) { navigate_tinymce_scroll(e, "'.$name.'"); });
-
-                    tinymce.get("'.$name.'").dom.events.add(
-                        tinymce.get("'.$name.'").dom.doc,
-                        "blur",
+                    editor.on(
+                        "blur focus",
                         function(e)
                         {
                             navigate_tinymce_event(e, "'.$name.'");
                         }
                     );
 
-                    tinymce.get("'.$name.'").dom.events.add(
-                        tinymce.get("'.$name.'").dom.doc,
-                        "focus",
-                        function(e)
-                        {
-                            navigate_tinymce_event(e, "'.$name.'");
-                        }
-                    );
-
-                    tinymce.get("'.$name.'").dom.events.add(
-                        tinymce.get("'.$name.'").dom.doc,
-                        "scroll",
+                    $(editor.iframeElement).on(
+	                    "scroll", 
                         function(e)
                         {
                             navigate_tinymce_event(e, "'.$name.'");
@@ -565,39 +616,6 @@ class naviforms
                 }
             });
         ');
-
-        /* testing optimal width adjustments width: ($("#'.$name.'").width() - 20) + "px", */
-		/* code for "external" toolbar mode, kind of buggy
-                handle_event_callback: function(e)
-                {
-                    if(e.type=="click")
-                    {
-                        var width = $("textarea#'.$name.'").next().width() - 2;
-
-                        $("#'.$name.'_external.mceExternalToolbar").css({
-                            position: "absolute",
-                            "margin-left": $("textarea#'.$name.'").prev().width(),
-                            width: width,
-                            background: $(".mceToolbar").eq(0).css("background-color"),
-                            "border-bottom": "solid 1px #ccc"
-                        });
-
-                        $("#'.$name.'_external.mceExternalToolbar").find(".mceToolbar.mceLeft").css({
-                            width: width,
-                            height: "auto",
-                            "padding-bottom": "2px"
-                        });
-                    }
-                },
-
-        $layout->add_script('
-			$(document).bind("focus", function()
-			{
-			    $("#'.$name.'_external.mceExternalToolbar").hide();
-			});
-		');
-
-		*/
 
 		return $out;
 	}
