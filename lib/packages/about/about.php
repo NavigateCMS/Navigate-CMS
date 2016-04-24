@@ -44,30 +44,18 @@ function about_layout()
 	$navibars->add_tab(t(218, 'Third party libraries'));	
 	
 	$navibars->add_tab_content_row(array(	'<label>'.t(218, 'Third party libraries').'</label>',
-											'<a href="http://tinymce.moxiecode.com/" target="_blank">TinyMCE WYSIWYG Javascript editor 3.5.10</a><br />'));
-
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.cirkuit.net/projects/tinymce/cirkuitSkin/" target="_blank">TinyMCE Cirkuit skin v0.5</a><br />' ));
-											
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/badsyntax/tinymce-custom-inlinepopups" target="_blank">TinyMCE jQuery UI inline popups (2011/06/14)</a><br />' ));
+											'<a href="http://www.tinymce.com" target="_blank">TinyMCE 4.3.10</a><br />'));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/tinymce-plugins/codemagic" target="_blank">TinyMCE CodeMagic plugin (2013/07/20)</a><br />' ));
+											'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.08</a><br />' ));
+											'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.09</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-   											'<a href="http://www.assembla.com/spaces/lorem-ipsum" target="_blank">TinyMCE LoremIpsum plugin v0.12</a><br />' ));
+   											'<a href="http://www.assembla.com/spaces/lorem-ipsum" target="_blank">TinyMCE LoremIpsum plugin v0.13</a><br />' ));
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-   											'<a href="https://github.com/claviska/tinymce-table-dropdown" target="_blank">Table Dropdown plugin for TinyMCE (31 Jan 2012)</a><br />' ));
-
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="http://code.google.com/p/tinymce-pre-plugin/" target="_blank">TinyMCE pre plugin r3 (17 Nov 2010)</a><br />' ));
-
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
+	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.jquery.com" target="_blank">jQuery v1.11.3 + jQuery Migrate v1.2.1</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
