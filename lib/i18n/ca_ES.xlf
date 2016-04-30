@@ -3685,5 +3685,23 @@
 				<target>Més emprats</target>
 			</segment>
 		</unit>
+		<unit id="614">
+			<segment>
+				<source>Edit with TinyMCE</source>
+				<target>Editar amb TinyMCE</target>
+			</segment>
+		</unit>
+		<unit id="615">
+			<segment>
+				<source>Edit as source code</source>
+				<target>Editar com a codi font</target>
+			</segment>
+		</unit>
+		<unit id="616">
+			<segment>
+				<source>Edit with NV Composer</source>
+				<target>Editar amb NV Composer</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

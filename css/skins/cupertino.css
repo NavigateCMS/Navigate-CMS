@@ -1039,6 +1039,38 @@ i.mce-i-attribs
 }
 
 
+/* editor selector (future) nv composer / tinymce / source code */
+span.editor_selector
+{
+	display: block;
+	margin-top: 8px;
+}
+
+span.editor_selector i.fa
+{
+	padding: 6px 4px;
+	color: #0070a3;
+	background: #d7ebf9 url("../../css/cupertino/images/ui-bg_glass_80_d7ebf9_1x400.png") repeat-x scroll 50% 50%;
+	border-radius: 2px;
+	border: 1px solid #aed0ea;
+	margin-right: -4px;
+	cursor: pointer;
+}
+
+span.editor_selector i.fa:hover
+{
+	background: #e4f1fb url("../../css/cupertino/images/ui-bg_glass_100_e4f1fb_1x400.png") repeat-x scroll 50% 50%;
+}
+
+
+span.editor_selector i.fa.active
+{
+	color: #fff;
+	background: #3baae3 url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50%;
+}
+
+
+
 
 /* CHECKBOX STYLING */
 /* Thanks to Geoffrey Crofte http://codepen.io/CreativeJuiz/ */

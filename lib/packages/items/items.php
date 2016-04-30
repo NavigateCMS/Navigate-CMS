@@ -1533,7 +1533,14 @@ function items_form($item)
 
 					$navibars->add_tab_content_row(
                         array(
-                            '<label>'.template::section_name($section['name']).'</label>',
+                            '<label>'.
+                                template::section_name($section['name']).
+                                '<span class="editor_selector" for="section-'.$section['code'].'-'.$lang.'">'.
+                                    //'<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
+                                    '<i class="fa fa-border fa-fw fa-lg fa-file-text-o active" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
+                                    '<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i>'.
+                                '</span>'.
+                            '</label>',
                             $naviforms->editorfield('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], ($section['width']+48).'px', $lang),
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',

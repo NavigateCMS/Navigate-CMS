@@ -3685,5 +3685,22 @@
 				<target>Más usados</target>
 			</segment>
 		</unit>
+		<unit id="614">
+			<segment>
+				<source>Edit with TinyMCE</source>
+				<target>Editar con TinyMCE</target>
+			</segment>
+		</unit>
+		<unit id="615">
+			<segment>
+				<source>Edit as source code</source>
+				<target>Editar como código fuente</target>
+			</segment>
+		</unit>
+		<unit id="616">
+			<segment>
+				<source>Edit with NV Composer</source>
+				<target>Editar con NV Composer</target>
+			</segment>
 	</file>
 </xliff>
