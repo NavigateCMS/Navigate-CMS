@@ -46,6 +46,7 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>'.t(218, 'Third party libraries').'</label>',
 											'<a href="http://www.tinymce.com" target="_blank">TinyMCE 4.3.10</a><br />'));
 
+	// note: the tinymce-codemirror plugin has Apache 2 License, but the author Arjan (from Webgear.nl) has given permission to use and include the code in this application
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4</a><br />' ));
 
