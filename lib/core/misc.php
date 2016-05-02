@@ -220,8 +220,8 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 	}
 
 	$tags = array();
-	foreach ($matches as $match){
- 
+	foreach ($matches as $match)
+	{
 		//Parse tag attributes, if any
 		$attributes = array();
 		if ( !empty($match['attributes'][0]) ){ 
@@ -662,5 +662,151 @@ function value_or_default($value, $default="")
 	else
 		return $value;
 }
+
+
+/**
+ * Find a tag by ID and append/replace content
+ *
+ * source: http://stackoverflow.com/a/17661043/1829145
+ * Thanks to Rodolfo Buaiz (brasofilo)
+ *
+ * @param string $oDoc source html (passed by reference!)
+ * @param string $s html code to insert
+ * @param string $sId id of the tag to find
+ * @param string $sHtml
+ * @param boolean $bAppend append new code?
+ * @param boolean $bInsert replace existing contents by the new source code?
+ * @param boolean $bAddToOuter
+ * @return boolean
+ */
+
+function brasofilo_suSetHtmlElementById( &$oDoc, &$s, $sId, $sHtml, $bAppend = false, $bInsert = false, $bAddToOuter = false )
+{
+    if( brasofilo_suIsValidString( $s ) && brasofilo_suIsValidString( $sId ) )
+    {
+        $bCreate = true;
+        if( is_object( $oDoc ))
+        {
+            if( !( $oDoc instanceof DOMDocument ))
+            {
+	            return false;
+            }
+            $bCreate = false;
+        }
+
+        if( $bCreate )
+        {
+	        $oDoc = new DOMDocument();
+        }
+
+        libxml_use_internal_errors(true);
+        $oDoc->loadHTML($s);
+        libxml_use_internal_errors(false);
+        $oNode = $oDoc->getElementById( $sId );
+
+        if( is_object( $oNode ))
+        {
+            $bReplaceOuter = ( !$bAppend && !$bInsert );
+
+            $sId = uniqid('NVCMS_SHEBI-');
+            $aId = array( "<!-- $sId -->", "<!--$sId-->" );
+
+            if( $bReplaceOuter )
+            {
+                if( brasofilo_suIsValidString( $sHtml ) )
+                {
+                    $oNode->parentNode->replaceChild( $oDoc->createComment( $sId ), $oNode );
+                    $s = $oDoc->saveHtml();
+                    $s = str_replace( $aId, $sHtml, $oDoc->saveHtml());
+                }
+                else
+                {
+	                $oNode->parentNode->removeChild( $oNode );
+                    $s = $oDoc->saveHtml();
+                }
+                return true;
+            }
+
+            $bReplaceInner = ( $bAppend && $bInsert );
+            $sThis = null;
+
+            if( !$bReplaceInner )
+            {
+                $sThis = $oDoc->saveHTML( $oNode );
+                $sThis = ($bInsert? $sHtml : '').($bAddToOuter? $sThis : (substr($sThis,strpos($sThis,'>')+1,-(strlen($oNode->nodeName)+3)))).($bAppend? $sHtml : '');
+            }
+
+            if( !$bReplaceInner && $bAddToOuter )
+            {
+                $oNode->parentNode->replaceChild( $oDoc->createComment( $sId ), $oNode );
+                $sId = &$aId;
+            }
+            else
+            {
+	            $oNode->nodeValue = $sId;
+            }
+
+            $s = str_replace( $sId, $bReplaceInner?$sHtml:$sThis, $oDoc->saveHtml());
+            return true;
+        }
+    }
+
+    return false;
+ }
+
+function brasofilo_suIsValidString( &$s, &$iLen = null, $minLen = null, $maxLen = null )
+{
+	if( !is_string( $s ) || !isset( $s{0} ))
+    {
+	    return false;
+    }
+
+    if( $iLen !== null )
+    {
+	    $iLen = strlen( $s );
+    }
+
+    return (
+        ( $minLen===null? true : ( $minLen > 0 && isset( $s{$minLen-1} ) ) ) &&
+        $maxLen===null? true : ( $maxLen >= $minLen && !isset( $s{$maxLen} ) )
+    );
+}
+
+function brasofilo_suAppendHtmlById( &$s, $sId, $sHtml, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, $sHtml, true, false );
+}
+
+function brasofilo_suInsertHtmlById( &$s, $sId, $sHtml, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, $sHtml, false, true );
+}
+
+function brasofilo_suAddHtmlBeforeById( &$s, $sId, $sHtml, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, $sHtml, false, true, true );
+}
+
+function brasofilo_suAddHtmlAfterById( &$s, $sId, $sHtml, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, $sHtml, true, false, true );
+}
+
+function brasofilo_suSetHtmlById( &$s, $sId, $sHtml, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, $sHtml, true, true );
+}
+
+function brasofilo_suReplaceHtmlElementById( &$s, $sId, $sHtml, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, $sHtml, false, false );
+}
+
+function brasofilo_suRemoveHtmlElementById( &$s, $sId, &$oDoc = null )
+{
+	return brasofilo_suSetHtmlElementById( $oDoc, $s, $sId, null, false, false );
+}
+
+
 
 ?>
