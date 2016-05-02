@@ -210,55 +210,11 @@ function nvweb_search($vars=array())
         $archive = $_REQUEST['archive'];
         if(!empty($archive))
            $archive = 'archive='.$archive.'&';
-		
-		if($vars['paginator']=='true')
+
+		if(isset($vars['paginator']) && $vars['paginator']!='false')
 		{
-			$pages = ceil($total / $vars['items']);
-			$page = $_GET['page'];
-
-			if($pages > 1)
-            {
-                $paginator_text_prev = '&#10092;';
-                $paginator_text_next = '&#10093;';
-
-                if(!empty($vars['paginator_prev']))
-                    $paginator_text_prev = $theme->t($vars['paginator_prev']);
-
-                if(!empty($vars['paginator_next']))
-                    $paginator_text_next = $theme->t($vars['paginator_next']);
-
-	            $out[] = '<div class="paginator">';
-
-				if($page > 1) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page - 1).'" rel="prev">'.$paginator_text_prev.'</a>';
-
-				if($page == 4)
-					$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page=1">1</a>';
-				else if($page > 3)
-					$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page=1">1</a><span class="paginator-etc">...</span>';
-
-				for($p = $page - 2; $p < $page + 3; $p++)
-				{
-					if($p < 1) continue;
-
-					if($p > $pages) break;
-
-					if($p==$page)
-						$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.$p.'" class="paginator-current">'.$p.'</a>';
-					else
-						$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.$p.'">'.$p.'</a>';
-				}
-
-				if($page + 3 == $pages)
-					$out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.$pages.'">'.$pages.'</a>';
-				else if($page + 3 < $pages)
-					$out[] = '<span class="paginator-etc">...</span><a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.$pages.'">'.$pages.'</a>';
-
-				if($page < $pages) $out[] = '<a href="?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page='.($page + 1).'" rel="next">'.$paginator_text_next.'</a>';
-
-				$out[] = '<div style=" clear: both; "></div>';
-
-				$out[] = '</div>';
-            }
+			$search_url = '?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page=';
+			$out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars, $search_url);
 		}
 	}
 	

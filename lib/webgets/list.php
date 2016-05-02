@@ -130,7 +130,7 @@ function nvweb_list($vars=array())
 	// retrieve entries
 
     // calculate the offset of the first element to retrieve
-    // Warning: the paginator applies on all paginated lists on a page
+    // Warning: the paginator applies on all paginated lists on a page (so right now there can only be one in a page)
 	if(empty($_GET['page']))
         $_GET['page'] = 1;
 	$offset = intval($_GET['page'] - 1) * $vars['items'];
@@ -583,64 +583,8 @@ function nvweb_list($vars=array())
 		$out[] = $item_html;
 	}
 
-	if($vars['paginator']=='true')
-	{
-		$pages = ceil($total / $vars['items']);
-		$page = $_GET['page'];
-
-        $paginator_text_prev = '&#10092;';
-        $paginator_text_next = '&#10093;';
-
-		if(!empty($vars['paginator_prev']))
-			$paginator_text_prev = $theme->t($vars['paginator_prev']);
-
-		if(!empty($vars['paginator_next']))
-			$paginator_text_next = $theme->t($vars['paginator_next']);
-
-        // keep existing URL variables except "page" and "route" (route is an internal navigate variable)
-        $url_suffix = '';
-        if(!is_array($_GET)) $_GET = array();
-        foreach($_GET as $key => $val)
-        {
-            if($key=='page' || $key=='route') continue;
-            $url_suffix .= '&'.$key.'='.$val;
-        }
-
-        if($pages > 1)
-        {
-            $out[] = '<div class="paginator">';
-
-            if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // ❬
-
-            if($page == 4)
-                $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
-            else if($page > 3)
-                $out[] = '<a href="?page=1'.$url_suffix.'">1</a><span class="paginator-etc">...</span>';
-
-            for($p = $page - 2; $p < $page + 3; $p++)
-            {
-                if($p < 1) continue;
-
-                if($p > $pages) break;
-
-                if($p==$page)
-                    $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
-                else
-                    $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
-            }
-
-            if($page + 3 == $pages)
-                $out[] = '<a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
-            else if($page + 3 < $pages)
-                $out[] = '<span class="paginator-etc">...</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
-
-            if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
-
-            $out[] = '<div style=" clear: both; "></div>';
-
-            $out[] = '</div>';
-        }
-	}
+	if(isset($vars['paginator']) && $vars['paginator']!='false')
+		$out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars);
 
 	return implode("\n", $out);
 }
@@ -1634,6 +1578,224 @@ function nvweb_list_get_from_twitter($username, $cache_time=3600, $offset, $item
     $items = item::convert_from_rss($articles);
 
     return array($items, count($items));
+}
+
+function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=array())
+{
+	global $theme;
+
+	$out = array();
+
+	$pages = ceil($total / $items_per_page);
+
+    $paginator_text_prev = '&#10092;';
+    $paginator_text_next = '&#10093;';
+
+	$paginator_text_first = '&#10092;&#10072;';
+    $paginator_text_last = '&#10072;&#10093;';
+	$paginator_text_etc = '&hellip;';
+
+
+	if(!empty($params['paginator_prev']))
+		$paginator_text_prev = $theme->t($params['paginator_prev']);
+
+	if(!empty($params['paginator_next']))
+		$paginator_text_next = $theme->t($params['paginator_next']);
+
+	if(!empty($params['paginator_first']))
+		$paginator_text_first = $theme->t($params['paginator_first']);
+
+	if(!empty($params['paginator_last']))
+		$paginator_text_last = $theme->t($params['paginator_last']);
+
+	if(!empty($params['paginator_etc']))
+		$paginator_text_etc = $theme->t($params['paginator_etc']);
+
+    // keep existing URL variables except "page" and "route" (route is an internal navigate variable)
+    $url_suffix = '';
+    if(!is_array($_GET)) $_GET = array();
+    foreach($_GET as $key => $val)
+    {
+        if($key=='page' || $key=='route') continue;
+        $url_suffix .= '&'.$key.'='.$val;
+    }
+
+    if($pages > 1)
+    {
+	    switch($type)
+	    {
+		    case 'prev/next':
+				$out[] = '<div class="paginator">';
+
+		        if($page > 1)
+			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+
+			    if($page < $pages)
+			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+
+		        $out[] = '<div style=" clear: both; "></div>';
+
+		        $out[] = '</div>';
+			    break;
+
+		    case 'first/prev/next/last':
+				$out[] = '<div class="paginator">';
+
+		        if($page > 1)
+		        {
+			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="prev">'.$paginator_text_first.'</a>'; // <|
+			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+		        }
+
+			    if($page < $pages)
+			    {
+			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="next">'.$paginator_text_last.'</a>'; // |❭
+			    }
+
+		        $out[] = '<div style=" clear: both; "></div>';
+
+		        $out[] = '</div>';
+
+			    break;
+
+		    case 'prev/central/next':
+				$out[] = '<div class="paginator">';
+
+		        if($page > 1)
+			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+
+		        for($p = $page - 2; $p < $page + 3; $p++)
+		        {
+		            if($p < 1) continue;
+
+		            if($p > $pages) break;
+
+		            if($p==$page)
+		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+		            else
+		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+		        }
+
+		        if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+
+		        $out[] = '<div style=" clear: both; "></div>';
+
+		        $out[] = '</div>';
+			    break;
+
+
+		    case 'first/prev/central/next/last':
+				$out[] = '<div class="paginator">';
+
+				if($page > 1)
+		        {
+			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="prev">'.$paginator_text_first.'</a>'; // <|
+			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+		        }
+
+		        for($p = $page - 2; $p < $page + 3; $p++)
+		        {
+		            if($p < 1) continue;
+
+		            if($p > $pages) break;
+
+		            if($p==$page)
+		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+		            else
+		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+		        }
+
+                if($page < $pages)
+			    {
+			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="next">'.$paginator_text_last.'</a>'; // |❭
+			    }
+
+		        $out[] = '<div style=" clear: both; "></div>';
+
+		        $out[] = '</div>';
+		    break;
+
+
+		    case 'all_pages':
+				$out[] = '<div class="paginator">';
+
+		        for($p = 1; $p <= $pages; $p++)
+		        {
+		            if($p==$page)
+		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+		            else
+		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+		        }
+
+		        $out[] = '<div style=" clear: both; "></div>';
+
+		        $out[] = '</div>';
+			    break;
+
+		    case 'true':
+		    case 'classic':
+		    default:
+			    $out[] = '<div class="paginator">';
+
+		        if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+
+		        if($page == 4)
+		            $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
+		        else if($page > 3)
+		            $out[] = '<a href="?page=1'.$url_suffix.'">1</a><span class="paginator-etc">'.$paginator_text_etc.'</span>';
+
+		        for($p = $page - 2; $p < $page + 3; $p++)
+		        {
+		            if($p < 1) continue;
+
+		            if($p > $pages) break;
+
+		            if($p==$page)
+		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+		            else
+		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+		        }
+
+		        if($page + 3 == $pages)
+		            $out[] = '<a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+		        else if($page + 3 < $pages)
+		            $out[] = '<span class="paginator-etc">'.$paginator_text_etc.'</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+
+		        if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+
+		        $out[] = '<div style=" clear: both; "></div>';
+
+		        $out[] = '</div>';
+			    break;
+	    }
+    }
+
+	if(!empty($params['paginator_tag_id']))
+	{
+		$paginator_html = implode("\n", $out);
+
+		$paginator_func = function() use ($params, $paginator_html)
+		{
+			global $html;
+
+			$html = nvweb_replace_tag_contents(
+				$params['paginator_tag_id'],
+				$paginator_html,
+				$html
+			);
+		};
+
+		nvweb_after_body('php', $paginator_func);
+		$paginator_html = "";
+	}
+	else
+	{
+		$paginator_html = implode("\n", $out);
+	}
+
+	return $paginator_html;
 }
 
 ?>
