@@ -173,7 +173,6 @@ try
     if(empty($template))
         throw new Exception('Navigate CMS: no template found!');
 
-
     // parse the special tag "include"
     // also convert curly brackets tags {{nv object=""}} to <nv object="" /> version
     // we do it now because new nv tags could be added before parsing the whole html
@@ -181,9 +180,9 @@ try
 
     $current['plugins_called'] = nvweb_plugins_called_in_template($html);
     $html = nvweb_plugins_event('before_parse', $html);
-
+	
     $html = nvweb_theme_settings($html);
-
+	
     $html = nvweb_template_parse_lists($html);
 	$html = nvweb_template_parse($html);
 
@@ -211,6 +210,7 @@ try
     $html = nvweb_template_oembed_parse($html);
 	$html = nvweb_template_processes($html);
 
+	$end.= nvweb_after_body('php');
 	$end = nvweb_after_body('html');
 	$end.= nvweb_after_body('js');
 	$end.= "\n\n";

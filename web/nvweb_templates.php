@@ -113,11 +113,25 @@ function nvweb_after_body($type="js", $code="")
 	{
 		if(!empty($current[$type.'_after_body']))
 		{
-			if($type=='js')
+			switch($type)
 			{
-				array_unshift($current[$type.'_after_body'], '<script language="javascript" type="text/javascript">');
-				$current[$type.'_after_body'][] = '</script>';
+				case 'js':
+					array_unshift($current[$type.'_after_body'], '<script language="javascript" type="text/javascript">');
+					$current[$type.'_after_body'][] = '</script>';
+					break;
+
+				case 'php':
+					foreach($current[$type.'_after_body'] as $code)
+						call_user_func($code);
+
+					$current[$type.'_after_body'] = array();
+					break;
+
+				case 'html':
+				default:
+					break;
 			}
+
 			return implode("\n", $current[$type.'_after_body']);
 		}
 	}
@@ -707,6 +721,13 @@ function nvweb_templates_find_closing_list_tag($html, $offset)
 
     return $next_closing;
 }
+
+function nvweb_replace_tag_contents($tag_id, $content, $html)
+{
+	brasofilo_suSetHtmlById( $html, $tag_id, $content );
+	return $html;
+}
+
 
 /**
  * Apply current website theme settings
