@@ -51,6 +51,9 @@ function about_layout()
 											'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
+											'<a href="https://github.com/Matmusia/magicline" target="_blank">TinyMCE magic line plugin v1.2</a><br />' ));
+
+	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.09</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',

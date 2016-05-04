@@ -477,7 +477,7 @@ class naviforms
 				    "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
-				    "codesample, codemirror, imagetools, importcss, paste" // add fullpage to edit full HTML code with head and body tags
+				    "codesample, codemirror, imagetools, importcss, paste, magicline" // add fullpage to edit full HTML code with head and body tags
 				],
 				
 				external_plugins: {
@@ -488,7 +488,7 @@ class naviforms
 				},
 				
 				toolbar: [
-					"formatselect fontselect fontsizeselect | forecolor | backcolor | removeformat visualchars visualblocks | searchreplace code",
+					"formatselect fontselect fontsizeselect | forecolor | backcolor | removeformat visualchars visualblocks magicline | searchreplace code",
                     "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent blockquote | bullist numlist | subscript superscript | loremipsum charmap nonbreaking | pre",
                     "styleselect | styleprops attribs | table | link unlink anchor hr | image imgmap media codesample | undo redo"
                 ],
@@ -497,6 +497,10 @@ class naviforms
 				
 			    browser_spellcheck : true,
                 spellchecker_language: "'.$lang.'",
+                
+                media_live_embeds: false, // disable iframe loading (like videos) to allow resizing
+                
+                magicline_color: "#0070a3",
 			    
 			    codemirror: {
 					path:  "'.NAVIGATE_URL.'/lib/external/codemirror",
