@@ -24,6 +24,7 @@ class navitable
 	public $pager;
     public $default_fid;
 	public $grid_notes_object_name;
+	public $max_rows;
 
 	public function __construct($id="")	
 	{
@@ -42,6 +43,7 @@ class navitable
         $this->after_right_click_col = '';
         $this->default_fid = $_REQUEST['fid'];
 		$this->quicksearch_url = '';
+		$this->max_rows = 30;
 	}
 	
 	public function setURL($url)
@@ -442,7 +444,7 @@ class navitable
 		$html[] = 'pager: "#'.$this->id.'-pager",';	
 		
 		$html[] = 'viewrecords: true,';		// display the number of total records in the pager bar
-		$html[] = 'rowNum: "30",';			
+		$html[] = 'rowNum: '.$this->max_rows.',';
 		$html[] = 'rowList: [10,15,20,30,50,100],';
 		$html[] = 'scroll: 1,';
 		$html[] = 'iconSet: "fontAwesome",';
