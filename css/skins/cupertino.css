@@ -953,6 +953,9 @@ div.mce-menu .mce-text
 {
 	font-family: Verdana, sans-serif;
 	font-size: 11px;
+	margin-left: 4px;
+	display: inline-block;
+	padding-right: 4px;
 }
 
 div.mce-menu .mce-menu-item
@@ -1068,7 +1071,6 @@ span.editor_selector i.fa.active
 	color: #fff;
 	background: #3baae3 url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50%;
 }
-
 
 
 /* CHECKBOX STYLING */
