@@ -2221,7 +2221,11 @@ class file
         if(!empty($disposition))
             $disposition = '&amp;disposition=' . $disposition;
 
-        $url = NVWEB_OBJECT.'?id='.$id.$disposition;
+	    if(defined("NVWEB_OBJECT"))
+            $url = NVWEB_OBJECT.'?id='.$id.$disposition;
+	    else
+		    $url = NAVIGATE_DOWNLOAD.'?id='.$id.$disposition;
+
         return $url;
     }
 

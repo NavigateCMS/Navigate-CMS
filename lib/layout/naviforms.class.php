@@ -434,8 +434,13 @@ class naviforms
         global $theme;
 
 		$height = 400;
-		
-		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true).'</textarea>';
+
+		$text = htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true);
+
+		// remove unneeded new lines (to fix a problem of extra spaces in pre/code tags)
+		$text = str_replace('&NewLine;', '', $text);
+
+		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.$text.'</textarea>';
 
         $content_css = $website->content_stylesheets('tinymce', 'content');
         $content_css_selectable = $website->content_stylesheets('tinymce', 'content_selectable');
@@ -471,13 +476,13 @@ class naviforms
                 menubar: false,
                 theme: "modern",
                 skin: "navigatecms-cupertino",
-			    
+                			    
 			    plugins: [
 				    "compat3x",
 				    "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
-				    "codesample, codemirror, imagetools, importcss, paste, magicline" // add fullpage to edit full HTML code with head and body tags
+				    "codesample codemirror imagetools importcss paste magicline nv_rollups" // add fullpage to edit full HTML code with head and body tags
 				],
 				
 				external_plugins: {
@@ -488,14 +493,14 @@ class naviforms
 				},
 				
 				toolbar: [
-					"formatselect fontselect fontsizeselect | forecolor | backcolor | removeformat visualchars visualblocks magicline | searchreplace code",
-                    "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent blockquote | bullist numlist | subscript superscript | loremipsum charmap nonbreaking | pre",
-                    "styleselect | styleprops attribs | table | link unlink anchor hr | image imgmap media codesample | undo redo"
+					"formatselect fontselect fontsizeselect | forecolor | backcolor | removeformat | searchreplace code",
+                    "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent blockquote | bullist numlist | nv_rollup_special_char",
+                    "styleselect | styleprops attribs | table | nv_rollup_links | image imgmap media codesample | undo redo"
                 ],
 
 				toolbar_items_size: "small",
 				
-			    browser_spellcheck : true,
+			    browser_spellcheck: true,
                 spellchecker_language: "'.$lang.'",
                 
                 media_live_embeds: false, // disable iframe loading (like videos) to allow resizing
@@ -515,6 +520,10 @@ class naviforms
 				},
 				
 				image_advtab: true,
+				
+				automatic_uploads: true,
+			    paste_data_images: true,
+				images_upload_url: "navigate_upload.php?engine=tinymce&session_id='.session_id().'&debug",
 				
 				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px", 
                 

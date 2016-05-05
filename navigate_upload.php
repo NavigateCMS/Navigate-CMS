@@ -11,7 +11,7 @@ require_once('cfg/globals.php');
 require_once('cfg/common.php');
 require_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
 
-//file_put_contents(NAVIGATE_PATH . '/debug.txt', print_r($_REQUEST, true).print_r($_FILES, true));
+//file_put_contents(NAVIGATE_PATH . '/private/debug.txt', print_r($_REQUEST, true).print_r($_FILES, true));
 
 /* global variables */
 global $DB;
@@ -19,6 +19,7 @@ global $user;
 global $config;
 global $layout;
 global $website;
+
 
 // create database connection
 $DB = new database();
@@ -209,44 +210,93 @@ else if($_REQUEST['engine']=='pixlr')
 	echo false;
 	core_terminate();
 }
-
-
-// plUpload engine
-if($user->permission("files.upload")=="true")
+else if($_REQUEST['engine']=='tinymce')
 {
-	// Get parameters
-	$chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
-	$chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
-	$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+	$DB = new database();
+	$DB->connect();
 
-	// Clean the fileName for security reasons
-	$fileName = base64_encode($fileName);
+    $file = file::register_upload(
+        $_FILES['file']['tmp_name'],
+        $_FILES['file']['name'],
+        0,
+	    NULL,
+	    true
+    );
 
-	// Remove old temp files
-	if (is_dir($targetDir) && ($dir = opendir($targetDir)))
-	{
-		navigate_upload_remove_temporary($targetDir, $maxFileAge);
-	}
+	if(!empty($file))
+		echo json_encode(array('location' => file::file_url($file->id)));
 	else
-		die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
-
-	// Look for the content type header
-	if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
-		$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
-
-	if (isset($_SERVER["CONTENT_TYPE"]))
-		$contentType = $_SERVER["CONTENT_TYPE"];
-
-	if (strpos($contentType, "multipart") !== false)
+		echo json_encode(false);
+	
+	$DB->disconnect();
+	core_terminate();
+}
+else
+{
+	// plUpload engine
+	if($user->permission("files.upload")=="true")
 	{
-		if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
+		// Get parameters
+		$chunk = isset($_REQUEST["chunk"]) ? $_REQUEST["chunk"] : 0;
+		$chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
+		$fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+
+		// Clean the fileName for security reasons
+		$fileName = base64_encode($fileName);
+
+		// Remove old temp files
+		if (is_dir($targetDir) && ($dir = opendir($targetDir)))
+		{
+			navigate_upload_remove_temporary($targetDir, $maxFileAge);
+		}
+		else
+			die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+
+		// Look for the content type header
+		if (isset($_SERVER["HTTP_CONTENT_TYPE"]))
+			$contentType = $_SERVER["HTTP_CONTENT_TYPE"];
+
+		if (isset($_SERVER["CONTENT_TYPE"]))
+			$contentType = $_SERVER["CONTENT_TYPE"];
+
+		if (strpos($contentType, "multipart") !== false)
+		{
+			if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
+			{
+				// Open temp file
+				$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, ($chunk == 0 ? "wb" : "ab"));
+				if ($out)
+				{
+					// Read binary input stream and append it to temp file
+					$in = fopen($_FILES['file']['tmp_name'], "rb");
+
+					if ($in)
+					{
+						while ($buff = fread($in, 4096))
+							fwrite($out, $buff);
+					}
+					else
+						die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+
+					fclose($out);
+					@unlink($_FILES['file']['tmp_name']);
+
+					// save meta file info into database (need a new db connection, we do this in the caller script)
+				}
+				else
+					die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+			}
+			else
+				die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+		}
+		else
 		{
 			// Open temp file
-			$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, ($chunk == 0 ? "wb" : "ab"));
+			$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
 			if ($out)
 			{
 				// Read binary input stream and append it to temp file
-				$in = fopen($_FILES['file']['tmp_name'], "rb");
+				$in = fopen("php://input", "rb");
 
 				if ($in)
 				{
@@ -257,41 +307,13 @@ if($user->permission("files.upload")=="true")
 					die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
 
 				fclose($out);
-				@unlink($_FILES['file']['tmp_name']);
-
-				// save meta file info into database (need a new db connection, we do this in the caller script)
 			}
 			else
 				die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 		}
-		else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+
+		// Return JSON-RPC response
+		die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 	}
-	else
-	{
-		// Open temp file
-		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
-		if ($out)
-		{
-			// Read binary input stream and append it to temp file
-			$in = fopen("php://input", "rb");
-
-			if ($in)
-			{
-				while ($buff = fread($in, 4096))
-					fwrite($out, $buff);
-			}
-			else
-				die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
-
-			fclose($out);
-		}
-		else
-			die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
-	}
-
-	// Return JSON-RPC response
-	die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 }
-	
 ?>
