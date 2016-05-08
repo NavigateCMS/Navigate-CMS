@@ -479,7 +479,7 @@ class naviforms
                 			    
 			    plugins: [
 				    "compat3x",
-				    "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak",
+				    "advlist autolink link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
 				    "codesample codemirror imagetools importcss paste magicline nv_rollups" // add fullpage to edit full HTML code with head and body tags
@@ -506,6 +506,7 @@ class naviforms
                 media_live_embeds: false, // disable iframe loading (like videos) to allow resizing
                 
                 magicline_color: "#0070a3",
+                magicline_targetedItems: ["DIV", "IMG", "IFRAME", "PRE", "TABLE"],
 			    
 			    codemirror: {
 					path:  "'.NAVIGATE_URL.'/lib/external/codemirror",
@@ -572,8 +573,24 @@ class naviforms
                 // events
                 handle_event_callback : "navigate_tinymce_event",
                 
-                init_instance_callback: function(editor)
+                // before render this tinymce
+                setup: function(editor)
                 {
+                },
+                
+                // just after rendering this tinymce 
+                init_instance_callback: function(editor)
+                {                           
+					// find missing images
+					$("#'.$name.'").parent().find("iframe").contents().find("img").each(function()
+					{
+						if( (typeof this.naturalWidth != "undefined" && this.naturalWidth == 0 ) 
+					        || this.readyState == "uninitialized" ) 
+				        {
+					        $(this).addClass("nomagicline");
+					    }
+					});
+                
                     $("#'.$name.'").parent().find("iframe").droppable(
                     {
                         drop: function(event, ui)
