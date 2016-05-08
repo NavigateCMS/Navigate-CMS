@@ -9,6 +9,7 @@ class navitable
 	public $sortorder;
 	public $edit_index;
 	public $edit_url;
+	public $edit_extra; // extra parameter to include in the edit row url
     public $delete_url;
     public $quicksearch_url;
 	public $initial_url;
@@ -393,10 +394,11 @@ class navitable
         return $result;
     }
 	
-	public function setEditUrl($index = 'id', $url)
+	public function setEditUrl($index = 'id', $url, $extra=NULL)
 	{
 		$this->edit_index = $index;
-		$this->edit_url = $url;			
+		$this->edit_url = $url;
+		$this->edit_extra = $extra;
 	}
 	
 	public function setInitialURL($url)
@@ -674,16 +676,21 @@ class navitable
 			$html[] = '{';
 			$html[] = '		navigate_unselect_text();';
 			$html[] = ' 	var data = $("#'.$this->id.'").getRowData(rowid); ';
+			$html[] = ' 	var row_edit_url = "'.$this->edit_url.'" + data.'.$this->edit_index.'; ';
+			if(!empty($this->edit_extra))
+			{
+				$html[] = ' 	row_edit_url = row_edit_url + "&'.$this->edit_extra.'=" + data.'.$this->edit_extra.';';
+			}
             //$html[] = '	console.log(rowid); ';
             //$html[] = '	console.log(data);';
             $html[] = '     if(e && e.ctrlKey) ';
             $html[] = ' 	{   
-                                var nw = window.open("'.$this->edit_url.'" + data.'.$this->edit_index.');
+                                var nw = window.open(row_edit_url);
 								nw.blur();
 								window.focus();
                             }';
             $html[] = ' 	else';
-			$html[] = ' 	{   window.location.href = "'.$this->edit_url.'" + data.'.$this->edit_index.';  }';
+			$html[] = ' 	{   window.location.href = row_edit_url;  }';
 			//$html[] = ' 	window.location.href = "'.$this->edit_url.'" + rowid;';
 			//$html[] = ' 	window.location.href = "'.$this->edit_url.'" + $(this).getCol(1)[iRow];';	// we catch the ID from the first column
 			//$html[] = ' 	window.location.href = "'.$this->edit_url.'" + data.id;';	// we catch the ID from the first column

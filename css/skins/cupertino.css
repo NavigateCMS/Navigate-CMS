@@ -694,6 +694,13 @@ a.navigate-content-actions-selected
 	vertical-align: top;
 }
 
+.ui-text-light
+{
+	color: #aed0ea;
+}
+
+
+
 /* tinymce v3 */
 .navigate-form-row  span.mceEditor
 {

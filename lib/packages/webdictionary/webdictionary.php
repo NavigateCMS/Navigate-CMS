@@ -13,7 +13,7 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
-		case 1:	// json data retrieval & operations
+		case 'json': // json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
@@ -43,21 +43,28 @@ function run()
 						else	// single search
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
-				
+
 					list($dataset, $total) = webdictionary_search($where, $orderby, $offset, $max);
 
 					for($i=0; $i < count($dataset); $i++)
 					{
+						$origin = "";
+						if(!empty($dataset[$i]['theme']))
+							$origin = '<i class="fa fa-fw fa-paint-brush ui-text-light" title="'.t(368, "Theme").'"></i> '.$dataset[$i]['theme'];
+						else if(!empty($dataset[$i]['extension']))
+							$origin = '<i class="fa fa-fw fa-puzzle-piece ui-text-light" title="'.t(617, "Extension").'"></i> '.$dataset[$i]['extension'];
+
 						if(empty($dataset[$i])) continue;
 						$out[$i] = array(
-							0	=> $dataset[$i]['id'],	// this 4th column won't appear, it works as ghost column for setting a unique ID to the row
+							0	=> $dataset[$i]['theme'].$dataset[$i]['extension'].'.'.$dataset[$i]['id'],	// this 4th column won't appear, it works as ghost column for setting a unique ID to the row
 							1	=> $dataset[$i]['node_id'], // id of the word (Ex. word "3" in English -> test, word "3" in Spanish -> prueba)
-							2	=> $dataset[$i]['theme'],
+							2	=> $origin,
 							3 	=> language::name_by_code($dataset[$i]['lang']),
-							4	=> $dataset[$i]['text']
+							4	=> $dataset[$i]['text'],
+							5   => $dataset[$i]['source']
 						);
-					}					
-					
+					}
+
 					navitable::jqgridJson($out, $page, $offset, $max, $total, 0); // 0 is the index of the ghost ID column
 					break;
 			}
@@ -66,13 +73,16 @@ function run()
 			exit;
 			break;
 		
-		case 'edit': // edit/new form		
-			if(!empty($_REQUEST['id']))
+		case 'edit': // edit/new form
+			if(!empty($_REQUEST['path']) && !is_numeric($_REQUEST['id']))
+				$wtext->load($_REQUEST['path']);
+			else if(!empty($_REQUEST['id']))
 				$wtext->load($_REQUEST['id']);
 
 			if(isset($_REQUEST['form-sent']))
 			{
 				$wtext->load_from_post();
+
 				try
 				{
 					$wtext->save();
@@ -159,22 +169,25 @@ function webdictionary_list()
 			'search_form'
 		)
 	);
-		
+
+	$navitable->setQuickSearchURL('?fid='.$_REQUEST['fid'].'&act=json&_search=true&quicksearch=');
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
+	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('node_id');
 	$navitable->setDataIndex('node_id');
-	$navitable->setEditUrl('node_id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
+	$navitable->setEditUrl('node_id', '?fid='.$_REQUEST['fid'].'&act=edit&id=', 'path');
+	$navitable->max_rows = 500;
 
-	$navitable->addCol("#id#", 'id', "40", "true", "left", NULL, "true");	
+	$navitable->addCol("#id#", 'id', "40", "true", "left", NULL, "true");   // ghost (unique) ID
 	
-	$navitable->addCol("ID", 'node_id', "90", "true", "left");	
-	$navitable->addCol(t(368, 'Theme'), 'theme', "60", "true", "left");	
+	$navitable->addCol("ID", 'node_id', "90", "true", "left");	// textual ID
+	$navitable->addCol(t(191, 'Source'), 'source', "60", "true", "left");
 	$navitable->addCol(t(46, 'Language'), 'lang', "50", "true", "left");	
 	$navitable->addCol(t(54, 'Text'), 'text', "400", "true", "left");	
-	
+	$navitable->addCol("Path", "path", 0, "false", "left", NULL, "true");
+
 	$navibars->add_content($navitable->generate());	
 	
 	return $navibars->generate();
@@ -201,17 +214,20 @@ function webdictionary_form($item)
 
 	if(empty($item->node_id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+			)
+		);
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
-
+		$navibars->add_actions(
+			array(
+				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+			)
+		);
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -230,7 +246,7 @@ function webdictionary_form($item)
 								},
 								"'.t(35, 'Delete').'": function() {
 									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->node_id.'";
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->node_id.'&path='.$_REQUEST['path'].'";
 								}
 							}
 						});';		
@@ -240,9 +256,13 @@ function webdictionary_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=webdictionary&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=webdictionary&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+		array(
+			(!empty($item->id)? '<a href="?fid=webdictionary&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=webdictionary&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+		)
+	);
 
 	$navibars->form();
 
@@ -250,13 +270,22 @@ function webdictionary_form($item)
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
     $navibars->add_tab_content($naviforms->hidden('theme', $item->theme));
-	
+
 	$node_id_text = (!empty($item->node_id)? $item->node_id : t(52, '(new)'));
 	if(!empty($item->node_id) && !is_numeric($item->node_id))
-		$node_id_text .= ' | '.$theme->title;
+	{
+		if($item->node_type == 'extension')
+			$node_id_text .= ' | '.$item->extension_name;
+		else
+			$node_id_text .= ' | '.$theme->title;
+	}
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.$node_id_text.'</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>ID</label>',
+			'<span>'.$node_id_text.'</span>'
+		)
+	);
 											
 	$navibars->add_tab_content($naviforms->hidden('node_type', (empty($item->node_type)? 'global' : $item->node_type)));
 	$navibars->add_tab_content($naviforms->hidden('subtype', (empty($item->subtype)? 'text' : $item->subtype)));	
@@ -267,6 +296,7 @@ function webdictionary_form($item)
     foreach($website->languages_list as $l)
         $data[$l] = language::name_by_code($l);
 
+	// load installed translation services
     $translate_extensions = extension::list_installed('translate', false);
 
     foreach($website->languages_list as $lang)
@@ -309,9 +339,12 @@ function webdictionary_form($item)
 		}
 		else
 		{
-			$navibars->add_tab_content_row(array(	'<label>'.language::name_by_code($lang).'</label>',
-													$naviforms->textarea('webdictionary-text-'.$lang, $item->text[$lang])
-												));
+			$navibars->add_tab_content_row(
+				array(
+					'<label>'.language::name_by_code($lang).'</label>',
+					$naviforms->textarea('webdictionary-text-'.$lang, $item->text[$lang])
+				)
+			);
 		}
 		
 	}
@@ -324,13 +357,13 @@ function webdictionary_search($where, $orderby, $offset, $max)
 	global $DB;
 	global $website;
 	global $theme;
-	
+
 	$theme_translations = array();
-	
+
 	if(!empty($theme))
 	{
 		$theme_translations = $theme->get_translations(); // force load theme dictionary in all languages available
-		
+
 		// search filters for theme strings (ONLY ENABLED FOR QUICKSEARCH)
 		// $where example = 'website = 1 AND ( node_id LIKE "%design%" OR lang LIKE "%design%" OR text LIKE "%design%")'
 		
@@ -338,7 +371,8 @@ function webdictionary_search($where, $orderby, $offset, $max)
 		$qsearch = substr($where, strpos($where, ' LIKE "%') + 8); 
 		$qsearch = mb_strtolower(substr($qsearch, 0, strpos($qsearch, '%" OR')));
 		$qsearch = trim($qsearch);
-		
+
+		// remove theme strings that do not match the search query
 		if(!empty($qsearch))
 		{			
 			for($trs=0; $trs < count($theme_translations); $trs++)
@@ -361,47 +395,122 @@ function webdictionary_search($where, $orderby, $offset, $max)
 		$theme_translations = array_filter($theme_translations);
 		sort($theme_translations);
 	}
-	
-	$DB->query('SELECT id, theme, node_id, lang, `text`
-				  FROM nv_webdictionary
-				 WHERE '.$where.'
-				   AND node_type = "global"
-				UNION 
-				SELECT id, theme, subtype AS node_id, lang, `text`
-				  FROM nv_webdictionary
-				 WHERE '.$where.'
-				   AND node_type = "theme"',
-				 'array'
-			  );
-			  	
+
+	$extensions_translations = array();
+
+	$extensions = extension::list_installed();
+	if(!is_array($extensions))
+		$extensions = array();
+
+	foreach($extensions as $extension)
+	{
+		$ext = new extension();
+		$ext->load($extension['code']);
+		$extension_translations = $ext->get_translations(); // load all translations of the extension
+
+		// remove extension strings that do not match the search query
+		if(!empty($qsearch))
+		{
+			for($trs=0; $trs < count($extension_translations); $trs++)
+			{
+				$tt_text = mb_strtolower($extension_translations[$trs]['text']);
+				$tt_extension = mb_strtolower($extension_translations[$trs]['extension']);
+				$tt_id = mb_strtolower($extension_translations[$trs]['node_id']);
+				$tt_lang = $extension_translations[$trs]['lang'];
+
+				if(	strpos($tt_text, $qsearch) === false	&&
+					strpos($tt_extension, $qsearch) === false	&&
+					strpos($tt_id, $qsearch) === false	&&
+					strpos($tt_lang, $qsearch) === false	)
+				{
+					$extension_translations[$trs] = NULL;
+				}
+			}
+
+			$extension_translations = array_filter($extension_translations);
+		}
+
+		if(!empty($extension_translations))
+		{
+			$extensions_translations = array_merge(
+				$extensions_translations,
+				$extension_translations
+			);
+		}
+	}
+
+
+	$DB->query('
+		SELECT id, theme, node_id, node_type, lang, `text`, CONCAT_WS(".", node_type, "" , subtype) AS source
+		  FROM nv_webdictionary
+		 WHERE '.$where.'
+		   AND node_type = "global"
+		
+		UNION 
+		
+		SELECT id, theme, subtype AS node_id, node_type, lang, `text`, CONCAT_WS(".", node_type, theme, subtype) AS source
+		  FROM nv_webdictionary
+		 WHERE '.$where.'
+		   AND node_type = "theme"',
+		 'array'
+	);
 	$resultset = $DB->result();
 
-	// remove from theme_translations the strings 
-	// customized in Navigate database
+	// remove from theme_translations the strings already present (customized) in database
 	for($dbrs=0; $dbrs < count($resultset); $dbrs++)
 	{
 		for($trs=0; $trs < count($theme_translations); $trs++)
 		{				
-			if(	$resultset[$dbrs]['node_id']==$theme_translations[$trs]['node_id']	&&
-				$resultset[$dbrs]['lang']==$theme_translations[$trs]['lang'])
+			if(	$resultset[$dbrs]['node_type'] == "theme"	&&
+				$resultset[$dbrs]['node_id'] == $theme_translations[$trs]['node_id']	&&
+				$resultset[$dbrs]['lang'] == $theme_translations[$trs]['lang']
+			)
 			{
 				unset($theme_translations[$trs]);
 				break;
 			}
 		}
 	}
-	
+
 	$dataset = array_merge($resultset, $theme_translations);
+
+	$DB->query('
+		SELECT id, extension, node_type, subtype AS node_id, lang, `text`, CONCAT_WS(".", node_type, extension, subtype) AS source
+		  FROM nv_webdictionary
+		 WHERE '.$where.'
+		   AND node_type = "extension"',
+		 'array'
+	);
+	$resultset = $DB->result();
+
+	// remove from extension translations the strings already present (customized) in database
+	for($dbrs=0; $dbrs < count($resultset); $dbrs++)
+	{
+		for($trs=0; $trs < count($extensions_translations); $trs++)
+		{
+			if(	$resultset[$dbrs]['node_type'] == "extension"	&&
+				$resultset[$dbrs]['extension'] == $extensions_translations[$trs]['extension']	&&
+				$resultset[$dbrs]['node_id'] == $extensions_translations[$trs]['node_id']	&&
+				$resultset[$dbrs]['lang'] == $extensions_translations[$trs]['lang']
+			)
+			{
+				unset($extensions_translations[$trs]);
+				break;
+			}
+		}
+	}
+
+	$dataset = array_merge($dataset, $resultset, $extensions_translations);
 	$total = count($dataset);
-	
+
 	// reorder dataset
 	$orderby = explode(' ', $orderby);
 	// [0] -> column, [1] -> asc | desc
 
 	$dataset = array_orderby($dataset, $orderby[0], ($orderby[1]=='desc'? SORT_DESC : SORT_ASC));
-	
+
 	$dataset = array_slice($dataset, $offset, $max);
-	
+
 	return array($dataset, $total);
 }
 
@@ -462,8 +571,10 @@ function webdictionary_edit_language_form($code)
 	$DB->query('
 		SELECT *
 		  FROM nv_webdictionary
-		 WHERE (node_type = "global")
-		    OR (node_type = "theme" AND theme= "'.$theme->name.'")
+		 WHERE (	(node_type = "global")
+		    		OR (node_type = "theme" AND theme= "'.$theme->name.'")
+		       ) AND
+		       website = '.$website->id.'
     ');
 
 	$db_trans = $DB->result();
@@ -483,10 +594,68 @@ function webdictionary_edit_language_form($code)
 			array_push(
 				$theme->dictionaries,
 				array(
+					"source" => $text_id,
 					"node_id" => $text_id,
 					"text" => $otext->text,
 					"lang" => $otext->lang
 				)
+			);
+		}
+	}
+
+
+	$extensions_translations = array();
+
+	$extensions = extension::list_installed();
+	if(!is_array($extensions))
+		$extensions = array();
+
+	foreach($extensions as $extension)
+	{
+		$ext = new extension();
+		$ext->load($extension['code']);
+		$extension_translations = $ext->get_translations(); // load all translations of the extension
+
+		$extensions_translations = array_merge(
+			$extensions_translations,
+			$extension_translations
+		);
+	}
+
+	$DB->query('
+		SELECT *
+		  FROM nv_webdictionary
+		 WHERE node_type = "extension" AND
+		       website = '.$website->id,
+		'array'
+	);
+	$resultset = $DB->result();
+
+	for($dbrs=0; $dbrs < count($resultset); $dbrs++)
+	{
+		$found = false;
+		for($trs=0; $trs < count($extensions_translations); $trs++)
+		{
+			if(	$resultset[$dbrs]['node_type'] == "extension"	&&
+				$resultset[$dbrs]['extension'] == $extensions_translations[$trs]['extension']	&&
+				$resultset[$dbrs]['subtype'] == $extensions_translations[$trs]['node_id']	&&
+				$resultset[$dbrs]['lang'] == $extensions_translations[$trs]['lang']
+			)
+			{
+				$found = true;
+				$extensions_translations[$trs]['text'] = $resultset[$dbrs]['text'];
+			}
+		}
+
+		// translation was not included in the extension languages, so we need to add it to our array
+		if(!$found)
+		{
+			$extensions_translations[] = array(
+				'extension' => $resultset[$dbrs]['extension'],
+				'source' => 'extension.'.$resultset[$dbrs]['extension'].'.'.$resultset[$dbrs]['subtype'],
+				'node_id' => $resultset[$dbrs]['subtype'],
+				'lang' => $resultset[$dbrs]['lang'],
+				'text' => $resultset[$dbrs]['text']
 			);
 		}
 	}
@@ -501,12 +670,36 @@ function webdictionary_edit_language_form($code)
 		if($otext['lang'] == $origin)
 		{
 			$translation = $dict_dest[$otext['node_id']];
+			if(is_numeric($otext['source']))
+				$otext['source'] = 'global.'.$otext['source'];
 
+			// note: PHP does not allow using dots in $_POST variable names, unless they are used in an array
 			$table.= '
 				<tr>
 					<td>'.$otext['node_id'].'</textarea></td>
 					<td><textarea rows="2" cols="60" disabled="disabled">'.$otext['text'].'</textarea></td>
-					<td><textarea name="'.$code.'-'.$otext['node_id'].'" rows="2" cols="60">'.$translation.'</textarea></td>
+					<td><textarea name="data['.$code.'.'.$otext['source'].']" rows="2" cols="60">'.$translation.'</textarea></td>
+				</tr>
+			';
+		}
+	}
+
+	foreach($extensions_translations as $otext)
+	{
+		if($otext['lang'] == $origin)
+		{
+			$translation = "";
+			foreach($extensions_translations as $dtext)
+			{
+				if($otext['source'] == $dtext['source'] &&  $dtext['lang']==$code)
+					$translation = $dtext['text'];
+			}
+
+			$table.= '
+				<tr>
+					<td>'.$otext['source'].'</textarea></td>
+					<td><textarea rows="2" cols="60" disabled="disabled">'.$otext['text'].'</textarea></td>
+					<td><textarea name="data['.$code.'.'.$otext['source'].']" rows="2" cols="60">'.$translation.'</textarea></td>
 				</tr>
 			';
 		}

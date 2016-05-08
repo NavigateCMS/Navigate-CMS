@@ -3703,5 +3703,11 @@
 				<target>Edit with NV Composer</target>
 			</segment>
 		</unit>
+		<unit id="617">
+			<segment>
+				<source>Extension</source>
+				<target>Extension</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

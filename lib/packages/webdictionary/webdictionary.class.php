@@ -3,12 +3,16 @@
 class webdictionary
 {
 	public $id; // unused but needed
+	public $website;
 	public $node_type;
 	public $theme;
+	public $extension;
 	public $node_id;
 	public $subtype;
 	public $lang;
 	public $text;
+	
+	public $extension_name;
 	
 	// load a certain word from the dictionary with its translations
 	public function load($id)
@@ -30,48 +34,101 @@ class webdictionary
 		}
 		else
 		{
-			// $id is a theme string that may be in the database or/and the theme json dictionary
-			$theme_dictionary = $theme->get_translations();
-
-			$this->node_type= 'theme';
-			$this->node_id  = $id;
-			$this->theme	= $theme->name;
-			$this->subtype	= $id;
-					
-			$this->text = array();
-			foreach($theme_dictionary as $word)
+			// id can be a theme string or a translation path (example: extension.seotab.check_url_on_facebook)
+			$path = explode(".", $id, 3);
+			if($path[0]=='extension')
 			{
-				if($word['node_id']==$id)
-					$this->text[$word['lang']] = $word['text'];
+				$extension = new extension();
+				$extension->load($path[1]);
+				$id = $path[2];
+
+				// $id is a theme string that may be in the database or/and the theme json dictionary
+				$extension_dictionary = $extension->get_translations();
+
+				$this->id       = $id;
+				$this->node_type= 'extension';
+				$this->extension= $extension->code;
+				$this->extension_name = $extension->title;
+				$this->node_id  = $id;
+				$this->subtype	= $id;
+				$this->website  = $website->id;
+
+				$this->text = array();
+				foreach($extension_dictionary as $word)
+				{
+					if($word['node_id']==$id)
+						$this->text[$word['lang']] = $word['text'];
+				}
+
+				// we need to load the database versions of the theme strings
+				// node_id is not used in database with theme strings
+				$DB->query('
+					SELECT lang, text
+					  FROM nv_webdictionary 
+					 WHERE node_type = "extension"
+					   AND extension = '.protect($this->extension).'
+					   AND subtype = '.protect($this->subtype).'
+					   AND website = '.$website->id
+				);
+
+				$data = $DB->result();
+
+				if(!is_array($data)) $data = array();
+				foreach($data as $item)
+					$this->text[$item->lang] = $item->text;
 			}
-			
-			// we need to load the database versions of the theme strings
-			// node_id is not used in database with theme strings
-			$DB->query('
-				SELECT lang, text
-				  FROM nv_webdictionary 
-				 WHERE node_type = "theme"
-				   AND theme = '.protect($theme->name).'
-				   AND subtype = '.protect($this->subtype).'
-				   AND website = '.$website->id
-			);
-								
-			$data = $DB->result();
-			
-			if(!is_array($data)) $data = array();			
-			foreach($data as $item)
-				$this->text[$item->lang] = $item->text;
+			else    // theme translation (only for the current active theme)
+			{
+				$id = $path[2];
+
+				// $id is a theme string that may be in the database or/and the theme json dictionary
+				$theme_dictionary = $theme->get_translations();
+
+				$this->id       = $id;
+				$this->node_type= 'theme';
+				$this->node_id  = $id;
+				$this->theme	= $theme->name;
+				$this->subtype	= $id;
+				$this->website  = $website->id;
+
+				$this->text = array();
+				foreach($theme_dictionary as $word)
+				{
+					if($word['node_id']==$id)
+						$this->text[$word['lang']] = $word['text'];
+				}
+
+				// we need to load the database versions of the theme strings
+				// node_id is not used in database with theme strings
+				$DB->query('
+					SELECT lang, text
+					  FROM nv_webdictionary 
+					 WHERE node_type = "theme"
+					   AND theme = '.protect($theme->name).'
+					   AND subtype = '.protect($this->subtype).'
+					   AND website = '.$website->id
+				);
+
+				$data = $DB->result();
+
+				if(!is_array($data)) $data = array();
+				foreach($data as $item)
+					$this->text[$item->lang] = $item->text;
+			}
 		}
 	}
 		
 	public function load_from_resultset($rs)
 	{
 		$main = $rs[0];
-		
+
+		$this->website  = $main->website;
 		$this->node_type= $main->node_type;
 		$this->node_id  = $main->node_id;
 		$this->theme	= $main->theme;
+		$this->extension= $main->extension;
 		$this->subtype	= $main->subtype;
+
 		$this->text		= array();
 		
 		for($r=0; $r < count($rs); $r++)
@@ -82,9 +139,6 @@ class webdictionary
 	
 	public function load_from_post()
 	{
-		global $DB;
-		global $theme;
-
 		// if node_id is empty, then is an insert
 		$this->node_type 	= $_REQUEST['node_type'];
 		$this->subtype 		= $_REQUEST['subtype'];
@@ -103,8 +157,7 @@ class webdictionary
 	public function save()
 	{
 		global $DB;
-		global $website;
-		
+
 		// remove all old entries
 		if(!empty($this->node_id))
 		{
@@ -118,6 +171,7 @@ class webdictionary
 					WHERE website = '.protect($this->website).'
 					  AND subtype = '.protect($this->subtype).'
 					  AND theme = '.protect($this->theme).' 
+					  AND extension = '.protect($this->extension).' 
 					  AND node_type = '.protect($this->node_type).
 					  $node_id_filter
 			);
@@ -145,6 +199,7 @@ class webdictionary
 				WHERE subtype = '.protect($this->subtype).'
 				  AND node_type = '.protect($this->node_type).'
 				  AND theme = '.protect($this->theme).'
+				  AND extension = '.protect($this->extension).'
 				  AND website = '.protect($this->website).
 				  $node_id_filter
 			);
@@ -174,7 +229,7 @@ class webdictionary
 
 			$this->node_id = intval($tmp) + 1;
 		}
-		
+
 		// one entry per language
 		foreach($this->text as $lang => $text)
 		{
@@ -182,15 +237,16 @@ class webdictionary
 
 			$ok = $DB->execute('
  				INSERT INTO nv_webdictionary
-					(id, website, node_type, node_id, theme, subtype, lang, `text`)
+					(id, website, node_type, node_id, theme, extension, subtype, lang, `text`)
 				VALUES
-					( 0, :website, :node_type, :node_id, :theme, :subtype, :lang, :text)
+					( 0, :website, :node_type, :node_id, :theme, :extension, :subtype, :lang, :text)
 				',
 				array(
 					":website" => $this->website,
 					":node_type" => $this->node_type,
-					":node_id" => !empty($this->theme)? 0 : $this->node_id,
-					":theme" => $this->theme,
+					":node_id" => (!empty($this->theme) || !empty($this->extension))? 0 : $this->node_id,
+					":theme" => !empty($this->theme)? $this->theme : "",
+					":extension" => !empty($this->extension)? $this->extension : "",
 					":subtype" => $this->subtype,
 					":lang" => $lang,
 					":text" => $text
@@ -199,7 +255,7 @@ class webdictionary
 			
 			if(!$ok) throw new Exception($DB->get_last_error());
 		}
-		
+
 		return true;
 	}	
 	
@@ -273,15 +329,16 @@ class webdictionary
 				// NO error checking
 				$DB->execute('
 	                INSERT INTO nv_webdictionary
-						(id, website, node_type, node_id, theme, subtype, lang, `text`)
+						(id, website, node_type, node_id, theme, extension, subtype, lang, `text`)
 					VALUES
-						( 0, :website, :node_type, :node_id, :theme, :subtype, :lang, :text)
+						( 0, :website, :node_type, :node_id, :theme, :extension, :subtype, :lang, :text)
 					',
 					array(
 						":website" => $website_id,
 						":node_type" => $node_type,
 						":node_id" => $node_id,
 						":theme" => "",
+						":extension" => "",
 						":subtype" => $subtype,
 						":lang" => $lang,
 						":text" => value_or_default($litem, "")
@@ -299,50 +356,73 @@ class webdictionary
 
 		$errors = array();
 
-		foreach($_POST as $key => $text)
+		foreach($_POST['data'] as $key => $text)
 		{
-			if(substr($key, 0, strlen($language.'-'))==($language.'-'))
-			{
-				$key = substr($key, strlen($language.'-'));
+			$object = "";
+			list($language, $type, $id) = explode(".", $key, 3);
+			// 0 => language
+			// 1 => type (theme, extension, internal)
+			// 2 => ID or name.ID   (name of the theme or extension)
 
-				if(is_numeric($key))
-				{
+			if(!is_numeric($id))
+				list($object, $id) = explode(".", $id, 2);
+
+			switch($type)
+			{
+				case "global":
 					// remove old entry, if exists
 					$DB->execute('
 		                DELETE FROM nv_webdictionary
-						WHERE node_id = '.protect($key).'
+						WHERE node_id = '.protect($id).'
 						  AND node_type = '.protect('global').'
 						  AND lang = '.protect($language).'
 						  AND website = '.$website->id.'
 						LIMIT 1
 					');
-				}
-				else
-				{
+					break;
+
+				case "theme":
 					// remove old entry, if exists
 					$DB->execute('
 		                DELETE FROM nv_webdictionary
-						WHERE subtype = '.protect($key).'
+						WHERE subtype = '.protect($id).'
 						  AND node_type = '.protect("theme").'
-						  AND theme = '.protect($theme->name).'
+						  AND theme = '.protect($object).'
 						  AND lang = '.protect($language).'
 						  AND website = '.$website->id.'
 						LIMIT 1
 					');
-				}
+					break;
 
-				// insert new value
+				case "extension":
+					// remove old entry, if exists
+					$DB->execute('
+		                DELETE FROM nv_webdictionary
+						WHERE subtype = '.protect($id).'
+						  AND node_type = '.protect("extension").'
+						  AND extension = '.protect($object).'
+						  AND lang = '.protect($language).'
+						  AND website = '.$website->id.'
+						LIMIT 1
+					');
+					break;
+			}
+
+			// insert new value (if not empty)
+			if(!empty($text))
+			{
 				$ok = $DB->execute('
 				    INSERT INTO nv_webdictionary
-                    (	id,	website, node_type, theme, node_id, subtype, lang, `text`)
-                    VALUES
-                    (	0, :website, :node_type, :theme, :node_id, :subtype, :lang, :text )',
+	                (	id,	website, node_type, theme, extension, node_id, subtype, lang, `text`)
+	                VALUES
+	                (	0, :website, :node_type, :theme, :extension, :node_id, :subtype, :lang, :text )',
 					array(
 						':website' => $website->id,
-						':node_type' => (is_numeric($key)? 'global' : 'theme'),
-						':theme' => (is_numeric($key)? '' : $theme->name),
-						':node_id' => (is_numeric($key)? $key : 0),
-						':subtype' => (is_numeric($key)? '' : $key),
+						':node_type' => $type,
+						':theme' => ($type=='theme'? $object : ""),
+						':extension' => ($type=='extension'? $object : ""),
+						':node_id' => (is_numeric($id)? $id : 0),
+						':subtype' => (is_numeric($id)? '' : $id),
 						':lang' => $language,
 						':text' => value_or_default($text, "")
 					)

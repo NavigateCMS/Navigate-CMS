@@ -13,6 +13,7 @@ class extension
     public $settings;
 
     public $dictionary;
+	public $dictionaries;
 
 	public function load($code)
 	{
@@ -186,11 +187,25 @@ class extension
     {
         global $user;
         global $session;
+        global $website;
+        global $DB;
 
         if(empty($this->dictionary))
         {
             $extension_languages = (array)$this->definition->languages;
             $file = '';
+
+            if(!is_array($extension_languages))
+				$extension_languages = array();
+
+            // if we are in Navigate CMS, user has the default language
+            // if we call this function from the website, the session has the default language
+            $current_language = $session['lang'];
+            if(empty($current_language) && !empty($webuser))
+                $current_language = $webuser->language;
+
+            if(empty($current_language) && !empty($user))
+                $current_language = $user->language;
 
             foreach($extension_languages as $lcode => $lfile)
             {
@@ -208,17 +223,79 @@ class extension
 
             if(!empty($json))
                 $this->dictionary = (array)json_decode($json);
+
+            // maybe we have a custom translation added in navigate / webdictionary ?
+            if(!empty($website->id))
+            {
+                $DB->query('
+                  SELECT subtype, lang, text
+                    FROM nv_webdictionary
+                   WHERE website = '.$website->id.'
+                     AND node_type = "extension"
+                     AND lang = '.protect($current_language).'
+                     AND extension = '.protect($this->code)
+                );
+                $rs = $DB->result();
+
+                for($r=0; $r < count($rs); $r++)
+                    $this->dictionary[$rs[$r]->subtype] = $rs[$r]->text;
+            }
         }
 
-        $out = $code;
-        if(substr($out, 0, 1)=='@')  // get translation from theme dictionary
-            $out = substr($out, 1);
+        if(is_string($code))
+		{
+            $out = $code;
+            if(substr($out, 0, 1)=='@')  // get translation from theme dictionary
+                $out = substr($out, 1);
 
-        if(!empty($this->dictionary[$out]))
-            $out = $this->dictionary[$out];
+            if(!empty($this->dictionary[$out]))
+                $out = $this->dictionary[$out];
+        }
 
         return $out;
     }
+
+
+    public function get_translations()
+	{
+		if(empty($this->dictionaries))
+		{
+			$dict = array();
+            if(isset($this->definition->languages))
+            {
+                foreach($this->definition->languages as $lcode => $lfile)
+                {
+                    $jarray = NULL;
+                    $json = @file_get_contents(NAVIGATE_PATH.'/plugins/'.$this->code.'/'.$lfile);
+
+                    if(!empty($json))
+                        $jarray = (array)json_decode($json);
+
+                    if(!empty($jarray))
+                    {
+                        foreach($jarray as $code => $text)
+                        {
+                            $id = count($dict) + 1;
+                            $id = -$id;
+                            $dict[] = array(
+                                'id'		=>	$id, //.' | '.$this->name . ' | '.$code,
+                                'extension'	=>	$this->code,
+                                'source'    =>  'extension.'.$this->code.'.'.$code,
+                                'node_id'	=>	$code,
+                                'lang'		=>	$lcode,
+                                'text'		=>	$text
+                            );
+                        }
+                    }
+                }
+			}
+
+			$this->dictionaries = $dict;
+		}
+
+		return $this->dictionaries;
+	}
+
 
     public static function list_installed($type='', $ignore_permissions=true)
     {

@@ -204,6 +204,7 @@ class theme
 						$dict[] = array(
                             'id'		=>	$id, //.' | '.$this->name . ' | '.$code,
                             'theme'		=>	$this->name,
+							'source'    =>  'theme.'.$this->name.'.'.$code,
                             'node_id'	=>	$code,
                             'lang'		=>	$lcode,
                             'text'		=>	$text
