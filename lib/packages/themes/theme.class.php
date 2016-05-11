@@ -29,7 +29,7 @@ class theme
 	public function load($name)
 	{	
 		$json = @file_get_contents(NAVIGATE_PATH.'/themes/'.$name.'/'.$name.'.theme');
-
+		
 		if(empty($json))
 			return false;
 			
@@ -58,6 +58,17 @@ class theme
         $this->content_samples = (array)$theme->content_samples;
 
         $this->content_samples_parse();
+
+		// in 2.0 templates->section "code" was replaced by "id"
+		// added some code to keep compatibility with existing themes
+		for($t=0; $t < count($this->templates); $t++)
+		{
+			for($s=0; $s < count($this->templates[$t]->sections); $s++)
+			{
+				if(!isset($this->templates[$t]->sections[$s]->id))
+					$this->templates[$t]->sections[$s]->id = $this->templates[$t]->sections[$s]->code;
+			}
+		}
 
 		return true;
 	}

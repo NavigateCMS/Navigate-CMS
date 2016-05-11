@@ -142,7 +142,7 @@ class item
 		$fields = array('title', 'tags');
 		
 		if(!is_array($template->sections))
-            $template->sections = array('code' => 'main');
+            $template->sections = array('id' => 'main');
 		
 		foreach($template->sections as $section)
 		{			
@@ -150,7 +150,7 @@ class item
 				$section = (array) $section;
 
 			if(is_array($section))
-				$section = $section['code'];
+				$section = $section['id'];
 			
 			$fields[] = 'section-'.$section;	
 		}
