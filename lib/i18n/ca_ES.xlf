@@ -3709,5 +3709,17 @@
 				<target>Extensió</target>
 			</segment>
 		</unit>
+		<unit id="618">
+			<segment>
+				<source>Change the status to Published to be able to the item on the future publication date currently assigned</source>
+				<target>Canvia l'estat a Publicat per a poder veure el contingut en la data de publicación que hi ha assignada</target>
+			</segment>
+		</unit>
+		<unit id="619">
+			<segment>
+				<source>Template changed, please Save now to see the changes in the next tabs</source>
+				<target>Plantilla canviada, si us plau Guarda per veure els canvis a les següents pestanyes</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

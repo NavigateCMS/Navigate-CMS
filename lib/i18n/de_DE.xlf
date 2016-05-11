@@ -3709,5 +3709,17 @@
 				<target>Erweiterung</target>
 			</segment>
 		</unit>
+		<unit id="618">
+			<segment>
+				<source>Change the status to Published to be able to see the item on the future publication date currently assigned</source>
+				<target>Ändern Sie den Status auf Veröffentlicht in der Lage sein den auf die Zukunft Veröffentlichungsdatum zu sehen aktuell zugewiesenen</target>
+			</segment>
+		</unit>
+		<unit id="619">
+			<segment>
+				<source>Template changed, please Save now to see the changes in the next tabs</source>
+				<target>Vorlage geändert, bitte Speichern Sie nun die Änderungen in den nächsten Tabs zu sehen</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

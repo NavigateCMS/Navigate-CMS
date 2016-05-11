@@ -3709,5 +3709,17 @@
 				<target>Extension</target>
 			</segment>
 		</unit>
+		<unit id="618">
+			<segment>
+				<source>Change the status to Published to be able to see the item on the future publication date currently assigned</source>
+				<target>Change the status to Published to be able to see the item on the future publication date currently assigned</target>
+			</segment>
+		</unit>
+		<unit id="619">
+			<segment>
+				<source>Template changed, please Save now to see the changes in the next tabs</source>
+				<target>Template changed, please Save now to see the changes in the next tabs</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

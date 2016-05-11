@@ -546,7 +546,7 @@ function run()
 		            $title = t(238, 'Main content');
 	            $zones[] = array(
 		            'type' => 'section',
-		            'code' => $template->sections[$ts]['code'],
+		            'id' => $template->sections[$ts]['id'],
 		            'title' => $title
 	            );
             }
@@ -567,7 +567,7 @@ function run()
 
 				$zones[] = array(
 		            'type' => 'property',
-		            'code' => $template->properties[$ps]->id,
+		            'id' => $template->properties[$ps]->id,
 		            'title' => $title
 	            );
 			}
@@ -1182,6 +1182,7 @@ function items_form($item)
 	{
 		if(!isset($item->permission))
 			$item->permission = 1;
+
 		$navibars->add_tab_content_row(
 	        array(
 	            '<label>'.t(68, 'Status').'</label>',
@@ -1207,7 +1208,10 @@ function items_form($item)
                         1 => t(359, 'Visible only to Navigate CMS users'),
                         2 => t(358, 'Hidden to everybody')
 	                )
-	            )
+	            ),
+                '<span id="status_info" class="ui-icon ui-icon-alert"
+                       data-message="'.t(618, 'Change the status to Published to see the item on the future publication date currently assigned', false, true).'"
+					   style="display: none; float: none; vertical-align: middle; "></span>'
 	        )
 	    );
 	}
@@ -1248,7 +1252,8 @@ function items_form($item)
 		array(
 			'<label>'.t(280, 'Page views').'</label>',
 			$item->views
-		)
+		),
+		"div_page_views"
 	);
 
 	$navibars->add_tab(t(87, "Association")); // tab #1
@@ -1308,7 +1313,13 @@ function items_form($item)
                 (empty($item->id)? '1' : intval($item->embedding)),
                 "navigate_change_association();"
             ),
-            '<span id="embedding_info" class="ui-icon ui-icon-info" style="float: left; margin-left: -4px;"></span>'
+            '<span id="embedding_info" class="ui-icon ui-icon-info"
+			        data-message-title-1="'.t(163, 'Embedded', false, true).'"
+					data-message-content-1="'.t(165, 'Full content is shown on category page. Ex. "Who we are?"', false, true).'"
+					data-message-title-2="'.t(164, 'Own path', false, true).'"
+					data-message-content-2="'.t(166, 'The content is accessed through its own url. Ex. "News"', false, true).'" 
+					style="float: left; margin-left: -4px;">
+			</span>'
         ),
         'div_category_embedded'
     );
@@ -1317,7 +1328,10 @@ function items_form($item)
         array(
             '<label>'.t(22, 'Elements').'</label>',
             '<button style="float: left;">'.t(171, 'Order').'</button>',
-            '<span id="order_info" class="ui-icon ui-icon-info" style="float: left; margin-left: 2px;"></span>',
+            '<span id="order_info" class="ui-icon ui-icon-info"
+ 				   data-message="'.t(425, 'Order elements of a category (unless the template forces other sorting)', false, true).'"
+				   style="float: left; margin-left: 2px;">				   
+			</span>',
             '<div id="items_order_window" style="display: none;"></div>'
         ),
         'div_category_order'
@@ -1379,63 +1393,18 @@ function items_form($item)
                 });
             });
 	    });
-
-		$("#embedding_info").qtip(
-		{
-		    content: "<div><strong>'.t(163, 'Embedded').'</strong>: '.t(165, 'Full content is shown on category page. Ex. "Who we are?"', false, true).'<br /><br /><strong>'.t(164, 'Own path').'</strong>: '.t(166, 'The content is accessed through its own url. Ex. "News"', false, true).'</div>",
-		    show:
-		    {
-		        event: "mouseover"
-            },
-	        hide:
-	        {
-		        event: "mouseout"
-            },
-	        style:
-	        {
-		        tip: true,
-		        width: 300,
-		        classes: "qtip-cream"
-	        },
-	        position:
-	        {
-		        at: "top right",
-		        my: "bottom left"
-	        }
-        });
-
-		$("#order_info").qtip(
-		{
-		    content: \'<div>'.t(425, 'Order elements of a category (unless the template forces other sorting)', false, true).'</div>\',
-		    show:
-            {
-                event: "mouseover"
-            },
-            hide:
-            {
-                event: "mouseout"
-            },
-            style:
-            {
-                tip: true,
-                width: 300,
-                classes: "qtip-cream"
-            },
-            position:
-            {
-                at: "top right",
-                my: "bottom left"
-            }
-		});
 	');
 
 	$templates = template::elements('element');
 	$template_select = $naviforms->select_from_object_array('template', $templates, 'id', 'title', $item->template);
-										                    
+
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(79, 'Template').'</label>',
 			$template_select,
+	        '<span id="template_info" class="ui-icon ui-icon-alert"
+ 				   data-message="'.t(619, "Template changed, please Save now to see the changes in the next tabs", false, true).'"
+				   style="display: none; float: none; vertical-align: middle; "></span>'
         ),
 		'div_template_select'
     );
@@ -1489,7 +1458,7 @@ function items_form($item)
 			if(!isset($template->sections))
 				$template->sections[] = array(
                     0 => array(
-                        'code' => 'main',
+	                    'id' => 'main',
                         'name' => '#main#',
                         'editor' => 'tinymce',
                         'width' => '960px'
@@ -1517,7 +1486,7 @@ function items_form($item)
                         {
                             if($te['enabled']=='0') continue;
                             $translate_extensions_titles[] = $te['title'];
-                            $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'section-'.$section['code'].'-'.$lang.'\', \''.$lang.'\');';
+                            $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'section-'.$section['id'].'-'.$lang.'\', \''.$lang.'\');';
                         }
 
                         if(!empty($translate_extensions_actions))
@@ -1535,19 +1504,19 @@ function items_form($item)
                         array(
                             '<label>'.
                                 template::section_name($section['name']).
-                                '<span class="editor_selector" for="section-'.$section['code'].'-'.$lang.'">'.
+                                '<span class="editor_selector" for="section-'.$section['id'].'-'.$lang.'">'.
                                     //'<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
                                     '<i class="fa fa-border fa-fw fa-lg fa-file-text-o active" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
                                     '<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i>'.
                                 '</span>'.
                             '</label>',
-                            $naviforms->editorfield('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], ($section['width']+48).'px', $lang),
+                            $naviforms->editorfield('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+48).'px', $lang),
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',
                             $translate_menu,
-                            '<button onclick="navigate_items_copy_from_dialog(\'section-'.$section['code'].'-'.$lang.'\'); return false;"><img src="img/icons/silk/page_white_copy.png" align="absmiddle"> '.t(189, 'Copy from').'...</button> ',
-                            '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
-                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                            '<button onclick="navigate_items_copy_from_dialog(\'section-'.$section['id'].'-'.$lang.'\'); return false;"><img src="img/icons/silk/page_white_copy.png" align="absmiddle"> '.t(189, 'Copy from').'...</button> ',
+                            '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
+                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>',
                             '<br />'
                         ),
@@ -1560,11 +1529,11 @@ function items_form($item)
 					$navibars->add_tab_content_row(
                         array(
                             '<label>'.template::section_name($section['name']).'</label>',
-                            $naviforms->scriptarea('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], 'html', ' width: '.$section['width'].'px'),
+                            $naviforms->scriptarea('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], 'html', ' width: '.$section['width'].'px'),
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',
-                            '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
-                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                            '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
+                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>',
                             '<br />'
                         ),
@@ -1584,7 +1553,7 @@ function items_form($item)
                         {
                             if($te['enabled']=='0') continue;
                             $translate_extensions_titles[] = $te['title'];
-                            $translate_extensions_actions[] = 'javascript: navigate_textarea_translate_'.$te['code'].'(\'section-'.$section['code'].'-'.$lang.'\', \''.$lang.'\');';
+                            $translate_extensions_actions[] = 'javascript: navigate_textarea_translate_'.$te['code'].'(\'section-'.$section['id'].'-'.$lang.'\', \''.$lang.'\');';
                         }
 
                         if(!empty($translate_extensions_actions))
@@ -1601,12 +1570,12 @@ function items_form($item)
 					$navibars->add_tab_content_row(
                         array(
                             '<label>'.template::section_name($section['name']).'</label>',
-                            $naviforms->textarea('section-'.$section['code'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['code']], 8, 48, ' width: '.$section['width'].'px'),
+                            $naviforms->textarea('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], 8, 48, ' width: '.$section['width'].'px'),
                             '<div style="clear:both; margin-top:5px; margin-bottom: 10px; ">',
                             '<label>&nbsp;</label>',
 	                        $translate_menu,
-                            '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
-                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['code'].'-'.$lang.'\', \''.$section['code'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                            '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
+                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>'
                         ),
 						'',
@@ -1767,7 +1736,7 @@ function items_form($item)
 				</div>
 				<div class="navigate-form-row" style=" display: none; ">
 					<label>'.t(239, 'Section').'</label>
-					'.$naviforms->select_from_object_array('navigate_items_copy_from_section', array(), 'code', 'name', '').'
+					'.$naviforms->select_from_object_array('navigate_items_copy_from_section', array(), 'id', 'name', '').'
 				</div>			
 			</div>
 			
