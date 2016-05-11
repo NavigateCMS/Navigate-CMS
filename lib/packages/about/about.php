@@ -60,7 +60,7 @@ function about_layout()
    											'<a href="http://www.assembla.com/spaces/lorem-ipsum" target="_blank">TinyMCE LoremIpsum plugin v0.13</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://www.jquery.com" target="_blank">jQuery v1.11.3 + jQuery Migrate v1.2.1</a><br />' ));
+											'<a href="http://www.jquery.com" target="_blank">jQuery v2.2.3 + jQuery Migrate v1.3</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />' ));
@@ -69,7 +69,7 @@ function about_layout()
 											'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.20</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.11.0</a><br />' ));
+											'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.13.3</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.12</a><br />' ));
