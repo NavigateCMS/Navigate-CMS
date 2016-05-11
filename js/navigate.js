@@ -1,8 +1,6 @@
 var navigatecms = {
     forms: {
-        datepicker: {
-
-        }
+        datepicker:		{ }
     }
 };
 var navigate_menu_current_tab;
@@ -1439,7 +1437,7 @@ function navigate_tinymce_event(event, element, ignoreScroll)
     }
     else if(event.type=='focus')
     {
-        // restore scroll position
+        // restore scroll position, unless it is zero
         var cookie = $.cookie("navigate-tinymce-scroll");
 
         if(cookie)
@@ -1458,7 +1456,7 @@ function navigate_tinymce_event(event, element, ignoreScroll)
                     {
                         $('#' + element + '_ifr').contents().scrollTop(spos);
                     },
-                    10
+                    20
                 );
             }
         }
@@ -1468,7 +1466,7 @@ function navigate_tinymce_event(event, element, ignoreScroll)
         if(!ignoreScroll)
         {
             // if the user scrolls the tinyMCE iframe, we ignore the previous saved scroll position
-            navigate_tinymce_scroll(event, element, true);
+            navigate_tinymce_scroll(event, element);
         }
     }
 

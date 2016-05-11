@@ -178,7 +178,7 @@ class naviforms
 
 		$out = '<input type="text" class="datepicker" name="'.$name.'" id="'.$name.'" value="'.$value.'" />
 				<img src="img/icons/silk/calendar_delete.png" width="16" height="16" align="absmiddle" 
-					 style=" cursor: pointer; " onclick=" $(this).parent().find(\'input\').val(\'\'); " />';
+					 style=" cursor: pointer; " onclick=" $(this).parent().find(\'input\').val(\'\'); $(this).parent().find(\'input\').trigger(\'change\'); " />';
 		
 		$format = $user->date_format;   // custom user date format
 
@@ -576,6 +576,20 @@ class naviforms
                 // before render this tinymce
                 setup: function(editor)
                 {
+	                editor.on("init", function() 
+	                { 
+				        $(editor.getWin()).bind("scroll blur focus", function(e)
+				        {
+                            navigate_tinymce_event(e, "'.$name.'");
+				        });
+				        
+				        // restore last known iframe scroll position
+				        navigate_tinymce_event({type: "focus"}, "'.$name.'", true);
+	                    setTimeout(function()
+	                    {
+	                        navigate_tinymce_event({type: "focus"}, "'.$name.'", true);
+	                    }, 25);
+				    });			    				    
                 },
                 
                 // just after rendering this tinymce 
@@ -585,7 +599,7 @@ class naviforms
 					$("#'.$name.'").parent().find("iframe").contents().find("img").each(function()
 					{
 						if( (typeof this.naturalWidth != "undefined" && this.naturalWidth == 0 ) 
-					        || this.readyState == "uninitialized" ) 
+					        || this.readyState == "uninitialized" )					         
 				        {
 					        $(this).addClass("nomagicline");
 					    }
@@ -621,28 +635,6 @@ class naviforms
                             $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 1);
                         }
                     });
-
-                    editor.on(
-                        "blur focus",
-                        function(e)
-                        {
-                            navigate_tinymce_event(e, "'.$name.'");
-                        }
-                    );
-
-                    $(editor.iframeElement).on(
-	                    "scroll", 
-                        function(e)
-                        {
-                            navigate_tinymce_event(e, "'.$name.'");
-                        }
-                    );
-
-                    // restore last known iframe scroll position
-                    setTimeout(function()
-                    {
-                        navigate_tinymce_event({type: "focus"}, "'.$name.'", true);
-                    }, 20);
                 }
             });
         ');
