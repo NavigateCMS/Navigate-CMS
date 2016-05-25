@@ -1005,7 +1005,7 @@ function navigate_media_browser_focalpoint(file_id)
             $(html).dialog(
                 {
                     modal: true,
-                    title: "Focal point",
+                    title: navigate_t(540, "Focal point"),
                     width: 700,
                     height: 500,
                     resizable: false

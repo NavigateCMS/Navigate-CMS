@@ -732,6 +732,7 @@ class layout
                 500: "'.t(500, 'Rename').'",
                 501: "'.t(501, 'Previous').'",
                 502: "'.t(502, 'Next').'",
+                540: "'.t(540, 'Focal point').'",
                 580: "'.t(580, 'Used in this page').'",
                 581: "'.t(581, 'None').'",
                 582: "'.t(582, "default").'",
