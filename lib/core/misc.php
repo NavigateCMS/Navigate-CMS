@@ -663,6 +663,20 @@ function value_or_default($value, $default="")
 		return $value;
 }
 
+/**
+ * Returns a alphabetic string for an integer
+ *
+ * Example: 1 => a, 2 => b ... then aa, ab, ac... aaa, aab, aac...
+ *
+ * @param string $input The intenger to convert
+ * @return string The generated alphabetic string
+ */
+function number2alphabet($n)
+{
+    for($r = ""; $n >= 0; $n = intval($n / 26) - 1)
+        $r = chr($n%26 + 0x61) . $r;    // upercase --> 0x41
+    return $r;
+}
 
 /**
  * Find a tag by ID and append/replace content

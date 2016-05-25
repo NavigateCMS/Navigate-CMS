@@ -563,7 +563,7 @@ function nvweb_list($vars=array())
             if($template_tags_processed > 500)
                 break;
 
-            $content = nvweb_list_parse_tag($tag, $item, $vars['source']);
+            $content = nvweb_list_parse_tag($tag, $item, $vars['source'], $i, ($i+$offset), $total);
             $item_html = str_replace($tag['full_tag'], $content, $item_html);
 
             // html template has changed, the nvlist tags may have changed its positions
@@ -589,7 +589,7 @@ function nvweb_list($vars=array())
 	return implode("\n", $out);
 }
 
-function nvweb_list_parse_tag($tag, $item, $source='item')
+function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_position, $item_absolute_position, $total)
 {
 	global $current;
 	global $website;
@@ -604,6 +604,27 @@ function nvweb_list_parse_tag($tag, $item, $source='item')
 		case 'query':
             $out = $item->_query->$tag['attributes']['value'];
             break;
+
+		// special: return element position in list
+		case 'position':
+
+			$position = $item_relative_position;
+			if($tag['attributes']['absolute']=='true')
+				$position = $item_absolute_position;
+
+			switch($tag['attributes']['type'])
+			{
+				case 'alphabetic':
+					$out = number2alphabet($position);
+					break;
+
+				case 'numeric':
+				default:
+					$out = $position + 1; // first element is 1, but in list is zero
+					break;
+			}
+
+			break;
 
 		// NOTE: the following refers to structure information of an ITEM, useless if the source are categories!
 		case 'structure':
@@ -1736,7 +1757,6 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		    case 'true':
 		    case 'classic':
-		    default:
 			    $out[] = '<div class="paginator">';
 
 		        if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
@@ -1769,6 +1789,10 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		        $out[] = '</div>';
 			    break;
+
+		    case 'false':
+		    default:
+			    // no paginator
 	    }
     }
 

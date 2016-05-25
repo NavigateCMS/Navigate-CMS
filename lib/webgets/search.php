@@ -199,7 +199,7 @@ function nvweb_search($vars=array())
 				// parse special template tags
 				foreach($template_tags as $tag)
 				{
-					$content = nvweb_list_parse_tag($tag, $item);
+					$content = nvweb_list_parse_tag($tag, $item, $i, ($i+$offset), $total);
 					$item_html = str_replace($tag['full_tag'], $content, $item_html);	
 				}
 				
