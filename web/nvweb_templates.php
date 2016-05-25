@@ -173,6 +173,7 @@ function nvweb_template_parse($template)
 			case 'nvweb':
 			case 'widget':
 			case 'webget':
+			case '':
 				// webgets on lib/webgets have priority over private/webgets
 				nvweb_webget_load($tag['attributes']['name']);
 				
@@ -902,7 +903,7 @@ function nvweb_template_fix_download_paths($in)
  * Apply some template tweaks to improve Navigate CMS theme developing experience like:
  *
  * <ul>
- * <li>Guess absolute paths to images, stylesheets and scripts (even on urls without http, "//")</li>
+ * <li>Guess absolute paths to images, stylesheets, videos and scripts (even on urls without http, "//")</li>
  * <li>Convert &lt;a rel="video"&gt; and &lt;a rel="audio"&gt;  to &lt;video&gt; and &lt;audio&gt; tags</li>
  * <li>Process &lt;img&gt; tags to generate optimized images</li>
  * <li>Add Navigate CMS content default styles</li>
@@ -971,7 +972,62 @@ function nvweb_template_tweaks($html)
 			$html = str_replace($tag['full_tag'], $tag['new'], $html);
 		}
 	}
-	
+
+	// poster attribute (<video>)
+	$tags = nvweb_tags_extract($html, array('video'), false, true, 'UTF-8');
+	foreach($tags as $tag)
+	{
+		if(!isset($tag['attributes']['poster'])) continue;
+		if(substr($tag['attributes']['poster'], 0, 7)!='http://' &&
+		   substr($tag['attributes']['poster'], 0, 8)!='https://')
+		{
+            if(substr($tag['attributes']['poster'], 0, 2)=='//')
+                $src = $website->protocol.substr($tag['attributes']['poster'], 2);
+            else
+                $src = $website_absolute_path.'/'.$tag['attributes']['poster'];
+
+			$tag['new'] = '<video poster="'.$src.'" ';
+			foreach($tag['attributes'] as $name => $value)
+			{
+				if($name!='poster')
+					$tag['new'] .= $name.'="'.$value.'" ';
+			}
+			$tag['new'] .= '>'.$tag['contents'].'</video>';
+
+			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+		}
+	}
+
+	// sources (video, audio)
+	$tags = nvweb_tags_extract($html, array('video', 'audio'), false, true, 'UTF-8');
+	foreach($tags as $tag)
+	{
+		$tag_sources = nvweb_tags_extract($tag['contents'], 'source', true, true, 'UTF-8');
+
+		foreach($tag_sources as $source)
+		{
+			if(!isset($source['attributes']['src'])) continue;
+			if(substr($source['attributes']['src'], 0, 7)!='http://' &&
+			   substr($source['attributes']['src'], 0, 8)!='https://')
+			{
+	            if(substr($source['attributes']['src'], 0, 2)=='//')
+	                $src = $website->protocol.substr($source['attributes']['src'], 2);
+	            else
+	                $src = $website_absolute_path.'/'.$source['attributes']['src'];
+
+				$source['new'] = '<source src="'.$src.'" ';
+				foreach($source['attributes'] as $name => $value)
+				{
+					if($name!='poster')
+						$source['new'] .= $name.'="'.$value.'" ';
+				}
+				$source['new'] .= '>'.$source['contents'].'</source>';
+
+				$html = str_replace($source['full_tag'], $source['new'], $html);
+			}
+		}
+	}
+
 	// images
 	$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');
 
