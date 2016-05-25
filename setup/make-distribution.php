@@ -1,5 +1,5 @@
 <?php
-/* Navigate MAKE DISTRIBUTION v1.5 */
+/* Navigate MAKE DISTRIBUTION v2.0 */
 /* 		created by: Naviwebs   http://www.naviwebs.com	*/
 /* creates a distribution package for Navigate */
 /* Requirements: installed and functional copy of Navigate */
@@ -195,9 +195,7 @@ $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/oembed/.htaccess'), 
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/web/.htaccess.example'), 'web/.htaccess.example');
 $zipfile->addFile('', 'updates/empty.txt');
 
-// 1.9.1, include ocean theme zipped to be installed optionally
-// in nvcms 2.0, replace ocean with theme kit
-$zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/themes/ocean.zip'), 'themes/ocean.zip');
+$zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/themes/theme_kit.zip'), 'themes/theme_kit.zip');
 
 $contents = $zipfile->file();
 file_put_contents("distribution/package.zip", $contents);

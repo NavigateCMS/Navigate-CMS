@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '1.9.4');
+	define('APP_VERSION', '2.0.0');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -41,7 +41,7 @@ if($_REQUEST['step']=='cleaning')
     // remove installation files
     @unlink('navigate.sql');
     @unlink('package.zip');
-    @unlink(NAVIGATE_PATH.'/themes/ocean.zip');
+    @unlink(NAVIGATE_PATH.'/themes/theme_kit.zip');
     @unlink(NAVIGATE_PATH.'/cfg/globals.setup.php');
     @unlink('setup.php');
 
@@ -351,8 +351,8 @@ function navigate_install_requirements()
                     <input type="text" value="<?php echo $_SERVER['SERVER_SOFTWARE'];?>" class="<?php echo ($checks['server']? 'green' : 'red');?>" />
                 </div>                 
                 <div>
-                    <label>PHP &ge; 5.2</label>
-                    <input type="text" value="<?php echo ($checks['php5.2']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php5.2']? 'green' : 'red');?>" />
+                    <label>PHP &ge; 5.3</label>
+                    <input type="text" value="<?php echo ($checks['php5.3']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php5.3']? 'green' : 'red');?>" />
                 </div>                    
                 <div>
                     <label>&raquo; GD</label>
@@ -570,7 +570,7 @@ function navigate_install_configuration()
 	            <br />
 	            <div>
                     <label><?php echo $lang['theme'];?></label>
-                    <input style=" width: auto; " type="checkbox" name="DEFAULT_THEME" id="DEFAULT_THEME" value="ocean" checked="checked" /><label for="DEFAULT_THEME"><?php echo $lang['theme_default_install'];?>: <strong>Ocean</strong></label>
+                    <input style=" width: auto; " type="checkbox" name="DEFAULT_THEME" id="DEFAULT_THEME" value="theme_kit" checked="checked" /><label for="DEFAULT_THEME"><?php echo $lang['theme_default_install'];?>: <strong>Theme Kit</strong></label>
                 </div>
                 <br />
                 <div>
@@ -1499,12 +1499,12 @@ function process()
 				if(!$DB->connect())
 					die(json_encode(array('error' => $DB->get_last_error())));
 
-				if(@$_SESSION['NAVIGATE-SETUP']['DEFAULT_THEME']=='ocean')
+				if(@$_SESSION['NAVIGATE-SETUP']['DEFAULT_THEME']=='theme_kit')
 				{
                     $website = new website();
                     $website->load($_SESSION['NAVIGATE-SETUP']['WEBSITE_DEFAULT']);
 
-					$website->theme = 'ocean';
+					$website->theme = 'theme_kit';
                     $website->languages = array(
                         'en' => array(
                             'language' => 'en',
@@ -1528,13 +1528,13 @@ function process()
 					$user->load(1);
 
 					$zip = new ZipArchive();
-					$zip_open_status = $zip->open(NAVIGATE_PATH.'/themes/ocean.zip');
+					$zip_open_status = $zip->open(NAVIGATE_PATH.'/themes/theme_kit.zip');
 					if($zip_open_status === TRUE)
 					{
-						$zip->extractTo(NAVIGATE_PATH.'/themes/ocean');
+						$zip->extractTo(NAVIGATE_PATH.'/themes/theme_kit');
 						$zip->close();
 						$theme = new theme();
-						$theme->load('ocean');
+						$theme->load('theme_kit');
 						$theme->import_sample($website, $user);
 					}
 
