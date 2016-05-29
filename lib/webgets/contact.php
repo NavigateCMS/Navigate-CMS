@@ -91,15 +91,16 @@ function nvweb_contact($vars=array())
                         global $theme;
 
                         $tmp = $theme->t($key);
+
                         if(!empty($tmp))
-                            return $theme->t($key);
+                            return $tmp;
                         else
                             return $webgets['contact']['translations'][$key];
                     },
                     $labels
                 );
                 $fields = array_combine($fields, $labels);
-
+	            
                 // $fields = array( 'field_name' => 'field_label', ... )
 
                 // check required fields

@@ -120,6 +120,11 @@ function nvweb_content($vars=array())
             if(empty($vars['separator']))
                 $vars['separator'] = ' ';
 
+            $class = 'item-tag';
+            if(!empty($vars['class']))
+                $class = $vars['class'];
+
+
             if(!empty($vars['id']))
             {
                 $itm = new item();
@@ -134,7 +139,7 @@ function nvweb_content($vars=array())
                         for($i=0; $i < count($itags); $i++)
                         {
                             if(empty($itags[$i])) continue;
-                            $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
                         }
                     }
                 }
@@ -153,7 +158,7 @@ function nvweb_content($vars=array())
                         for($i=0; $i < count($itags); $i++)
                         {
                             if(empty($itags[$i])) continue;
-                            $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
                         }
                     }
                 }
@@ -174,7 +179,7 @@ function nvweb_content($vars=array())
                         {
                             for($i=0; $i < count($itags); $i++)
                             {
-                                $tags[$i] = '<a class="item-tag" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                                $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
                             }
                         }
                     }
