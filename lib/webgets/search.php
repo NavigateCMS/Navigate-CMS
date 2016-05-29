@@ -73,15 +73,61 @@ function nvweb_search($vars=array())
 
         if(!empty($search_archive[2]))
             $vars['categories'] = $search_archive[2];
-
-        if(isset($vars['categories']))
+		
+		if(isset($vars['categories']))
 		{
-			$categories = explode(',', $vars['categories']);
-			$categories = array_filter($categories); // remove empty elements
-			
-			if($vars['children']=='true')
-				$categories = nvweb_menu_get_children($categories);
+	        if($vars['categories']=='all')
+	        {
+	            $categories = array(0);
+	            $vars['children'] = 'true';
+	        }
+	        else if($vars['categories']=='parent')
+	        {
+	            $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
+	            $categories = array($parent);
+	        }
+	        else if($vars['categories']=='nvlist_parent')
+	        {
+	            if($vars['nvlist_parent_type'] === 'structure')
+	            {
+	                $categories = array($vars['nvlist_parent_item']->id);
+	            }
+	        }
+	        else if(!is_numeric($vars['categories']))
+	        {
+	            // if "categories" attribute has a comma, then we suppose it is a list of comma separated values
+	            // if not, then maybe we want to get the categories from a specific property of the current page
+	            if(strpos($vars['categories'], ',')===false)
+	            {
+	                $categories = nvweb_properties(array(
+	                    'property'	=> 	$vars['categories']
+	                ));
+	            }
+	
+	            if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+	            {
+	                $categories = nvweb_properties(array(
+	                    'mode'	=>	'block_group_block',
+	                    'property' => $vars['categories']
+	                ));
+	            }
+	
+	            if(!is_array($categories))
+	            {
+	                $categories = explode(',', $categories);
+	                $categories = array_filter($categories); // remove empty elements
+	            }
+	        }
+	        else
+	        {
+	            $categories = explode(',', $vars['categories']);
+	            $categories = array_filter($categories); // remove empty elements
+	        }
 		}
+		
+		if($vars['children']=='true')
+            $categories = nvweb_menu_get_children($categories);
+
 
 		// retrieve entries
 		$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
@@ -199,7 +245,7 @@ function nvweb_search($vars=array())
 				// parse special template tags
 				foreach($template_tags as $tag)
 				{
-					$content = nvweb_list_parse_tag($tag, $item, $i, ($i+$offset), $total);
+					$content = nvweb_list_parse_tag($tag, $item, $vars['source'], $i, ($i+$offset), $total);
 					$item_html = str_replace($tag['full_tag'], $content, $item_html);	
 				}
 				

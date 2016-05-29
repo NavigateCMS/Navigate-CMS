@@ -918,8 +918,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
                 case 'thumbnail':
+				case 'thumbnail_url':
                     $thumbnail_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'];
-                    if(@$tag['attributes']['return']=='url')
+                    if($tag['attributes']['value']=='thumbnail_url' || @$tag['attributes']['return']=='url')
                         $out = $thumbnail_url;
                     else
                         $out = '<img src="'.$thumbnail_url.'" alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />';
@@ -1039,9 +1040,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 				case 'photo':
 					$photo = @array_shift(array_keys($item->galleries[0]));
 					if(empty($photo))
-						$out = $website->absolute_path(false) . '/object?type=transparent';
+						$out = NVWEB_OBJECT . '?type=transparent';
 					else
-						$out = $website->absolute_path(false) . '/object?type=image&id='.$photo;
+					{
+						$out = NVWEB_OBJECT . '?wid='.$website->id.'&id='.$photo.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'];
+					}
 					break;
 
 				case 'url':
@@ -1664,14 +1667,14 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		        if($page > 1)
 		        {
-			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="prev">'.$paginator_text_first.'</a>'; // <|
+			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="first">'.$paginator_text_first.'</a>'; // <|
 			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
 		        }
 
 			    if($page < $pages)
 			    {
 			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
-			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="next">'.$paginator_text_last.'</a>'; // |❭
+			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="last">'.$paginator_text_last.'</a>'; // |❭
 			    }
 
 		        $out[] = '<div style=" clear: both; "></div>';
@@ -1711,7 +1714,7 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 				if($page > 1)
 		        {
-			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="prev">'.$paginator_text_first.'</a>'; // <|
+			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="first">'.$paginator_text_first.'</a>'; // <|
 			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
 		        }
 
@@ -1730,7 +1733,7 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
                 if($page < $pages)
 			    {
 			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
-			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="next">'.$paginator_text_last.'</a>'; // |❭
+			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="last">'.$paginator_text_last.'</a>'; // |❭
 			    }
 
 		        $out[] = '<div style=" clear: both; "></div>';
