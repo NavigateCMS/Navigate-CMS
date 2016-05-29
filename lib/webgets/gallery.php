@@ -110,7 +110,12 @@ function nvweb_gallery($vars=array())
             }
             else if(!empty($vars['return']) && $vars['return']=='thumbnail')
             {
+	            // TO DO: add missing alt / title texts!
                 $out[] = '<img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />';
+            }
+            else if(!empty($vars['return']) && $vars['return']=='thumbnail_url')
+            {
+                $out[] = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border;
             }
             else
                 $out[] = '<div class="nv_gallery_item">
