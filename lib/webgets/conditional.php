@@ -311,6 +311,14 @@ function nvweb_conditional($vars=array())
                 if(!empty($item->galleries[0]))
                     $out = $item_html;
             }
+            else if(isset($vars['min']) && (count($item->galleries[0]) >= intval($vars['min'])))
+            {
+                $out = $item_html;
+            }
+            else if(isset($vars['max']) && (count($item->galleries[0]) <= intval($vars['max'])))
+            {
+                $out = $item_html;
+            }
             break;
 
         case 'tags':
