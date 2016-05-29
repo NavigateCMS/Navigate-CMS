@@ -345,7 +345,7 @@ class website
             ');
 		}
 		
-		// send statistics to navigatecms.com
+		// if allowed, send statistics to navigatecms.com
 		if(NAVIGATECMS_STATS)
 		{
 			global $user;
@@ -365,7 +365,10 @@ class website
                     'author_name' => $user->username,
                     'author_email' => $user->email,
                     'author_language' => $user->language
-                )
+                ),
+				NULL,
+				10,
+				'post'
             );
 		}		
 		
@@ -476,7 +479,7 @@ class website
         @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
         @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
 
-		// send statistics to navigatecms.com
+		// if allowed, send statistics to navigatecms.com
 		if(NAVIGATECMS_STATS)
 		{
 			global $user;
@@ -496,7 +499,10 @@ class website
                     'author_name' => $user->username,
                     'author_email' => $user->email,
                     'author_language' => $user->language
-                )
+                ),
+				NULL,
+				10,
+				'post'
             );
 		}
 		
@@ -596,7 +602,7 @@ class website
             @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
 		}
 		
-		// send statistics to navigatecms.com
+		// if allowed, send statistics to navigatecms.com
 		if(NAVIGATECMS_STATS)
 		{
 			global $user;
@@ -616,7 +622,10 @@ class website
                     'author_name' => $user->username,
                     'author_email' => $user->email,
                     'author_language' => $user->language
-                )
+                ),
+				NULL,
+				10,
+				'post'
             );
 		}		
 		

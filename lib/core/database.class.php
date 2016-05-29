@@ -1,12 +1,10 @@
 <?php
 /**
- * 
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2015 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2016 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license GPLv2
- *
  */
 
 class database
@@ -122,11 +120,11 @@ class database
 		}
 		catch(PDOException $e)
 		{
-			$this->lastError = $e->getMessage();	
+			$this->lastError = $e->getMessage();
 		}
 		catch(Exception $e)
 		{
-			return false;	
+			return false;
 		}		
 		
 		return empty($this->lastError);	

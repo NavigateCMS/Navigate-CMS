@@ -1010,13 +1010,13 @@ function blocks_form($item)
 	            $block_trigger_types = array(
 		            '' => t(181, 'Hidden'),
 		            'title' => t(67, 'Title'),
+		            'content' => t(9, 'Content'),
                     'image' => t(157, 'Image'),
                     'rollover' => t(182, 'Rollover'),
                     'video' => t(272, 'Video'),
-                    'flash' => 'Flash',
                     'html' => 'HTML',
-                    'links' => t(549, 'Links'),
-                    'content' => t(9, 'Content')
+		            'links' => t(549, 'Links'),
+		            'flash' => 'Flash'
 	            );
 
 	            // check block trigger restrictions in theme definition
