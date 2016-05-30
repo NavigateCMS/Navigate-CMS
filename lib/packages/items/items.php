@@ -1454,7 +1454,7 @@ function items_form($item)
                 ),
                'div_path_'.$lang
             );
-									   
+
 			if(!isset($template->sections))
 				$template->sections[] = array(
                     0 => array(
@@ -1464,6 +1464,9 @@ function items_form($item)
                         'width' => '960px'
                     )
                 );
+			
+			if(!is_array($template->sections))
+				$template->sections = array();
 
 			foreach($template->sections as $section)
 			{								

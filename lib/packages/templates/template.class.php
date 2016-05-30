@@ -82,11 +82,12 @@ class template
         $defaults = array(
             'sections' => array(
                 0 => array(
-                    'code' => 'main',
+                    'id' => 'main',
                     'name' => '#main#',
                     'editor' => 'tinymce',
-                    'width' => '960')
-                ),
+                    'width' => '960'
+                )
+            ),
             'gallery'  => 0,
             'comments' => 0,
             'tags' => 0,
@@ -144,10 +145,14 @@ class template
 		}
 		if(empty($this->sections))
 		{
-			$this->sections = array( 0 => array( 'code' => 'main', 
-												 'name' => '#main#', 
-												 'editor' => 'tinymce', 
-												 'width' => '960') );	
+			$this->sections = array(
+				0 => array(
+					'code' => 'id',
+					'name' => '#main#',
+					'editor' => 'tinymce',
+					'width' => '960'
+				)
+			);
 		}
 		
 		$this->gallery		= intval($_REQUEST['gallery']);	

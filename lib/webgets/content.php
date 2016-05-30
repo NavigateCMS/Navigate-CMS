@@ -189,6 +189,7 @@ function nvweb_content($vars=array())
             break;
 		
 		case 'section':
+		case 'body':
 		default:
 			if(empty($vars['section'])) $vars['section'] = 'main';
 			$section = "section-".$vars['section'];
@@ -211,7 +212,7 @@ function nvweb_content($vars=array())
                 {
                     foreach($template->sections as $tsection)
                     {
-                        if($tsection['code'] == $vars['section'])
+                        if($tsection['id'] == $vars['section'] || $tsection['code'] == $vars['section'])
                         {
                             switch($tsection['editor'])
                             {
@@ -246,7 +247,7 @@ function nvweb_content($vars=array())
 
                         foreach($template->sections as $tsection)
                         {
-                            if($tsection['code'] == $vars['section'])
+                            if($tsection['id'] == $vars['section'] || $tsection['code'] == $vars['section'])
                             {
                                 switch($tsection['editor'])
                                 {
