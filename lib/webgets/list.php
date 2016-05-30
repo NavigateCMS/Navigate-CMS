@@ -180,6 +180,14 @@ function nvweb_list($vars=array())
         if($vars['filter']=='menu')
             $visible = ' AND s.visible = 1 ';
 
+		$templates = "";
+        if(!empty($vars['templates']))
+        {
+	        $templates = explode(",", $vars['templates']);
+	        $templates = array_filter($templates);
+			$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+        }
+
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
 			            s.date_published, s.date_unpublish, s.date_published as pdate,
@@ -196,6 +204,7 @@ function nvweb_list($vars=array())
 			   AND d.subtype = "title"
 			   AND d.node_id = s.id
 			   AND d.lang = '.protect($current['lang']).'
+		     '.$templates.'
 			 '.$visible.'
 			 '.$exclude.'
 			 '.$orderby.'
@@ -307,6 +316,14 @@ function nvweb_list($vars=array())
                 // we need the first item assigned to the structure
                 $access_extra_items = str_replace('s.', 'i.', $access_extra);
 
+	            $templates = "";
+		        if(!empty($vars['templates']))
+		        {
+			        $templates = explode(",", $vars['templates']);
+			        $templates = array_filter($templates);
+					$templates = ' AND i.template IN ("'.implode('","', $templates).'")';
+		        }
+
                 // default source for retrieving items (embedded or not)
                 $DB->query('
                     SELECT SQL_CALC_FOUND_ROWS i.id
@@ -326,7 +343,8 @@ function nvweb_list($vars=array())
                        AND d.node_type = "item"
                        AND d.subtype = "title"
                        AND d.node_id = i.id
-                       AND d.lang = '.protect($current['lang']).'
+                       AND d.lang = '.protect($current['lang']).'                       
+                     '.$templates.'
                      '.$exclude.'
                      ORDER BY i.position ASC
                      LIMIT 1
@@ -438,6 +456,17 @@ function nvweb_list($vars=array())
 
         $embedded = ($vars['embedded']=='true'? '1' : '0');
 
+		$templates = "";
+        if(!empty($vars['templates']))
+        {
+	        $templates = explode(",", $vars['templates']);
+	        $templates = array_filter($templates);
+	        if($embedded=='1')
+				$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+			else
+	            $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
+        }
+
 		// default source for retrieving items
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
@@ -461,6 +490,7 @@ function nvweb_list($vars=array())
 			   AND d.subtype = "title"
 			   AND d.node_id = i.id
 			   AND d.lang = '.protect($current['lang']).'
+		     '.$templates.'
 			 '.$exclude.'
 			 '.$orderby.'
 			 LIMIT '.$vars['items'].'
