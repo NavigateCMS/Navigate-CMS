@@ -639,7 +639,6 @@ class layout
 			        setTimeout(
 			            function()
 			            {
-			                console.log("close now!");
 			                $("#navigate-website-selector-top").closeMbExtruder();
 		                }, 
 		                1000

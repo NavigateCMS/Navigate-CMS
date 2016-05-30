@@ -117,17 +117,24 @@ class update
 	{
         $context = stream_context_create(array(
                 'http' => array(
-                    'timeout' => 20
+                    'timeout' => 10
                 )
             )
         );
+
 		$latest_update = @file_get_contents(
             'http://update.navigatecms.com/latest',
             0,
             $context
         );
+
+		// if update info could not be loaded set the same version installed, to avoid looking for updates if the connection cannot be established
 		if(empty($latest_update))
-			return false;
+		{
+			$latest_installed = self::latest_installed();
+			$latest_update = '{"Version":"'.$latest_installed->version.'","Revision":"'.$latest_installed->revision.'"}';
+		}
+
 		$latest_update = json_decode($latest_update);
 		return $latest_update;
 	}
