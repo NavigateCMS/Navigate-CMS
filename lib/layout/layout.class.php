@@ -5,6 +5,7 @@ class layout
 	public $scripts;
 	public $before_includes;
 	public $styles;
+	public $styles_unmerged;
 	public $js_code;
 	public $buffer;
 	
@@ -78,10 +79,13 @@ class layout
 		$this->scripts[] = $src;
 	}
 	
-	public function add_style_tag($src)
+	public function add_style_tag($src, $merged_and_compressed=true)
 	{
-		$this->styles[] = $src;
-	}	
+		if($merged_and_compressed)
+			$this->styles[] = $src;
+		else
+			$this->styles_unmerged[] = $src;
+	}
 	
 	public function includes()
 	{		
@@ -381,6 +385,14 @@ class layout
         }
 
         $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/font-awesome/css/font-awesome.min.css" />';
+
+		if(!empty($this->styles_unmerged))
+		{
+			foreach($this->styles_unmerged as $css_file)
+			{
+				$out[] = '<link rel="stylesheet" type="text/css" href="'.$css_file.'" />';
+			}
+		}
 
         return implode("\n", $out);
 	}	
@@ -741,7 +753,9 @@ class layout
                 586: "'.t(586, "Same width & height (cropped)").'",
                 587: "'.t(587, "Full available width").'",
                 588: "'.t(588, "Replace image").'",
-                601: "'.t(601, "Import").'"
+                601: "'.t(601, "Import").'",
+                620: "'.t(620, "Insert").'",
+                621: "'.t(621, "Append").'"                
             };
         ');
 

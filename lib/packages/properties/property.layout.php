@@ -187,24 +187,111 @@ function navigate_property_layout_field($property, $object="")
                 $options = (array)$options;
 
             // translate each option text
-            if(!empty($object))
+            if(!empty($object) && !empty($options))
             {
                 foreach($options as $value => $text)
                     $options[$value] = $object->t($text);
             }
 
-			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
-			$field[] = '<label>'.$property_name.'</label>';
-			$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value);
-            if(!empty($property->helper))
-            {
-	            $helper_text = $property->helper;
-	            if(!empty($object))
-		            $helper_text = $object->t($helper_text);
-                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
-            }
-			$field[] = '</div>';			
-			break;
+			if(!isset($property->option_html))
+			{
+				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+				$field[] = '<label>'.$property_name.'</label>';
+				$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value);
+	            if(!empty($property->helper))
+	            {
+		            $helper_text = $property->helper;
+		            if(!empty($object))
+			            $helper_text = $object->t($helper_text);
+	                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
+	            }
+				$field[] = '</div>';
+			}
+			else
+			{
+				// each option formatted in a specific html fragment
+				if(isset($property->stylesheet))
+				{
+					$custom_stylesheet = $property->stylesheet;
+					if(strpos($custom_stylesheet, 'http')===false)
+                        $custom_stylesheet = NAVIGATE_URL.'/themes/'.$website->theme.'/'.$custom_stylesheet.'?bogus='.time();
+
+					$layout->add_style_tag($custom_stylesheet, false);
+
+					if(empty($options)) // parse stylesheet and try to identify all possible values
+					{
+						$custom_stylesheet_contents = file_get_contents(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$property->stylesheet);
+						$custom_stylesheet_contents = stylesheet_parse($custom_stylesheet_contents);
+
+						$options = array();
+						if(is_array($custom_stylesheet_contents))
+						{
+							foreach($custom_stylesheet_contents as $rule => $rule_content)
+							{
+								if(in_array(substr($rule, 0, 1), array('.', '#')))
+								{
+									$rule = str_replace(array('.', '#', ':before', ':after', ':focus', ':visited'), '', $rule);
+									$options[$rule] = $rule;
+									if(!empty($object))
+										$options[$rule] = $object->t($rule);
+								}
+							}
+						}
+					}
+				}
+
+				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+				$field[] = '<label>'.$property_name.'</label>';
+				$field[] = $naviforms->selectfield("property-".$property->id, array_keys($options), array_values($options), $property->value, NULL, false, NULL, NULL, false, false);
+
+
+				$layout->add_script('
+					$("#property-'.$property->id.'").select2(
+				        {
+				            selectOnBlur: true,
+				            minimumResultsForSearch: 6,
+							escapeMarkup: function (markup)
+					        {
+					            return markup; // let our custom formatter work
+					        },
+					        templateSelection: function(row)
+					        {					        
+					            var option_html = "'.str_replace('"', '\"', $property->option_html).'";
+					            option_html = option_html.replace(/{{VALUE}}/g, row.id);
+					            option_html = option_html.replace(/{{TEXT}}/g, row.text);
+					        
+					            if(row.id)
+					                return option_html;
+					            else
+					                return "("  + navigate_t(581, "None") + ")";
+					        },
+					        templateResult: function(data)
+					        {
+					            var option_html = "'.str_replace('"', '\"', $property->option_html).'";
+					            option_html = option_html.replace(/{{VALUE}}/g, data.id);
+					            option_html = option_html.replace(/{{TEXT}}/g, data.text);
+					        
+					            if(data.id)
+					                return option_html;
+					            else
+					                return "("  + navigate_t(581, "None") + ")";
+					        }
+				        }
+				    );
+			    ');
+
+				
+	            if(!empty($property->helper))
+	            {
+		            $helper_text = $property->helper;
+		            if(!empty($object))
+			            $helper_text = $object->t($helper_text);
+	                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
+	            }
+				$field[] = '</div>';
+			}
+			break;	
+
 			
 		case 'moption':
             $options = $property->options;
