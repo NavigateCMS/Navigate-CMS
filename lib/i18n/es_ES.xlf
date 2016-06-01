@@ -3721,5 +3721,17 @@
 				<target>Plantilla cambiada, por favor Guarda para ver los cambios en las siguientes pestañas</target>
 			</segment>
 		</unit>
+		<unit id="620">
+			<segment>
+				<source>Insert</source>
+				<target>Insertar</target>
+			</segment>
+		</unit>
+		<unit id="621">
+			<segment>
+				<source>Append</source>
+				<target>Añadir</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

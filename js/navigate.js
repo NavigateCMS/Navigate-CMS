@@ -319,7 +319,7 @@ function navigate_notification(text, sticky)
 function navigate_t(id, text)
 {
 	if(navigate_lang_dictionary && navigate_lang_dictionary[id]!=null)
-		return navigate_lang_dictionary[id];	
+		return navigate_lang_dictionary[id];
 	else
 		return text;
 }
@@ -1525,7 +1525,7 @@ function navigate_selector_upgrade(el)
     $(el).select2(
         {
             selectOnBlur: true,
-            minimumResultsForSearch: 6,
+            minimumResultsForSearch: 6
         }
     );
 

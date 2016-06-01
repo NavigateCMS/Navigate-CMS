@@ -3721,5 +3721,17 @@
 				<target>Plantilla canviada, si us plau Guarda per veure els canvis a les següents pestanyes</target>
 			</segment>
 		</unit>
+		<unit id="620">
+			<segment>
+				<source>Insert</source>
+				<target>Inserir</target>
+			</segment>
+		</unit>
+		<unit id="621">
+			<segment>
+				<source>Append</source>
+				<target>Afegir</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

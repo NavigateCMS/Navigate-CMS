@@ -3721,5 +3721,17 @@
 				<target>Template changed, please Save now to see the changes in the next tabs</target>
 			</segment>
 		</unit>
+		<unit id="620">
+			<segment>
+				<source>Insert</source>
+				<target>Insert</target>
+			</segment>
+		</unit>
+		<unit id="621">
+			<segment>
+				<source>Append</source>
+				<target>Append</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

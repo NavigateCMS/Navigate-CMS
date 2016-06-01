@@ -3721,5 +3721,17 @@
 				<target>Vorlage geändert, bitte Speichern Sie nun die Änderungen in den nächsten Tabs zu sehen</target>
 			</segment>
 		</unit>
+		<unit id="620">
+			<segment>
+				<source>Insert</source>
+				<target>Einfügen</target>
+			</segment>
+		</unit>
+		<unit id="621">
+			<segment>
+				<source>Append</source>
+				<target>Anhängen</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>
