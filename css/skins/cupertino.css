@@ -711,6 +711,8 @@ a.navigate-content-actions-selected
 	overflow: auto;
 }
 
+
+
 /* tinymce v4 */
 .navigate-form-row  div.mce-tinymce
 {
@@ -1078,6 +1080,24 @@ span.editor_selector i.fa.active
 	color: #fff;
 	background: #3baae3 url("../../css/cupertino/images/ui-bg_glass_50_3baae3_1x400.png") repeat-x scroll 50% 50%;
 }
+
+
+ul.tinymce_nv_link_ajax_selector
+{
+	position: absolute;
+	z-index: 100;
+	max-height: 140px;
+	margin-left: -1px;
+    margin-top: -2px;
+	overflow: auto;
+	padding: 1px;
+	border-radius: 0 4px 4px 4px;
+	box-shadow: 5px 5px 4px -5px #3b5881;
+    opacity: 0.95;
+	background: #f2f5f7 url("../../css/cupertino/images/ui-bg_highlight-hard_100_f2f5f7_1x100.png") repeat-x scroll 50% top;
+    border: 1px solid #dddddd;
+}
+
 
 
 /* CHECKBOX STYLING */

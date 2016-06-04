@@ -14,9 +14,41 @@ function run()
 
 	switch($_REQUEST['act'])
 	{
+		case 'json':
 		case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
+				case 'search_links':
+					$text = $_REQUEST['text'];
+					$lang = $_REQUEST['lang'];
+					if(empty($lang))
+						$lang = array_keys($website->languages)[0];
+
+					$DB->query('
+						SELECT p.path, d.text
+						  FROM nv_paths p, nv_webdictionary d
+						 WHERE p.website = '.protect($website->id).' AND
+						       p.lang = '.protect($lang).' AND
+						       d.website = p.website AND
+						       d.node_type = p.type AND
+						       d.node_id = p.object_id AND
+						       d.lang = p.lang AND
+						       d.subtype = "title" AND 
+						       (    
+						            p.path LIKE '.protect('%'.$text.'%').'  OR  
+									d.text LIKE '.protect('%'.$text.'%').' 
+						       )
+						 ORDER BY d.id DESC
+						 LIMIT 10
+					');
+
+					$result = $DB->result();
+
+
+					echo json_encode($result);
+					core_terminate();
+					break;
+
 				case 'del':	// remove rows
                     if($user->permission('websites.delete')=='true')
                     {

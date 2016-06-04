@@ -479,7 +479,7 @@ class naviforms
                 			    
 			    plugins: [
 				    "compat3x",
-				    "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+				    "advlist autolink nv_link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
 				    "codesample codemirror imagetools importcss paste magicline nv_rollups" // add fullpage to edit full HTML code with head and body tags
