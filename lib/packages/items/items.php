@@ -1075,8 +1075,8 @@ function items_form($item)
 	$navibars->form('', 'fid=items&act=edit&id='.$item->id);
 
     $layout->add_script("
-        $(document).on('keydown', null, 'ctrl+s', function (evt) { navigate_items_tabform_submit(1); return false; } );
-        $(document).on('keydown', null, 'ctrl+m', function (evt) { navigate_media_browser(); return false; } );
+        $(document).on('keydown.ctrl_s', function (evt) { navigate_items_tabform_submit(1); return false; } );
+        $(document).on('keydown.ctrl_m', function (evt) { navigate_media_browser(); return false; } );
     ");
 
 	$layout->add_script('

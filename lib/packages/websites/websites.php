@@ -386,7 +386,9 @@ function websites_form($item)
     {
 	    $navibars->add_actions(
 		    array(
-			    '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
+			    '<a href="#" onclick="javascript: navigate_media_browser();" title="Ctrl+m">
+					<img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media')
+			    .'</a>'
 		    )
 	    );
 
@@ -563,15 +565,26 @@ function websites_form($item)
         if(empty($item->id))
         {
             $navibars->add_actions(
-                array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
+                array(
+	                '<a href="#" onclick="navigate_tabform_submit(1);" title="Ctrl+s">
+						<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save')
+	                .'</a>'
+                )
             );
         }
         else
         {
             $navibars->add_actions(
                 array(
-                    '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-                    (($user->permission('websites.delete')=='true')? '<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>' : '')
+                    '<a href="#" onclick="navigate_tabform_submit(1);" title="Ctrl+s">
+						<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save')
+                    .'</a>',
+                    (($user->permission('websites.delete')=='true')?
+	                    '<a href="#" onclick="navigate_delete_dialog();">
+							<img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete')
+	                    .'</a>'
+	                    : ''
+                    )
                 )
             );
 
@@ -601,6 +614,11 @@ function websites_form($item)
 
             $navibars->add_content(implode("\n", $delete_html));
         }
+
+	    $layout->add_script("
+            $(document).on('keydown.ctrl_s', function (evt) { navigate_items_tabform_submit(1); return false; } );
+            $(document).on('keydown.ctrl_m', function (evt) { navigate_media_browser(); return false; } );
+        ");
     }
 
 	$navibars->add_actions(
