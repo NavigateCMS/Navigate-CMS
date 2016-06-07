@@ -3733,5 +3733,23 @@
 				<target>Anhängen</target>
 			</segment>
 		</unit>
+		<unit id="622">
+			<segment>
+				<source>Date range</source>
+				<target>Datumsbereich</target>
+			</segment>
+		</unit>
+				<unit id="623">
+			<segment>
+				<source>Begin</source>
+				<target>Beginnen</target>
+			</segment>
+		</unit>
+		<unit id="624">
+			<segment>
+				<source>End</source>
+				<target>Ende</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

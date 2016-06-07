@@ -52,7 +52,7 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 				
-					$DB->queryLimit('id,avatar,username,email,fullname,groups,joindate,blocked',
+					$DB->queryLimit('id,avatar,username,email,fullname,groups,joindate,access,access_begin,access_end',
 									'nv_webusers', 
 									$where, 
 									$orderby, 
@@ -85,14 +85,25 @@ function run()
                             $wug
                         );
 
+						$blocked = 1;
+						if( $dataset[$i]['access'] == 0 ||
+                            ( $dataset[$i]['access'] == 2 &&
+                                ($dataset[$i]['access_begin']==0 ||$dataset[$i]['access_begin'] < time()) &&
+                                ($dataset[$i]['access_end']==0 || $dataset[$i]['access_end'] > time())
+                            )
+                        )
+						{
+							$blocked = 0;
+						}
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.$dataset[$i]['username'].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
-                            2 	=> '<div class="list-row" data-blocked="'.$dataset[$i]['blocked'].'" title="'.$dataset[$i]['email'].'">'.$dataset[$i]['username'].'</div>',
+                            2 	=> '<div class="list-row" data-blocked="'.$blocked.'" title="'.$dataset[$i]['email'].'">'.$dataset[$i]['username'].'</div>',
 							3	=> $dataset[$i]['fullname'],
 							4	=> implode("<br />", $wug),
 							5 	=> core_ts2date($dataset[$i]['joindate'], true),
-							6	=> (($dataset[$i]['blocked']==0)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
+							6	=> ($blocked==0? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
                             7 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
@@ -295,7 +306,7 @@ function webusers_list()
 	$navitable->addCol(t(159, 'Name'), 'fullname', "150", "true", "left");
 	$navitable->addCol(t(506, 'Groups'), 'groups', "120", "true", "left");
 	$navitable->addCol(t(247, 'Date joined'), 'joindate', "60", "true", "left");
-	$navitable->addCol(t(321, 'Allowed'), 'blocked', "80", "true", "center");
+	$navitable->addCol(t(321, 'Allowed'), 'access', "80", "true", "center");
     $navitable->addCol(t(168, 'Notes'), 'note', "32", "false", "center");
 
     // webuser groups filter
@@ -549,11 +560,62 @@ function webusers_form($item)
         '<label>'.t(249, 'Newsletter').'</label>',
 		$naviforms->checkbox('webuser-newsletter', $item->newsletter),
     ));
-										
+
+	$webuser_access = array(
+		'0' =>  t(321, "Allowed"),
+		'1' =>  t(47, "Blocked"),
+		'2' =>  t(622, "Date range")
+	);
+	
 	$navibars->add_tab_content_row(array(
-        '<label>'.t(47, 'Blocked').'</label>',
-		$naviforms->checkbox('webuser-blocked', $item->blocked),
+        '<label>'.t(364, 'Access').'</label>',
+		$naviforms->selectfield(
+			'webuser-access', 
+			array_keys($webuser_access), 
+			array_values($webuser_access), 
+			$item->access,
+			'navigate_webusers_change_access();'
+		)
     ));
+
+	// TODO:
+	//      modificar blocked per access a la base de dades i al .class
+	//      afegir access_begin, access_end SQL i .class
+	//      canviar codi on s'utilitzava blocked
+	//      traspassar canvis a Pascual
+
+	if(empty($item->access_begin))
+		$item->access_begin = '';
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<img src="img/icons/silk/date_go.png" /> '.t(623, 'Begin').'</label>',
+			$naviforms->datefield('webuser-access-begin', $item->access_begin, true, ' width:200px; ')
+        )
+    );
+
+	if(empty($item->access_end))
+		$item->access_end = '';
+	$navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<img src="img/icons/silk/date_delete.png" /> '.t(624, 'End').'</label>',
+			$naviforms->datefield('webuser-access-end', $item->access_end, true, ' width:200px; ')
+        )
+    );
+
+	$layout->add_script('
+		function navigate_webusers_change_access()
+		{
+			$("#webuser-access-begin").parent().hide();
+			$("#webuser-access-end").parent().hide();
+			
+			if($("#webuser-access").val() == "2")
+			{
+				$("#webuser-access-begin").parent().show();
+				$("#webuser-access-end").parent().show();
+			}
+		}
+		navigate_webusers_change_access();
+	');
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(538, 'Private comment').'</label>',

@@ -153,14 +153,19 @@ function nvweb_webuser($vars=array())
                     if(!empty($wu_id))
                     {
                         $wu->load($wu_id);
-                        if($wu->blocked == 0)
+                        if( $wu->access == 0 ||
+                            ( $wu->access == 2 &&
+                                ($wu->access_begin==0 || time() > $wu->access_begin) &&
+                                ($wu->access_end==0 || time() < $wu->access_end)
+                            )
+                        )
                         {
                             $wu->newsletter = 1;
                             $ok = $wu->save();
                         }
                     }
 
-                    if(empty($wu_id) || ($wu->blocked==1 && !empty($wu->activation_key)))
+                    if(empty($wu_id) || ($wu->access==1 && !empty($wu->activation_key)))
                     {
                         // create a new webuser account with that email
                         $username = substr($email, 0, strpos($email, '@')); // left part of the email
@@ -205,7 +210,7 @@ function nvweb_webuser($vars=array())
                             $wu->newsletter = 1;
                             $wu->language = $current['lang']; // infer the webuser language by the active website language
                             $wu->username = $username;
-                            $wu->blocked = 1;
+                            $wu->access = 1;    // user is blocked until the server recieves an email confirmation
                         }
 
                         $wu->activation_key = md5($wu->email . rand(1, 9999999));

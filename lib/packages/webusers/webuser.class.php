@@ -27,7 +27,9 @@ class webuser
     public $private_comment;
 	public $activation_key;
 	public $cookie_hash;
-	public $blocked;
+	public $access; // 0: allowed, 1 => blocked, 2 => allowed within a date range
+	public $access_begin;   // timestamp, 0 => infinite
+	public $access_end; // timestamp, 0 => infinite
   	
 	public function load($id)
 	{
@@ -52,6 +54,22 @@ class webuser
         if(!empty($data))
 		{
 			$this->load_from_resultset($data);
+
+			// check if the user is still allowed to sign in
+			$blocked = 1;
+			if( $this->access == 0 ||
+                ( $this->access == 2 &&
+                    ($this->access_begin==0 || $this->access_begin < time()) &&
+                    ($this->access_end==0 || $this->access_end > time())
+                )
+            )
+			{
+				$blocked = 0;
+			}
+
+			if($blocked==1)
+				return false;
+
 			$session['webuser'] = $this->id;
 
             // maybe this function is called without initializing $events
@@ -115,7 +133,9 @@ class webuser
 		$this->private_comment	= $main->private_comment;
 		$this->activation_key	= $main->activation_key;
 		$this->cookie_hash	= $main->cookie_hash;
-		$this->blocked		= $main->blocked;
+		$this->access		= $main->access;
+		$this->access_begin	= $main->access_begin;
+		$this->access_end	= $main->access_end;
 
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
@@ -140,8 +160,11 @@ class webuser
 			$this->birthdate	= '';
 		$this->language		= $_REQUEST['webuser-language'];			
 		$this->newsletter	= ($_REQUEST['webuser-newsletter']=='1'? '1' : '0');
-		$this->blocked		= ($_REQUEST['webuser-blocked']=='1'? '1' : '0');	
-		
+		$this->access		= $_REQUEST['webuser-access'];
+		$this->access_begin	= (empty($_REQUEST['webuser-access-begin'])? '' : core_date2ts($_REQUEST['webuser-access-begin']));
+		$this->access_end	= (empty($_REQUEST['webuser-access-end'])? '' : core_date2ts($_REQUEST['webuser-access-end']));
+
+
 		$this->country		= $_REQUEST['webuser-country'];
 		$this->timezone		= $_REQUEST['webuser-timezone'];
 		$this->address		= $_REQUEST['webuser-address'];
@@ -217,15 +240,15 @@ class webuser
 		    INSERT INTO nv_webusers
                 (	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
                     language, country, timezone, address, zipcode, location, phone, social_website,
-                    joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, blocked,
-                    email_verification_date
+                    joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, 
+                    access, access_begin, access_end, email_verification_date
                 )
                 VALUES 
                 (
                     :id, :website, :username, :password, :email, :groups, :fullname, :gender, :avatar, :birthdate,
                     :language, :country, :timezone, :address, :zipcode, :location, :phone, :social_website,
-                    :joindate, :lastseen, :newsletter, :private_comment, :activation_key, :cookie_hash, :blocked,
-                    :email_verification_date
+                    :joindate, :lastseen, :newsletter, :private_comment, :activation_key, :cookie_hash, 
+                    :access, :access_begin, :access_end, :email_verification_date
                 )',
             array(
                 ":id" => 0,
@@ -252,7 +275,9 @@ class webuser
                 ":private_comment" => is_null($this->private_comment)? '' : $this->private_comment,
                 ":activation_key" => is_null($this->activation_key)? '' : $this->activation_key,
                 ":cookie_hash" => is_null($this->cookie_hash)? '' : $this->cookie_hash,
-                ":blocked" => is_null($this->blocked)? '0' : $this->blocked,
+				":access" => value_or_default($this->access, 0),
+                ":access_begin" => value_or_default($this->access_begin, 0),
+                ":access_end" => value_or_default($this->access_end, 0),
 	            ":email_verification_date" => value_or_default($this->email_verification_date, 0)
             )
         );							
@@ -315,7 +340,9 @@ class webuser
                   private_comment = :private_comment,
                   activation_key = :activation_key,
                   cookie_hash = :cookie_hash,
-                  blocked = :blocked,
+                  access = :access,
+                  access_begin = :access_begin,
+                  access_end = :access_end,
                   email_verification_date = :email_verification_date
                 WHERE id = :id
             ',
@@ -342,7 +369,9 @@ class webuser
                 ':private_comment' => $this->private_comment,
                 ':activation_key' => $this->activation_key,
                 ':cookie_hash' => $this->cookie_hash,
-                ':blocked' => $this->blocked,
+                ":access" => value_or_default($this->access, 0),
+                ":access_begin" => value_or_default($this->access_begin, 0),
+                ":access_end" => value_or_default($this->access_end, 0),
                 ':id' => $this->id,
 	            ':email_verification_date' => value_or_default($this->email_verification_date, 0)
             )
@@ -360,6 +389,23 @@ class webuser
 
 		return true;
 	}
+
+	public function access_allowed()
+	{
+		// check if the user is still allowed to sign in
+		if( $this->access == 0 ||
+            ( $this->access == 2 &&
+                ($this->access_begin==0 || $this->access_begin < time()) &&
+                ($this->access_end==0 || $this->access_end > time())
+            )
+        )
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	
 	public function authenticate($website, $username, $password)
 	{
@@ -374,33 +420,42 @@ class webuser
         $website_check = '';
 		if($website > 0)
 			$website_check = 'AND website  = '.protect($website);
-				
+
 		if($DB->query('SELECT * 
 						 FROM nv_webusers 
-						WHERE blocked = "0"
+						WHERE ( access = 0 OR
+						 		(access = 2 AND 
+						 			(access_begin = 0 OR access_begin < '.time().') AND 
+						 			(access_end = 0 OR access_end > '.time().') 
+					            )
+					           )
 						  '.$website_check.'
-						  AND LOWER(username) = '.protect($username)))
+						  AND LOWER(username) = '.protect($username))
+		)
 		{		
-			$data = $DB->result();	
-			
-			if($data[0]->password==$A1) 
+			$data = $DB->result();
+
+			if(!empty($data))
 			{
-				$this->load_from_resultset($data);
+				if($data[0]->password==$A1)
+				{
+					$this->load_from_resultset($data);
 
-                // maybe this function is called without initializing $events
-                if(method_exists($events, 'trigger'))
-                {
-                    $events->trigger(
-                        'webuser',
-                        'sign_in',
-                        array(
-                            'webuser' => $this,
-                            'by' => 'authenticate'
-                        )
-                    );
-                }
+	                // maybe this function is called without initializing $events
+	                if(method_exists($events, 'trigger'))
+	                {
+	                    $events->trigger(
+	                        'webuser',
+	                        'sign_in',
+	                        array(
+	                            'webuser' => $this,
+	                            'by' => 'authenticate'
+	                        )
+	                    );
+	                }
 
-				return true;
+					return true;
+				}
 			}
 		}
 		
@@ -463,11 +518,12 @@ class webuser
 			$wu = new webuser();
 			$wu->load($rs->id);
 
-			if($wu->blocked==1 && empty($wu->password) && empty($wu->email_verification_date))
+			// access is only enabled for blocked users (access==1) which don't have a password nor an email verification date
+			if($wu->access==1 && empty($wu->password) && empty($wu->email_verification_date))
 			{
 				// email is confirmed through a newsletter subscribe request
 				$wu->email_verification_date = time();
-				$wu->blocked = 0;
+				$wu->access = 0;
 				$wu->activation_key = "";
 				$status = $wu->save();
 			}
@@ -544,7 +600,7 @@ class webuser
                 $wuser->website = $website->id;
                 $wuser->joindate = core_time();
                 $wuser->lastseen = core_time();
-                $wuser->blocked = 0;
+                $wuser->access = 0;
                 $wuser->insert();
 
 	            $DB->execute('
@@ -609,7 +665,8 @@ class webuser
                 '/*avatar,*/.'
                 birthdate, language, country, timezone,
                 address, zipcode, location, phone, social_website,
-                joindate, lastseen, newsletter, private_comment, blocked
+                joindate, lastseen, newsletter, private_comment, 
+                access, access_begin, access_end
             FROM nv_webusers
             WHERE website = '.protect($website->id), 'array');
 
@@ -635,7 +692,9 @@ class webuser
             t(563, 'Last seen'),
             t(249, 'Newsletter'),
             t(538, 'Private comment'),
-            t(47, 'Blocked')
+            t(364, 'Access'),
+            t(364, 'Access').' / '.t(623, 'Begin'),
+            t(364, 'Access').' / '.t(624, 'End')
         );
 
         $out = $DB->result();

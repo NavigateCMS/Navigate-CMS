@@ -3733,5 +3733,23 @@
 				<target>Añadir</target>
 			</segment>
 		</unit>
+		<unit id="622">
+			<segment>
+				<source>Date range</source>
+				<target>Intervalo de fechas</target>
+			</segment>
+		</unit>
+				<unit id="623">
+			<segment>
+				<source>Begin</source>
+				<target>Inicio</target>
+			</segment>
+		</unit>
+		<unit id="624">
+			<segment>
+				<source>End</source>
+				<target>Fin</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

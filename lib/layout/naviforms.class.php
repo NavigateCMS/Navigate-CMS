@@ -168,7 +168,7 @@ class naviforms
 		return $out;	
 	}	
 	
-	public function datefield($name, $value="", $hour=false)
+	public function datefield($name, $value="", $hour=false, $style="")
 	{
 		global $layout;
 		global $user;
@@ -176,7 +176,7 @@ class naviforms
 		if(!empty($value))
 			$value = core_ts2date($value, $hour);
 
-		$out = '<input type="text" class="datepicker" name="'.$name.'" id="'.$name.'" value="'.$value.'" />
+		$out = '<input type="text" class="datepicker" name="'.$name.'" id="'.$name.'" value="'.$value.'" style="'.$style.'" />
 				<img src="img/icons/silk/calendar_delete.png" width="16" height="16" align="absmiddle" 
 					 style=" cursor: pointer; " onclick=" $(this).parent().find(\'input\').val(\'\'); $(this).parent().find(\'input\').trigger(\'change\'); " />';
 		

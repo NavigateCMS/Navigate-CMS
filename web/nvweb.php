@@ -121,7 +121,10 @@ try
 
     // if the webuser was removed, it doesn't exist anymore,
     //  $session/$_COOKIE may have obsolete data, force a log out
-    if(empty($webuser->id)  && (!empty($session['webuser']) || !empty($_COOKIE['webuser'])))
+	// also check date range access
+    if( (empty($webuser->id) && (!empty($session['webuser']) || !empty($_COOKIE['webuser']))) ||
+	    !$webuser->access_allowed()
+    )
     {
         $webuser->unset_cookie();
         unset($webuser);
