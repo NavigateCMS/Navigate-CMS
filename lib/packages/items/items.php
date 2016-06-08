@@ -1683,6 +1683,13 @@ function items_form($item)
 			$navibars->add_tab_content('</div>');		
 		}
 
+		// translate content_samples titles
+		if(is_array($theme->content_samples))
+		{
+			for($i=0; $i < count($theme->content_samples); $i++)
+				$theme->content_samples[$i]->title = $theme->t($theme->content_samples[$i]->title);
+		}
+
 		$layout->add_script('
 			var template_sections = '.json_encode($template->sections).';
 		    var theme_content_samples = '.json_encode($theme->content_samples).';
@@ -1805,7 +1812,7 @@ function items_form($item)
 		
 		/* IMAGE GALLERIES */
 
-		if($template->gallery > 0 || $template->gallery==='true')
+		if($template->gallery==='true' || $template->gallery > 0)
 		{
 			$navibars->add_tab(t(210, "Gallery")); // tab #3
 
@@ -1822,7 +1829,8 @@ function items_form($item)
                 2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" title="'.t(81, 'Hidden').'" />'
             );
 
-            if(!is_array($item->galleries[0])) $item->galleries[0] = array();
+            if(!is_array($item->galleries[0])) 
+	            $item->galleries[0] = array();
 			$gallery_elements_order = implode('#', array_keys($item->galleries[0]));
 			
 			$navibars->add_tab_content(
@@ -1841,7 +1849,7 @@ function items_form($item)
                 $f->load($ids[$g]);
 				$gallery .= '
 				    <li>
-                        <div id="items-gallery-item-'.$ids[$g].'-droppable" class="navigate-droppable ui-corner-all">
+                        <div id="items-gallery-item-'.$ids[$g].'-droppable" class="navigate-droppable ui-corner-all" data-file-id="'.$f->id.'">
                             <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
                             <img title="'.$ids[$g].'" src="'.$default_img.'" data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$ids[$g].'&amp;disposition=inline&amp;width=75&amp;height=75" width="75" height="75" />
                         </div>
@@ -1852,7 +1860,7 @@ function items_form($item)
 		
 			// empty element
 			$gallery .= '
-                <li>
+                <li class="gallery-item-empty-droppable">
                     <div id="items-gallery-item-empty-droppable" class="navigate-droppable ui-corner-all">
                         <img src="img/icons/misc/dropbox.png" vspace="18" />
                     </div>
@@ -1878,6 +1886,19 @@ function items_form($item)
                 )
             );
 
+			$layout->add_content('
+				<ul id="contextmenu-gallery-items" style="display: none" class="ui-corner-all">
+	                <li id="contextmenu-gallery-items-properties"><a href="#"><span class="ui-icon ui-icon-contact"></span>'.t(213, "Image caption").'</a></li>
+	                <li id="contextmenu-gallery-items-permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
+	                <li id="contextmenu-gallery-items-focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
+	                <li id="contextmenu-gallery-items-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
+	                <li><!--divider--></li>
+	                <li id="contextmenu-gallery-items-remove"><a href="#"><span class="ui-icon ui-icon-minus"></span>'.t(627, 'Remove').'</a></li>
+	                <li id="contextmenu-gallery-items-move-beginning"><a href="#"><span class="ui-icon ui-icon-arrowthickstop-1-n"></span>'.t(628, 'Move to the beginning').'</a></li>
+	                <li id="contextmenu-gallery-items-move-end"><a href="#"><span class="ui-icon ui-icon-arrowthickstop-1-s"></span>'.t(629, 'Move to the end').'</a></li>
+	            </ul>
+			');
+
 			// script#6
 			
 			$layout->add_script('
@@ -1891,53 +1912,6 @@ function items_form($item)
 					    data_src: "src",
 					    show_while_loading: true
 					});
-				});
-
-				$("#items-gallery-elements .navigate-droppable").live("dblclick", function()
-				{
-					var id = $(this).attr("id");
-					id = id.replace("items-gallery-item-", "");
-					id = id.replace("-droppable", "");
-					
-					if(!id || id=="" || id=="empty") return;
-					
-					$("#navigate_items_gallery_captions_form_image-droppable img")
-						.attr("src", NAVIGATE_DOWNLOAD + "?wid=" + $(this).attr("website_id") + "&id=" + id + "&disposition=inline&width=75&height=75") // navigate["website_id"]
-						.attr("vspace", 0);
-					
-					for(lang in active_languages)
-					{
-						$("#navigate_items_gallery_captions_form_image_" + active_languages[lang])
-							.val($("#items-gallery-item-" + id + "-dictionary-" + active_languages[lang]).val());
-					}
-					
-					$("#navigate_items_gallery_captions_form").dialog(
-					{
-						title: "<img src=\"img/icons/silk/image_edit.png\" align=\"absmiddle\"> '.t(77, 'Properties').'",
-						modal: true,
-						buttons: 
-						{ 
-							"'.t(58, 'Cancel').'": function() 
-							{ 
-								$(this).dialog("close"); 
-								$(window).trigger("resize");
-							},	
-							"'.t(190, 'Ok').'": function() 
-							{ 
-								for(lang in active_languages)
-								{
-									var image_caption_id = "items-gallery-item-" + id + "-dictionary-" + active_languages[lang];
-																											
-									$("#"+image_caption_id)
-										.val($("#navigate_items_gallery_captions_form_image_" + active_languages[lang]).val());
-								}						
-								$(this).dialog("close"); 
-								$(window).trigger("resize");
-							}
-						},
-						width: 650,
-						height: 300
-					});	
 				});
 			');
 						
@@ -2324,7 +2298,7 @@ function items_form($item)
 		$layout->add_script('
 			function navigate_items_preview()
 			{
-				navigate_items_disable_spellcheck();
+				// navigate_items_disable_spellcheck(); not needed in tinymce 4?
 				navigate_periodic_event_delegate(); // force saving current data in history
 				var url = "'.$nvweb_preview.'";
 				var active_language = $("input[name=\'language_selector[]\']:checked").val();

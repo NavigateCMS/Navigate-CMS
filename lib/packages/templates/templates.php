@@ -564,7 +564,7 @@ function templates_form($item)
 				minLength: 0			
 			});
 			
-			$(\'input[name="template-sections-width[]"]\').live("click", function()
+			$(document).on(\'click\', \'input[name="template-sections-width[]"]\', function()			
 			{
 				$(this).autocomplete( "search" , $(this).val());
 			});

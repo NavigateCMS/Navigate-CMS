@@ -708,6 +708,7 @@ class layout
                 57: "'.t(57, 'Do you really want to delete this item?').'",
                 58: "'.t(58, 'Cancel').'",
                 59: "'.t(59, 'Confirmation').'",
+                77: "'.t(77, 'Properties').'",
                 82: "'.t(82, 'File').'",
                 92: "'.t(92, 'Close').'",
                 141: "'.t(141, 'Folder').'",
@@ -975,7 +976,7 @@ class layout
                 <li id="contextmenu-files-rename"><a href="#"><span class="ui-icon ui-icon-pencil"></span>'.t(500, 'Rename').'</a></li>
                 <li id="contextmenu-files-description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
                 '.($user->permission("files.delete")=="true"? '<li id="contextmenu-files-delete"><a href="#"><span class="ui-icon ui-icon-trash"></span>'.t(35, 'Delete').'</a></li>' : '').'
-                '.implode("\n", $extra_contextmenu_actions).'
+                '.implode("\n", $extra_contextmenu_actions).'                
             </ul>
             <ul id="contextmenu-mediabrowser-folders" style="display: none;">
 	            <li id="contextmenu-mediabrowser-folders-open" action="open"><a href="#"><span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>'.t(499, "Open").'</a></li>

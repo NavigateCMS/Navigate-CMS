@@ -290,7 +290,7 @@ function navigate_property_layout_field($property, $object="")
 	            }
 				$field[] = '</div>';
 			}
-			break;	
+			break;
 
 			
 		case 'moption':
