@@ -738,6 +738,7 @@ class theme
             eval('$properties = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/properties.var_export')).';');
         else
             $properties = unserialize(file_get_contents($ptf.'/properties.serialized'));
+
         $elements_with_properties = array('structure', 'item', 'block', 'block_group_block');
 
         foreach($elements_with_properties as $el)
@@ -835,12 +836,44 @@ class theme
                     else if($el=='block')
                         $template = $real[$el_id]->type;
                     else
+                    {
                         $template = $real[$el_id]->template;
+
+						if(empty($template) && $el == 'item' && $real[$el_id]->embedding == 1)
+	                    {
+		                    // we have to get the template set in the category of the item
+							$template = $DB->query_single(
+								'template',
+								'nv_structure',
+								' id = '.protect($real[$el_id]->category).' AND 
+								  website = '.$website->id
+							);
+	                    }
+                    }
 
                     property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative, $ws);
                 }
             }
         }
+
+	    // apply settings from export
+        if(file_exists($ptf.'/settings.var_export'))
+            eval('$settings_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/settings.var_export')).';');
+        else
+            $settings_or = unserialize(file_get_contents($ptf.'/settings.serialized'));
+
+	    if(is_numeric($settings_or['homepage']))
+	    {
+		    // homepage as a category ID
+		    $website->homepage = $structure[$settings_or['homepage']]->id;
+	    }
+	    else
+	    {
+		    // homepage as a path
+		    $website->homepage = $settings_or['homepage'];
+	    }
+
+	    $website->save();
 
         core_remove_folder($ptf);
     }
@@ -849,6 +882,7 @@ class theme
     {
         global $website;
         global $theme;
+	    global $DB;
 
         @set_time_limit(0);
 
@@ -859,6 +893,7 @@ class theme
         $comments = array();
         $properties = array();
         $files = array();
+	    $settings = array();
 
         // structure
         for($c=0; $c < count($a_categories); $c++)
@@ -892,8 +927,17 @@ class theme
             $tmp->load($a_items[$i]);
 
             //$properties['item'][$tmp->id] = property::load_properties_associative('item', $tmp->template, 'item', $tmp->id);
-            $properties['item'][$tmp->id] = property::load_properties('item', $tmp->template, 'item', $tmp->id);
-            list($tmp->dictionary, $files) = theme::export_sample_parse_dictionary($tmp->dictionary, $files);
+
+	        $template_id = $tmp->template;
+	        if($tmp->embedding == 1)
+	        {
+		        // we have to get the template set in the category of the item
+				$template_id = $DB->query_single('template', 'nv_structure', ' id = '.protect($tmp->category).' AND website = '.$website->id);
+	        }
+
+	        $properties['item'][$tmp->id] = property::load_properties('item', $template_id, 'item', $tmp->id);
+
+	        list($tmp->dictionary, $files) = theme::export_sample_parse_dictionary($tmp->dictionary, $files);
 
             // add files referenced in properties
             if(is_array($properties['item'][$tmp->id]))
@@ -980,6 +1024,9 @@ class theme
             $files[$f] = $file;
         }
 
+	    // settings
+	    $settings['homepage'] = $website->homepage;
+
         $zip = new zipfile();
         $zip->addFile(var_export($website->languages, true), 'languages.var_export');
         $zip->addFile(var_export($theme->options, true), 'theme_options.var_export');
@@ -991,6 +1038,7 @@ class theme
         $zip->addFile(var_export($comments, true), 'comments.var_export');
         $zip->addFile(var_export($files, true), 'files.var_export');
         $zip->addFile(var_export($properties, true), 'properties.var_export');
+        $zip->addFile(var_export($settings, true), 'settings.var_export');
 
         foreach($files as $file)
             $zip->addFile(file_get_contents($file->absolute_path()), 'files/'.$file->id);

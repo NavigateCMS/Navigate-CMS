@@ -527,6 +527,7 @@ function themes_sample_content_export_form()
     $navitable_items->setURL('?fid=items&act=1');
     $navitable_items->sortBy('date_modified', 'DESC');
 	$navitable_items->setDataIndex('id');
+	$navitable_items->max_rows = 9999999;
     $navitable_items->addCol("ID", 'id', "40", "true", "left");
     $navitable_items->addCol(t(67, 'Title'), 'title', "350", "true", "left");
     $navitable_items->addCol(t(309, 'Social'), 'comments', "80", "true", "center");
@@ -545,6 +546,7 @@ function themes_sample_content_export_form()
     $navitable_block_groups->setURL('?fid=blocks&act=block_groups_json');
     $navitable_block_groups->sortBy('id', 'DESC');
     $navitable_block_groups->setDataIndex('id');
+    $navitable_items->max_rows = 9999999;
     $navitable_block_groups->addCol("ID", 'id', "80", "true", "left");
     $navitable_block_groups->addCol(t(237, 'Code'), 'code', "120", "true", "left");
     $navitable_block_groups->addCol(t(67, 'Title'), 'title', "200", "true", "left");
@@ -560,6 +562,7 @@ function themes_sample_content_export_form()
     $navitable_blocks->setURL('?fid=blocks&act=1');
     $navitable_blocks->sortBy('id', 'DESC');
     $navitable_blocks->setDataIndex('id');
+    $navitable_items->max_rows = 9999999;
     $navitable_blocks->addCol("ID", 'id', "40", "true", "left");
     $navitable_blocks->addCol(t(160, 'Type'), 'type', "120", "true", "center");
     $navitable_blocks->addCol(t(67, 'Title'), 'title', "400", "true", "left");
@@ -577,6 +580,7 @@ function themes_sample_content_export_form()
     $navitable_comments->setURL('?fid=comments&act=1');
     $navitable_comments->sortBy('date_created', 'desc');
     $navitable_comments->setDataIndex('id');
+    $navitable_items->max_rows = 9999999;
     $navitable_comments->addCol("ID", 'id', "80", "true", "left");
     $navitable_comments->addCol(t(180, 'Item'), 'item', "200", "true", "left");
     $navitable_comments->addCol(t(226, 'Date created'), 'date_created', "100", "true", "left");
@@ -586,8 +590,7 @@ function themes_sample_content_export_form()
     $navitable_comments->after_select_callback = ' $("#comments").val(navitable_comments_list_selected_rows); ';
     $navibars->add_tab_content($naviforms->hidden('comments', ''));
     $navibars->add_tab_content($navitable_comments->generate());
-
-
+    
     $navibars->add_tab(t(89, "Files"));
     $navibars->add_tab_content_row(
         array(
@@ -605,7 +608,7 @@ function themes_sample_content_export_form()
     return $navibars->generate();
 }
 
-/* TODO: generate a theme from custom templates and blocks... maybe in NVCMS2.0?
+/* TODO: generate a theme from custom templates and blocks... maybe in NVCMS3.0?
 function themes_export_form()
 {
     // templates, blocks, files, properties
