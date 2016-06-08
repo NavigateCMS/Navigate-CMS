@@ -17,8 +17,8 @@ class file
 	public $width;
 	public $height;
     public $focalpoint; // 50.00#50.00 (image center by top%, left%)
-    public $title;
-    public $description; // image ALT
+    public $title; // array ("lang" => "text")
+    public $description; // image ALT; array ("lang" => "text")
 	public $date_added;
 	public $uploaded_by;	
 	public $access; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in

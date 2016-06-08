@@ -368,7 +368,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
     if(!empty($vars['border']))     $border = $vars['border'];
 
     if(!empty($width))  $sizes.= ' width="'.$width.'" ';
-	if(!empty($height)) $sizes.= ' height="'.$type['height'].'" ';
+	if(!empty($height)) $sizes.= ' height="'.$height.'" ';
 	
 	switch($trigger['trigger-type'][$lang])
 	{

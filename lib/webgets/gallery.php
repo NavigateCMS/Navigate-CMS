@@ -80,7 +80,6 @@ function nvweb_gallery($vars=array())
 	{
         case 'image':
 
-            // TO DO: add alt and title to the image
             if(is_array($item->galleries))
                 $gallery = $item->galleries[0];
 
@@ -104,14 +103,16 @@ function nvweb_gallery($vars=array())
             if(empty($image_selected))
                 return '';
 
+			list($image_title, $image_description) = nvweb_gallery_image_caption($image_selected, $gallery);
+
             if(!empty($vars['return']) && $vars['return']=='url')
             {
                 $out[] = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline';
             }
             else if(!empty($vars['return']) && $vars['return']=='thumbnail')
             {
-	            // TO DO: add missing alt / title texts!
-                $out[] = '<img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />';
+                $out[] = '<img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].
+	                            $border.'" alt="'.$image_description.'" title="'.$image_title.'" />';
             }
             else if(!empty($vars['return']) && $vars['return']=='thumbnail_url')
             {
@@ -120,8 +121,8 @@ function nvweb_gallery($vars=array())
             else
                 $out[] = '<div class="nv_gallery_item">
                             <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
-                                <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'"
-                                     alt="" title="" />
+                                <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].
+	                                $border.'" alt="'.$image_description.'" title="'.$image_title.'" />
                             </a>
                         </div>';
             break;
@@ -144,18 +145,20 @@ function nvweb_gallery($vars=array())
 			
 			foreach($gallery as $image => $dictionary)
 			{
+				list($image_title, $image_description) = nvweb_gallery_image_caption($image, $gallery);
+
 				if($first)
 				{
 					$out[] = '<a href="#" onclick="return GB_showImageSet(image_set_'.$item->id.', 1);">
-											<img class="nv_gallery_image" 
-												 src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'"
-												 alt="'.$dictionary[$current['lang']].'" title="'.$dictionary[$current['lang']].'" />
-									 </a>';
+								<img class="nv_gallery_image" 
+									 src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'"
+									 alt="'.$image_description.'" title="'.$image_title.'" />
+							 </a>';
 				}
 						
 				if(!$first) $jsout .= ','."\n";
 				
-				$jsout .= '{"caption": "'.$dictionary[$current['lang']].'", "url": "'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline"}';
+				$jsout .= '{"caption": "'.$image_title.'", "url": "'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline"}';
 				$preload[] = "'".NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline';
 				$first = false;
                 $items--;
@@ -176,7 +179,9 @@ function nvweb_gallery($vars=array())
 
             foreach($gallery as $image => $dictionary)
             {
-                $out[] = '<Image Source="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" Title="'.$dictionary[$current['lang']].'"></Image>';
+	            list($image_title, $image_description) = nvweb_gallery_image_caption($image, $gallery);
+
+                $out[] = '<Image Source="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" Title="'.$image_title.'"></Image>';
                 $items--;
                 if($items <= 0) break;
             }
@@ -202,7 +207,10 @@ function nvweb_gallery($vars=array())
 
             foreach($images as $img)
             {
-                $out[] = '<img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />';
+	            list($image_title, $image_description) = nvweb_gallery_image_caption($img, $gallery);
+
+                $out[] = '<img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].
+	                        $border.'" alt="'.$image_description.'" title="'.$image_title.'" />';
                 $items--;
                 if($items <= 0) break;
             }
@@ -228,9 +236,12 @@ function nvweb_gallery($vars=array())
 
             foreach($images as $img)
             {
+	            list($image_title, $image_description) = nvweb_gallery_image_caption($img, $gallery);
+
                 $out[] = '
                     <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline">
-                        <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" alt="" title="" />
+                        <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].
+	                        $border.'" alt="'.$image_description.'" title="'.$image_title.'" />
                     </a>';
                 $items--;
                 if($items <= 0) break;
@@ -256,7 +267,7 @@ function nvweb_gallery($vars=array())
 			$first = true;
 			
 			foreach($gallery as $image => $dictionary)
-			{			
+			{
 				if($vars['only_first']=='true')
 				{
 					$style = ' style="display: none;" ';
@@ -264,11 +275,13 @@ function nvweb_gallery($vars=array())
 						$style = ' style="display: block;" ';
 					$first = false;
 				}
+
+				list($image_title, $image_description) = nvweb_gallery_image_caption($img, $gallery);
 				
 				$out[] = '<div class="nv_gallery_item" '.$style.'>
 							<a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
 								<img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'"
-									 alt="'.$dictionary[$current['lang']].'" title="'.$dictionary[$current['lang']].'" />
+									 alt="'.$image_description.'" title="'.$image_title.'" />									 
 							</a>
 						</div>';
 
@@ -307,4 +320,30 @@ function nvweb_gallery_reorder($gallery=array(), $order='priority')
 
     return $gallery;
 }
+
+function nvweb_gallery_image_caption($image, $gallery)
+{
+	global $current;
+
+	$image_title = "";
+	$image_description = "";
+
+	if(is_array($gallery))
+	{
+		$image_title = $gallery[$image][$current['lang']];
+		$image_description = $gallery[$image][$current['lang']];
+	}
+
+	if(empty($image_title))
+	{
+		// retrieve title and description from file
+		$image_selected_obj = new file();
+		$image_selected_obj->load($image);
+		$image_description = $image_selected_obj->description[$current['lang']];
+		$image_title = $image_selected_obj->title[$current['lang']];
+	}
+
+	return array($image_title, $image_description);
+}
+
 ?>

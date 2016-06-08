@@ -1142,11 +1142,12 @@ function nvweb_template_tweaks($html)
 		{
 			if($name!='src')
                 $tag['new'] .= $name.'="'.$value.'" ';
-			
-			if($name=='width' && strpos($src, '?')!==false && strpos($value, "%")===false)
+
+			// width attribute, the image is retrieved from a dynamic source, the width is not expressed in percentage, the width is not already given in the url parameters
+			if($name=='width' && strpos($src, '?')!==false && strpos($value, "%")===false && strpos($src, "&width=")===false)
 				$src .= '&width='.$value;
 				
-			if($name=='height' && strpos($src, '?')!==false && strpos($value, "%")===false)
+			if($name=='height' && strpos($src, '?')!==false && strpos($value, "%")===false && strpos($src, "&height=")===false)
 				$src .= '&height='.$value;	
 		}
 		
