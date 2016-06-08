@@ -153,7 +153,7 @@ function about_layout()
 											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.6.1</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="https://github.com/jeresig/jquery.hotkeys" target="_blank">jQuery HotKeys v0.2 (jeresig fork)</a><br />' ));
+                                            '<a href="https://github.com/tzuryby/jquery.hotkeys" target="_blank">jQuery HotKeys v0.8+</a><br />' ));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="https://github.com/DrPheltRight/jquery-caret" target="_blank">jQuery Caret v20803a7a16 (Sep 23 2011)</a><br />' ));

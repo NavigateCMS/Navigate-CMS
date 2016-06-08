@@ -9,7 +9,6 @@ class extension
     public $definition;
 
     public $enabled;
-    //public $favorite;
     public $settings;
 
     public $dictionary;
@@ -31,7 +30,6 @@ class extension
         $this->title = $this->definition->title;
         $this->code = $code;
         $this->enabled = 1; // default
-        //$this->favorite = 0; // default
         $this->settings = array(); // default
 
         // now retrieve extension configuration for the active website
@@ -47,7 +45,6 @@ class extension
         {
             $this->id = $row->id;
             $this->enabled = $row->enabled;
-            //$this->favorite = $row->favorite;
             $this->settings = json_decode($row->settings, true);
         }
 	}
@@ -125,14 +122,13 @@ class extension
         if(empty($this->id))
         {
             $ok = $DB->execute('
-                INSERT INTO nv_extensions (id, website, extension, enabled, settings, favorite)
-                    VALUES(0, :website, :code, :enabled, :settings, :favorite )',
+                INSERT INTO nv_extensions (id, website, extension, enabled, settings)
+                    VALUES(0, :website, :code, :enabled, :settings)',
                 array(
                     ':website' => $this->website,
                     ':code' => $this->code,
                     ':enabled' => value_or_default($this->enabled, 0),
-                    ':settings' => $settings,
-                    ':favorite' => value_or_default($this->favorite, 0)
+                    ':settings' => $settings
                 )
             );
         }
@@ -140,12 +136,11 @@ class extension
         {
             $ok = $DB->execute('
                 UPDATE nv_extensions
-                   SET enabled = :enabled, settings = :settings, favorite = :favorite
+                   SET enabled = :enabled, settings = :settings
                  WHERE id = :id',
                 array(
                     ':enabled' => value_or_default($this->enabled, 0),
                     ':settings' => $settings,
-                    ':favorite' => $this->favorite,
                     ':id' => $this->id
                 )
             );
@@ -320,8 +315,7 @@ class extension
         foreach($rs as $row)
         {
             $properties[$row['extension']] = array(
-                'enabled' => intval($row['enabled'])/*,
-                'favorite' => intval($row['favorite'])*/
+                'enabled' => intval($row['enabled'])
             );
         }
 
@@ -370,7 +364,6 @@ class extension
                     $extensions[$t]['enabled'] = ($properties[$code]['enabled']===0)? '0' : '1';
                 else
                     $extensions[$t]['enabled'] = '1';
-                //$extensions[$t]['favorite'] = ($properties[$code]['favorite']===0)? '0' : '1';
             }
         }
 
