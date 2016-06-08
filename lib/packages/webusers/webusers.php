@@ -578,14 +578,9 @@ function webusers_form($item)
 		)
     ));
 
-	// TODO:
-	//      modificar blocked per access a la base de dades i al .class
-	//      afegir access_begin, access_end SQL i .class
-	//      canviar codi on s'utilitzava blocked
-	//      traspassar canvis a Pascual
-
 	if(empty($item->access_begin))
 		$item->access_begin = '';
+
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<img src="img/icons/silk/date_go.png" /> '.t(623, 'Begin').'</label>',
@@ -617,12 +612,15 @@ function webusers_form($item)
 		navigate_webusers_change_access();
 	');
 
-    $navibars->add_tab_content_row(array(
-        '<label>'.t(538, 'Private comment').'</label>',
-        $naviforms->textarea('webuser-private_comment', $item->private_comment)
-        )
-    );
-
+	// private_comment is deprecated in NV 2.0
+	if(!empty($item->private_comment))
+	{
+	    $navibars->add_tab_content_row(array(
+	        '<label>'.t(538, 'Private comment').'</label>',
+	        $naviforms->textarea('webuser-private_comment', $item->private_comment)
+	        )
+	    );
+	}
 
     $navibars->add_tab(t(506, "Groups"));
 
