@@ -10,6 +10,7 @@ class website
 	public $folder; // usually empty, used when the website is IN a folder, ex. http://www.naviwebs.com/demo/homepage
     public $redirect_to; // if the website is private or closed, redirect anonymous visitors to a real path
     public $wrong_path_action;
+	public $empty_path_action;
 	public $languages; // array('en' => array( 'language' => 'en', 'variant' => 'US', 'code' => 'en_US' => 'system_locale' => 'ENU_USA'), 'es_ES' => array(...), ...)
 	public $languages_published; // array ('en', 'es_ES')
 	public $date_format;
@@ -81,6 +82,7 @@ class website
 
 		$this->redirect_to		= $main->redirect_to;
         $this->wrong_path_action= $main->wrong_path_action;
+        $this->empty_path_action= $main->empty_path_action;
 
 		$this->languages		    = mb_unserialize($main->languages);
 		$this->languages_published  = array_filter(mb_unserialize($main->languages_published));
@@ -125,9 +127,8 @@ class website
 	
 	public function load_from_post()
 	{
-		global $DB;
         global $theme;
-					
+
 		$this->name				= $_REQUEST['title'];
 		
 		$this->protocol			= $_REQUEST['protocol'];
@@ -137,6 +138,7 @@ class website
 
         $this->redirect_to		= $_REQUEST['redirect_to'];
         $this->wrong_path_action= $_REQUEST['wrong_path_action'];
+        $this->empty_path_action= $_REQUEST['empty_path_action'];
 
         $this->date_format		= $_REQUEST['date_format'];
 		$this->tinymce_css		= $_REQUEST['tinymce_css'];
@@ -381,7 +383,8 @@ class website
 
 		$ok = $DB->execute('
 		    INSERT INTO nv_websites
-            (	id, name, protocol, subdomain, domain, folder, redirect_to, wrong_path_action,
+            (	id, name, protocol, subdomain, domain, folder, redirect_to, 
+            	wrong_path_action, empty_path_action,
                 languages, languages_published,
                 aliases, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
@@ -399,6 +402,7 @@ class website
               :folder,
               :redirect_to,
               :wrong_path_action,
+              :empty_path_action,
               :languages,
               :languages_published,
               :aliases,
@@ -434,7 +438,8 @@ class website
 				":domain" => value_or_default($this->domain, ""),
 				":folder" => value_or_default($this->folder, ""),
 				":redirect_to" => value_or_default($this->redirect_to, ""),
-				":wrong_path_action" => value_or_default($this->wrong_path_action, ''),
+				":wrong_path_action" => value_or_default($this->wrong_path_action, 'blank'),
+				":empty_path_action" => value_or_default($this->empty_path_action, 'homepage_redirect'),
 				":languages" => (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				":languages_published" => (is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
 				":aliases" => json_encode($this->aliases),
@@ -523,6 +528,7 @@ class website
                     folder	=   ?,
                     redirect_to = ?,
                     wrong_path_action = ?,
+                    empty_path_action = ?,
                     languages = ?,
                     languages_published = ?,
                     aliases = ?,
@@ -559,6 +565,7 @@ class website
                 value_or_default($this->folder, ""),
                 value_or_default($this->redirect_to, ""),
                 value_or_default($this->wrong_path_action, "blank"),
+                value_or_default($this->empty_path_action, "homepage_redirect"),
                 (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				(is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
                 json_encode($this->aliases),

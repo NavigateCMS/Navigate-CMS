@@ -3739,7 +3739,7 @@
 				<target>Datumsbereich</target>
 			</segment>
 		</unit>
-				<unit id="623">
+		<unit id="623">
 			<segment>
 				<source>Begin</source>
 				<target>Beginnen</target>
@@ -3749,6 +3749,36 @@
 			<segment>
 				<source>End</source>
 				<target>Ende</target>
+			</segment>
+		</unit>
+		<unit id="625">
+			<segment>
+				<source>Empty paths</source>
+				<target>Leere Pfade</target>
+			</segment>
+		</unit>
+		<unit id="626">
+			<segment>
+				<source>Display the home page, without changing the route</source>
+				<target>Zeigen Sie die Homepage, ohne die Route zu ändern</target>
+			</segment>
+		</unit>
+		<unit id="627">
+			<segment>
+				<source>Remove</source>
+				<target>Entfernen</target>
+			</segment>
+		</unit>
+		<unit id="628">
+			<segment>
+				<source>Move to the beginning</source>
+				<target>An den Anfang</target>
+			</segment>
+		</unit>
+		<unit id="629">
+			<segment>
+				<source>Move to the end</source>
+				<target>Zum Ende</target>
 			</segment>
 		</unit>
 	</file>

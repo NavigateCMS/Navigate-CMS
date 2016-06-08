@@ -3751,5 +3751,35 @@
 				<target>End</target>
 			</segment>
 		</unit>
+		<unit id="625">
+			<segment>
+				<source>Empty paths</source>
+				<target>Empty paths</target>
+			</segment>
+		</unit>
+		<unit id="626">
+			<segment>
+				<source>Display the home page, without changing the route</source>
+				<target>Display the home page, without changing the route</target>
+			</segment>
+		</unit>
+		<unit id="627">
+			<segment>
+				<source>Remove</source>
+				<target>Remove</target>
+			</segment>
+		</unit>
+		<unit id="628">
+			<segment>
+				<source>Move to the beginning</source>
+				<target>Move to the beginning</target>
+			</segment>
+		</unit>
+		<unit id="629">
+			<segment>
+				<source>Move to the end</source>
+				<target>Move to the end</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

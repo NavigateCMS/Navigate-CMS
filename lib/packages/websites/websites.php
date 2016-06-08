@@ -303,18 +303,13 @@ function run()
 					DELETE FROM nv_webdictionary_history WHERE website = '.$website_id.';
 				');
 
-				firephp_nv::log($ok);
-				firephp_nv::log($DB->get_last_error());
-				firephp_nv::log($DB->error());
-
 				echo ($ok? 'true' : $DB->error());
 			}
 			else
 			{
 				echo '';
 			}
-
-
+			
 			core_terminate();
 			break;
 
@@ -636,35 +631,54 @@ function websites_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-											$naviforms->textfield('title', $item->name) ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(67, 'Title').'</label>',
+			$naviforms->textfield('title', $item->name)
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(287, 'Protocol').'</label>',
-											$naviforms->selectfield('protocol',
-												array(
-														0 => 'http://',
-														1 => 'https://'
-													),
-												array(
-														0 => 'HTTP',
-														1 => 'HTTPS ['.t(288, 'Secured site (requires certificate)').']'
-													),
-												$item->protocol
-											)
-										)
-									);
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(287, 'Protocol').'</label>',
+			$naviforms->selectfield(
+				'protocol',
+				array(
+					0 => 'http://',
+					1 => 'https://'
+				),
+				array(
+					0 => 'HTTP',
+					1 => 'HTTPS ['.t(288, 'Secured site (requires certificate)').']'
+				),
+				$item->protocol
+			)
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(228, 'Subdomain').'</label>',
-											$naviforms->textfield('subdomain', $item->subdomain),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' www</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(228, 'Subdomain').'</label>',
+			$naviforms->textfield('subdomain', $item->subdomain),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' www</span>'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(229, 'Domain').'</label>',
-											$naviforms->textfield('domain', $item->domain),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' naviwebs.net</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(229, 'Domain').'</label>',
+			$naviforms->textfield('domain', $item->domain),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' naviwebs.net</span>'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(141, 'Folder').'</label>',
-											$naviforms->textfield('folder', $item->folder),
-											'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /new-website</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(141, 'Folder').'</label>',
+			$naviforms->textfield('folder', $item->folder),
+			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /new-website</span>'
+		)
+	);
 
 	$homepage_url = "";
 	if(!empty($item->homepage))
@@ -755,7 +769,11 @@ function websites_form($item)
 	{
 		$navibars->add_tab_content_row(array(
             '<label>'.t(368, 'Theme').'</label>',
-			'<strong><a href="?fid=8&act=themes"><img height="16" width="16" align="absmiddle" src="img/icons/silk/rainbow.png" /></a> '.$theme->title.'</strong>'
+			'<strong>
+				<a href="?fid=8&act=themes">
+					<img height="16" width="16" align="absmiddle" src="img/icons/silk/rainbow.png" />
+				</a> '.$theme->title.'
+			</strong>'
 		));
 	}
 
@@ -776,6 +794,32 @@ function websites_form($item)
                     3 => t(519, 'Send a 404 HTTP error header')
                 ),
                 $item->wrong_path_action,
+                '',
+                false
+            )
+        )
+    );
+
+	// when no path is given
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(625, 'Empty paths').'...</label>',
+            $naviforms->selectfield(
+                'empty_path_action',
+                array(
+                    0 => 'homepage_redirect',
+	                1 => 'homepage_noredirect',
+	                2 => 'blank',
+	                3 => 'theme_404',
+                    4 => 'http_404'
+                ),
+                array(
+	                0 => t(517, 'Redirect to home page'),
+	                1 => t(626, 'Display the home page, without changing the route'),
+	                2 => t(516, 'Show a blank page'),
+                    3 => t(518, 'Use the custom 404 template of a theme (if exists)'),
+	                4 => t(519, 'Send a 404 HTTP error header')
+                ),
+                $item->empty_path_action,
                 '',
                 false
             )

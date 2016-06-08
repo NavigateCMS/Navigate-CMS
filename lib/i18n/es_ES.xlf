@@ -3751,5 +3751,35 @@
 				<target>Fin</target>
 			</segment>
 		</unit>
+		<unit id="625">
+			<segment>
+				<source>Empty paths</source>
+				<target>Las rutas vacías</target>
+			</segment>
+		</unit>
+		<unit id="626">
+			<segment>
+				<source>Display the home page, without changing the route</source>
+				<target>Muestran la página inicial, sin cambiar la ruta</target>
+			</segment>
+		</unit>
+		<unit id="627">
+			<segment>
+				<source>Remove</source>
+				<target>Quitar</target>
+			</segment>
+		</unit>
+		<unit id="628">
+			<segment>
+				<source>Move to the beginning</source>
+				<target>Mover al principio</target>
+			</segment>
+		</unit>
+		<unit id="629">
+			<segment>
+				<source>Move to the end</source>
+				<target>Mover al final</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>
