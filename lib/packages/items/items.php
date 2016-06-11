@@ -1638,7 +1638,8 @@ function items_form($item)
                 );
 			}
 
-			$layout->add_script('               
+			$layout->add_script('
+			                
                 $("#tags-'.$lang.'").tagit({
                     removeConfirmation: true,
                     allowSpaces: true,
@@ -1676,6 +1677,26 @@ function items_form($item)
                             .trigger("change");
                     }
                 });
+                
+                $("#tags-'.$lang.'").next().sortable({
+                    items: ">li:not(.tagit-new)",
+                    update: function(ui, event)
+                    {
+                        var tags = [];
+                        
+                        $("#tags-'.$lang.'").next().find("span.tagit-label").each(function()
+                        {
+                            if($(this).text() != "")
+                                tags.push($(this).text());
+                        });
+                        if(tags.length > 0) tags = tags.join(",");
+                        else                tags = "";
+                                                    
+                        $("#tags-'.$lang.'").val(tags);
+                        $("#tags-'.$lang.'").trigger("change");                                                
+                    }
+                });
+                
 			');
 
 			// script#4

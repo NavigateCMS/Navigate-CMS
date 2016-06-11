@@ -2240,6 +2240,11 @@ ul.tagit li.tagit-choice-editable
     padding: 0.4em 18px 0.4em 0.5em;
 }
 
+ul.ui-sortable li.tagit-choice
+{
+	cursor: move;
+}
+
 
 
 .video-js-box
@@ -2591,6 +2596,7 @@ div.jGrowl div.jGrowl-closer:hover
     font-weight: normal;
     border-radius: 4px;
 }
+
 
 
 .qtip

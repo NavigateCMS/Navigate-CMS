@@ -106,7 +106,7 @@ function run()
                                 $categories = $permissions_values[$permissions_definitions[$i]['name']];
                                 if(!is_array($categories))
                                     $categories = array();
-                                $categories = array_filter($permissions_values[$permissions_definitions[$i]['name']]);
+                                $categories = array_filter($categories);
                                 $control = '<button data-permission-name="'.$permissions_definitions[$i]['name'].'" data-action="structure" data-value="'.json_encode($categories).'" title="'.count($categories).'"><i class="fa fa-sitemap fa-fw"></i> '.t(611, "Choose").'</button>';
                                 break;
 
