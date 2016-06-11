@@ -615,6 +615,7 @@ function nvweb_object_enabled($object)
 	return $enabled;
 }
 
+// type: theme, item, structure, (product)
 function nvweb_source_url($type, $id, $lang='')
 {
 	global $DB;
@@ -687,6 +688,12 @@ function nvweb_source_url($type, $id, $lang='')
 		   AND website = '.$website->id
 	);
 
+	if(empty($url))
+	{
+		if($type=='item')
+			$url = '/node/' . $id;
+	}
+	
     $url = nvweb_prepare_link($url);
 
 	return $url;										   

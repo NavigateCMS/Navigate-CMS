@@ -1166,6 +1166,48 @@ function nvweb_template_tweaks($html)
 	return $html;
 }
 
+/*
+	convert nv:// paths to real links
+	right now there are two possibilities, where id is a numeric value
+	nv://element/id (or elements, or item)
+	nv://structure/id   (or category)
+*/
+function nvweb_template_convert_nv_paths($html)
+{
+	preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9])+/", $html, $matches);
+
+	if(!empty($matches) && !empty($matches[0]))
+	{
+		$matches = $matches[0];
+		foreach($matches as $match)
+		{
+			$parts = explode('/', $match);
+			$url = "";
+			switch($parts[2])
+			{
+				case 'element':
+				case 'item':
+				case 'elements':
+					$url = nvweb_source_url("item", $parts[3]);
+					break;
+				
+				case 'structure':
+				case 'category':
+					$url = nvweb_source_url("structure", $parts[3]);
+					break;
+				
+				default:
+					// ignore this url
+			}
+
+			if(!empty($url))
+				$html = str_replace($match, $url, $html);
+		}
+	}
+
+	return $html;
+}
+
 function nvweb_template_oembed_parse($html)
 {
     $reg_exUrl = '/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)?/i';

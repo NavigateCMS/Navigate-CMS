@@ -223,8 +223,11 @@ try
 
 	$html = nvweb_template_tweaks($html);
 	$html = nvweb_template_restore_special($html);
-    $events->trigger('theme', 'after_parse', array('html' => &$html));
+
+	$events->trigger('theme', 'after_parse', array('html' => &$html));
     $html = nvweb_plugins_event('after_parse', $html);
+
+	$html = nvweb_template_convert_nv_paths($html);
 
 	$_SESSION['nvweb.'.$website->id] = $session;
 	session_write_close();
