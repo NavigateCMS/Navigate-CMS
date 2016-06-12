@@ -27,7 +27,9 @@ class theme
 	public $dictionaries;
 	
 	public function load($name)
-	{	
+	{
+		global $website;
+
 		$json = @file_get_contents(NAVIGATE_PATH.'/themes/'.$name.'/'.$name.'.theme');
 		
 		if(empty($json))
@@ -57,7 +59,7 @@ class theme
 		$this->templates = (array)$theme->templates;
         $this->content_samples = (array)$theme->content_samples;
 
-        $this->content_samples_parse();
+		$this->content_samples_parse();
 
 		// in 2.0 templates->section "code" was replaced by "id"
 		// added some code to keep compatibility with existing themes
@@ -298,9 +300,14 @@ class theme
     }
 
     // add special samples if the theme is using foundation, bootstrap...
-    public function content_samples_parse()
+    public function content_samples_parse($ws=null)
     {
         global $website;
+
+	    if(empty($ws) && !empty($website))
+		    $ws = $website;
+	    else
+		    $ws = new website();
 
         $content_samples = array();
 
@@ -326,8 +333,8 @@ class theme
                     case 'foundation_grid':
                     case 'bootstrap_grid':
                     case 'grid':
+						$stylesheets = explode(",", $ws->content_stylesheets());
                         $html_pre = '<html><head>';
-                        $stylesheets = explode(",", $website->content_stylesheets());
                         foreach($stylesheets as $ss)
                             $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
                         $html_pre.= '</head><body><div id="navigate-theme-content-sample" style=" width: 99%; ">';
@@ -372,7 +379,6 @@ class theme
     {
         global $website;
         global $DB;
-	    global $user;
 	    global $events;
 
         if(is_null($ws))
@@ -860,20 +866,26 @@ class theme
         if(file_exists($ptf.'/settings.var_export'))
             eval('$settings_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/settings.var_export')).';');
         else
-            $settings_or = unserialize(file_get_contents($ptf.'/settings.serialized'));
+        {
+	        // get first structure ID
+	        $structure_id = array_keys($structure);
+	        $structure_id = $structure_id[0];
+	        $settings_or = array('homepage' => $structure_id);
+        }
+
 
 	    if(is_numeric($settings_or['homepage']))
 	    {
 		    // homepage as a category ID
-		    $website->homepage = $structure[$settings_or['homepage']]->id;
+		    $ws->homepage = $structure[$settings_or['homepage']]->id;
 	    }
 	    else
 	    {
 		    // homepage as a path
-		    $website->homepage = $settings_or['homepage'];
+		    $ws->homepage = $settings_or['homepage'];
 	    }
 
-	    $website->save();
+	    $ws->save();
 
         core_remove_folder($ptf);
     }

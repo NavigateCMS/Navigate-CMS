@@ -1534,8 +1534,8 @@ function process()
 						$zip->extractTo(NAVIGATE_PATH.'/themes/theme_kit');
 						$zip->close();
 						$theme = new theme();
-						$theme->load('theme_kit');
-						$theme->import_sample($website, $user);
+						$theme->load('theme_kit', $website);
+						$theme->import_sample($website);
 					}
 
 	                echo json_encode(array('ok' => $lang['done']));
