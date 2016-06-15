@@ -3781,5 +3781,23 @@
 				<target>Mover al final</target>
 			</segment>
 		</unit>
+        <unit id="630">
+            <segment>
+                <source>Element</source>
+                <target>Elemento</target>
+            </segment>
+        </unit>
+        <unit id="631">
+            <segment>
+                <source>Dynamic URL</source>
+                <target>Ruta dinámica</target>
+            </segment>
+        </unit>
+        <unit id="632">
+            <segment>
+                <source>Replace text</source>
+                <target>Reemplazar el texto</target>
+            </segment>
+        </unit>
 	</file>
 </xliff>

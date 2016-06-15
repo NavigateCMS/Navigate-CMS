@@ -916,6 +916,7 @@ function navigate_property_layout_field($property, $object="")
             ');
             break;
 
+		case 'element':
         case 'item':
             $property_item_title = '';
 			$property_item_id = '';

@@ -639,6 +639,8 @@ class naviforms
             });
         ');
 
+        $layout->navigate_editorfield_link_dialog();
+
 		return $out;
 	}
 	

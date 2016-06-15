@@ -644,7 +644,27 @@ function run()
                 'array');
 
             $rows = $DB->result();
-            $total = $DB->foundRows();
+			$total = $DB->foundRows();
+
+			if($_REQUEST['association']=='free')
+			{
+				for($i = 0; $i < count($rows); $i++)
+				{
+					$rows[$i]['path'] = $DB->query_single(
+						'path',
+						'nv_paths',
+						'	website = '.protect($website->id).' AND 
+							type="item" AND 
+							object_id="'.$rows[$i]['id'].'" AND 
+							lang="'.$website->languages_list[0].'"
+						'
+					);
+
+					if(empty($rows[$i]['path']))
+						$rows[$i]['path'] = '/node/'.$rows[$i]['id'];
+				}
+			}
+
             echo json_encode(array('items' => $rows, 'totalCount' => $total));
             core_terminate();
             break;

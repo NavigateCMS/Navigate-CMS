@@ -1098,6 +1098,38 @@ ul.tinymce_nv_link_ajax_selector
     border: 1px solid #dddddd;
 }
 
+.mce-container .fa,
+.mce-container *.fa,
+.mce-widget .fa,
+.mce-widget *.fa,
+.mce-reset .fa
+{
+	font-family: FontAwesome;
+	font-size: 16px;
+	line-height: 1em;
+	font-weight: normal;
+}
+
+.mce-container .tinymce-dialog-button
+{
+	background: rgb(252,252,252);
+	background: -moz-linear-gradient(top, rgba(252,252,252,1) 0%, rgb(222, 222, 222) 100%);
+	background: -webkit-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(222,222,222,1) 100%);
+	background: linear-gradient(to bottom, rgba(252,252,252,1) 0%,rgba(222,222,222,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#DEDEDE',GradientType=0 );
+	border: solid 1px #ccc;
+	/*border-radius: 3px;*/
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+	padding: 3px 3px 4px;
+}
+
+.mce-container .tinymce-dialog-button:hover
+{
+	background: rgb(252,252,252);
+}
+
 
 
 /* CHECKBOX STYLING */

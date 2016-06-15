@@ -8,11 +8,14 @@ class layout
 	public $styles_unmerged;
 	public $js_code;
 	public $buffer;
+
+	public $parts_added;
 	
 	public function __construct($layout)	
 	{
 		$this->type = $layout;
 		$this->before_includes = array();
+		$this->parts_added = array();
 	}
 	
 	public function doctype()
@@ -886,6 +889,10 @@ class layout
 		global $events;
 		global $user;
 
+		if(in_array('media_browser', $this->parts_added))
+			return;
+		array_push($this->parts_added, 'media_browser');
+
         $naviforms = new naviforms();
 		
 		$DB->query('
@@ -1263,8 +1270,188 @@ class layout
 			}
         ');
 	}
+
+	public function navigate_editorfield_link_dialog()
+	{
+		global $website;
+
+		if(in_array('link_dialog', $this->parts_added))
+			return;
+		array_push($this->parts_added, 'link_dialog');
+
+		$naviforms = new naviforms();
+
+		$html = array();
+		$html[] = '<div class="navigate-form-row">';
+		$html[] = '<label>'.t(191, 'Source').'</label>';
+		$html[] = $naviforms->buttonset(
+					'nv_link_dialog_source',
+					array(
+						'structure'	  => t(16, 'Structure'),
+						'element'	  => t(180, 'Item')
+					),
+					'structure',
+					'nv_link_dialog_source_change()'
+				);
+		$html[] = '</div>';
+
+		$hierarchy = structure::hierarchy(0);
+		$categories_list = structure::hierarchyList($hierarchy);
+
+
+		$html[] = '<div class="navigate-form-row hidden">';
+		$html[] = '<label>'.t(78, 'Category').'</label>';
+		$html[] = '<div class="category_tree" id="nv_link_dialog_category">
+						<img src="img/icons/silk/world.png" align="absmiddle" /> '.
+						$website->name.$categories_list.'
+					</div>';
+		$html[] = '</div>';
+
+		$html[] = '<div class="navigate-form-row hidden">';
+		$html[] = '<label>'.t(630, 'Element').'</label>';
+		$html[] = $naviforms->selectfield("nv_link_dialog_element", null, null, null, null, false, null, null, false);
+		$html[] = '</div>';
+
+		$html[] = '<div class="navigate-form-row hidden">';
+		$html[] = '<label>'.t(75, 'Path').'</label>';
+		$html[] = '<div id="nv_link_dialog_real_path">'.$website->absolute_path(true).'<span>?</span></div>';
+		$html[] = '</div>';
+
+		$html[] = '<div class="navigate-form-row hidden">';
+		$html[] = '<label>'.t(631, "Dynamic URL").'</label>';
+		$html[] = '<div id="nv_link_dialog_dynamic_path"><strong>?</strong></div>';
+		$html[] = '</div>';
+
+		$html[] = '<div class="navigate-form-row hidden">';
+		$html[] = '<label>'.t(632, 'Replace text').'</label>';
+		$html[] = $naviforms->checkbox("nv_link_dialog_replace_text", true);
+		$html[] = '<input type="hidden" id="nv_link_dialog_title" value="" />';
+		$html[] = '</div>';
+		
+
+		$this->add_content('
+			<div id="nv_link_dialog" title="'.t(631, "Dynamic URL").'" class="hidden">
+				'.implode("\n", $html).'
+			</div>
+		');
+
+		$this->add_script('		
+			function nv_link_dialog_source_change()
+			{
+				setTimeout(function()
+				{			
+					var source = $(\'#nv_link_dialog_source_structure:checked,#nv_link_dialog_source_element:checked\').val();
+													
+					$("#nv_link_dialog_real_path").parent().addClass("hidden");
+					$("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+					$("#nv_link_dialog_replace_text").parent().addClass("hidden");
+					
+					$("#nv_link_dialog_element").parent().addClass("hidden");
+					$("#nv_link_dialog_category").parent().addClass("hidden");
+					
+					if(source == "element")
+					{
+						$("#nv_link_dialog_element").parent().removeClass("hidden");
+					}
+					else if(source == "structure")
+					{
+						$("#nv_link_dialog_category").parent().removeClass("hidden");
+					}
+				}, 100);
+			}
+		
+			$("#nv_link_dialog_category ul:first").kvaTree(
+			{
+				imgFolder: "js/kvatree/img/",
+				dragdrop: false,
+				background: "#f2f5f7",
+				overrideEvents: true,
+				onClick: function(event, node)
+				{
+					$("#nv_link_dialog_category span").removeClass("active");				
+					$(node).find("span:first").addClass("active");
+					
+					if($("#nv_link_dialog_category span.active").length > 0)
+					{				
+						var id = $("#nv_link_dialog_category span.active").parent().attr("value");
+						var text = $("#nv_link_dialog_category span.active").text();
+											
+						$("#nv_link_dialog_dynamic_path strong").html("nv://structure/" + id);
+								
+						$("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
+						$("#nv_link_dialog_replace_text").parent().removeClass("hidden");
+						$("#nv_link_dialog_title").val(text);
+					}
+					else
+					{
+						$("#nv_link_dialog_real_path").parent().addClass("hidden");
+						$("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+						$("#nv_link_dialog_replace_text").parent().addClass("hidden");
+						$("#nv_link_dialog_title").val("");
+					}						
+				}
+			});
+
+			$("#nv_link_dialog_element").select2(
+                {
+                    placeholder: "'.t(533, "Find element by title").'",
+                    minimumInputLength: 1,
+                    ajax: {
+                        url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item",
+                        dataType: "json",
+                        delay: 100,
+                        data: function(params)
+                        {
+	                        return {
+				                title: params.term,
+				                association: "free",
+				                nd: new Date().getTime(),
+				                page_limit: 30, // page size
+				                page: params.page // page number
+				            };
+                        },
+                        processResults: function (data, params)
+				        {
+				            params.page = params.page || 1;
+				            return {
+								results: data.items,
+								pagination: { more: (params.page * 30) < data.total_count }
+							};
+				        }
+                    },
+                    templateSelection: function(row)
+					{
+						if(row.id)
+						{
+							$("#nv_link_dialog_real_path span").html(row.path);
+							$("#nv_link_dialog_dynamic_path strong").html("nv://element/" + row.id);
+							
+							$("#nv_link_dialog_real_path").parent().removeClass("hidden");
+							$("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
+							$("#nv_link_dialog_replace_text").parent().removeClass("hidden");
+							$("#nv_link_dialog_title").val(row.text);
+							
+							return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+						}
+						else
+						{
+							$("#nv_link_dialog_real_path").parent().addClass("hidden");
+							$("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+							$("#nv_link_dialog_replace_text").parent().addClass("hidden");
+							$("#nv_link_dialog_title").val("");
+							return row.text;
+						}
+					},
+					escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                    triggerChange: true,
+                    allowClear: true
+                });
+                
+			nv_link_dialog_source_change(); // auto-select structure on load			
+		');
+	}
 	
-	function silk_sprite($html)
+	public function silk_sprite($html)
 	{
 		// parse generated html and subsitute all static silk icons for a sprite
 		$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');

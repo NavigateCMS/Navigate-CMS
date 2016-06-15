@@ -3781,5 +3781,23 @@
 				<target>Moure al final</target>
 			</segment>
 		</unit>
+        <unit id="630">
+            <segment>
+                <source>Element</source>
+                <target>Element</target>
+            </segment>
+        </unit>
+        <unit id="631">
+            <segment>
+                <source>Dynamic URL</source>
+                <target>Ruta dinàmica</target>
+            </segment>
+        </unit>
+        <unit id="632">
+            <segment>
+                <source>Replace text</source>
+                <target>Reemplaçar el text</target>
+            </segment>
+        </unit>
 	</file>
 </xliff>
