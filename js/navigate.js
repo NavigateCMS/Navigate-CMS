@@ -26,6 +26,17 @@ $(window).on('load', function()
     });
     jQuery.longclick.duration = 1000; // default longlick duration
 
+
+    /* hack to make select2 work in jQuery UI dialogs; thanks to @UltCombo */
+    if($.ui && $.ui.dialog && $.ui.dialog.prototype._allowInteraction)
+    {
+        var ui_dialog_interaction = $.ui.dialog.prototype._allowInteraction;
+        $.ui.dialog.prototype._allowInteraction = function(e) {
+            if ($(e.target).closest('.select2-dropdown').length) return true;
+            return ui_dialog_interaction.apply(this, arguments);
+        };
+    }
+
     $(".select2").not(".select2-container").each(function(i, el)
     {
         navigate_selector_upgrade(el);
