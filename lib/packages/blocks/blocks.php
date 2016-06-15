@@ -1376,8 +1376,8 @@ function blocks_form($item)
 							break;
 
 						case "content":
-							tinyMCE.getInstanceById("trigger-content-" + to).setContent(
-								tinyMCE.getInstanceById("trigger-content-" + from).getContent()
+							tinyMCE.get("trigger-content-" + to).setContent(
+								tinyMCE.get("trigger-content-" + from).getContent()
 							);
 							break;
 
@@ -1729,6 +1729,9 @@ function blocks_form($item)
 			escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
 	        triggerChange: true
 		});
+		
+		$("#elements_selection_wrapper").find(".select2-search__field").css("width", "408px");		
+		$("#elements_selection_wrapper").find("li.select2-search").css("width", "auto");
 	');
 
 							
