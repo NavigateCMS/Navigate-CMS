@@ -339,8 +339,10 @@ function nvweb_gallery_image_caption($image, $gallery)
 		// retrieve title and description from file
 		$image_selected_obj = new file();
 		$image_selected_obj->load($image);
-		$image_description = $image_selected_obj->description[$current['lang']];
-		$image_title = $image_selected_obj->title[$current['lang']];
+        if(isset($image_selected_obj->description[$current['lang']]))
+		    $image_description = $image_selected_obj->description[$current['lang']];
+        if(isset($image_selected_obj->title[$current['lang']]))
+		    $image_title = $image_selected_obj->title[$current['lang']];
 	}
 
 	return array($image_title, $image_description);

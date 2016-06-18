@@ -1488,6 +1488,13 @@ function items_form($item)
 			if(!is_array($template->sections))
 				$template->sections = array();
 
+			// compatibility fix: auto-correct template sections with missing ID (only "code" provided)
+			for($s=0; $s < count($template->sections); $s++)
+			{
+				if(!isset($template->sections[$s]['id']))
+					$template->sections[$s]['id'] = $template->sections[$s]['code'];
+			}
+
 			foreach($template->sections as $section)
 			{								
 				if(is_object($section))

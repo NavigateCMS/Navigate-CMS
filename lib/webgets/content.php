@@ -219,6 +219,7 @@ function nvweb_content($vars=array())
                                 case 'raw':
                                     $out = nl2br($texts[$current['lang']][$section]);
                                     break;
+
                                 case 'html':
                                 case 'tinymce':
                                 default:
@@ -228,7 +229,6 @@ function nvweb_content($vars=array())
                             break;
                         }
                     }
-
                 }
 			}
 			else if($current['type']=='structure')
@@ -269,6 +269,7 @@ function nvweb_content($vars=array())
 					}
 				}
 			}
+
 			break;
 	}
 

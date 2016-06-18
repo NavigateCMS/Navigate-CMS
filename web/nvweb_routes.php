@@ -73,7 +73,7 @@ function nvweb_load_website_by_url($url, $exit=true)
         if( $alias_parsed['host'] == $host )
         {
 	        // check the path section
-            if(strpos($path, rawurldecode($alias_parsed['path']), 0) === false)
+            if(empty($path) || strpos($path, rawurldecode($alias_parsed['path']), 0) === false)
                 continue;
 
             // alias path is included in the requested path

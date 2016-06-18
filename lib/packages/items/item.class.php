@@ -149,6 +149,10 @@ class item
 			if(is_object($section)) 
 				$section = (array) $section;
 
+			// compatibility fix: auto-correct template sections with missing ID (only "code" provided)
+			if(!isset($section['id']))
+				$section['id'] = $section['code'];
+
 			if(is_array($section))
 				$section = $section['id'];
 			
