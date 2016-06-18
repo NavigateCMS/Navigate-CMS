@@ -467,12 +467,19 @@ function nvweb_list($vars=array())
 	            $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
         }
 
+        $columns_extra = '';
+        if($vars['order'] == 'comments')
+        {
+            // we need to retrieve the number of comments to apply the order by clause
+            $columns_extra = ', (SELECT COUNT(c.id) FROM nv_comments c WHERE i.id = c.item AND c.website = i.website AND c.status = 0) AS comments_published';
+        }
+
 		// default source for retrieving items
-		$DB->query('
+        $query = '
 			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
                     i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-                    d.text as title, i.position as position, s.position
-			  FROM nv_items i, nv_structure s, nv_webdictionary d
+                    d.text as title, i.position as position, s.position '.$columns_extra.'
+			  FROM nv_items i, nv_structure s, nv_webdictionary d			          
 			 WHERE i.category IN('.implode(",", $categories).')
 			   AND i.website = '.$website->id.'
 			   AND i.permission <= '.$permission.'
@@ -494,8 +501,9 @@ function nvweb_list($vars=array())
 			 '.$exclude.'
 			 '.$orderby.'
 			 LIMIT '.$vars['items'].'
-			OFFSET '.$offset
-		);
+			OFFSET '.$offset;
+
+		$DB->query($query);
 
 		$rs = $DB->result();
 		$total = $DB->foundRows();
@@ -1190,6 +1198,10 @@ function nvweb_list_get_orderby($order)
 
         case 'votes':
             $orderby = ' ORDER BY i.votes DESC ';
+            break;
+
+        case 'comments':
+            $orderby = ' ORDER BY comments_published DESC ';
             break;
 
         case 'views':
