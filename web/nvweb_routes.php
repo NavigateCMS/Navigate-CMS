@@ -72,51 +72,56 @@ function nvweb_load_website_by_url($url, $exit=true)
 
         if( $alias_parsed['host'] == $host )
         {
+			if(!isset($alias_parsed['path']))
+				$alias_parsed['path'] = "";
+
 	        // check the path section
-            if(empty($path) || strpos($path, rawurldecode($alias_parsed['path']), 0) === false)
-                continue;
+			if(	($path == $alias_parsed['path']) ||
+				($path == '/nvweb.home' && empty($alias_parsed['path'])) ||
+				(!empty($path) && strpos($path, rawurldecode($alias_parsed['path']), 0) !== false)
+			)
+			{
+				// alias path is included in the requested path
+				// identify the extra part
+				// EXAMPLE
+				//
+				//    ALIAS           http://themes.navigatecms.com
+				//    REQUEST         http://themes.navigatecms.com/en/introduction
+				//        EXTRA           /en/introduction
+				//
+				//    REAL PATH       http://www.navigatecms.com/en/documentation/themes
+				//    REAL + EXTRA    http://www.navigatecms.com/en/documentation/themes/introduction
+				//
+				// note that the language part "en" is placed in different order
+				// so our approach is to IGNORE the path sections already existing in the real path
 
-            // alias path is included in the requested path
-            // identify the extra part
-            // EXAMPLE
-            //
-            //    ALIAS           http://themes.navigatecms.com
-            //    REQUEST         http://themes.navigatecms.com/en/introduction
-            //        EXTRA           /en/introduction
-            //
-            //    REAL PATH       http://www.navigatecms.com/en/documentation/themes
-            //    REAL + EXTRA    http://www.navigatecms.com/en/documentation/themes/introduction
-            //
-            // note that the language part "en" is placed in different order
-            // so our approach is to IGNORE the path sections already existing in the real path
+				$extra = substr($path, strlen($alias_parsed['path']));
 
-            $extra = substr($path, strlen($alias_parsed['path']));
+				$real_parsed = parse_url($real);
+				$real_path = explode('/', $real_parsed['path']);
+				$extra_path = explode('/', $extra);
 
-            $real_parsed = parse_url($real);
-            $real_path = explode('/', $real_parsed['path']);
-            $extra_path = explode('/', $extra);
+				if (!is_array($extra_path))
+					$extra_path = array();
 
-            if(!is_array($extra_path))
-                $extra_path = array();
+				$add_to_real = '';
+				foreach ($extra_path as $part) {
+					if ($part == 'nvweb.home')
+						continue;
 
-            $add_to_real = '';
-            foreach($extra_path as $part)
-            {
-                if($part=='nvweb.home')
-                    continue;
+					if (in_array($part, $real_path))
+						continue;
 
-                if(in_array($part, $real_path))
-                    continue;
+					$add_to_real .= '/' . $part;
+				}
 
-                $add_to_real .= '/' . $part;
-            }
+				// TO DO: maybe in a later version full ALIAS support could be implemented
+				//        right now we only redirect to the real path
+				$url = $real . $add_to_real;
 
-            // TO DO: maybe in a later version full ALIAS support could be implemented
-            //        right now we only redirect to the real path
-            $url = $real . $add_to_real;
-
-            header('location: '.$idn->encode($url));
-            nvweb_clean_exit();
+				header('location: ' . $idn->encode($url));
+				nvweb_clean_exit();
+			}
         }
     }
 
