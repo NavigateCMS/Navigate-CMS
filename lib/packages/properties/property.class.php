@@ -733,7 +733,7 @@ class property
                     ':type' => $item_type,
                     ':item_id' => value_or_default($item_id, 0),
                     ':name' => $property->name,
-                    ':value' => $_REQUEST['property-'.$property->id]
+                    ':value' => value_or_default($_REQUEST['property-'.$property->id], "")
                 )
             );
 
@@ -878,7 +878,7 @@ class property
                     ':type' => $item_type,
                     ':item_id' => value_or_default($item_id, 0),
                     ':name' => $property->name,
-                    ':value' => $value
+                    ':value' => value_or_default($value, "")
                 )
             );
 
@@ -987,7 +987,7 @@ class property
                     ':type' => $item_type,
                     ':item_id' => value_or_default($item_id, 0),
                     ':name' => $property->name,
-                    ':value' => $value
+                    ':value' => value_or_default($value, "")
                 )
             );
 
