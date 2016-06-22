@@ -1133,7 +1133,6 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	                    $item = $items[0];
 	                    $source = "item";
                     }
-
 					// pass all nvlist tag parameters to properties nvweb, but some attribute/values take preference
 					$nvweb_properties_parameters = array_replace(
 						$tag['attributes'],
