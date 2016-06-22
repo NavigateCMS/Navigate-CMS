@@ -44,8 +44,22 @@ function nvweb_properties($vars=array())
 			}
             else if(empty($vars['id']))
             {
-                $vars['id'] = $current['object']->id;
                 $vars['type'] = $current['object']->template;
+
+                if($current['type'] == "item")
+                {
+                    $vars['id'] = $current['object']->id;
+                }
+                else if($current['type'] == "structure")
+                {
+                    // find the first embedded content associated with this structure entry
+                    $itm = nvweb_content_items($current['object']->id, true, 1, true, 'priority');
+                    if(!empty($itm))
+                        $vars['id'] = $itm->id;
+                    else
+                        $vars['id'] = 0;
+                }
+
                 if(!isset($properties['item-'.$vars['id']]))
                     $properties['item-'.$current['object']->id] = property::load_properties("item", $vars['type'], 'item', $vars['id']);
             }
