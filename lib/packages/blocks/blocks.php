@@ -1182,15 +1182,23 @@ function blocks_form($item)
                     )
                 );
 
+				$editor_width = "";
                 if(!empty($block_type_width))
-                    $block_type_width .= 'px';
+				{
+					if($block_type_width > 500)
+                    	$editor_width = $block_type_width.'px';
+					else
+						$editor_width = '500px';
+				}
 
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(9, "Content").'</label>',
-                        $naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $block_type_width, $lang),
+                        $naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $editor_width, $lang),
                         ''
-                    )
+                    ),
+					'',
+					'lang="'.$lang.'"'
                 );
 
 
