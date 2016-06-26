@@ -561,10 +561,11 @@ class property
 
         if($item_type == 'block_group_block')
         {
-            $block = block::block_group_block($template, $element);
+            $block = block::block_group_block($template, $item_id);
             $e_properties = $block->properties;
 
             // we must find the block group ID to search the assigned property values
+            // $item_id MUST BE the numeric ID of the block group
             if(!empty($template))
             {
                 $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$website->id);
@@ -592,7 +593,7 @@ class property
         );
 			
 		$values = $DB->result();
-
+        
 		if(!is_array($values))
             $values = array();
 

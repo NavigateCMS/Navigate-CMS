@@ -105,8 +105,18 @@ class block
             if($bc['code']==$this->type)
                 $this->class = $bc['type'];
         }
-
 	}
+
+    public function load_from_block_group($block_group_id, $block_type)
+    {
+        $this->id = $block_type;
+        $this->type = $block_type;
+        $this->class = 'block_group_block';
+        $this->_block_group_id = $block_group_id;
+        $this->date_modified = time();
+        $this->access = 0;
+        $this->enabled = 1;
+    }
 	
 	public function load_from_post()
 	{
@@ -621,7 +631,16 @@ class block
     {
         // load properties if not already done
         if(empty($this->properties))
-            $this->properties = property::load_properties('block', $this->type, 'block', $this->id);
+        {
+            if($this->class == 'block_group_block')
+            {
+                $this->properties = property::load_properties('block_group_block', $this->_block_group_id, 'block_group_block', $this->id);
+            }
+            else
+            {
+                $this->properties = property::load_properties('block', $this->type, 'block', $this->id);
+            }
+        }
 
         for($p=0; $p < count($this->properties); $p++)
         {
@@ -643,7 +662,16 @@ class block
     {
         // load properties if not already done
         if(empty($this->properties))
-            $this->properties = property::load_properties('block', $this->type, 'block', $this->id);
+        {
+            if($this->class == 'block_group_block')
+            {
+                $this->properties = property::load_properties('block_group_block', $this->_block_group_id, 'block_group_block', $this->id);
+            }
+            else
+            {
+                $this->properties = property::load_properties('block', $this->type, 'block', $this->id);
+            }
+        }
 
         for($p=0; $p < count($this->properties); $p++)
         {

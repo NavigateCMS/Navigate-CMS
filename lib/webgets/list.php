@@ -538,7 +538,18 @@ function nvweb_list($vars=array())
         }
         else if($vars['source']=='block' || $vars['source']=='block_group')
         {
-            $item = $rs[$i];
+            if(get_class($rs[$i])=='block')
+            {
+                // standard block
+                $item = $rs[$i];
+            }
+            else
+            {
+                // block from block group
+                // limitation: there can only exist one block group block of the same kind in a block group
+                $item = new block();
+                $item->load_from_block_group($vars['type'], $rs[$i]->id);
+            }
         }
         else if($vars['source']=='gallery')
         {
@@ -1341,8 +1352,12 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         if(empty($property_name))
             $property_name = $tag['attributes']['property_name'];
 
+        if(!method_exists($item, 'property'))
+            return "";
+
         $property_value = $item->property($property_name);
         $property_definition = $item->property_definition($property_name);
+
         $condition_value = $tag['attributes']['property_value'];
 
         if(in_array($property_definition->type, array('image', "file")))
