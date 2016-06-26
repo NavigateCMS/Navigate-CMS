@@ -1539,14 +1539,41 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     else if($tag['attributes']['by']=='block')
     {
         // $item may be a block object or a block group block type
-        if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+
+        if(isset($tag['attributes']['type']))
         {
-            $out = $item_html;
+            if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+            {
+                $out = $item_html;
+            }
+            else
+            {
+                // no match, discard this conditional
+                $out = '';
+            }
         }
-        else
+
+        // does the block have a link defined?
+        if(isset($tag['attributes']['linked']))
         {
-            // no match, discard this conditional
-            $out = '';
+            $block_has_link = in_array(
+                $item->action['action-type'][$current['lang']],
+                array("web", "web-n", "file", "image", "javascript")
+            );
+
+            if( $tag['attributes']['linked'] == "true" && $block_has_link)
+            {
+                $out = $item_html;
+            }
+            else if( $tag['attributes']['linked'] == "false" && !$block_has_link)
+            {
+                $out = $item_html;
+            }
+            else
+            {
+                // no match, discard this conditional
+                $out = '';
+            }
         }
     }
     else if($tag['attributes']['by']=='access')
