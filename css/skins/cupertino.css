@@ -779,6 +779,17 @@ div.mce-btn button:hover
 	background: rgb(252,252,252);
 }
 
+.mce-btn.mce-active button,
+.mce-btn.mce-active button:hover
+{
+	background: rgb(222,222,222);
+	background: -moz-linear-gradient(top, rgb(222, 222, 222) 0%, rgba(252,252,252,1) 100%);
+	background: -webkit-linear-gradient(top, rgba(222,222,222,1) 0%,rgba(252,252,252,1) 100%);
+	background: linear-gradient(to bottom, rgba(222,222,222,1) 0%,rgba(252,252,252,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#DEDEDE', endColorstr='#fcfcfc',GradientType=0 );
+	border: solid 1px #bbb;
+}
+
 div.mce-btn-group:not(:first-child),
 .mce-btn-group .mce-btn
 {

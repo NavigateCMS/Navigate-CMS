@@ -495,7 +495,7 @@ class naviforms
 				toolbar: [
 					"formatselect fontselect fontsizeselect | forecolor | backcolor | removeformat | searchreplace code",
                     "bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | outdent indent blockquote | bullist numlist | nv_rollup_special_char",
-                    "styleselect | styleprops attribs | table | nv_rollup_links | image imgmap media codesample | undo redo"
+                    "styleselect | styleprops attribs | table | nv_rollup_links | image imgmap media codesample | magicline | undo redo"
                 ],
 
 				toolbar_items_size: "small",
@@ -573,7 +573,7 @@ class naviforms
                 // events
                 handle_event_callback : "navigate_tinymce_event",
                 
-                // before render this tinymce
+                // before rendering this tinymce
                 setup: function(editor)
                 {
 	                editor.on("init", function() 
@@ -635,6 +635,9 @@ class naviforms
                             $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 1);
                         }
                     });
+                    
+                    // deprecated, but the only way we found to set the button on on init
+	                tinyMCE.get("'.$name.'").controlManager.setActive("magicline", true);	                
                 }
             });
         ');
