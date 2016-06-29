@@ -773,8 +773,7 @@ class website
     public function content_stylesheets($format='tinymce', $name='content', $merge=false)
     {
         global $theme;
-	    global $website;
-
+		
         // determine stylesheets for content (website > theme + default navigate cms)
         $content_css = array();
 
@@ -785,7 +784,14 @@ class website
 
         if(!empty($this->theme) && !empty($theme))
         {
-            $style = $this->theme_options->style;
+            $style = @$this->theme_options->style;
+
+			if(empty($style))
+			{
+				$theme_styles = get_object_vars($theme->styles);
+				$theme_styles = array_values($theme_styles);
+				$style = $theme_styles[0]->name;
+			}
 
 	        if($name=='content_selectable' && !isset($theme->styles->$style->$name))
 		        $name = 'content';
