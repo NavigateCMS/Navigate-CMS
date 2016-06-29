@@ -1,4 +1,6 @@
 syntax: glob
+cache/scripts.*.min.jgz
+cache/styles.*.min.css
 cache/1/*
 private/sessions/*
 private/1
