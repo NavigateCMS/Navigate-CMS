@@ -290,7 +290,7 @@ class navibrowse
 		$folders_tree = file::hierarchyList($hierarchy, $item->parent);			
 		
 		$html[] = '
-			<div id="navibrowse-folder-tree-dialog">
+			<div id="navibrowse-folder-tree-dialog" class="hidden">			
 				<div class="navibrowse_folder_tree" style=" width: 90%; "><img src="img/icons/silk/folder_home.png" align="absmiddle" />  '.t(18, 'Home').$folders_tree.'</div>
 			</div>
 		';

@@ -356,7 +356,7 @@ class webuser
                 ':gender' => value_or_default($this->gender, ""),
                 ':avatar' => $this->avatar,
                 ':birthdate' => value_or_default($this->birthdate, 0),
-                ':language' => $this->language,
+                ':language' => value_or_default($this->language, ""),
                 ':lastseen' => $this->lastseen,
                 ':country' => $this->country,
                 ':timezone' => $this->timezone,
@@ -364,11 +364,11 @@ class webuser
                 ':zipcode' => $this->zipcode,
                 ':location' => $this->location,
                 ':phone'	=> $this->phone,
-                ':social_website' => $this->social_website,
-                ':newsletter' => $this->newsletter,
-                ':private_comment' => $this->private_comment,
-                ':activation_key' => $this->activation_key,
-                ':cookie_hash' => $this->cookie_hash,
+                ':social_website' => value_or_default($this->social_website, ""),
+                ':newsletter' => value_or_default($this->newsletter, 0),
+                ':private_comment' => value_or_default($this->private_comment, ""),
+                ':activation_key' => value_or_default($this->activation_key, ""),
+                ':cookie_hash' => value_or_default($this->cookie_hash, ""),
                 ":access" => value_or_default($this->access, 0),
                 ":access_begin" => value_or_default($this->access_begin, 0),
                 ":access_end" => value_or_default($this->access_end, 0),
@@ -720,7 +720,7 @@ class webuser
         readfile($temp_file);
 
         @unlink($temp_file);
-
+		
         core_terminate();
     }
 
