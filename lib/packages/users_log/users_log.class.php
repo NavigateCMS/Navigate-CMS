@@ -129,25 +129,35 @@ class users_log
 		global $DB;
 		global $user;
 		global $website;
-		
+
+		// last month only!
 		$DB->query('
 			SELECT DISTINCT nvul.website, nvul.function, nvul.item, nvul.item_title,
-							nvf.lid as function_title, nvf.icon as function_icon							
+							nvf.lid as function_title, nvf.icon as function_icon
 			FROM nv_users_log nvul, 
 				 nv_functions nvf
-			WHERE user = '.protect($user->id).'
+			WHERE nvul.user = '.protect($user->id).'
 			  AND nvul.function = nvf.id
 			  AND nvul.item > 0
 			  AND nvul.action = "load"
 			  AND nvul.website = '.protect($website->id).'
 			  AND nvul.item_title <> ""
-			ORDER BY `date` DESC
+			  AND nvul.date > '.( core_time() - 30 * 86400).'
+			  AND nvul.date = (	SELECT MAX(nvulm.date) 
+			  					  FROM nv_users_log nvulm 
+			  					 WHERE nvulm.function = nvul.function 
+			  					   AND nvulm.item = nvul.item
+			  					   AND nvulm.item_title = nvul.item_title
+			  					   AND nvulm.website = '.protect($website->id).'
+			  					   AND nvulm.user = '.protect($user->id).'
+							   )
+			ORDER BY nvul.date DESC
 			LIMIT '.$limit
 		);
 
 		$rows = $DB->result();
-		
-		return $rows;		
+
+		return $rows;
 	}
 }
 

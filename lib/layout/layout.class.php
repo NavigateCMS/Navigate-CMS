@@ -524,35 +524,12 @@ class layout
 
         if(!empty($website->id))
         {
-            // recent items panel
-            $ri = users_log::recent_items(10);
+			// recent items panel (loaded by an ajax request)
+			$this->add_content('<ul id="navigate-recent-items" class="hidden"></ul>');
 
-            if(!is_array($ri))
-                $ri = array();
-
-            $actions = array();
-
-            foreach($ri as $action)
-            {
-                $url = '?fid='.$action->function.'&wid='.$action->website.'&act=load&id='.$action->item;
-                $actions[] = '<li><a href="'.$url.'" title="'.htmlspecialchars($action->item_title).' | '.htmlspecialchars(t($action->function_title, $action->function_title)).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a></li>';
-            }
-
-            $this->add_content(
-                '<ul id="navigate-recent-items" style=" display: none; ">'.
-                    implode("\n", $actions).
-                '</ul>'
-            );
-
-            // favorite extensions panel
-            // TODO: retrieve user's favorites
-            /*
-            $this->add_content(
-                '<div id="navigate-favorite-extensions" class="ui-dialog ui-widget ui-corner-all" style=" display: none; ">'.
-                    implode("\n", $actions).
-                '</div>'
-            );
-            */
+			// favorite extensions panel
+			// TODO: retrieve user's favorites
+			// $this->add_content('<div id="navigate-favorite-extensions" class="ui-dialog ui-widget ui-corner-all hidden"></div>');
 
             $this->add_content(
                 '<ul id="navigate-create-helper" style=" display: none; ">'.

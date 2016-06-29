@@ -444,7 +444,7 @@ class naviforms
 
         $content_css = $website->content_stylesheets('tinymce', 'content');
         $content_css_selectable = $website->content_stylesheets('tinymce', 'content_selectable');
-
+        
 		/* disabled for tiny mce 4.x, problems with the compressor
         // remove cache if the server address has changed
         $tinymce_gz = glob(NAVIGATE_PATH.'/lib/external/tinymce4/*.gz');

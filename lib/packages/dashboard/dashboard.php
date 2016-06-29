@@ -1,11 +1,27 @@
 <?php
 function run()
 {
-	global $website;
-	global $layout;
-	
+
 	switch(@$_REQUEST['act'])
 	{
+		case 'recent_items':
+            $ri = users_log::recent_items(value_or_default($_REQUEST['limit']), 10);
+
+            if(!is_array($ri))
+                $ri = array();
+
+            for($i=0; $i < count($ri); $i++)
+            {
+				$action = $ri[$i];
+				$ri[$i]->_url = '?fid='.$action->function.'&wid='.$action->website.'&act=load&id='.$action->item;
+                $ri[$i]->_link = '<a href="'.$ri[$i]->_url.'" title="'.htmlspecialchars($action->item_title).' | '.htmlspecialchars(t($action->function_title, $action->function_title)).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a>';
+            }
+
+			echo json_encode($ri);
+			core_terminate();
+
+			break;
+
 		default:
 			$out = dashboard_create();
 	}

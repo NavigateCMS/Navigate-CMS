@@ -71,14 +71,42 @@ $(window).on('load', function()
     // recent items list
 	$('#navigate-recent-items-link').on('mouseenter', function()
 	{
-		$('#navigate-recent-items').css({
-			top: $('#navigate-recent-items-link').offset().top + 20,
-			left: $('#navigate-recent-items-link').offset().left + $('#navigate-recent-items-link').width() - $('#navigate-recent-items').width() - 5
-		}).show();
+        // load the recent items list, if empty
+        
+        if($('#navigate-recent-items li').length == 0)
+        {
+            $('#navigate-recent-items-link').css('cursor', 'wait');
 
-        $('#navigate-recent-items').addClass('navi-ui-widget-shadow');
+            $.getJSON(
+                "?fid=dashboard&act=recent_items&limit=10",
+                {}, 
+                function(data)
+                {
+                    $(data).each(function()
+                    {
+                        $('#navigate-recent-items').append('<li>' + this._link + '</li>');
+                    });
+                    
+                    $('#navigate-recent-items-link').css('cursor', 'pointer');
 
-        $('#navigate-recent-items').menu();
+                    $('#navigate-recent-items').css({
+                        top: $('#navigate-recent-items-link').offset().top + 20,
+                        left: $('#navigate-recent-items-link').offset().left + $('#navigate-recent-items-link').width() - $('#navigate-recent-items').width() - 5
+                    }).show();
+                    $('#navigate-recent-items').addClass('navi-ui-widget-shadow');
+                    $('#navigate-recent-items').menu();
+                }
+            );
+        }
+        else
+        {
+            $('#navigate-recent-items').css({
+                top: $('#navigate-recent-items-link').offset().top + 20,
+                left: $('#navigate-recent-items-link').offset().left + $('#navigate-recent-items-link').width() - $('#navigate-recent-items').width() - 5
+            }).show();
+            $('#navigate-recent-items').addClass('navi-ui-widget-shadow');
+            $('#navigate-recent-items').menu();
+        }
 	});
 	
 	$('#navigate-recent-items').on('mouseleave', function()
