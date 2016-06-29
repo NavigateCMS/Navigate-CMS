@@ -150,8 +150,12 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://www.framework2.com.ar/dzone/forceUTF8-es/" target="_blank">Encoding UTF8 Class (by Sebastián Grignoli)</a><br />' ));
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/weixiyen/jquery-filedrop" target="_blank">jQuery FileDrop v0.1.0 (2014/03/14)</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.dropzonejs.com" target="_blank">DropzoneJS v4.3.0</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.6.1</a><br />' ));

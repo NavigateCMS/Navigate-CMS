@@ -118,7 +118,7 @@ class layout
 		$this->add_script_tag('js/kvatree/js/kvaTree.js');			
 		$this->add_style_tag('js/kvatree/css/kvaTree.css');
 
-        $this->add_script_tag('js/plugins/jquery.filedrop.js');
+		$this->add_script_tag('js/plugins/dropzone.js');
 
 		$this->add_script_tag('js/plugins/jquery.ezCookie.js');
         $this->add_script_tag('js/plugins/jquery.longclick.js');
@@ -507,6 +507,8 @@ class layout
 		if(empty($fid))
 			$fid = 'dashboard';
 
+		$user_profile_name = $DB->query_single('name', 'nv_profiles', 'id='.protect($user->profile));
+
 		$this->add_content(
 			'<div class="navigate-help">'.
                 (empty($website->id)? '' : '<a class="navigate-plus-link" href="#" title="'.t(38, 'Create').'"><i class="fa fa-fw fa-plus"></i></span></a>').
@@ -516,14 +518,14 @@ class layout
 			'</div>'.
 			'<div class="navigate-session">'.
                 (empty($website->id)? '' : '<a href="#" id="navigate-recent-items-link"><div><span class="ui-icon ui-icon-triangle-1-s" style=" float: right; "></span><img src="img/icons/silk/briefcase.png" width="16px" height="16px" align="absmiddle" /> '.t(275, 'Recent items').'</div></a>').
-				'<a class="bold" href="?fid=2" title="'.$DB->query_single('name', 'nv_profiles', 'id='.protect($user->profile)).'"><img src="img/icons/silk/user.png" width="16px" height="16px" align="absmiddle" /> '.$user->username.'</a>'.
+				'<a class="bold" href="?fid=2" title="'.$user_profile_name.'"><img src="img/icons/silk/user.png" width="16px" height="16px" align="absmiddle" /> '.$user->username.'</a>'.
 			'</div>'
 		);
 
         if(!empty($website->id))
         {
             // recent items panel
-            $ri = users_log::recent_items(7);
+            $ri = users_log::recent_items(10);
 
             if(!is_array($ri))
                 $ri = array();

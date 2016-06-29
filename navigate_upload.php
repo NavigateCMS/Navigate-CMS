@@ -90,7 +90,7 @@ $maxFileAge = 24 * 60 * 60; // Temp file age in seconds (1 day)
 //file_put_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/files/out.txt', print_r($_FILES, true));
 
 // filedrop drag'n'drop engine	
-if($_REQUEST['engine']=='filedrop')
+if($_REQUEST['engine']=='dropzone')
 {
 	if($user->permission("files.upload")=="true")
 	{

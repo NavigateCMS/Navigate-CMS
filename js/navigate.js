@@ -1609,12 +1609,15 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 	{
         if($(selector).attr("data-filedrop")!="true")
         {
-            // filedrop does not offer a "remove bindings" option, so only the first binding for an element is used
-            $(selector).filedrop(
+            // remove previous binding, if exists (in case of trying to init the dropzone on the same object multiple times)
+            // Dropzone.forElement(selector).destroy();
+            $(selector).dropzone(
             {
-                url: NAVIGATE_URL + "/navigate_upload.php?session_id=" + navigate["session_id"] + "&engine=filedrop",
-                paramname: "upload",
-                error: function(err, file)
+                url: NAVIGATE_URL + "/navigate_upload.php?session_id=" + navigate["session_id"] + "&engine=dropzone",
+                paramName: "upload",
+                parallelUploads: 1,
+                autoProcessQueue: 1,
+                error: function(file, err)
                 {
                     switch(err)
                     {
@@ -1638,43 +1641,25 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                             break;
                     }
                 },
-                maxfiles: 1000,
-                maxfilesize: NAVIGATE_MAX_UPLOAD_SIZE,    // max file size in MBs,
-                queuefiles: 1,
+                maxFiles: 1000,
+                maxFilesize: NAVIGATE_MAX_UPLOAD_SIZE,    // max file size in MBs,
                 document_title: "",
-                dragOver: function()
+                dragover: function()
                 {
                     // user dragging files over #dropzone
                     navigate_status(navigate_lang_dictionary[260], "img/icons/misc/dropbox.png", true); // Drag & Drop files now to upload them
                     if(callbacks.dragOver)
                         callbacks.dragOver();
                 },
-                dragLeave: function()
+                dragleave: function()
                 {
                     // user dragging files out of #dropzone
                     navigate_status(navigate_lang_dictionary[42], "ready"); // ready
                     if(callbacks.dragLeave)
                         callbacks.dragLeave();
                 },
-                docOver: function()
+                processing: function(file)
                 {
-                    // user dragging files anywhere inside the browser document window
-                },
-                docLeave: function()
-                {
-                    // user dragging files out of the browser document window
-                },
-                drop: function()
-                {
-                    // user drops file
-                },
-                uploadStarted: function(i, file, len)
-                {
-                    // a file began uploading
-                    // i = index => 0, 1, 2, 3, 4 etc
-                    // file is the actual file of the index
-                    // len = total files user dropped
-
                     var fname = file.fileName;
                     if(!fname)  fname = file.name;
 
@@ -1690,9 +1675,15 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                     if(callbacks.uploadStarted)
                         callbacks.uploadStarted(file);
                 },
-                uploadFinished: function(i, file, response, time)
+                complete: function(file)
                 {
                     // response is the data you got back from server in JSON format.
+                    
+                    if(!file || !file.xhr)
+                        return false;
+                    
+                    var response = $.parseJSON(file.xhr.response);
+
                     if(show_progress_in_title)
                     {
                         $(document).attr("title", $(this).document_title);
@@ -1726,13 +1717,13 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                         });
                     }
                 },
-                progressUpdated: function(i, file, progress)
+                uploadprogress: function(file, progress, bytesSent)
                 {
                     // this function is used for large files and updates intermittently
                     // progress is the integer value of file being uploaded percentage to completion
                     var fname = file.fileName;
                     if(!fname)  fname = file.name;
-
+                    
                     navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader", "default", progress); // uploading
 
                     if(show_progress_in_title)
@@ -1740,21 +1731,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                         $(document).attr("title", navigate_lang_dictionary[261] + ": " + fname + " " + progress + "%", "loader");
                     }
                 },
-                speedUpdated: function(i, file, speed)
-                {
-                    // speed in kb/s
-                },
-                rename: function(name)
-                {
-                    // name in string format
-                    // must return alternate name as string
-                },
-                beforeEach: function(file)
-                {
-                    // file is a file object
-                    // return false to cancel upload
-                },
-                afterAll: function()
+                queuecomplete: function()
                 {
                     // runs after all files have been uploaded or otherwise dealt with
                     $("link[rel*=shortcut]").remove().clone().appendTo("head").attr("href", "favicon.ico");
@@ -1762,7 +1739,10 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 
                     if(callbacks.afterAll)
                         callbacks.afterAll();
-                }
+                },
+                previewTemplate: "", // remove default template
+                addedfile: function(file) {},
+                thumbnail: function(file, dataUrl) {} // ignore default template
             });
 
             $(selector).attr("data-filedrop", "true");
