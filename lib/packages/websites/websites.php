@@ -159,6 +159,13 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);
 				}
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->name, json_encode($_REQUEST));
+			}
+			else
+			{
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->name);
 			}
 
 			$out = websites_form($item);
@@ -171,6 +178,9 @@ function run()
 				if($item->delete() > 0)
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
+
+					if(!empty($item->id))
+						users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->name, json_encode($_REQUEST));
 
                     // if we don't have any websites, tell user a new one will be created
                     $test = $DB->query_single('id', 'nv_websites');
@@ -226,10 +236,15 @@ function run()
         case 'reset_statistics':
             if($user->permission('websites.edit')=='true')
             {
-                $DB->execute('UPDATE nv_items SET views = 0 WHERE website = '.$website->id);
-                $DB->execute('UPDATE nv_paths SET views = 0 WHERE website = '.$website->id);
-                $DB->execute('UPDATE nv_structure SET views = 0 WHERE website = '.$website->id);
+				$website_id = trim($_REQUEST['website']);
+				$website_id = intval($website_id);
+
+                $DB->execute('UPDATE nv_items SET views = 0 WHERE website = '.$website_id);
+                $DB->execute('UPDATE nv_paths SET views = 0 WHERE website = '.$website_id);
+                $DB->execute('UPDATE nv_structure SET views = 0 WHERE website = '.$website_id);
                 echo 'true';
+
+				users_log::action($_REQUEST['fid'], $website_id, 'reset_statistics', "", json_encode($_REQUEST));
             }
             core_terminate();
             break;
@@ -267,6 +282,9 @@ function run()
 				);
 
 				echo ($ok? 'true' : 'false');
+
+				if($ok)
+					users_log::action($_REQUEST['fid'], $website_id, 'replace_urls', "", json_encode($_REQUEST));
 			}
 			else
 			{
@@ -302,6 +320,9 @@ function run()
 					DELETE FROM nv_webdictionary WHERE website = '.$website_id.';
 					DELETE FROM nv_webdictionary_history WHERE website = '.$website_id.';
 				');
+
+				if($ok)
+					users_log::action($_REQUEST['fid'], $website_id, 'remove_content', "", json_encode($_REQUEST));
 
 				echo ($ok? 'true' : $DB->error());
 			}
@@ -406,7 +427,7 @@ function websites_form($item)
                                 $(this).dialog("close");
 
                                 $.post(
-                                    "?fid=websites&act=reset_statistics",
+                                    "?fid=websites&act=reset_statistics&website='.$item->id.'",
                                     {},
                                     function(data)
                                     {

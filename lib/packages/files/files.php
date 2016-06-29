@@ -422,9 +422,9 @@ function files_browser($parent, $search="")
 	$navibrowse->onDblClick('navigate_files_dblclick');
 	$navibrowse->onRightClick('navigate_files_contextmenu');
 	$navibrowse->onMove('navigate_files_move');
-	
-	$navibars->add_content($navibrowse->generate());
-
+    $navibrowse_hierarchy = $navibrowse->generate();
+	$navibars->add_content($navibrowse_hierarchy);
+    
     $layout->add_script('
         navigate_file_drop(
             ".navibrowse",

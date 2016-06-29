@@ -118,6 +118,7 @@ function run()
 
 		case 2: // edit/new form
         case 'create':
+		case 'edit':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -135,12 +136,21 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
+
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->username, json_encode($_REQUEST));
+			}
+			else
+			{
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->username);
 			}
 		
 			$out = webusers_form($item);
 			break;
 					
-		case 4: // remove 
+		case 4: // remove
+		case 'remove':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -148,6 +158,7 @@ function run()
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
 					$out = webusers_list();
+					users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->username, json_encode($_REQUEST));
 				}
 				else
 				{
@@ -169,7 +180,8 @@ function run()
 
         case 'export':
             // export web users list to a CSV file
-            webuser::export();
+			users_log::action($_REQUEST['fid'], 0, 'export', "all", json_encode($_REQUEST));
+			webuser::export();
             break;
 
         case 'webuser_groups_list':
@@ -215,12 +227,17 @@ function run()
                 {
                     $ok = $webuser_group->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false);
+					users_log::action($_REQUEST['fid'], $webuser_group->id, 'save_webuser_group', $webuser_group->name, json_encode($_REQUEST));
                 }
                 catch(Exception $e)
                 {
                     $layout->navigate_notification($e->getMessage(), true, true);
                 }
             }
+			else
+			{
+				users_log::action($_REQUEST['fid'], $webuser_group->id, 'load_webuser_group', $webuser_group->name, json_encode($_REQUEST));
+			}
 
             $out = webuser_groups_form($webuser_group);
             break;
@@ -236,6 +253,7 @@ function run()
                 $webuser_group->delete();
                 $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
                 $out = webuser_groups_list();
+				users_log::action($_REQUEST['fid'], $webuser_group->id, 'remove_webuser_group', $webuser_group->name, json_encode($_REQUEST));
             }
             catch(Exception $e)
             {
@@ -475,7 +493,7 @@ function webusers_form($item)
 							buttons: {
 								"'.t(35, 'Delete').'": function() {
 									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=4&id='.$item->id.'";
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'";
 								},
 								"'.t(58, 'Cancel').'": function() {
 									$(this).dialog("close");

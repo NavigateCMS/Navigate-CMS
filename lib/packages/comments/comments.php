@@ -103,7 +103,8 @@ function run()
 			exit;
 			break;
 		
-		case 2: // edit/new form		
+		case 2: // edit/new form
+		case 'edit':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -121,12 +122,20 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->name, json_encode($_REQUEST));
+			}
+			else
+			{
+				if(!empty($item->id))
+					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->name);
 			}
 		
 			$out = comments_form($item);
 			break;
 					
-		case 4: // remove 
+		case 4: // remove
+		case 'remove':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -134,6 +143,9 @@ function run()
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
 					$out = comments_list();
+
+					if(!empty($item->id))
+						users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->name, json_encode($_REQUEST));
 				}
 				else
 				{
@@ -147,6 +159,7 @@ function run()
             $count = comment::remove_spam();
             $layout->navigate_notification(t(524, 'Items removed successfully').': <strong>'.$count.'</strong>', false);
             $out = comments_list();
+			users_log::action($_REQUEST['fid'], $website->id, 'remove_spam', "", json_encode($_REQUEST));
             break;
 
         case 'json_find_webuser': // json find webuser by name (for "user" autocomplete)
@@ -308,7 +321,7 @@ function comments_form($item)
 							buttons: {
 								"'.t(35, 'Delete').'": function() {
 									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=4&id='.$item->id.'";
+									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'";
 								},
 								"'.t(58, 'Cancel').'": function() {
 									$(this).dialog("close");
@@ -323,7 +336,7 @@ function comments_form($item)
 	
 	$navibars->add_actions(
 		array(
-			(!empty($item->id)? '<a href="?fid=comments&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			(!empty($item->id)? '<a href="?fid=comments&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 			'<a href="?fid=comments&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
 		)
