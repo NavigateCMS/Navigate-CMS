@@ -1383,53 +1383,65 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         }
 
         $condition = false;
-        switch($tag['attributes']['property_compare'])
+        if(isset($tag['attributes']['property_empty']))
         {
-            case '>':
-            case 'gt':
-                $condition = ($property_value > $condition_value);
-                break;
+            if( $tag['attributes']['property_empty']=='true' && empty($condition_value) ||
+                $tag['attributes']['property_empty']=='false' && !empty($condition_value)
+            )
+            {
+                $condition = true;
+            }
+        }
+        else
+        {
+            switch($tag['attributes']['property_compare'])
+            {
+                case '>':
+                case 'gt':
+                    $condition = ($property_value > $condition_value);
+                    break;
 
-            case '<':
-            case 'lt':
-                $condition = ($property_value < $condition_value);
-                break;
+                case '<':
+                case 'lt':
+                    $condition = ($property_value < $condition_value);
+                    break;
 
-            case '>=':
-            case '=>':
-            case 'gte':
-                $condition = ($property_value >= $condition_value);
-                break;
+                case '>=':
+                case '=>':
+                case 'gte':
+                    $condition = ($property_value >= $condition_value);
+                    break;
 
-            case '<=':
-            case '=<':
-            case 'lte':
-                $condition = ($property_value <= $condition_value);
-                break;
+                case '<=':
+                case '=<':
+                case 'lte':
+                    $condition = ($property_value <= $condition_value);
+                    break;
 
-            case '!=':
-            case 'neq':
-		        if(is_numeric($property_value))
-		        {
-			        if($condition_value == 'true')          $condition_value = '1';
-			        else if($condition_value == 'false')    $condition_value = '0';
-		        }
+                case '!=':
+                case 'neq':
+                    if(is_numeric($property_value))
+                    {
+                        if($condition_value == 'true')          $condition_value = '1';
+                        else if($condition_value == 'false')    $condition_value = '0';
+                    }
 
-		        $condition = ($property_value != $condition_value);
-                break;
+                    $condition = ($property_value != $condition_value);
+                    break;
 
-            case '=':
-            case '==':
-            case 'eq':
-            default:
-		        if(is_numeric($property_value))
-		        {
-			        if($condition_value == 'true')          $condition_value = '1';
-			        else if($condition_value == 'false')    $condition_value = '0';
-		        }
+                case '=':
+                case '==':
+                case 'eq':
+                default:
+                    if(is_numeric($property_value))
+                    {
+                        if($condition_value == 'true')          $condition_value = '1';
+                        else if($condition_value == 'false')    $condition_value = '0';
+                    }
 
-                $condition = ($property_value == $condition_value);
-		        break;
+                    $condition = ($property_value == $condition_value);
+                    break;
+            }
         }
 
         if($condition)
