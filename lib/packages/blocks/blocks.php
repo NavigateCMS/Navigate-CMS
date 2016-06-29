@@ -1193,7 +1193,13 @@ function blocks_form($item)
 
                 $navibars->add_tab_content_row(
                     array(
-                        '<label>'.t(9, "Content").'</label>',
+                        '<label>'.t(9, "Content").'
+							<span class="editor_selector" for="trigger-content-'.$lang.'">'.
+								//'<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
+								'<i class="fa fa-border fa-fw fa-lg fa-file-text-o active" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
+								'<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i>'.
+							'</span>'.
+						'</label>',
                         $naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $editor_width, $lang),
                         ''
                     ),
@@ -1234,7 +1240,7 @@ function blocks_form($item)
                     array(
                         '<label>'.t(184, 'Webpage').'</label>',
                         $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=5'),
-                        ''
+                        '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>'
                     )
                 );
 

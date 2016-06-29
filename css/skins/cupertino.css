@@ -556,6 +556,12 @@ a.navigate-content-actions-selected
 	height: 18px;
 }
 
+.navigate-form-row .uibutton .ui-button-text
+{
+	padding: 0.3em 1em;
+	margin-top: -2px;
+}
+
 .navigate-form-row-language-info
 {
     font-style: italic;
@@ -780,7 +786,9 @@ div.mce-btn button:hover
 }
 
 .mce-btn.mce-active button,
-.mce-btn.mce-active button:hover
+.mce-btn.mce-active button:hover,
+.mce-open.mce-active,
+.mce-open.mce-active:hover
 {
 	background: rgb(222,222,222);
 	background: -moz-linear-gradient(top, rgb(222, 222, 222) 0%, rgba(252,252,252,1) 100%);
@@ -789,6 +797,24 @@ div.mce-btn button:hover
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#DEDEDE', endColorstr='#fcfcfc',GradientType=0 );
 	border: solid 1px #bbb;
 }
+
+.mce-btn.mce-splitbtn.mce-active
+{
+	background: transparent;
+}
+
+/*
+.mce-splitbtn.mce-btn-small.mce-active .mce-open
+{
+	background: rgb(252,252,252);
+	background: -moz-linear-gradient(top, rgba(252,252,252,1) 0%, rgb(222, 222, 222) 100%);
+	background: -webkit-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(222,222,222,1) 100%);
+	background: linear-gradient(to bottom, rgba(252,252,252,1) 0%,rgba(222,222,222,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#DEDEDE',GradientType=0 );
+	border: solid 1px #ccc;
+	border-radius: 3px;
+}
+*/
 
 div.mce-btn-group:not(:first-child),
 .mce-btn-group .mce-btn
