@@ -623,7 +623,6 @@ class theme
             $block_groups[$old_block_group_id] = $block_group;
         }
 
-
         // comments
         if(file_exists($ptf.'/comments.var_export'))
             eval('$comments_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/comments.var_export')).';');
@@ -856,7 +855,7 @@ class theme
 							);
 	                    }
                     }
-
+                    
                     property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative, $ws);
                 }
             }
@@ -981,7 +980,7 @@ class theme
             }
 
             // note: maybe not all blocks in the group have been selected in the "blocks" tab
-            // here we only export the block group definition, not adding anything else to export
+            // here we only export the block group definition and the block group blocks properties, not adding anything else to export
         }
 
 
@@ -1045,7 +1044,6 @@ class theme
         $zip->addFile(var_export($categories, true), 'structure.var_export');
         $zip->addFile(var_export($items, true), 'items.var_export');
         $zip->addFile(var_export($block_groups, true), 'block_groups.var_export');
-        $zip->addFile(var_export($blocks, true), 'blocks.var_export');
         $zip->addFile(var_export($blocks, true), 'blocks.var_export');
         $zip->addFile(var_export($comments, true), 'comments.var_export');
         $zip->addFile(var_export($files, true), 'files.var_export');

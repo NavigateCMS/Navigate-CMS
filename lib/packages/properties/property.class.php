@@ -797,9 +797,25 @@ class property
 
    		$dictionary = array();
 
-   		// load properties associated with the element type
-   		$properties = property::elements($template, $item_type, $ws->id);
+        // load properties associated with the element type
+        if($item_type=='block_group_block')
+        {
+            $block = block::block_group_block($template, $item_type);
+            $properties = $block->properties;
 
+            if(!is_numeric($item_id))
+            {
+                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$ws->id);
+                $item_id = $block_group_id;
+                if(empty($block_group_id))
+                    $item_id = 0;
+            }
+        }
+        else
+        {
+            $properties = property::elements($template, $item_type);
+        }
+        
         if(!is_array($properties))
             $properties = array();
 
