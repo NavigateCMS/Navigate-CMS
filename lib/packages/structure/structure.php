@@ -424,7 +424,6 @@ function structure_tree($hierarchy)
 		');
 	}
 
-
 	$navitree->setData($hierarchy);
 
 	$navitree->setTreeColumn(1);

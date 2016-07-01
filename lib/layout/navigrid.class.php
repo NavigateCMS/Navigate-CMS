@@ -74,7 +74,7 @@ class navigrid
 			$html[] = '		<img src="'.$item['thumbnail'].'"  width="'.$this->thumbnail_width.'" height="'.$this->thumbnail_height.'" title="'.$item['description'].'"  />';
 			$html[] = '		<div class="navigrid-item-name">'.$item['name'].'</div>';
 			$html[] = $item['footer'];
-			$html[] = '</div>';					
+			$html[] = '</div>';
 		}
 
 		$html[] = '<div class="clearer">&nbsp;</div>';

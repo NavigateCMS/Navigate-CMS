@@ -155,7 +155,7 @@ class naviforms
             $source = '["'.implode('","', $source).'"]';
         else
             $source = '"'.$source.'"';
-
+        
 		$layout->add_script('
 			$("#'.$name.'").autocomplete(
 			{

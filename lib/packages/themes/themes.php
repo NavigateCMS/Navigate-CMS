@@ -261,7 +261,8 @@ function themes_grid($list)
     if(!$marketplace)
     {
         $grid->item_size(220, 220);
-        $grid->thumbnail_size(138, 150);
+        //$grid->thumbnail_size(138, 150); NV 1.x thumbnail size
+        $grid->thumbnail_size(205, 145);
         $grid->highlight_on_click = false;
 
         $themes = array();
