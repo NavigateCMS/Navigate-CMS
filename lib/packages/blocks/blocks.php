@@ -236,7 +236,7 @@ function run()
 						 WHERE path LIKE '.protect('%'.$_REQUEST['term'].'%').' 
 						   AND website = '.$website->id.'
 				      ORDER BY path ASC
-					     LIMIT 30',
+					     LIMIT 10',
 						'array');
 						
 			echo json_encode($DB->result());
@@ -1102,13 +1102,13 @@ function blocks_form($item)
                 }
 
                 $table = new naviorderedtable("trigger_links_table_".$lang);
-                $table->setWidth("600px");
+                $table->setWidth("776px");
                 $table->setHiddenInput("trigger-links-table-order-".$lang);
                 $navibars->add_tab_content( $naviforms->hidden("trigger-links-table-order-".$lang, "") );
 
                 $table->addHeaderColumn(t(242, 'Icon'), 50);
                 $table->addHeaderColumn(t(67, 'Title'), 200);
-                $table->addHeaderColumn(t(197, 'Link'), 200);
+                $table->addHeaderColumn(t(197, 'Link'), 390);
                 $table->addHeaderColumn('<i class="fa fa-external-link" title="'.t(324, 'New window').'"></i>', 16);
                 $table->addHeaderColumn(t(35, 'Remove'), 50);
 
@@ -1136,11 +1136,13 @@ function blocks_form($item)
                             array(
 	                            ( empty($links_icons)?
 	                                array('content' => '-', 'align' => 'center') :
-	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlinks['icon'][$key].'" style="width: 190px;"></select>', 'align' => 'left')
+	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlinks['icon'][$key].'"  data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
                                 ),
-                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" style="width: 250px;" />', 'align' => 'left'),
-                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" style="width: 300px;" />', 'align' => 'left'),
-                                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
+                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
+                                array(	'content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" data-role="link" style="width: 300px;" />'.
+													 '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
+										'align' => 'left'),
+                                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
                                                     <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />', 'align' => 'left'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                             )
@@ -1154,11 +1156,14 @@ function blocks_form($item)
                     array(
 	                    ( empty($links_icons)?
                             array('content' => '-', 'align' => 'center') :
-                            array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="" style="width: 190px;"></select>', 'align' => 'left')
+                            array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="" data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
                         ),
-                        array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" style="width: 250px;" />', 'align' => 'left'),
-                        array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" style="width: 300px;" />', 'align' => 'left'),
-                        array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
+                        array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" data-role="title" style="width: 250px;" />', 'align' => 'left'),
+                        array(	'content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" data-role="link" style="width: 300px;" />'.
+											 '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
+								'align' => 'left'
+						),
+                        array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']"  data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
                                             <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
                                 'align' => 'left'),
                         array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
@@ -1235,11 +1240,10 @@ function blocks_form($item)
                 );
 
                 /* show/hide appropiate row type by action */
-
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(184, 'Webpage').'</label>',
-                        $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=5'),
+                        $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=path'),
                         '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>'
                     )
                 );

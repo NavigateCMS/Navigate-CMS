@@ -82,6 +82,10 @@ $(window).on('load', function()
                 {}, 
                 function(data)
                 {
+                    // in case of a duplicated request, simply ignore it
+                    if($('#navigate-recent-items li').length > 0)
+                        return;
+
                     $(data).each(function()
                     {
                         $('#navigate-recent-items').append('<li>' + this._link + '</li>');

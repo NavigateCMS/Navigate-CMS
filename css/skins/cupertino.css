@@ -1319,12 +1319,19 @@ label:hover:before
 	border-top:1px solid transparent;
 	color:#666699;
 	padding:6px;
+	position: relative;
 }
 
 .box-table tr:hover td 
 {
 	background:none repeat scroll 0 0 #D0DAFD;
 	color:#333399;
+}
+
+.box-table .nv_block_nv_link_trigger
+{
+	margin-top: -4px;
+	margin-left: 4px;
 }
 
 div.subcomment
