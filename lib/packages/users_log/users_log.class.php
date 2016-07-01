@@ -159,6 +159,39 @@ class users_log
 
 		return $rows;
 	}
+
+	public static function recent_actions($function, $action, $limit=8)
+	{
+		global $DB;
+		global $user;
+		global $website;
+
+		// last month only!
+		$DB->query('
+			SELECT DISTINCT nvul.website, nvul.function, nvul.item
+			FROM nv_users_log nvul
+			WHERE nvul.user = '.protect($user->id).'
+			  AND nvul.function = '.protect($function).'
+			  AND nvul.item > 0
+			  AND nvul.action = '.protect($action).'
+			  AND nvul.website = '.protect($website->id).'
+			  AND nvul.date > '.( core_time() - 30 * 86400).'
+			  AND nvul.date = (	SELECT MAX(nvulm.date) 
+			  					  FROM nv_users_log nvulm 
+			  					 WHERE nvulm.function = nvul.function 
+			  					   AND nvulm.item = nvul.item
+			  					   AND nvulm.item_title = nvul.item_title
+			  					   AND nvulm.website = '.protect($website->id).'
+			  					   AND nvulm.user = '.protect($user->id).'
+							   )
+			ORDER BY nvul.date DESC
+			LIMIT '.$limit
+		);
+
+		$rows = $DB->result();
+
+		return $rows;
+	}
 }
 
 ?>

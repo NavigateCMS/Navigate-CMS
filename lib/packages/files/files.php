@@ -344,6 +344,7 @@ function run()
 		default:						
 			// show requested folder or search
 			$out = files_browser($_REQUEST['parent'], $_REQUEST['navigate-quicksearch']);
+            users_log::action($_REQUEST['fid'], intval($_REQUEST['parent']), 'list', '', json_encode($_REQUEST));
 			break;
 	}
 	

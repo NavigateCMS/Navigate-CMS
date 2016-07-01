@@ -167,8 +167,66 @@ class navibrowse
 		
 		$html[] = '<div class="navibrowse-path ui-corner-all">';
 		$html[] = '	<a href="?fid='.$_REQUEST['fid'].'"><img src="img/icons/silk/folder_home.png" width="16px" height="16px" align="absbottom" /> '.t(18, 'Home').'</a>';
+
 		if($this->parent > 0)
 			$html[] = '	<a href="?fid='.$_REQUEST['fid'].'&parent='.$this->previous.'"><img src="img/icons/silk/folder_up.png" width="16px" height="16px" align="absbottom" /> '.t(139, 'Back').'</a>';
+
+		// recent folders
+
+		$function_id = $_REQUEST['fid'];
+		if(!is_numeric($function_id))
+		{
+			$f = core_load_function($_REQUEST['fid']);
+			$function_id = $f->id;
+		}
+		$actions = users_log::recent_actions($function_id, 'list', 8);
+
+		if(!empty($actions))
+		{
+			$html[] = '	<a href="#" id="navigate-navibrowse-recent-items-link"><img src="img/icons/silk/folder_bell.png" width="16px" height="16px" align="absbottom" /> '.t(275, 'Recent elements').' <span style=" float: right; " class="ui-icon ui-icon-triangle-1-s"></span></i></a>';
+			$layout->add_content(
+				'<ul id="navigate-navibrowse-recent-items" class="hidden">'.
+				implode(
+					"\n",
+					array_map(
+						function($action)
+						{
+							return 	'<li>'.
+										'<a href="?fid='.$_REQUEST['fid'].'&parent='.$action->item.'">'.
+											'<img src="img/icons/silk/folder.png" style="vertical-align: text-bottom;" /> '.
+											file::getFullPathTo($action->item).
+										'</a>'.
+									'</li>';
+						},
+						$actions
+					)
+				).
+				'</ul>'
+			);
+
+			$layout->add_script('
+				$("#navigate-navibrowse-recent-items-link").on("click", function(e)
+				{
+					e.preventDefault();
+					e.stopPropagation();
+					
+					$("#navigate-navibrowse-recent-items").css({
+						position: "absolute",
+						top: $("#navigate-navibrowse-recent-items-link").offset().top + 26,
+						left: $("#navigate-navibrowse-recent-items-link").offset().left,
+						zIndex: 10,
+						"min-width": $("#navigate-navibrowse-recent-items-link").width() + "px"
+					});
+					$("#navigate-navibrowse-recent-items").addClass("navi-ui-widget-shadow");
+					$("#navigate-navibrowse-recent-items").removeClass("hidden");
+					$("#navigate-navibrowse-recent-items").menu().show();
+					
+					return false;
+				});
+			');
+		}
+
+		// folders hierarchy
 		$html[] = '	<a href="#" onclick="navibrowse_folder_tree_dialog('.$this->parent.');"><img src="img/icons/silk/application_side_tree.png" width="16px" height="16px" align="absbottom" /> '.t(75, 'Path').': '.$this->path.'</a>';
 
 		$html[] = '
@@ -264,8 +322,8 @@ class navibrowse
 			if($item->type=='folder')
 			{
 				$html[] = '<div class="navibrowse-folder ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
-				$html[] = '		<img src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';	
-				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';				
+				$html[] = '		<img src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
+				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
 				$html[] = '</div>';	
 			}
 			else
