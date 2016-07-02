@@ -18,7 +18,11 @@ function nvweb_tags($vars=array())
             if($search_url == $website->absolute_path())
                 $search_url = NVWEB_ABSOLUTE.'/nvtags';
 
-            $search_url .= '?q=';
+            $search_parameter = 'q';
+            if(!empty($vars['request']))
+                $search_parameter = $vars['request'];
+
+            $search_url .= '?'.$search_parameter.'=';
 
             $categories = array();
             if(!empty($vars['categories']))
