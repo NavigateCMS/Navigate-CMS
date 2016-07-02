@@ -87,7 +87,7 @@ function nvweb_list($vars=array())
 	if($vars['children']=='true')
         $categories = nvweb_menu_get_children($categories);
 
-    // if we have categories="x" children="true" [to get the children of a category, but not himself]
+    // if we have categories="x" children="true" [to get the children of a category, but not itself]
     if($vars['children']=='only')
     {
         $children = nvweb_menu_get_children($categories);

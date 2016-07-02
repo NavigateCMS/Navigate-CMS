@@ -83,6 +83,7 @@ function nvweb_search($vars=array())
 	        }
 	        else if($vars['categories']=='parent')
 	        {
+				$categories = array($current['object']->id);
 	            $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
 	            $categories = array($parent);
 	        }
@@ -124,11 +125,53 @@ function nvweb_search($vars=array())
 	            $categories = array_filter($categories); // remove empty elements
 	        }
 		}
-		
+
 		if($vars['children']=='true')
-            $categories = nvweb_menu_get_children($categories);
+			$categories = nvweb_menu_get_children($categories);
 
+		// if we have categories="x" children="true" [to get the children of a category, but not itself]
+		if($vars['children']=='only')
+		{
+			$children = nvweb_menu_get_children($categories);
+			for($c=0; $c < count($categories); $c++)
+				array_shift($children);
+			$categories = $children;
+		}
 
+		if(!empty($vars['children']) && intval($vars['children']) > 0)
+		{
+			$children = nvweb_menu_get_children($categories, intval($vars['children']));
+
+			for($c=0; $c < count($categories); $c++)
+				array_shift($children);
+			$categories = $children;
+		}
+
+		// apply a filter on categories, if given
+		// example: request_categories="c" ... in the url &q=text&c=23,35
+		if(!empty($vars['request_categories']))
+		{
+			$categories_filter = explode(",", $_REQUEST[$vars['request_categories']]);
+			if(empty($categories))
+			{
+				// note: categories may be empty by the rules applies on categories + children;
+				// in this case we give preference to the request_categories filter
+				$categories = array_values($categories_filter);
+			}
+			else
+			{
+				for($cf=0; $cf < count($categories_filter); $cf++)
+				{
+					if(!in_array($categories_filter[$cf], $categories))
+					{
+						unset($categories_filter[$cf]);
+					}
+					$categories_filter = array_filter($categories_filter);
+				}
+				$categories = $categories_filter;
+			}
+		}
+		
 		// retrieve entries
 		$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
         $access     = (!empty($current['webuser'])? 1 : 2);
