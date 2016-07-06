@@ -391,24 +391,24 @@ class naviforms
 	public function scriptarea($name, $value, $syntax="js", $style= " width: 75%; height: 250px; ")
 	{
 		global $layout;
-		global $website;
-		global $user;
 		
 		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" '.$style.' " rows="10">'.$value.'</textarea>';
 
 		$layout->add_script('
-			$(window).bind("load", function()
+			$(window).on("load", function()
 			{
-				var cm = CodeMirror.fromTextArea(document.getElementById("'.$name.'"), 
-										{
-											mode: "text/html", 
-											tabMode: "indent",
-											lineNumbers: true,
-											styleActiveLine: true,
-											matchBrackets: true,
-											autoCloseTags: true,
-                                            extraKeys: {"Ctrl-Space": "autocomplete"}
-										});
+				var cm = CodeMirror.fromTextArea(
+				    document.getElementById("'.$name.'"), 
+                    {
+                        mode: "text/html", 
+                        tabMode: "indent",
+                        lineNumbers: true,
+                        styleActiveLine: true,
+                        matchBrackets: true,
+                        autoCloseTags: true,
+                        extraKeys: {"Ctrl-Space": "autocomplete"}
+                    }
+                );
 
 		        CodeMirror.commands.autocomplete = function(cm) {
                     CodeMirror.showHint(cm, CodeMirror.htmlHint);
@@ -426,14 +426,20 @@ class naviforms
 		return $out;
 	}
 	
-	public function editorfield($name, $value, $width="80%", $lang="es")
+	public function editorfield($name, $value, $width="80%", $lang="es", $website_id=NULL)
 	{
 		global $layout;
 		global $website;
 		global $user;
-        global $theme;
 
 		$height = 400;
+        
+        $ws = $website;
+        if(!empty($website_id) && $website_id!=$website->id)
+        {
+            $ws = new website();
+            $ws->load($website_id);
+        }
 
 		$text = htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true);
 
@@ -442,8 +448,8 @@ class naviforms
 
 		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.$text.'</textarea>';
 
-        $content_css = $website->content_stylesheets('tinymce', 'content');
-        $content_css_selectable = $website->content_stylesheets('tinymce', 'content_selectable');
+        $content_css = $ws->content_stylesheets('tinymce', 'content');
+        $content_css_selectable = $ws->content_stylesheets('tinymce', 'content_selectable');
         
 		/* disabled for tiny mce 4.x, problems with the compressor
         // remove cache if the server address has changed
@@ -619,7 +625,7 @@ class naviforms
                             if(!file_id || file_id=="" || file_id==0) return;
                             var media = $(ui.draggable).attr("mediatype");
                             var mime = $(ui.draggable).attr("mimetype");
-                            var web_id = "'.$website->id.'";
+                            var web_id = "'.$ws->id.'";
                             navigate_tinymce_add_content($("#'.$name.':tinymce").attr("id"), file_id, media, mime, web_id, ui.draggable);
                             $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 1);
                         },
@@ -647,10 +653,14 @@ class naviforms
 		return $out;
 	}
 	
-	public function dropbox($name, $value=0, $media="", $disabled=false, $default_value=null, $options=array())
+	public function dropbox($name, $value=0, $media="", $disabled=false, $default_value=null, $options=array(), $website_id=null)
 	{
 		global $layout;
 		global $website;
+        global $theme;
+
+        if(empty($website_id))
+            $website_id = $website->id;
 
 		$out = array();
         $out[] = '<div id="'.$name.'-droppable-wrapper" class="navigate-droppable-wrapper">';
@@ -665,7 +675,7 @@ class naviforms
             {
                 $f = new file();
                 $f->load($value);
-                $out[] = '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$f->id.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
+                $out[] = '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$f->id.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
             }
             else if($media=='video')
             {
@@ -717,21 +727,30 @@ class naviforms
                     ';
 
                     // "create" context menu actions (image picker)
+                    $ws = new website();
+                    if($website_id==$website->id)
+                        $ws = $website;
+                    else
+                        $ws->load($website_id);
+
+                    $ws_theme = new theme();
+                    if($website_id==$website->id)
+                        $ws_theme = $theme;
+                    else
+                        $ws_theme->load($ws->theme);
+
                     $layout->add_content('
                         <ul id="'.$name.'-image_picker" class="navigate-image-picker navi-ui-widget-shadow">
                             '.implode("\n", array_map(
-                                function($k, $v)
+                                function($k, $v) use ($website_id, $ws_theme)
                                 {
-                                    global $website;
-                                    global $theme;
-
-                                    if(!empty($theme))
-                                        $v = $theme->t($v);
+                                    if(!empty($ws_theme))
+                                        $v = $ws_theme->t($v);
 
                                     return '
-                                        <li data-value="'.$k.'" data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=75&amp;height=75">
+                                        <li data-value="'.$k.'" data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$k.'&amp;disposition=inline&amp;width=75&amp;height=75">
                                             <a href="#">
-                                                <img title="'.$v.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$k.'&amp;disposition=inline&amp;width=48&amp;height=48" />
+                                                <img title="'.$v.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$k.'&amp;disposition=inline&amp;width=48&amp;height=48" />
                                                 <span>'.$v.'</span>
                                             </a>
                                         </li>
@@ -777,7 +796,7 @@ class naviforms
                         <li action="description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
                     </ul>
                 ';
-
+                
                 $layout->add_script('
                     $("#'.$name.'-droppable").on("contextmenu", function(ev)
                     {
@@ -1013,7 +1032,6 @@ class naviforms
     public function dropdown_tree($id, $tree, $selected_value="", $onChange="eval")
     {
         global $layout;
-        global $website;
 
         $out = array();
 

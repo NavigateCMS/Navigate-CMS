@@ -18,7 +18,7 @@ function run()
 		case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
-				case 'search_links':
+				case 'search_links': // active website only!
 					$text = $_REQUEST['text'];
 					$lang = $_REQUEST['lang'];
 					if(empty($lang))
@@ -80,12 +80,14 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 
-					$DB->queryLimit('id,name,subdomain,domain,folder,homepage,permission,favicon',
-									'nv_websites',
-									$where,
-									$orderby,
-									$offset,
-									$max);
+					$DB->queryLimit(
+						'id,name,subdomain,domain,folder,homepage,permission,favicon',
+						'nv_websites',
+						$where,
+						$orderby,
+						$offset,
+						$max
+					);
 
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
@@ -95,10 +97,10 @@ function run()
 					$out = array();
 
 					$permissions = array(
-							0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
-							1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(70, 'Private'),
-							2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
-						);
+						0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
+						1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(70, 'Private'),
+						2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
+					);
 
 					for($i=0; $i < count($dataset); $i++)
 					{
@@ -171,7 +173,8 @@ function run()
 			$out = websites_form($item);
 			break;
 
-		case 4: // remove
+		case 'remove':
+		case 4:
 			if(!empty($_REQUEST['id']) && ($user->permission('websites.delete')=='true'))
 			{
 				$item->load(intval($_REQUEST['id']));
@@ -384,14 +387,16 @@ function websites_form($item)
 {
 	global $user;
 	global $DB;
-	global $website;
 	global $layout;
-    global $theme;
     global $events;
 
 	$navibars = new navibars();
 	$naviforms = new naviforms();
 	$layout->navigate_media_browser();	// we want to use media browser in this function
+
+	$theme = new theme();
+	if(!empty($item->theme))
+		$theme->load($item->theme);
 
 	if(empty($item->id))
 		$navibars->title(t(241, 'Websites').' / '.t(38, 'Create'));
@@ -1639,11 +1644,11 @@ function websites_form($item)
             $property = new property();
             $property->load_from_theme($theme_option, $item->theme_options->{$theme_option->id});
             $navibars->add_tab_content(
-	            navigate_property_layout_field($property)
+	            navigate_property_layout_field($property, "", $item->id)
             );
         }
 
-	    navigate_property_layout_scripts();
+	    navigate_property_layout_scripts($item->id);
     }
 
     $events->trigger(

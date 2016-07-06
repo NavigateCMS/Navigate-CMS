@@ -129,6 +129,13 @@ class website
 	{
         global $theme;
 
+		$ws_theme = $theme;
+		if($this->theme != $theme->name)
+		{
+			$ws_theme = new theme();
+			$ws_theme->load($this->theme);
+		}
+
 		$this->name				= $_REQUEST['title'];
 		
 		$this->protocol			= $_REQUEST['protocol'];
@@ -231,13 +238,13 @@ class website
         // Theme style (common property)
         $this->theme_options['style'] = $_REQUEST['property-style'];
 
-        if(!empty($theme->options))
+        if(!empty($ws_theme->options))
         {
-            foreach($theme->options as $theme_option)
+            foreach($ws_theme->options as $theme_option)
             {
                 // get property info
                 $property = new property();
-                $property->load_from_theme($theme_option);
+                $property->load_from_theme($theme_option, NULL, NULL, NULL, $this->id);
 
                 $value = '';
 
@@ -773,7 +780,14 @@ class website
     public function content_stylesheets($format='tinymce', $name='content', $merge=false)
     {
         global $theme;
-		
+
+		$ws_theme = $theme;
+		if($this->theme != $theme->name)
+		{
+			$ws_theme = new theme();
+			$ws_theme->load($this->theme);
+		}
+
         // determine stylesheets for content (website > theme + default navigate cms)
         $content_css = array();
 
@@ -782,23 +796,23 @@ class website
         if(!empty($this->tinymce_css))
             $content_css[] = $this->tinymce_css.'?bogus='.time();
 
-        if(!empty($this->theme) && !empty($theme))
+        if(!empty($this->theme) && !empty($ws_theme))
         {
             $style = @$this->theme_options->style;
 
 			if(empty($style))
 			{
-				$theme_styles = get_object_vars($theme->styles);
+				$theme_styles = get_object_vars($ws_theme->styles);
 				$theme_styles = array_values($theme_styles);
 				$style = $theme_styles[0]->name;
 			}
 
-	        if($name=='content_selectable' && !isset($theme->styles->$style->$name))
+	        if($name=='content_selectable' && !isset($ws_theme->styles->$style->$name))
 		        $name = 'content';
 
-            if(!empty($style) && !empty($theme->styles->$style->$name))
+            if(!empty($style) && !empty($ws_theme->styles->$style->$name))
             {
-                $style_content_css = explode(',', $theme->styles->$style->$name);
+                $style_content_css = explode(',', $ws_theme->styles->$style->$name);
                 foreach($style_content_css as $scc)
                 {
                     if(strpos($scc, 'http')===false)

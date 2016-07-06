@@ -54,19 +54,29 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
 	return implode("\n", $out);	
 }
 
-function navigate_property_layout_field($property, $object="")
+function navigate_property_layout_field($property, $object="", $website_id="")
 {
 	global $website;
 	global $layout;
     global $theme;
     global $DB;
 
+	$ws = $website;
+	$ws_theme = $theme;
+	if(!empty($website_id) && $website_id!=$website->id)
+	{
+		$ws = new website();
+		$ws->load($website_id);
+		$ws_theme = new theme();
+		$ws_theme->load($ws->theme);
+	}
+
 	// object used for translations (theme or extension)
 	if(empty($object))
-		$object = $theme;
+		$object = $ws_theme;
 
 	$naviforms = new naviforms();
-	$langs = $website->languages_list;
+	$langs = $ws->languages_list;
 
 	$field = array();
 
@@ -214,13 +224,13 @@ function navigate_property_layout_field($property, $object="")
 				{
 					$custom_stylesheet = $property->stylesheet;
 					if(strpos($custom_stylesheet, 'http')===false)
-                        $custom_stylesheet = NAVIGATE_URL.'/themes/'.$website->theme.'/'.$custom_stylesheet.'?bogus='.time();
+                        $custom_stylesheet = NAVIGATE_URL.'/themes/'.$ws->theme.'/'.$custom_stylesheet.'?bogus='.time();
 
 					$layout->add_style_tag($custom_stylesheet, false);
 
 					if(empty($options)) // parse stylesheet and try to identify all possible values
 					{
-						$custom_stylesheet_contents = file_get_contents(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$property->stylesheet);
+						$custom_stylesheet_contents = file_get_contents(NAVIGATE_PATH.'/themes/'.$ws->theme.'/'.$property->stylesheet);
 						$custom_stylesheet_contents = stylesheet_parse($custom_stylesheet_contents);
 
 						$options = array();
@@ -542,7 +552,7 @@ function navigate_property_layout_field($property, $object="")
 
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                 $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
-                $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang], $width);
+                $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang], $width, NULL, $website_id);
 	            $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	            if(!empty($property->helper))
 	            {
@@ -721,7 +731,7 @@ function navigate_property_layout_field($property, $object="")
             {
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
                 $field[] = '<label>'.$property_name.'</label>';
-                $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue, @$property->options);
+                $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "image", false, @$property->dvalue, @$property->options, $website_id);
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
@@ -747,7 +757,7 @@ function navigate_property_layout_field($property, $object="")
 
                     $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                     $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
-                    $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "image", false, @$property->dvalue);
+                    $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "image", false, @$property->dvalue, $website_id);
 	                if(!empty($property->helper))
 	                {
 		                $helper_text = $property->helper;
@@ -765,7 +775,7 @@ function navigate_property_layout_field($property, $object="")
             {
 	            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 	            $field[] = '<label>'.$property_name.'</label>';
-	            $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video", false, $property->dvalue);
+	            $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video", false, $property->dvalue, $website_id);
 		        if(!empty($property->helper))
 		        {
 			        $helper_text = $property->helper;
@@ -791,7 +801,7 @@ function navigate_property_layout_field($property, $object="")
 
 	                $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 		            $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
-		            $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "video", false, $property->dvalue);
+		            $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "video", false, $property->dvalue, $website_id);
 			        if(!empty($property->helper))
 			        {
 				        $helper_text = $property->helper;
@@ -807,7 +817,7 @@ function navigate_property_layout_field($property, $object="")
 		case 'file':
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 			$field[] = '<label>'.$property_name.'</label>';
-			$field[] = $naviforms->dropbox("property-".$property->id, $property->value);
+			$field[] = $naviforms->dropbox("property-".$property->id, $property->value, NULL, NULL, NULL, NULL, $website_id);
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;
@@ -829,7 +839,7 @@ function navigate_property_layout_field($property, $object="")
 			break;
 			
 		case 'category':
-            $hierarchy = structure::hierarchy(0);
+            $hierarchy = structure::hierarchy(0, $website_id);
             $categories_list = structure::hierarchyList($hierarchy, $property->value);
 
             if(empty($categories_list))
@@ -849,7 +859,7 @@ function navigate_property_layout_field($property, $object="")
             break;
 
         case 'categories':
-            $hierarchy = structure::hierarchy(0);
+            $hierarchy = structure::hierarchy(0, $website_id);
             $selected = explode(',', $property->value);
             if(!is_array($selected))
                 $selected = array($property->value);
@@ -857,7 +867,7 @@ function navigate_property_layout_field($property, $object="")
 
             $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
             $field[] = '<label>'.$property_name.'</label>';
-            $field[] = '<div class="category_tree" id="categories-tree-property-'.$property->id.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>';
+            $field[] = '<div class="category_tree" id="categories-tree-property-'.$property->id.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$ws->name.$categories_list.'</div>';
             $field[] = $naviforms->hidden('property-'.$property->id, $property->value);
             $field[] = '<label>&nbsp;</label>';
             $field[] = '<button id="categories_tree_select_all_categories-property-'.$property->id.'">'.t(481, 'Select all').'</button>';
@@ -927,10 +937,10 @@ function navigate_property_layout_field($property, $object="")
                     'text',
                     'nv_webdictionary',
                     '   node_type = "item" AND
-                        website = "'.$website->id.'" AND
+                        website = "'.$ws->id.'" AND
                         node_id = "'.$property->value.'" AND
                         subtype = "title" AND
-                        lang = "'.$website->languages_published[0].'"'
+                        lang = "'.$ws->languages_published[0].'"'
                 );
 	            $property_item_title = array($property_item_title);
 	            $property_item_id = array($property->value);
@@ -1026,12 +1036,19 @@ function navigate_property_layout_field($property, $object="")
 	return implode("\n", $field);
 }
 
-function navigate_property_layout_scripts()
+function navigate_property_layout_scripts($website_id="")
 {
 	global $layout;
 	global $website;
 
-	$ws_languages = $website->languages();
+	$ws = $website;
+	if(!empty($website_id) && $website->id!=$website_id)
+	{
+		$ws = new website();
+		$ws->load($website_id);
+	}
+
+	$ws_languages = $ws->languages();
 	$default_language = array_keys($ws_languages);
     $default_language = $default_language[0];
 

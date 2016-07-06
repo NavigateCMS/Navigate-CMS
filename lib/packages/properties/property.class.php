@@ -113,23 +113,33 @@ class property
 			$option = explode('#', $option, 2);
 			if(empty($option[1])) continue;
 			$this->options[trim($option[0])] = trim($option[1]);
-		}		
+		}
 	}
 
-    public function load_from_theme($theme_option, $value=null, $source='website', $template='')
+    public function load_from_theme($theme_option, $value=null, $source='website', $template='', $website_id=NULL)
     {
         global $website;
         global $theme;
+
+        $ws = $website;
+        $ws_theme = $theme;
+        if(!empty($website_id) && $website_id!=$website->id)
+        {
+            $ws = new website();
+            $ws->load($website_id);
+            $ws_theme = new theme();
+            $ws_theme->load($website->theme);
+        }
 
         if(is_string($theme_option))
         {
             // theme_option as ID, not object
             if($source=='website')
             {
-                if(empty($theme->options))
-                    $theme->options = array();
+                if(empty($ws_theme->options))
+                    $ws_theme->options = array();
 
-                foreach($theme->options as $to)
+                foreach($ws_theme->options as $to)
                 {
                     if($to->id==$theme_option || $to->name==$theme_option)
                     {
@@ -141,10 +151,10 @@ class property
             }
             else if($source=='template')
             {
-                if(empty($theme->templates))
-                    $theme->templates = array();
+                if(empty($ws_theme->templates))
+                    $ws_theme->templates = array();
 
-                foreach($theme->templates as $tt)
+                foreach($ws_theme->templates as $tt)
                 {
                     if($tt->type != $template)
                         continue;
@@ -168,7 +178,7 @@ class property
         }
 
         $this->id = $theme_option->id;
-        $this->website = $website->id;
+        $this->website = $ws->id;
        	$this->element = $theme_option->element;
        	$this->template = '';
        	$this->name = $theme_option->name;
@@ -183,15 +193,15 @@ class property
        	$this->enabled = 1;
 
         if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
-            $this->name = $theme->t(substr($this->name, 1));
+            $this->name = $ws_theme->t(substr($this->name, 1));
 
         if(substr($this->helper, 0, 1)=='@')
-            $this->helper = $theme->t(substr($this->helper, 1));
+            $this->helper = $ws_theme->t(substr($this->helper, 1));
 
         $this->value = $value;
 
-        if(!isset($value) && isset($website->theme_options->{$this->id}))
-            $this->value = $website->theme_options->{$this->id};
+        if(!isset($value) && isset($ws->theme_options->{$this->id}))
+            $this->value = $ws->theme_options->{$this->id};
 
         if(empty($this->value) && empty($this->id))
             $this->value = $this->dvalue;
