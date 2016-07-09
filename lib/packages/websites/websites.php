@@ -951,6 +951,13 @@ function websites_form($item)
     if(empty($item->languages))
         $item->languages = array();
 
+	// add previously assigned locales if they are missing
+	foreach($item->languages as $lcode => $ldef)
+	{
+		if(!in_array($ldef['system_locale'], $locales))
+			$locales[$ldef['system_locale']] = '? ['.$ldef['system_locale'].']';
+	}
+
     $p = 0;
     foreach($item->languages as $lcode => $ldef)
     {
