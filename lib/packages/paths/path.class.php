@@ -86,6 +86,7 @@ class path
 				"path" => value_or_default($this->path, ""),
 				"cache_file" => $this->cache_file,
 				"cache_expires" => value_or_default($this->cache_expires, 0),
+				"views" => value_or_default($this->views, 0),
 			    "website" => value_or_default($this->website, $website->id)
 			)
 		);
@@ -185,16 +186,17 @@ class path
     
 			$ok = $DB->execute('
  				INSERT INTO nv_paths
-				(id, website, type, object_id, lang, path, cache_file, cache_expires)
+				(id, website, type, object_id, lang, path, cache_file, cache_expires, views)
 				VALUES
-				( 0, :website, :type, :object_id, :lang, :path, "", 0 )
+				( 0, :website, :type, :object_id, :lang, :path, "", 0, :views )
 				',
 				array(
 					':website' => $website_id,
 					':type' => $type,
 					':object_id' => $object_id,
 					':lang' => $lang,
-					':path' => $path
+					':path' => $path,
+                    ':views' => 0,
 				)
 			);
   			

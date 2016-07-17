@@ -330,7 +330,7 @@ class item
                 ":author" => value_or_default($this->author, ''),
                 ":galleries" => serialize($this->galleries),
                 ":comments_enabled_to" => value_or_default($this->comments_enabled_to, 0),
-                ":comments_moderator" => value_or_default($this->comments_moderator, ""),
+                ":comments_moderator" => value_or_default($this->comments_moderator, 0),
                 ":access" => value_or_default($this->access, 0),
                 ":groups" => $groups,
                 ":permission" => value_or_default($this->permission, 0),

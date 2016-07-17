@@ -877,6 +877,8 @@ class property
             if($property->type=='boolean' && empty($value))
                 $value = 0;
 
+            if(is_null($value)) $value = ""; // should not be needed because of value_or_default, but doing this here fixes some warnings
+
            // remove the old element
             $DB->execute('
 				DELETE FROM nv_properties_items
