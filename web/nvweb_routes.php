@@ -75,10 +75,12 @@ function nvweb_load_website_by_url($url, $exit=true)
 			if(!isset($alias_parsed['path']))
 				$alias_parsed['path'] = "";
 
+            $rud_path = rawurldecode($alias_parsed['path']);
+
 	        // check the path section
 			if(	($path == $alias_parsed['path']) ||
 				($path == '/nvweb.home' && empty($alias_parsed['path'])) ||
-				(!empty($path) && strpos($path, rawurldecode($alias_parsed['path']), 0) !== false)
+				(!empty($path) && !empty($rud_path) && strpos($path, $rud_path, 0) !== false)
 			)
 			{
 				// alias path is included in the requested path
