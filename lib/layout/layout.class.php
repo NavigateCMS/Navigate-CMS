@@ -745,6 +745,7 @@ class layout
         $this->add_script(' var navigate = Array(); ');
         $this->add_script(' navigate["website_id"] = "'.$website->id.'";');
         $this->add_script(' navigate["session_id"] = "'.session_id().'";');
+        $this->add_script(' navigate["word_separator"] = "'.$website->word_separator.'";');
     }
 	
 	public function navigate_notification($text, $isError=false, $sticky=false)

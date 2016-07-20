@@ -3799,5 +3799,29 @@
                 <target>Replace text</target>
             </segment>
         </unit>
+        <unit id="633">
+            <segment>
+                <source>Word separator in paths</source>
+                <target>Word separator in paths</target>
+            </segment>
+        </unit>
+        <unit id="634">
+            <segment>
+                <source>Hyphen</source>
+                <target>Hyphen</target>
+            </segment>
+        </unit>
+        <unit id="635">
+            <segment>
+                <source>Underscore</source>
+                <target>Underscore</target>
+            </segment>
+        </unit>
+		<unit id="636">
+			<segment>
+				<source>Existing paths will not be modified</source>
+				<target>Existing paths will not be modified</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

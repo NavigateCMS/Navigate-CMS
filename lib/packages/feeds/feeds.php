@@ -442,8 +442,9 @@ function feeds_form($item)
 			var surl = "";
 			surl = "/" + language;
 			var title = $("#title-"+language).val();
-			title = title.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
-			title = title.replace(/[.\s]+/g, "_");
+            title = title.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");            
+			title = title.replace(/[.\s]+/g, navigate["word_separator"]);
+
 			surl += "/" + title;
 			$(el).val(surl.toLowerCase());
 			navigate_feeds_path_check(el);
@@ -461,7 +462,7 @@ function feeds_form($item)
 			if(path==last_check[$(el).id]) return;
 
 			path = path.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
-			path = path.replace(/[.\s]+/g, "_");
+			path = path.replace(/[.\s]+/g, navigate["word_separator"]);
 
 			$(el).val(path);
 			

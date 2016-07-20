@@ -1147,6 +1147,29 @@ function websites_form($item)
 
 	$navibars->add_tab(t(9, "Content"));
 
+    // keep the default value for Navigate CMS < 2.0
+    if(empty($item->word_separator))
+        $item->word_separator = "_";
+
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(633, 'Word separator in paths').'</label>',
+			$naviforms->selectfield(
+                'word_separator',
+                array(
+                    0 => '-',
+                    1 => '_'
+                ),
+                array(
+                    0 => t(634, "Hyphen")." /navigate-cms",
+                    1 => t(635, "Underscore")." /navigate_cms"
+                ),
+                $item->word_separator
+            ),
+            '<span class="navigate-form-row-info">'.t(636, 'Existing paths will not be modified').'</span>'
+        )
+    );
+
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(50, 'Date format').'</label>',
@@ -1213,13 +1236,17 @@ function websites_form($item)
         )
     );
 
-	$navibars->add_tab_content_row(
-        array(
-            '<label>tinyMCE CSS</label>',
-			$naviforms->textfield('tinymce_css', $item->tinymce_css),
-			'<span class="navigate-form-row-info">'.t(230, 'Ex.').' /css/style.content.css</span>'
-        )
-    );
+    // navigate cms 2.0.2: website->tinymce_css field is DEPRECATED (will be removed in a future revision)
+    if(!empty($item->tinymce_css))
+    {
+        $navibars->add_tab_content_row(
+            array(
+                '<label>tinyMCE CSS</label>',
+                $naviforms->textfield('tinymce_css', $item->tinymce_css),
+                '<span class="navigate-form-row-info">'.t(230, 'Ex.').' /css/style.content.css</span>'
+            )
+        );
+    }
 
 	$navibars->add_tab_content_row(
         array(
@@ -1232,7 +1259,7 @@ function websites_form($item)
 		array(
 			'<label>'.t(597, 'Share files in media browser').'</label>',
 			$naviforms->checkbox('share_files_media_browser', ($item->share_files_media_browser=='1')),
-			'<span class="navigate-form-row-info">'.t(598, 'Only between websites of the current Navigate CMS installation').'</span>'
+			'<span class="navigate-form-row-info">('.t(598, 'Only between websites of the current Navigate CMS installation').')</span>'
 		)
 	);
 

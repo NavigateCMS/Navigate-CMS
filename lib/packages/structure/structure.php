@@ -883,14 +883,15 @@ function structure_form($item)
 			else
 				surl = "/" + language;
 			var title = $("#title-"+language).val();
-			title = title.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
-			title = title.replace(/[.\s]+/g, "_");
+            title = title.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
+			title = title.replace(/[.\s]+/g, navigate["word_separator"]);
+
 			surl += "/" + title;
 			$(el).val(surl.toLowerCase());
 			navigate_structure_path_check(el);
 		}		
 		
-		function navigate_structure_path_check(el)
+		function navigate_structure_path_check(el)		
 		{
 		    var caret_position = null;
             if($(el).is("input") && $(el).is(":focus"))
@@ -902,8 +903,8 @@ function structure_form($item)
 			if(path==last_check[$(el).id]) return;
 			if(path.indexOf("http")==0) return; // ignore paths starting with http/https
 
-			path = path.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
-			path = path.replace(/[.\s]+/g, "_");
+            path = path.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
+			path = path.replace(/[.\s]+/g, navigate["word_separator"]);
 
 			$(el).val(path);
 			

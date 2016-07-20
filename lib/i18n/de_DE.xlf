@@ -3799,5 +3799,29 @@
                 <target>Ersetzen von Text</target>
             </segment>
         </unit>
+		<unit id="633">
+			<segment>
+				<source>Word separator in paths</source>
+				<target>Wortbegrenzungszeichen in Pfade</target>
+			</segment>
+		</unit>
+		<unit id="634">
+			<segment>
+				<source>Hyphen</source>
+				<target>Bindestrich</target>
+			</segment>
+		</unit>
+		<unit id="635">
+			<segment>
+				<source>Underscore</source>
+				<target>Unterstrich</target>
+			</segment>
+		</unit>
+        <unit id="636">
+            <segment>
+                <source>Existing paths will not be modified</source>
+                <target>Bestehende Wege werden nicht verändert</target>
+            </segment>
+        </unit>
 	</file>
 </xliff>

@@ -1980,7 +1980,7 @@ function blocks_type_form($item)
 	$navibars->add_tab_content_row(array(	'<label>ID</label>',
 											'<span>'.(!empty($item['id'])? $item['id'] : t(52, '(new)')).'</span>' ));
 
-    // TODO: in Navigate 1.9 add several block types (p.e. Ad (Google adsense, ...), Map (Bing, Yahoo, Google, ...))
+    // TODO: in Navigate CMS 2.0+ add several block types (p.e. Ad (Google adsense, ...), Map (Bing, Yahoo, Google, ...))
     $block_modes = block::modes();
     $navibars->add_tab_content_row(
         array(
@@ -2085,12 +2085,12 @@ function blocks_type_form($item)
             if($("#code").val()!="")
                 return;
             var title = $("#title").val();
-			title = title.replace(/([\'"?:\+\&!¿#\\\\])/g, "");
-			title = title.replace(/[.\s]+/g, "_");
+			title = title.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
+			title = title.replace(/[.\s]+/g, navigate["word_separator"]);
             $("#code").val(title.toLowerCase());
         }
 
-        $("#code").bind("focus", function()
+        $("#code").on("focus", function()
         {
             if($(this).val() == "")
                 navigate_blocks_code_generate();

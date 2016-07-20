@@ -26,6 +26,7 @@ class website
 	public $default_timezone;
     public $aliases;
 	//public $server_time_offset;
+    public $word_separator;
 	public $metatag_description;  // multilanguage
 	public $metatag_keywords;  // multilanguage
     public $metatags; // multilanguage
@@ -78,7 +79,8 @@ class website
 		$this->protocol			= $main->protocol;
 		$this->subdomain		= $main->subdomain;
 		$this->domain			= $main->domain;				
-		$this->folder			= $main->folder;		
+		$this->folder			= $main->folder;
+        $this->word_separator	= $main->word_separator;
 
 		$this->redirect_to		= $main->redirect_to;
         $this->wrong_path_action= $main->wrong_path_action;
@@ -141,7 +143,8 @@ class website
 		$this->protocol			= $_REQUEST['protocol'];
 		$this->subdomain		= $_REQUEST['subdomain'];
 		$this->domain			= $_REQUEST['domain'];				
-		$this->folder			= $_REQUEST['folder'];				
+		$this->folder			= $_REQUEST['folder'];
+        $this->word_separator	= $_REQUEST['word_separator'];
 
         $this->redirect_to		= $_REQUEST['redirect_to'];
         $this->wrong_path_action= $_REQUEST['wrong_path_action'];
@@ -366,6 +369,7 @@ class website
                     'website_id' => $this->id,
                     'url' => $this->absolute_path(),
                     'folder' => $this->folder,
+                    'word_separator' => $this->word_separator,
                     'homepage' => $this->homepage,
                     'theme' => $this->theme,
                     'emails' => serialize($this->contact_emails),
@@ -392,7 +396,7 @@ class website
 		    INSERT INTO nv_websites
             (	id, name, protocol, subdomain, domain, folder, redirect_to, 
             	wrong_path_action, empty_path_action,
-                languages, languages_published,
+                languages, languages_published, word_separator,
                 aliases, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
                 additional_scripts, permission,
@@ -413,6 +417,7 @@ class website
               :languages,
               :languages_published,
               :aliases,
+              :word_separator,
               :date_format,
               :tinymce_css,
               :resize_uploaded_images,
@@ -450,6 +455,7 @@ class website
 				":languages" => (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				":languages_published" => (is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
 				":aliases" => json_encode($this->aliases),
+                ":word_separator" => value_or_default($this->word_separator, "-"),
 				":date_format" => $this->date_format,
 				":tinymce_css" => value_or_default($this->tinymce_css, ''),
 				":resize_uploaded_images" => value_or_default($this->resize_uploaded_images, ''),
@@ -503,6 +509,7 @@ class website
                     'website_id' => $this->id,
                     'url' => $this->absolute_path(),
                     'folder' => $this->folder,
+                    'word_separator' => $this->word_separator,
                     'homepage' => $this->homepage,
                     'theme' => $this->theme,
                     'emails' => serialize($this->contact_emails),
@@ -539,6 +546,7 @@ class website
                     languages = ?,
                     languages_published = ?,
                     aliases = ?,
+                    word_separator = ?,
                     date_format = ?,
                     tinymce_css = ?,
                     resize_uploaded_images = ?,
@@ -576,6 +584,7 @@ class website
                 (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				(is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
                 json_encode($this->aliases),
+                value_or_default($this->word_separator, "-"),
                 $this->date_format,
                 value_or_default($this->tinymce_css, ""),
                 $this->resize_uploaded_images,
@@ -628,6 +637,7 @@ class website
                     'name' => $this->name,
                     'url' => $this->absolute_path(),
                     'folder' => $this->folder,
+                    'word_separator' => $this->word_separator,
                     'homepage' => $this->homepage,
                     'theme' => $this->theme,
                     'emails' => serialize($this->contact_emails),
@@ -697,6 +707,7 @@ class website
         $this->domain			= $domain;
         $this->folder			= $folder;
         $this->redirect_to      = '';
+        $this->word_separator   = '-';
         $this->date_format		= 'Y/m/d';
         $this->homepage			= '/en/home';
         $this->permission		= 0;
