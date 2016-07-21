@@ -3823,5 +3823,11 @@
                 <target>Bestehende Wege werden nicht verändert</target>
             </segment>
         </unit>
+		<unit id="637">
+			<segment>
+				<source>Website notes</source>
+				<target>Website Notizen</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

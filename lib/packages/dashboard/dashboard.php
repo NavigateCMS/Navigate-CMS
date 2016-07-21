@@ -488,6 +488,71 @@ function dashboard_create()
         );
     }
 
+    $layout->navigate_notes_dialog('website', $website->id);
+    $public_wall_notes = grid_notes::comments('website', $website->id);
+    $elements_html = '
+        <div class="navigate-panel-model-row hidden">
+            <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public hide">
+                <span data-field="date"></span> 
+                <span data-field="username"><strong>'.$public_wall_notes[$e]['username'].'</strong></span>
+            </div>
+            <div data-field="note" class="navigate-panel-recent-comments-element"></div>
+        </div>
+    ';
+    for($e = 0; $e < 4; $e++)
+    {
+        if(!isset($public_wall_notes[$e]))
+            break;
+
+        $tmp = array(
+            '<div class="navigate-panel-public-wall-note" id="website-note-'.$public_wall_notes[$e]['id'].'">',
+            '<div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
+               '<span data-field="date">'.$public_wall_notes[$e]['date'].'</span> '.
+               '<span data-field="username"><strong>'.$public_wall_notes[$e]['username'].'</strong></span>'.
+            '</div>',
+            '<div data-field="note" class="navigate-panel-recent-comments-element">'.$public_wall_notes[$e]['note'].'</div>',
+            '</div>'
+        );
+
+        $elements_html .= implode("\n", $tmp);
+    }
+
+    $navibars->add_tab_content_panel(
+        '<img src="img/icons/silk/note.png" align="absmiddle" /> '.t(637, 'Website notes').
+        '<div style="float: right; cursor: pointer;" onclick="navigate_display_notes_dialog(navigate_dashboard_website_notes_update);">
+            <img src="img/icons/silk/add.png" width="18px" height="18px" class="grid_note_edit" align="absmiddle" />
+         </div>'.
+        '<div style="float: right;" onclick="navigate_display_notes_dialog(navigate_dashboard_website_notes_update);">
+            <span class="navigate_grid_notes_span">'.count($public_wall_notes).'</span><img src="img/skins/badge.png" ng-notes="'.count($public_wall_notes).'" width="18px" height="18px" class="grid_note_edit" align="absmiddle" />
+        </div>',
+        $elements_html,
+        'navigate-panel-public-wall',
+        '385px',
+        '162px'
+    );
+
+    $layout->add_script('
+        function navigate_dashboard_website_notes_update(object_type, object_id)
+        {
+            $("#navigate-panel-public-wall").find(".navigate-panel-public-wall-note").remove();
+            $.getJSON("?fid=grid_notes&object="+object_type+"&act=grid_notes_comments&id="+object_id, function(data)
+                {
+                    $(data).each(function(i)
+                    {                    
+                        var model = $(".navigate-panel-model-row").html();            
+                        var row = \'<div class="navigate-panel-public-wall-note" id="website-note-\'+this.id+\'">\';
+                        row = row + model + \'</div>\';
+                        $("#navigate-panel-public-wall > div:last").append(row);
+                                                                                                                                    
+                        var row = $("#navigate-panel-public-wall div.navigate-panel-public-wall-note:last");
+                        $(row).find("span[data-field=date]").html(this.date);
+                        $(row).find("span[data-field=username] strong").html(this.date);
+                        $(row).find("div[data-field=note]").html(this.note);
+                    });
+                }
+            );
+        }
+    ');
 
 	//$navibars->add_tab(t(62, "Statistics"));
 	

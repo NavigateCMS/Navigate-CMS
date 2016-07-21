@@ -109,8 +109,6 @@ class layout
 		$this->add_script_tag('lib/external/jquery-tag-it/js/tag-it.js');
 		$this->add_style_tag('lib/external/jquery-tag-it/css/jquery.tagit.css');
 
-		//  $this->add_script_tag('js/jstree/jquery.jstree.js');    // unused!
-
 		$this->add_script_tag('js/star-rating/jquery.rating.js');
 		$this->add_script_tag('js/star-rating/jquery.MetaData.js');		
 		$this->add_style_tag('js/star-rating/jquery.rating.css');
@@ -783,7 +781,7 @@ class layout
         $grid_control_url = "?fid=grid_notes&object=".$element_type."&act=";
 
         $this->add_script("
-            function navigate_display_notes_dialog()
+            function navigate_display_notes_dialog(callback)
             {
                 var row_id = ".$element_id.";
                 // open item notes dialog
@@ -825,6 +823,7 @@ class layout
                                         if(number_of_notes < 0) number_of_notes = 0;
                                         $(grid_note).fadeOut();
                                         $('.navigate_grid_notes_span').html(number_of_notes);
+                                        if(callback) callback('".$element_type."', '".$element_id."');
                                     }
                                 });
                             });
@@ -852,6 +851,7 @@ class layout
                                     {
                                         $(container).parent().remove();
                                         $('.navigate_grid_notes_span').html(parseInt($('.navigate_grid_notes_span').text()) + 1);
+                                        if(callback) callback('".$element_type."', '".$element_id."');
                                     }
                                 });
                             });

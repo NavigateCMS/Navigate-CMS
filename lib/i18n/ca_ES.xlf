@@ -3823,5 +3823,11 @@
 				<target>Les rutes existents no es modificaran</target>
 			</segment>
 		</unit>
+		<unit id="637">
+			<segment>
+				<source>Website notes</source>
+				<target>Notes del lloc web</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>
