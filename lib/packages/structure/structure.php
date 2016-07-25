@@ -485,19 +485,28 @@ function structure_form($item)
 	else
 		$navibars->title(t(16, 'Structure').' / '.t(170, 'Edit').' ['.$item->id.']');
 
-	$navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+	$navibars->add_actions(
+	    array(
+	        '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
+        )
+    );
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+            )
+        );
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
 
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -619,70 +628,55 @@ function structure_form($item)
         }
     ');
 
-    /*
-	$navibars->add_tab_content_row(array(	'<label>'.t(84, 'Parent').'</label>',
-											'<div class="category_tree" id="category-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
-										));		
-										
-	$layout->add_script('$("#category-tree-parent ul:first").kvaTree({
-	        imgFolder: "js/kvatree/img/",
-			dragdrop: false,
-			background: "#f2f5f7",
-			onClick: function(event, node)
-			{
-				$("input[name=\"parent\"]").val($(node).attr("value"));	
-				$.ajax({
-				  url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=category_path&id=" + $(node).attr("value"),
-				  dataType: "json",
-				  data: {},
-				  success: function(data, textStatus, xhr)
-				  {
-					  item_category_path = data;
-				  }
-				});
-			}
-		});');
-    */
-
 	$templates = template::elements('structure');
 	$template_select = $naviforms->select_from_object_array('template', $templates, 'id', 'title', $item->template);
 										                    
-	$navibars->add_tab_content_row(array(	'<label>'.t(79, 'Template').'</label>',
-											$template_select,
-										));		
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(79, 'Template').'</label>',
+		    $template_select,
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(85, 'Date published').'</label>',
-											$naviforms->datefield('date_published', $item->date_published, true),
-										));		
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(85, 'Date published').'</label>',
+		    $naviforms->datefield('date_published', $item->date_published, true),
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(90, 'Date unpublished').'</label>',
-											$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
-										));																	
-																							
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(90, 'Date unpublished').'</label>',
+		    $naviforms->datefield('date_unpublish', $item->date_unpublish, true),
+	    )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(364, 'Access').'</label>',
-											$naviforms->selectfield('access', 
-												array(
-														0 => 0,
-														1 => 2,
-														2 => 1,
-														3 => 3
-													),
-												array(
-														0 => t(254, 'Everybody'),
-                                                        1 => t(362, 'Not signed in'),
-                                                        2 => t(361, 'Web users only'),
-														3 => t(512, 'Selected web user groups')
-													),
-												$item->access,
-												'navigate_webuser_groups_visibility($(this).val());',
-												false,
-												array(
-														1 => t(363, 'Users who have not yet signed in')
-												)
-											)
-										)
-									);
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(364, 'Access').'</label>',
+            $naviforms->selectfield('access',
+                array(
+                        0 => 0,
+                        1 => 2,
+                        2 => 1,
+                        3 => 3
+                    ),
+                array(
+                        0 => t(254, 'Everybody'),
+                        1 => t(362, 'Not signed in'),
+                        2 => t(361, 'Web users only'),
+                        3 => t(512, 'Selected web user groups')
+                    ),
+                $item->access,
+                'navigate_webuser_groups_visibility($(this).val());',
+                false,
+                array(
+                        1 => t(363, 'Users who have not yet signed in')
+                )
+            )
+        )
+    );
 
     $webuser_groups = webuser_group::all_in_array();
 
@@ -745,12 +739,15 @@ function structure_form($item)
 		)
 	);
 
-	$navibars->add_tab_content_row(
-		array(
-			'<label>'.t(280, 'Page views').'</label>',
-			$item->views
-		)
-	);
+    if($item->views > 0)
+    {
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(280, 'Page views').'</label>',
+                $item->views
+            )
+        );
+    }
 									
 											
 	$navibars->add_tab(t(54, "Text").' / '.t(74, "Paths"));
@@ -767,17 +764,23 @@ function structure_form($item)
 	}
 	$lang_selector[] = '</div>';
 	
-	$navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-											implode("\n", $lang_selector)
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(63, 'Languages').'</label>',
+			implode("\n", $lang_selector)
+        )
+    );
 											
 	foreach($website->languages_list as $lang_code)
 	{		
 		$navibars->add_tab_content('<div class="language_fields" id="language_fields_'.$lang_code.'" style=" display: none; ">');
 		
-		$navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-												$naviforms->textfield('title-'.$lang_code, @$item->dictionary[$lang_code]['title'])
-											));		
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(67, 'Title').'</label>',
+				$naviforms->textfield('title-'.$lang_code, @$item->dictionary[$lang_code]['title'])
+            )
+        );
 											
 		$open_live_site = '';												
 		if(!empty($item->paths[$lang_code]))
@@ -843,7 +846,10 @@ function structure_form($item)
 		$navibars->add_tab_content_row(
             array(
                 '<label>'.t(325, 'Branch').'</label>',
-				'<div class="category_tree" id="category_tree_jump_branch_'.$lang_code.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>',
+				'<div class="category_tree" id="category_tree_jump_branch_'.$lang_code.'">
+				        <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+                        '<div class="category_tree_ul">'.$categories_list.'</div>'.
+                '</div>',
 				$naviforms->hidden('action-jump-branch-'.$lang_code, $item->dictionary[$lang_code]['action-jump-branch'])
             )
         );
@@ -968,15 +974,27 @@ function structure_form($item)
 				case "jump-branch":
 					$("#action-new-window-" + language).parent().show();
 					$("#action-jump-branch-" + language).parent().show();
-					$("#category_tree_jump_branch_" + language+ " ul:first").kvaTree({
-									imgFolder: "js/kvatree/img/",
-									dragdrop: false,
-									background: "#f2f5f7",
-									onClick: function(event, node)
-									{
-										$("#action-jump-branch-" + language).val($(node).attr("value"));	
-									}
-								});					
+					
+					$("#category_tree_jump_branch_" + language+ " .category_tree_ul").jstree({
+                        plugins: ["changed", "types"],
+                        "types" : 
+                        {
+                            "default":  {   "icon": "img/icons/silk/folder.png"    },
+                            "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+                        },
+                        "core" : 
+                        {
+                            "multiple" : false
+                        }
+					}).on("changed.jstree", function(e, data) 
+					{
+                        var i, j, r = [];
+                        for(i = 0, j = data.selected.length; i < j; i++) 
+                        {
+                            var selected_node = data.instance.get_node(data.selected[i]).data.nodeId;
+                            $("#action-jump-branch-" + language).val(selected_node);
+                        }
+                    });                    
 					break;
 					
 				case "jump-item":

@@ -88,7 +88,7 @@ function about_layout()
                                             '<a href="http://mind2soft.com/labs/jquery/multiselect/" target="_blank">jQuery UIx Multiselect v2.0RC</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.prokvk.com/en/kvatree-jquery-plugin.html" target="_blank">kvaTree v1.0</a><br />' ));
+											'<a href="http://www.jstree.com" target="_blank">jsTree v3.3.1</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://www.plupload.com/" target="_blank">Plupload v2.0.0</a><br />' ));

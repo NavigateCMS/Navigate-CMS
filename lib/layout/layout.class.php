@@ -109,12 +109,12 @@ class layout
 		$this->add_script_tag('lib/external/jquery-tag-it/js/tag-it.js');
 		$this->add_style_tag('lib/external/jquery-tag-it/css/jquery.tagit.css');
 
+        $this->add_style_tag('js/jstree/themes/default/style.css');
+		$this->add_script_tag('js/jstree/jstree.js');
+
 		$this->add_script_tag('js/star-rating/jquery.rating.js');
 		$this->add_script_tag('js/star-rating/jquery.MetaData.js');		
 		$this->add_style_tag('js/star-rating/jquery.rating.css');
-
-		$this->add_script_tag('js/kvatree/js/kvaTree.js');			
-		$this->add_style_tag('js/kvatree/css/kvaTree.css');
 
 		$this->add_script_tag('js/plugins/dropzone.js');
 
@@ -1282,8 +1282,8 @@ class layout
 		$html[] = '<div class="navigate-form-row hidden">';
 		$html[] = '<label>'.t(78, 'Category').'</label>';
 		$html[] = '<div class="category_tree" id="nv_link_dialog_category">
-						<img src="img/icons/silk/world.png" align="absmiddle" /> '.
-						$website->name.$categories_list.'
+						<img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+                        '<div class="tree_ul">'.$categories_list.'</div>
 					</div>';
 		$html[] = '</div>';
 
@@ -1340,37 +1340,39 @@ class layout
 				}, 100);
 			}
 		
-			$("#nv_link_dialog_category ul:first").kvaTree(
-			{
-				imgFolder: "js/kvatree/img/",
-				dragdrop: false,
-				background: "#f2f5f7",
-				overrideEvents: true,
-				onClick: function(event, node)
-				{
-					$("#nv_link_dialog_category span").removeClass("active");				
-					$(node).find("span:first").addClass("active");
-					
-					if($("#nv_link_dialog_category span.active").length > 0)
-					{				
-						var id = $("#nv_link_dialog_category span.active").parent().attr("value");
-						var text = $("#nv_link_dialog_category span.active").text();
-											
-						$("#nv_link_dialog_dynamic_path strong").html("nv://structure/" + id);
-								
-						$("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
-						$("#nv_link_dialog_replace_text").parent().removeClass("hidden");
-						$("#nv_link_dialog_title").val(text);
-					}
-					else
-					{
-						$("#nv_link_dialog_real_path").parent().addClass("hidden");
-						$("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
-						$("#nv_link_dialog_replace_text").parent().addClass("hidden");
-						$("#nv_link_dialog_title").val("");
-					}						
-				}
-			});
+		    $("#nv_link_dialog_category .tree_ul").jstree({
+                plugins: ["changed", "types"],
+                "types" : 
+                {
+                    "default":  {   "icon": "img/icons/silk/folder.png"    },
+                    "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+                },
+                "core" : 
+                {
+                    "multiple" : false
+                }
+            }).on("changed.jstree", function(e, data) 
+            {                               
+                if(data.selected.length > 0)
+                {				
+                    var node = data.instance.get_node(data.selected[0]);
+                    var id = node.data.nodeId;
+                    var text = $(node.text).text();
+                                        
+                    $("#nv_link_dialog_dynamic_path strong").html("nv://structure/" + id);
+                            
+                    $("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
+                    $("#nv_link_dialog_replace_text").parent().removeClass("hidden");
+                    $("#nv_link_dialog_title").val(text);
+                }
+                else
+                {
+                    $("#nv_link_dialog_real_path").parent().addClass("hidden");
+                    $("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+                    $("#nv_link_dialog_replace_text").parent().addClass("hidden");
+                    $("#nv_link_dialog_title").val("");
+                }		
+            });				   
 
 			$("#nv_link_dialog_element").select2(
                 {

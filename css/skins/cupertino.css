@@ -2352,10 +2352,17 @@ ul.ui-sortable li.tagit-choice
 	width: 280px;
 }
 
-ul.kvaTree li span.text 
+/* jstree styles */
+.jstree-default .jstree-clicked
 {
-    cursor: pointer;
+	background: #c3e1ff;
 }
+
+.jstree-default .jstree-hovered
+{
+	background: rgba(195, 225, 255, 0.6);
+}
+
 
 #navigate_grid_color_picker
 {

@@ -53,7 +53,10 @@ class naviorderedtable
 		
 		foreach($columns as $col)
 		{
-			@$this->rows[] = '<td align="'.$col['align'].'">'.$col['content'].'</td>';
+		    if(!isset($col['style']))
+                $col['style'] = "";
+
+			@$this->rows[] = '<td align="'.$col['align'].'" style="'.$col['style'].'">'.$col['content'].'</td>';
 		}
 		
 		$this->rows[] = '</tr>';				

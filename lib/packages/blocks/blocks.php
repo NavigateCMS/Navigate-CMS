@@ -1139,11 +1139,14 @@ function blocks_form($item)
 	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlinks['icon'][$key].'"  data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
                                 ),
                                 array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
-                                array(	'content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" data-role="link" style="width: 300px;" />'.
+                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" data-role="link" style="width: 260px;" />'.
 													 '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
-										'align' => 'left'),
+                                      'align' => 'left',
+                                      'style' => 'white-space: nowrap;'
+                                ),
                                 array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
-                                                    <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />', 'align' => 'left'),
+                                                    <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
+                                      'align' => 'left'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                             )
                         );
@@ -1159,13 +1162,13 @@ function blocks_form($item)
                             array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="" data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
                         ),
                         array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" data-role="title" style="width: 250px;" />', 'align' => 'left'),
-                        array(	'content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" data-role="link" style="width: 300px;" />'.
+                        array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" data-role="link" style="width: 260px;" />'.
 											 '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
-								'align' => 'left'
+                              'align' => 'left'
 						),
                         array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']"  data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
                                             <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
-                                'align' => 'left'),
+                              'align' => 'left'),
                         array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                     )
                 );
@@ -1548,14 +1551,20 @@ function blocks_form($item)
 	$navibars->add_tab_content_row(
         array(
             '<label>&nbsp;</label>',
-		    '<div class="category_tree" id="category-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
+		    '<div class="category_tree" id="category-tree-parent">
+                <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+                '<div class="tree_ul">'.$categories_list.'</div>'.
+            '</div>'
         )
     );
 
 	$navibars->add_tab_content_row(
         array(
             '<label>&nbsp;</label>',
-		    '<div class="category_tree" id="exclusions-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$exclusions_list.'</div>'
+		    '<div class="category_tree" id="exclusions-tree-parent">
+                <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+                '<div class="tree_ul">'.$exclusions_list.'</div>'.
+            '</div>'
         )
     );
 										
@@ -1566,85 +1575,7 @@ function blocks_form($item)
         $item->exclusions = array();
 
     $navibars->add_tab_content($naviforms->hidden('categories', implode(',', $item->categories)));
-
     $navibars->add_tab_content($naviforms->hidden('exclusions', implode(',', $item->exclusions)));
-										
-	$layout->add_script('
-
-	    function navigate_blocks_all_categories_switch()
-	    {
-	        $("#category-tree-parent").parent().hide();
-	        $("#exclusions-tree-parent").parent().hide();
-
-            if($("#all_categories_2").is(":checked"))
-	            $("#exclusions-tree-parent").parent().show();
-	         else if($("#all_categories_0").is(":checked"))
-	            $("#category-tree-parent").parent().show();
-	    }
-
-	    $("#all_categories_0,#all_categories_1,#all_categories_2").on("click", navigate_blocks_all_categories_switch);
-
-		$("#category-tree-parent ul:first").kvaTree(
-		{
-	        imgFolder: "js/kvatree/img/",
-			dragdrop: false,
-			background: "#f2f5f7",
-			overrideEvents: true,
-			onClick: function(event, node)
-			{
-				if($(node).find("span:first").hasClass("active"))
-					$(node).find("span:first").removeClass("active");
-				else
-					$(node).find("span:first").addClass("active");
-				
-				var categories = new Array();
-				
-				$("#category-tree-parent span.active").parent().each(function()
-				{
-					categories.push($(this).attr("value"));
-				});
-				
-				if(categories.length > 0)								
-					$("#categories").val(categories);
-				else
-					$("#categories").val("");		
-			}
-		});
-		
-		$("#category-tree-parent li").find("span:first").css("cursor", "pointer");
-
-		$("#exclusions-tree-parent ul:first").kvaTree(
-		{
-	        imgFolder: "js/kvatree/img/",
-			dragdrop: false,
-			background: "#f2f5f7",
-			overrideEvents: true,
-			onClick: function(event, node)
-			{
-				if($(node).find("span:first").hasClass("active"))
-					$(node).find("span:first").removeClass("active");
-				else
-					$(node).find("span:first").addClass("active");
-
-				var categories = new Array();
-
-				$("#exclusions-tree-parent span.active").parent().each(function()
-				{
-					categories.push($(this).attr("value"));
-				});
-
-				if(categories.length > 0)
-					$("#exclusions").val(categories);
-				else
-					$("#exclusions").val("");
-			}
-		});
-
-		$("#exclusions-tree-parent li").find("span:first").css("cursor", "pointer");
-
-		navigate_blocks_all_categories_switch();
-		
-	');
 
 	$elements_display = "all";
 	if(!empty($item->elements['exclusions']))
@@ -2988,11 +2919,17 @@ function block_group_block_options($block_group, $code, $status)
     $layout->navigate_media_browser();	// we can use media browser in this function
 
     $navibars->add_actions(
-        array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	)
+        array(	'<a href="#" onclick="javascript: navigate_media_browser();">
+                    <img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').
+                '</a>'
+        )
     );
 
     $navibars->add_actions(
-        array(	'<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
+        array(	'<a href="#" onclick="navigate_tabform_submit(0);">
+                    <img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').
+                '</a>'
+        )
     );
 
     $navibars->form();

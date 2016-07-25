@@ -349,7 +349,10 @@ class navibrowse
 		
 		$html[] = '
 			<div id="navibrowse-folder-tree-dialog" class="hidden">			
-				<div class="navibrowse_folder_tree" style=" width: 90%; "><img src="img/icons/silk/folder_home.png" align="absmiddle" />  '.t(18, 'Home').$folders_tree.'</div>
+				<div class="navibrowse_folder_tree" style=" width: 90%; ">
+				    <img src="img/icons/silk/folder_home.png" align="absmiddle" />  '.t(18, 'Home').
+                    '<div class="tree_ul">'.$folders_tree.'</div>
+                </div>
 			</div>
 		';
 
@@ -454,18 +457,24 @@ class navibrowse
 						}
 					});';							
 
-		$html[] = '
-			$(".navibrowse_folder_tree ul:first").kvaTree(
-			{
-				imgFolder: "js/kvatree/img/",
-				autoclose: false,
-				dragdrop: false,
-				background: "#f2f5f7",
-				onDblClick: function(event, node)
-				{
-					window.location.href = "?fid='.$_REQUEST['fid'].'&parent=" + $(node).attr("value");	
-				}
-			});		
+		$html[] = '				
+            $(".navibrowse_folder_tree .tree_ul").jstree({
+                plugins: ["changed", "types"],
+                "types" : 
+                {
+                    "default":  {   "icon": "img/icons/silk/folder.png"    },
+                    "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+                },
+                "core" : 
+                {
+                    "multiple" : false
+                }
+            }).on("dblclick.jstree", function(e, data)
+            {
+                var node = $(e.target).closest("li");
+                window.location.href = "?fid='.$_REQUEST['fid'].'&parent=" + $(node).attr("value");
+            });
+				
 			
 			$("#navibrowse-folder-tree-dialog").hide();
 		

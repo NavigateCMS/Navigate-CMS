@@ -535,44 +535,70 @@ function feeds_form($item)
 	$hierarchy = structure::hierarchy(0);
 	$categories_list = structure::hierarchyList($hierarchy, $item->categories);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(330, 'Categories').'</label>',
-											'<div class="category_tree" id="category-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.$categories_list.'</div>'
-										));		
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(330, 'Categories').'</label>',
+			'<div class="category_tree" id="category-tree-parent"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+            '<div class="tree_ul">'.$categories_list.'</div>'.
+            '</div>'
+        )
+    );
 										
 	if(!is_array($item->categories))
 		$item->categories = array();
 		
 	$navibars->add_tab_content($naviforms->hidden('categories', implode(',', $item->categories)));		
 										
-	$layout->add_script('
-		$("#category-tree-parent ul:first").kvaTree({
-	        imgFolder: "js/kvatree/img/",
-			dragdrop: false,
-			background: "#f2f5f7",
-			overrideEvents: true,
-			onClick: function(event, node)
-			{
-				if($(node).find("span:first").hasClass("active"))
-					$(node).find("span:first").removeClass("active");
-				else
-					$(node).find("span:first").addClass("active");
-				
-				var categories = new Array();
-				
-				$("#category-tree-parent span.active").parent().each(function()
-				{
-					categories.push($(this).attr("value"));
-				});
-				
-				if(categories.length > 0)								
-					$("#categories").val(categories);
-				else
-					$("#categories").val("");		
-			}
-		});
-		
-		$("#category-tree-parent li").find("span:first").css("cursor", "pointer");
-		
+	$layout->add_script('		
+		$("#category-tree-parent .tree_ul").jstree({
+            plugins: ["changed", "types", "checkbox"],
+            "types" :
+            {
+                "default":  {   "icon": "img/icons/silk/folder.png"    },
+                "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+            },
+            "checkbox":
+            {
+                three_state: false,
+                cascade: "undetermined"
+            },
+            "core":
+            {
+                dblclick_toggle: false
+            }
+        })
+        .on("dblclick.jstree", function(e)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+        
+            var li = $(e.target).closest("li");
+            $("#category-tree-parent .tree_ul").jstree("open_node", "#" + li[0].id);
+        
+            var children_nodes = new Array();
+            children_nodes.push(li);
+            $(li).find("li").each(function() {
+                children_nodes.push("#" + $(this)[0].id);
+            });
+        
+            $("#category-tree-parent .tree_ul").jstree("select_node", children_nodes);
+        
+            return false;
+        })
+        .on("changed.jstree", function(e, data)
+        {
+            var i, j, r = [];
+            var categories = new Array();
+            $("#categories").val("");
+        
+            for(i = 0, j = data.selected.length; i < j; i++)
+            {
+                var id = data.instance.get_node(data.selected[i]).data.nodeId;
+                categories.push(id);
+            }
+            if(categories.length > 0)
+                $("#categories").val(categories);
+        });		
 	');	
 
 	return $navibars->generate();

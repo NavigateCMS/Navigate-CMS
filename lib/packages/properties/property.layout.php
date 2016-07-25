@@ -867,7 +867,10 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
             $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
             $field[] = '<label>'.$property_name.'</label>';
-            $field[] = '<div class="category_tree" id="categories-tree-property-'.$property->id.'"><img src="img/icons/silk/world.png" align="absmiddle" /> '.$ws->name.$categories_list.'</div>';
+            $field[] = '<div class="category_tree" id="categories-tree-property-'.$property->id.'">
+                            <img src="img/icons/silk/world.png" align="absmiddle" /> '.$ws->name.
+                            '<div class="tree_ul">'.$categories_list.'</div>'.
+                        '</div>';
             $field[] = $naviforms->hidden('property-'.$property->id, $property->value);
             $field[] = '<label>&nbsp;</label>';
             $field[] = '<button id="categories_tree_select_all_categories-property-'.$property->id.'">'.t(481, 'Select all').'</button>';
@@ -880,49 +883,65 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	        }
             $field[] = '</div>';
 
-            $layout->add_script('
-                $("#categories-tree-property-'.$property->id.' ul:first").kvaTree({
-                    imgFolder: "js/kvatree/img/",
-                    dragdrop: false,
-                    background: "#f2f5f7",
-                    overrideEvents: true,
-                    onClick: function(event, node)
+            $layout->add_script('              
+                $("#categories-tree-property-'.$property->id.' .tree_ul").jstree({
+                    plugins: ["changed", "types", "checkbox"],
+                    "types" :
                     {
-                        if($(node).find("span:first").hasClass("active"))
-                            $(node).find("span:first").removeClass("active");
-                        else
-                            $(node).find("span:first").addClass("active");
-
-                        var categories = new Array();
-
-                        $("#categories-tree-property-'.$property->id.' span.active").parent().each(function()
-                        {
-                            categories.push($(this).attr("value"));
-                        });
-
-                        if(categories.length > 0)
-                            $("#property-'.$property->id.'").val(categories);
-                        else
-                            $("#property-'.$property->id.'").val("");
+                        "default":  {   "icon": "img/icons/silk/folder.png"    },
+                        "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+                    },
+                    "checkbox":
+                    {
+                        three_state: false,
+                        cascade: "undetermined"
+                    },
+                    "core":
+                    {
+                        dblclick_toggle: false
                     }
-                });
-
-                $("#categories-tree-property-'.$property->id.' li").find("span:first").css("cursor", "pointer");
-
-                $("#categories_tree_select_all_categories-property-'.$property->id.'").on("click", function()
+                })
+                .on("dblclick.jstree", function(e)
                 {
-                    var categories = new Array();
-
-                    $("#categories-tree-property-'.$property->id.'").find("li").not(".separator").each(function(i, el)
-                    {
-                        $(el).find("span:first").addClass("active");
-                        categories.push($(el).attr("value"));
+                    e.preventDefault();
+                    e.stopPropagation();
+                
+                    var li = $(e.target).closest("li");
+                    $("#categories-tree-property-'.$property->id.' .tree_ul").jstree("open_node", "#" + li[0].id);
+                
+                    var children_nodes = new Array();
+                    children_nodes.push(li);
+                    $(li).find("li").each(function() {
+                        children_nodes.push("#" + $(this)[0].id);
                     });
-
-                    $("#property-'.$property->id.'").val(categories);
-
-                    return false
+                
+                    $("#categories-tree-property-'.$property->id.' .tree_ul").jstree("select_node", children_nodes);
+                
+                    return false;
+                })
+                .on("changed.jstree", function(e, data)
+                {
+                    var i, j, r = [];
+                    var categories = new Array();
+                    $("#property-'.$property->id.'").val("");       
+                
+                    for(i = 0, j = data.selected.length; i < j; i++)
+                    {
+                        var id = data.instance.get_node(data.selected[i]).data.nodeId;
+                        categories.push(id);
+                    }
+                    
+                    if(categories.length > 0)
+                        $("#property-'.$property->id.'").val(categories);                                                                
                 });
+
+                $("#categories_tree_select_all_categories-property-'.$property->id.'").on("click", function(e)
+                {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    $("#categories-tree-property-'.$property->id.' .tree_ul").jstree("select_all");
+                    return false;
+                });                                
             ');
             break;
 

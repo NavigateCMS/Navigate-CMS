@@ -416,7 +416,9 @@ class structure
 		foreach($hierarchy as $node)
 		{	
 			$li_class = '';
+
 			$post_html = structure::hierarchyList($node->children, $selected, $lang, $ignore_permissions);
+            $has_children = !empty($post_html);
 
 			if(strpos($post_html, 'class="active"')!==false)
 				$li_class = ' class="open" ';
@@ -446,15 +448,17 @@ class structure
 					$title = '<span style="opacity: 0.75;"><i class="fa fa-fw fa-language"></i> #'.$node->id.'</span>';
 			}
 
-
 			if(!$ignore_permissions && !structure::category_allowed($node->id))
 				$title = '<div class="ui-state-disabled">'.$title.'</div>';
 
+            $node_type = 'folder';
+            if(!$has_children)
+                $node_type = 'leaf';
 
 			if(in_array($node->id, $selected))
-				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-selected="true"><span class="active">'.$title.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-selected="true" data-jstree=\'{"selected": true, "type": "'.$node_type.'"}\'><span class="active">'.$title.'</span>';
 			else
-				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-selected="false"><span>'.$title.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-selected="false" data-jstree=\'{"selected": false, "type": "'.$node_type.'"}\'><span>'.$title.'</span>';
 
 			$html[] = $post_html;
 			$html[] = '</li>';
