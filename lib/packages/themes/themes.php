@@ -212,6 +212,7 @@ function themes_grid($list)
 	global $layout;
 	global $website;
     global $user;
+    global $current_version;
 	
 	$navibars = new navibars();	
 	$navibars->title(t(367, 'Themes'));
@@ -421,7 +422,7 @@ function themes_grid($list)
     $out = $navibars->generate();
 
 	$layout->add_script('
-		$.getScript("lib/packages/themes/themes.js", function()
+		$.getScript("lib/packages/themes/themes.js?r='.$current_version->revision.'", function()
 		{
 			navigate_themes_init();
 		});
@@ -715,4 +716,5 @@ function themes_export_form()
     return $navibars->generate();
 }
 */
+
 ?>

@@ -1047,6 +1047,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
         case 'product':
             // TO DO (when navigate has products!)
+
             break;
 			
 		default:
@@ -1059,6 +1060,7 @@ function navigate_property_layout_scripts($website_id="")
 {
 	global $layout;
 	global $website;
+    global $current_version;
 
 	$ws = $website;
 	if(!empty($website_id) && $website->id!=$website_id)
@@ -1121,7 +1123,7 @@ function navigate_property_layout_scripts($website_id="")
 	');
 
 	$layout->add_script('
-		$.getScript("lib/packages/properties/properties.js", function()
+		$.getScript("lib/packages/properties/properties.js?r='.$current_version->revision.'", function()
 		{
 			$(".navigate-form-row-property-action").on("click", function(e)
 			{

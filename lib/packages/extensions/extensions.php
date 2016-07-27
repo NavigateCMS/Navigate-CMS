@@ -215,8 +215,8 @@ function run()
 function extensions_grid($list)
 {
     global $layout;
-    global $website;
     global $user;
+    global $current_version;
 
     $navibars = new navibars();
     $navibars->title(t(327, 'Extensions'));
@@ -326,7 +326,7 @@ function extensions_grid($list)
                 });
             });
 
-            $.getScript("lib/packages/extensions/extensions.js", function()
+            $.getScript("lib/packages/extensions/extensions.js?r='.$current_version->revision.'", function()
             {
                 navigate_extensions_refresh();
             });
@@ -567,4 +567,5 @@ function extensions_dialog($extension, $function, $params)
 
     return $out;
 }
+
 ?>

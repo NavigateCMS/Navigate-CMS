@@ -142,6 +142,7 @@ class update
 	public static function latest_installed()
 	{
 		global $DB;
+
 		$DB->query('
 			SELECT * 
 			FROM nv_updates 
@@ -149,7 +150,9 @@ class update
 			ORDER BY revision DESC 
 			LIMIT 1
 		');
-		$installed_version = $DB->first();		
+
+		$installed_version = $DB->first();
+
 		return $installed_version;
 	}
 	
@@ -403,7 +406,7 @@ class update
         @unlink($ufile);
 		
 		return true;
-		
 	}
 }
+
 ?>

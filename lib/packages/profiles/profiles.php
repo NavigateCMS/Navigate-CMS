@@ -158,10 +158,8 @@ function profiles_list()
 
 function profiles_form($item)
 {
-	global $user;
-	global $DB;
-	global $website;
 	global $layout;
+    global $current_version;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -386,7 +384,7 @@ function profiles_form($item)
 	');
 
 	$layout->add_script('
-		$.getScript("lib/packages/permissions/permissions.js", function()
+		$.getScript("lib/packages/permissions/permissions.js?r='.$current_version->revision.'", function()
 		{
 			navigate_window_resize();
 		});
@@ -394,4 +392,5 @@ function profiles_form($item)
 
     return $navibars->generate();
 }
+
 ?>

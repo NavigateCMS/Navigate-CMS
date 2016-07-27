@@ -91,8 +91,8 @@ class layout
 	}
 	
 	public function includes()
-	{		
-		global $user;
+	{
+        global $current_version;
 
 		$this->add_script_tag('js/navigate.js');
 		
@@ -206,12 +206,10 @@ class layout
 
         $this->add_script_tag('js/navigate_backcompat.js');
 
-		//$out[] = '<link href="http://fonts.googleapis.com/css?family=".$webfont."&v2' rel="stylesheet" type="text/css" />';
-
 		if(APP_DEBUG)
 		{
 			foreach($this->styles as $cssfile)
-				$out[] = '<link rel="stylesheet" type="text/css" href="'.$cssfile.'" />';
+				$out[] = '<link rel="stylesheet" type="text/css" href="'.$cssfile.'?r='.$current_version->revision.'" />';
 		}
 		else
 		{
@@ -269,16 +267,16 @@ class layout
                 @unlink($stylesheets[$ss]);
 
 			if(!empty($stylesheet))
-				$out[] = '<link rel="stylesheet" type="text/css" href="'.$stylesheet.'?_='.filemtime($stylesheet).'" />';
+				$out[] = '<link rel="stylesheet" type="text/css" href="'.$stylesheet.'?r='.$current_version->revision.'&_='.filemtime($stylesheet).'" />';
 			else			
-				$out[] = '<link rel="stylesheet" type="text/css" href="cache/styles.css?_='.filemtime('cache/styles.css').'" />';
+				$out[] = '<link rel="stylesheet" type="text/css" href="cache/styles.css?r='.$current_version->revision.'&_='.filemtime('cache/styles.css').'" />';
 		}
 		
 		if(APP_DEBUG)
 		{
 			foreach($this->scripts as $jsfile)
 			{
-				$out[] = '<script language="javascript" src="'.$jsfile.'" type="text/javascript"></script>';	
+				$out[] = '<script language="javascript" src="'.$jsfile.'?r='.$current_version->revision.'" type="text/javascript"></script>';
 			}
 		}
 		else
@@ -336,9 +334,9 @@ class layout
                 @unlink($javascripts[$js]);
 
             if(!empty($javascript))
-                $out[] = '<script language="javascript" src="'.$javascript.'?_='.filemtime($javascript).'" type="text/javascript"></script>';
+                $out[] = '<script language="javascript" src="'.$javascript.'?r='.$current_version->revision.'&_='.filemtime($javascript).'" type="text/javascript"></script>';
             else
-                $out[] = '<script language="javascript" src="cache/scripts.js?_='.filemtime('cache/scripts.js').'" type="text/javascript"></script>';
+                $out[] = '<script language="javascript" src="cache/scripts.js?r='.$current_version->revision.'&_='.filemtime('cache/scripts.js').'" type="text/javascript"></script>';
 		}
 		
 		return implode("\n", $out);
@@ -347,11 +345,13 @@ class layout
 	public function before_includes()
 	{
 		global $user;
+        global $current_version;
+
 		if(empty($user->skin)) $user->skin = 'cupertino';
 		if(empty($user->language)) $user->language = 'en';
 
-		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery.min.js"></script>';
-		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate.js"></script>';
+		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery.min.js?r='.$current_version->revision.'"></script>';
+		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate.js?r='.$current_version->revision.'"></script>';
 
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
         if(APP_DEBUG)
@@ -360,10 +360,10 @@ class layout
             $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = false;</script>';
 
         // jqgrid translation
-		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/i18n/grid.locale-'.$user->language.'.js"></script>';
+		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/i18n/grid.locale-'.$user->language.'.js?r='.$current_version->revision.'"></script>';
 
         // jquery ui custom css
-        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui.css" />';
+        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/'.$user->skin.'/jquery-ui.css?r='.$current_version->revision.'" />';
 
 		return implode("\n", $out);
 	}
@@ -371,27 +371,29 @@ class layout
 	public function after_includes()
 	{
 		global $user;
+        global $current_version;
+
         $out = array();
 
 		if(empty($user->skin)) $user->skin = 'cupertino';
-		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/skins/'.$user->skin.'.css" />';
+		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/skins/'.$user->skin.'.css?r='.$current_version->revision.'" />';
 
         $out[] = '<script type="text/javascript">$.datepicker.setDefaults( $.datepicker.regional[ "'.$user->language.'" ] );</script>';
 
         // select2 translation (if not english)
         if($user->language != 'en')
         {
-            $out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/select2/js/i18n/'.$user->language.'.js"></script>';
+            $out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/select2/js/i18n/'.$user->language.'.js?r='.$current_version->revision.'"></script>';
             $out[] = '<script language="javascript">$.fn.select2.defaults.set("language", "'.$user->language.'");</script>';
         }
 
-        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/font-awesome/css/font-awesome.min.css" />';
+        $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/font-awesome/css/font-awesome.min.css?r='.$current_version->revision.'" />';
 
 		if(!empty($this->styles_unmerged))
 		{
 			foreach($this->styles_unmerged as $css_file)
 			{
-				$out[] = '<link rel="stylesheet" type="text/css" href="'.$css_file.'" />';
+				$out[] = '<link rel="stylesheet" type="text/css" href="'.$css_file.'?r='.$current_version->revision.'" />';
 			}
 		}
 
@@ -643,8 +645,7 @@ class layout
 	public function navigate_footer()
 	{
         global $user;
-
-		$current_version = update::latest_installed();
+        global $current_version;
 
         $version = ' v'.$current_version->version; //.' r'.$current_version->revision;
         if($user->permission('navigatecms.display_version')=='false')
@@ -868,9 +869,11 @@ class layout
         global $website;
 		global $events;
 		global $user;
+        global $current_version;
 
 		if(in_array('media_browser', $this->parts_added))
 			return;
+
 		array_push($this->parts_added, 'media_browser');
 
         $naviforms = new naviforms();
@@ -938,7 +941,7 @@ class layout
 		$this->add_content(implode("", $html));
 
 		$this->add_script('
-			$.getScript("js/navigate_media_browser.js");
+			$.getScript("js/navigate_media_browser.js?r='.$current_version->revision.'");
 			$("#navigate_media_browser_upload_button").on("click", navigate_media_browser_files_uploader);
 		');
 

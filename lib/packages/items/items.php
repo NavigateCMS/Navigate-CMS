@@ -975,6 +975,7 @@ function items_form($item)
 	global $layout;
     global $theme;
     global $events;
+    global $current_version;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -2372,7 +2373,7 @@ function items_form($item)
     }
 	
 	$layout->add_script('
-		$.getScript("lib/packages/items/items.js", function()
+		$.getScript("lib/packages/items/items.js?r='.$current_version->revision.'", function()
 		{
 			if(typeof navigate_items_onload == "function")
 				navigate_items_onload();

@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2016. All rights reserved.                 |
-// | Last modified 20/02/2016                                               |
+// | Last modified 27/07/2016                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -48,6 +48,7 @@ global $layout;
 global $website;
 global $theme;
 global $events;
+global $current_version;
 global $world_languages; // filled in language.class.php
 
 // is a simple keep alive request?
@@ -116,6 +117,8 @@ else
 	if(empty($user->id))
 		header('location: '.NAVIGATE_MAIN.'?logout');
 }
+
+$current_version = update::latest_installed();
 
 // new updates check -> only Administrator (profile=1)
 if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES!==false)

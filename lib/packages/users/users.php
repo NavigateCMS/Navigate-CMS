@@ -173,10 +173,9 @@ function users_list()
 
 function users_form($item)
 {
-	global $user;
 	global $DB;
-	global $website;
 	global $layout;
+    global $current_version;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -450,9 +449,10 @@ function users_form($item)
 	');
 
 	$layout->add_script('
-		$.getScript("lib/packages/permissions/permissions.js");
+		$.getScript("lib/packages/permissions/permissions.js?r='.$current_version->revision.'");
 	');
 
     return $navibars->generate();
 }
+
 ?>

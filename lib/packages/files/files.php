@@ -358,6 +358,7 @@ function files_browser($parent, $search="")
 	global $website;
     global $events;
     global $user;
+    global $current_version;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -701,14 +702,13 @@ function files_browser($parent, $search="")
 	');
 
     $layout->add_script('
-		$.getScript("lib/packages/files/files.js", function()
+		$.getScript("lib/packages/files/files.js?r='.$current_version->revision.'", function()
 		{
             navigate_files_onload();
 		});
 	');
 
 	return $navibars->generate();
-	
 }
 
 function files_item_properties($item)
