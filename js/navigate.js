@@ -814,8 +814,17 @@ function navigate_periodic_event()
 	}
 }
 
-function navigate_hide_context_menus()
+function navigate_hide_context_menus(e)
 {
+    // trigger click on inner li > a
+    if(e && $(e.target).hasClass("ui-menu-item"))
+    {
+        $(e.target).find('a:first').click();
+        var href = $(e.target).find('a:first').attr("href");
+        if(href && href!="" && href!="#")
+            window.location.replace(href);
+    }
+
     setTimeout(function()
     {
         $(".ui-menu").each(function()
@@ -826,7 +835,6 @@ function navigate_hide_context_menus()
 
     }, 50);
 }
-
 
 function phpjs_function_exists(function_name) 
 {
