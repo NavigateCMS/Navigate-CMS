@@ -287,7 +287,6 @@ function run()
                 try
                 {
                     $item->save();
-                    $id = $item->id;
                     $layout->navigate_notification(t(53, "Data saved successfully."), false);
                 }
                 catch(Exception $e)
@@ -550,13 +549,15 @@ function blocks_list()
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list">
+                <img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;
+            </a>'
         );
     }
 
     $navibars->add_actions(
         array(
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'),
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'),
             '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
@@ -602,6 +603,8 @@ function blocks_form($item)
 	global $layout;
     global $events;
     global $theme;
+
+    $current_version = $_SESSION['current_version'];
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();	
@@ -704,13 +707,13 @@ function blocks_form($item)
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
 
     $navibars->add_actions(
         array(
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>'),
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'),
             '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
@@ -728,7 +731,7 @@ function blocks_form($item)
 
 	$navibars->form();
 
-    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js"></script>');
+    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>');
 
 	$navibars->add_tab(t(43, "Main"));
 	
@@ -1764,14 +1767,14 @@ function blocks_types_list()
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
 
     $navibars->add_actions(
         array(
             '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>')
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>')
         )
     );
 
@@ -1882,14 +1885,14 @@ function blocks_type_form($item)
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
 
     $navibars->add_actions(
         array(
             '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_link.png"> '.t(506, 'Groups').'</a>')
+            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>')
         )
     );
 
@@ -2377,6 +2380,7 @@ function block_group_form($item)
     global $website;
     global $layout;
     global $theme;
+    global $current_version;
 
     $navibars = new navibars();
     $naviforms = new naviforms();
@@ -2492,26 +2496,29 @@ function block_group_form($item)
 
     $navibars->add_tab(t(23, "Blocks"));
 
-    // blocks by ID
-    // block types
+    $allowed_types = array();
+    if(!empty($item->code))
+    {
+        for($bg=0; $bg < count($theme->block_groups); $bg++)
+        {
+            if($theme->block_groups[$bg]->id == $item->code)
+            {
+                if(isset($theme->block_groups[$bg]->allowed_types))
+                {
+                    $allowed_types = $theme->block_groups[$bg]->allowed_types;
+                }
+                break;
+            }
+        }
+    }
+
+    $blocks_selected = array();
 
     if(!is_array($item->blocks))
         $item->blocks = array();
 
     $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', implode('#', $item->blocks)));
-
-    $table = new naviorderedtable("blocks_group_table");
-    $table->setWidth("800px");
-    $table->setHiddenInput("blocks-order");
-    $table->setReorderCallback("blocks_selection_update");
-
     $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
-
-    $table->addHeaderColumn('ID', 200);
-    $table->addHeaderColumn(t(160, 'Type'), 250);
-    $table->addHeaderColumn(t(67, 'Title'), 300);
-    $table->addHeaderColumn(t(170, 'Edit'), 50);
-    $table->addHeaderColumn(t(35, 'Remove'), 50);
 
     $block_types = block::types();
     $lang = $website->languages_published[0];
@@ -2527,20 +2534,24 @@ function block_group_form($item)
             if(empty($block) || empty($block->type))
                 continue;
 
-            $table->addRow($p, array(
-                array('content' => '<span>'.$item->blocks[$p].'</span>', 'align' => 'left'),
-                array('content' => '<span>'.$theme->t($block->type).'</span>', 'align' => 'left'),
-                array('content' => '<span>'.$block->dictionary[$lang]['title'].'</span>', 'align' => 'left'),
-                array('content' => '<a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>', 'align' => 'center'),
-                array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
-            ));
-
+            $blocks_selected[] = '
+                <div class="block_group_block ui-state-default" data-block-id="'.$block->id.'" data-block-type="block">
+                    <div class="actions">
+                        <a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
+                        <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                    </div>
+                    <div class="title">'.$block->dictionary[$lang]['title'].'</div>
+                    <div class="subcomment"><span style="float: right;">ID '.$block->id.'</span><img src="img/icons/silk/brick.png" /> '.$theme->t($block->type).'</div>
+                </div>
+            ';
         }
         else if(!empty($item->blocks[$p]))
         {
             // maybe a block group type?
             if(is_array($theme->block_groups))
             {
+                $icon = 'img/icons/silk/bricks.png';
+                $block_type = 'block_group_block';
                 foreach($theme->block_groups as $key => $bg)
                 {
                     for($i=0; $i < count($bg->blocks); $i++)
@@ -2564,6 +2575,8 @@ function block_group_form($item)
             // maybe a block type?
             if(empty($block))
             {
+                $icon = 'img/icons/silk/brick_link.png';
+                $block_type = 'block_type';
                 for($bt=0; $bt < count($block_types); $bt++)
                 {
                     if($block_types[$bt]['id']==$item->blocks[$p])
@@ -2574,198 +2587,36 @@ function block_group_form($item)
                 }
             }
 
-            $table->addRow($p, array(
-                array('content' => '<span>'.$block['code'].'</span>', 'align' => 'left'),
-                array('content' => '<span>'.$theme->t($block['type']).'</span>', 'align' => 'left'),
-                array('content' => '<span title="'.$block['description'].'">'.$block['title'].'</span>', 'align' => 'left'),
-                array('content' => (empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>'), 'align' => 'center'),
-                array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" />', 'align' => 'center')
-            ));
+            $blocks_selected[] = '
+                <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="'.$block_type.'">
+                    <div class="actions">
+                        '.(empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                        <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                    </div>
+                    <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
+                    <div class="subcomment"><span style="float: right;">ID '.$block['type'].'</span><img src="'.$icon.'" /> '.$theme->t($block['type']).'</div>
+                </div>
+            ';
         }
     }
 
-    $navibars->add_tab_content_row(array(
-        '<label>'.t(405, 'Selection').'</label>',
-        '<div>'.$table->generate().'</div>',
-        '<div class="subcomment">
-            <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').
-        '</div>'
-    ));
+    $blocks_selected = implode("\n", $blocks_selected);
 
-    $navibars->add_tab_content_row(array(
-        '<label>&nbsp;</label>',
-        '<button id="block-selection-add-block"><i class="fa fa-plus-square-o"></i> '.t(437, 'Block').'</button>',
-        '<button id="block-selection-add-block_type"><i class="fa fa-plus-square"></i> '.t(543, 'Block type').'</button>',
-        '<button id="block-selection-add-block_from_group"><i class="fa fa-puzzle-piece"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</button>'
-        )
+    $navibars->add_tab_content(
+        '<div id="block_group_selected_blocks" style="width: 49%; float: left; margin-right: 2%;">
+            <div class="ui-accordion ui-widget ui-helper-reset">
+                <h3 class="ui-accordion-header ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                    <img src="img/icons/silk/bricks.png" style="vertical-align: middle;" /> '.t(405, 'Selection').'
+                </h3>
+                <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">'.$blocks_selected.'</div>
+            </div>
+            <div class="subcomment">
+                <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, "Drag any row to assign priorities").'
+            </div>
+         </div>'
     );
 
-    // **** ADD BLOCK FROM GROUP dialog ****
-
-    $block_types_from_group_assoc = array();
-    $block_types_from_group_titles = array();
-    foreach($theme->block_groups as $key => $bg)
-    {
-        for($i=0; $i < count($bg->blocks); $i++)
-        {
-            $block_types_from_group_titles[$bg->blocks[$i]->id] = $theme->t($bg->blocks[$i]->title);
-            $block_types_from_group_assoc[$bg->blocks[$i]->id] = (array)$bg->blocks[$i];
-        }
-    }
-
-    $layout->add_script('var blocks_selection_block_types_from_group = '.json_encode($block_types_from_group_assoc));
-
-    $layout->add_content('
-        <div id="block-selection-add-block_from_group-dialog" style="display: none;">
-            <form action="#" method="post" onsubmit="return false;">
-                '.$naviforms->selectfield(
-		            'block-selection-add-block_from_group-dialog-type',
-		            array_keys($block_types_from_group_titles),
-		            array_values($block_types_from_group_titles),
-		            null, null, false, null, "width: 100%;"
-	            ).'
-            </form>
-        </div>
-    ');
-
-    $layout->add_script('
-        $("#block-selection-add-block_from_group").on("click", function()
-        {
-            $("#block-selection-add-block_from_group-dialog").dialog(
-            {
-                title: "'.t(472, 'Add').': '.t(556, 'Block from group').' ['.$theme->t($item->code).']",
-                modal: true,
-                width: 430,
-                height: 130,
-                buttons:
-                {
-                    "'.t(190, 'Ok').'": function()
-                    {
-                        var bts = $("#block-selection-add-block_from_group-dialog-type").val();
-
-                        if(!bts) return;
-
-                        var settings_column = "";
-                        if(blocks_selection_block_types_from_group[bts].properties)
-                            settings_column = \'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="\'+bts+\'" data-block-group-action="settings"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>\';
-
-                        var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
-                        tr += \'<td>\'+bts+\'</td>\';
-                        tr += \'<td>\'+blocks_selection_block_types_from_group[bts].id+\'</td>\';
-                        tr += \'<td>\'+blocks_selection_block_types_from_group[bts].title+\'</td>\';
-                        tr += \'<td align="center">\'+settings_column+\'</td>\';
-                        tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
-                        tr += \'</tr>\';
-
-                        $("#blocks_group_table").find("tbody:last").append(tr);
-                        $("#blocks_group_table").tableDnD(
-                        {
-                            onDrop: function(table, row)
-                            {
-                                navigate_naviorderedtable_blocks_group_table_reorder();
-                            }
-                        });
-
-                        // force a table refresh
-                        navigate_naviorderedtable_blocks_group_table_reorder();
-
-                        $("#block-selection-add-block_from_group-dialog").dialog("close");
-                    },
-                    "'.t(58, 'Cancel').'": function()
-                    {
-                        $("#block-selection-add-block_from_group-dialog").dialog("close");
-                    }
-                }
-            });
-
-            return false;
-        });
-    ');
-
-
-    // **** ADD BLOCK TYPE dialog ****
-
-    $block_types_assoc = array();
-    $block_types_titles = array();
-    for($i=0; $i < count($block_types); $i++)
-    {
-	    if(is_numeric($block_types[$i]['id']))
-	    {
-            $block_types_titles[$block_types[$i]['code']] = $block_types[$i]['title'];
-            $block_types_assoc[$block_types[$i]['code']] = $block_types[$i];
-	    }
-	    else
-	    {
-		    $block_types_titles[$block_types[$i]['id']] = $block_types[$i]['title'];
-            $block_types_assoc[$block_types[$i]['id']] = $block_types[$i];
-	    }
-    }
-
-    $layout->add_script('var blocks_selection_block_types = '.json_encode($block_types_assoc));
-
-    $layout->add_content('
-        <div id="block-selection-add-block_type-dialog" style="display: none;">
-            <form action="#" method="post" onsubmit="return false;">
-                '.$naviforms->selectfield(
-	                'block-selection-add-block_type-dialog-type',
-		            array_keys($block_types_titles),
-		            array_values($block_types_titles),
-		            null, null, false, null, "width: 100%;"
-	            ).'
-            </form>
-        </div>
-    ');
-
-    $layout->add_script('
-        $("#block-selection-add-block_type").on("click", function()
-        {
-            $("#block-selection-add-block_type-dialog").dialog(
-            {
-                title: "'.t(472, 'Add').': '.t(543, 'Block type').'",
-                modal: true,
-                width: 430,
-                height: 130,
-                buttons:
-                {
-                    "'.t(190, 'Ok').'": function()
-                    {
-                        var bts = $("#block-selection-add-block_type-dialog-type").val();
-
-                        var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
-                        tr += \'<td>\'+bts+\'</td>\';
-                        tr += \'<td>\'+blocks_selection_block_types[bts].type+\'</td>\';
-                        tr += \'<td>\'+blocks_selection_block_types[bts].title+\'</td>\';
-                        tr += \'<td></td>\';
-                        tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
-                        tr += \'</tr>\';
-
-                        $("#blocks_group_table").find("tbody:last").append(tr);
-                        $("#blocks_group_table").tableDnD(
-                        {
-                            onDrop: function(table, row)
-                            {
-                                navigate_naviorderedtable_blocks_group_table_reorder();
-                            }
-                        });
-
-                        // force a table refresh
-                        navigate_naviorderedtable_blocks_group_table_reorder();
-
-                        $("#block-selection-add-block_type-dialog").dialog("close");
-                    },
-                    "'.t(58, 'Cancel').'": function()
-                    {
-                        $("#block-selection-add-block_type-dialog").dialog("close");
-                    }
-                }
-            });
-
-            return false;
-        });
-    ');
-
-    // **** ADD specific BLOCK dialog ****
-
+    // **** ADD specific BLOCKS ****
     $sql = '
          SELECT b.type, b.id, d.text as title
            FROM nv_blocks b
@@ -2779,111 +2630,180 @@ function block_group_form($item)
        ORDER BY b.id DESC';
 
     $DB->query($sql);
-    $blocks = $DB->result();
+    $block_elements = $DB->result();
 
-    $block_elements = array();
-    $block_elements_titles = array();
-    for($i=0; $i < count($blocks); $i++)
-    {
-        $block_elements[$blocks[$i]->id] = $blocks[$i];
-        $block_elements_titles[$blocks[$i]->id] = $blocks[$i]->title.' ('.$blocks[$i]->type.')';
-    }
-
-    $layout->add_script('var blocks_selection_block_elements = '.json_encode($block_elements));
-
-    $layout->add_content('
-        <div id="block-selection-add-block-dialog" style="display: none;">
-            <form action="#" method="post" onsubmit="return false;">
-                '.$naviforms->selectfield(
-	                'block-selection-add-block-dialog-type',
-		            array_keys($block_elements_titles),
-		            array_values($block_elements_titles),
-		            null, null, false, null, "width: 100%;"
-	            ).'
-            </form>
-        </div>
-    ');
-
-    $layout->add_script('
-        $("#block-selection-add-block").on("click", function()
-        {
-            $("#block-selection-add-block-dialog").dialog(
-            {
-                title: "'.t(472, 'Add').': '.t(437, 'Block').'",
-                modal: true,
-                width: 430,
-                height: 130,
-                buttons:
-                {
-                    "'.t(190, 'Ok').'": function()
-                    {
-                        var bs = $("#block-selection-add-block-dialog-type").val();
-
-                        var tr = \'<tr id="\'+(new Date().getTime())+\'">\';
-                        tr += \'<td>\'+bs+\'</td>\';
-                        tr += \'<td>\'+blocks_selection_block_elements[bs].type+\'</td>\';
-                        tr += \'<td>\'+blocks_selection_block_elements[bs].title+\'</td>\';
-                        tr += \'<td style="text-align: center;"><a href="?fid=blocks&act=edit&id=\'+blocks_selection_block_elements[bs].id+\'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a></td>\';
-                        tr += \'<td align="center"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_blocks_selection_remove(this);" style="cursor:pointer;" /></td>\';
-                        tr += \'</tr>\';
-
-                        $("#blocks_group_table").find("tbody:last").append(tr);
-                        $("#blocks_group_table").tableDnD(
+    // blocks available in the accordion
+    $navibars->add_tab_content(
+        '<div id="blocks_available_wrapper" style="float: left; width: 49%; ">
+            <div id="blocks_available_accordion">
+                <h3><i class="fa fa-plus-square-o"></i> '.t(437, 'Block').'</h3>
+                <div>
+                '.implode(
+                    "\n",
+                    array_map(
+                        function($b) use ($allowed_types)
                         {
-                            onDrop: function(table, row)
+                            global $theme;
+
+                            $classes = 'block_group_block ui-state-default';
+                            if(!empty($allowed_types) && !in_array($b->type, $allowed_types))
+                                $classes .= ' ui-state-disabled';
+
+                            $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'">'.
+                                        '<div class="actions">
+                                            <a href="?fid=blocks&act=edit&id='.$b->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
+                                            <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                        </div>'.
+                                        '<div class="title">'.$b->title.'</div>'.
+                                        '<div class="subcomment"><span style="float: right;">ID '.$b->id.'</span><img src="img/icons/silk/brick.png" /> '.$theme->t($b->type).'</div>'.
+                                    '</div>';
+                            return $html;
+                        },
+                        $block_elements
+                    )
+                ).'
+                </div>
+                <h3><i class="fa fa-plus-square"></i> '.t(543, 'Block type').'</h3>
+                <div>
+                '.implode(
+                    "\n",
+                    array_map(
+                        function($b) use ($allowed_types)
+                        {
+                            $classes = 'block_group_block ui-state-default';
+                            if(!empty($allowed_types) && !in_array($b['id'], $allowed_types))
+                                $classes .= ' ui-state-disabled';
+
+                            $html = '<div class="'.$classes.'" data-block-id="'.$b['id'].'">'.
+                                '<div class="actions">
+                                    <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                </div>'.
+                                '<div class="title">'.$b['title'].'</div>'.
+                                '<div class="subcomment">
+                                    <span style="float: right;">'.$b['count'].' '.($b['count']==1? t(437, "Block") : t(23, "Blocks")).'</span>
+                                    <img src="img/icons/silk/brick_link.png" /> ID '.$b['id'].'</div>'.
+                                '</div>';
+                            return $html;
+                        },
+                        $block_types
+                    )
+                ).'
+                </div>
+                <h3><i class="fa fa-puzzle-piece"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</h3>
+                <div>                    
+                    '.implode(
+                        "\n",
+                        array_map(
+                            function($b) use ($item)
                             {
-                                navigate_naviorderedtable_blocks_group_table_reorder();
-                            }
-                        });
+                                global $theme;
 
-                        // force a table refresh
-                        navigate_naviorderedtable_blocks_group_table_reorder();
-
-                        $("#block-selection-add-block-dialog").dialog("close");
-                    },
-                    "'.t(58, 'Cancel').'": function()
-                    {
-                        $("#block-selection-add-block-dialog").dialog("close");
-                    }
-                }
-            });
-
-            return false;
-        });
-    ');
+                                $html = '<div class="block_group_block ui-state-default" data-block-id="'.$b->id.'" data-block-type="block_group_block" title="'.$theme->t($b->description).'">'.
+                                            '<div class="actions">
+                                                '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                                <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                            </div>'.
+                                            '<div class="title">'.$theme->t($b->title).'</div>'.
+                                            '<div class="subcomment">
+                                                <span style="float: right;">ID '.$b->id.'</span>
+                                                <img src="img/icons/silk/bricks.png" />'.
+                                            '</div>'.
+                                        '</div>';
+                                return $html;
+                            },
+                            $theme->block_groups[0]->blocks
+                        )
+                    ).'
+                </div>
+            </div>
+            <div class="subcomment">
+                <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(638, "Disabled blocks are not compatible with the current block group type").'
+            </div>
+        </div>'
+    );
 
     $layout->add_script('
+        $("#blocks_available_accordion").accordion({
+            collapsible: true
+        });
+                
+        $( "#block_group_selected_blocks .ui-accordion-content" ).sortable({
+            scroll: true,
+            helper: "clone",
+            placeholder: "block_group_block ui-state-highlight placeholder",
+            
+            stop: blocks_selection_update,            
+            receive: function(event, ui)
+            {
+                $(ui.helper).removeClass("ui-state-active");
+                $(ui.helper).removeAttr("style");
+            }
+        });
+        
+        $( "#block_group_selected_blocks .ui-accordion-content" ).on("mouseenter", ".block_group_block", function()
+        {
+            $(this).addClass("ui-state-active");
+        });
+        
+        $( "#block_group_selected_blocks .ui-accordion-content" ).on("mouseleave", ".block_group_block", function()
+        {
+            $(this).removeClass("ui-state-active");
+        });
+        
+        
+        $("#blocks_available_accordion .block_group_block").not(".ui-state-disabled").draggable(
+        {
+            appendTo: "#navigate-content-tabs",
+            connectToSortable: "#block_group_selected_blocks .ui-accordion-content",
+            revert: true,
+            helper: "clone",
+            cursor: "move",
+            opacity: 0.95,
+            start: function(event, ui)
+            {
+                $(ui.helper).addClass("ui-state-active");
+            },
+            stop: function(event, ui)
+            {
+                $( "#block_group_selected_blocks .ui-accordion-content" ).sortable("refreshPositions");
+                $( "#block_group_selected_blocks .ui-accordion-content" ).sortable("refresh");
+            }
+        });
+    
+        $( "#block_group_selected_blocks, #blocks_available_accordion" ).disableSelection();
+    
+    
         function blocks_selection_update()
         {
-            $("#blocks_group_selection").val("");
-            var blocks_id_ordered = [];
-            var blocks_ts_ordered = $("#blocks-order").val().split("#");
-            for(bto in blocks_ts_ordered)
+            var blocks_id_ordered = []; 
+            $( "#block_group_selected_blocks .ui-accordion-content" ).sortable( "refresh" );
+            
+            $("#block_group_selected_blocks .block_group_block").each(function()
             {
-                if(!blocks_ts_ordered[bto])
-                    continue;
-                var id = $("tr#"+blocks_ts_ordered[bto]).find("td:first").text();
-                if(id && id!="")
-                {
-                    blocks_id_ordered.push(id);
-                    $("#blocks_group_selection").val(blocks_id_ordered.join(","));
-                }
-            }
+                blocks_id_ordered.push($(this).data("block-id"));
+            });
+
+            $("#blocks_group_selection").val(blocks_id_ordered.join(","));
+            
+            // only one instance of each block_group_block is allowed
+            $("#blocks_available_accordion").find("div.block_group_block[data-block-type=block_group_block]").show();            
+            $("#block_group_selected_blocks").find("div.block_group_block[data-block-type=block_group_block]").each(function()
+            {
+                $("#blocks_available_accordion").find("div.block_group_block[data-block-type=block_group_block][data-block-id="+$(this).data("block-id")+"]").hide();                                            
+            });
         }
 
         function navigate_blocks_selection_remove(el)
         {
-            $(el).parent().parent().remove();
-            navigate_naviorderedtable_blocks_group_table_reorder();
+            $(el).closest(".block_group_block").remove();
             blocks_selection_update();
         }
 
         // update table result onload
-        navigate_naviorderedtable_blocks_group_table_reorder();
         blocks_selection_update();
     ');
 
-    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js"></script>');
+    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>');
 
     return $navibars->generate();
 }
@@ -2919,16 +2839,18 @@ function block_group_block_options($block_group, $code, $status)
     $layout->navigate_media_browser();	// we can use media browser in this function
 
     $navibars->add_actions(
-        array(	'<a href="#" onclick="javascript: navigate_media_browser();">
-                    <img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').
-                '</a>'
+        array(
+            '<a href="#" onclick="javascript: navigate_media_browser();">
+                <img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').
+            '</a>'
         )
     );
 
     $navibars->add_actions(
-        array(	'<a href="#" onclick="navigate_tabform_submit(0);">
-                    <img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').
-                '</a>'
+        array(
+            '<a href="#" onclick="navigate_tabform_submit(0);">
+                <img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').
+            '</a>'
         )
     );
 

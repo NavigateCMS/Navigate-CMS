@@ -545,6 +545,8 @@ class block
 	public static function types($orderby='id', $asc='asc')
 	{
 		global $theme;
+        global $DB;
+        global $website;
 
         $data = block::custom_types();
 
@@ -555,9 +557,17 @@ class block
             $theme_blocks = array();
         else
         {
-            // process theme translations for each block title
+            // retrieve more info for each block (title translation and block count)
             for($b=0; $b < count($theme_blocks); $b++)
+            {
                 $theme_blocks[$b]['title'] = $theme->t($theme_blocks[$b]['title']);
+                $theme_blocks[$b]['count'] = $DB->query_single(
+                    'COUNT(*) AS total',
+                    'nv_blocks',
+                    ' website = '.$website->id.' AND 
+                      type = '.protect($theme_blocks[$b]['id'])
+                );
+            }
         }
 
         if(!is_array($data))

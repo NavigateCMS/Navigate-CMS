@@ -3829,5 +3829,11 @@
 				<target>Notes del lloc web</target>
 			</segment>
 		</unit>
+		<unit id="638">
+			<segment>
+				<source>Disabled blocks are not compatible with the current block group type</source>
+				<target>Els blocs deshabilitats no són compatibles amb el tipus actiu de grup de blocs</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

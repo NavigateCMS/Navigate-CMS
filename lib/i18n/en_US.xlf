@@ -3829,5 +3829,12 @@
 				<target>Website notes</target>
 			</segment>
 		</unit>
+		<unit id="638">
+			<segment>
+				<source>Disabled blocks are not compatible with the current block group type</source>
+				<target>Disabled blocks are not compatible with the current block group type</target>
+			</segment>
+		</unit>
+
 	</file>
 </xliff>

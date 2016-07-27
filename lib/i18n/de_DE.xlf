@@ -3829,5 +3829,11 @@
 				<target>Website Notizen</target>
 			</segment>
 		</unit>
+		<unit id="638">
+			<segment>
+				<source>Disabled blocks are not compatible with the current block group type</source>
+				<target>Die gesperrten Blöcke sind nicht kompatibel mit dem aktiven Typ der Blockgruppe</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

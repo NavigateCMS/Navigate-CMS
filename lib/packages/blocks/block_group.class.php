@@ -57,7 +57,6 @@ class block_group
         if(empty($this->blocks))
             $this->blocks = array();
 	}
-
 	
 	public function save()
 	{

@@ -2951,6 +2951,90 @@ div.jGrowl div.jGrowl-notification
     color: #FFFFFF;
 }
 
+div.subcomment img
+{
+	vertical-align: middle;
+}
+
+
+div.block_group_block
+{
+	max-width: 354px;
+	min-width: 200px;
+	width: 44%;
+	float: left;
+	margin-right: 8px;
+	margin-bottom: 8px;
+	border: solid 1px #ccc;
+	padding: 8px;
+	border-radius: 2px;
+	position: relative;
+	cursor: move;
+}
+
+#blocks_available_accordion div.block_group_block.ui-state-default:not(:hover)
+{
+	background: rgba(255, 255, 255, 0.4);
+}
+
+div.block_group_block .title
+{
+	margin-bottom: 8px;
+}
+
+
+div#block_group_selected_blocks div.block_group_block
+{
+	width: auto;
+	max-width: none;
+	float: none;
+	margin-right: 0;
+	cursor: move;
+}
+
+div.block_group_block .icon
+{
+	float: right;
+	margin-left: 12px;
+}
+
+div.block_group_block div.subcomment,
+div#block_group_selected_blocks div.subcomment,
+div#blocks_available_wrapper div.subcomment
+{
+	margin-left: 0;
+	padding-left: 0;
+}
+
+div#block_group_selected_blocks > div.subcomment,
+div#blocks_available_wrapper > div.subcomment
+{
+	margin-top: 4px;
+}
+
+
+div.block_group_block .actions
+{
+	float: right;
+	display: none;
+}
+
+div#block_group_selected_blocks div.block_group_block .actions
+{
+	display: block;
+}
+
+div.block_group_block .actions a
+{
+	text-align: right;
+	display: inline-block;
+	margin-left: 4px;
+}
+
+div.block_group_block .actions a:hover
+{
+	opacity: .75;
+}
 
 
 /* timepicker addon styles */
