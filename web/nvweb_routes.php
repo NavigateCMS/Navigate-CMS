@@ -226,11 +226,16 @@ function nvweb_prepare_link($path)
 
     if(	substr(strtolower($path), 0, 7)=='http://' ||
 		substr(strtolower($path), 0, 8)=='https://' ||
+		substr(strtolower($path), 0, 5)=='nv://' ||
 		substr(strtolower($path), 0, 1)=='#'
 	)
+    {
         $url = $path;
+    }
     else
+    {
         $url = NVWEB_ABSOLUTE.$path;
+    }
 
     return $url;
 }
