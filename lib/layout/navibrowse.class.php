@@ -296,7 +296,7 @@ class navibrowse
 		');
 
 		$html[] = '</div>';
-		
+        
 		$html[] = '<div class="navibrowse-items">';		
 		
 		if($this->parent > 0) // we are on a subfolder, let's include the ".." directory
