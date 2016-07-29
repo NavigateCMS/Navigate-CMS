@@ -1143,7 +1143,7 @@ function blocks_form($item)
                                 ),
                                 array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" data-role="link" style="width: 260px;" />'.
-													 '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
+                                                   '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
                                       'align' => 'left',
                                       'style' => 'white-space: nowrap;'
                                 ),
@@ -1246,13 +1246,52 @@ function blocks_form($item)
                 );
 
                 /* show/hide appropiate row type by action */
+                $selected_link_title = '';
+                if(!empty($item->action['action-web'][$lang]))
+                {
+                    $path = explode('/', $item->action['action-web'][$lang]);
+                    if(count($path) > 0 && $path[0]=='nv:')
+                    {
+                        if($path[2]=='structure')
+                        {
+                            $tmp = new structure();
+                            $tmp->load($path[3]);
+                            $selected_link_title = $tmp->dictionary[$lang]['title'];
+                            $layout->add_script('
+                                $(".nv_block_nv_link_info[data-lang='.$lang.']").find("img[data-type=structure]").removeClass("hidden");
+                            ');
+                        }
+                        else if($path[2]=='element')
+                        {
+                            $tmp = new item();
+                            $tmp->load($path[3]);
+                            $selected_link_title = $tmp->dictionary[$lang]['title'];
+                            $layout->add_script('
+                                $(".nv_block_nv_link_info[data-lang='.$lang.']").find("img[data-type=element]").removeClass("hidden");
+                            ');
+                        }
+                    }
+                }
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(184, 'Webpage').'</label>',
                         $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=path'),
-                        '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>'
+                        '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
+                        '<div class="subcomment nv_block_nv_link_info" data-lang="'.$lang.'">
+                            <img src="img/icons/silk/sitemap_color.png" class="hidden" data-type="structure" sprite="false" />
+                            <img src="img/icons/silk/page.png" class="hidden" data-type="element" sprite="false" /> '.
+                            '<span>'.$selected_link_title.'</span>'.
+                        '</div>'
                     )
                 );
+                $layout->add_script('
+                    $("input[name=action-web-'.$lang.']").on("keydown", function()
+                    {
+                        var div_info = $(this).parent().find(".nv_block_nv_link_info");
+                        $(div_info).find("span").text("");
+                        $(div_info).find("img").addClass("hidden");
+                    });
+                ');
 
 	            $navibars->add_tab_content_row(
                     array(
@@ -1326,7 +1365,6 @@ function blocks_form($item)
 					$("#trigger-type-" + to)
 						.val($("#trigger-type-" + from).val())
 						.trigger("change");
-
 
 					// copy trigger value, depending on the trigger type
 					switch($("#trigger-type-" + to).val())
