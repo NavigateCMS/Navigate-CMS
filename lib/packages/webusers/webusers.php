@@ -130,7 +130,7 @@ function run()
 				try
 				{
 					$item->save();
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{
@@ -226,7 +226,7 @@ function run()
                 try
                 {
                     $ok = $webuser_group->save();
-                    $layout->navigate_notification(t(53, "Data saved successfully."), false);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					users_log::action($_REQUEST['fid'], $webuser_group->id, 'save_webuser_group', $webuser_group->name, json_encode($_REQUEST));
                 }
                 catch(Exception $e)

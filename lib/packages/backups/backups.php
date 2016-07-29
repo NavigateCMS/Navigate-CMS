@@ -97,7 +97,7 @@ function run()
 					$item->save();
 					$id = $item->id;
 
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{

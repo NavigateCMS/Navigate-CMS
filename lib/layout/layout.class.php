@@ -747,7 +747,7 @@ class layout
         $this->add_script(' navigate["word_separator"] = "'.$website->word_separator.'";');
     }
 	
-	public function navigate_notification($text, $isError=false, $sticky=false)
+	public function navigate_notification($text, $isError=false, $sticky=false, $css_icon="")
 	{
 		$text = str_replace("\n", '', $text);
 		$text = str_replace("\r", '', $text);
@@ -757,11 +757,23 @@ class layout
             $sticky = 'true';
         else
             $sticky = 'false';
-		
-		$this->add_script('$.jGrowl.defaults.position = "center";');
-		$this->add_script('$.jGrowl("'.$text.'", { life: 4000,
-		                                           sticky: '.$sticky.',
-												   open: function() { setTimeout(function() { $(".jGrowl-notification").css({"background-repeat": "repeat"}); }, 50);} });');
+
+        $icon = '';
+        if(!empty($css_icon))
+            $icon = '<i class=\''.$css_icon.'\'></i> ';
+
+		$this->add_script('
+		    $.jGrowl.defaults.position = "center";
+		    $.jGrowl("'.$icon.$text.'", { 
+		        life: 4000,
+                sticky: '.$sticky.',
+                open: function() { 
+                    setTimeout(function() { 
+                        $(".jGrowl-notification").css({"background-repeat": "repeat"}); 
+                    }, 50);
+                } 
+            });');
+
 		//$this->add_script('$("#jGrowl").css({"top": "36px"});');
 		//$this->add_script('$(".jGrowl-notification").css({"background-color": "#fda700", "background-image": "none", "border-color": "#6c1108"});');
 	}

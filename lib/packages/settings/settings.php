@@ -22,7 +22,7 @@ function run()
 				if(!empty($_REQUEST['user-password']))
 					$user->set_password($_REQUEST['user-password']);
 				$user->update();
-				$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+                $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 			}
 		
 			$out = settings_form();

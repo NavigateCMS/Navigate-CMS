@@ -438,7 +438,7 @@ function extensions_options($extension, $saved=null)
     if($saved!==null)
     {
         if($saved)
-            $layout->navigate_notification(t(53, "Data saved successfully."), false);
+            $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
         else
             $layout->navigate_notification(t(56, "Unexpected error"), true, true);
     }

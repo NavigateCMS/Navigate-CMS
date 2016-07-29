@@ -196,7 +196,7 @@ function run()
 					unset($item);
 					$item = new block();
 					$item->load($id);
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{
@@ -287,7 +287,7 @@ function run()
                 try
                 {
                     $item->save();
-                    $layout->navigate_notification(t(53, "Data saved successfully."), false);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
                 }
                 catch(Exception $e)
                 {
@@ -403,7 +403,7 @@ function run()
 					{
 						// save
 						$ok = block::types_update($dataset);
-						$layout->navigate_notification(t(53, "Data saved successfully."), false);
+                        $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					}
 					catch(Exception $e)
 					{
@@ -2864,7 +2864,7 @@ function block_group_block_options($block_group, $code, $status)
     if($status!==null)
     {
         if($status)
-            $layout->navigate_notification(t(53, "Data saved successfully."), false);
+            $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
         else
             $layout->navigate_notification(t(56, "Unexpected error"), true, true);
     }

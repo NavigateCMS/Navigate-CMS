@@ -258,8 +258,8 @@ function run()
 					$item->save();
 					unset($item);
 					$item = new file();
-					$item->load($_REQUEST['id']);	
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+					$item->load($_REQUEST['id']);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{

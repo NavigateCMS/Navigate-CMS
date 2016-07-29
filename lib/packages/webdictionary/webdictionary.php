@@ -86,7 +86,7 @@ function run()
 				try
 				{
 					$wtext->save();
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{
@@ -119,7 +119,7 @@ function run()
 			{
 				$status = webdictionary::save_translations_post($_REQUEST['code']);
 				if($status=='true')
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				else
 					$layout->navigate_notification(implode('<br />', $status), true, true);
 			}

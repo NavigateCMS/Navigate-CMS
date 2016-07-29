@@ -111,9 +111,9 @@ function run()
 					$id = $item->id;
 					unset($item);
 					$item = new feed();				
-					$item->load($id);	
-					
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+					$item->load($id);
+
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{

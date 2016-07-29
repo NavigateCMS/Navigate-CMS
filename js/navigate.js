@@ -335,7 +335,7 @@ function navigate_status(text, img, status, percentage)
     }
 }
 
-function navigate_notification(text, sticky)
+function navigate_notification(text, sticky, css_icon)
 {
 	$.jGrowl.defaults.position = "center";
 	$.jGrowl.defaults.closerTemplate = '<div><i class="fa fa-trash fa-lg"></i></div>';
@@ -343,8 +343,12 @@ function navigate_notification(text, sticky)
     if(!sticky || sticky=="" || sticky==null)
         sticky = false;
 
+    var icon = "";
+    if(css_icon)
+        icon = '<i class="' + css_icon + '"></i> ';
+
 	$.jGrowl(
-        text,
+        icon+text,
         {
             life: 4000,
             sticky: sticky,

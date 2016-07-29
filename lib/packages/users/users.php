@@ -96,7 +96,7 @@ function run()
 				{
 					$item->save();
                     permission::update_permissions(json_decode($_REQUEST['navigate_permissions_changes'], true), 0, $item->id);
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{

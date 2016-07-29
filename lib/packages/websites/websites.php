@@ -155,7 +155,7 @@ function run()
 					$item = new website();
 					$item->load($id);
 
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{
@@ -509,7 +509,7 @@ function websites_form($item)
 					                            navigate_notification("'.t(56, "Unexpected error.").'");
 					                        else
 					                        {
-					                            navigate_notification("'.t(53, "Data successfully saved").'");
+					                            navigate_notification("'.t(53, "Data saved successfully").'", false, "fa fa-check");
 	                                            $("#navigate_replace_urls_dialog").dialog("close");
 	                                        }
 	                                    }

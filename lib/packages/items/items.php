@@ -299,7 +299,7 @@ function run()
                     if(!empty($_REQUEST['items-order']))
                         item::reorder($_REQUEST['items-order']);
 
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);
+					$layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					$item->load($item->id);
 					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 				}

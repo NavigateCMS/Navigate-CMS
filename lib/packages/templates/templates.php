@@ -93,7 +93,7 @@ function run()
 					else
 						$enableds = array();
 					property::reorder("template", $item->id, $_REQUEST['template-properties-order'], $enableds);
-					$layout->navigate_notification(t(53, "Data saved successfully."), false);	
+                    $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
 				{
