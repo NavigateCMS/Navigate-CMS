@@ -111,10 +111,10 @@ class users_log
 				$uid,
 				$wid,
 				$function,
-				$item,
-				$action,
+				value_or_default($item, ""),
+				value_or_default($action, ""),
 				value_or_default((string)$item_title, ""),
-				$encoded_data
+				value_or_default($encoded_data, "")
 			)
 		);
 			

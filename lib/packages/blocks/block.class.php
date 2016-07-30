@@ -407,7 +407,7 @@ class block
             ',
             array(
                 ':website'          =>  $this->website,
-                ':type'             =>  $this->type,
+                ':type'             =>  value_or_default($this->type, ""),
                 ':date_published'   =>  value_or_default($this->date_published, 0),
                 ':date_unpublish'   =>  value_or_default($this->date_unpublish, 0),
                 ':position'         =>  value_or_default($this->position, 0),
