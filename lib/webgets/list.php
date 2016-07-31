@@ -224,6 +224,31 @@ function nvweb_list($vars=array())
             'zone' => 'object'
         ));
     }
+    else if($vars['source']=='block_link')
+    {
+        // only useful if this nvlist is inside another nv list of source="block"
+        $block_links = $vars['nvlist_parent_item']->trigger['trigger-links'][$current['lang']];
+
+        $rs = array();
+        if(!is_array($block_links)) $block_links = array();
+        foreach($block_links as $b_key => $b_data)
+        {
+            if(!is_array($b_data)) $b_data = array();
+            $b_i = 0;
+            foreach($b_data as $b_ref => $b_value)
+            {
+                if(!isset($rs[$b_i]))
+                    $rs[$b_i] = new stdClass();
+
+                if(!isset($rs[$b_i]->id))
+                    $rs[$b_i]->id = $b_ref;
+
+                $rs[$b_i]->$b_key = $b_value;
+                $b_i++;
+            }
+        }
+        $total = count($rs);
+    }
     else if($vars['source']=='block_group')
     {
         $bg = new block_group();
@@ -531,7 +556,7 @@ function nvweb_list($vars=array())
 			$item->load($rs[$i]->id);
 			$item->date_to_display = $rs[$i]->pdate;
 		}
-        else if($vars['source']=='rss' || $vars['source']=='twitter')
+        else if($vars['source']=='rss' || $vars['source']=='twitter'  || $vars['source']=='block_link')
         {
             // item is virtually created
             $item = $rs[$i];
@@ -599,10 +624,10 @@ function nvweb_list($vars=array())
             $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
         }
 
-
         // now, parse the (remaining) common nvlist tags (selfclosing tags)
         $template_tags_processed = 0;
         $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8'); // selfclosing = true
+
         while(!empty($template_tags))
 		{
             $tag = $template_tags[0];
@@ -951,6 +976,44 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'poll_answers':
                     $out = nvweb_blocks_render_poll($item);
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        case 'block_link':
+            switch($tag['attributes']['value'])
+            {
+                case 'id':
+                    $out = $item->id;
+                    break;
+
+                case 'title':
+                    $out = $item->title;
+                    if(!empty($tag['attributes']['length']))
+                        $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
+                    break;
+
+                case 'url':
+                case 'path':
+                    $out = $item->link;
+                    if(empty($out))
+                        $out = '#';
+                    else
+                        $out = nvweb_prepare_link($out);
+                    break;
+
+                case 'target':
+                    if($item->new_window == 1)
+                        $out = '_blank';
+                    else
+                        $out = '_self';
+                    break;
+
+                case 'icon':
+                    $out = @$item->icon;
                     break;
 
                 default:
