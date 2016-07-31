@@ -2,10 +2,11 @@
 function nvweb_languages($vars=array())
 {
 	global $website;
-	global $DB;
     global $current;
 
 	$out = array();
+
+    $class = value_or_default($vars['class'], "");
 		
 	switch($vars['mode'])
 	{
@@ -13,11 +14,11 @@ function nvweb_languages($vars=array())
 			foreach($website->languages_published as $lang)
 			{
                 if($current['lang']==$lang)
-                    $out[] = '<a href="?lang='.$lang.'" class="language-selected">'.$lang.'</a>';
+                    $out[] = '<a href="?lang='.$lang.'" class="language-selected '.$class.' active">'.$lang.'</a>';
                 else
-				    $out[] = '<a href="?lang='.$lang.'">'.$lang.'</a>';
+				    $out[] = '<a href="?lang='.$lang.'" class="'.$class.'">'.$lang.'</a>';
 			}
-            $out = implode($vars['separator'], $out);
+            $out = implode('<span class="nv-language-separator">'.$vars['separator'].'</span>', $out);
 			break;
 			
 		case 'name':
@@ -25,11 +26,11 @@ function nvweb_languages($vars=array())
 			{
                 $lang_name = language::name_by_code($lang);
                 if($current['lang']==$lang)
-                    $out[] = '<a href="?lang='.$lang.'" class="language-selected">'.$lang_name.'</a>';
+                    $out[] = '<a href="?lang='.$lang.'" class="language-selected '.$class.' active">'.$lang_name.'</a>';
                 else
-                    $out[] = '<a href="?lang='.$lang.'">'.$lang_name.'</a>';
+                    $out[] = '<a href="?lang='.$lang.'" class="'.$class.'">'.$lang_name.'</a>';
 			}
-            $out = implode($vars['separator'], $out);
+            $out = implode('<span class="nv-language-separator">'.$vars['separator'].'</span>', $out);
 			break;
 
 		case 'flag':
@@ -44,11 +45,11 @@ function nvweb_languages($vars=array())
                 }
 
                 if($current['lang']==$lang)
-                    $out[] = '<a href="?lang='.$lang.'" class="language-selected"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" />'.$extra.'</a>';
+                    $out[] = '<a href="?lang='.$lang.'" class="language-selected '.$class.' active"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" />'.$extra.'</a>';
                 else
-                    $out[] = '<a href="?lang='.$lang.'"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" alt="'.$flag.'" />'.$extra.'</a>';
+                    $out[] = '<a href="?lang='.$lang.'" class="'.$class.'"><img src="'.NVWEB_ABSOLUTE.'/object?type=flag&code='.$flag.'" alt="'.$flag.'" />'.$extra.'</a>';
 			}
-            $out = implode($vars['separator'], $out);
+            $out = implode('<span class="nv-language-separator">'.$vars['separator'].'</span>', $out);
 			break;
 
         case 'li':
@@ -58,16 +59,16 @@ function nvweb_languages($vars=array())
                     continue;
                 $lang_name = language::name_by_code($lang);
                 if($current['lang']==$lang)
-                    $out[] = '<li><a href="?lang='.$lang.'" class="language-selected active">'.$lang_name.'</a></li>';
+                    $out[] = '<li><a href="?lang='.$lang.'" class="language-selected '.$class.' active">'.$lang_name.'</a></li>';
                 else
-                    $out[] = '<li><a href="?lang='.$lang.'">'.$lang_name.'</a></li>';
+                    $out[] = '<li><a href="?lang='.$lang.'" class="'.$class.'">'.$lang_name.'</a></li>';
             }
-            $out = implode($vars['separator'], $out);
+            $out = implode('<span class="nv-language-separator">'.$vars['separator'].'</span>', $out);
             break;
 
         case 'select':
         default:
-            $out[] = '<select onchange="if(this.value!=\''.$current['lang'].'\') window.location.href = \'?lang=\'+this.value;">';
+            $out[] = '<select class="'.$class.'" onchange="if(this.value!=\''.$current['lang'].'\') window.location.href = \'?lang=\'+this.value;">';
             foreach($website->languages_published as $lang)
             {
                 if(empty($lang))
@@ -79,7 +80,7 @@ function nvweb_languages($vars=array())
                     $out[] = '<option value="'.$lang.'">'.$lang_name.'</option>';
             }
             $out[] = '</select>';
-            $out = implode($vars['separator'], $out);
+            $out = implode("\n", $out);
             break;
     }
 		

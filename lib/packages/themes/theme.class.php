@@ -255,7 +255,7 @@ class theme
 	public static function list_available()
 	{
 		$themes = glob(NAVIGATE_PATH.'/themes/*/*.theme');
-
+        
 		for($t=0; $t < count($themes); $t++)
 		{
             $theme_json = @json_decode(@file_get_contents($themes[$t]));
