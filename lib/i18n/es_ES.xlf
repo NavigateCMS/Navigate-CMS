@@ -3835,5 +3835,18 @@
                 <target>Los bloques deshabilitados no son compatibles con el tipo actual de grupo de bloques</target>
             </segment>
         </unit>
+		<unit id="639">
+			<segment>
+				<source>Restore panel</source>
+				<target>Restaurar panel</target>
+			</segment>
+		</unit>
+		<unit id="640">
+			<segment>
+				<source>Default arrangement</source>
+				<target>Organizacion predeterminada</target>
+			</segment>
+		</unit>
+
 	</file>
 </xliff>

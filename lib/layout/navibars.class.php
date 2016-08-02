@@ -115,9 +115,9 @@ class navibars
 	function add_tab_content_panel($title, $content, $id="", $width="90%", $height="200px")
 	{
 		if(is_array($content)) $content = implode("\n", $content);
-		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="ui-widget-content ui-corner-all" style=" float: left; margin-right: 10px; margin-bottom: 5px; width: '.$width.'; height: '.$height.' " id="'.$id.'">';
-		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="ui-state-default ui-corner-top" style=" padding: 5px; ">'.$title.'</div>';	// ui-tabs-selected ui-state-active
-		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="" style=" height: '.(intval($height) - 32).'px; overflow: auto; ">'.$content.'</div>';
+		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="ui-widget-content ui-corner-all navigate-panel" style=" margin-bottom: 5px; width: '.$width.'; height: '.$height.' " id="'.$id.'">';
+		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="ui-state-default ui-corner-top navigate-panel-header" style=" padding: 5px; ">'.$title.'</div>';	// ui-tabs-selected ui-state-active
+		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '<div class="navigate-panel-body" style=" height: '.(intval($height) - 32).'px; overflow: auto; ">'.$content.'</div>';
 		$this->elements['tabs_content'][(count($this->elements['tabs'])-1)][] = '</div>';				
 	}
 	

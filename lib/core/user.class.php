@@ -376,7 +376,7 @@ class user
 
         return $value;
     }
-    
+
     /**
      * Return a permission value applied to this user (or profile)
      *

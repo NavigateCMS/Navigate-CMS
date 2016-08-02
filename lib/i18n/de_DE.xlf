@@ -3835,5 +3835,18 @@
 				<target>Die gesperrten Blöcke sind nicht kompatibel mit dem aktiven Typ der Blockgruppe</target>
 			</segment>
 		</unit>
+		<unit id="639">
+			<segment>
+				<source>Restore panel</source>
+				<target>Wiederherstellen Panel</target>
+			</segment>
+		</unit>
+		<unit id="640">
+			<segment>
+				<source>Default arrangement</source>
+				<target>Standardanordnung</target>
+			</segment>
+		</unit>
+
 	</file>
 </xliff>
