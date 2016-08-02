@@ -315,6 +315,69 @@ class user
 	}
 
     /**
+     * Return (or save) a setting value applied to this user
+     *
+     * @param string $name Code of the setting
+     * @param string Value of the setting (if has to be saved)
+     * @return string Value of the setting
+     */
+	public function setting($name, $value=NULL)
+    {
+        global $DB;
+        global $website;
+
+        $DB->query(
+            'SELECT * 
+             FROM nv_settings 
+             WHERE  type = "user" AND 
+                    user = '.protect($this->id).' AND
+                    website = '.protect($website->id).' AND 
+                    name = '.protect($name)
+        );
+
+        $setting = $DB->first();
+
+        if(!isset($value))
+        {
+            if(!empty($setting))
+                $value = $setting->value;
+        }
+        else
+        {
+            // replace setting value
+            if(empty($setting))
+            {
+                $DB->execute('
+                    INSERT INTO nv_settings
+                       (id, website, type, user, name, value)
+                     VALUES
+                      (:id, :website, :type, :user, :name, :value)
+                ', array(
+                    ':id' => 0,
+                    ':website' => $website->id,
+                    ':type' => "user",
+                    ':user' => $this->id,
+                    ':name' => $name,
+                    ':value' => $value
+                ));
+            }
+            else
+            {
+                $DB->execute('
+                    UPDATE nv_settings
+                       SET value = :value
+                     WHERE id = :id
+                ', array(
+                    ':id' => $setting->id,
+                    ':value' => $value
+                ));
+            }
+        }
+
+        return $value;
+    }
+    
+    /**
      * Return a permission value applied to this user (or profile)
      *
      * @param string $name Code of the permission
