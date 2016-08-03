@@ -1,6 +1,9 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/blocks/block_group.class.php');
 
+// unused nvweb, may be removed in a future version;
+// please use <nvlist source="block_group">
+
 function nvweb_block_group($vars=array())
 {
 	global $website;
@@ -15,8 +18,10 @@ function nvweb_block_group($vars=array())
 
     $bg = new block_group();
 
-    if(!empty($vars['id']))
+    if(!empty($vars['id']) && is_numeric($vars['id']))
         $bg->load($vars['id']);
+    else if(!empty($vars['id']) && !is_numeric($vars['id']))
+        $bg->load_by_code($vars['id']);
     else if(!empty($vars['code']))
         $bg->load_by_code($vars['code']);
 
@@ -26,10 +31,11 @@ function nvweb_block_group($vars=array())
         foreach($bg->blocks as $bgb)
         {
             // can be a numeric ID or a string representing the block type
-            if(is_numeric($bgb))
-                $out[] = nvweb_blocks(array('mode' => 'single', 'id' => $bgb));
+            // note: block group blocks are not allowed, as navigate cms does not know the code to generate them
+            if(is_numeric($bgb['id']))
+                $out[] = nvweb_blocks(array('mode' => 'single', 'id' => $bgb['id']));
             else
-                $out[] = nvweb_blocks(array('type' => $bgb));
+                $out[] = nvweb_blocks(array('type' => $bgb['id']));
         }
     }
 

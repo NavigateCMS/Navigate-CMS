@@ -38,6 +38,8 @@ class block_group
 	
 	public function load_from_resultset($rs)
 	{
+	    global $theme;
+
 		$main = $rs[0];
 		
 		$this->id				= $main->id;
@@ -45,7 +47,55 @@ class block_group
 		$this->code  			= $main->code;
 		$this->title  			= $main->title;
 		$this->notes  			= $main->notes;
-		$this->blocks			= mb_unserialize($main->blocks);
+
+        // serialized (pre nv 2.1) or json object? (>= 2.1)
+        // this compatibility fix will be removed in a future version!
+        if(substr($main->blocks, 0, 2)=='a:')
+        {
+            $this->blocks		= mb_unserialize($main->blocks);
+
+            for($b = 0; $b < count($this->blocks); $b++)
+            {
+                if(is_numeric($this->blocks[$b]))
+                {
+                        $this->blocks[$b] = array(
+                            "type" => "block",
+                            "id" => $this->blocks[$b]
+                        );
+                }
+                else if(!empty($this->blocks[$b]))
+                {
+                    // block group block or block type?
+                    if(is_array($theme->block_groups))
+                    {
+                        foreach($theme->block_groups as $key => $bg)
+                        {
+                            for($i=0; $i < count($bg->blocks); $i++)
+                            {
+                                if($bg->blocks[$i]->id==$this->blocks[$b])
+                                {
+                                    $this->blocks[$b] = array(
+                                        "type" => "block_group_block",
+                                        "id" => $this->blocks[$b]
+                                    );
+                                }
+                            }
+                        }
+                    }
+
+                    // final case, we assume it's a block type
+                    if(!is_array($this->blocks[$b]))
+                    {
+                        $this->blocks[$b] = array(
+                            "type" => "block_type",
+                            "id" => $this->blocks[$b]
+                        );
+                    }
+                }
+            }
+        }
+        else
+            $this->blocks = json_decode($main->blocks, true);
 	}
 	
 	public function load_from_post()
@@ -53,7 +103,7 @@ class block_group
         $this->code  			= $_REQUEST['code'];
         $this->title  			= $_REQUEST['title'];
         $this->notes 			= $_REQUEST['notes'];
-        $this->blocks			= explode(",", $_REQUEST['blocks_group_selection']);
+        $this->blocks			= json_decode($_REQUEST['blocks_group_selection'], true); //explode(",", $_REQUEST['blocks_group_selection']);
         if(empty($this->blocks))
             $this->blocks = array();
 	}
@@ -99,7 +149,7 @@ class block_group
                 ':code'             =>  value_or_default($this->code, ''),
                 ':title'            =>  value_or_default($this->title, ''),
                 ':notes'            =>  value_or_default($this->notes, ''),
-                ':blocks'           =>  serialize($this->blocks)
+                ':blocks'           =>  json_encode($this->blocks)
             )
         );
 
@@ -131,7 +181,7 @@ class block_group
                 ':code'             =>  value_or_default($this->code, ''),
                 ':title'            =>  value_or_default($this->title, ''),
                 ':notes'            =>  value_or_default($this->notes, ''),
-                ':blocks'           =>  serialize($this->blocks)
+                ':blocks'           =>  json_encode($this->blocks)
             )
         );
 		
