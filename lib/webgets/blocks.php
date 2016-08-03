@@ -60,19 +60,26 @@ function nvweb_blocks($vars=array())
         $categories = explode(',', $vars['categories']);
         $categories = array_filter($categories);
     }
-    $categories[] = $current['category'];
+
+    if(isset($current['object']->category))
+        $categories[] = $current['object']->category;
+    else
+        $categories[] = $current['category'];
 
     $blocks = array();
 
     $categories_query = '';
     $exclusions_query = '';
-    if(is_array($categories))
+
+    if(is_array($categories) && !empty($categories[0]))
     {
         foreach($categories as $cq)
         {
             $categories_query .= " OR INSTR(CONCAT(',', categories, ','), ',".intval($cq).",') > 0 ";
             $exclusions_query .= " AND INSTR(CONCAT(',', exclusions, ','), ',".intval($cq).",') = 0 ";
         }
+
+        $categories_query = ' AND (categories = "" '.$categories_query.') ';
     }
 
 	switch($order_mode)
@@ -91,7 +98,7 @@ function nvweb_blocks($vars=array())
                    AND (date_published = 0 OR date_published < '.core_time().')
                    AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                    AND access IN('.implode(',', $access).')
-                   AND (categories = "" '.$categories_query.')
+                   '.$categories_query.'
                    '.$exclusions_query.'
                    AND id = '.protect($vars['id'])
             );
@@ -115,11 +122,10 @@ function nvweb_blocks($vars=array())
                    AND (date_published = 0 OR date_published < '.core_time().')
                    AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                    AND access IN('.implode(',', $access).')
-                   AND (categories = "" '.$categories_query.')
+                   '.$categories_query.'
                    '.$exclusions_query.'
                 ORDER BY position ASC
             ');
-
 			$rows = $DB->result();
 
 			foreach($rows as $row)
@@ -145,7 +151,7 @@ function nvweb_blocks($vars=array())
                    AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                    AND access IN('.implode(',', $access).')
                    AND fixed = 1
-                   AND (categories = "" '.$categories_query.')
+                   '.$categories_query.'
                    '.$exclusions_query.'
               ORDER BY position ASC
             ');
@@ -167,7 +173,7 @@ function nvweb_blocks($vars=array())
                    AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
                    AND access IN('.implode(',', $access).')
                    AND id NOT IN('.implode(",", $fixed_rows_ids).')
-                   AND (categories = "" '.$categories_query.')
+                   '.$categories_query.'
                    '.$exclusions_query.'
                  ORDER BY RAND()
             ');

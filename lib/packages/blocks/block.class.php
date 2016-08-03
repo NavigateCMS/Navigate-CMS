@@ -143,7 +143,7 @@ class block
         if(!empty($_REQUEST['exclusions']))
             $this->exclusions	= explode(',', $_REQUEST['exclusions']);
 
-        if($_REQUEST['all_categories']=='1')
+        if($_REQUEST['all_categories']=='1' || (is_array($_REQUEST['all_categories']) && $_REQUEST['all_categories'][0] == '1'))
         {
             $this->categories 	= array();
             $this->exclusions 	= array();
