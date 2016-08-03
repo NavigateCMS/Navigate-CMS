@@ -1264,7 +1264,7 @@ function nvweb_template_oembed_url($url)
     // Youtube: http://www.youtube.com?watch=3MteSlpxCpo
     else if(strpos($url, 'www.youtube.com/watch'))
     {
-        $oembed_url = 'http://www.youtube.com/oembed?url='.urlencode($url).'&format=json';
+        $oembed_url = 'https://www.youtube.com/oembed?url='.urlencode($url).'&format=json';
         $response = nvweb_template_oembed_cache('youtube', $oembed_url);
         if(!empty($response->html))
             $out = $response->html;
@@ -1272,8 +1272,52 @@ function nvweb_template_oembed_url($url)
     // Vimeo: http://vimeo.com/channels/staffpicks/113397445
     else if(strpos($url, 'www.vimeo.com/') || strpos($url, 'vimeo.com/'))
     {
-        $oembed_url = 'http://vimeo.com/api/oembed.json?url='.urlencode($url);
+        $oembed_url = 'https://vimeo.com/api/oembed.json?url='.urlencode($url);
         $response = nvweb_template_oembed_cache('vimeo', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+
+    // Instagram: https://www.instagram.com/p/BInLvYQDSHe/
+    else if( strpos($url, 'www.instagram.com/p/') ||
+             strpos($url, 'instagram.com/p/') ||
+             strpos($url, 'instagr.am/p/')
+    )
+    {
+        $oembed_url = 'https://api.instagram.com/oembed?url='.urlencode($url);
+        $response = nvweb_template_oembed_cache('instagram', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+    // Flickr: http://www.flickr.com/photos/bees/2362225867
+    else if(strpos($url, 'www.flickr.com/photos/'))
+    {
+        $oembed_url = 'http://www.flickr.com/services/oembed.json?url='.urlencode($url);
+        $response = nvweb_template_oembed_cache('flickr', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+    // DailyMotion: http://www.dailymotion.com/video/x40gjsb_stock-video-category-nature-landscapes-corsican-nature-island-of-beauty-sea-beach_shortfilms
+    else if(strpos($url, 'www.dailymotion.com/video/'))
+    {
+        $oembed_url = 'http://www.dailymotion.com/services/oembed?format=json&url='.urlencode($url);
+        $response = nvweb_template_oembed_cache('dailymotion', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+    // Scribd: https://www.scribd.com/doc/110799637
+    else if(strpos($url, 'www.scribd.com/doc/'))
+    {
+        $oembed_url = 'http://www.scribd.com/services/oembed?format=json&url='.urlencode($url);
+        $response = nvweb_template_oembed_cache('scribd', $oembed_url);
+        if(!empty($response->html))
+            $out = $response->html;
+    }
+    // Soundcloud: https://soundcloud.com/elvenlied/ivan-torrent-icarus-feat-julie
+    else if(strpos($url, 'soundcloud.com/'))
+    {
+        $oembed_url = 'https://soundcloud.com/oembed?format=json&url='.urlencode($url);
+        $response = nvweb_template_oembed_cache('soundcloud', $oembed_url);
         if(!empty($response->html))
             $out = $response->html;
     }
