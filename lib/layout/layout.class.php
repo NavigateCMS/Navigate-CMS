@@ -665,7 +665,6 @@ class layout
                 </div>
             </div>'
         );
-		
 	}
 
     public function navigate_additional_scripts()
@@ -689,6 +688,7 @@ class layout
                 57: "'.t(57, 'Do you really want to delete this item?').'",
                 58: "'.t(58, 'Cancel').'",
                 59: "'.t(59, 'Confirmation').'",
+                67: "'.t(67, 'Title').'",
                 77: "'.t(77, 'Properties').'",
                 82: "'.t(82, 'File').'",
                 92: "'.t(92, 'Close').'",

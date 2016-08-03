@@ -3847,6 +3847,12 @@
 				<target>Organizacion predeterminada</target>
 			</segment>
 		</unit>
+		<unit id="641">
+			<segment>
+				<source>It will only be shown if the template supports it</source>
+				<target>Sólo se mostrará en las plantillas que lo soporten</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

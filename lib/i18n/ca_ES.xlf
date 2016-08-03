@@ -3847,6 +3847,12 @@
 				<target>Organitzacio per defecte</target>
 			</segment>
 		</unit>
+		<unit id="641">
+			<segment>
+				<source>It will only be shown if the template supports it</source>
+				<target>Només es mostrarà en les plantilles que ho suportin</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

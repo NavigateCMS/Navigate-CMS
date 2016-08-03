@@ -262,62 +262,75 @@ function nvweb_list($vars=array())
             {
                 unset($bgbo);
 
-                if(is_numeric($bgb))
+                switch($bgb['type'])
                 {
-                    $bgbo = new block();
-                    $bgbo->load($bgb);
+                    case 'block':
+                        $bgbo = new block();
+                        $bgbo->load($bgb['id']);
 
-                    if(empty($bgbo) || empty($bgbo->type))
-                        continue;
+                        if(empty($bgbo) || empty($bgbo->type))
+                            continue;
 
-                    // check if we can display this block
-                    if(nvweb_object_enabled($bgbo))
-                    {
-                        // check categories / exclusions
-                        if(!empty($bgbo->categories))
+                        // check if we can display this block
+                        if(nvweb_object_enabled($bgbo))
                         {
-                            $bgbo_cat_found = false;
-
-                            foreach($categories as $list_cat)
+                            // check categories / exclusions
+                            if(!empty($bgbo->categories))
                             {
-                                if(in_array($list_cat, $bgbo->categories))
-                                    $bgbo_cat_found = true;
+                                $bgbo_cat_found = false;
+
+                                foreach($categories as $list_cat)
+                                {
+                                    if(in_array($list_cat, $bgbo->categories))
+                                        $bgbo_cat_found = true;
+                                }
+                                if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
+                                    continue;
                             }
-                            if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
-                                continue;
+
+                            if(!empty($bgbo->exclusions))
+                            {
+                                foreach($categories as $list_cat)
+                                {
+                                    if(in_array($list_cat, $bgbo->exclusions))
+                                        continue; // skip this block
+                                }
+                            }
+
+                            $rs[] = $bgbo;
                         }
-                        if(!empty($bgbo->exclusions))
+                        break;
+
+                    case 'block_group_block':
+                        $bgba = $theme->block_group_blocks($vars['type']);
+
+                        if(!empty($bgba[$bgb['id']])) // there is defined a "block group block" with that type
                         {
-                            foreach($categories as $list_cat)
-                            {
-                                if(in_array($list_cat, $bgbo->exclusions))
-                                    continue; // skip this block
-                            }
+                            $bgbo = $bgba[$bgb['id']];
+                            $rs[] = $bgbo;
                         }
-                        $rs[] = $bgbo;
-                    }
-                }
-                else
-                {
-                    // is block group block type (special block) or is a block type (like banners)?
-                    $bgba = $theme->block_group_blocks($vars['type']);
 
-                    if(!empty($bgba[$bgb])) // there is defined a "block group block" with that type
-                    {
-                        $bgbo = $bgba[$bgb];
-                        $rs[] = $bgbo;
-                    }
-                    else // that type is not a special "block group block", so is a generic "block type" (a collection of blocks of the same type)
-                    {
+                        break;
+
+                    case 'block_type':
+                        // a collection of blocks of the same type
                         list($bgbos, $foo) = nvweb_blocks(array(
-                            'type' => $bgb,
+                            'type' => $bgb['id'],
                             'mode' => ($order=='random'? 'random' : 'ordered'),
                             'zone' => 'object'
                         ));
 
+                        // add the block type definition, with its title
+                        if(count($bgbos) > 0 && isset($bgb['title']) && !empty($bgb['title']))
+                        {
+                            $bgb['_object_type'] = 'block_group_block_type';
+                            $rs[] = (object)$bgb;
+                        }
+
                         for($i=0; $i < count($bgbos); $i++)
                             $rs[] = $bgbos[$i];
-                    }
+
+                        break;
                 }
             }
             $total = count($rs);
@@ -566,6 +579,11 @@ function nvweb_list($vars=array())
             if(get_class($rs[$i])=='block')
             {
                 // standard block
+                $item = $rs[$i];
+            }
+            else if(isset($rs[$i]->_object_type) && ($rs[$i]->_object_type == "block_group_block_type"))
+            {
+                // block type definition (mainly used to add a title before a list of blocks of the same type)
                 $item = $rs[$i];
             }
             else
@@ -1021,6 +1039,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
             }
             break;
 
+        case 'block_type':
+            switch($tag['attributes']['value'])
+            {
+                case 'title':
+                    $out = $item->title;
+                    break;
+            }
+            break;
+
         case 'gallery':
             switch($tag['attributes']['value'])
             {
@@ -1113,7 +1140,6 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					else
 						$out = date($website->date_format, $item->date_to_display);
 					break;
-
 
 				case 'content':
 				case 'section':
@@ -1649,6 +1675,26 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 // no match, discard this conditional
                 $out = '';
             }
+        }
+    }
+    else if($tag['attributes']['by']=='block_type')
+    {
+        // $item is a block type defined in a block group (to add a title before listing blocks of that kind)
+        if(isset($tag['attributes']['type']) && $item->_object_type == "block_group_block_type")
+        {
+            if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+            {
+                $out = $item_html;
+            }
+            else
+            {
+                // no match, discard this conditional
+                $out = '';
+            }
+        }
+        else
+        {
+            $out = '';
         }
     }
     else if($tag['attributes']['by']=='access')
