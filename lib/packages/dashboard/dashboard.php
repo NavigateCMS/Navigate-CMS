@@ -1,4 +1,6 @@
 <?php
+require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed_parser.class.php');
+
 function run()
 {
     global $user;
@@ -12,6 +14,37 @@ function run()
                     $dashboard_panels = $_REQUEST['dashboard_panels'];
                     $user->setting('dashboard-panels', json_encode($dashboard_panels));
                     echo json_encode(true);
+                    core_terminate();
+                    break;
+
+                case 'feed':
+                    $feed = new feed_parser();
+                    $feed->set_cache(4 * 3600); // once update each 4 hours
+                    $feed->load($_REQUEST['url']);
+                    list($channel, $articles, $count) = $feed->parse(0, $_REQUEST['limit'], 'newest');
+                    $items = item::convert_from_rss($articles);
+
+                    if(!empty($items))
+                    {
+                        $feed_html = '';
+                        for($c=0; $c < count($items); $c++)
+                        {
+                            if(empty($items[$c])) break;
+                            $tmp = array(
+                                '<div class="navigate-panel-body-title ui-corner-all">'.
+                                    '<a href="'.$items[$c]->paths[$_REQUEST['language']].'" target="_blank">'.
+                                        core_ts2date($items[$c]->date_to_display, true).' '.
+                                        '<strong>'.$items[$c]->dictionary[$_REQUEST['language']]['title'].'</strong>'.
+                                    '</a>'.
+                                '</div>',
+                                '<div id="navigatecms-feed-item-'.$items[$c]->id.'" class="navigate-panel-recent-feed-element">'.
+                                    $items[$c]->dictionary[$_REQUEST['language']]['section-main'].
+                                '</div>');
+
+                            $feed_html .= implode("\n", $tmp);
+                        }
+                    }
+                    echo $feed_html;
                     core_terminate();
                     break;
 
@@ -93,6 +126,7 @@ function dashboard_create()
     dashboard_panel_recent_elements(array("navibars" => &$navibars, "statistics" => &$stats));
     dashboard_panel_latest_searches(array("navibars" => &$navibars, "statistics" => &$stats));
     dashboard_panel_public_wall(array("navibars" => &$navibars, "statistics" => &$stats));
+    dashboard_panel_navigatecms_news(array("navibars" => &$navibars, "statistics" => &$stats));
 
     $events->trigger(
         'dashboard',
@@ -736,5 +770,44 @@ function dashboard_panel_public_wall($params)
     );
 }
 
+function dashboard_panel_navigatecms_news($params)
+{
+    global $DB;
+    global $website;
+    global $layout;
+    global $current;
+
+    $stats = &$params['statistics'];
+    $navibars = &$params['navibars'];
+
+    // we'll need to load the feed by AJAX to avoid blocking the dashboard function
+    $html_loader = '<div class="navigate-panel-loader"><i class="fa fa-circle-o-notch fa-spin fa-3x fa-fw"></i></div>';
+
+    $navibars->add_tab_content_panel(
+        '<img src="img/icons/silk/rss.png" align="absmiddle" /> Navigate CMS RSS',
+        $html_loader,
+        'navigate-panel-navigatecms-feed',
+        '100%',
+        '314px'
+    );
+
+    $layout->add_script('
+        $(window).on("load", function()
+        {        
+            $("#navigate-panel-navigatecms-feed .navigate-panel-body")
+                .load("?fid=dashboard&act=json&oper=feed", {limit: 5, language: "en", url: "http://www.navigatecms.com/en/rss"});
+        });
+        
+        $("#navigate-panel-navigatecms-feed").on("mouseenter", ".navigate-panel-body-title", function()
+        {
+            $(this).addClass("ui-state-highlight");
+        });
+        
+        $("#navigate-panel-navigatecms-feed").on("mouseleave", ".navigate-panel-body-title", function()
+        {
+            $(this).removeClass("ui-state-highlight");
+        });
+    ');
+}
 
 ?>

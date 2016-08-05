@@ -2335,19 +2335,39 @@ ul.connectedSortable li
 	margin-top: 2px;
 }
 
+.navigate-panel-body-title,
 .navigate-panel-recent-comments-username
 {
 	padding: 3px; 
 	margin: 3px; 
 	margin-bottom: 0px;
 	overflow: hidden;
+	border: solid 1px #AED0EA;
 }
 
+.navigate-panel-body-title a,
 .navigate-panel-recent-comments-username a
 {
 	display: block;
 	text-decoration: none;	
 	white-space: nowrap;
+}
+
+.navigate-panel-recent-feed-element
+{
+	padding: 8px;
+}
+
+.navigate-panel-recent-feed-element img
+{
+	width: 100%;
+}
+
+.navigate-panel-loader
+{
+	color: #174570;
+	margin: 96px auto;
+	text-align: center;
 }
 
 
