@@ -489,6 +489,10 @@ function nvweb_list($vars=array())
 
         */
 
+        $filters = '';
+        if(!empty($vars['filter']))
+            $filters = nvweb_list_parse_filters($vars['filter'], 'items');
+
         // reuse structure.access permission
         $access_extra_items = str_replace('s.', 'i.', $access_extra);
 
@@ -535,6 +539,7 @@ function nvweb_list($vars=array())
 			   AND d.subtype = "title"
 			   AND d.node_id = i.id
 			   AND d.lang = '.protect($current['lang']).'
+             '.$filters.'
 		     '.$templates.'
 			 '.$exclude.'
 			 '.$orderby.'
@@ -1780,6 +1785,206 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     return $out;
 }
 
+function nvweb_list_parse_filters($raw, $object='item')
+{
+    global $website;
+
+    $filters = array();
+
+    $raw = str_replace("'", '"', $raw);
+
+    $aFilters = json_decode($raw, true);
+    if(APP_DEBUG && json_last_error() > 0)
+        firephp_nv::log($raw, json_last_error_msg());
+
+    $comparators = array(
+        'eq' => '=',
+        'neq' => '!=',
+        'gt' => '>',
+        'gte' => '>=',
+        'lt' => '<',
+        'lte' => '<='
+    );
+
+    for($f=0; $f < count($aFilters); $f++)
+    {
+        $filter = $aFilters[$f];
+
+        $key = array_keys($filter);
+        $key = $key[0];
+        $value = $filter[$key];
+
+        if(substr($key, 0, 9) == 'property.')
+        {
+            // object property value
+            // TODO: filters for values in DICTIONARY
+            $key = substr($key, 9);
+
+            if(!is_array($value))
+            {
+                if(substr($value, 0, 1)=='$')
+                {
+                    if(!isset($_REQUEST[substr($value, 1)]))
+                        continue;   // ignore this filter
+
+                    $value = $_REQUEST[substr($value, 1)];
+                }
+
+                $filters[] = ' AND i.id IN ( SELECT node_id 
+                                               FROM nv_properties_items
+                                              WHERE website = '.$website->id.' AND
+                                                    property_id = '.protect($key).' AND
+                                                    element = "item" AND
+                                                    value = '.protect($value).'
+                                           )';
+            }
+            else
+            {
+                foreach($value as $comp_type => $comp_value)
+                {
+                    if(substr($comp_value, 0, 1)=='$')
+                    {
+                        if(!isset($_REQUEST[substr($comp_value, 1)]))
+                            continue;   // ignore this filter
+
+                        $comp_value = $_REQUEST[substr($comp_value, 1)];
+                    }
+
+                    if(isset($comparators[$comp_type]))
+                    {
+                        $filters[] = ' AND i.id IN ( 
+                                             SELECT node_id 
+                                               FROM nv_properties_items
+                                              WHERE website = '.$website->id.' AND
+                                                    property_id = '.protect($key).' AND
+                                                    element = "item" AND
+                                                    value '.$comparators[$comp_type].' '.protect($comp_value).'
+                                            )';
+                    }
+                    else if($comp_type == 'in' || $comp_type == 'nin')
+                    {
+                        if($comp_type == 'nin')
+                            $comp_type = 'NOT IN';
+                        else
+                            $comp_type = 'IN';
+
+                        if(!is_array($comp_value))
+                            $comp_value = explode(",", $comp_value);
+
+                        $filters[] = ' AND i.id IN ( 
+                                            SELECT node_id 
+                                              FROM nv_properties_items
+                                             WHERE website = '.$website->id.' AND
+                                                    property_id = '.protect($key).' AND
+                                                    element = "item" AND
+                                                    value '.$comp_type.'('.
+                                                        implode(
+                                                            ",",
+                                                            array_map(
+                                                                function($v)
+                                                                {
+                                                                    return protect($v);
+                                                                },
+                                                                array_values($comp_value)
+                                                            )
+                                                        ).')
+                                            )';
+                    }
+                }
+            }
+        }
+        else
+        {
+            // object value
+            switch($key)
+            {
+                case 'id':
+                    $field = 'i.id';
+                    $direct_filter = true;
+                    break;
+
+                case 'author':
+                    $field = 'i.author';
+                    $direct_filter = true;
+                    break;
+
+                case 'date_to_display':
+                    $field = 'i.date_to_display';
+                    $direct_filter = true;
+                    break;
+
+                case 'score':
+                    $field = 'i.score';
+                    $direct_filter = true;
+                    break;
+
+                case 'votes':
+                    $field = 'i.votes';
+                    $direct_filter = true;
+                    break;
+
+                default:
+                    continue;
+                    break;
+            }
+
+            if($direct_filter)
+            {
+                if(!is_array($value))
+                {
+                    if(substr($value, 0, 1)=='$')
+                    {
+                        if(!isset($_REQUEST[substr($value, 1)]))
+                            continue;   // ignore this filter
+                        
+                        $value = $_REQUEST[substr($value, 1)];
+                    }
+
+                    $filters[] = ' AND '.$field.' = '.protect($value);
+                }
+                else
+                {
+                    foreach($value as $comp_type => $comp_value)
+                    {
+                        if(substr($comp_value, 0, 1)=='$')
+                        {
+                            if(!isset($_REQUEST[substr($comp_value, 1)]))
+                                continue;   // ignore this filter
+                            $comp_value = $_REQUEST[substr($comp_value, 1)];
+                        }
+
+                        if(isset($comparators[$comp_type]))
+                            $filters[] = ' AND '.$field.' '.$comparators[$comp_type].' '.protect($comp_value);
+                        else if($comp_type == 'in' || $comp_type == 'nin')
+                        {
+                            if($comp_type == 'nin')
+                                $comp_type = 'NOT IN';
+                            else
+                                $comp_type = 'IN';
+
+                            $filters[] = ' AND '.$field.' '.$comp_type.'('.
+                                implode(
+                                    ",",
+                                    array_map(
+                                        function($v)
+                                        {
+                                            return protect($v);
+                                        },
+                                        array_values($comp_value)
+                                    )
+                                ).')';
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $filters = implode("\n", $filters);
+
+    return $filters;
+}
+
 function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null, $permission=null, $order=null)
 {
     $feed = new feed_parser();
@@ -2028,5 +2233,7 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 	return $paginator_html;
 }
+
+
 
 ?>
