@@ -3853,6 +3853,12 @@
 				<target>Només es mostrarà en les plantilles que ho suportin</target>
 			</segment>
 		</unit>
+		<unit id="642">
+			<segment>
+				<source>Redirect to a website page</source>
+				<target>Redirigir a una pàgina del lloc web</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

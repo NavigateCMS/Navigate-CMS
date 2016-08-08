@@ -3853,6 +3853,12 @@
 				<target>Sólo se mostrará en las plantillas que lo soporten</target>
 			</segment>
 		</unit>
+		<unit id="642">
+			<segment>
+				<source>Redirect to a website page</source>
+				<target>Redirigir a una página del sitio web</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

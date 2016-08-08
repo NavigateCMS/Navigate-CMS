@@ -811,20 +811,88 @@ function websites_form($item)
                     0 => 'blank',
                     1 => 'homepage',
                     2 => 'theme_404',
-                    3 => 'http_404'
+                    3 => 'http_404',
+                    4 => 'website_path'
                 ),
                 array(
                     0 => t(516, 'Show a blank page'),
                     1 => t(517, 'Redirect to home page'),
                     2 => t(518, 'Use the custom 404 template of a theme (if exists)'),
-                    3 => t(519, 'Send a 404 HTTP error header')
+                    3 => t(519, 'Send a 404 HTTP error header'),
+                    4 => t(642, 'Redirect to a website page'),
                 ),
                 $item->wrong_path_action,
-                '',
+                'navigate_websites_wrong_path_action_change(this)',
                 false
-            )
+            ),
+            '<a class="uibutton nv_website_wrong_path_trigger hidden"><i class="fa fa-sitemap"></i></a>',
+            '<span id="navigate-website-wrong-path-redirect" class="nv_website_wrong_path_info navigate-form-row-info">'.$item->wrong_path_redirect.'</span>',
+            $naviforms->hidden('wrong_path_redirect', $item->wrong_path_redirect)
         )
     );
+
+    
+    $layout->add_script('
+        function navigate_websites_wrong_path_action_change(el)
+        {
+            $(el).parent().find(".nv_website_wrong_path_trigger").addClass("hidden");
+            $(el).parent().find(".nv_website_wrong_path_info").addClass("hidden");
+            
+            if($(el).val()=="website_path")
+            {
+                $(el).parent().find(".nv_website_wrong_path_trigger").removeClass("hidden");
+                $(el).parent().find(".nv_website_wrong_path_info").removeClass("hidden");                
+            }
+        }
+                
+        navigate_websites_wrong_path_action_change($("#wrong_path_action"));
+    
+        $(".nv_website_wrong_path_trigger").on("click", function()
+        {
+            var trigger = this;
+        
+            // hide "replace title" when calling the dialog from the block action
+            // leave it enabled when calling the dialog from the Links table
+            if($(this).parents("table.box-table").length == 0)
+                $("#nv_link_dialog_replace_text").parent().css("visibility", "hidden");
+        
+            $("#nv_link_dialog").removeClass("hidden");
+            $("#nv_link_dialog").dialog({
+                title: $("#nv_link_dialog").attr("title"),
+                modal: true,
+                width: 620,
+                height: 400,
+                buttons: [
+                    {
+                        text: "Ok",
+                        click: function(event, ui)
+                        {
+                            // check if there is any path selected
+                            if(!$("#nv_link_dialog_dynamic_path").hasClass("hidden"))
+                            {
+                                var input_path = $("#wrong_path_redirect");
+                                input_path.val($("#nv_link_dialog_dynamic_path").text());
+                                $(".nv_website_wrong_path_info").html($("#nv_link_dialog_dynamic_path").text());
+        
+                                $("#nv_link_dialog").dialog("close");
+                            }
+                        }
+                    },
+                    {
+                        text: "Cancel",
+                        click: function(event, ui)
+                        {
+                            $("#nv_link_dialog").dialog("close");
+                        }
+                    }
+                ],
+                close: function()
+                {
+                    $("#nv_link_dialog_replace_text").parent().css("visibility", "visible");
+                }
+            });
+        });    
+    ');
 
 	// when no path is given
     $navibars->add_tab_content_row(array(

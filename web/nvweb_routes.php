@@ -389,6 +389,12 @@ function nvweb_route_parse($route="")
                         return;
                         break;
 
+                    case 'website_path':
+                        $redirect_url = nvweb_template_convert_nv_paths($website->wrong_path_redirect);
+                        header('location: '.$redirect_url);
+                        nvweb_clean_exit();
+                        break;
+
                     case 'blank':
                     default:
                         nvweb_clean_exit();

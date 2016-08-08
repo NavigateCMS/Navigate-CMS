@@ -3853,6 +3853,12 @@
 				<target>Es wird nur dann angezeigt, wenn die Vorlage unterstützt</target>
 			</segment>
 		</unit>
+		<unit id="642">
+			<segment>
+				<source>Redirect to a website page</source>
+				<target>Umleitung auf eine Seite, auf der Website</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

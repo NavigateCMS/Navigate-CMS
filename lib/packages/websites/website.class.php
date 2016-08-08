@@ -10,6 +10,7 @@ class website
 	public $folder; // usually empty, used when the website is IN a folder, ex. http://www.naviwebs.com/demo/homepage
     public $redirect_to; // if the website is private or closed, redirect anonymous visitors to a real path
     public $wrong_path_action;
+    public $wrong_path_redirect;
 	public $empty_path_action;
 	public $languages; // array('en' => array( 'language' => 'en', 'variant' => 'US', 'code' => 'en_US' => 'system_locale' => 'ENU_USA'), 'es_ES' => array(...), ...)
 	public $languages_published; // array ('en', 'es_ES')
@@ -82,9 +83,10 @@ class website
 		$this->folder			= $main->folder;
         $this->word_separator	= $main->word_separator;
 
-		$this->redirect_to		= $main->redirect_to;
-        $this->wrong_path_action= $main->wrong_path_action;
-        $this->empty_path_action= $main->empty_path_action;
+		$this->redirect_to		    = $main->redirect_to;
+        $this->wrong_path_action    = $main->wrong_path_action;
+        $this->wrong_path_redirect  = $main->wrong_path_redirect;
+        $this->empty_path_action    = $main->empty_path_action;
 
 		$this->languages		    = mb_unserialize($main->languages);
 		$this->languages_published  = array_filter(mb_unserialize($main->languages_published));
@@ -146,9 +148,10 @@ class website
 		$this->folder			= $_REQUEST['folder'];
         $this->word_separator	= $_REQUEST['word_separator'];
 
-        $this->redirect_to		= $_REQUEST['redirect_to'];
-        $this->wrong_path_action= $_REQUEST['wrong_path_action'];
-        $this->empty_path_action= $_REQUEST['empty_path_action'];
+        $this->redirect_to		    = $_REQUEST['redirect_to'];
+        $this->wrong_path_action    = $_REQUEST['wrong_path_action'];
+        $this->wrong_path_redirect  = $_REQUEST['wrong_path_redirect'];
+        $this->empty_path_action    = $_REQUEST['empty_path_action'];
 
         $this->date_format		= $_REQUEST['date_format'];
 		$this->tinymce_css		= $_REQUEST['tinymce_css'];
@@ -395,7 +398,7 @@ class website
 		$ok = $DB->execute('
 		    INSERT INTO nv_websites
             (	id, name, protocol, subdomain, domain, folder, redirect_to, 
-            	wrong_path_action, empty_path_action,
+            	wrong_path_action, wrong_path_redirect, empty_path_action,
                 languages, languages_published, word_separator,
                 aliases, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
@@ -413,6 +416,7 @@ class website
               :folder,
               :redirect_to,
               :wrong_path_action,
+              :wrong_path_redirect,
               :empty_path_action,
               :languages,
               :languages_published,
@@ -451,6 +455,7 @@ class website
 				":folder" => value_or_default($this->folder, ""),
 				":redirect_to" => value_or_default($this->redirect_to, ""),
 				":wrong_path_action" => value_or_default($this->wrong_path_action, 'blank'),
+				":wrong_path_redirect" => value_or_default($this->wrong_path_redirect, ''),
 				":empty_path_action" => value_or_default($this->empty_path_action, 'homepage_redirect'),
 				":languages" => (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				":languages_published" => (is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
@@ -542,6 +547,7 @@ class website
                     folder	=   ?,
                     redirect_to = ?,
                     wrong_path_action = ?,
+                    wrong_path_redirect = ?,
                     empty_path_action = ?,
                     languages = ?,
                     languages_published = ?,
@@ -580,6 +586,7 @@ class website
                 value_or_default($this->folder, ""),
                 value_or_default($this->redirect_to, ""),
                 value_or_default($this->wrong_path_action, "blank"),
+                value_or_default($this->wrong_path_redirect, ""),
                 value_or_default($this->empty_path_action, "homepage_redirect"),
                 (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				(is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),

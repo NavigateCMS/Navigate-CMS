@@ -3853,6 +3853,12 @@
 				<target>It will only be shown if the template supports it</target>
 			</segment>
 		</unit>
+		<unit id="642">
+			<segment>
+				<source>Redirect to a website page</source>
+				<target>Redirect to a website page</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>
