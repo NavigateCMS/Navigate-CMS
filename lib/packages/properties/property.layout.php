@@ -377,7 +377,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';		
-			$field[] = '<script language="javascript" type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>';
+			$field[] = '<script language="javascript" type="text/javascript" src="https://maps.google.com/maps/api/js"></script>';
 
 			$layout->add_script('
 				var property_'.$property->id.'_gmap = null;
@@ -444,21 +444,46 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				
 				function property'.$property->id.'search()
 				{				
+					var address = $("#property-'.$property->id.'-search input").val();
 					var geocoder = new google.maps.Geocoder();
-					geocoder.geocode( { "address": $("#property-'.$property->id.'-search input").val()}, function(results, status) 
+					geocoder.geocode( { "address": address}, function(results, status) 
 					{
-						if (status == google.maps.GeocoderStatus.OK)
+						if(status == google.maps.GeocoderStatus.OK)
 						{
 							property_'.$property->id.'_gmap.setCenter(results[0].geometry.location);
 							var marker = new google.maps.Marker(
 							{
 								map: property_'.$property->id.'_gmap, 
 								position: results[0].geometry.location
-							});
+							});							
 						} 
 						else 
 						{
-							alert("Geocode was not successful for the following reason: " + status);
+						    if(status=="REQUEST_DENIED") // Api limit reached?
+						    {
+						        // try to use an alternative geocode service
+                                $.getJSON("http://services.gisgraphy.com/geocoding/geocode?format=json&callback=?&address="+address, function(data)
+                                {                                    
+                                    if(!data.result || data.result.length < 1)
+                                        alert("Geocode was not successful for the following reason: " + status);
+                                    else
+                                    {
+                                        var myLatLng = new google.maps.LatLng(data.result[0].lat, data.result[0].lng);
+                                        
+                                        /*
+                                        var marker = new google.maps.Marker(
+							            {
+								            map: property_'.$property->id.'_gmap, 
+								            position: myLatLng
+							            });
+							            */
+							                   
+                                        property_'.$property->id.'_gmap.setCenter(myLatLng);
+                                    }
+                                });						        
+						    }
+						    else
+						        alert("Geocode was not successful for the following reason: " + status);
 						}
 					});
 					
