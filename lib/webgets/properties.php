@@ -274,7 +274,17 @@ function nvweb_properties_render($property, $vars)
             $property->value = (array)$property->value;
 
 		if(!isset($property->value) || !isset($property->value[$current['lang']]))
-			$property->value[$current['lang']] = $property->dvalue->{$current['lang']};
+        {
+            if(isset($property->dvalue->{$current['lang']}))
+    			$property->value[$current['lang']] = $property->dvalue->{$current['lang']};
+            else
+            {
+                if(!is_array($property->value))
+                    $property->value = array();
+
+                $property->value[$current['lang']] = $property->dvalue;
+            }
+        }
 	}
 
 	switch($property->type)
