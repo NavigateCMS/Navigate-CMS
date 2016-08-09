@@ -2906,7 +2906,7 @@ function block_group_block_options($block_group, $code, $status)
     global $layout;
     global $website;
     global $theme;
-
+    
     $block = block::block_group_block($block_group, $code);
     $properties = $block->properties;
 
@@ -3003,6 +3003,7 @@ function block_group_block_options($block_group, $code, $status)
     }
 
     $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$navibars->generate().'</div>');
+    navigate_property_layout_scripts();
     $layout->navigate_additional_scripts();
     $layout->add_script('
         $("html").css("background", "transparent");
