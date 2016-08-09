@@ -311,29 +311,51 @@ class webdictionary
 	    if(empty($node_id))
 		    throw new Exception('ERROR webdictionary: No ID! ['.$node_type.']');
 
-		// delete old entries
-		$DB->execute('
-		    DELETE FROM nv_webdictionary
-             WHERE node_type = '.protect($node_type).'
-               AND node_id = '.protect($node_id).'
-               AND website = '.$website_id
-        );
-							  
-		// and now insert the new values
         if(!is_array($dictionary))
             $dictionary = array();
+
+        if($node_type=='property-block_group_block')
+        {
+            // special case, remove only the rows we will insert
+            foreach($dictionary as $lang => $texts)
+            {
+                $subtypes = array_keys($texts);
+
+                $DB->execute('
+                    DELETE FROM nv_webdictionary
+                     WHERE node_type = '.protect($node_type).'
+                       AND node_id = '.protect($node_id).'
+                       AND website = '.$website_id.'
+                       AND lang = '.protect($lang).'
+                       AND subtype IN ('.implode(",", array_map(function($k){ return protect($k);}, $subtypes)).')'
+                );
+            }
+        }
+        else
+        {
+            // first, delete old entries (deletes too much rows when updating block group block properties)
+            $DB->execute('
+                DELETE FROM nv_webdictionary
+                 WHERE node_type = '.protect($node_type).'
+                   AND node_id = '.protect($node_id).'
+                   AND website = '.$website_id
+            );
+            // and then insert the new values
+        }
+
 		foreach($dictionary as $lang => $item)
 		{
 			foreach($item as $subtype => $litem)
-			{	
+			{
 				// NO error checking
 				$DB->execute('
 	                INSERT INTO nv_webdictionary
 						(id, website, node_type, node_id, theme, extension, subtype, lang, `text`)
 					VALUES
-						( 0, :website, :node_type, :node_id, :theme, :extension, :subtype, :lang, :text)
+						( :id, :website, :node_type, :node_id, :theme, :extension, :subtype, :lang, :text)
 					',
 					array(
+					    ":id" => 0,
 						":website" => $website_id,
 						":node_type" => $node_type,
 						":node_id" => $node_id,

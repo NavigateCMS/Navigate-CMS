@@ -81,7 +81,7 @@ class website
 		$this->subdomain		= $main->subdomain;
 		$this->domain			= $main->domain;				
 		$this->folder			= $main->folder;
-        $this->word_separator	= $main->word_separator;
+        $this->word_separator	= value_or_default($main->word_separator, '_');
 
 		$this->redirect_to		    = $main->redirect_to;
         $this->wrong_path_action    = $main->wrong_path_action;

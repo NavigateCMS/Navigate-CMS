@@ -2573,7 +2573,7 @@ function block_group_form($item)
         {
             case "block":
                 $block = new block();
-                $block->load($item->blocks[$p]);
+                $block->load($item->blocks[$p]['id']);
 
                 if(empty($block) || empty($block->type))
                     continue;
@@ -2906,7 +2906,7 @@ function block_group_block_options($block_group, $code, $status)
     global $layout;
     global $website;
     global $theme;
-    
+
     $block = block::block_group_block($block_group, $code);
     $properties = $block->properties;
 
