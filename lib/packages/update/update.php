@@ -155,9 +155,20 @@ function update_list()
 	*/
 	$manual_update[] = '<div style=" float: right; margin-right: 8px; "><input type="submit" disabled="disabled" class="uibutton" id="update_manual_install" value="'.t(365, 'Install').'" /></div>';
 	
-	$navibars->add_tab_content_panel('<img src="img/icons/silk/disk_upload.png" align="absmiddle" /> '.t(303, 'Manual update'), $manual_update, 'navigate-panel-manual-update', '250px', '184px');	
+	$navibars->add_tab_content_panel('<img src="img/icons/silk/disk_upload.png" align="absmiddle" /> '.t(303, 'Manual update'), $manual_update, 'navigate-panel-manual-update', '250px', '184px');
 
 	$layout->add_script('
+        $(".navigate-panel").css({
+            "visibility": "visible",
+            "float": "left",
+            "margin-right": "12px" 
+        });
+        
+        $(".navigate-panels-summary").css({
+            "max-width": "239px",
+            "width": "100%"
+        });
+
 		navigate_file_drop("#update_manual_dropbox", 0, 
 			{ 
 				afterOne: function(file)
