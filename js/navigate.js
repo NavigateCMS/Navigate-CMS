@@ -98,6 +98,7 @@ $(window).on('load', function()
                         left: $('#navigate-recent-items-link').offset().left + $('#navigate-recent-items-link').width() - $('#navigate-recent-items').width() - 5
                     }).show();
                     $('#navigate-recent-items').addClass('navi-ui-widget-shadow');
+                    $('#navigate-recent-items').removeClass('hidden');
                     $('#navigate-recent-items').menu();
                 }
             );
@@ -108,6 +109,7 @@ $(window).on('load', function()
                 top: $('#navigate-recent-items-link').offset().top + 20,
                 left: $('#navigate-recent-items-link').offset().left + $('#navigate-recent-items-link').width() - $('#navigate-recent-items').width() - 5
             }).show();
+            $('#navigate-recent-items').removeClass('hidden');
             $('#navigate-recent-items').addClass('navi-ui-widget-shadow');
             $('#navigate-recent-items').menu();
         }
@@ -329,7 +331,7 @@ function navigate_status(text, img, status, percentage)
     {
         $(ns).after('<div id="navigate-status-progressbar"><div id="navigate-status-progressbar-label"></div></div>');
         $("#navigate-status-progressbar" ).progressbar({
-            value: percentage
+            value: parseInt(percentage)
         });
         $('#navigate-status-progressbar-label').text(percentage + '%');
     }
@@ -1661,6 +1663,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                 paramName: "upload",
                 parallelUploads: 1,
                 autoProcessQueue: 1,
+                clickable: false,
                 error: function(file, err)
                 {
                     switch(err)
@@ -1767,6 +1770,8 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                     // progress is the integer value of file being uploaded percentage to completion
                     var fname = file.fileName;
                     if(!fname)  fname = file.name;
+
+                    progress = parseFloat(progress).toFixed(2);
                     
                     navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader", "default", progress); // uploading
 

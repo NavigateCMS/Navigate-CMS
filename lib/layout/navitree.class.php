@@ -63,6 +63,7 @@ class navitree
 	public function nodeToRow($node, $parent=-1)
 	{
 		global $website;
+        global $theme;
 
 		$html = array();
 		
@@ -80,7 +81,9 @@ class navitree
 			if($this->columns[$this->treeColumn]==$col) 
 				$treecolumn = true;
 		
-			if($node->{$col['property']}===NULL && strpos($col['property'], 'dictionary|')===false)
+			if( $node->{$col['property']}===NULL &&
+                strpos($col['property'], 'dictionary|')===false
+            )
 			{
 				$html[] = '	<td align="'.$col['align'].'">&nbsp;</td>';	
 				continue;	

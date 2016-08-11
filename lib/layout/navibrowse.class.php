@@ -480,21 +480,22 @@ class navibrowse
 		
 			function navibrowse_folder_tree_dialog(current)
 		    {
-			  $("#navibrowse-folder-tree-dialog").dialog(
-			  {
-					resizable: true,
-					height: 350,
-					width: 500,
-					modal: true,
-					title: "'.t(221, 'Jump to').'...",
-					buttons: 
-					{
-						"'.t(58, 'Cancel').'": function() 
-						{
-							$(this).dialog("close");
-						}
-					}
-				});
+		        $("#navibrowse-folder-tree-dialog").removeClass("hidden");
+                $("#navibrowse-folder-tree-dialog").dialog(
+                {
+                    resizable: true,
+                    height: 350,
+                    width: 500,
+                    modal: true,
+                    title: "'.t(221, 'Jump to').'...",
+                    buttons: 
+                    {
+                        "'.t(58, 'Cancel').'": function() 
+                        {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
 		    }
 		';
 				

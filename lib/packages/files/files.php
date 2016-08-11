@@ -791,17 +791,29 @@ function files_item_properties($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.$item->id.'</span>'));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.$item->id.'</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(144, 'Filename').'</label>',
-											$naviforms->textfield('name', $item->name),
-										));		
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(144, 'Filename').'</label>',
+			$naviforms->textfield('name', $item->name),
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(145, 'Size').'</label>',
-											'<span>'.core_bytes($item->size).'</span>'));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(145, 'Size').'</label>',
+			'<span>'.core_bytes($item->size).'</span>'
+        )
+    );
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>'.t(160, 'Type').'</label>',
             $naviforms->selectfield('type',
                 array(
