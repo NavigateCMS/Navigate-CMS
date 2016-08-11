@@ -382,13 +382,14 @@ function structure_tree($hierarchy)
     ');
 
 	$columns = array();
-	$columns[] = array(	'name'	=>	'ID', 'property'	=> 'id', 		'type'	=> 'text', 		'width' => '8%', 	'align' => 'left' );
-	$columns[] = array(	'name'	=>	t(67, 'Title').' '.$lang_selector,		'property'	=> 'dictionary|title',		'type'	=> 'text', 		'width' => '56%', 	'align' => 'left'	);
+	$columns[] = array(	'name'	=>	'ID', 'property'	=> 'id', 		'type'	=> 'text', 		'width' => '5%', 	'align' => 'left' );
+	$columns[] = array(	'name'	=>	t(67, 'Title').' '.$lang_selector,		'property'	=> 'dictionary|title',		'type'	=> 'text', 		'width' => '53%', 	'align' => 'left'	);
 	$columns[] = array(	'name'	=>	t(73, 'Children'),	'property'	=> 'children', 	'type'	=> 'count', 	'width' => '5%', 	'align' => 'center'	);
-	$columns[] = array(	'name'	=>	t(85, 'Date published'), 'property'	=> 'dates', 'type'	=> 'text', 		'width' => '13%', 	'align' => 'center'	);			
-	$columns[] = array(	'name'	=>	'<span title="'.t(283, 'Show in menus').'">'.t(76, 'Visible').'</span>', 'property'	=> 'visible', 'type'	=> 'boolean',	'width' => '5%', 	'align' => 'center'	);			
-	$columns[] = array(	'name'	=>	t(364, 'Access'), 'property'	=> 'access',	'type'	=> 'option', 	'width' => '5%', 	'align' => 'center', 	'options' => $access);
-	$columns[] = array(	'name'	=>	t(68, 'Status'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '8%', 	'align' => 'center', 	'options' => $permissions);
+	$columns[] = array(	'name'	=>	t(79, 'Template'),	'property'	=> 'template_title', 	'type'	=> 'text', 	    'width' => '12%', 	'align' => 'left'	);
+	$columns[] = array(	'name'	=>	t(85, 'Date published'), 'property'	=> 'dates', 'type'	=> 'text', 		'width' => '10%', 	'align' => 'center'	);
+	$columns[] = array(	'name'	=>	'<span title="'.t(283, 'Show in menus').'">'.t(76, 'Visible').'</span>', 'property'	=> 'visible', 'type'	=> 'boolean',	'width' => '4%', 	'align' => 'center'	);
+	$columns[] = array(	'name'	=>	t(364, 'Access'), 'property'	=> 'access',	'type'	=> 'option', 	'width' => '4%', 	'align' => 'center', 	'options' => $access);
+	$columns[] = array(	'name'	=>	t(68, 'Status'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '7%', 	'align' => 'center', 	'options' => $permissions);
 	
 	$navitree->setColumns($columns);
 
@@ -582,9 +583,13 @@ function structure_form($item)
         $extra_actions
     );
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=structure&act=edit&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=structure&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/sitemap_color.png"> '.t(61, 'Tree').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        (!empty($item->id)? '<a href="?fid=structure&act=edit&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=structure&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/sitemap_color.png"> '.t(61, 'Tree').'</a>',
+			'search_form'
+        )
+    );
 
 	$navibars->form();
 
@@ -592,8 +597,12 @@ function structure_form($item)
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
 	if(empty($item->id))
 		$item->parent = $_GET['parent'];
@@ -607,10 +616,13 @@ function structure_form($item)
     if(empty($categories_list))
         $categories_list = '<ul><li value="0">'.t(428, '(no category)').'</li></ul>';
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(84, 'Parent').'</label>',
-                                            $naviforms->dropdown_tree('parent', $categories_list, $item->parent, 'navigate_parent_category_change')
-										),
-									'category_tree');
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(84, 'Parent').'</label>',
+            $naviforms->dropdown_tree('parent', $categories_list, $item->parent, 'navigate_parent_category_change')
+        ),
+		'category_tree'
+    );
 
     $layout->add_script('
         function navigate_parent_category_change(id)
@@ -634,21 +646,21 @@ function structure_form($item)
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>'.t(79, 'Template').'</label>',
-		    $template_select,
+		    $template_select
         )
     );
 										
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>'.t(85, 'Date published').'</label>',
-		    $naviforms->datefield('date_published', $item->date_published, true),
+		    $naviforms->datefield('date_published', $item->date_published, true)
         )
     );
 										
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>'.t(90, 'Date unpublished').'</label>',
-		    $naviforms->datefield('date_unpublish', $item->date_unpublish, true),
+		    $naviforms->datefield('date_unpublish', $item->date_unpublish, true)
 	    )
     );
 

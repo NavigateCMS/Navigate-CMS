@@ -372,10 +372,22 @@ class structure
 		{
 			$tree = structure::loadTree($id_parent, $ws_id);
 
+            $templates = template::elements('structure');
+
 			for($i=0; $i < count($tree); $i++)
             {
 				$tree[$i]->dictionary = webdictionary::load_element_strings('structure', $tree[$i]->id);
                 $tree[$i]->label = $tree[$i]->dictionary[$ws->languages_list[0]]['title'];
+
+                $tree[$i]->template_title = $tree[$i]->template;
+                for($t=0; $t < count($templates); $t++)
+                {
+                    if($templates[$t]->type == $tree[$i]->template)
+                    {
+                        $tree[$i]->template_title = $templates[$t]->title;
+                        break;
+                    }
+                }
 
                 for($wl=0; $wl < count($ws->languages_list); $wl++)
                 {
