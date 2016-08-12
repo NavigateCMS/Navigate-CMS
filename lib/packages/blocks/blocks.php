@@ -2684,6 +2684,13 @@ function block_group_form($item)
     $DB->query($sql);
     $block_elements = $DB->result();
 
+    $block_group_blocks = array();
+    for($bg=0; $bg < count($theme->block_groups); $bg++)
+    {
+        if($theme->block_groups[$bg]->id == $item->code)
+            $block_group_blocks = $theme->block_groups[$bg]->blocks;
+    }
+
     // blocks available in the accordion
     $navibars->add_tab_content(
         '<div id="blocks_available_wrapper" style="float: left; width: 49%; ">
@@ -2764,7 +2771,7 @@ function block_group_form($item)
                                         '</div>';
                                 return $html;
                             },
-                            $theme->block_groups[0]->blocks
+                            $block_group_blocks
                         )
                     ).'
                 </div>

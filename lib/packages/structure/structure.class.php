@@ -344,6 +344,8 @@ class structure
 	public static function hierarchy($id_parent=0, $ws_id=null)
 	{
 		global $website;
+        global $theme;
+
 		if(empty($ws_id))
 			$ws_id = $website->id;
 
@@ -388,6 +390,8 @@ class structure
                         break;
                     }
                 }
+                if(method_exists($theme, "t"))
+                    $tree[$i]->template_title = $theme->t($tree[$i]->template_title);
 
                 for($wl=0; $wl < count($ws->languages_list); $wl++)
                 {
