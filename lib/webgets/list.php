@@ -1210,11 +1210,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					break;
 
                 case 'tags':
-                    $out = nvweb_content(array(
-                        'mode' => 'tags',
-                        'separator' => $tag['attributes']['separator'],
-                        'id' => $item->id
-                    ));
+                    // pass all nvlist tag parameters to the content nvweb, but some attribute/values take preference
+                    $nvweb_parameters = array_replace(
+                        $tag['attributes'],
+                        array(
+                            'mode' => 'tags',
+                            'id' => $item->id
+                        )
+                    );
+                    $out = nvweb_content($nvweb_parameters);
                     break;
 
 				case 'score':
