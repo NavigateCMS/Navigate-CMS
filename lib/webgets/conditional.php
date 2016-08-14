@@ -176,6 +176,7 @@ function nvweb_conditional($vars=array())
             {
                 if( $property_value == $vars['property_value']  ||
                     ($property_value=='1' && $vars['property_value']=='true') ||
+                    (empty($property_value) && $vars['property_value']=='false') ||
                     ($property_value=='0' && $vars['property_value']=='false')
                 )
                 {

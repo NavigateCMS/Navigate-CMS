@@ -614,6 +614,7 @@ function websites_form($item)
             $delete_html[] = '<script language="javascript" type="text/javascript">';
             $delete_html[] = 'function navigate_delete_dialog()';
             $delete_html[] = '{';
+            $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
             $delete_html[] = '$("#navigate-delete-dialog").dialog({
                                 resizable: true,
                                 height: 150,

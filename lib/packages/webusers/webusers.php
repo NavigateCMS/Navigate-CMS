@@ -483,7 +483,8 @@ function webusers_form($item)
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
 		$delete_html[] = '<script language="javascript" type="text/javascript">';
 		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';				
+		$delete_html[] = '{';
+        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
 		$delete_html[] = '$("#navigate-delete-dialog").dialog({
 							resizable: true,
 							height: 150,
@@ -873,22 +874,23 @@ function webuser_groups_form($item)
         $delete_html[] = '<script language="javascript" type="text/javascript">';
         $delete_html[] = 'function navigate_delete_dialog()';
         $delete_html[] = '{';
+        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
         $delete_html[] = '$("#navigate-delete-dialog").dialog({
-                        resizable: true,
-                        height: 150,
-                        width: 300,
-                        modal: true,
-                        title: "'.t(59, 'Confirmation').'",
-                        buttons: {
-                            "'.t(58, 'Cancel').'": function() {
-                                $(this).dialog("close");
-                            },
-                            "'.t(35, 'Delete').'": function() {
-                                $(this).dialog("close");
-                                window.location.href = "?fid='.$_REQUEST['fid'].'&act=webuser_group_delete&id='.$item->id.'";
+                            resizable: true,
+                            height: 150,
+                            width: 300,
+                            modal: true,
+                            title: "'.t(59, 'Confirmation').'",
+                            buttons: {
+                                "'.t(58, 'Cancel').'": function() {
+                                    $(this).dialog("close");
+                                },
+                                "'.t(35, 'Delete').'": function() {
+                                    $(this).dialog("close");
+                                    window.location.href = "?fid='.$_REQUEST['fid'].'&act=webuser_group_delete&id='.$item->id.'";
+                                }
                             }
-                        }
-                    });';
+                        });';
         $delete_html[] = '}';
         $delete_html[] = '</script>';
 
