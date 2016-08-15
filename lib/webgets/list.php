@@ -1483,8 +1483,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         $condition = false;
         if(isset($tag['attributes']['property_empty']))
         {
-            if( $tag['attributes']['property_empty']=='true' && empty($condition_value) ||
-                $tag['attributes']['property_empty']=='false' && !empty($condition_value)
+            if( $tag['attributes']['property_empty']=='true' && empty($property_value) ||
+                $tag['attributes']['property_empty']=='false' && !empty($property_value)
             )
             {
                 $condition = true;

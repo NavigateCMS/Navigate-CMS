@@ -240,6 +240,22 @@ function nvweb_conditional($vars=array())
             }
             break;
 
+        case 'section':
+            $section_empty = empty($item->dictionary[$current['lang']]['section-'.$vars['section']]);
+            if(
+                $vars['empty']=='true' && $section_empty    ||
+                $vars['empty']=='false' && !$section_empty
+            )
+            {
+                $out = $item_html;
+            }
+            else
+            {
+                // remove this conditional html code on this round
+                $out = '';
+            }
+            break;
+
         case 'access':
             $access = 0;
             switch($vars['access'])
