@@ -392,7 +392,7 @@ function run()
 
 				if($ok)
 				{
-					$layout->navigate_notification(t(478, 'Item duplicated successfully.'), false);
+					$layout->navigate_notification(t(478, 'Item duplicated successfully.'), false, false, 'fa fa-check');
                     $out = items_form($item);
 				}
 				else

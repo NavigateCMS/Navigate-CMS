@@ -1002,6 +1002,10 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	        }
             $field[] = '</div>';
 
+            $template_filter = @$property->element_template;
+            if(empty($template_filter))
+                $template_filter = $property->item_template;
+
             $layout->add_script('
                 $("#property-'.$property->id.'").select2(
                 {
@@ -1015,7 +1019,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                         {
 	                        return {
 				                title: params.term,
-				                template: "'.$property->item_template.'",
+				                template: "'.$template_filter.'",
 				                nd: new Date().getTime(),
 				                page_limit: 30, // page size
 				                page: params.page // page number

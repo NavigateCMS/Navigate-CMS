@@ -628,7 +628,8 @@ function nvweb_properties_render($property, $vars)
 	        }
             break;
 
-        case 'item':
+        case 'element':
+        case 'item': // deprecated
             $return = @$vars['return'];
 
             switch($return)
@@ -644,13 +645,41 @@ function nvweb_properties_render($property, $vars)
                     $out = nvweb_source_url('item', $property->value, $current['lang']);
                     break;
 
+                case 'section':
+                    $item = new item();
+                    $item->load($property->value);
+                    $out = $item->dictionary[$current['lang']]['section-'.$vars['section']];
+                    break;
+
+                case 'property':
+                    $params = array();
+                    foreach($vars as $attr_name => $attr_value)
+                    {
+                        if(strpos($attr_name, 'element-property-')===0)
+                        {
+                            $attr_name = str_replace('element-property-', '', $attr_name);
+                            $params[$attr_name] = $attr_value;
+                        }
+                        else if($attr_name == 'element-property')
+                        {
+                            $params['property'] = $attr_value;
+                        }
+                    }
+
+                    //  default parameters
+                    $params['mode'] = 'item';
+                    $params['id'] = $property->value;
+                    $out = nvweb_properties($params);
+
+                    break;
+
                 case 'id':
                 default:
                     $out = $property->value;
                     break;
             }
             break;
-			
+
 		default:	
 	}
 	
