@@ -1832,6 +1832,8 @@ function nvweb_list_parse_filters($raw, $object='item')
                         continue;   // ignore this filter
 
                     $value = $_REQUEST[substr($value, 1)];
+                    if(empty($value)) // ignore empty values
+                        continue;
                 }
 
                 $filters[] = ' AND i.id IN ( SELECT node_id 
@@ -1852,6 +1854,8 @@ function nvweb_list_parse_filters($raw, $object='item')
                             continue;   // ignore this filter
 
                         $comp_value = $_REQUEST[substr($comp_value, 1)];
+                        if(empty($comp_value)) // ignore empty values
+                            continue;
                     }
 
                     if(isset($comparators[$comp_type]))
@@ -1862,7 +1866,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                                               WHERE website = '.$website->id.' AND
                                                     property_id = '.protect($key).' AND
                                                     element = "item" AND
-                                                    value '.$comparators[$comp_type].' '.protect($comp_value).'
+                                                    value '.$comparators[$comp_type].' '.protect($comp_value, null, true).'
                                             )';
                     }
                     else if($comp_type == 'in' || $comp_type == 'nin')
@@ -1942,6 +1946,8 @@ function nvweb_list_parse_filters($raw, $object='item')
                             continue;   // ignore this filter
                         
                         $value = $_REQUEST[substr($value, 1)];
+                        if(empty($value)) // ignore empty values
+                            continue;
                     }
 
                     $filters[] = ' AND '.$field.' = '.protect($value);
@@ -1955,10 +1961,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                             if(!isset($_REQUEST[substr($comp_value, 1)]))
                                 continue;   // ignore this filter
                             $comp_value = $_REQUEST[substr($comp_value, 1)];
+                            if(empty($comp_value)) // ignore empty values
+                                continue;
                         }
 
                         if(isset($comparators[$comp_type]))
-                            $filters[] = ' AND '.$field.' '.$comparators[$comp_type].' '.protect($comp_value);
+                            $filters[] = ' AND '.$field.' '.$comparators[$comp_type].' '.protect($comp_value, null, true);
                         else if($comp_type == 'in' || $comp_type == 'nin')
                         {
                             if($comp_type == 'nin')

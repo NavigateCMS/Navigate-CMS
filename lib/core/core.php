@@ -39,10 +39,14 @@ function t($id, $default='', $replace=array(), $encodeChars=false)
  * @param string $wrapped_by Surround the input string with "double" or 'single' quotes (default is "double")
  * @return string
  */
-function protect($text, $wrapped_by="")
+function protect($text, $wrapped_by="", $keep_numeric=false)
 {
 	global $DB;
-	return $DB->protect($text, $wrapped_by="");
+
+    if($keep_numeric && is_numeric($text))
+        return $text;
+
+	return $DB->protect($text, $wrapped_by);
 }
 
 /**
