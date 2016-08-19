@@ -650,7 +650,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                 $conditional = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
                 @include_once(NAVIGATE_PATH.'/lib/webgets/conditional.php');
-                $vars = array_merge($tag['attributes'], array('template' => $conditional));
+                $vars = array_merge($tag['attributes'], array('_template' => $conditional));
 
                 $content = nvweb_conditional($vars);
 

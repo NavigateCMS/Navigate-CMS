@@ -32,94 +32,103 @@ function nvweb_conditional($vars=array())
     }
     else
     {
-        $categories = array();
-        if(!empty($current['object']->id))
-            $categories = array($current['object']->id);
-
-        if(isset($vars['categories']))
+        if(isset($vars['scope']) && $vars['scope'] == 'element')
         {
-            $categories = explode(',', $vars['categories']);
-            $categories = array_filter($categories); // remove empty elements
-        }
+            // the current path belongs to a structure category, but the template is asking for an element value,
+            // so we try to find the first element assigned to the current category
+            $categories = array();
+            if(!empty($current['object']->id))
+                $categories = array($current['object']->id);
 
-        $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
-
-        // public access / webuser based / webuser groups based
-        $access = 2;
-        $access_extra = '';
-        if(!empty($current['webuser']))
-        {
-            $access = 1;
-            if(!empty($webuser->groups))
+            if(isset($vars['categories']))
             {
-                $access_groups = array();
-                foreach($webuser->groups as $wg)
-                {
-                    if(empty($wg))
-                        continue;
-                    $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
-                }
-                if(!empty($access_groups))
-                    $access_extra = ' OR (s.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+                $categories = explode(',', $vars['categories']);
+                $categories = array_filter($categories); // remove empty elements
             }
+
+            $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
+
+            // public access / webuser based / webuser groups based
+            $access = 2;
+            $access_extra = '';
+            if(!empty($current['webuser']))
+            {
+                $access = 1;
+                if(!empty($webuser->groups))
+                {
+                    $access_groups = array();
+                    foreach($webuser->groups as $wg)
+                    {
+                        if(empty($wg))
+                            continue;
+                        $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
+                    }
+                    if(!empty($access_groups))
+                        $access_extra = ' OR (s.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+                }
+            }
+
+            // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
+            $order      = @$_REQUEST['order'];
+            if(empty($order))
+                $order  = @$vars['order'];
+            if(empty($order))   // default order: latest
+                $order = 'latest';
+
+            $orderby = nvweb_list_get_orderby($order);
+
+            $rs = NULL;
+
+            $access_extra_items = str_replace('s.', 'i.', $access_extra);
+
+            if(empty($categories))
+            {
+                // force executing the query; search in all categories
+                $categories = nvweb_menu_get_children(array(0));
+            }
+
+            // default source for retrieving items
+            $DB->query('
+                SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
+                       i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+                       d.text as title, i.position as position
+                  FROM nv_items i, nv_structure s, nv_webdictionary d
+                 WHERE i.category IN('.implode(",", $categories).')
+                   AND i.website = '.$website->id.'
+                   AND i.permission <= '.$permission.'
+                   AND (i.date_published = 0 OR i.date_published < '.core_time().')
+                   AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
+                   AND s.id = i.category
+                   AND (s.date_published = 0 OR s.date_published < '.core_time().')
+                   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+                   AND s.permission <= '.$permission.'
+                   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
+                   AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
+                   AND d.website = i.website
+                   AND d.node_type = "item"
+                   AND d.subtype = "title"
+                   AND d.node_id = i.id
+                   AND d.lang = '.protect($current['lang']).'
+                 '.$orderby.'
+                 LIMIT 1
+                 OFFSET 0'
+            );
+
+            $rs = $DB->result();
+
+            // now we have the element against which the condition will be checked
+            $i = 0;
+
+            $item->load($rs[$i]->id);
         }
-
-        // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
-        $order      = @$_REQUEST['order'];
-        if(empty($order))
-            $order  = @$vars['order'];
-        if(empty($order))   // default order: latest
-            $order = 'latest';
-
-        $orderby = nvweb_list_get_orderby($order);
-
-        $rs = NULL;
-
-        $access_extra_items = str_replace('s.', 'i.', $access_extra);
-
-        if(empty($categories))
+        else if(!isset($vars['scope']) || $vars['scope'] == 'structure')
         {
-            // force executing the query; search in all categories
-            $categories = nvweb_menu_get_children(array(0));
+            $item = $current['object'];
         }
-
-        // default source for retrieving items
-        $DB->query('
-            SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
-                   i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-                   d.text as title, i.position as position
-              FROM nv_items i, nv_structure s, nv_webdictionary d
-             WHERE i.category IN('.implode(",", $categories).')
-               AND i.website = '.$website->id.'
-               AND i.permission <= '.$permission.'
-               AND (i.date_published = 0 OR i.date_published < '.core_time().')
-               AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
-               AND s.id = i.category
-               AND (s.date_published = 0 OR s.date_published < '.core_time().')
-               AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
-               AND s.permission <= '.$permission.'
-               AND (s.access = 0 OR s.access = '.$access.$access_extra.')
-               AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
-               AND d.website = i.website
-               AND d.node_type = "item"
-               AND d.subtype = "title"
-               AND d.node_id = i.id
-               AND d.lang = '.protect($current['lang']).'
-             '.$orderby.'
-             LIMIT 1
-             OFFSET 0'
-        );
-
-        $rs = $DB->result();
-
-        // now we have the element against which the condition will be checked
-        $i = 0;
-
-        $item->load($rs[$i]->id);
     }
 
     // get the template
-    $item_html = $vars['template'];
+    $item_html = $vars['_template'];
 
     // now, parse the conditional tags (with html source code inside)
     switch($vars['by'])

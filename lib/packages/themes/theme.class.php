@@ -70,6 +70,10 @@ class theme
 				if(!isset($this->templates[$t]->sections[$s]->id))
 					$this->templates[$t]->sections[$s]->id = $this->templates[$t]->sections[$s]->code;
 			}
+
+			// remove spaces in "uses" attribute value, if declared
+            if(isset($this->templates[$t]->uses))
+                $this->templates[$t]->uses = str_replace(" ", "", $this->templates[$t]->uses);
 		}
 
 		return true;

@@ -621,6 +621,22 @@ class structure
 		return $out;
 	}
 
+    public function property_exists($property_name)
+    {
+        global $DB;
+
+        // load properties if not already done
+        if(empty($this->properties))
+            $this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+                return true;
+        }
+        return false;
+    }
+
     public function backup($type='json')
     {
         global $DB;
