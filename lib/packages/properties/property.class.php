@@ -14,6 +14,7 @@ class property
 	public $dvalue;	// default value
     public $multilanguage; // "true", "false" or empty
     public $helper;
+    public $width;
 	public $position;
 	public $enabled;
 	
@@ -70,6 +71,7 @@ class property
 		$this->dvalue		= $main->dvalue;		
 		$this->multilanguage= $main->multilanguage;
 		$this->helper       = $main->helper;
+		$this->width        = $main->width;
 		$this->position		= $main->position;
 		$this->enabled		= $main->enabled;	
 		
@@ -185,6 +187,7 @@ class property
        	$this->type = $theme_option->type;
        	$this->options = (array)$theme_option->options;
        	$this->dvalue = $theme_option->dvalue;	// default value
+        $this->width = $theme_option->width;
        	$this->multilanguage = $theme_option->multilanguage;
        	$this->helper = $theme_option->helper;
         $this->function = $theme_option->function;
@@ -224,6 +227,7 @@ class property
        	$this->dvalue = $object->dvalue;	// default value
        	$this->multilanguage = $object->multilanguage;
        	$this->helper = $object->helper;
+       	$this->width = $object->width;
         $this->function = $object->function;
        	$this->position = 0;
        	$this->enabled = 1;
