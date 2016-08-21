@@ -984,6 +984,7 @@ function files_item_properties($item)
 						credentials: true,
 						method: "GET",
 						referrer: "Navigate CMS",
+						icon: "'.NAVIGATE_URL.'/img/navigate-isotype-16x16.png",
 						locktitle: true,
 						locktype: "png",
 						redirect: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=pixlr_exit&id='.$item->id.'&ts=" + + new Date().getTime()
