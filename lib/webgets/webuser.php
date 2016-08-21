@@ -168,17 +168,20 @@ function nvweb_webuser($vars=array())
                     if(empty($wu_id) || ($wu->access==1 && !empty($wu->activation_key)))
                     {
                         // create a new webuser account with that email
-                        $username = substr($email, 0, strpos($email, '@')); // left part of the email
+                        $username = strtolower(substr($email, 0, strpos($email, '@'))); // left part of the email
 
-                        // if proposed username already exists,
-                        // use the full email as username
-                        // ** if the email already exists, the subscribe process only updates the newsletter setting!
-                        $wu_id = $DB->query_single(
-                            'id',
-                            'nv_webusers',
-                            ' username = '.protect($username).'
-                          AND website = '.$website->id
-                        );
+                        if(!empty($username) && !in_array($username, array('info', 'admin', 'contact', 'demo', 'test')))
+                        {
+                            // check if the proposed username already exists,
+                            // in that case use the full email as username
+                            // ** if the email already exists, the subscribe process only updates the newsletter setting!
+                            $wu_id = $DB->query_single(
+                                'id',
+                                'nv_webusers',
+                                ' username = '.protect($username).'
+                              AND website = '.$website->id
+                            );
+                        }
 
                         if(!empty($wu_id))
                         {
