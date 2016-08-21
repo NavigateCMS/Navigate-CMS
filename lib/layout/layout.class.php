@@ -533,7 +533,7 @@ class layout
 
             $this->add_content(
                 '<ul id="navigate-create-helper" style=" display: none; ">'.
-                    '<li id="navigate-create-helper-item"><a href="?fid=items&act=edit"><img class="silk-sprite silk-page" src="img/transparent.gif" width="16" height="16" align="absmiddle" /> '.t(180, 'Item').'</a></li>'.
+                    '<li id="navigate-create-helper-item"><a href="?fid=items&act=edit"><img class="silk-sprite silk-page" src="img/transparent.gif" width="16" height="16" align="absmiddle" /> '.t(630, 'Element').'</a></li>'.
                     '<li id="navigate-create-helper-block"><a href="?fid=blocks&act=edit"><img class="silk-sprite silk-brick" src="img/transparent.gif" width="16" height="16" align="absmiddle" /> '.t(437, 'Block').'</a></li>'.
                     '<li id="navigate-create-helper-structure"><a href="?fid=structure&act=edit"><img class="silk-sprite silk-sitemap_color" src="img/transparent.gif" width="16" height="16" align="absmiddle" /> '.t(479, 'Structure entry').'</a></li>'.
                 '</ul>'
