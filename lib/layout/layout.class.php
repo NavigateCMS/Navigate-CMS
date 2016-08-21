@@ -1401,7 +1401,7 @@ class layout
                         {
 	                        return {
 				                title: params.term,
-				                association: "free",
+				                embedding: 0,
 				                nd: new Date().getTime(),
 				                page_limit: 30, // page size
 				                page: params.page // page number

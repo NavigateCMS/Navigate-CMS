@@ -628,6 +628,9 @@ function run()
 	        if(!empty($_REQUEST['association']))
                 $template_filter = ' AND nvi.association = '.protect($_REQUEST['association']).' ';
 
+	        if(isset($_REQUEST['embedding']))
+                $template_filter = ' AND nvi.embedding = '.protect($_REQUEST['embedding']).' ';
+
             $DB->query('
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
 				  FROM nv_webdictionary nvw, nv_items nvi
@@ -638,7 +641,7 @@ function run()
 				   AND nvw.website = '.$website->id.'
 				   AND nvw.website = nvi.website
 				   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
-		      ORDER BY nvw.text ASC
+		        ORDER BY nvw.text ASC
 			     LIMIT '.intval($_REQUEST['page_limit']).'
 			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
                 'array');
