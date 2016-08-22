@@ -402,13 +402,23 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                 }
 
                 // try an alternative method (Chrome browser work around)
-                if(max_width==0)
+                if(!max_width || max_width==0)
                     max_width = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('width');
 
-                if(max_height==0)
+                if(!max_width || max_height==0)
                     max_height = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('height');
-
+                
                 var or_styles = ' style="' + $(editor.selection.getContent({format: 'raw'}))[0].style.cssText + '" ';
+
+                if($(editor.selection.getContent({format: 'raw'}))[0].hasAttributes())
+                {
+                    var or_attrs = $(editor.selection.getContent({format: 'raw'}))[0].attributes;
+                    for(var i = or_attrs.length - 1; i >= 0; i--)
+                    {
+                        if(or_attrs[i].name!='style' && or_attrs[i].name!='width' && or_attrs[i].name!='height' && or_attrs[i].name!='src')
+                            or_styles += ' ' + or_attrs[i].name + '="' + or_attrs[i].value + '" ';
+                    }
+                }
 
                 embed_dialog = true;
             }
