@@ -375,6 +375,8 @@ class structure
 			$tree = structure::loadTree($id_parent, $ws_id);
 
             $templates = template::elements('structure');
+            if(empty($templates))
+                $templates = array();
 
 			for($i=0; $i < count($tree); $i++)
             {
@@ -382,14 +384,16 @@ class structure
                 $tree[$i]->label = $tree[$i]->dictionary[$ws->languages_list[0]]['title'];
 
                 $tree[$i]->template_title = $tree[$i]->template;
-                for($t=0; $t < count($templates); $t++)
+
+                foreach($templates as $template_def)
                 {
-                    if($templates[$t]->type == $tree[$i]->template)
+                    if($template_def->type == $tree[$i]->template)
                     {
-                        $tree[$i]->template_title = $templates[$t]->title;
+                        $tree[$i]->template_title = $template_def->title;
                         break;
                     }
                 }
+
                 if(method_exists($theme, "t"))
                     $tree[$i]->template_title = $theme->t($tree[$i]->template_title);
 
