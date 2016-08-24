@@ -407,7 +407,7 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 
                 if(!max_width || max_height==0)
                     max_height = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('height');
-                
+
                 var or_styles = ' style="' + $(editor.selection.getContent({format: 'raw'}))[0].style.cssText + '" ';
 
                 if($(editor.selection.getContent({format: 'raw'}))[0].hasAttributes())

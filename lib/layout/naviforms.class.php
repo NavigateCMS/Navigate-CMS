@@ -512,7 +512,8 @@ class naviforms
                 media_live_embeds: false, // disable iframe loading (like videos) to allow resizing
                 
                 magicline_color: "#0070a3",
-                magicline_targetedItems: ["DIV", "IMG", "IFRAME", "PRE", "TABLE"],
+                magicline_targetedItems: ["DIV", "IMG", "IFRAME", "PRE", "TABLE", "P", "ARTICLE", "UL", "OL"],
+                magicline_triggerMargin: 16,
 			    
 			    codemirror: {
 					path:  "'.NAVIGATE_URL.'/lib/external/codemirror",
