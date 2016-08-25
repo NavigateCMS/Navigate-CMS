@@ -61,8 +61,12 @@ function run()
 			
 			$out = update_list();
 			break;
-		
-		case 0:
+
+        case 'cache_clean':
+            update::cache_clean();
+            // don't break
+
+        case 0:
 		default:
 			$out = update_list();
 	}
