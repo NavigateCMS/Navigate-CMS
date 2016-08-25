@@ -16,7 +16,9 @@ function run()
 		case 'manual_update':
 			$ok = update::install_from_repository(intval($_POST['update_manual_file']));
 			if($ok)
+            {
 				$layout->navigate_notification(t(293, "Application successfully updated"), false);
+            }
 			else
 			{
 				$files = glob(NAVIGATE_PATH.'/updates/update-*.log.txt');
@@ -80,7 +82,7 @@ function update_list()
 	
 	$navibars->title(t(285, 'Update'));
 	
-	$navibars->form('', 'fid=update&act=manual_update');
+	$navibars->form('', 'fid=update&act=manual_update&debug');
 	$navibars->add_tab(t(0, 'Navigate'));	
 	
 	$updates_available = update::updates_available();
@@ -95,7 +97,7 @@ function update_list()
     }
 	
 	if($latest_available->Revision > $current_version->revision)
-		$navibars->add_actions(	 array(	'<a href="?fid=update&act=install_next_update"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"> '.t(289, 'Update Navigate').' <img src="img/icons/silk/bullet_go.png" align="absmiddle" /> '.$updates_available[0]['Version'].' r'.$updates_available[0]['Revision'].'</a>') );
+		$navibars->add_actions(	 array(	'<a href="?fid=update&act=install_next_update&debug"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"> '.t(289, 'Update Navigate').' <img src="img/icons/silk/bullet_go.png" align="absmiddle" /> '.$updates_available[0]['Version'].' r'.$updates_available[0]['Revision'].'</a>') );
 		
 	$current = array();
 	$current[] = '<div class="navigate-panels-summary ui-corner-all" style=" width: 234px; height: 118px; ">';

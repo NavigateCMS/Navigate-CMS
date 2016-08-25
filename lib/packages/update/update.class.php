@@ -404,9 +404,27 @@ class update
 		$urow->save();
 
         @unlink($ufile);
+
+        update::cache_clean();
 		
 		return true;
 	}
+
+	public static function cache_clean()
+    {
+        // do some cleaning: css&js navigate cache, thumbnails cache and tinymce cache
+        $navigatecms_cache = glob(NAVIGATE_PATH . '/cache/*.min.*');
+        for($t=0; $t < count($navigatecms_cache); $t++)
+            @unlink($navigatecms_cache[$t]);
+
+        $tinymce_cache = glob(NAVIGATE_PATH . '/lib/external/tinymce/*.gz');
+        for($t=0; $t < count($tinymce_cache); $t++)
+            @unlink($tinymce_cache[$t]);
+
+        $thumbnails = glob(NAVIGATE_PRIVATE . '/*/thumbnails/*x*');
+        for($t=0; $t < count($thumbnails); $t++)
+            @unlink($thumbnails[$t]);
+    }
 }
 
 ?>
