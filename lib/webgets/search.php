@@ -20,7 +20,7 @@ function nvweb_search($vars=array())
     if(!empty($_REQUEST['archive']))
         $search_archive = explode("-", $_REQUEST['archive']);  // YEAR, MONTH, CATEGORIES (separated by commas)
 
-	if(!empty($search_what) || (!empty($search_archive[0]) && !empty($search_archive[1])))
+	if(isset($_REQUEST[$vars['request']]) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
         // LOG search request
         $wu_id = 0;
@@ -48,6 +48,8 @@ function nvweb_search($vars=array())
            $search_what = array();
 
 		$likes = array();
+        $likes[] = ' 1=1 ';
+
 		foreach($search_what as $what)
         {
             if(substr($what, 0, 1)=='-')

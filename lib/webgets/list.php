@@ -1478,6 +1478,12 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                     $condition_value = core_time();
                 }
                 break;
+
+            case 'boolean':
+                if($property_value=="" && isset($property_definition->dvalue))
+                    $property_value = $property_definition->dvalue;
+
+                break;
         }
 
         $condition = false;
@@ -1520,8 +1526,10 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 case 'neq':
                     if(is_numeric($property_value))
                     {
-                        if($condition_value == 'true')          $condition_value = '1';
-                        else if($condition_value == 'false')    $condition_value = '0';
+                        if($condition_value == 'true' || $condition_value===true)
+                            $condition_value = '1';
+                        else if($condition_value == 'false' || $condition_value===false)
+                            $condition_value = '0';
                     }
 
                     $condition = ($property_value != $condition_value);
@@ -1533,8 +1541,10 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 default:
                     if(is_numeric($property_value))
                     {
-                        if($condition_value == 'true')          $condition_value = '1';
-                        else if($condition_value == 'false')    $condition_value = '0';
+                        if($condition_value == 'true' || $condition_value===true)
+                            $condition_value = '1';
+                        else if($condition_value == 'false' || $condition_value===false)
+                            $condition_value = '0';
                     }
 
                     $condition = ($property_value == $condition_value);

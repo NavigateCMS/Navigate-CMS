@@ -393,6 +393,7 @@ function websites_form($item)
 	$navibars = new navibars();
 	$naviforms = new naviforms();
 	$layout->navigate_media_browser();	// we want to use media browser in this function
+    $layout->navigate_editorfield_link_dialog();
 
 	$theme = new theme();
 	if(!empty($item->theme))
