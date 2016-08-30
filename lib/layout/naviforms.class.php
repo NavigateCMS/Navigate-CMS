@@ -356,7 +356,6 @@ class naviforms
                 altOnChange: true,
                 regional: "'.$user->language.'",
                 colorFormat: ["#HEX"],
-                //colorFormat: ["#rxgxbx"],
                 draggable: true,
                 parts: ["header", "map", "bar", "hex", "hsv", "rgb", "preview", "swatches", "footer"],
                 //layout: { "memory": [6,0,1,5] },
@@ -373,6 +372,9 @@ class naviforms
                 swatchesWidth: 80,
                 open: function(event, color)
                 {
+                    if($(".ui-colorpicker-dialog").position().top + $(".ui-colorpicker-dialog").height() > $(window).height())                    
+                        $(".ui-colorpicker-dialog").css("top", $(window).height() - $(".ui-colorpicker-dialog").height() - 8);
+                
                     $("#'.$name.'").data("previous", $("#'.$name.'").val());
                     $("#'.$name.'-selector").children().css("backgroundColor", $("#'.$name.'").data("previous"));
                     $("#'.$name.'").colorpicker("setColor", $("#'.$name.'").data("previous"));
@@ -774,6 +776,9 @@ class naviforms
                                 $("#'.$name.'-image_picker").menu();
                                 $("#'.$name.'-image_picker").css({left: ev.pageX, top: ev.pageY});
                                 $("#'.$name.'-image_picker").show();
+                                
+                                if($("#'.$name.'-image_picker").position().top + $("#'.$name.'-image_picker").height() > $(window).height())                    
+                                    $("#'.$name.'-image_picker").css("top", $(window).height() - $("#'.$name.'-image_picker").height() - 8);
 
                                 $("#'.$name.'-image_picker li").off().on("click", function()
                                 {
@@ -785,7 +790,7 @@ class naviforms
                             }, 100);
                         });
                     ');
-
+                    
                     $contextmenu = true;
                 }
 
