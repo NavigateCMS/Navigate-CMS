@@ -24,21 +24,31 @@ function run()
                     list($channel, $articles, $count) = $feed->parse(0, $_REQUEST['limit'], 'newest');
                     $items = item::convert_from_rss($articles);
 
+                    $display_language = $_REQUEST['language'];
+
                     if(!empty($items))
                     {
                         $feed_html = '';
                         for($c=0; $c < count($items); $c++)
                         {
                             if(empty($items[$c])) break;
+
+                            if(!isset($items[$c]->dictionary[$display_language]))
+                            {
+                                // requested language not available, get the first available in the feed
+                                $feed_languages = array_keys($items[$c]->dictionary);
+                                $display_language = $feed_languages[0];
+                            }
+
                             $tmp = array(
                                 '<div class="navigate-panel-body-title ui-corner-all">'.
-                                    '<a href="'.$items[$c]->paths[$_REQUEST['language']].'" target="_blank">'.
+                                    '<a href="'.$items[$c]->paths[$display_language].'" target="_blank">'.
                                         core_ts2date($items[$c]->date_to_display, true).' '.
-                                        '<strong>'.$items[$c]->dictionary[$_REQUEST['language']]['title'].'</strong>'.
+                                        '<strong>'.$items[$c]->dictionary[$display_language]['title'].'</strong>'.
                                     '</a>'.
                                 '</div>',
                                 '<div id="navigatecms-feed-item-'.$items[$c]->id.'" class="navigate-panel-recent-feed-element">'.
-                                    $items[$c]->dictionary[$_REQUEST['language']]['section-main'].
+                                    $items[$c]->dictionary[$display_language]['section-main'].
                                 '</div>');
 
                             $feed_html .= implode("\n", $tmp);
