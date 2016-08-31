@@ -155,6 +155,8 @@ class layout
 		$this->add_style_tag('lib/external/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css');
 
 		$this->add_script_tag('js/plugins/pixlr.js');
+        
+        $this->add_script_tag('js/plugins/jquery.inputmask.bundle.js');
 
         $this->add_script_tag('js/plugins/jquery.hotkeys.js');
         $this->add_script_tag('lib/external/jquery-caret/jquery.caret.js');
@@ -196,7 +198,6 @@ class layout
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-ca.js');
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-de.js');
 		$this->add_style_tag('lib/external/colorpicker/jquery.colorpicker.css');
-
 
         $this->add_script_tag('lib/external/jquery.uix.multiselect/js/jquery-multiselect-2.0.js');
         $this->add_style_tag('lib/external/jquery.uix.multiselect/css/jquery-multiselect-2.0.css');

@@ -43,12 +43,20 @@ function about_layout()
 
 	$navibars->add_tab(t(218, 'Third party libraries'));	
 	
-	$navibars->add_tab_content_row(array(	'<label>'.t(218, 'Third party libraries').'</label>',
-											'<a href="http://www.tinymce.com" target="_blank">TinyMCE 4.3.13</a><br />'));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(218, 'Third party libraries').'</label>',
+			'<a href="http://www.tinymce.com" target="_blank">TinyMCE 4.3.13</a><br />'
+		)
+	);
 
 	// note: the tinymce-codemirror plugin has Apache 2 License, but the author Arjan (from Webgear.nl) has given permission to use and include the code in this application
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://github.com/Matmusia/magicline" target="_blank">TinyMCE magic line plugin v1.2</a><br />' ));
@@ -87,14 +95,33 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
                                             '<a href="http://mind2soft.com/labs/jquery/multiselect/" target="_blank">jQuery UIx Multiselect v2.0RC</a><br />' ));
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.jstree.com" target="_blank">jsTree v3.3.1</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.jstree.com" target="_blank">jsTree v3.3.1</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.plupload.com/" target="_blank">Plupload v2.0.0</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/RobinHerbots/jquery.inputmask" target="_blank">jQuery Input Mask v3.3.1</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://player.bitgravity.com" target="_blank">Bitgravity free video player v6</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.plupload.com/" target="_blank">Plupload v2.0.0</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://player.bitgravity.com" target="_blank">Bitgravity free video player v6</a><br />'
+		)
+	);
 											
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://mediaelementjs.com/" target="_blank">MediaElement.js v2.11.2</a><br />' ));
