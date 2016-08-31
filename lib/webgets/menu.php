@@ -1,4 +1,6 @@
 <?php
+nvweb_webget_load('properties');
+
 function nvweb_menu($vars=array())
 {
 	global $website;
@@ -16,6 +18,16 @@ function nvweb_menu($vars=array())
 	$parent = intval(@$vars['parent']) + 0;
 	$from = intval(@$vars['from']) + 0;
 	$of	= intval(@$vars['of']) + 0;
+
+    if(isset($vars['parent']) && !is_numeric($vars['parent']))
+    {
+        // assume parent attribute contains a property_id which has the category value
+        $parent_property = nvweb_properties(array(
+            'property' => $vars['parent']
+        ));
+        if(!empty($parent_property))
+            $parent = $parent_property;
+    }
 
 	if($of > 0)
 	{
