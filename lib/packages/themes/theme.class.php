@@ -250,7 +250,8 @@ class theme
             'search'		=>	t(41, 'Search'),
             'newsletter'	=>	t(249, 'Newsletter'),
             'portfolio'     =>  t(447, 'Portfolio'),
-            'portfolio_item'=>  t(448, 'Portfolio item')
+            'portfolio_item'=>  t(448, 'Portfolio item'),
+            'not_found'     =>  t(13, 'Not found')
         );
 
 		return $template_types;
@@ -1230,4 +1231,5 @@ class theme
         return $latest_update;
     }
 }
+
 ?>
