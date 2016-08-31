@@ -298,6 +298,29 @@ function nvweb_search($vars=array())
 			}
 		}
 
+		if($total==0)
+        {
+            $search_results_empty_text = $theme->t("no_results_found");
+
+            if(isset($vars['no_results_found']))
+                $search_results_empty_text = $theme->t($vars["no_results_found"]);
+
+            if(empty($search_results_empty_text) || $search_results_empty_text == 'no_results_found')
+                $search_results_empty_text = t(645, "No results found");
+
+            // display the error message only if
+            //  1) it's not empty
+            //  2) the template is preventing the display of any error message in the search ( no_results_found="" )
+            if( !empty($search_results_empty_text) &&
+                (   !isset($vars['no_results_found']) || ( isset($vars['no_results_found']) && !empty($vars['no_results_found'])) )
+            )
+            {
+                $out[] = '<div class="search-results-empty">';
+                $out[] =    $search_results_empty_text;
+                $out[] = '</div>';
+            }
+        }
+
         $archive = $_REQUEST['archive'];
         if(!empty($archive))
            $archive = 'archive='.$archive.'&';
@@ -311,4 +334,5 @@ function nvweb_search($vars=array())
 	
 	return implode("\n", $out);
 }
+
 ?>

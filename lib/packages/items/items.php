@@ -2438,4 +2438,5 @@ function items_order($category)
 
     return implode("\n", $out);
 }
+
 ?>

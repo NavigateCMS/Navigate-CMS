@@ -531,7 +531,7 @@ class navitable
                 delfunc: function(rownums)
                 {
                     // ask confirmation
-                    $(\'<div id="navigate-delete-dialog" class="hidden">'.t(60, 'Do you really want to delete the selected items?').'</div>\')
+                    $(\'<div id="navigate-delete-dialog">'.t(60, 'Do you really want to delete the selected items?').'</div>\')
                         .dialog(
                         {
                             resizable: true,
