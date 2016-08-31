@@ -81,8 +81,8 @@
 		</unit>
 		<unit id="13">
 			<segment>
-				<source>/*/</source>
-				<target>phpMyAdmin</target>
+				<source>Not found</source>
+				<target>No trobat/da</target>
 			</segment>
 		</unit>
 		<unit id="14">
@@ -3869,6 +3869,12 @@
 			<segment>
 				<source>Thousands separator</source>
 				<target>Separador de milers</target>
+			</segment>
+		</unit>
+		<unit id="645">
+			<segment>
+				<source>No results found</source>
+				<target>No s'ha trobat cap resultat</target>
 			</segment>
 		</unit>
 

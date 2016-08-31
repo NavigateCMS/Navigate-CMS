@@ -132,6 +132,7 @@ class website
 	public function load_from_post()
 	{
         global $theme;
+        global $user;
 
 		$ws_theme = $theme;
 		if($this->theme != $theme->name)
@@ -285,6 +286,11 @@ class website
 
                     case 'coordinates':
                         $value = $_REQUEST['property-'.$theme_option->id.'-latitude'].'#'.$_REQUEST['property-'.$theme_option->id.'-longitude'];
+                        break;
+
+                    case 'decimal':
+                        $value = $_REQUEST['property-'.$theme_option->id];
+                        $value = core_string2decimal($value);
                         break;
 
                     default:

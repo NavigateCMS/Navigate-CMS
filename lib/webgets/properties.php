@@ -1,6 +1,6 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/webgets/content.php');
 require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
+nvweb_webget_load('content');
 
 function nvweb_properties($vars=array())
 {
@@ -294,6 +294,13 @@ function nvweb_properties_render($property, $vars)
 	{
 		case 'value':
 			$out = $property->value;
+			break;
+
+        case 'decimal':
+            $out = $property->value;
+
+            if(isset($vars['precision']))
+                $out = number_format($property->value, $vars['precision']);
 			break;
 			
 		case 'boolean':
@@ -688,4 +695,5 @@ function nvweb_properties_render($property, $vars)
 	
 	return $out;	
 }
+
 ?>

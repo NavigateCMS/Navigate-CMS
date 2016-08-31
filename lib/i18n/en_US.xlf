@@ -81,8 +81,8 @@
 		</unit>
 		<unit id="13">
 			<segment>
-				<source>/*/</source>
-				<target>/*/</target>
+				<source>Not found</source>
+				<target>Not found</target>
 			</segment>
 		</unit>
 		<unit id="14">
@@ -3869,6 +3869,12 @@
 			<segment>
 				<source>Thousands separator</source>
 				<target>Thousands separator</target>
+			</segment>
+		</unit>
+		<unit id="645">
+			<segment>
+				<source>No results found</source>
+				<target>No results found</target>
 			</segment>
 		</unit>
 

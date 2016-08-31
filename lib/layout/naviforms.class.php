@@ -142,6 +142,43 @@ class naviforms
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
 		return $out;	
 	}
+
+	public function decimalfield($name, $value="", $precision=2, $decimal_separator=".", $thousands_separator="", $prefix="", $suffix="", $width="400px", $action="", $extra="")
+	{
+	    global $layout;
+
+        // may happen when converting a property type from (multilanguage) text to a (single) value
+        if(is_array($value))
+            $value = array_pop($value);
+		$value = htmlspecialchars($value);
+
+        if(!empty($width))
+            $extra .= ' style=" width: '.$width.';"';
+
+        if(!empty($action))
+            $extra .= ' onkeyup="'.$action.'"';
+
+		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
+
+        $layout->add_script('
+            $("#'.$name.'").inputmask(
+                { 
+                    alias: "decimal",
+                    rightAlign: false,
+                    digitsOptional: true,
+                    autoGroup: true,
+                    allowMinus: true,
+                    digits: '.$precision.',
+                    radixPoint: "'.$decimal_separator.'",
+                    groupSeparator: "'.$thousands_separator.'",                    
+                    suffix: "'.$suffix.'",
+                    prefix: "'.$prefix.'"
+                }
+            );
+        ');
+
+		return $out;
+	}
 	
 	public function autocomplete($name, $value="", $source, $callback='""', $width="400px")
 	{
@@ -790,7 +827,7 @@ class naviforms
                             }, 100);
                         });
                     ');
-                    
+
                     $contextmenu = true;
                 }
 

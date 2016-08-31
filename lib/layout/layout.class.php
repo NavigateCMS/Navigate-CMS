@@ -155,7 +155,7 @@ class layout
 		$this->add_style_tag('lib/external/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css');
 
 		$this->add_script_tag('js/plugins/pixlr.js');
-        
+
         $this->add_script_tag('js/plugins/jquery.inputmask.bundle.js');
 
         $this->add_script_tag('js/plugins/jquery.hotkeys.js');

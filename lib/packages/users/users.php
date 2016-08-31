@@ -339,7 +339,7 @@ function users_form($item)
 	$select = $naviforms->select_from_object_array('user-thousands_separator', $data, 'code', 'name', $item->thousands_separator);
 	$navibars->add_tab_content_row(
 		array(
-			'<label>'.t(643, 'Thousands separator').'</label>',
+			'<label>'.t(644, 'Thousands separator').'</label>',
 			$select
 		)
 	);
@@ -353,6 +353,22 @@ function users_form($item)
 		4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date(Y).' 23:59"}'),
 		5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date(Y).' 23:59"}')
 	);
+
+    $layout->add_script('
+        $("#user-decimal_separator,#user-thousands_separator").on("change", function()
+        {
+            $("#user-decimal_separator").parent().find("label:first").removeClass("ui-state-error");
+            $("#user-thousands_separator").parent().find("label:first").removeClass("ui-state-error");
+        
+            if($("#user-decimal_separator").val()==$("#user-thousands_separator").val())
+            {
+                $("#user-decimal_separator").parent().find("label:first").addClass("ui-state-error");
+                $("#user-thousands_separator").parent().find("label:first").addClass("ui-state-error");
+            }
+        });
+        
+        $("#user-decimal_separator").trigger("change"); // force checking on load
+    ');
 
 	$select = $naviforms->select_from_object_array('user-date_format', $data, 'code', 'name', $item->date_format);
 	$navibars->add_tab_content_row(

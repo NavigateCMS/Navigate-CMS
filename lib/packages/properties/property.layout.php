@@ -59,6 +59,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	global $website;
 	global $layout;
     global $theme;
+    global $user;
     global $DB;
 
 	$ws = $website;
@@ -144,6 +145,21 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
+			break;
+
+        case 'decimal':
+			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+			$field[] = '<label>'.$property_name.'</label>';
+
+			$field[] = $naviforms->decimalfield("property-".$property->id, $property->value, $property->precision, $user->decimal_separator, $user->thousands_separator, @$property->prefix, @$property->suffix);
+			if(!empty($property->helper))
+			{
+				$helper_text = $property->helper;
+				if(!empty($object))
+					$helper_text = $object->t($helper_text);
+				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
+			}
+			$field[] = '</div>';
 			break;
 
 		case 'rating':
