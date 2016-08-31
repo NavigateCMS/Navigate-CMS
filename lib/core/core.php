@@ -366,6 +366,32 @@ function core_time()
 }
 
 /**
+ * Converts numeric value from string to its decimal representation
+ *  the format depends on the current signed in user and his preferences (decimal_separator, thousands_separator)
+ *
+ * @param string $value
+ * @return string internal PHP representation of a decimal number (dot notation)
+ */
+function core_string2decimal($value)
+{
+    global $user;
+
+    if(empty($user) || !isset($user->decimal_separator))
+    {
+        $user = new user();
+        $user->decimal_separator = '¿'; // if no user preference, set a random character to represent the decimal separator
+    }
+
+    // remove all characters except numbers, the negative symbol and the decimal character (defined by the current user)
+    $value = preg_replace('/[^0-9\/-\/'.$user->decimal_separator.']/', '', $value);
+
+    // replace the user decimal character for the internal PHP symbol: a dot .
+    $value = str_replace($user->decimal_separator, ".", $value);
+
+    return $value;
+}
+
+/**
  * Sends an e-mail using the account details entered in the website settings form
  * Note: if this function is called when the url has the parameter "debug", a log of the process is dumped
  *
@@ -1049,4 +1075,5 @@ function core_version()
 
 	return $config['version'];
 }
+
 ?>

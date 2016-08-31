@@ -579,6 +579,13 @@ a.navigate-content-actions-selected
 	font-weight: bold;
 	float: left;
     line-height: 19px;
+	min-height: 25px;
+}
+
+.navigate-form-row label.ui-state-error,
+.navigate-form-row label.ui-state-highlight
+{
+	border: none;
 }
 
 .navigate-form-row .buttonset
@@ -3156,3 +3163,4 @@ div.block_group_block .actions a:hover
 .ui-timepicker-div.ui-timepicker-oneLine dl dd.ui_tpicker_microsec:before { content:'.'; display:inline-block; }
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide,
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide:before{ display: none; }
+

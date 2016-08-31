@@ -17,8 +17,14 @@ class property
     public $width;
 	public $position;
 	public $enabled;
+
+    // decimal properties extra fields
+    public $precision;
+    public $prefix;
+    public $suffix;
 	
 		// value
+        // decimal
 		// option
 		// multiple option
 		// boolean
@@ -73,12 +79,17 @@ class property
 		$this->helper       = $main->helper;
 		$this->width        = $main->width;
 		$this->position		= $main->position;
-		$this->enabled		= $main->enabled;	
-		
+		$this->enabled		= $main->enabled;
+        // decimal format extra fields
+        $this->precision    = $main->precision;
+        $this->prefix       = $main->prefix;
+        $this->suffix       = $main->suffix;
+
 		if($this->type == 'date')
 			$this->dvalue = core_ts2date($this->dvalue, false);		
 		else if($this->type == 'datetime')
-			$this->dvalue	= 	core_ts2date($this->dvalue, true);				
+			$this->dvalue	= 	core_ts2date($this->dvalue, true);
+
 	}
 	
 	public function load_from_post()
@@ -194,6 +205,10 @@ class property
         $this->conditional = $theme_option->conditional;
        	$this->position = 0;
        	$this->enabled = 1;
+        // decimal format extra fields
+        $this->precision    = $theme_option->precision;
+        $this->prefix       = $theme_option->prefix;
+        $this->suffix       = $theme_option->suffix;
 
         if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
             $this->name = $ws_theme->t(substr($this->name, 1));
@@ -231,6 +246,10 @@ class property
         $this->function = $object->function;
        	$this->position = 0;
        	$this->enabled = 1;
+
+        $this->precision    = $object->precision;
+        $this->prefix       = $object->prefix;
+        $this->suffix       = $object->suffix;
 
         if(!empty($dictionary))
             $this->name = $dictionary->t($this->name);
@@ -482,6 +501,7 @@ class property
 	{
 		$types = array(
             'value'			=>	t(193, 'Value'),
+            'decimal'		=>	t(643, 'Decimal'),
             'boolean'		=>  t(206, 'Boolean'),
             'option' 		=>	t(194, 'Option'),
             'moption' 		=>	t(211, 'Multiple option'),
@@ -692,32 +712,37 @@ class property
 		{
 			// we ALWAYS SAVE the property value, even if it is empty
 
+            $property_value = $_REQUEST['property-'.$property->id];
+
             // multilanguage property?
             if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
-                $_REQUEST['property-'.$property->id] = '[dictionary]';
+                $property_value = '[dictionary]';
 
             // date/datetime property?
             if($property->type=='date' || $property->type=='datetime')
-                $_REQUEST['property-'.$property->id] = core_date2ts($_REQUEST['property-'.$property->id]);
+                $property_value = core_date2ts($_REQUEST['property-'.$property->id]);
 
             if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
-                $_REQUEST['property-'.$property->id] = implode(',', $_REQUEST['property-'.$property->id]);
+                $property_value = implode(',', $_REQUEST['property-'.$property->id]);
 
             if($property->type=='coordinates')
-                $_REQUEST['property-'.$property->id] = $_REQUEST['property-'.$property->id.'-latitude'].'#'.$_REQUEST['property-'.$property->id.'-longitude'];
+                $property_value = $_REQUEST['property-'.$property->id.'-latitude'].'#'.$_REQUEST['property-'.$property->id.'-longitude'];
+
+            if($property->type=='decimal')
+                $property_value = core_string2decimal($_REQUEST['property-'.$property->id]);
 
             if($property->type=='webuser_groups' && !empty($_REQUEST['property-'.$property->id]))
-                $_REQUEST['property-'.$property->id] = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
+                $property_value = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
 
             // boolean (checkbox): if not checked,  form does not send the value
             if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
-                $_REQUEST['property-'.$property->id] = 0;
+                $property_value = 0;
 
             // item (select2): if no selection, the form does not send a value (HTML);
             // if we don't set an empty value, Navigate would take that as non-existant field and would set the default value,
             // which is different as the user may really want to set "empty" as the value
             if($property->type=='item' && !isset($_REQUEST['property-'.$property->id]))
-                $_REQUEST['property-'.$property->id] = "";
+                $property_value = "";
 
             // remove the old element
             $DB->execute('
@@ -747,8 +772,8 @@ class property
                     ':property_id' => $property->id,
                     ':type' => $item_type,
                     ':item_id' => value_or_default($item_id, 0),
-                    ':name' => $property->name,
-                    ':value' => value_or_default($_REQUEST['property-'.$property->id], "")
+                    ':name' => value_or_default($property->name, $property->id),
+                    ':value' => value_or_default($property_value, "")
                 )
             );
 
@@ -863,9 +888,6 @@ class property
                 $value = '[dictionary]';
             }
 
-            if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
-                $value = implode(',', $value);
-
             if($property->type=='coordinates')
             {
                 if(is_array($value))
@@ -874,6 +896,8 @@ class property
                 // if it isn't an array, then we suppose it already has the right format
             }
 
+            // property->type "decimal"; we don't need to reconvert, it already should be in the right format
+
             if($property->type=='webuser_groups' && !empty($value))
                 $value = 'g'.implode(',g', $value);
 
@@ -881,7 +905,8 @@ class property
             if($property->type=='boolean' && empty($value))
                 $value = 0;
 
-            if(is_null($value)) $value = ""; // should not be needed because of value_or_default, but doing this here fixes some warnings
+            if(is_null($value))
+                $value = ""; // should not be needed because of value_or_default, but doing this here fixes some warnings
 
            // remove the old element
             $DB->execute('
@@ -939,6 +964,8 @@ class property
    	}
 
     // modify a single property
+    // DEPRECATED, function will be removed soon
+    /*
     public static function change($item_type, $item_id, $property_name, $property_value, $template="")
     {
         global $DB;
@@ -991,9 +1018,6 @@ class property
             webdictionary::save_element_strings($item_type, $item_id, $dictionary);
    		}
 
-        if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
-            $value = implode(',', $value);
-
         if($property->type=='coordinates')
             $value = $value['latitude'].'#'.$value['longitude'];
 
@@ -1027,6 +1051,7 @@ class property
         return true;
 
     }
+    */
 
     public static function remove_properties($element_type, $element_id)
     {
@@ -1225,4 +1250,5 @@ class property
         return $out;
     }
 }
+
 ?>
