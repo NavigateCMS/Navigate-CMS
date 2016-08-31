@@ -328,7 +328,22 @@ function users_form($item)
 			$select
 		)
 	);
-											
+
+	// Thousands separator
+	$data = array(
+        0	=> json_decode('{"code": "", "name": "('.strtolower(t(581, "None")).') ---> 1234567"}'),
+        1	=> json_decode('{"code": ",", "name": ", ---> 1,234,567"}'),
+        2	=> json_decode('{"code": ".", "name": ". ---> 1.234.567"}'),
+	);
+
+	$select = $naviforms->select_from_object_array('user-thousands_separator', $data, 'code', 'name', $item->thousands_separator);
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(643, 'Thousands separator').'</label>',
+			$select
+		)
+	);
+
 	// Date format
 	$data = array(
 		0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date(Y).'-12-31 23:59"}'),

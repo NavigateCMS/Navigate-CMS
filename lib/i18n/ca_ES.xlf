@@ -3859,6 +3859,18 @@
 				<target>Redirigir a una pàgina del lloc web</target>
 			</segment>
 		</unit>
+		<unit id="643">
+			<segment>
+				<source>Decimal</source>
+				<target>Decimal</target>
+			</segment>
+		</unit>
+		<unit id="644">
+			<segment>
+				<source>Thousands separator</source>
+				<target>Separador de milers</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

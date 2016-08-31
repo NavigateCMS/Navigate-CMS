@@ -758,7 +758,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         $id = $item->category;
 
                     $out = nvweb_properties(array(
-                        'mode'		=>	(($source=='structure' || $source=='category')? 'structure' : 'item'),
+                        'mode'		=>	(($source=='structure' || $source=='category')? 'structure' : 'element'),
                         'id'		=>	$id,
                         'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name']),
                         'option'	=>	$tag['attributes']['option'],

@@ -11,6 +11,7 @@ class user
 	public $timezone;
 	public $date_format;
 	public $decimal_separator;
+	public $thousands_separator;
     public $skin;
 	public $blocked;
 	public $attempts;
@@ -95,7 +96,8 @@ class user
 		$this->profile			 = $rs->profile;
 		$this->language			 = $rs->language;
 		$this->timezone			 = $rs->timezone;				
-		$this->decimal_separator = $rs->decimal_separator;
+		$this->decimal_separator    = $rs->decimal_separator;
+		$this->thousands_separator  = $rs->thousands_separator;
 		$this->date_format		 = $rs->date_format;
 		$this->skin     		 = $rs->skin;
 		$this->blocked			 = $rs->blocked;
@@ -127,7 +129,8 @@ class user
 		$this->profile			 = intval($_REQUEST['user-profile']);
 		$this->language			 = $_REQUEST['user-language'];
 		$this->timezone			 = $_REQUEST['user-timezone'];			
-		$this->decimal_separator = $_REQUEST['user-decimal_separator'];
+		$this->decimal_separator    = $_REQUEST['user-decimal_separator'];
+		$this->thousands_separator  = $_REQUEST['user-thousands_separator'];
 		$this->date_format		 = $_REQUEST['user-date_format'];
 		$this->skin     		 = $_REQUEST['user-skin'];
 		$this->blocked			 = ($_REQUEST['user-blocked']=='1'? '1' : '0');
@@ -217,7 +220,7 @@ class user
 		$ok = $DB->execute(
             'INSERT INTO nv_users
                 (id, username, password, email, language, timezone,
-                websites, profile, date_format, decimal_separator, skin, blocked,
+                websites, profile, date_format, decimal_separator, thousands_separator, skin, blocked,
                 attempts, cookie_hash, activation_key)
                 VALUES
                 ( 0,
@@ -230,6 +233,7 @@ class user
                   :profile,
                   :date_format,
                   :decimal_separator,
+                  :thousands_separator,
                   :skin,
                   :blocked,
                 0,
@@ -246,6 +250,7 @@ class user
                 ':profile'           =>  $this->profile,
                 ':date_format'       =>  $this->date_format,
                 ':decimal_separator' =>  $this->decimal_separator,
+                ':thousands_separator' =>  $this->thousands_separator,
                 ':skin'              =>  value_or_default($this->skin, 'cupertino'),
                 ':blocked'           =>  value_or_default($this->blocked, 0)
             )
@@ -282,6 +287,7 @@ class user
 				  profile  = :profile,
 				  date_format  = :date_format,
 				  decimal_separator = :decimal_separator,
+				  thousands_separator = :thousands_separator,
 				  skin = :skin,
 				  blocked  = :blocked,
 				  attempts = :attempts,
@@ -298,7 +304,8 @@ class user
 				':websites' =>  (empty($this->websites)? '' : json_encode($this->websites)),
 				':profile' => $this->profile,
 				':date_format' => $this->date_format,
-				':decimal_separator' => $this->decimal_separator,
+				':decimal_separator' => value_or_default($this->decimal_separator, "."),
+				':thousands_separator' => value_or_default($this->thousands_separator, ""),
 				':skin' => value_or_default($this->skin, "cupertino"),
 				':blocked' => value_or_default($this->blocked, 0),
 				':attempts' => value_or_default($this->attempts, 0),
@@ -311,7 +318,6 @@ class user
 			throw new Exception($DB->get_last_error());
 			
 		return true;
-								
 	}
 
     /**
@@ -428,6 +434,7 @@ class user
 	 */	
 	public static function email_of($user_id)
 	{
+		global $DB;
 		global $DB;
 		$email = $DB->query_single('email', 'nv_users', ' id = '.intval($user_id));
 		

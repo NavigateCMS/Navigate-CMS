@@ -3859,6 +3859,18 @@
 				<target>Umleitung auf eine Seite, auf der Website</target>
 			</segment>
 		</unit>
-
+		<unit id="643">
+			<segment>
+				<source>Dezimal</source>
+				<target>Dezimal</target>
+			</segment>
+		</unit>
+		<unit id="644">
+			<segment>
+				<source>Thousands separator</source>
+				<target>Tausendertrennzeichen</target>
+			</segment>
+		</unit>
+		
 	</file>
 </xliff>

@@ -17,7 +17,7 @@
     color: #fff;
     opacity: 0.97;
     font-size: 10px;
-    font-family: Tahoma;
+    font-family: Tahoma, sans-serif;
     left: 0px;
     display: none;
 }
@@ -36,7 +36,8 @@
     line-height: 28px;
     cursor: pointer;
     text-decoration: none;
-    font-family: Tahoma;
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
     margin: 0;
 }
 
@@ -50,7 +51,8 @@
     line-height: 28px;
     cursor: pointer;
     text-decoration: none;
-    font-family: Tahoma;
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
     margin: 0;
 }
 
@@ -91,6 +93,8 @@
 {
     float: left;
     margin-right: 10px;
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
 }
 
 #navigate_liveedit_bar_spacer
@@ -103,6 +107,7 @@
 {
     color: #fff;
     font-family: Tahoma, sans-serif;
+    font-size: 10px;
 }
 
 .navigate_liveedit_bar_menu li,
@@ -115,8 +120,9 @@
     border-bottom: solid 1px #174570;
     padding: 0 5px;
     line-height: 28px;
+    font-family: Tahoma, sans-serif;
+    text-decoration: none;
 }
-
 
 .navigate_liveedit_bar_menu
 {
