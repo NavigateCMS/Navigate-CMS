@@ -124,15 +124,25 @@ function run()
                 $error = false;
                 parse_str(parse_url($url, PHP_URL_QUERY), $query);
 
-                @core_file_curl($url, sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+                $tmp_file = sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip';
+                @core_file_curl($url, $tmp_file);
+                if(@filesize($tmp_file) == 0)
+                {
+                    @unlink($tmp_file);
+                    // core file curl failed, try using file_get_contents...
+                    $tmp = @file_get_contents($url);
+                    if(!empty($tmp))
+                        @file_put_contents($tmp_file, $tmp);
+                    unset($tmp);
+                }
 
-                if(@filesize(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip') > 0)
+                if(@filesize($tmp_file) > 0)
                 {
                     // uncompress ZIP and copy it to the extensions dir
                     @mkdir(NAVIGATE_PATH.'/plugins/'.$query['code']);
 
                     $zip = new ZipArchive();
-                    $zip_open_status = $zip->open(sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip');
+                    $zip_open_status = $zip->open($tmp_file);
                     if($zip_open_status === TRUE)
                     {
                         $zip->extractTo(NAVIGATE_PATH.'/plugins/'.$query['code']);
