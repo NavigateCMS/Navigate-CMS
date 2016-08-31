@@ -344,9 +344,18 @@ class feed
                             if($properties[$p]->type=='image')
                             {
                                 if(!empty($properties[$p]->value))
-                                    $image = $website->absolute_path(false) . '/object?type=image&id='.$properties[$p]->value;
+                                    $image = $properties[$p]->value;
                                 else if(!empty($properties[$p]->dvalue))
-                                    $image = $website->absolute_path(false) . '/object?type=image&id='.$properties[$p]->dvalue;
+                                    $image = $properties[$p]->dvalue;
+
+                                if(is_array($image))
+                                {
+                                    $image = array_values($image);
+                                    $image = $image[0];
+                                }
+
+                                if(!empty($image))
+                                    $image = $website->absolute_path(false) . '/object?type=image&id='.$image;
                             }
 
                             // we only need the first image

@@ -205,7 +205,8 @@ function dashboard_create()
             json_decode('{"id": "navigate-panel-recent-comments"}')
         ),
         2 => array(
-            json_decode('{"id": "navigate-panel-recent-changes"}')
+            json_decode('{"id": "navigate-panel-recent-changes"}'),
+            json_decode('{"id": "navigate-panel-navigatecms-feed"}')
         ),
         3 => array(
             json_decode('{"id": "navigate-panel-top-elements"}'),
