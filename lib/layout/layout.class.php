@@ -148,7 +148,8 @@ class layout
 		
 		$this->add_script_tag('lib/external/flot/jquery.flot.js');
 		$this->add_script_tag('lib/external/flot/jquery.flot.pie.js');		
-		$this->add_script_tag('lib/external/flot/jquery.flot.navigate.js');				
+		$this->add_script_tag('lib/external/flot/jquery.flot.time.js');
+		$this->add_script_tag('lib/external/flot/jquery.flot.navigate.js');
 
 		$this->add_script_tag('lib/external/plupload/js/plupload.full.min.js');
 		$this->add_script_tag('lib/external/plupload/js/jquery.ui.plupload/jquery.ui.plupload.min.js');

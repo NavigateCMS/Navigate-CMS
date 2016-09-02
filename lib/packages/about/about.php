@@ -138,8 +138,12 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/" target="_blank">jQuery mb.extruder v2.5</a><br />' ));
 											
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.flotcharts.org" target="_blank">Flot (Attractive Javascript plotting for jQuery) v0.7</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.flotcharts.org" target="_blank">Flot (Attractive Javascript plotting for jQuery) v0.8.3</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://github.com/ludo/jquery-treetable" target="_blank">jQuery treeTable plugin v2.3.0</a><br />' ));
