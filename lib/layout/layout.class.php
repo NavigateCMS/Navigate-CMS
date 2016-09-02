@@ -1129,7 +1129,6 @@ class layout
         ');
 
 
-
         // title/description(alt) dialog
         $description_dialog = array();
 

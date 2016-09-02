@@ -2110,50 +2110,45 @@ function items_form($item)
 			// script#8
 			// comments moderation
 		}
-	
+
+
 		if($item->votes > 0)
 		{
 			$navibars->add_tab(t(352, "Votes"));	 // tab #6
 			
 			$score = $item->score / $item->votes;			
 			
-			$navibars->add_tab_content_panel('<img src="img/icons/silk/chart_pie.png" align="absmiddle" /> '.t(337, 'Summary'), 
-											 array(	'<div class="navigate-panels-summary ui-corner-all"><h2>'.$item->votes.'</h2><br />'.t(352, 'Votes').'</div>',
-													'<div class="navigate-panels-summary ui-corner-all""><h2>'.$score.'</h2><br />'.t(353, 'Score').'</div>',
-													'<div style=" float: left; margin-left: 8px; "><a href="#" class="uibutton" id="items_votes_webuser">'.t(15, 'Users').'</a></div>',
-													'<div style=" float: right; margin-right: 8px; "><a href="#" class="uibutton" id="items_votes_reset">'.t(354, 'Reset').'</a></div>',
-													'<div id="items_votes_webuser_window" style=" display: none; width: 600px; height: 350px; "></div>'
-											 ), 
-											 'navigate-panel-web-summary', '385px', '200px');	
-									 			
-											 
+			$navibars->add_tab_content_panel(
+			    '<img src="img/icons/silk/chart_pie.png" align="absmiddle" /> '.t(337, 'Summary'),
+				array(
+				    '<div class="navigate-panels-summary ui-corner-all"><h2>'.$item->votes.'</h2><br />'.t(352, 'Votes').'</div>',
+					'<div class="navigate-panels-summary ui-corner-all""><h2>'.$score.'</h2><br />'.t(353, 'Score').'</div>',
+					'<div style=" float: left; margin-left: 8px; "><a href="#" class="uibutton" id="items_votes_webuser">'.t(15, 'Users').'</a></div>',
+					'<div style=" float: right; margin-right: 8px; "><a href="#" class="uibutton" id="items_votes_reset">'.t(354, 'Reset').'</a></div>',
+					'<div id="items_votes_webuser_window" style=" display: none; width: 600px; height: 350px; "></div>'
+                ),
+				'navigate-panel-web-summary',
+                '385px',
+                '200px'
+            );
+
 			$layout->add_script('
 				$("#items_votes_reset").on("click", function()
 				{
-                    $("<div>'.t(497, "Do you really want to erase this data?").'</div>").dialog(
-                    {
-                        resizable: true,
-                        height: 150,
-                        width: 300,
-                        modal: true,
-                        title: "'.t(59, 'Confirmation').'",
-                        buttons:
+				    navigate_confirmation_dialog(
+				        function()
                         {
-						    "'.t(58, 'Cancel').'": function()
-						    {
-                                $(this).dialog("close");
-                            },
-							"'.t(354, 'Reset').'": function()
-							{
-							    $.post("?fid='.$_REQUEST['fid'].'&act=votes_reset&id='.$item->id.'", function(data)
-					            {
-						            $("#navigate-panel-web-summary").addClass("ui-state-disabled");
-						            navigate_notification("'.t(355, 'Votes reset').'");
-					            });
-                                $(this).dialog("close");
-							}
-						}
-					});
+                            navigate_notification("'.t(355, 'Votes reset').'");                           
+                            $.post("?fid=items&act=votes_reset&id='.$item->id.'", function(data)
+                            {
+                                $("#navigate-panel-web-summary").addClass("ui-state-disabled");
+                                navigate_notification("'.t(355, 'Votes reset').'");
+                            });
+                        },
+                        "'.t(497, "Do you really want to erase this data?").'",
+                        null,
+				        "'.t(354, 'Reset').'"
+                    );					    
 				});
 				
 				$("#items_votes_webuser").on("click", function()
@@ -2195,20 +2190,20 @@ function items_form($item)
 							  sortorder: "desc"
 							});	
 							
-							$("#items_votes_webuser_grid").jqGrid(	"navGrid", 
-																	"#items_votes_webuser_grid_pager", 
-																	{
-																		add: false,
-																		edit: false,
-																		del: true,
-																		search: false
-																	}
-																);
+							$("#items_votes_webuser_grid").jqGrid(	
+							    "navGrid", 
+								"#items_votes_webuser_grid_pager", 
+								{
+								    add: false,
+									edit: false,
+									del: true,
+									search: false
+                                }
+                            );
 						}
 					});
 				});				
 			');
-			
 			
 			$navibars->add_tab_content_panel(
                 '<img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(353, 'Score'),
@@ -2221,7 +2216,6 @@ function items_form($item)
 			$votes_by_score = webuser_vote::object_votes_by_score('item', $item->id);
 			
 			$gdata = array();
-			
 			$colors = array(
 				'#0a2f42',				
 				'#62bbe8',
@@ -2237,46 +2231,12 @@ function items_form($item)
 					'data' => (int)$vscore->votes,
 					'color' => $colors[($vscore->value % count($colors))]
 				);
-			}		
-							 						
-			$layout->add_script('
-				$(document).ready(function()
-				{		
-					var gdata = '.json_encode($gdata).';				
-				
-					$.plot($("#navigate-panel-web-score-graph"), gdata,
-					{						
-                        series:
-                        {
-                            pie:
-                            {
-                                show: true,
-                                radius: 1,
-                                tilt: 0.5,
-                                startAngle: 3/4,
-                                label:
-                                {
-                                    show: true,
-                                    formatter: function(label, series)
-                                    {
-                                        return \'<div style="font-size:12px;text-align:center;padding:2px;color:#fff;"><span style="font-size: 20px; font-weight: bold; ">\'+label+\'</span><br/>\'+Math.round(series.percent)+\'% (\'+series.data[0][1]+\')</div>\';
-                                    },
-                                    background: { opacity: 0.6 }
-                                },
-                                stroke:
-                                {
-                                    color: "#F2F5F7",
-                                    width: 4
-                                },
-                            }
-                        },
-                        legend:
-                        {
-                            show: false
-                        }
-					});
-			');		
-			
+			}
+
+            $navibars->add_tab_content('
+                <div class="hidden" id="navigate-panel-web-data-score">'.json_encode($gdata).'</div>
+            ');
+
 			$navibars->add_tab_content_panel(
                 '<img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(352, 'Votes').' ('.t(356, 'last 90 days').')',
                  array(	'<div id="navigate-panel-web-votes-graph" style=" margin: 8px; height: 150px; width: 360px; "></div>' ),
@@ -2286,65 +2246,11 @@ function items_form($item)
             );
 
 			$votes_by_date = webuser_vote::object_votes_by_date('item', $item->id, 90);
-
-			
-			$layout->add_script('
-									
-					var plot = $.plot(
-						$("#navigate-panel-web-votes-graph"), 
-						['.json_encode($votes_by_date).'], 
-						{
-							series:
-							{
-								points: { show: true, radius: 3 }
-							},
-							xaxis: 
-							{ 
-								mode: "time", 
-								tickLength: 5
-							},
-							yaxis:
-							{
-								tickDecimals: 0,
-								zoomRange: false,
-								panRange: false
-							},
-							grid: 
-							{ 
-								markings: function (axes) 
-								{
-									var markings = [];
-									var d = new Date(axes.xaxis.min);
-									// go to the first Saturday
-									d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7))
-									d.setUTCSeconds(0);
-									d.setUTCMinutes(0);
-									d.setUTCHours(0);
-									var i = d.getTime();
-									do {
-										// when we don\'t set yaxis, the rectangle automatically
-										// extends to infinity upwards and downwards
-										markings.push({ xaxis: { from: i, to: i + 2 * 24 * 60 * 60 * 1000 } });
-										i += 7 * 24 * 60 * 60 * 1000;
-									} while (i < axes.xaxis.max);
-							
-									return markings;
-								},
-								markingsColor: "#e7f5fc"								
-							},
-							zoom: 
-							{
-								interactive: false // mousewheel problems
-							},
-							pan: 
-							{
-								interactive: true
-							}
-						});
-					}
-				);
-			');
-		}		
+            $navibars->add_tab_content('
+                <div class="hidden" id="navigate-panel-web-data-votes_by_date">'.json_encode($votes_by_date).'</div>
+            ');
+            // script#9
+		}
 
         $nvweb_preview = NAVIGATE_PARENT.NAVIGATE_FOLDER.'/web/nvweb.php?preview=true&wid='.$website->id.'&route=';
 		
