@@ -757,20 +757,16 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     if($source!='structure' && $source!='category')
                         $id = $item->category;
 
-                    $out = nvweb_properties(array(
-                        'mode'		=>	(($source=='structure' || $source=='category')? 'structure' : 'element'),
-                        'id'		=>	$id,
-                        'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name']),
-                        'option'	=>	$tag['attributes']['option'],
-                        'border'	=>	$tag['attributes']['border'],
-                        'class'		=>	$tag['attributes']['class'],
-                        'width'		=>	$tag['attributes']['width'],
-                        'height'	=>	$tag['attributes']['height'],
-                        'return'	=>  $tag['attributes']['return'],
-                        'format'	=>  $tag['attributes']['format'],
-                        'link'	    =>  $tag['attributes']['link'],
-                        'floor'	    =>  $tag['attributes']['floor']
-                    ));
+                    $nvweb_properties_parameters = array_replace(
+                        $tag['attributes'],
+                        array(
+                            'mode'		=>	(!isset($tag['attributes']['mode'])? 'structure' : $tag['attributes']['mode']),
+                            'id'		=>	$id,
+                            'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name'])
+                        )
+                    );
+
+                    $out = nvweb_properties($nvweb_properties_parameters);
 					break;
 
 				case 'url':
@@ -907,6 +903,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         $wu->load($item->user);
                         $out = $wu->social_website;
                     }
+
+                    if(empty($out))
+                    {
+                        $out = '#';
+                    }
                     break;
 
 				case 'message':
@@ -946,7 +947,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'block':
                     // generate the full block code
-                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action);
+                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, NULL, NULL, $tag['attributes']);
                     break;
 
                 case 'title':
@@ -981,20 +982,16 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     if(!is_numeric($item->id))
                         $properties_mode = 'block_group_block';
 
-                    $out = nvweb_properties(array(
-                        'mode'		=>	$properties_mode,
-                        'id'		=>	$item->id,
-                        'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name']),
-                        'option'	=>	$tag['attributes']['option'],
-                        'border'	=>	$tag['attributes']['border'],
-                        'class'		=>	$tag['attributes']['class'],
-                        'width'		=>	$tag['attributes']['width'],
-                        'height'	=>	$tag['attributes']['height'],
-                        'return'	=>  $tag['attributes']['return'],
-                        'format'	=>  $tag['attributes']['format'],
-                        'link'	    =>  $tag['attributes']['link'],
-                        'floor'	    =>  $tag['attributes']['floor']
-                    ));
+                    $nvweb_properties_parameters = array_replace(
+                        $tag['attributes'],
+                        array(
+                            'mode'		=>	(!isset($tag['attributes']['mode'])? $properties_mode : $tag['attributes']['mode']),
+                            'id'		=>	$item->id,
+                            'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name'])
+                        )
+                    );
+
+                    $out = nvweb_properties($nvweb_properties_parameters);
                     break;
 
                 case 'poll_answers':
@@ -2255,7 +2252,5 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 	return $paginator_html;
 }
-
-
 
 ?>

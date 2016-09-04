@@ -12,7 +12,7 @@ function nvweb_properties($vars=array())
 
 	$out = '';
 
-	switch(@$vars['mode'])
+    switch(@$vars['mode'])
 	{
         case 'website':
             $wproperty = new property();
