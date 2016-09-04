@@ -48,6 +48,9 @@ object to the TinyMCE configuration.
 the indentOnInit option, you tell the Source Code editor to indent all code when
 the editor opens. This might be slow for large documents.
 
+**fullscreen** boolean (false) Whether to load the tinymce plugin and codemirror
+in full screen mode.
+
 **path**: string (codemirror) You might already have CodeMirror hosted elsewhere
 (outside TinyMCE). In that case, you can reuse that CodeMirror instance, by
 overriding the default path. For example:
@@ -113,6 +116,12 @@ This TinyMCE plugin is compatible with pretty much all browsers out there,
 including Firefox, Google Chrome, Safari and Internet Explorer, version 8 or
 better. It is NOT compatible with Interner Explorer 6 or 7, simply because
 CodeMirror itself does not work in these versions.
+
+Contributing
+------------
+When making changes to `plugins/codemirror/plugin.js`, be sure to run
+`npm run prepublish` before committing. The `prepublish` script will generate
+the `plugins/codemirror/plugin.min.js` file.
 
 Changelog
 ---------
