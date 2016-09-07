@@ -14,6 +14,7 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
+        case 'json':
 		case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
@@ -73,7 +74,8 @@ function run()
 			session_write_close();
 			exit;
 			break;
-		
+
+        case 'edit':
 		case 2: // edit/new form		
 			if(!empty($_REQUEST['id']))
 			{
@@ -97,7 +99,8 @@ function run()
 		
 			$out = profiles_form($item);
 			break;
-					
+
+        case 'delete':
 		case 4: // remove 
 			if(!empty($_REQUEST['id']))
 			{
@@ -114,7 +117,8 @@ function run()
 				}
 			}
 			break;
-					
+
+        case 'list':
 		case 0: // list / search result
 		default:			
 			$out = profiles_list();
@@ -185,33 +189,16 @@ function profiles_form($item)
 				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
 			)
 		);
-		
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=4&id='.$item->id.'";
-								},
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								}
-							}
-						});';		
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid=profiles&act=delete&id='.$item->id.'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 	
 	$navibars->add_actions(
