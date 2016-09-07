@@ -29,17 +29,34 @@ function about_layout()
 	$navibars->form();		
 	$navibars->add_tab('Navigate CMS');
 	
-	$navibars->add_tab_content_row(array(	'<label>'.t(216, 'Created by').'</label>',
-											'<a href="http://www.naviwebs.com" target="_blank">Naviwebs</a>' ));								
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(216, 'Created by').'</label>',
+			'<a href="http://www.naviwebs.com" target="_blank">Naviwebs</a>'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(220, 'Version').'</label>',
-											'<span>'.$current_version->version.' r'.$current_version->revision.'</span>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(220, 'Version').'</label>',
+			'<span>'.$current_version->version.' r'.$current_version->revision.'</span>'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(378, 'License').'</label>',
-											'<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPL v2</a>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(378, 'License').'</label>',
+			'<a href="http://www.gnu.org/licenses/gpl-2.0.html" target="_blank">GPL v2</a>'
+		)
+	);
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(219, 'Copyright').'</label>',
-											'<a href="http://www.naviwebs.com" target="_blank">&copy; 2010 - '.date('Y').', Naviwebs.com</a>' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(219, 'Copyright').'</label>',
+			'<a href="http://www.naviwebs.com" target="_blank">&copy; 2010 - '.date('Y').', Naviwebs.com</a>'
+		)
+	);
+
 
 	$navibars->add_tab(t(218, 'Third party libraries'));	
 	
@@ -73,14 +90,26 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />' ));
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.20</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.20</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.13.3</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.13.3</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.12</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://stanlemon.net/pages/jgrowl" target="_blank">jGrowl v1.2.12</a><br />'
+		)
+	);
 
     $navibars->add_tab_content_row(
 		array(
@@ -128,6 +157,13 @@ function about_layout()
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/pisi/Longclick" target="_blank">jQuery Long Click v0.3.2 (22-Jun-2010)</a><br />' ));
+
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>&nbsp;</label>',
+			'<a href="https://github.com/broofa/node-uuid" target="_blank">node-uuid v1.4.7</a><br />'
+        )
+    );
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://plugins.jquery.com/project/query-object" target="_blank">jQuery.query v2.1.8 (22-Jun-2010)</a><br />' ));

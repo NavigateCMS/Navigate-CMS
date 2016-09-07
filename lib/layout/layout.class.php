@@ -120,6 +120,8 @@ class layout
 
 		$this->add_script_tag('js/plugins/jquery.ezCookie.js');
         $this->add_script_tag('js/plugins/jquery.longclick.js');
+        $this->add_script_tag('js/plugins/uuid.js');
+        $this->add_script_tag('js/plugins/jquery.inputmask.bundle.js');
 
 		$this->add_style_tag('js/treetable/src/stylesheets/jquery.treeTable.css');
 		$this->add_script_tag('js/treetable/src/javascripts/jquery.treeTable.min.js');
@@ -156,8 +158,6 @@ class layout
 		$this->add_style_tag('lib/external/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css');
 
 		$this->add_script_tag('js/plugins/pixlr.js');
-
-        $this->add_script_tag('js/plugins/jquery.inputmask.bundle.js');
 
         $this->add_script_tag('js/plugins/jquery.hotkeys.js');
         $this->add_script_tag('lib/external/jquery-caret/jquery.caret.js');
