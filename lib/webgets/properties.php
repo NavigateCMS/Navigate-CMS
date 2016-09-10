@@ -124,6 +124,7 @@ function nvweb_properties($vars=array())
             // find block_group block definition
             $block_group = null; // unknown
             $block_code = $vars['id'];
+            $block_uid = $vars['uid'];
 
             if(empty($block_code))  // find the block group block which has the requested property (property name must be unique!)
             {
@@ -135,7 +136,7 @@ function nvweb_properties($vars=array())
 
             $properties = $block->properties;
 
-            $current_properties = property::load_properties($block_code, $block->_block_group_id, 'block_group_block', $block_code);
+            $current_properties = property::load_properties($block_code, $block->_block_group_id, 'block_group_block', $block_code, $block_uid);
 
 			// now we find the property requested
 			if(!is_array($current_properties))

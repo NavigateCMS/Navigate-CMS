@@ -65,8 +65,10 @@ function nvweb_list($vars=array())
             if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
             {
                 $categories = nvweb_properties(array(
-                    'mode'	=>	'block_group_block',
-                    'property' => $vars['categories']
+                    'mode'	    =>	'block_group_block',
+                    'property'  => $vars['categories'],
+                    'id'        =>	$vars['nvlist_parent_item']->id,
+                    'uid'       => $vars['nvlist_parent_item']->uid
                 ));
             }
 
@@ -304,12 +306,12 @@ function nvweb_list($vars=array())
                     case 'block_group_block':
                         $bgba = $theme->block_group_blocks($vars['type']);
 
-                        if(!empty($bgba[$bgb['id']])) // there is defined a "block group block" with that type
+                        if(!empty($bgba[$bgb['id']])) // get the definition for that "block group block" type
                         {
                             $bgbo = $bgba[$bgb['id']];
-                            $rs[] = $bgbo;
+                            $bgbo->uid = $bgb['uid'];
+                            $rs[] = clone $bgbo;
                         }
-
                         break;
 
                     case 'block_type':
@@ -330,6 +332,10 @@ function nvweb_list($vars=array())
                         for($i=0; $i < count($bgbos); $i++)
                             $rs[] = $bgbos[$i];
 
+                        break;
+
+                    case 'extension':
+                        $rs[] = (object)($bgb);
                         break;
                 }
             }
@@ -591,12 +597,19 @@ function nvweb_list($vars=array())
                 // block type definition (mainly used to add a title before a list of blocks of the same type)
                 $item = $rs[$i];
             }
+            else if(isset($rs[$i]->extension))
+            {
+                // extension block
+                $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
+                $item->type = "extension";
+                $item->extension = $rs[$i]->extension;
+                $item->uid = $rs[$i]->uid;
+            }
             else
             {
                 // block from block group
-                // limitation: there can only exist one block group block of the same kind in a block group
                 $item = new block();
-                $item->load_from_block_group($vars['type'], $rs[$i]->id);
+                $item->load_from_block_group($vars['type'], $rs[$i]->id, $rs[$i]->uid);
             }
         }
         else if($vars['source']=='gallery')
@@ -945,11 +958,27 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $out = $item->id;
                     break;
 
-                case 'block':
-                    // generate the full block code
-                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, NULL, NULL, $tag['attributes']);
+                // only for blocks in a block group!
+                case 'uid':
+                    $out = $item->uid;
                     break;
 
+                case 'block':
+                    // generate the full block code
+                    if($item->type == "extension")
+                    {
+                        if(function_exists('nvweb_'.$item->extension.'_'.$item->id))
+                        {
+                            // load extension block property values
+                            $item->properties = property::load_properties(NULL, $item->id, "extension_block", NULL, $item->uid);
+                            $out = call_user_func('nvweb_'.$item->extension.'_'.$item->id, $item);
+                        }
+                    }
+                    else
+                        $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, NULL, NULL, $tag['attributes']);
+                    break;
+
+                // not for extension_blocks
                 case 'title':
                     $out = $item->dictionary[$current['lang']]['title'];
                     if(!empty($tag['attributes']['length']))
@@ -957,9 +986,20 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
                 case 'content':
+                    if($item->type == "extension")
+                    {
+                        if(function_exists('nvweb_'.$item->extension.'_'.$item->id))
+                        {
+                            // load extension block property values
+                            $item->properties = property::load_properties(NULL, $item->id, "extension_block", NULL, $item->uid);
+                            $out = call_user_func('nvweb_'.$item->extension.'_'.$item->id, $item);
+                        }
+                    }
+                    else
                     $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, 'content', $item, $tag['attributes']);
                     break;
 
+                // not for extension_blocks
                 case 'url':
                 case 'path':
                     $out = nvweb_blocks_render_action($item->action, '', $current['lang'], true);
@@ -969,6 +1009,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         $out = nvweb_prepare_link($out);
                     break;
 
+                // not for extension_blocks
                 case 'target':
                     if($item->action['action-type'][$current['lang']]=='web-n')
                         $out = '_blank';
@@ -976,6 +1017,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         $out = '_self';
                     break;
 
+                // not for extension_blocks (only for standard blocks and block group blocks)
                 case 'property':
                     $properties_mode = 'block';
 
@@ -987,13 +1029,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         array(
                             'mode'		=>	(!isset($tag['attributes']['mode'])? $properties_mode : $tag['attributes']['mode']),
                             'id'		=>	$item->id,
-                            'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name'])
+                            'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name']),
+                            'uid'       =>  @$item->uid
                         )
                     );
 
                     $out = nvweb_properties($nvweb_properties_parameters);
                     break;
 
+                // not for extension_blocks
                 case 'poll_answers':
                     $out = nvweb_blocks_render_poll($item);
                     break;

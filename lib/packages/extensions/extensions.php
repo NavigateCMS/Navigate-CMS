@@ -272,8 +272,8 @@ function extensions_grid($list)
 
     if(!$marketplace)
     {
-        $grid->item_size(170, 170);
-        $grid->thumbnail_size(160, 100);
+        $grid->item_size(220, 220);
+        $grid->thumbnail_size(205, 145);
 
         $extensions = array();
 

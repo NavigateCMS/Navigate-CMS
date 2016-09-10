@@ -407,6 +407,27 @@ class extension
         if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php'))
             include_once(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php');
     }
+
+    public static function blocks()
+    {
+        $out = array();
+
+        $list = extension::list_installed();
+
+        for($e=0; $e < count($list); $e++)
+        {
+            if(isset($list[$e]['blocks']))
+            {
+                for($eb=0; $eb < count($list[$e]['blocks']); $eb++)
+                {
+                    $list[$e]['blocks'][$eb]->_extension = $list[$e]['code'];
+                    $out[] = $list[$e]['blocks'][$eb];
+                }
+            }
+        }
+
+        return $out;
+    }
 }
 
 ?>

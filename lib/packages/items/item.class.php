@@ -693,7 +693,6 @@ class item
 			$like = ' LIKE '.protect('%'.$text.'%');
 
 			// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
-
 			$DB->query('SELECT DISTINCT (nvw.node_id)
 						 FROM nv_webdictionary nvw
 						 WHERE nvw.node_type = "item"

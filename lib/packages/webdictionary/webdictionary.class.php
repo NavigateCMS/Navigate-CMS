@@ -276,7 +276,7 @@ class webdictionary
 	}
 	
 	// only for strings NOT from theme dictionary 
-	public static function load_element_strings($node_type, $node_id)
+	public static function load_element_strings($node_type, $node_id, $node_uid=null)
 	{
 		global $DB;
 		
@@ -284,7 +284,8 @@ class webdictionary
 			SELECT subtype, lang, text
 			  FROM nv_webdictionary
 			 WHERE node_type = '.protect($node_type).'
-			   AND node_id = '.protect($node_id)
+			   AND node_id = '.protect($node_id).
+            (empty($node_uid)? '' : ' AND node_uid = '.protect($node_uid))
 		);
 				
 		$data = $DB->result();
@@ -300,7 +301,7 @@ class webdictionary
 		return $dictionary;	
 	}
 
-	public static function save_element_strings($node_type, $node_id, $dictionary, $website_id=null)
+	public static function save_element_strings($node_type, $node_id, $dictionary, $website_id=null, $node_uid=null)
 	{
 		global $DB;
 		global $website;
@@ -331,6 +332,24 @@ class webdictionary
                 );
             }
         }
+        else if($node_type=='property-block_group-extension-block')
+        {
+            // special case, remove only the rows we will insert
+            foreach($dictionary as $lang => $texts)
+            {
+                $subtypes = array_keys($texts);
+
+                $DB->execute('
+                    DELETE FROM nv_webdictionary
+                     WHERE node_type = '.protect($node_type).'
+                       AND node_id = '.protect($node_id).'
+                       AND website = '.$website_id.'
+                       AND lang = '.protect($lang).'
+                       AND subtype IN ('.implode(",", array_map(function($k){ return protect($k);}, $subtypes)).')
+                       AND node_uid = '.protect($node_uid)
+                );
+            }
+        }
         else
         {
             // first, delete old entries (deletes too much rows when updating block group block properties)
@@ -350,15 +369,16 @@ class webdictionary
 				// NO error checking
 				$DB->execute('
 	                INSERT INTO nv_webdictionary
-						(id, website, node_type, node_id, theme, extension, subtype, lang, `text`)
+						(id, website, node_type, theme, extension, node_id, node_uid, subtype, lang, `text`)
 					VALUES
-						( :id, :website, :node_type, :node_id, :theme, :extension, :subtype, :lang, :text)
+						( :id, :website, :node_type, :theme, :extension, :node_id, :node_uid, :subtype, :lang, :text)
 					',
 					array(
 					    ":id" => 0,
 						":website" => $website_id,
 						":node_type" => $node_type,
 						":node_id" => $node_id,
+						":node_uid" => value_or_default($node_uid, ""),
 						":theme" => "",
 						":extension" => "",
 						":subtype" => $subtype,
@@ -472,7 +492,6 @@ class webdictionary
 
         return $out;
     }
-
 }
 
 ?>

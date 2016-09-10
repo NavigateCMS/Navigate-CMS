@@ -98,7 +98,7 @@ class events
 
         for($e=0; $e < count($extensions); $e++)
         {
-            if($extensions[$e]['enabled'] == '1')
+            if(!isset($extensions[$e]['enabled']) || $extensions[$e]['enabled'] == '1')
             {
                 if(!empty($extensions[$e]['bindings']))
                 {
@@ -112,4 +112,5 @@ class events
         }
     }
 }
+
 ?>

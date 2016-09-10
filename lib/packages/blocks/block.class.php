@@ -22,6 +22,7 @@ class block
     public $exclusions;
     public $elements; // selection or exclusions in a JSON object
 
+    public $uid;
     public $properties;
 
     static $nv_fontawesome_classes;
@@ -107,7 +108,7 @@ class block
         }
 	}
 
-    public function load_from_block_group($block_group_id, $block_type)
+    public function load_from_block_group($block_group_id, $block_type, $block_uid=null)
     {
         $this->id = $block_type;
         $this->type = $block_type;
@@ -116,6 +117,7 @@ class block
         $this->date_modified = time();
         $this->access = 0;
         $this->enabled = 1;
+        $this->uid = $block_uid;
     }
 	
 	public function load_from_post()
@@ -754,6 +756,31 @@ class block
         return $block;
     }
 
+    // extension may be the extension codename or the extension object
+    public static function extension_block($extension, $block_type)
+    {
+        if(is_string($extension))
+        {
+            $extension_name = $extension;
+            $extension = new extension();
+            $extension->load($extension_name);
+        }
+
+        $extension_blocks = $extension->definition->blocks;
+
+        $block = null;
+
+        for($eb=0; $eb < count($extension_blocks); $eb++)
+        {
+            if($extension_blocks[$eb]->id == $block_type)
+            {
+                $block = $extension_blocks[$eb];
+                break;
+            }
+        }
+
+        return $block;
+    }
 	
 	public function quicksearch($text)
 	{
@@ -844,4 +871,5 @@ class block
 	}
 
 }
+
 ?>

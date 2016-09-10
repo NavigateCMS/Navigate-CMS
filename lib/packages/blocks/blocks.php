@@ -506,11 +506,29 @@ function run()
             $status = null;
             $block_group = $_REQUEST['block_group'];
             $block_code = $_REQUEST['code'];
+            $block_uid = $_REQUEST['block_uid'];
 
             if(isset($_REQUEST['form-sent']))
-                $status = property::save_properties_from_post('block_group_block', $block_code, $block_group, $block_code);
+                $status = property::save_properties_from_post('block_group_block', $block_code, $block_group, $block_code, $block_uid);
 
-            $out = block_group_block_options($block_group, $block_code, $status);
+            $out = block_group_block_options($block_group, $block_code, $block_uid, $status);
+
+            echo $out;
+
+            core_terminate();
+            break;
+
+        case 'block_group_extension_block_options':
+            $status = null;
+            $block_group = $_REQUEST['block_group'];    // block_group type
+            $block_id = $_REQUEST['block_id'];          // extension block id (type)
+            $block_uid = $_REQUEST['block_uid'];        // extension block unique id
+            $block_extension = $_REQUEST['block_extension'];    // extension name
+
+            if(isset($_REQUEST['form-sent']))
+                $status = property::save_properties_from_post('extension_block', $block_group, $block_id, null, $block_uid);
+
+            $out = block_group_extension_block_options($block_group, $block_extension, $block_id, $block_uid, $status);
 
             echo $out;
 
@@ -1277,6 +1295,7 @@ function blocks_form($item)
                         }
                     }
                 }
+
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(184, 'Webpage').'</label>',
@@ -1289,6 +1308,7 @@ function blocks_form($item)
                         '</div>'
                     )
                 );
+
                 $layout->add_script('
                     $("input[name=action-web-'.$lang.']").on("keydown", function()
                     {
@@ -2450,32 +2470,15 @@ function block_group_form($item)
             )
         );
 
-        $delete_html = array();
-        $delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-        $delete_html[] = '<script language="javascript" type="text/javascript">';
-        $delete_html[] = 'function navigate_delete_dialog()';
-        $delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-        $delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								},
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=block_group_delete&id='.$item->id.'";
-								}
-							}
-						});';
-        $delete_html[] = '}';
-        $delete_html[] = '</script>';
-
-        $navibars->add_content(implode("\n", $delete_html));
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid=blocks&act=block_group_delete&id='.$item->id.'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
     }
 
     $navibars->add_actions(
@@ -2568,6 +2571,7 @@ function block_group_form($item)
 
     $block_types = block::types();
     $lang = $website->languages_published[0];
+    $extensions_blocks = extension::blocks();
 
     for($p=0; $p < count($item->blocks); $p++)
     {
@@ -2583,7 +2587,7 @@ function block_group_form($item)
                     continue;
 
                 $blocks_selected[] = '
-                    <div class="block_group_block ui-state-default" data-block-id="'.$block->id.'" data-block-type="block">
+                    <div class="block_group_block ui-state-default" data-block-id="'.$block->id.'" data-block-type="block" data-block-uid="'.$item->blocks[$p]['uid'].'">
                         <div class="actions">
                             <a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
                             <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
@@ -2605,7 +2609,7 @@ function block_group_form($item)
                 }
 
                 $blocks_selected[] = '
-                    <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_type">
+                    <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_type" data-block-uid="'.$item->blocks[$p]['uid'].'">
                         <div class="actions">
                             <a href="#" data-block-group="'.$block['block_group'].'" data-block-type-code="'.$block['code'].'" data-block-type-title="'.$item->blocks[$p]['title'].'" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /></a>
                             <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
@@ -2643,7 +2647,7 @@ function block_group_form($item)
                 }
 
                 $blocks_selected[] = '
-                    <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_group_block">
+                    <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_group_block"  data-block-uid="'.$item->blocks[$p]['uid'].'">
                         <div class="actions">
                             '.(empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
                             <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
@@ -2652,6 +2656,31 @@ function block_group_form($item)
                         <div class="subcomment"><span style="float: right;">ID '.$block['type'].'</span><img src="img/icons/silk/bricks.png" /> '.$theme->t($block['type']).'</div>
                     </div>
                 ';
+                break;
+
+            case "extension":
+                $block = $item->blocks[$p];
+
+                for($be=0; $be < count($extensions_blocks); $be++)
+                {
+                    if($block['id'] == $extensions_blocks[$be]->id)
+                    {
+                        $extension = new extension();
+                        $extension->load($block['extension']);
+
+                        $blocks_selected[] = '
+                            <div class="block_group_block ui-state-default" data-block-id="'.$block['id'].'" data-block-type="extension" data-block-extension="'.$block['extension'].'"  data-block-uid="'.$item->blocks[$p]['uid'].'">
+                                <div class="actions">
+                                    '.(empty($extensions_blocks[$be]->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-id="'.$block['id'].'" data-block-extension="'.$block['extension'].'" data-block-group-action="settings" onclick="navigate_block_group_extension_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                    <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                </div>
+                                <div class="title">'.$extension->t($extensions_blocks[$be]->title).'</div>
+                                <div class="subcomment"><span style="float: right;">ID '.$block['id'].'</span><img src="img/icons/silk/plugin.png" /> '.$extension->title.'</div>
+                            </div>
+                        ';
+                        break;
+                    }
+                }
                 break;
         }
     }
@@ -2699,7 +2728,7 @@ function block_group_form($item)
     $navibars->add_tab_content(
         '<div id="blocks_available_wrapper" style="float: left; width: 49%; ">
             <div id="blocks_available_accordion">
-                <h3><i class="fa fa-plus-square-o"></i> '.t(437, 'Block').'</h3>
+                <h3><i class="fa fa-fw fa-cube"></i> '.t(437, 'Block').'</h3>
                 <div>
                 '.implode(
                     "\n",
@@ -2726,7 +2755,7 @@ function block_group_form($item)
                     )
                 ).'
                 </div>
-                <h3><i class="fa fa-plus-square"></i> '.t(543, 'Block type').'</h3>
+                <h3><i class="fa fa-fw fa-cubes"></i> '.t(543, 'Block type').'</h3>
                 <div>
                 '.implode(
                     "\n",
@@ -2753,7 +2782,7 @@ function block_group_form($item)
                     )
                 ).'
                 </div>
-                <h3><i class="fa fa-puzzle-piece"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</h3>
+                <h3><i class="fa fa-fw fa-plus-square-o"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</h3>
                 <div>                    
                     '.implode(
                         "\n",
@@ -2762,7 +2791,7 @@ function block_group_form($item)
                             {
                                 global $theme;
 
-                                $html = '<div class="block_group_block ui-state-default" data-block-id="'.$b->id.'" data-block-type="block_group_block" title="'.$theme->t($b->description).'">'.
+                                $html = '<div class="block_group_block ui-state-default" data-block-id="'.$b->id.'" data-block-type="block_group_block" title="'.$theme->t(@$b->description).'">'.
                                             '<div class="actions">
                                                 '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
                                                 <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
@@ -2779,6 +2808,31 @@ function block_group_form($item)
                         )
                     ).'
                 </div>
+                <h3><i class="fa fa-fw fa-puzzle-piece"></i> '.t(327, 'Extensions').'</h3>
+                <div>
+                    '.implode(
+                        "\n",
+                        array_map(
+                            function($b) use ($allowed_types, $item)
+                            {
+                                $classes = 'block_group_block ui-state-default';
+                                $extension = new extension();
+                                $extension->load($b->_extension);
+
+                                $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="extension" data-block-extension="'.$b->_extension.'">'.
+                                    '<div class="actions">
+                                        '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_block_group_extension_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                        <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                    </div>'.
+                                    '<div class="title">'.$extension->t($b->title).'</div>'.
+                                    '<div class="subcomment"><span style="float: right;">ID '.$b->id.'</span><img src="img/icons/silk/plugin.png" /> '.$extension->title.'</div>'.
+                                    '</div>';
+                                return $html;
+                            },
+                            $extensions_blocks
+                        )
+                    ).'
+                </div>
             </div>
             <div class="subcomment">
                 <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(638, "Disabled blocks are not compatible with the current block group type").'
@@ -2786,88 +2840,7 @@ function block_group_form($item)
         </div>'
     );
 
-    $layout->add_script('
-        $("#blocks_available_accordion").accordion({
-            collapsible: true
-        });
-                
-        $( "#block_group_selected_blocks .ui-accordion-content" ).sortable({
-            scroll: true,
-            helper: "clone",
-            placeholder: "block_group_block ui-state-highlight placeholder",
-            
-            stop: blocks_selection_update,            
-            receive: function(event, ui)
-            {
-                $(ui.helper).removeClass("ui-state-active");
-                $(ui.helper).removeAttr("style");
-            }
-        });
-        
-        $( "#block_group_selected_blocks .ui-accordion-content" ).on("mouseenter", ".block_group_block", function()
-        {
-            $(this).addClass("ui-state-active");
-        });
-        
-        $( "#block_group_selected_blocks .ui-accordion-content" ).on("mouseleave", ".block_group_block", function()
-        {
-            $(this).removeClass("ui-state-active");
-        });
-        
-        
-        $("#blocks_available_accordion .block_group_block").not(".ui-state-disabled").draggable(
-        {
-            appendTo: "#navigate-content-tabs",
-            connectToSortable: "#block_group_selected_blocks .ui-accordion-content",
-            revert: true,
-            helper: "clone",
-            cursor: "move",
-            opacity: 0.95,
-            start: function(event, ui)
-            {
-                $(ui.helper).addClass("ui-state-active");
-            },
-            stop: function(event, ui)
-            {
-                $( "#block_group_selected_blocks .ui-accordion-content" ).sortable("refreshPositions");
-                $( "#block_group_selected_blocks .ui-accordion-content" ).sortable("refresh");
-            }
-        });
-    
-        $( "#block_group_selected_blocks, #blocks_available_accordion" ).disableSelection();
-    
-    
-        function blocks_selection_update()
-        {
-            var blocks = [];
-            
-            $( "#block_group_selected_blocks .ui-accordion-content" ).sortable( "refresh" );
-            
-            $("#block_group_selected_blocks .block_group_block").each(function()
-            {
-                blocks.push({
-                    id: $(this).data("block-id"),
-                    type: $(this).data("block-type"),
-                    title: $(this).find("a[data-block-type-title]:first").data("block-type-title")
-                });
-            });
-
-            $("#blocks_group_selection").val(JSON.stringify(blocks));
-            
-            // only one instance of each block_group_block is allowed
-            $("#blocks_available_accordion").find("div.block_group_block[data-block-type=block_group_block]").show();            
-            $("#block_group_selected_blocks").find("div.block_group_block[data-block-type=block_group_block]").each(function()
-            {
-                $("#blocks_available_accordion").find("div.block_group_block[data-block-type=block_group_block][data-block-id="+$(this).data("block-id")+"]").hide();                                            
-            });
-        }
-
-        function navigate_blocks_selection_remove(el)
-        {
-            $(el).closest(".block_group_block").remove();
-            blocks_selection_update();
-        }
-        
+    $layout->add_script('                       
         function navigate_blocks_block_type_title(el)
         {
             var title = $(el).data("block-type-title");
@@ -2902,17 +2875,22 @@ function block_group_form($item)
                 ]
             });
         }
-
-        // update table result onload
-        blocks_selection_update();
     ');
 
-    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>');
+    //$navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>');
+
+    $layout->add_script('
+        $.getScript("lib/packages/blocks/blocks.js?r='.$current_version->revision.'", 
+            function()
+            {
+                block_groups_onload();
+            });
+    ');
 
     return $navibars->generate();
 }
 
-function block_group_block_options($block_group, $code, $status)
+function block_group_block_options($block_group, $code, $block_uid, $status)
 {
     global $layout;
     global $website;
@@ -2978,7 +2956,7 @@ function block_group_block_options($block_group, $code, $status)
         );
     }
 
-    $properties_values = property::load_properties($code, $block_group, 'block_group_block', $code);
+    $properties_values = property::load_properties($code, $block_group, 'block_group_block', $code, $block_uid);
 
     foreach($properties as $option)
     {
@@ -3011,6 +2989,127 @@ function block_group_block_options($block_group, $code, $status)
         }
 
         $navibars->add_tab_content(navigate_property_layout_field($property));
+    }
+
+    $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$navibars->generate().'</div>');
+    navigate_property_layout_scripts();
+    $layout->navigate_additional_scripts();
+    $layout->add_script('
+        $("html").css("background", "transparent");
+    ');
+
+    $out = $layout->generate();
+
+    return $out;
+}
+
+function block_group_extension_block_options($block_group, $block_extension, $block_id, $block_uid, $status)
+{
+    global $layout;
+    global $website;
+    global $theme;
+
+    if(empty($block_extension))
+        throw new Exception("Unknown extension: {".$block_extension."} for block with uid:".$block_uid);
+
+    $extension = new extension();
+    $extension->load($block_extension);
+
+    $block = block::extension_block($extension, $block_id);
+    $properties = $block->properties;
+
+    if(empty($properties))
+        return;
+
+    $layout = null;
+    $layout = new layout('navigate');
+
+    if($status!==null)
+    {
+        if($status)
+            $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+        else
+            $layout->navigate_notification(t(56, "Unexpected error"), true, true);
+    }
+
+    $navibars = new navibars();
+    $naviforms = new naviforms();
+
+    $navibars->title(t(437, 'Block').' ['.$block_extension.' / '.$block_id.']');
+
+    $layout->navigate_media_browser();	// we can use media browser in this function
+
+    $navibars->add_actions(
+        array(
+            '<a href="#" onclick="javascript: navigate_media_browser();">
+                <img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').
+            '</a>'
+        )
+    );
+
+    $navibars->add_actions(
+        array(
+            '<a href="#" onclick="navigate_tabform_submit(0);">
+                <img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').
+            '</a>'
+        )
+    );
+
+    $navibars->form();
+
+    $navibars->add_tab(t(200, 'Options'));
+
+    $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+
+    // show a language selector (only if it's a multi language website)
+    if(count($website->languages) > 1)
+    {
+        $website_languages_selector = $website->languages();
+        $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(63, 'Languages').'</label>',
+                $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+            )
+        );
+    }
+
+    $properties_values = property::load_properties(NULL, $block_id, "extension_block", $block_group, $block_uid);
+
+    foreach($properties as $option)
+    {
+        $property = new property();
+        $property_value = '';
+
+        foreach($properties_values as $pv)
+        {
+            if($pv->id == $option->id)
+                $property_value = $pv->value;
+        }
+
+        $property->load_from_object($option, $property_value, $extension);
+
+        if($property->type == 'tab')
+        {
+            $navibars->add_tab($property->name);
+            if(count($website->languages) > 1)
+            {
+                $website_languages_selector = $website->languages();
+                $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+                $navibars->add_tab_content_row(
+                    array(
+                        '<label>'.t(63, 'Languages').'</label>',
+                        $naviforms->buttonset('language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+                    )
+                );
+            }
+        }
+
+        $navibars->add_tab_content(
+            navigate_property_layout_field($property, $extension)
+        );
     }
 
     $layout->add_content('<div id="navigate-content" class="navigate-content ui-corner-all">'.$navibars->generate().'</div>');
