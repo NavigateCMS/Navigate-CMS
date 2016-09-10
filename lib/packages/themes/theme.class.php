@@ -370,6 +370,55 @@ class theme
                             $content_samples[] = json_decode(json_encode(array('title' => $name, 'content' => $html)));
                         }
                         break;
+                    
+                    case 'skeleton_grid':
+                        $stylesheets = explode(",", $ws->content_stylesheets());
+                        $translate = array(
+                            1   => "one",
+                            2   => "two",
+                            3   => "three",
+                            4   => "four",
+                            5   => "fix",
+                            6   => "six",
+                            7   => "seven",
+                            8   => "eight",
+                            9   => "nine",
+                            10   => "ten",
+                            11   => "eleven",
+                            12   => "twelve"
+                        );
+                        
+                        $html_pre = '<html><head>';
+                        foreach($stylesheets as $ss)
+                            $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
+                        $html_pre.= '</head><body><div id="navigate-theme-content-sample" style=" width: 99%; ">';
+
+                        foreach($grid_samples as $gs)
+                        {
+                            $cols = explode(',', $gs);
+
+                            $name = "Grid &nbsp; [ ";
+
+                            $html = $html_pre.'<div class="row">';
+                            foreach($cols as $col)
+                            {
+                                $name .= $col.str_pad("", $col, "-");
+                                $scol = $col * 2;
+                                // set the small column to the closest step: 6 or 12
+                                if($scol >= 8) $scol = 12;
+                                if($scol <= 7) $scol = 6;
+
+                                $html .= '<div class="'.$translate[$col].' columns">'.$text.'</div>';
+                            }
+                            $name .= " ]";
+                            $html .= '</div>'; // close row
+                            $html .= '<div><p>+</p></div>'; // add extra space under the row
+                            $html .= '</div>'; // close copy enabled content
+                            $html .= '</body></html>';
+
+                            $content_samples[] = json_decode(json_encode(array('title' => $name, 'content' => $html)));
+                        }
+                        break;
 
                     default:
                         $content_samples[] = $cs;
