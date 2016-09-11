@@ -658,15 +658,16 @@ class property
 		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id, $item_uid);
 
 		// load custom properties values
+        // check node_uid empty or NULL to mantain compatibility with Navigate CMS < 2.2
 		$DB->query('
 		    SELECT * FROM nv_properties_items
  			 WHERE element = '.protect($item_type).'
 			   AND node_id = '.protect($item_id).
-			   (empty($item_uid)? '' : ' AND node_uid = '.protect($item_uid)).'
+			   (empty($item_uid)? '' : ' AND ( node_uid = '.protect($item_uid).' OR node_uid = "" OR node_uid IS NULL )').'
 			   AND website = '.$website->id,
             'array'
         );
-			
+
 		$values = $DB->result();
         
 		if(!is_array($values))

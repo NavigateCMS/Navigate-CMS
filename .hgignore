@@ -18,3 +18,4 @@ lib/external/tinymce/server_name
 themes/ocean
 themes/ocean/*
 themes/*
+plugins/twitter_timeline

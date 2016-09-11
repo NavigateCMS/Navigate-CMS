@@ -387,7 +387,7 @@ class theme
                             11   => "eleven",
                             12   => "twelve"
                         );
-                        
+
                         $html_pre = '<html><head>';
                         foreach($stylesheets as $ss)
                             $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
@@ -643,6 +643,9 @@ class theme
         }
 
         // block_groups
+        // TODO: import block type section title
+        // TODO: import block group block properties
+        // TODO: import extension block properties
         $block_groups = array();
         if(file_exists($ptf.'/block_groups.var_export'))
             eval('$block_groups_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/block_groups.var_export')).';');
@@ -1026,15 +1029,19 @@ class theme
             {
                 foreach($tmp->blocks as $bgb)
                 {
-                    if(!is_numeric($bgb))
+                    if($bgb['type'] == 'block_group_block')
                     {
-                        $properties['block_group_block'][$a_block_groups[$i]][$bgb] = property::load_properties($bgb, $tmp->code, 'block_group_block', $bgb);
+                        $properties['block_group_block'][$a_block_groups[$i]][$bgb['uid']] = property::load_properties($bgb['id'], $tmp->code, 'block_group_block', $bgb['id'], $bgb['uid']);
+                    }
+                    else if($bgb['type'] == 'extension')
+                    {
+                        $properties['block_group_block'][$a_block_groups[$i]][$bgb['uid']] = property::load_properties(NULL, $bgb['id'], "extension_block", NULL, $bgb['uid']);
                     }
                 }
             }
 
             // note: maybe not all blocks in the group have been selected in the "blocks" tab
-            // here we only export the block group definition and the block group blocks properties, not adding anything else to export
+            // here we only export the block group definition, the block group blocks properties and the extension blocks properties, not adding anything else to export
         }
 
 

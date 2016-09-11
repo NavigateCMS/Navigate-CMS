@@ -285,7 +285,7 @@ class webdictionary
 			  FROM nv_webdictionary
 			 WHERE node_type = '.protect($node_type).'
 			   AND node_id = '.protect($node_id).
-            (empty($node_uid)? '' : ' AND node_uid = '.protect($node_uid))
+            (empty($node_uid)? '' : ' AND ( node_uid = '.protect($node_uid).' OR node_uid = "" OR node_uid IS NULL )')
 		);
 				
 		$data = $DB->result();
