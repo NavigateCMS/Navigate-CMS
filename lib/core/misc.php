@@ -657,7 +657,7 @@ function slug($input)
 
 function value_or_default($value, $default="")
 {
-	if(is_null($value) || $value=="")
+	if((is_null($value) || $value=="") && !is_numeric($value))
 		return $default;
 	else
 		return $value;
