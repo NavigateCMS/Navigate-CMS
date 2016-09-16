@@ -626,7 +626,7 @@ class website
         );
 
 		if(!$ok) throw new Exception($DB->get_last_error());
-		
+
 		if(!file_exists(NAVIGATE_PRIVATE.'/'.$this->id))
 		{
 			@mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0755, true);
@@ -637,7 +637,7 @@ class website
             @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
             @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
 		}
-		
+
 		// if allowed, send statistics to navigatecms.com
 		if(NAVIGATECMS_STATS)
 		{
@@ -664,8 +664,8 @@ class website
 				10,
 				'post'
             );
-		}		
-		
+		}
+
 		return true;
 	}
 
@@ -801,28 +801,35 @@ class website
         return $options;
     }
 
-    public function content_stylesheets($format='tinymce', $name='content', $merge=false)
+    public function content_stylesheets($format='tinymce', $name='content', $merge=false, $ws_theme=null)
     {
         global $theme;
 
-		$ws_theme = $theme;
-		if($this->theme != $theme->name)
-		{
-			$ws_theme = new theme();
-			$ws_theme->load($this->theme);
-		}
+        if(empty($ws_theme))
+        {
+		    $ws_theme = $theme;
+
+            if($this->theme != $theme->name)
+            {
+                $ws_theme = new theme();
+                $ws_theme->load($this->theme);
+            }
+        }
 
         // determine stylesheets for content (website > theme + default navigate cms)
         $content_css = array();
 
         $content_css[] = NAVIGATE_URL.'/css/tools/tinymce.defaults.css';
 
+        // deprecated field (will be removed at some time)
         if(!empty($this->tinymce_css))
             $content_css[] = $this->tinymce_css.'?bogus='.time();
 
         if(!empty($this->theme) && !empty($ws_theme))
         {
-            $style = @$this->theme_options->style;
+            $style = "";
+            if(isset($this->theme_options->style))
+                $style = @$this->theme_options->style;
 
 			if(empty($style))
 			{
@@ -888,10 +895,13 @@ class website
 
 	            $content_css = $content_html;
 	        }
+	        else if($format=='array')
+            {
+	            // do nothing, already an array
+            }
 	        else
 	            $content_css = implode(',', $content_css);
         }
-
 
         return $content_css;
     }
@@ -1398,6 +1408,7 @@ class website
 
         return $where;
     }
+
 }
 
 ?>

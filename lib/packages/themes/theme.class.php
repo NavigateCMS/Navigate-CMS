@@ -28,10 +28,8 @@ class theme
 	
 	public function load($name)
 	{
-		global $website;
-
 		$json = @file_get_contents(NAVIGATE_PATH.'/themes/'.$name.'/'.$name.'.theme');
-		
+
 		if(empty($json))
 			return false;
 			
@@ -59,7 +57,7 @@ class theme
 		$this->templates = (array)$theme->templates;
         $this->content_samples = (array)$theme->content_samples;
 
-		$this->content_samples_parse();
+		$this->content_samples_parse(null);
 
 		// in 2.0 templates->section "code" was replaced by "id"
 		// added some code to keep compatibility with existing themes
@@ -326,8 +324,8 @@ class theme
             '6,3,3', '3,6,3', '3,3,6'
         );
 
-        $text = 'Vis prodesset adolescens adipiscing te, usu mazim perfecto recteque at, assum putant erroribus mea in.
-        Vel facete imperdiet id, cum an libris luptatum perfecto, vel fabellas inciderint ut.';
+        $text = "Vis prodesset adolescens adipiscing te, usu mazim perfecto recteque at, assum putant erroribus mea in.\n";
+        $text.= "Vel facete imperdiet id, cum an libris luptatum perfecto, vel fabellas inciderint ut.";
 
         if(!empty($this->content_samples))
         {
@@ -338,12 +336,13 @@ class theme
                     case 'foundation_grid':
                     case 'bootstrap_grid':
                     case 'grid':
-						$stylesheets = explode(",", $ws->content_stylesheets());
+                        $stylesheets = $ws->content_stylesheets('array', null, false, $this);
+
                         $html_pre = '<html><head>';
                         foreach($stylesheets as $ss)
                             $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
                         $html_pre.= '</head><body><div id="navigate-theme-content-sample" style=" width: 99%; ">';
-						
+
                         foreach($grid_samples as $gs)
                         {
                             $cols = explode(',', $gs);
@@ -370,7 +369,7 @@ class theme
                             $content_samples[] = json_decode(json_encode(array('title' => $name, 'content' => $html)));
                         }
                         break;
-                    
+
                     case 'skeleton_grid':
                         $stylesheets = explode(",", $ws->content_stylesheets());
                         $translate = array(
@@ -635,6 +634,8 @@ class theme
             $block->trigger['trigger-content'] = theme::import_sample_parse_array($block->trigger['trigger-content'], $files, $ws);
             $block->trigger['trigger-html'] = theme::import_sample_parse_array($block->trigger['trigger-html'], $files, $ws);
 
+    // TODO: translate action-url
+
             $block->dictionary = theme::import_sample_parse_dictionary($block->dictionary, $files, $ws);
 
             $block->insert();
@@ -643,9 +644,6 @@ class theme
         }
 
         // block_groups
-        // TODO: import block type section title
-        // TODO: import block group block properties
-        // TODO: import extension block properties
         $block_groups = array();
         if(file_exists($ptf.'/block_groups.var_export'))
             eval('$block_groups_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/block_groups.var_export')).';');
@@ -809,6 +807,8 @@ class theme
             else if($el=='item')                $real = $items;
             else if($el=='block')               $real = $blocks;
             else if($el=='block_group_block')   $real = $block_groups;
+            else
+                continue; // unrecognized element type, ignore
 
             if(!is_array($properties[$el]))
                 continue;
@@ -818,102 +818,16 @@ class theme
                 if(empty($el_properties))
                     continue;
 
-                $el_properties_associative = array();
-
-                foreach($el_properties as $foo => $property)
+                $item_uid = "";
+                if($el=='block_group_block')
                 {
-                    if(!empty($property) && is_array($property))
-                        $property = $property[0];
-
-                    if(empty($property->value))
-                        continue;
-
-                    switch($property->type)
-                    {
-                        case 'file':
-                        case 'image':
-							if(in_array($property->multilanguage, array('true', '1')))
-							{
-								foreach($property->value as $plang => $pval)
-								{
-									if(isset($files[$pval]->id))
-										$property->value[$plang] = $files[$pval]->id;
-								}
-							}
-							else
-							{
-                                if(isset($files[$property->value]->id))
-                                    $property->value = $files[$property->value]->id;
-							}
-                            break;
-
-                        case 'category':
-							if(in_array($property->multilanguage, array('true', '1')))
-							{
-								foreach($property->value as $plang => $pval)
-								{
-									if(isset($structure[$pval]->id))
-										$property->value[$plang] = $structure[$pval]->id;
-								}
-							}
-							else
-							{
-	                            if(isset($structure[$property->value]->id))
-	                                $property->value = $structure[$property->value]->id;
-							}
-                            break;
-
-                        case 'categories':
-							if(in_array($property->multilanguage, array('true', '1')))
-							{
-								foreach($property->value as $plang => $pval)
-								{
-									$property_categories_old = explode(',', $pval);
-				                    $property_categories_new = array();
-				                    foreach($property_categories_old as $oc)
-				                        $property_categories_new[] = $structure[$oc]->id;
-				                    $property->value[$plang] = implode(',', $property_categories_new);
-								}
-							}
-							else
-							{
-	                            $property_categories_old = explode(',', $property->value);
-	                            $property_categories_new = array();
-	                            foreach($property_categories_old as $oc)
-	                                $property_categories_new[] = $structure[$oc]->id;
-	                            $property->value = implode(',', $property_categories_new);
-							}
-                            break;
-
-                        default:
-                    }
-
-                    $el_properties_associative[$property->id] = $property->value;
+                    // find each assigned block UID reference in this block group block
+                    foreach($el_properties as $item_uid => $el_properties_bg)
+                        theme::import_sample_properties($ws, $el_properties_bg, $el, $files, $structure, $items, $real, $el_id, $item_uid);
                 }
-
-                if(!empty($el_properties_associative))
+                else
                 {
-                    if($el=='block_group_block')
-                        $template = $real[$el_id]->code;
-                    else if($el=='block')
-                        $template = $real[$el_id]->type;
-                    else
-                    {
-                        $template = $real[$el_id]->template;
-
-						if(empty($template) && $el == 'item' && $real[$el_id]->embedding == 1)
-	                    {
-		                    // we have to get the template set in the category of the item
-							$template = $DB->query_single(
-								'template',
-								'nv_structure',
-								' id = '.protect($real[$el_id]->category).' AND 
-								  website = '.$website->id
-							);
-	                    }
-                    }
-                    
-                    property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative, $ws);
+                    theme::import_sample_properties($ws, $el_properties, $el, $files, $structure, $items, $real, $el_id, $item_uid);
                 }
             }
         }
@@ -1056,6 +970,24 @@ class theme
             list($tmp->trigger['trigger-content'], $files) = theme::export_sample_parse_array($tmp->trigger['trigger-content'], $files);
             list($tmp->trigger['trigger-html'], $files) = theme::export_sample_parse_array($tmp->trigger['trigger-html'], $files);
 
+            if(!empty($tmp->trigger['trigger-image']))
+                $files = array_merge($files, array_values($tmp->trigger['trigger-image']));
+
+            if(!empty($tmp->trigger['trigger-rollover']))
+                $files = array_merge($files, array_values($tmp->trigger['trigger-rollover']));
+
+            if(!empty($tmp->trigger['trigger-rollover-active']))
+                $files = array_merge($files, array_values($tmp->trigger['trigger-rollover-active']));
+
+            if(!empty($tmp->trigger['trigger-flash']))
+                $files = array_merge($files, array_values($tmp->trigger['trigger-flash']));
+
+            if(!empty($tmp->action['action-image']))
+                $files = array_merge($files, array_values($tmp->action['action-image']));
+
+            if(!empty($tmp->action['action-file']))
+                $files = array_merge($files, array_values($tmp->action['action-file']));
+
             // add files referenced in properties
             if(is_array($properties['block'][$tmp->id]))
             {
@@ -1066,7 +998,6 @@ class theme
 
             $blocks[$tmp->id] = $tmp;
         }
-
 
         // folder
         $folders = array();
@@ -1259,6 +1190,117 @@ class theme
         }
 
         return $dictionary;
+    }
+
+    public static function import_sample_properties($ws, $el_properties, $el, $files, $structure, $items, $real, $el_id, $item_uid)
+    {
+        global $DB;
+
+        $el_properties_associative = array();
+
+        foreach($el_properties as $foo => $property)
+        {
+            if(!empty($property) && is_array($property))
+                $property = $property[0];
+
+            if(empty($property->value))
+                continue;
+
+            // get the original ID for files and categories
+            // "translate" those IDs for the ones assigned on the new website
+            // for example:
+            // (old website) file id: 35    =>  (new website) file id: 3
+            switch($property->type)
+            {
+                case 'file':
+                case 'image':
+                    if(in_array($property->multilanguage, array('true', '1')))
+                    {
+                        foreach($property->value as $plang => $pval)
+                        {
+                            if(isset($files[$pval]->id))
+                                $property->value[$plang] = $files[$pval]->id;
+                        }
+                    }
+                    else
+                    {
+                        if(isset($files[$property->value]->id))
+                            $property->value = $files[$property->value]->id;
+                    }
+                    break;
+
+                case 'category':
+                    if(in_array($property->multilanguage, array('true', '1')))
+                    {
+                        foreach($property->value as $plang => $pval)
+                        {
+                            if(isset($structure[$pval]->id))
+                                $property->value[$plang] = $structure[$pval]->id;
+                        }
+                    }
+                    else
+                    {
+                        if(isset($structure[$property->value]->id))
+                            $property->value = $structure[$property->value]->id;
+                    }
+                    break;
+
+                case 'categories':
+                    if(in_array($property->multilanguage, array('true', '1')))
+                    {
+                        foreach($property->value as $plang => $pval)
+                        {
+                            $property_categories_old = explode(',', $pval);
+                            $property_categories_new = array();
+                            foreach($property_categories_old as $oc)
+                                $property_categories_new[] = $structure[$oc]->id;
+                            $property->value[$plang] = implode(',', $property_categories_new);
+                        }
+                    }
+                    else
+                    {
+                        $property_categories_old = explode(',', $property->value);
+                        $property_categories_new = array();
+                        foreach($property_categories_old as $oc)
+                            $property_categories_new[] = $structure[$oc]->id;
+                        $property->value = implode(',', $property_categories_new);
+                    }
+                    break;
+
+                default:
+            }
+
+            $el_properties_associative[$property->id] = $property->value;
+        }
+
+        if(!empty($el_properties_associative))
+        {
+            if($el=='block_group_block')
+            {
+                $template = $real[$el_id]->code;
+            }
+            else if($el=='block')
+            {
+                $template = $real[$el_id]->type;
+            }
+            else
+            {
+                $template = $real[$el_id]->template;
+
+                if(empty($template) && $el == 'item' && $real[$el_id]->embedding == 1)
+                {
+                    // we have to get the template set in the category of the item
+                    $template = $DB->query_single(
+                        'template',
+                        'nv_structure',
+                        ' id = '.protect($real[$el_id]->category).' AND 
+								  website = '.$ws->id
+                    );
+                }
+            }
+
+            property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative, $ws, $item_uid);
+        }
     }
 
     public static function latest_available()

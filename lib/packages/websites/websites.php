@@ -420,33 +420,20 @@ function websites_form($item)
         $layout->add_script('
             function navigate_reset_statistics()
             {
-                var confirmation = "<div>'.t(430, 'Do you really want to remove all statistics of this website?').'</div>";
-                $(confirmation).dialog({
-                        resizable: true,
-                        height: 150,
-                        width: 300,
-                        modal: true,
-                        title: "'.t(59, 'Confirmation').'",
-                        buttons: {
-                            "'.t(190, 'Ok').'": function()
+                navigate_confirmation_dialog(
+                    function()
+                    {
+                        $.post(
+                            "?fid=websites&act=reset_statistics&website='.$item->id.'",
+                            {},
+                            function(data)
                             {
-                                $(this).dialog("close");
-
-                                $.post(
-                                    "?fid=websites&act=reset_statistics&website='.$item->id.'",
-                                    {},
-                                    function(data)
-                                    {
-                                        $("a[action=\'navigate_reset_statistics\']").parent().fadeOut();
-                                    }
-                                );
-                            },
-                            "'.t(58, 'Cancel').'": function()
-                            {
-                                $(this).dialog("close");
+                                $("a[action=\'navigate_reset_statistics\']").parent().fadeOut();
                             }
-                        }
-                });
+                        );
+                    }, 
+                    "<div>'.t(430, 'Do you really want to remove all statistics of this website?').'</div>" 
+                );
             }
         ');
 
@@ -525,7 +512,6 @@ function websites_form($item)
 	            }
 	        ');
 
-
 		    $extra_actions[] = '<a href="#" action="navigate_remove_website_data" onclick="javascript: navigate_remove_website_data();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cross.png"> '.t(208, 'Remove all content').'</a>';
 		    $layout->add_script('
             function navigate_remove_website_data()
@@ -537,7 +523,7 @@ function websites_form($item)
 
                 $(confirmation).dialog({
                         resizable: true,
-                        height: 200,
+                        height: 250,
                         width: 400,
                         modal: true,
                         title: "'.t(59, 'Confirmation').'",

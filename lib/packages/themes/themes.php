@@ -186,15 +186,25 @@ function run()
             {
                 $ntheme = new theme();
                 $ntheme->load($_REQUEST['theme']);
+
                 $website->theme = $ntheme->name;
+
                 if(!empty($ntheme->styles))
                 {
                     $nst = get_object_vars($ntheme->styles);
                     $nst = array_keys($nst);
+
+                    if(!isset($website->theme_options) || empty($website->theme_options))
+                        $website->theme_options = json_decode('{"style": ""}');
                     $website->theme_options->style = array_shift($nst);
                 }
                 else
-                    $website->theme_options->style = "";
+                {
+                    if(!isset($website->theme_options) || empty($website->theme_options))
+                        $website->theme_options = json_decode('{"style": ""}');
+                    else
+                        $website->theme_options->style = "";
+                }
 
                 try
                 {
@@ -244,7 +254,7 @@ function themes_grid($list)
         )
     );
 
-	$grid = new navigrid('themes');	
+	$grid = new navigrid('themes');
 
 	$grid->set_header('
         <div class="navibrowse-path ui-corner-all">
@@ -282,8 +292,7 @@ function themes_grid($list)
         if(!empty($website->theme))
         {
             $theme = new theme();
-            $theme->load($website->theme);
-
+            $theme->load($website->theme, true);
             $update_ver = $_SESSION['themes_updates'][$theme->name];
 
             if(version_compare($update_ver, $theme->version, '<='))
