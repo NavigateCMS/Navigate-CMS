@@ -2293,6 +2293,7 @@ class file
 
 		return $tmp;
 	}
+
 }
 
 ?>

@@ -387,11 +387,14 @@ class item
 		global $events;
 		global $user;
 
-		if($user->permission("items.edit") == 'false' && $this->author != $user->id)
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        if(!is_null($user))
+        {
+            if($user->permission("items.edit") == 'false' && $this->author != $user->id)
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
-		if( !structure::category_allowed($this->category) )
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            if( !structure::category_allowed($this->category) )
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        }
 
 		$this->date_modified = core_time();
 
