@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.1');
+	define('APP_VERSION', '2.1.2');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -1468,6 +1468,7 @@ function process()
 				$user->timezone = 'UTC';
 				$user->date_format = 'Y-m-d H:i';
                 $user->decimal_separator = ',';
+                $user->thousands_separator = '';
                 $user->attempts = 0;
                 $user->cookie_hash = '';
                 $user->activation_key = '';
@@ -1723,5 +1724,6 @@ function navigate_install_load_language()
 	
 	return $lang;
 }
+
 //	$DB->disconnect();
 ?>
