@@ -864,12 +864,18 @@ class file
 			// if needed, calculate width or height with aspect ratio
 			if(empty($width))
 			{
-				$width = round(($height / $size['height']) * $size['width']);
+			    if(!empty($size['height']))
+				    $width = round(($height / $size['height']) * $size['width']);
+                else
+                    $width = NULL;
 				return file::thumbnail($item, $width, $height, $border, $ftname);
 			}
 			else if(empty($height))
 			{
-				$height = round(($width / $size['width']) * $size['height']);
+			    if(!empty($size['width']))
+				    $height = round(($width / $size['width']) * $size['height']);
+                else
+                    $height = NULL;
 				return file::thumbnail($item, $width, $height, $border, $ftname);
 			}
 
