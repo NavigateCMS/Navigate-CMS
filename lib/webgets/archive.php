@@ -21,15 +21,17 @@ function nvweb_archive($vars=array())
 			$categories = array($current['id']);
 		else
 			$categories = array($current['object']->category);
+
+        $categories = nvweb_menu_get_children($categories);
 	}
 	else if(!empty($vars['categories']))
 	{
 		$categories = explode(',', $vars['categories']);
 		$categories = array_filter($categories); // remove empty elements
-	}
 
-	if($vars['children']=='true')
-		$categories = nvweb_menu_get_children($categories);
+        if($vars['children']=='true')
+            $categories = nvweb_menu_get_children($categories);
+	}
 
     if($vars['search_page_type']=='theme')
     {
@@ -132,7 +134,7 @@ function nvweb_archive_render($type, $dataset, $archive_url, $categories)
         }
 
         nvweb_after_body('js', '
-            jQuery(".nv-year").bind("click", function() { $(this).next().toggle() });
+            jQuery(".nv-year").on("click", function() { $(this).next().toggle() });
         ');
     }
     else if($type=='month')
