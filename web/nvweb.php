@@ -84,7 +84,18 @@ try
 			$session['lang'] = nvweb_country_language();
 	}
 
-	if(isset($_REQUEST['lang']))
+	$force_language = "";
+	if(strpos($url, 'lang='))
+	{
+		$params = parse_url($url, PHP_URL_QUERY);
+		parse_str($params, $params);
+		if(isset($params['lang']))
+			$force_language = $params['lang'];
+	}
+
+	if(!empty($force_language))
+		$session['lang'] = $force_language;
+	else if(isset($_REQUEST['lang']))
 		$session['lang'] = $_REQUEST['lang'];
 
     // load dictionary, extensions and bind events (as soon as possible)
