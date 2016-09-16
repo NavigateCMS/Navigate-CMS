@@ -521,7 +521,7 @@ function nvweb_blocks_render_action($action, $trigger_html, $lang, $return_url=f
             break;
 
         case 'image':
-            $url = NVWEB_ABSOLUTE.'/object?type=image&id='.$action['action-file'][$lang];
+            $url = NVWEB_ABSOLUTE.'/object?type=image&id='.$action['action-image'][$lang];
             $action = '<a href="'.$url.'">'.$trigger_html.'</a>';
             break;
 
