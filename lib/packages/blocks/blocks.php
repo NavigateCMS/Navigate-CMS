@@ -2611,7 +2611,7 @@ function block_group_form($item)
                 $blocks_selected[] = '
                     <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_type" data-block-uid="'.$item->blocks[$p]['uid'].'">
                         <div class="actions">
-                            <a href="#" data-block-group="'.$block['block_group'].'" data-block-type-code="'.$block['code'].'" data-block-type-title="'.$item->blocks[$p]['title'].'" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /></a>
+                            <a href="#" data-block-group="'.$block['block_group'].'" data-block-type-code="'.$block['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$item->blocks[$p]['title'].'</span></a>
                             <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
                         </div>
                         <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
@@ -2768,7 +2768,7 @@ function block_group_form($item)
 
                             $html = '<div class="'.$classes.'" data-block-id="'.$b['id'].'" data-block-type="block_type">'.
                                 '<div class="actions">
-                                    <a href="#" data-block-group="'.$b['block_group'].'" data-block-type-code="'.$b['code'].'" data-block-type-title="'.$b['block_type_title'].'" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /></a>
+                                    <a href="#" data-block-group="'.$b['block_group'].'" data-block-type-code="'.$b['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$b['block_type_title'].'</span></a>
                                     <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
                                 </div>'.
                                 '<div class="title">'.$b['title'].'</div>'.
@@ -2840,11 +2840,48 @@ function block_group_form($item)
         </div>'
     );
 
+
+    $block_group_block_types_form = "";
+    foreach($website->languages_list as $lang)
+    {
+        $block_group_block_types_form .= ' 
+            <div data-lang="'.$lang.'" class="navigate-form-row">
+                <label style="width: 48px; "><span title="'.language::name_by_code($lang).'" class="navigate-form-row-language-info"><img align="absmiddle" src="img/icons/silk/comment.png">'.$lang.'</span></label>
+                <input type="text" style=" width: 340px;" name="block_type_title_value['.$lang.']" value="">
+            </div>
+        ';
+    }
+    $navibars->add_tab_content('
+        <div id="navigate-block-groups-block-type-title" class="hidden">
+            '.$block_group_block_types_form.'
+            <div class="subcomment" style="margin-left: 0;"><img src="img/icons/silk/information.png" /> '.t(641, "It will only be shown if the template supports it").'</div>
+        </div>
+    ');
+
     $layout->add_script('                       
         function navigate_blocks_block_type_title(el)
         {
-            var title = $(el).data("block-type-title");
-            $(\'<div class="navigate-form-row"><input type="text" name="block_type_title_value" value="\'+title+\'" /><div class="subcomment" style="margin-left: 0;"><img src="img/icons/silk/information.png" /> '.t(641, "It will only be shown if the template supports it").'</div></div>\').dialog({
+            var title = $(el).find("span").text();
+            
+            try 
+            {
+               title = jQuery.parseJSON(title);
+            } 
+            catch(e) 
+            {
+                // not json; do nothing                    
+            }                    
+            
+            $("#navigate-block-groups-block-type-title").find("input[type=text]").each(function()
+            {                     
+                if(typeof(title)=="object")
+                    $(this).val(title[$(this).parent().data("lang")]);
+                else
+                    $(this).val(title);
+            });
+            
+            $("#navigate-block-groups-block-type-title").removeClass("hidden");
+            $("#navigate-block-groups-block-type-title").dialog({
                 title: navigate_t(67, "Title"),
                 modal: true,
                 width: 428,
@@ -2856,9 +2893,20 @@ function block_group_form($item)
                         },
                         click: function()
                         {
-                            var new_value = $(this).find(\'input[name="block_type_title_value"]\').val();
-                            $(el).data("block-type-title", new_value);
+                            var new_value = {};
+                            
+                            $("#navigate-block-groups-block-type-title")
+                                .find(\'input[type="text"]\').each(
+                                    function()
+                                    {
+                                        new_value[$(this).parent().data("lang")] = $(this).val(); 
+                                    }
+                                );
+                            
+                            $(el).find("span").text(JSON.stringify(new_value));
+                                                        
                             blocks_selection_update();
+                            
                             $( this ).dialog( "close" );
                         }
                     },
