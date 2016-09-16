@@ -1089,7 +1089,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
             switch($tag['attributes']['value'])
             {
                 case 'title':
-                    $out = $item->title;
+                    $title_obj = json_decode($item->title, true);
+                    if(empty($title_obj)) // not json
+                        $out = $item->title;
+                    else
+                        $out = $title_obj[$current['lang']];
                     break;
             }
             break;
