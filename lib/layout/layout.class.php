@@ -1362,12 +1362,13 @@ class layout
 				}, 100);
 			}
 		
-		    $("#nv_link_dialog_category .tree_ul").jstree({
+		    $("#nv_link_dialog_category .tree_ul").jstree(
+		    {
                 plugins: ["changed", "types"],
                 "types" : 
                 {
-                    "default":  {   "icon": "img/icons/silk/folder.png"    },
-                    "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+                    "default":  {   "icon": "img/icons/silk/folder.png"         },
+                    "leaf":     {   "icon": "img/icons/silk/page_white.png"     }
                 },
                 "core" : 
                 {

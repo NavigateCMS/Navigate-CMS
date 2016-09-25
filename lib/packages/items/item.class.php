@@ -109,7 +109,7 @@ class item
 
 		$this->association		= $_REQUEST['association'][0];
 		$this->category			= intval($_REQUEST['category']);
-		$this->embedding		= ($_REQUEST['embedding'][0]=='1')? '1' : '0';
+		$this->embedding		= ($_REQUEST['embedding'][0]!='1' || $this->association=='free')? '0' : '1';
 		$this->template			= ($this->embedding=='0' || $this->association=='free')? $_REQUEST['template'] : '';
 		$this->author			= intval($_REQUEST['item-author']);
 		
