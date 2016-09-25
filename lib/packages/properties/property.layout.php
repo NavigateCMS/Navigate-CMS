@@ -18,7 +18,12 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
 	// generate the form
 	for($p = 0; $p < count($properties); $p++)
 	{
-		if($properties[$p]->enabled == '0') continue;
+		if( $properties[$p]->enabled === '0' ||
+            $properties[$p]->enabled === 0 ||
+            $properties[$p]->enabled === "false" ||
+            $properties[$p]->enabled === false)
+		    continue;
+
 		$property_rows[] = navigate_property_layout_field($properties[$p]);
 	}
 
@@ -130,7 +135,6 @@ function navigate_property_layout_field($property, $object="", $website_id="")
         }
     }
 
-	
 	switch($property->type)
 	{
 		case 'value':
