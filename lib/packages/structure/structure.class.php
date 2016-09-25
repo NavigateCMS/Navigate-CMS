@@ -251,7 +251,7 @@ class structure
 			array(
 				":id" => $this->id,
 				":website" => $this->website,
-	            ":parent" => $this->parent,
+	            ":parent" => value_or_default($this->parent, 0),
 	            ":position" => $this->position,
 	            ":access" => $this->access,
 	            ":groups" => $groups,
@@ -664,7 +664,6 @@ class structure
 
 		return $tmp;
 	}
-
 }
 
 ?>

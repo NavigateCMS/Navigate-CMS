@@ -1567,7 +1567,6 @@ function blocks_form($item)
 	        break;
   	}
 
-
     if(!empty($item->type))
     {
         // we need to know if the block is defined in the active theme or in the database (numeric ID)
@@ -1778,14 +1777,16 @@ function blocks_form($item)
 		$table->addHeaderColumn('ID', 50);			
 		$table->addHeaderColumn(t(67, 'Title'), 350);
         $table->addHeaderColumn('<div style=" text-align: center; ">'.t(394, 'Fixed').'</div>', 50);
-		
+
 		foreach($blocks as $block)
 		{
 			$table->addRow($block->id, array(
 				array('content' => $block->id, 'align' => 'left'),
 				array('content' => $block->title, 'align' => 'left'),
-                array('content' => '<input type="checkbox" name="blocks-order-fixed['.$block->id.']" id="blocks-order-fixed['.$block->id.']" value="1" '.(($block->fixed=='1')? 'checked="checked"' : '').' />
-                                    <label for="blocks-order-fixed['.$block->id.']" />',
+                array('content' => '<span class="checkbox-wrapper">
+                                        <input type="checkbox" name="blocks-order-fixed['.$block->id.']" id="blocks-order-fixed['.$block->id.']" value="1" '.(($block->fixed=='1')? 'checked="checked"' : '').' />
+                                        <label for="blocks-order-fixed['.$block->id.']" />
+                                    </span>',
 	                  'align' => 'center'
                 )
 			));

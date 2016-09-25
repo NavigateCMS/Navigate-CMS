@@ -22,7 +22,7 @@ class website
     public $share_files_media_browser;
 	public $additional_scripts;
 	public $permission;	//  0 => public | 1 => private | 2 => only navigate users
-	public $block_types;
+	public $block_types;    // deprecated, will be removed in NV 3.0!!!
 	public $homepage;
 	public $default_timezone;
     public $aliases;
@@ -405,13 +405,13 @@ class website
 		    INSERT INTO nv_websites
             (	id, name, protocol, subdomain, domain, folder, redirect_to, 
             	wrong_path_action, wrong_path_redirect, empty_path_action,
-                languages, languages_published, word_separator,
-                aliases, date_format, tinymce_css, resize_uploaded_images,
+                languages, languages_published, aliases,
+                word_separator, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
                 additional_scripts, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
                 homepage, default_timezone, metatag_description, metatag_keywords, metatags,
-                favicon, theme, theme_options
+                favicon, theme, theme_options, block_types
             )
             VALUES
             ( 0,
@@ -451,7 +451,8 @@ class website
               :metatags,
               :favicon,
               :theme,
-              :theme_options
+              :theme_options,
+              :block_types
             )',
 			array(
 				":name" => value_or_default($this->name, ""),
@@ -465,14 +466,14 @@ class website
 				":empty_path_action" => value_or_default($this->empty_path_action, 'homepage_redirect'),
 				":languages" => (is_array($this->languages)? serialize($this->languages) : $this->languages),
 				":languages_published" => (is_array($this->languages_published)? serialize($this->languages_published) : $this->languages_published),
-				":aliases" => json_encode($this->aliases),
+                ":aliases" => json_encode($this->aliases),
                 ":word_separator" => value_or_default($this->word_separator, "-"),
-				":date_format" => $this->date_format,
+                ":date_format" => $this->date_format,
 				":tinymce_css" => value_or_default($this->tinymce_css, ''),
-				":resize_uploaded_images" => value_or_default($this->resize_uploaded_images, ''),
-				":comments_enabled_for" => value_or_default($this->comments_enabled_for, ''),
+				":resize_uploaded_images" => value_or_default($this->resize_uploaded_images, 0),
+				":comments_enabled_for" => value_or_default($this->comments_enabled_for, 0),
 				":comments_default_moderator" => value_or_default($this->comments_default_moderator, ''),
-				":share_files_media_browser" => value_or_default($this->share_files_media_browser, ''),
+				":share_files_media_browser" => value_or_default($this->share_files_media_browser, 0),
 				":additional_scripts" => value_or_default($this->additional_scripts, ''),
 				":permission" => $this->permission,
 				":mail_mailer" => value_or_default($this->mail_mailer, ''),
@@ -490,7 +491,8 @@ class website
 				":metatags" => json_encode($this->metatags),
 				":favicon" => value_or_default($this->favicon, 0),
 				":theme" => value_or_default($this->theme, ''),
-				":theme_options" => json_encode($this->theme_options)
+				":theme_options" => json_encode($this->theme_options),
+                ":block_types" => ""
 			)
         );
 		
@@ -838,7 +840,7 @@ class website
 				$style = $theme_styles[0]->name;
 			}
 
-	        if($name=='content_selectable' && !isset($ws_theme->styles->$style->$name))
+	        if(($name=='content_selectable' && !isset($ws_theme->styles->$style->$name)) || empty($name))
 		        $name = 'content';
 
             if(!empty($style) && !empty($ws_theme->styles->$style->$name))

@@ -336,7 +336,7 @@ class theme
                     case 'foundation_grid':
                     case 'bootstrap_grid':
                     case 'grid':
-                        $stylesheets = $ws->content_stylesheets('array', null, false, $this);
+                        $stylesheets = $ws->content_stylesheets('array', "content", false, $this);
 
                         $html_pre = '<html><head>';
                         foreach($stylesheets as $ss)

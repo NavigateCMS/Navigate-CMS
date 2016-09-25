@@ -996,7 +996,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         }
                     }
                     else
-                    $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, 'content', $item, $tag['attributes']);
+                        $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, 'content', $item, $tag['attributes']);
                     break;
 
                 // not for extension_blocks
