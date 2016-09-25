@@ -19,3 +19,4 @@ themes/ocean
 themes/ocean/*
 themes/*
 plugins/twitter_timeline
+cache/*

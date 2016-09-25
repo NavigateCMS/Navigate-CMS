@@ -1175,7 +1175,6 @@ ul.tinymce_nv_link_ajax_selector
 }
 
 
-
 /* CHECKBOX STYLING */
 /* Thanks to Geoffrey Crofte http://codepen.io/CreativeJuiz/ */
 
@@ -1185,7 +1184,7 @@ ul.tinymce_nv_link_ajax_selector
 	vertical-align: middle;
 	display: inline-block;
 	float: none;
-	margin-top: -24px;
+	margin-top: 0px; /* was -24px */
 	padding-left: 0;
 }
 
