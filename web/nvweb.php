@@ -145,7 +145,7 @@ try
     if(!empty($webuser->id))
     {
         $webuser->lastseen = core_time();
-        $webuser->save();
+        $webuser->save(false); // don't trigger the webuser_modified event
     }
 
     // check if the webuser wants to sign out

@@ -178,10 +178,10 @@ class webuser
 	}
 	
 	
-	public function save()
+	public function save($trigger_webuser_modified=true)
 	{
 		if(!empty($this->id))
-		  return $this->update();
+		  return $this->update($trigger_webuser_modified);
 		else
 		  return $this->insert();
 	}
@@ -298,7 +298,7 @@ class webuser
 		return true;
 	}	
 	
-	public function update()
+	public function update($trigger_webuser_modified=true)
 	{
 		global $DB;
         global $events;
@@ -379,13 +379,16 @@ class webuser
 
 		if(!$ok) throw new Exception($DB->get_last_error());
 
-        $events->trigger(
-            'webuser',
-            'save',
-            array(
-                'webuser' => $this
-            )
-        );
+        if($trigger_webuser_modified)
+        {
+            $events->trigger(
+                'webuser',
+                'save',
+                array(
+                    'webuser' => $this
+                )
+            );
+        }
 
 		return true;
 	}
