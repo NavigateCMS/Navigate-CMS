@@ -192,6 +192,9 @@ class layout
 		$this->add_script_tag('lib/external/mediaelement/mediaelement-and-player.js');
 		$this->add_style_tag('lib/external/mediaelement/mediaelementplayer.css');
 
+        $this->add_style_tag('lib/external/leaflet/leaflet.css');
+        $this->add_script_tag('lib/external/leaflet/leaflet.js');
+
 		$this->add_script_tag('lib/external/colorpicker/jquery.colorpicker.js');
 		$this->add_script_tag('lib/external/colorpicker/parts/jquery.ui.colorpicker-memory.narrow.js');
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-en.js');
