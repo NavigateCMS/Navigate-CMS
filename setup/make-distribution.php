@@ -1,5 +1,5 @@
 <?php
-/* Navigate MAKE DISTRIBUTION v2.0 */
+/* Navigate MAKE DISTRIBUTION v2.1.2 */
 /* 		created by: Naviwebs   http://www.naviwebs.com	*/
 /* creates a distribution package for Navigate */
 /* Requirements: installed and functional copy of Navigate */
@@ -121,7 +121,7 @@ file_put_contents('distribution/navigate.sql', $sql);
 
 /*	5/ Pack folders and files in "package.zip"
 		include: (root)
-				 cache
+				 cache (ignore the contents)
 				 cfg (without the valid globals.php),
 				 css
 				 docs
@@ -156,6 +156,7 @@ foreach($navigate_files as $file)
 	if(substr($file, 0, strlen('updates/'))=='updates/') continue;
     if(substr($file, 0, strlen('private/'))=='private/') continue;
     if(substr($file, 0, strlen('themes/'))=='themes/') continue;
+    if(substr($file, 0, strlen('cache/'))=='cache/') continue;
     // from 1.9.1, do not include ANY private file
 
     /* all files under plugins/ are safe to be added
@@ -230,6 +231,6 @@ function rrmdir($dir)
      reset($objects);
      rmdir($dir);
    }
-} 
+}
 
 ?>

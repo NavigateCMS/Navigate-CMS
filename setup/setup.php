@@ -419,10 +419,7 @@ function navigate_install_requirements()
 function navigate_install_configuration()
 {
 	global $lang;
-	/*
-	if(!file_exists('navigate/cfg/globals.setup.php'))
-		die('Setup files missing: cfg/globals.setup.php');
-	*/
+
 	$error = false;
 
 	$navigate_parent_folder = str_replace('\\', '/', dirname(realpath(__FILE__)));
@@ -464,7 +461,10 @@ function navigate_install_configuration()
         'ADMIN_EMAIL'	    => (empty($_REQUEST['ADMIN_EMAIL']))? '' : $_REQUEST['ADMIN_EMAIL']
 	);
 
-	if(!empty($_POST))
+    if(!file_exists('.'.$defaults['NAVIGATE_FOLDER'].'/cfg/globals.setup.php'))
+        die('Setup files missing: cfg/globals.setup.php');
+
+    if(!empty($_POST))
 	{
 		// create a configuration file		
 		$globals = file_get_contents('.'.$defaults['NAVIGATE_FOLDER'].'/cfg/globals.setup.php');
@@ -545,7 +545,7 @@ function navigate_install_configuration()
 	}
 
 	if($error)
-		die($lang['unexpected_error'].' (cfg/globals.php).');
+		die($lang['unexpected_error'].' could not create file (cfg/globals.php).');
 		
 	?>
     <h2>
