@@ -29,9 +29,12 @@ function nvweb_conditional($vars=array())
     if($current['type']=='item')
     {
         $item->load($current['object']->id);
+        $item_type = 'element';
     }
     else
     {
+        $item_type = 'structure';
+
         if(isset($vars['scope']) && $vars['scope'] == 'element')
         {
             // the current path belongs to a structure category, but the template is asking for an element value,
@@ -120,10 +123,12 @@ function nvweb_conditional($vars=array())
             $i = 0;
 
             $item->load($rs[$i]->id);
+            $item_type = 'element';
         }
         else if(!isset($vars['scope']) || $vars['scope'] == 'structure')
         {
             $item = $current['object'];
+            $item_type = 'structure';
         }
     }
 
@@ -158,6 +163,19 @@ function nvweb_conditional($vars=array())
                 // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
                 // element
                 $property_value = $item->property($property_name);
+
+                if(!$item->property_exists($property_name) && $item_type == 'structure')
+                {
+                    // get the first embedded element and check find the property
+                    $ci = nvweb_content_items(array($item->id), true, 1, true, 'priority');
+
+                    $item = new item();
+                    if(isset($ci[0]))
+                    {
+                        $item->load($ci[0]->id);
+                        $property_value = $item->property($property_name);
+                    }
+                }
 
                 if(!$item->property_exists($property_name))
                 {
