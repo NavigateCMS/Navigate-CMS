@@ -283,7 +283,7 @@ class layout
 		}
 		else
 		{
-            $javascripts = glob('cache/scripts.*');
+            $javascripts = glob('cache/scripts.min.*');
 			if(empty($javascripts))
 			{			
 				$tmp = '';
@@ -320,8 +320,8 @@ class layout
 				if(file_exists('cache/scripts.min.jgz'))
 				{
 					// cleaning
-					@unlink('cache/scripts.js');
-					@unlink('cache/scripts.min.js');
+					// @unlink('cache/scripts.js'); don't remove this file, it is used as a fallback when the server cannot serve jgz files
+					// @unlink('cache/scripts.min.js');
                     @rename('cache/scripts.min.jgz', 'cache/scripts.'.time().'.min.jgz');
 				}
 			}
@@ -336,9 +336,15 @@ class layout
                 @unlink($javascripts[$js]);
 
             if(!empty($javascript))
+            {
                 $out[] = '<script language="javascript" src="'.$javascript.'?r='.$current_version->revision.'&_='.filemtime($javascript).'" type="text/javascript"></script>';
+                // fallback when the compressed scripts version could not be loaded by the browser (incorrect .jgz client/server gzip encoding)
+                $out[] = '<script language="javascript" type="text/javascript">if(typeof(navigate_window_resize)=="undefined"){$.ajax({async: false, url: "'.NAVIGATE_URL.'/cache/scripts.js?r='.$current_version->revision.'&_='.filemtime('cache/scripts.js').'", dataType: "script"});}</script>';
+            }
             else
+            {
                 $out[] = '<script language="javascript" src="cache/scripts.js?r='.$current_version->revision.'&_='.filemtime('cache/scripts.js').'" type="text/javascript"></script>';
+            }
 		}
 		
 		return implode("\n", $out);
