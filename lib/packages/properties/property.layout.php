@@ -383,8 +383,8 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			$field[] = $naviforms->textfield("property-".$property->id.'-longitude', $longitude, '182px');
 			$field[] = '<img src="img/icons/silk/map_magnify.png" align="absmiddle" hspace="3px" id="property-'.$property->id.'-show" />';
 			$field[] = '<div id="property-'.$property->id.'-map-container" style=" display: none; ">';
-			$field[] = '	<div class="navigate-form-row" id="property-'.$property->id.'-search" style=" width: 320px; height: 24px; margin-top: 5px; margin-left: 85px; position: absolute; z-index: 1000; opacity: 0.9; ">';
-			$field[] = '		<input type="text" name="property-'.$property->id.'-search-text" style=" width: 280px; " /> ';
+			$field[] = '	<div class="navigate-form-row" id="property-'.$property->id.'-search" style=" width: 278px; height: 24px; margin-top: 9px; margin-left: 40px; position: absolute; z-index: 1000; opacity: 0.95; ">';
+			$field[] = '		<input type="text" name="property-'.$property->id.'-search-text" style=" width: 240px; " /> ';
 			$field[] = '		<img class="ui-widget ui-button ui-state-default ui-corner-all" sprite="false" style=" cursor: pointer; padding: 3px; " src="'.NAVIGATE_URL.'/img/icons/silk/zoom.png" align="right" />';			
 			$field[] = '	</div>';
 			$field[] = '	<div id="property-'.$property->id.'-map" style=" width: 400px; height: 200px; "></div>';
@@ -401,6 +401,21 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			$layout->add_script('
 				var property_'.$property->id.'_lmap = null;
 			    var marker = null;
+			    
+			    // initialize leaflet map
+                property_'.$property->id.'_lmap = L.map(
+                    "property-'.$property->id.'-map",
+                    {
+                        doubleClickZoom: false
+                    }
+                );					    
+                
+                // create the tile layer with correct attribution
+                var osmUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+                var osmAttrib = "Map data © <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors";
+                var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 19, attribution: osmAttrib });
+                
+                property_'.$property->id.'_lmap.addLayer(osm);
 							
 				$("#property-'.$property->id.'-search input").on("keyup", function(e)
 				{	if(e.keyCode == 13)	property'.$property->id.'search();	});
@@ -412,24 +427,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 					var myLatlng = new L.LatLng(
 					    $("#property-'.$property->id.'-latitude").val(),
 					    $("#property-'.$property->id.'-longitude").val()
-					);
-									
-					// initialize leaflet map
-					property_'.$property->id.'_lmap = L.map(
-					    "property-'.$property->id.'-map",
-					    {
-					        center: myLatlng,
-					        zoom: 17,
-					        doubleClickZoom: false
-					    }
-                    );					    
-                    
-                    // create the tile layer with correct attribution
-	                var osmUrl = "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-	                var osmAttrib = "Map data © <a href=\"http://openstreetmap.org\">OpenStreetMap</a> contributors";
-	                var osm = new L.TileLayer(osmUrl, {minZoom: 0, maxZoom: 19, attribution: osmAttrib });
-	                
-	                property_'.$property->id.'_lmap.addLayer(osm);
+					);																
+												
+                    property_'.$property->id.'_lmap.setView(myLatlng, 17);
 	                
 	                marker = L.marker(myLatlng).addTo(property_'.$property->id.'_lmap);
 	                
@@ -448,12 +448,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 						height: 400,
 						title: "'.t(300, 'Map').': '.t(301, 'Double click a place to set the coordinates').'",
 						resize: property'.$property->id.'resize,
-						close: function()
-						{
-                            property_'.$property->id.'_lmap.remove();				    
-						},
 						open: function()
 						{
+						    $(this).css("padding", 0);
 						    property_'.$property->id.'_lmap.invalidateSize();
                         }
                     }).dialogExtend(
