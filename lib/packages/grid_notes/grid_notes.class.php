@@ -42,7 +42,7 @@ class grid_notes
         );
 
 
-        // TO DO: purge old grid notes when current background is empty or transparent
+        // TODO: purge old grid notes when current background is empty or transparent
         //          =>  remove all empty notes
         // NOT REALLY NEEDED, just save the item grid notes history, let the user remove at will
 
@@ -97,7 +97,7 @@ class grid_notes
             $notes = array();
             foreach($grid_notes as $gnote)
             {
-                if($gnote->item_id==$dataset[$i][$field_id])
+                if($gnote->item_id == $dataset[$i][$field_id])
                 {
                     if(empty($background))
                         $background = $gnote->background; // the latest background saved is the one shown
@@ -111,6 +111,7 @@ class grid_notes
                 $dataset[$i]['_grid_notes_html'] = '<img src="img/icons/silk/note_edit.png" ng-notes="'.count($notes).'" class="grid_note_edit" align="absmiddle" />';
             else
                 $dataset[$i]['_grid_notes_html'] = '<span class="navigate_grid_notes_span">'.count($notes).'</span><img src="img/skins/badge.png" ng-notes="'.count($notes).'" width="18px" height="18px" class="grid_note_edit" align="absmiddle" />';
+
             $dataset[$i]['_grid_notes_html'] .= ' ';
             $dataset[$i]['_grid_notes_html'] .= '<img src="img/icons/silk/color_swatch.png" title="" ng-background="'.$background.'" class="grid_color_swatch" align="absmiddle" />';
         }

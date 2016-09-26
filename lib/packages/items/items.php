@@ -999,19 +999,6 @@ function items_form($item)
 		)
 	);
 
-    if(!empty($item->id))
-    {
-        $notes = grid_notes::comments('item', $item->id);
-        $navibars->add_actions(
-	        array(
-	            '<a href="#" onclick="javascript: navigate_display_notes_dialog();">
-					<span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span>
-					<img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'
-				</a>'
-	        )
-        );
-    }
-
 	if(empty($item->id))
 	{
 		$navibars->add_actions(
@@ -1052,6 +1039,19 @@ function items_form($item)
             }
         ');
 	}
+
+    if(!empty($item->id))
+    {
+        $notes = grid_notes::comments('item', $item->id);
+        $navibars->add_actions(
+            array(
+                '<a href="#" onclick="javascript: navigate_display_notes_dialog();">
+					<span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span>
+					<img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'
+				</a>'
+            )
+        );
+    }
 
     if(!empty($item->id))
     {

@@ -254,6 +254,8 @@ function run()
 
 			list($rs, $total) = block_group::paginated_list($offset, $max, $_REQUEST['sidx'], $_REQUEST['sord']);
 
+            $rs = grid_notes::summary($rs, 'block_group', 'id');
+
             // translate $rs to an array of ordered fields
             foreach($rs as $row)
             {
@@ -266,7 +268,8 @@ function run()
                     'id' => $row['id'],
                     'code' => $row['code'],
                     'title' => $row['title'],
-                    'blocks' => count($row['blocks'])
+                    'blocks' => count($row['blocks']),
+                    'notes' => $row['_grid_notes_html']
                 );
             }
 
@@ -2394,11 +2397,13 @@ function block_groups_list()
     $navitable->sortBy('id');
     $navitable->setDataIndex('id');
     $navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=block_group_edit&id=');
+    $navitable->setGridNotesObjectName("block_group");
 
     $navitable->addCol("ID", 'id', "80", "true", "left");
     $navitable->addCol(t(237, 'Code'), 'code', "120", "true", "left");
     $navitable->addCol(t(67, 'Title'), 'title', "200", "true", "left");
     $navitable->addCol(t(23, 'Blocks'), 'blocks', "80", "true", "left");
+    $navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
 
     $navibars->add_content($navitable->generate());
 
@@ -2454,6 +2459,16 @@ function block_group_form($item)
         )
     );
 
+    if(!empty($item->id))
+    {
+        $notes = grid_notes::comments('block_group', $item->id);
+        $navibars->add_actions(
+            array(
+                '<a href="#" onclick="javascript: navigate_display_notes_dialog();"><span class="navigate_grid_notes_span" style=" width: 20px; line-height: 16px; ">'.count($notes).'</span><img src="img/skins/badge.png" width="20px" height="18px" style="margin-top: -2px;" class="grid_note_edit" align="absmiddle" /> '.t(168, 'Notes').'</a>'
+            )
+        );
+    }
+
     $navibars->add_actions(
         array(
         (!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
@@ -2504,10 +2519,14 @@ function block_group_form($item)
         )
     ));
 
-    $navibars->add_tab_content_row(array(
-        '<label>'.t(168, 'Notes').'</label>',
-        $naviforms->textarea('notes', $item->notes)
-    ));
+    // DEPRECATED field, will be removed. Please use the Notes feature
+    if(!empty($item->notes))
+    {
+        $navibars->add_tab_content_row(array(
+            '<label>'.t(168, 'Notes').'</label>',
+            $naviforms->textarea('notes', $item->notes)
+        ));
+    }
 
     $navibars->add_tab(t(23, "Blocks"));
 
@@ -2891,7 +2910,8 @@ function block_group_form($item)
         }
     ');
 
-    //$navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>');
+    if(!empty($item->id))
+        $layout->navigate_notes_dialog('block_group', $item->id);
 
     $layout->add_script('
         $.getScript("lib/packages/blocks/blocks.js?r='.$current_version->revision.'", 
