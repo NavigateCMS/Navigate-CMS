@@ -520,22 +520,44 @@ class theme
              WHERE website = '.$ws->id
         );
 
-        foreach($structure_or as $category)
+        // we need to insert the old categories in order, in other words, the parents before its children
+        // so to make things easy, we loop until we have no more categories to insert
+        // this could lead to an infinite loop, so we have to add a simple protection
+        $structure_categories_or = $structure_or;
+        $changes = true;
+        while(!empty($structure_categories_or) && $changes)
         {
-            if(empty($category))
-                continue;
+            $changes = false;
+            foreach($structure_categories_or as $si => $category)
+            {
+                if(empty($category))
+                    continue;
 
-            $old_category_id = $category->id;
-            $category->id = 0;
-            $category->website = $ws->id;
-            // if this category has a parent != root, update the parent id with the new value given
-            if($category->parent > 0)
-                $category->parent = $structure[$category->parent]->id;
+                $old_category_id = $category->id;
+                $category->id = 0;
+                $category->website = $ws->id;
 
-            $category->insert();
+                if($category->parent > 0 && !isset($structure[$category->parent]))
+                {
+                    // this structure entry needs a parent category that's not yet inserted
+                    // ignore the current entry until the next loop
+                    continue;
+                }
 
-            $structure[$old_category_id] = $category;
+                // if this category has a parent != root, update the parent id with the new value given
+                if($category->parent > 0)
+                    $category->parent = $structure[$category->parent]->id;
+
+                $category->insert();
+                $changes = true;
+
+                $structure[$old_category_id] = $category;
+                unset($structure_categories_or[$si]);
+            }
+
+            $structure_categories_or = array_filter($structure_categories_or);
         }
+
 
         // items
         $items = array();
