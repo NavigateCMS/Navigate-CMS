@@ -2477,14 +2477,399 @@ function block_group_form($item)
 
     $navibars->form();
 
-    $navibars->add_tab(t(43, "Main"));
+    if(!empty($item->id))
+    {
+        $navibars->add_tab(t(23, "Blocks"));
+
+        $allowed_types = array();
+        if(!empty($item->code))
+        {
+            for($bg=0; $bg < count($theme->block_groups); $bg++)
+            {
+                if($theme->block_groups[$bg]->id == $item->code)
+                {
+                    if(isset($theme->block_groups[$bg]->allowed_types))
+                    {
+                        $allowed_types = $theme->block_groups[$bg]->allowed_types;
+                    }
+                    break;
+                }
+            }
+        }
+
+        $blocks_selected = array();
+
+        if(!is_array($item->blocks))
+            $item->blocks = array();
+
+        $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', json_encode($item->blocks)));
+        $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
+
+        $block_types = block::types();
+        $lang = $website->languages_published[0];
+        $extensions_blocks = extension::blocks();
+
+        for($p=0; $p < count($item->blocks); $p++)
+        {
+            unset($block);
+
+            switch($item->blocks[$p]['type'])
+            {
+                case "block":
+                    $block = new block();
+                    $block->load($item->blocks[$p]['id']);
+
+                    if(empty($block) || empty($block->type))
+                        continue;
+
+                    $blocks_selected[] = '
+                        <div class="block_group_block ui-state-default" data-block-id="'.$block->id.'" data-block-type="block" data-block-uid="'.$item->blocks[$p]['uid'].'">
+                            <div class="actions">
+                                <a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
+                                <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                            </div>
+                            <div class="title">'.$block->dictionary[$lang]['title'].'</div>
+                            <div class="subcomment"><span style="float: right;">ID '.$block->id.'</span><img src="img/icons/silk/brick.png" /> '.$theme->t($block->type).'</div>
+                        </div>
+                    ';
+                    break;
+
+                case "block_type":
+                    for($bt=0; $bt < count($block_types); $bt++)
+                    {
+                        if($block_types[$bt]['id']==$item->blocks[$p]['id'])
+                        {
+                            $block = $block_types[$bt];
+                            break;
+                        }
+                    }
+
+                    $blocks_selected[] = '
+                        <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_type" data-block-uid="'.$item->blocks[$p]['uid'].'">
+                            <div class="actions">
+                                <a href="#" data-block-group="'.$block['block_group'].'" data-block-type-code="'.$block['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$item->blocks[$p]['title'].'</span></a>
+                                <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                            </div>
+                            <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
+                            <div class="subcomment">
+                                <span style="float: right;">ID '.$block['code'].'</span>
+                                <img src="img/icons/silk/brick_link.png" /> '.$block['count'].' '.($block['count']==1? t(437, "Block") : t(23, "Blocks")).'
+                            </div>
+                        </div>
+                    ';
+                    break;
+
+                case "block_group_block":
+                    if(is_array($theme->block_groups))
+                    {
+                        foreach($theme->block_groups as $key => $bg)
+                        {
+                            for($i=0; $i < count($bg->blocks); $i++)
+                            {
+                                if($bg->blocks[$i]->id==$item->blocks[$p]['id'])
+                                {
+                                    $block = array(
+                                        'code' => $bg->blocks[$i]->id,
+                                        'type' => $bg->blocks[$i]->id,
+                                        'title' => $theme->t($bg->blocks[$i]->title),
+                                        'description'  => $theme->t($bg->blocks[$i]->description),
+                                        'properties'  => $bg->blocks[$i]->properties,
+                                        'block_group' => $bg->id
+                                    );
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    $blocks_selected[] = '
+                        <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_group_block"  data-block-uid="'.$item->blocks[$p]['uid'].'">
+                            <div class="actions">
+                                '.(empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                            </div>
+                            <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
+                            <div class="subcomment"><span style="float: right;">ID '.$block['type'].'</span><img src="img/icons/silk/bricks.png" /> '.$theme->t($block['type']).'</div>
+                        </div>
+                    ';
+                    break;
+
+                case "extension":
+                    $block = $item->blocks[$p];
+
+                    for($be=0; $be < count($extensions_blocks); $be++)
+                    {
+                        if($block['id'] == $extensions_blocks[$be]->id)
+                        {
+                            $extension = new extension();
+                            $extension->load($block['extension']);
+
+                            $blocks_selected[] = '
+                                <div class="block_group_block ui-state-default" data-block-id="'.$block['id'].'" data-block-type="extension" data-block-extension="'.$block['extension'].'"  data-block-uid="'.$item->blocks[$p]['uid'].'">
+                                    <div class="actions">
+                                        '.(empty($extensions_blocks[$be]->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-id="'.$block['id'].'" data-block-extension="'.$block['extension'].'" data-block-group-action="settings" onclick="navigate_block_group_extension_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                        <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                    </div>
+                                    <div class="title">'.$extension->t($extensions_blocks[$be]->title).'</div>
+                                    <div class="subcomment"><span style="float: right;">ID '.$block['id'].'</span><img src="img/icons/silk/plugin.png" /> '.$extension->title.'</div>
+                                </div>
+                            ';
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        $blocks_selected = implode("\n", $blocks_selected);
+
+        $navibars->add_tab_content(
+            '<div id="block_group_selected_blocks" style="width: 49%; float: left; margin-right: 2%;">
+                <div class="ui-accordion ui-widget ui-helper-reset">
+                    <h3 class="ui-accordion-header ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                        <img src="img/icons/silk/bricks.png" style="vertical-align: middle;" /> '.t(405, 'Selection').'
+                    </h3>
+                    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">'.$blocks_selected.'</div>
+                </div>
+                <div class="subcomment">
+                    <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, "Drag any row to assign priorities").'
+                </div>
+             </div>'
+        );
+
+        // **** ADD specific BLOCKS ****
+        $sql = '
+             SELECT b.type, b.id, d.text as title
+               FROM nv_blocks b
+          LEFT JOIN nv_webdictionary d
+                     ON b.id = d.node_id
+                    AND d.node_type = "block"
+                    AND d.subtype = "title"
+                    AND d.lang = "'.$website->languages_list[0].'"
+                    AND d.website = '.$website->id.'
+              WHERE b.website = '.$website->id.'
+           ORDER BY b.id DESC';
+
+        $DB->query($sql);
+        $block_elements = $DB->result();
+
+        $block_group_blocks = array();
+        for($bg=0; $bg < count($theme->block_groups); $bg++)
+        {
+            if($theme->block_groups[$bg]->id == $item->code)
+                $block_group_blocks = $theme->block_groups[$bg]->blocks;
+        }
+
+        // blocks available in the accordion
+        $navibars->add_tab_content(
+            '<div id="blocks_available_wrapper" style="float: left; width: 49%; ">
+                <div id="blocks_available_accordion">
+                    <h3><i class="fa fa-fw fa-cube"></i> '.t(437, 'Block').'</h3>
+                    <div>
+                    '.implode(
+                        "\n",
+                        array_map(
+                            function($b) use ($allowed_types)
+                            {
+                                global $theme;
+
+                                $classes = 'block_group_block ui-state-default';
+                                if(!empty($allowed_types) && !in_array($b->type, $allowed_types))
+                                    $classes .= ' ui-state-disabled';
+
+                                $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="block">'.
+                                            '<div class="actions">
+                                                <a href="?fid=blocks&act=edit&id='.$b->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
+                                                <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                            </div>'.
+                                            '<div class="title">'.$b->title.'</div>'.
+                                            '<div class="subcomment"><span style="float: right;">ID '.$b->id.'</span><img src="img/icons/silk/brick.png" /> '.$theme->t($b->type).'</div>'.
+                                        '</div>';
+                                return $html;
+                            },
+                            $block_elements
+                        )
+                    ).'
+                    </div>
+                    <h3><i class="fa fa-fw fa-cubes"></i> '.t(543, 'Block type').'</h3>
+                    <div>
+                    '.implode(
+                        "\n",
+                        array_map(
+                            function($b) use ($allowed_types)
+                            {
+                                $classes = 'block_group_block ui-state-default';
+                                if(!empty($allowed_types) && !in_array($b['id'], $allowed_types))
+                                    $classes .= ' ui-state-disabled';
+
+                                $html = '<div class="'.$classes.'" data-block-id="'.$b['id'].'" data-block-type="block_type">'.
+                                    '<div class="actions">
+                                        <a href="#" data-block-group="'.$b['block_group'].'" data-block-type-code="'.$b['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$b['block_type_title'].'</span></a>
+                                        <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                    </div>'.
+                                    '<div class="title">'.$b['title'].'</div>'.
+                                    '<div class="subcomment">
+                                        <span style="float: right;">'.$b['count'].' '.($b['count']==1? t(437, "Block") : t(23, "Blocks")).'</span>
+                                        <img src="img/icons/silk/brick_link.png" /> ID '.$b['id'].'</div>'.
+                                    '</div>';
+                                return $html;
+                            },
+                            $block_types
+                        )
+                    ).'
+                    </div>
+                    <h3><i class="fa fa-fw fa-plus-square-o"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</h3>
+                    <div>                    
+                        '.implode(
+                            "\n",
+                            array_map(
+                                function($b) use ($item)
+                                {
+                                    global $theme;
+
+                                    $html = '<div class="block_group_block ui-state-default" data-block-id="'.$b->id.'" data-block-type="block_group_block" title="'.$theme->t(@$b->description).'">'.
+                                                '<div class="actions">
+                                                    '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                                    <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                                </div>'.
+                                                '<div class="title">'.$theme->t($b->title).'</div>'.
+                                                '<div class="subcomment">
+                                                    <span style="float: right;">ID '.$b->id.'</span>
+                                                    <img src="img/icons/silk/bricks.png" />'.
+                                                '</div>'.
+                                            '</div>';
+                                    return $html;
+                                },
+                                $block_group_blocks
+                            )
+                        ).'
+                    </div>
+                    <h3><i class="fa fa-fw fa-puzzle-piece"></i> '.t(327, 'Extensions').'</h3>
+                    <div>
+                        '.implode(
+                            "\n",
+                            array_map(
+                                function($b) use ($allowed_types, $item)
+                                {
+                                    $classes = 'block_group_block ui-state-default';
+                                    $extension = new extension();
+                                    $extension->load($b->_extension);
+
+                                    $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="extension" data-block-extension="'.$b->_extension.'">'.
+                                        '<div class="actions">
+                                            '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_block_group_extension_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
+                                            <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
+                                        </div>'.
+                                        '<div class="title">'.$extension->t($b->title).'</div>'.
+                                        '<div class="subcomment"><span style="float: right;">ID '.$b->id.'</span><img src="img/icons/silk/plugin.png" /> '.$extension->title.'</div>'.
+                                        '</div>';
+                                    return $html;
+                                },
+                                $extensions_blocks
+                            )
+                        ).'
+                    </div>
+                </div>
+                <div class="subcomment">
+                    <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(638, "Disabled blocks are not compatible with the current block group type").'
+                </div>
+            </div>'
+        );
+
+
+        $block_group_block_types_form = "";
+        foreach($website->languages_list as $lang)
+        {
+            $block_group_block_types_form .= ' 
+                <div data-lang="'.$lang.'" class="navigate-form-row">
+                    <label style="width: 48px; "><span title="'.language::name_by_code($lang).'" class="navigate-form-row-language-info"><img align="absmiddle" src="img/icons/silk/comment.png">'.$lang.'</span></label>
+                    <input type="text" style=" width: 340px;" name="block_type_title_value['.$lang.']" value="">
+                </div>
+            ';
+        }
+        $navibars->add_tab_content('
+            <div id="navigate-block-groups-block-type-title" class="hidden">
+                '.$block_group_block_types_form.'
+                <div class="subcomment" style="margin-left: 0;"><img src="img/icons/silk/information.png" /> '.t(641, "It will only be shown if the template supports it").'</div>
+            </div>
+        ');
+
+        $layout->add_script('                       
+            function navigate_blocks_block_type_title(el)
+            {
+                var title = $(el).find("span").text();
+                
+                try 
+                {
+                   title = jQuery.parseJSON(title);
+                } 
+                catch(e) 
+                {
+                    // not json; do nothing                    
+                }                    
+                
+                $("#navigate-block-groups-block-type-title").find("input[type=text]").each(function()
+                {                     
+                    if(typeof(title)=="object")
+                        $(this).val(title[$(this).parent().data("lang")]);
+                    else
+                        $(this).val(title);
+                });
+                
+                $("#navigate-block-groups-block-type-title").removeClass("hidden");
+                $("#navigate-block-groups-block-type-title").dialog({
+                    title: navigate_t(67, "Title"),
+                    modal: true,
+                    width: 428,
+                    buttons: [
+                        {
+                            text: navigate_t(190, "Ok"),
+                            icons: {
+                                primary: "ui-icon-check"
+                            },
+                            click: function()
+                            {
+                                var new_value = {};
+                                
+                                $("#navigate-block-groups-block-type-title")
+                                    .find(\'input[type="text"]\').each(
+                                        function()
+                                        {
+                                            new_value[$(this).parent().data("lang")] = $(this).val(); 
+                                        }
+                                    );
+                                
+                                $(el).find("span").text(JSON.stringify(new_value));
+                                                            
+                                blocks_selection_update();
+                                
+                                $( this ).dialog( "close" );
+                            }
+                        },
+                        {
+                            text: navigate_t(58, "Cancel"),
+                            icons: {
+                                primary: "ui-icon-close"
+                            },
+                            click: function()
+                            {
+                                $( this ).dialog( "close" );
+                            }
+                        }
+                    ]
+                });
+            }
+        ');
+    }
+
+    $navibars->add_tab(t(457, "Information"));
 
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
     $navibars->add_tab_content($naviforms->hidden('id', $item->id));
 
     $navibars->add_tab_content_row(array(
-        '<label>ID</label>',
-        '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' )
+            '<label>ID</label>',
+            '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' )
     );
 
     $navibars->add_tab_content_row(array(
@@ -2527,388 +2912,6 @@ function block_group_form($item)
             $naviforms->textarea('notes', $item->notes)
         ));
     }
-
-    $navibars->add_tab(t(23, "Blocks"));
-
-    $allowed_types = array();
-    if(!empty($item->code))
-    {
-        for($bg=0; $bg < count($theme->block_groups); $bg++)
-        {
-            if($theme->block_groups[$bg]->id == $item->code)
-            {
-                if(isset($theme->block_groups[$bg]->allowed_types))
-                {
-                    $allowed_types = $theme->block_groups[$bg]->allowed_types;
-                }
-                break;
-            }
-        }
-    }
-
-    $blocks_selected = array();
-
-    if(!is_array($item->blocks))
-        $item->blocks = array();
-
-    $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', json_encode($item->blocks)));
-    $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
-
-    $block_types = block::types();
-    $lang = $website->languages_published[0];
-    $extensions_blocks = extension::blocks();
-
-    for($p=0; $p < count($item->blocks); $p++)
-    {
-        unset($block);
-
-        switch($item->blocks[$p]['type'])
-        {
-            case "block":
-                $block = new block();
-                $block->load($item->blocks[$p]['id']);
-
-                if(empty($block) || empty($block->type))
-                    continue;
-
-                $blocks_selected[] = '
-                    <div class="block_group_block ui-state-default" data-block-id="'.$block->id.'" data-block-type="block" data-block-uid="'.$item->blocks[$p]['uid'].'">
-                        <div class="actions">
-                            <a href="?fid=blocks&act=edit&id='.$block->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
-                            <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                        </div>
-                        <div class="title">'.$block->dictionary[$lang]['title'].'</div>
-                        <div class="subcomment"><span style="float: right;">ID '.$block->id.'</span><img src="img/icons/silk/brick.png" /> '.$theme->t($block->type).'</div>
-                    </div>
-                ';
-                break;
-
-            case "block_type":
-                for($bt=0; $bt < count($block_types); $bt++)
-                {
-                    if($block_types[$bt]['id']==$item->blocks[$p]['id'])
-                    {
-                        $block = $block_types[$bt];
-                        break;
-                    }
-                }
-
-                $blocks_selected[] = '
-                    <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_type" data-block-uid="'.$item->blocks[$p]['uid'].'">
-                        <div class="actions">
-                            <a href="#" data-block-group="'.$block['block_group'].'" data-block-type-code="'.$block['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$item->blocks[$p]['title'].'</span></a>
-                            <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                        </div>
-                        <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
-                        <div class="subcomment">
-                            <span style="float: right;">ID '.$block['code'].'</span>
-                            <img src="img/icons/silk/brick_link.png" /> '.$block['count'].' '.($block['count']==1? t(437, "Block") : t(23, "Blocks")).'
-                        </div>
-                    </div>
-                ';
-                break;
-
-            case "block_group_block":
-                if(is_array($theme->block_groups))
-                {
-                    foreach($theme->block_groups as $key => $bg)
-                    {
-                        for($i=0; $i < count($bg->blocks); $i++)
-                        {
-                            if($bg->blocks[$i]->id==$item->blocks[$p]['id'])
-                            {
-                                $block = array(
-                                    'code' => $bg->blocks[$i]->id,
-                                    'type' => $bg->blocks[$i]->id,
-                                    'title' => $theme->t($bg->blocks[$i]->title),
-                                    'description'  => $theme->t($bg->blocks[$i]->description),
-                                    'properties'  => $bg->blocks[$i]->properties,
-                                    'block_group' => $bg->id
-                                );
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                $blocks_selected[] = '
-                    <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_group_block"  data-block-uid="'.$item->blocks[$p]['uid'].'">
-                        <div class="actions">
-                            '.(empty($block['properties'])? '':'<a href="#" data-block-group="'.$block['block_group'].'" data-block-group-block="'.$block['code'].'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
-                            <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                        </div>
-                        <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
-                        <div class="subcomment"><span style="float: right;">ID '.$block['type'].'</span><img src="img/icons/silk/bricks.png" /> '.$theme->t($block['type']).'</div>
-                    </div>
-                ';
-                break;
-
-            case "extension":
-                $block = $item->blocks[$p];
-
-                for($be=0; $be < count($extensions_blocks); $be++)
-                {
-                    if($block['id'] == $extensions_blocks[$be]->id)
-                    {
-                        $extension = new extension();
-                        $extension->load($block['extension']);
-
-                        $blocks_selected[] = '
-                            <div class="block_group_block ui-state-default" data-block-id="'.$block['id'].'" data-block-type="extension" data-block-extension="'.$block['extension'].'"  data-block-uid="'.$item->blocks[$p]['uid'].'">
-                                <div class="actions">
-                                    '.(empty($extensions_blocks[$be]->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-id="'.$block['id'].'" data-block-extension="'.$block['extension'].'" data-block-group-action="settings" onclick="navigate_block_group_extension_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
-                                    <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                                </div>
-                                <div class="title">'.$extension->t($extensions_blocks[$be]->title).'</div>
-                                <div class="subcomment"><span style="float: right;">ID '.$block['id'].'</span><img src="img/icons/silk/plugin.png" /> '.$extension->title.'</div>
-                            </div>
-                        ';
-                        break;
-                    }
-                }
-                break;
-        }
-    }
-
-    $blocks_selected = implode("\n", $blocks_selected);
-
-    $navibars->add_tab_content(
-        '<div id="block_group_selected_blocks" style="width: 49%; float: left; margin-right: 2%;">
-            <div class="ui-accordion ui-widget ui-helper-reset">
-                <h3 class="ui-accordion-header ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
-                    <img src="img/icons/silk/bricks.png" style="vertical-align: middle;" /> '.t(405, 'Selection').'
-                </h3>
-                <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">'.$blocks_selected.'</div>
-            </div>
-            <div class="subcomment">
-                <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, "Drag any row to assign priorities").'
-            </div>
-         </div>'
-    );
-
-    // **** ADD specific BLOCKS ****
-    $sql = '
-         SELECT b.type, b.id, d.text as title
-           FROM nv_blocks b
-      LEFT JOIN nv_webdictionary d
-                 ON b.id = d.node_id
-                AND d.node_type = "block"
-                AND d.subtype = "title"
-                AND d.lang = "'.$website->languages_list[0].'"
-                AND d.website = '.$website->id.'
-          WHERE b.website = '.$website->id.'
-       ORDER BY b.id DESC';
-
-    $DB->query($sql);
-    $block_elements = $DB->result();
-
-    $block_group_blocks = array();
-    for($bg=0; $bg < count($theme->block_groups); $bg++)
-    {
-        if($theme->block_groups[$bg]->id == $item->code)
-            $block_group_blocks = $theme->block_groups[$bg]->blocks;
-    }
-
-    // blocks available in the accordion
-    $navibars->add_tab_content(
-        '<div id="blocks_available_wrapper" style="float: left; width: 49%; ">
-            <div id="blocks_available_accordion">
-                <h3><i class="fa fa-fw fa-cube"></i> '.t(437, 'Block').'</h3>
-                <div>
-                '.implode(
-                    "\n",
-                    array_map(
-                        function($b) use ($allowed_types)
-                        {
-                            global $theme;
-
-                            $classes = 'block_group_block ui-state-default';
-                            if(!empty($allowed_types) && !in_array($b->type, $allowed_types))
-                                $classes .= ' ui-state-disabled';
-
-                            $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="block">'.
-                                        '<div class="actions">
-                                            <a href="?fid=blocks&act=edit&id='.$b->id.'"><img src="'.NAVIGATE_URL.'/img/icons/silk/pencil.png" /></a>
-                                            <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                                        </div>'.
-                                        '<div class="title">'.$b->title.'</div>'.
-                                        '<div class="subcomment"><span style="float: right;">ID '.$b->id.'</span><img src="img/icons/silk/brick.png" /> '.$theme->t($b->type).'</div>'.
-                                    '</div>';
-                            return $html;
-                        },
-                        $block_elements
-                    )
-                ).'
-                </div>
-                <h3><i class="fa fa-fw fa-cubes"></i> '.t(543, 'Block type').'</h3>
-                <div>
-                '.implode(
-                    "\n",
-                    array_map(
-                        function($b) use ($allowed_types)
-                        {
-                            $classes = 'block_group_block ui-state-default';
-                            if(!empty($allowed_types) && !in_array($b['id'], $allowed_types))
-                                $classes .= ' ui-state-disabled';
-
-                            $html = '<div class="'.$classes.'" data-block-id="'.$b['id'].'" data-block-type="block_type">'.
-                                '<div class="actions">
-                                    <a href="#" data-block-group="'.$b['block_group'].'" data-block-type-code="'.$b['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$b['block_type_title'].'</span></a>
-                                    <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                                </div>'.
-                                '<div class="title">'.$b['title'].'</div>'.
-                                '<div class="subcomment">
-                                    <span style="float: right;">'.$b['count'].' '.($b['count']==1? t(437, "Block") : t(23, "Blocks")).'</span>
-                                    <img src="img/icons/silk/brick_link.png" /> ID '.$b['id'].'</div>'.
-                                '</div>';
-                            return $html;
-                        },
-                        $block_types
-                    )
-                ).'
-                </div>
-                <h3><i class="fa fa-fw fa-plus-square-o"></i> '.t(556, 'Block from group').' ['.$theme->t($item->code).']</h3>
-                <div>                    
-                    '.implode(
-                        "\n",
-                        array_map(
-                            function($b) use ($item)
-                            {
-                                global $theme;
-
-                                $html = '<div class="block_group_block ui-state-default" data-block-id="'.$b->id.'" data-block-type="block_group_block" title="'.$theme->t(@$b->description).'">'.
-                                            '<div class="actions">
-                                                '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_blocks_group_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
-                                                <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                                            </div>'.
-                                            '<div class="title">'.$theme->t($b->title).'</div>'.
-                                            '<div class="subcomment">
-                                                <span style="float: right;">ID '.$b->id.'</span>
-                                                <img src="img/icons/silk/bricks.png" />'.
-                                            '</div>'.
-                                        '</div>';
-                                return $html;
-                            },
-                            $block_group_blocks
-                        )
-                    ).'
-                </div>
-                <h3><i class="fa fa-fw fa-puzzle-piece"></i> '.t(327, 'Extensions').'</h3>
-                <div>
-                    '.implode(
-                        "\n",
-                        array_map(
-                            function($b) use ($allowed_types, $item)
-                            {
-                                $classes = 'block_group_block ui-state-default';
-                                $extension = new extension();
-                                $extension->load($b->_extension);
-
-                                $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="extension" data-block-extension="'.$b->_extension.'">'.
-                                    '<div class="actions">
-                                        '.(empty($b->properties)? '':'<a href="#" data-block-group="'.$item->code.'" data-block-group-block="'.$b->id.'" data-block-group-action="settings" onclick="navigate_block_group_extension_block_settings(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cog.png" /></a>').'
-                                        <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
-                                    </div>'.
-                                    '<div class="title">'.$extension->t($b->title).'</div>'.
-                                    '<div class="subcomment"><span style="float: right;">ID '.$b->id.'</span><img src="img/icons/silk/plugin.png" /> '.$extension->title.'</div>'.
-                                    '</div>';
-                                return $html;
-                            },
-                            $extensions_blocks
-                        )
-                    ).'
-                </div>
-            </div>
-            <div class="subcomment">
-                <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(638, "Disabled blocks are not compatible with the current block group type").'
-            </div>
-        </div>'
-    );
-
-
-    $block_group_block_types_form = "";
-    foreach($website->languages_list as $lang)
-    {
-        $block_group_block_types_form .= ' 
-            <div data-lang="'.$lang.'" class="navigate-form-row">
-                <label style="width: 48px; "><span title="'.language::name_by_code($lang).'" class="navigate-form-row-language-info"><img align="absmiddle" src="img/icons/silk/comment.png">'.$lang.'</span></label>
-                <input type="text" style=" width: 340px;" name="block_type_title_value['.$lang.']" value="">
-            </div>
-        ';
-    }
-    $navibars->add_tab_content('
-        <div id="navigate-block-groups-block-type-title" class="hidden">
-            '.$block_group_block_types_form.'
-            <div class="subcomment" style="margin-left: 0;"><img src="img/icons/silk/information.png" /> '.t(641, "It will only be shown if the template supports it").'</div>
-        </div>
-    ');
-
-    $layout->add_script('                       
-        function navigate_blocks_block_type_title(el)
-        {
-            var title = $(el).find("span").text();
-            
-            try 
-            {
-               title = jQuery.parseJSON(title);
-            } 
-            catch(e) 
-            {
-                // not json; do nothing                    
-            }                    
-            
-            $("#navigate-block-groups-block-type-title").find("input[type=text]").each(function()
-            {                     
-                if(typeof(title)=="object")
-                    $(this).val(title[$(this).parent().data("lang")]);
-                else
-                    $(this).val(title);
-            });
-            
-            $("#navigate-block-groups-block-type-title").removeClass("hidden");
-            $("#navigate-block-groups-block-type-title").dialog({
-                title: navigate_t(67, "Title"),
-                modal: true,
-                width: 428,
-                buttons: [
-                    {
-                        text: navigate_t(190, "Ok"),
-                        icons: {
-                            primary: "ui-icon-check"
-                        },
-                        click: function()
-                        {
-                            var new_value = {};
-                            
-                            $("#navigate-block-groups-block-type-title")
-                                .find(\'input[type="text"]\').each(
-                                    function()
-                                    {
-                                        new_value[$(this).parent().data("lang")] = $(this).val(); 
-                                    }
-                                );
-                            
-                            $(el).find("span").text(JSON.stringify(new_value));
-                                                        
-                            blocks_selection_update();
-                            
-                            $( this ).dialog( "close" );
-                        }
-                    },
-                    {
-                        text: navigate_t(58, "Cancel"),
-                        icons: {
-                            primary: "ui-icon-close"
-                        },
-                        click: function()
-                        {
-                            $( this ).dialog( "close" );
-                        }
-                    }
-                ]
-            });
-        }
-    ');
 
     if(!empty($item->id))
         $layout->navigate_notes_dialog('block_group', $item->id);
