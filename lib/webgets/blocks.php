@@ -379,15 +379,21 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 	switch($trigger['trigger-type'][$lang])
 	{
 		case 'image':
-			$trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'" '.$sizes.' />';
+		    if($vars['return'] == 'url')
+		        return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border;
+            else
+			    $trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'" '.$sizes.' />';
 			break;
 			
 		case 'rollover':
-			$trigger_html = '
-				<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'"
-					 '.$sizes.'
-					 onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';"
-					 onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';" />';
+            if($vars['return'] == 'url')
+                return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border;
+            else
+			    $trigger_html = '
+                    <img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'"
+                         '.$sizes.'
+                         onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';"
+                         onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';" />';
 			break;
 			
 		case 'flash':
