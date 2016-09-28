@@ -194,6 +194,7 @@ $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/plugins/.htaccess'), 'plugin
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/sessions/.htaccess'), 'private/sessions/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/oembed/.htaccess'), 'private/oembed/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/web/.htaccess.example'), 'web/.htaccess.example');
+$zipfile->addFile('', 'cache/empty.txt');
 $zipfile->addFile('', 'updates/empty.txt');
 
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/themes/theme_kit.zip'), 'themes/theme_kit.zip');
