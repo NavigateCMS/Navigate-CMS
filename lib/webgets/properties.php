@@ -23,6 +23,20 @@ function nvweb_properties($vars=array())
 
         case 'element':
 		case 'item': // deprecated, may be removed in a future version
+
+            // if item ID is not given and the current object an element or a structure category?
+            if(empty($vars['id']) && $current['type']=='structure')
+            {
+                // find the first embedded element for the current category
+                // (because the template code has requested specifically to return the property from an element!)
+                $itm = nvweb_content_items($current['object']->id, true, 1, true, 'priority');
+
+                if(!empty($itm) && isset($itm[0]))
+                    $vars['id'] = $itm[0]->id;
+                else
+                    $vars['id'] = 0;
+            }
+
             if(!isset($properties['item-'.$vars['id']]) && !empty($vars['id']))
 			{
 				// load item template
