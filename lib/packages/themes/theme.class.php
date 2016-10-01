@@ -480,14 +480,43 @@ class theme
         $ws->save();
 
 
+        // folders (if available)
+        $theme_files_parent = file::create_folder($this->name, "folder/generic", 0, $ws->id);
+
+        $folders = array();
+        if(file_exists($ptf.'/folders.var_export')) // available since v2.1.2
+            eval('$folders_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/folders.var_export')).';');
+
+        if(!empty($folders_or))
+        {
+            // assume folders are defined in order (first the parents, then their children)
+            foreach($folders_or as $f)
+            {
+                // error protection
+                if(empty($f->id))
+                    continue;
+
+                $folders[$f->id] = new file();
+                $folders[$f->id]->load_from_resultset(array($f));
+                $folders[$f->id]->id = 0;
+                $folders[$f->id]->website = $ws->id;
+
+                if(isset($folders[$f->parent]))
+                    $folders[$f->id]->parent = $folders[$f->parent]->id;
+                else
+                    $folders[$f->id]->parent = $theme_files_parent;
+
+                $folders[$f->id]->insert();
+            }
+        }
+
+        
         // files
         $files = array();
         if(file_exists($ptf.'/files.var_export'))
             eval('$files_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/files.var_export')).';');
         else
             $files_or = unserialize(file_get_contents($ptf.'/files.serialized'));
-
-        $theme_files_parent = file::create_folder($this->name, "folder/generic", 0, $ws->id);
 
         foreach($files_or as $f)
         {
@@ -499,8 +528,12 @@ class theme
             $files[$f->id]->load_from_resultset(array($f));
             $files[$f->id]->id = 0;
             $files[$f->id]->website = $ws->id;
-            // TODO: set the right parent (replicate folders hierarchy)
-            $files[$f->id]->parent = $theme_files_parent;
+
+            if(isset($folders[$f->parent]))
+                $files[$f->id]->parent = $folders[$f->parent]->id;
+            else
+                $files[$f->id]->parent = $theme_files_parent;
+
             $files[$f->id]->insert();
 
             // finally copy the sample file
@@ -1087,19 +1120,24 @@ class theme
             $blocks[$tmp->id] = $tmp;
         }
 
-        // folder
+        // folders
+        // save references and get their files list
         $folders = array();
+        $folders_to_check = array();
         if(!empty($folder))
         {
-            array_push($folders, $folder);
-            while(!empty($folders))
+            array_push($folders_to_check, $folder);
+            while(!empty($folders_to_check))
             {
-                $f = array_shift($folders);
+                $f = array_shift($folders_to_check);
                 $f = file::filesOnPath($f);
                 foreach($f as $file)
                 {
                     if($file->type == 'folder')
-                        array_push($folders, $file->id);
+                    {
+                        array_push($folders_to_check, $file->id);
+                        array_push($folders, $file);
+                    }
                     else
                         $files[] = $file->id;
                 }
@@ -1127,6 +1165,7 @@ class theme
         $zip->addFile(var_export($blocks, true), 'blocks.var_export');
         $zip->addFile(var_export($comments, true), 'comments.var_export');
         $zip->addFile(var_export($files, true), 'files.var_export');
+        $zip->addFile(var_export($folders, true), 'folders.var_export');
         $zip->addFile(var_export($properties, true), 'properties.var_export');
         $zip->addFile(var_export($settings, true), 'settings.var_export');
 
