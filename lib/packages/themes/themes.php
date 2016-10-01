@@ -576,6 +576,13 @@ function themes_sample_content_export_form()
     $navitable_items->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");
     $navitable_items->addCol(t(80, 'Permission'), 'permission', "80", "true", "center");
     $navitable_items->after_select_callback = ' $("#elements").val(navitable_items_list_selected_rows); ';
+    $navitable_items->setLoadCallback('
+        if(!themes_export_first_select_elements) 
+        {
+            $("#cb_items_list").trigger("click");
+            themes_export_first_select_elements = true; 
+        }
+    ');
     $navibars->add_tab_content($naviforms->hidden('elements', ''));
     $navibars->add_tab_content($navitable_items->generate());
 
@@ -592,6 +599,13 @@ function themes_sample_content_export_form()
     $navitable_block_groups->addCol(t(67, 'Title'), 'title', "200", "true", "left");
     $navitable_block_groups->addCol(t(23, 'Blocks'), 'blocks', "80", "true", "left");
     $navitable_block_groups->after_select_callback = ' $("#block_groups").val(navitable_block_groups_list_selected_rows); ';
+    $navitable_block_groups->setLoadCallback('
+        if(!themes_export_first_select_blockgrp) 
+        {
+            $("#cb_block_groups_list").trigger("click");
+            themes_export_first_select_blockgrp = true; 
+        }
+    ');
     $navibars->add_tab_content($naviforms->hidden('block_groups', ''));
     $navibars->add_tab_content($navitable_block_groups->generate());
 
@@ -610,6 +624,13 @@ function themes_sample_content_export_form()
     $navitable_blocks->addCol(t(364, 'Access'), 'access', "40", "true", "center");
     $navitable_blocks->addCol(t(65, 'Enabled'), 'enabled', "40", "true", "center");
     $navitable_blocks->after_select_callback = ' $("#blocks").val(navitable_blocks_list_selected_rows); ';
+    $navitable_blocks->setLoadCallback('
+        if(!themes_export_first_select_blocks) 
+        {
+            $("#cb_blocks_list").trigger("click"); 
+            themes_export_first_select_blocks = true; 
+        }
+    ');
     $navibars->add_tab_content($naviforms->hidden('blocks', ''));
     $navibars->add_tab_content($navitable_blocks->generate());
 
@@ -628,6 +649,13 @@ function themes_sample_content_export_form()
     $navitable_comments->addCol(t(54, 'Text'), 'message', "200", "true", "left");
     $navitable_comments->addCol(t(68, 'Status'), 'status', "80", "true", "center");
     $navitable_comments->after_select_callback = ' $("#comments").val(navitable_comments_list_selected_rows); ';
+    $navitable_comments->setLoadCallback('
+        if(!themes_export_first_select_comments) 
+        {
+            $("#cb_comments_list").trigger("click"); 
+            themes_export_first_select_comments = true; 
+        }
+    ');
     $navibars->add_tab_content($naviforms->hidden('comments', ''));
     $navibars->add_tab_content($navitable_comments->generate());
     
@@ -644,6 +672,16 @@ function themes_sample_content_export_form()
             t(482, 'All sample files should be placed in a folder. Navigate CMS will also add files used in contents.').
         '</div>'
     );
+
+    // auto-select everything on load
+    $layout->add_script('
+        themes_export_first_select_elements = false;
+        themes_export_first_select_blockgrp = false;
+        themes_export_first_select_blocks   = false;
+        themes_export_first_select_comments = false;
+
+        $("#theme_export_sample_content_select_all_categories").trigger("click");               
+    ');
 
     return $navibars->generate();
 }
