@@ -499,6 +499,7 @@ class theme
             $files[$f->id]->load_from_resultset(array($f));
             $files[$f->id]->id = 0;
             $files[$f->id]->website = $ws->id;
+            // TODO: set the right parent (replicate folders hierarchy)
             $files[$f->id]->parent = $theme_files_parent;
             $files[$f->id]->insert();
 
@@ -600,6 +601,7 @@ class theme
             $items[$old_item_id] = $item;
         }
 
+
         // blocks
         $blocks = array();
         if(file_exists($ptf.'/blocks.var_export'))
@@ -656,9 +658,52 @@ class theme
             $block->trigger['trigger-content'] = theme::import_sample_parse_array($block->trigger['trigger-content'], $files, $ws);
             $block->trigger['trigger-html'] = theme::import_sample_parse_array($block->trigger['trigger-html'], $files, $ws);
 
-    // TODO: translate action-url
-
             $block->dictionary = theme::import_sample_parse_dictionary($block->dictionary, $files, $ws);
+
+            // translate nv:// urls, which may be in:
+            //      trigger->[trigger-links][lang][link][code] => link
+            //      trigger->[trigger-content][lang] (as html code)
+            //      trigger->[trigger-html][lang] (as html code)
+            //      action->[action-web][lang]
+
+            if(!empty($block->trigger['trigger-links']))
+            {
+                foreach($block->trigger['trigger-links'] as $lang => $block_trigger_link)
+                {
+                    foreach($block_trigger_link['link'] as $btl_code => $btl_link)
+                    {
+                        $btl_link = theme::import_sample_translate_nv_urls($btl_link, $structure, $items);
+                        $block->trigger['trigger-links'][$lang]['link'][$btl_code] = $btl_link;
+                    }
+                }
+            }
+
+            if(!empty($block->trigger['trigger-content']))
+            {
+                foreach($block->trigger['trigger-content'] as $lang => $block_trigger_content)
+                {
+                    $block_trigger_content = theme::import_sample_translate_nv_urls($block_trigger_content, $structure, $items);
+                    $block->trigger['trigger-content'][$lang] = $block_trigger_content;
+                }
+            }
+
+            if(!empty($block->trigger['trigger-html']))
+            {
+                foreach($block->trigger['trigger-html'] as $lang => $block_trigger_content)
+                {
+                    $block_trigger_content = theme::import_sample_translate_nv_urls($block_trigger_content, $structure, $items);
+                    $block->trigger['trigger-html'][$lang] = $block_trigger_content;
+                }
+            }
+
+            if(!empty($block->action['action-web']))
+            {
+                foreach($block->action['action-web'] as $lang => $block_action_web)
+                {
+                    $block_action_web = theme::import_sample_translate_nv_urls($block_action_web, $structure, $items);
+                    $block->action['action-web'][$lang] = $block_action_web;
+                }
+            }
 
             $block->insert();
 
@@ -718,7 +763,13 @@ class theme
             $comment->insert();
         }
 
-        // update structure properties [jump-branch, jump-item] to its new ID values
+        // now that categories and elements have been inserted
+        // we need to fix:
+        //      structure jumps: [jump-branch, jump-item] to its new ID values
+        //      items' sections: embedded nv:// urls
+        // note: properties will be "translated" later
+
+        // update structure properties
         foreach($structure as $old_id => $entry)
         {
             foreach($entry->dictionary as $elang => $properties)
@@ -731,6 +782,21 @@ class theme
                 $entry->save();
             }
         }
+
+        // find & update items' sections nv:// urls
+        foreach($items as $old => $element)
+        {
+            foreach($element->dictionary as $eld_lang => $eld_field)
+            {
+                foreach($eld_field as $eld_field_key => $eld_field_val)
+                {
+                    $html = theme::import_sample_translate_nv_urls($eld_field_val, $structure, $items);
+                    $items[$old]->dictionary[$eld_lang][$eld_field_key] = $html;
+                }
+            }
+            $items[$old]->save();
+        }
+
 
         // translate website options; check for forced multilanguage options!
 	    $theme_options = array();
@@ -854,7 +920,7 @@ class theme
             }
         }
 
-	    // apply settings from export
+	    // apply final settings from export
         if(file_exists($ptf.'/settings.var_export'))
             eval('$settings_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/settings.var_export')).';');
         else
@@ -865,7 +931,7 @@ class theme
 	        $settings_or = array('homepage' => $structure_id);
         }
 
-
+        // what is the homepage?
 	    if(is_numeric($settings_or['homepage']))
 	    {
 		    // homepage as a category ID
@@ -1232,6 +1298,8 @@ class theme
             // "translate" those IDs for the ones assigned on the new website
             // for example:
             // (old website) file id: 35    =>  (new website) file id: 3
+
+            // ...and also translate nv:// urls in (text) properties values
             switch($property->type)
             {
                 case 'file':
@@ -1290,6 +1358,18 @@ class theme
                     break;
 
                 default:
+                    if(is_array($property->value))
+                    {
+                        // multilanguage property
+                        foreach($property->value as $lang => $pvalue)
+                        {
+                            $property->value[$lang] = theme::import_sample_translate_nv_urls($pvalue, $structure, $items);
+                        }
+                    }
+                    else if(!is_string($property->value))  // ignore numeric values
+                    {
+                        $property->value = theme::import_sample_translate_nv_urls($property->value, $structure, $items);
+                    }
             }
 
             $el_properties_associative[$property->id] = $property->value;
@@ -1323,6 +1403,42 @@ class theme
 
             property::save_properties_from_array($el, $real[$el_id]->id, $template, $el_properties_associative, $ws, $item_uid);
         }
+    }
+
+    public static function import_sample_translate_nv_urls($html, $structure, $items)
+    {
+        preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9])+/", $html, $matches);
+
+        if(!empty($matches) && !empty($matches[0]))
+        {
+            $matches = $matches[0];
+            foreach($matches as $match)
+            {
+                $parts = explode('/', $match);
+                $url = "";
+                switch($parts[2])
+                {
+                    case 'element':
+                    case 'item':
+                    case 'elements':
+                        $url = 'nv://element/' . $items[$parts[3]]->id;
+                        break;
+
+                    case 'structure':
+                    case 'category':
+                        $url = 'nv://structure/' . $structure[$parts[3]]->id;
+                        break;
+
+                    default:
+                        // ignore this url, leave as is
+                }
+
+                if(!empty($url))
+                    $html = str_replace($match, $url, $html);
+            }
+        }
+
+        return $html;
     }
 
     public static function latest_available()
