@@ -57,7 +57,6 @@ global $website;
 global $theme;
 global $events;
 
-
 if(!empty($_REQUEST['process']))
     process();
 
@@ -1249,6 +1248,9 @@ function navigate_install_completed()
 function process()
 {
 	global $DB;
+    global $website;
+    global $events;
+    global $theme;
 	
 	set_time_limit(0);
 	setlocale(LC_ALL, $_SESSION['navigate_install_locale']);
@@ -1523,19 +1525,22 @@ function process()
                     $website->languages_published = array('en', 'es');
                     $website->save();
 
-					// default objects (first user, no events...)
-					$events = new events();
+					// default objects (first user, no events bound...)
 					$user = new user();
 					$user->load(1);
 
+                    $events = new events();
+
 					$zip = new ZipArchive();
 					$zip_open_status = $zip->open(NAVIGATE_PATH.'/themes/theme_kit.zip');
+
 					if($zip_open_status === TRUE)
 					{
 						$zip->extractTo(NAVIGATE_PATH.'/themes/theme_kit');
 						$zip->close();
-						$theme = new theme();
-						$theme->load('theme_kit', $website);
+
+                        $theme = new theme();
+						$theme->load('theme_kit');
 						$theme->import_sample($website);
 					}
 

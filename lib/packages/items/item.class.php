@@ -467,13 +467,13 @@ class item
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
 
-		$events->trigger(
-			'item',
-			'save',
-			array(
-				'item' => $this
-			)
-		);
+        $events->trigger(
+            'item',
+            'save',
+            array(
+                'item' => $this
+            )
+        );
 
 		return true;
 	}

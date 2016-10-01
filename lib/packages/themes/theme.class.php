@@ -782,6 +782,7 @@ class theme
             $block_groups[$old_block_group_id] = $block_group;
         }
 
+
         // comments
         if(file_exists($ptf.'/comments.var_export'))
             eval('$comments_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/comments.var_export')).';');
@@ -966,6 +967,9 @@ class theme
 	        $structure_id = $structure_id[0];
 	        $settings_or = array('homepage' => $structure_id);
         }
+
+        if(!empty($settings_or['favicon']))
+            $ws->favicon = $files[$settings_or['favicon']]->id;
 
         // what is the homepage?
 	    if(is_numeric($settings_or['homepage']))
@@ -1160,6 +1164,10 @@ class theme
             }
         }
 
+        // include favicon in file list
+        if(!empty($website->favicon))
+            $files[] = $website->favicon;
+
         // files
         $files = array_unique($files);
         for($f=0; $f < count($files); $f++)
@@ -1171,6 +1179,7 @@ class theme
 
 	    // settings
 	    $settings['homepage'] = $website->homepage;
+        $settings['favicon'] = $website->favicon;
 
         $zip = new zipfile();
         $zip->addFile(var_export($website->languages, true), 'languages.var_export');
@@ -1406,6 +1415,7 @@ class theme
                     {
                         $property_categories_old = explode(',', $property->value);
                         $property_categories_new = array();
+
                         foreach($property_categories_old as $oc)
                             $property_categories_new[] = $structure[$oc]->id;
                         $property->value = implode(',', $property_categories_new);

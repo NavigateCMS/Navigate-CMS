@@ -702,24 +702,28 @@ class block
         global $theme;
 
         $block = null;
-        foreach($theme->block_groups as $key => $bg)
+
+        if(is_array($theme->block_groups))
         {
-            // block_group matches?
-            // if we don't have a block_group, find the first block_group block with the code requested
-            if($bg->id == $block_group || empty($block_group))
+            foreach($theme->block_groups as $key => $bg)
             {
-                for($i=0; $i < count($bg->blocks); $i++)
+                // block_group matches?
+                // if we don't have a block_group, find the first block_group block with the code requested
+                if($bg->id == $block_group || empty($block_group))
                 {
-                    if($bg->blocks[$i]->id == $block_code)
+                    for($i=0; $i < count($bg->blocks); $i++)
                     {
-                        $block = $bg->blocks[$i];
-                        $block->_block_group_id = $bg->id;
-                        break;
+                        if($bg->blocks[$i]->id == $block_code)
+                        {
+                            $block = $bg->blocks[$i];
+                            $block->_block_group_id = $bg->id;
+                            break;
+                        }
                     }
                 }
+                if(!empty($block))
+                    break;
             }
-            if(!empty($block))
-                break;
         }
 
         return $block;
