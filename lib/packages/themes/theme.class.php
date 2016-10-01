@@ -339,8 +339,13 @@ class theme
                         $stylesheets = $ws->content_stylesheets('array', "content", false, $this);
 
                         $html_pre = '<html><head>';
-                        foreach($stylesheets as $ss)
-                            $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
+
+                        if(!empty($stylesheets) && is_array($stylesheets))
+                        {
+                            foreach($stylesheets as $ss)
+                                $html_pre.= '<link rel="stylesheet" type="text/css" href="'.$ss.'" />';
+                        }
+
                         $html_pre.= '</head><body><div id="navigate-theme-content-sample" style=" width: 99%; ">';
 
                         foreach($grid_samples as $gs)
@@ -430,8 +435,9 @@ class theme
 
     public function import_sample($ws=null)
     {
-        global $website;
         global $DB;
+        global $website;
+        global $theme;
 	    global $events;
 
         if(is_null($ws))
@@ -593,7 +599,7 @@ class theme
         }
 
 
-        // items
+        // elements
         $items = array();
         if(file_exists($ptf.'/items.var_export'))
             eval('$items_or = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/items.var_export')).';');
@@ -764,12 +770,10 @@ class theme
             $new_selection = array();
             for($bi=0; $bi < count($block_group->blocks); $bi++)
             {
-                if(is_numeric($block_group->blocks[$bi]))
-                    $new_selection[] = $blocks[$block_group->blocks[$bi]]->id;
-                else if(!empty($block_groups->blocks[$bi]))
-                    $new_selection[] = $block_group->blocks[$bi];
-                else
-                    $new_selection[] = $block_group->blocks[$bi];
+                if($block_group->blocks[$bi]['type'] == 'block')
+                    $block_group->blocks[$bi]['id'] = $blocks[ $block_group->blocks[$bi]['id'] ]->id;
+
+                $new_selection[] = $block_group->blocks[$bi];
             }
             $block_group->blocks = $new_selection;
 
@@ -833,20 +837,19 @@ class theme
 
         // translate website options; check for forced multilanguage options!
 	    $theme_options = array();
-        for($toi=0; $toi < count($ws->theme_options); $toi++)
+        for($toi=0; $toi < count($theme->options); $toi++)
         {
-            $to = $ws->theme_options[$toi];
-
-            if(empty($to->dvalue))
-                continue;
+            $to = $theme->options[$toi];
+            $to->value = $ws->theme_options->{$to->id};
 
             switch($to->type)
             {
                 case 'file':
                 case 'image':
+                    // is multi-language forced for this option?
 					if(in_array($to->multilanguage, array('true', '1')))
 					{
-						foreach($to->dvalue as $olang => $oval)
+						foreach($to->value as $olang => $oval)
 						{
 							if(isset($files[$oval]->id))
 								$to->value[$olang] = $files[$oval]->id;
@@ -854,15 +857,16 @@ class theme
 					}
 					else
 					{
-						if(isset($files[$to->dvalue]->id))
-							$to->value = $files[$to->dvalue]->id;
+						if(isset($files[$to->value]->id))
+							$to->value = $files[$to->value]->id;
 					}
                     break;
 
                 case 'category':
+                    // is multi-language forced for this option?
 					if(in_array($to->multilanguage, array('true', '1')))
 					{
-						foreach($to->dvalue as $olang => $oval)
+						foreach($to->value as $olang => $oval)
 						{
 							if(isset($structure[$oval]->id))
 								$to->value[$olang] = $structure[$oval]->id;
@@ -870,15 +874,16 @@ class theme
 					}
 					else
 					{
-						if(isset($structure[$to->dvalue]->id))
-                            $to->value = $structure[$to->dvalue]->id;
+						if(isset($structure[$to->value]->id))
+                            $to->value = $structure[$to->value]->id;
 					}
                     break;
 
                 case 'categories':
+                    // is multi-language forced for this option?
 					if(in_array($to->multilanguage, array('true', '1')))
 					{
-						foreach($to->dvalue as $olang => $oval)
+						foreach($to->value as $olang => $oval)
 						{
 							$property_categories_old = explode(',', $oval);
 		                    $property_categories_new = array();
@@ -890,7 +895,7 @@ class theme
 					}
 					else
 					{
-	                    $property_categories_old = explode(',', $to->dvalue);
+	                    $property_categories_old = explode(',', $to->value);
 	                    $property_categories_new = array();
 	                    foreach($property_categories_old as $oc)
 	                        $property_categories_new[] = $structure[$oc]->id;
@@ -904,9 +909,7 @@ class theme
             }
 
 	        // convert theme option definition to website option value
-	        $theme_options[$to->id] = $to->dvalue;
-            if(isset($to->value))
-	            $theme_options[$to->id] = $to->value;
+            $theme_options[$to->id] = $to->value;
         }
 
 	    $ws->theme_options = $theme_options;
@@ -1144,6 +1147,19 @@ class theme
             }
         }
 
+        // add files selected as theme_options
+        foreach($theme->options as $to)
+        {
+            if($to->type == 'image' || $to->type == 'file')
+            {
+                $to_value = $website->theme_options->{$to->id};
+                if(is_array($to_value))
+                    $files = array_merge($files, $to_value);
+                else
+                    $files[] = $to_value;
+            }
+        }
+
         // files
         $files = array_unique($files);
         for($f=0; $f < count($files); $f++)
@@ -1158,7 +1174,7 @@ class theme
 
         $zip = new zipfile();
         $zip->addFile(var_export($website->languages, true), 'languages.var_export');
-        $zip->addFile(var_export($theme->options, true), 'theme_options.var_export');
+        $zip->addFile(var_export($website->theme_options, true), 'theme_options.var_export');
         $zip->addFile(var_export($categories, true), 'structure.var_export');
         $zip->addFile(var_export($items, true), 'items.var_export');
         $zip->addFile(var_export($block_groups, true), 'block_groups.var_export');

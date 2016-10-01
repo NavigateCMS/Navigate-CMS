@@ -3,6 +3,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/blocks/block_group.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
+require_once(NAVIGATE_PATH.'/lib/packages/extensions/extension.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 
 function run()
