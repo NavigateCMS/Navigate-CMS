@@ -3877,6 +3877,12 @@
 				<target>No s'ha trobat cap resultat</target>
 			</segment>
 		</unit>
+		<unit id="646">
+			<segment>
+				<source>Show all unselectable blocks</source>
+				<target>Mostrar tots els blocs no sel·leccionables</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

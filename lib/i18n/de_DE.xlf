@@ -3877,6 +3877,12 @@
 				<target>Keine Ergebnisse</target>
 			</segment>
 		</unit>
+		<unit id="646">
+			<segment>
+				<source>Show all unselectable blocks</source>
+				<target>Alle unselectable Blöcke</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

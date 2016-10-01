@@ -2676,7 +2676,7 @@ function block_group_form($item)
 
                                 $classes = 'block_group_block ui-state-default';
                                 if(!empty($allowed_types) && !in_array($b->type, $allowed_types))
-                                    $classes .= ' ui-state-disabled';
+                                    $classes .= ' ui-state-disabled hidden';
 
                                 $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="block">'.
                                             '<div class="actions">
@@ -2691,6 +2691,7 @@ function block_group_form($item)
                             $block_elements
                         )
                     ).'
+                        <div class="navigate-block_group-accordion-info-link hidden"><i class="fa fa-eye-slash"></i>&nbsp;&nbsp;<a href="#">'.t(646, "Show all unselectable blocks").'</a></div>
                     </div>
                     <h3><i class="fa fa-fw fa-cubes"></i> '.t(543, 'Block type').'</h3>
                     <div>

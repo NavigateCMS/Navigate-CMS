@@ -3877,6 +3877,12 @@
 				<target>No results found</target>
 			</segment>
 		</unit>
+		<unit id="646">
+			<segment>
+				<source>Show all unselectable blocks</source>
+				<target>Show all unselectable blocks</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

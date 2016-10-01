@@ -2455,6 +2455,25 @@ ul.ui-sortable li.tagit-choice
 }
 
 
+
+.navigate-block_group-accordion-info-link,
+.navigate-block_group-accordion-info-link a
+{
+	font-size: 10px;
+	font-style: italic;
+	color: #aaa;
+	float: right;
+	text-decoration: none;
+	clear: both;
+}
+
+.navigate-block_group-accordion-info-link:hover,
+.navigate-block_group-accordion-info-link:hover a
+{
+	color: #333;
+}
+
+
 #navigate_grid_color_picker
 {
     position: absolute;
