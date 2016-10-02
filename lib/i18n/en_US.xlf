@@ -1749,8 +1749,8 @@
 		</unit>
 		<unit id="291">
 			<segment>
-				<source>Last version</source>
-				<target>Last version</target>
+				<source>Latest version</source>
+				<target>Latest version</target>
 			</segment>
 		</unit>
 		<unit id="292">

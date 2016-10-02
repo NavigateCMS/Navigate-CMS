@@ -402,6 +402,8 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				var property_'.$property->id.'_lmap = null;
 			    var marker = null;
 			    
+			    L.Icon.Default.imagePath = "'.NAVIGATE_URL.'/lib/external/leaflet/images";
+			    
 			    // initialize leaflet map
                 property_'.$property->id.'_lmap = L.map(
                     "property-'.$property->id.'-map",
