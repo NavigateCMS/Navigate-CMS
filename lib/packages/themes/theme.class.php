@@ -880,6 +880,23 @@ class theme
 					}
                     break;
 
+                case 'element':
+                    // is multi-language forced for this option?
+					if(in_array($to->multilanguage, array('true', '1')))
+					{
+						foreach($to->value as $olang => $oval)
+						{
+							if(isset($items[$oval]->id))
+								$to->value[$olang] = $items[$oval]->id;
+						}
+					}
+					else
+					{
+						if(isset($items[$to->value]->id))
+                            $to->value = $items[$to->value]->id;
+					}
+                    break;
+
                 case 'categories':
                     // is multi-language forced for this option?
 					if(in_array($to->multilanguage, array('true', '1')))
@@ -1036,8 +1053,6 @@ class theme
             $tmp = new item();
             $tmp->load($a_items[$i]);
 
-            //$properties['item'][$tmp->id] = property::load_properties_associative('item', $tmp->template, 'item', $tmp->id);
-
 	        $template_id = $tmp->template;
 	        if($tmp->embedding == 1)
 	        {
@@ -1055,6 +1070,13 @@ class theme
                 foreach($properties['item'][$tmp->id] as $property)
                     if($property->type == 'image' || $property->type == 'file')
                         $files[] = $property->value;
+            }
+
+            // add files referenced in gallery
+            if(is_array($tmp->galleries[0]))
+            {
+                $gallery_images = array_keys($tmp->galleries[0]);
+                $files = array_merge($files, $gallery_images);
             }
 
             $items[$tmp->id] = $tmp;
@@ -1419,6 +1441,23 @@ class theme
                         foreach($property_categories_old as $oc)
                             $property_categories_new[] = $structure[$oc]->id;
                         $property->value = implode(',', $property_categories_new);
+                    }
+                    break;
+
+                case 'element':
+                    // is multi-language forced for this property?
+                    if(in_array($property->multilanguage, array('true', '1')))
+                    {
+                        foreach($property->value as $olang => $oval)
+                        {
+                            if(isset($items[$oval]->id))
+                                $property->value[$olang] = $items[$oval]->id;
+                        }
+                    }
+                    else
+                    {
+                        if(isset($items[$property->value]->id))
+                            $property->value = $items[$property->value]->id;
                     }
                     break;
 
