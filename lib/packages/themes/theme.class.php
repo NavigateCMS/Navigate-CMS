@@ -1054,7 +1054,8 @@ class theme
             $tmp->load($a_items[$i]);
 
 	        $template_id = $tmp->template;
-	        if($tmp->embedding == 1)
+
+	        if($tmp->association != "free" && $tmp->embedding == 1)
 	        {
 		        // we have to get the template set in the category of the item
 				$template_id = $DB->query_single('template', 'nv_structure', ' id = '.protect($tmp->category).' AND website = '.$website->id);
