@@ -569,10 +569,22 @@ function structure_form($item)
             }
         }
 
+        if(!empty($item->parent))
+        {
+            $parent = new structure();
+            $parent->load($item->parent);
+
+            $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$parent->id.'">
+                                        <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_first.png"> 
+                                        <small>('.strtolower(t(84, 'Parent')).')</small> '.$parent->dictionary[$website->languages_list[0]]["title"].
+                                    '</a>';
+        }
+
         if(!empty($previous_brother))
-            $extra_actions[] = '<a href="?fid=structure&act=edit&id='.$previous_brother.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_previous.png"> '.t(501, 'Previous').': '.$previous_brother_title.'</a>';
+            $extra_actions[] = '<a href="?fid=structure&act=edit&id='.$previous_brother.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_previous.png"> <small>('.strtolower(t(501, 'Previous')).')</small> '.$previous_brother_title.'</a>';
+
         if(!empty($next_brother))
-        $extra_actions[] = '<a href="?fid=structure&act=edit&id='.$next_brother.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_next.png"> '.t(502, 'Next').': '.$next_brother_title.'</a>';
+            $extra_actions[] = '<a href="?fid=structure&act=edit&id='.$next_brother.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_next.png"> <small>('.strtolower(t(502, 'Next')).')</small> '.$next_brother_title.'</a>';
     }
 
     $events->add_actions(
