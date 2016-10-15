@@ -26,8 +26,34 @@ function nvweb_archive($vars=array())
 	}
 	else if(!empty($vars['categories']))
 	{
-		$categories = explode(',', $vars['categories']);
-		$categories = array_filter($categories); // remove empty elements
+        if(!is_numeric($vars['categories']) && strpos($vars['categories'], ',')===false)
+        {
+            // we want to get the categories from a specific property of the current page
+            $categories = nvweb_properties(array(
+                'property'	=> 	$vars['categories']
+            ));
+
+            if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+            {
+                $categories = nvweb_properties(array(
+                    'mode'	    =>	'block_group_block',
+                    'property'  => $vars['categories'],
+                    'id'        =>	$vars['nvlist_parent_item']->id,
+                    'uid'       => $vars['nvlist_parent_item']->uid
+                ));
+            }
+
+            if(!is_array($categories))
+            {
+                $categories = explode(',', $categories);
+                $categories = array_filter($categories); // remove empty elements
+            }
+        }
+        else
+        {
+		    $categories = explode(',', $vars['categories']);
+		    $categories = array_filter($categories); // remove empty elements
+        }
 
         if($vars['children']=='true')
             $categories = nvweb_menu_get_children($categories);
