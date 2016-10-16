@@ -9,6 +9,7 @@ function nvweb_liveedit($vars=array())
     global $lang;
     global $theme;
     global $session;
+    global $webuser;
 
 	$out = array();
 	$url = '';
@@ -99,6 +100,7 @@ function nvweb_liveedit($vars=array())
         $out[] = '      <span>'.t(160, 'Type').' <strong>'.$page_type.'</strong></span>';
         $out[] = '      <span>ID <strong>'.$current['id'].'</strong></span>';
         $out[] = '      <span>'.t(46, 'Language').' <strong>'.language::name_by_code($session['lang']).'</strong></span>';
+        $out[] = '      <span>'.t(647, 'Webuser').' <strong>'.(empty($webuser->id)? '('.mb_strtolower(t(581, "None")).')' : $webuser->username.' ('.$webuser->id.')').'</strong></span>';
 
         /* elements associated to this structure entry
         if($current['type']=='structure')

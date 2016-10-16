@@ -3883,6 +3883,12 @@
 				<target>Mostrar todos los bloques no seleccionables</target>
 			</segment>
 		</unit>
+		<unit id="647">
+			<segment>
+				<source>Web user</source>
+				<target>Usuario web</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>

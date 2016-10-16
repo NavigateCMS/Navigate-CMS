@@ -3883,6 +3883,12 @@
 				<target>Mostrar tots els blocs no sel·leccionables</target>
 			</segment>
 		</unit>
+		<unit id="647">
+			<segment>
+				<source>Web user</source>
+				<target>Usuari web</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>
