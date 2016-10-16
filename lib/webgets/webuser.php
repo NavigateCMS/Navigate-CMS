@@ -85,29 +85,44 @@ function nvweb_webuser($vars=array())
             $signin_username = $_REQUEST[(empty($vars['username_field'])? 'signin_username' : $vars['username_field'])];
             $signin_password = $_REQUEST[(empty($vars['password_field'])? 'signin_password' : $vars['password_field'])];
 
-            $signed_in = $webuser->authenticate($webuser_website, $signin_username, $signin_password);
-            if(!$signed_in)
+            // a page may have several forms, which one do we have to check?
+            if(!empty($vars['form']))
             {
-                $message = $webgets[$webget]['translations']['login_incorrect'];
+                list($field_name, $field_value) = explode('=', $vars['form']);
+                if($_POST[$field_name]!=$field_value)
+                    return;
+            }
 
-                if(empty($vars['notify']))
-                    $vars['notify'] = 'inline';
+            // ignore empty (or partial empty) forms
+            if(!empty($signin_username) && !empty($signin_password))
+            {
+                $signed_in = $webuser->authenticate($webuser_website, $signin_username, $signin_password);
 
-                switch($vars['notify'])
+                if(!$signed_in)
                 {
-                    case 'alert':
-                        nvweb_after_body('js', 'alert("'.$message.'");');
-                        break;
+                    $message = $webgets[$webget]['translations']['login_incorrect'];
 
-                    case 'inline':
-                        $out = '<div class="nvweb-signin-form-error">'.$message.'</div>';
-                        break;
+                    if(empty($vars['notify']))
+                        $vars['notify'] = 'inline';
 
-                    // javascript callback
-                    default:
-                        nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
-                        break;
+                    switch($vars['notify'])
+                    {
+                        case 'alert':
+                            nvweb_after_body('js', 'alert("'.$message.'");');
+                            break;
+
+                        case 'inline':
+                            $out = '<div class="nvweb-signin-form-error">'.$message.'</div>';
+                            break;
+
+                        // javascript callback
+                        default:
+                            nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                            break;
+                    }
                 }
+                else
+                    $webuser->set_cookie();
             }
             break;
 
