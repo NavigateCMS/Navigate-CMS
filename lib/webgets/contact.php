@@ -70,12 +70,15 @@ function nvweb_contact($vars=array())
                 if(!empty($vars['form']))
                 {
                     list($field_name, $field_value) = explode('=', $vars['form']);
+                    $field_name = trim($field_name);
+                    $field_value = trim($field_value);
                     if($_POST[$field_name]!=$field_value)
                         return;
                 }
 
-                // check if this send request really comes from the website and not from a spambot
-                if(parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain)
+                // try to check if this send request really comes from the website and not from a spambot
+                if( parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain &&
+                    parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->domain )
                     return;
 
                 // prepare fields and labels
@@ -89,6 +92,8 @@ function nvweb_contact($vars=array())
                     {
                         global $webgets;
                         global $theme;
+
+                        $key = trim($key);
 
                         $tmp = $theme->t($key);
 
@@ -114,6 +119,7 @@ function nvweb_contact($vars=array())
                 {
                     foreach($required as $field)
                     {
+                        $field = trim($field);
                         $value = trim($_POST[$field]);
                         if(empty($value))
                             $errors[] = $fields[$field];
@@ -227,6 +233,8 @@ function nvweb_contact_generate($fields)
     {
         foreach($fields as $field => $label)
         {
+            $field = trim($field); // remove unwanted spaces
+
            if(substr($field, -2, 2)=='[]')
                $field = substr($field, 0, -2);
 
