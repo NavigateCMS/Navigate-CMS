@@ -132,7 +132,7 @@ function run()
 						  LEFT JOIN nv_users u
 						  			 ON u.id = i.author
 							  WHERE '.$where.'	
-						   GROUP BY i.id 
+						   GROUP BY i.id, d.text, d.lang, u.username						   
 						   ORDER BY '.$orderby.' 
 							  LIMIT '.$max.'
 							 OFFSET '.$offset;

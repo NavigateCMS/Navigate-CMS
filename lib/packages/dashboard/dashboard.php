@@ -511,15 +511,17 @@ function dashboard_panel_recent_changes($params)
 
     /* NV USER LOG */
     $DB->query('
-        SELECT u.username, ul.action, f.lid as function_lid, f.icon as function_icon, f.id as function_id, ul.item_title as title, ul.date, ul.item as item_id
-          FROM nv_users_log ul, nv_users u, nv_functions f
-         WHERE u.id = ul.user
-           AND ul.action IN ("save", "remove")
-           AND website = '.$website->id.'
-           AND f.id = ul.function
-      GROUP BY u.username, ul.function, ul.item
-      ORDER BY date DESC
-      LIMIT 10
+        SELECT a.username, a.action, a.function_lid, a.function_icon, a.function_id, a.item_id, a.title, MAX(a.action_date) as date
+          FROM (SELECT u.username, ul.action, f.lid as function_lid, f.icon as function_icon, f.id as function_id, ul.item as item_id, ul.item_title as title, ul.date as action_date
+                  FROM nv_users_log ul, nv_users u, nv_functions f
+                 WHERE u.id = ul.user
+                   AND ul.action IN ("save", "remove")
+                   AND ul.website = 1
+                   AND f.id = ul.function
+                ORDER BY action_date DESC
+              LIMIT 200) a
+        GROUP BY a.username, a.action, a.function_lid, a.function_icon, a.function_id, a.item_id, a.title                        
+        LIMIT 10
     ', 'array');
     $users_log = $DB->result();
 

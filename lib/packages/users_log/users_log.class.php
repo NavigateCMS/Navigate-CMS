@@ -16,8 +16,7 @@ class users_log
 		global $DB;
 		global $website;
 		
-		if($DB->query('SELECT * FROM nv_users_log
-						WHERE id = '.intval($id)))
+		if($DB->query('SELECT * FROM nv_users_log WHERE id = '.intval($id)))
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data);
@@ -133,7 +132,7 @@ class users_log
 		// last month only!
 		$DB->query('
 			SELECT DISTINCT nvul.website, nvul.function, nvul.item, nvul.item_title,
-							nvf.lid as function_title, nvf.icon as function_icon
+							nvf.lid as function_title, nvf.icon as function_icon, nvul.date
 			FROM nv_users_log nvul, 
 				 nv_functions nvf
 			WHERE nvul.user = '.protect($user->id).'
@@ -168,7 +167,7 @@ class users_log
 
 		// last month only!
 		$DB->query('
-			SELECT DISTINCT nvul.website, nvul.function, nvul.item
+			SELECT DISTINCT nvul.website, nvul.function, nvul.item, nvul.date
 			FROM nv_users_log nvul
 			WHERE nvul.user = '.protect($user->id).'
 			  AND nvul.function = '.protect($function).'

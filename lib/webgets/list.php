@@ -85,7 +85,6 @@ function nvweb_list($vars=array())
         }
 	}
 
-
 	if($vars['children']=='true')
         $categories = nvweb_menu_get_children($categories);
 

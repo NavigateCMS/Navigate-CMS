@@ -175,8 +175,8 @@ class webuser_vote
 			   AND object  = '.protect($object).'
                AND object_id = '.protect($object_id).' 
 			   AND date > '.$fromDate.'
-			 ORDER BY date ASC'
-		);
+			 ORDER BY date ASC
+        ');
 					 
 		$data = $DB->result();
 		

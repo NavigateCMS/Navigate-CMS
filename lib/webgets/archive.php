@@ -177,7 +177,6 @@ function nvweb_archive_render($type, $dataset, $archive_url, $categories)
     }
 
     $out = implode("\n", $out);
-
     return $out;
 }
 

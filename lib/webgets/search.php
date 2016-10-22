@@ -196,9 +196,9 @@ function nvweb_search($vars=array())
         // NOTE: anyway, having >500 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
 
 		$DB->query('	
-			SELECT SQL_CALC_FOUND_ROWS i.id as id, i.permission, i.date_published, i.date_unpublish,
-			        i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-			        i.position as position, wd.text as title
+			SELECT SQL_CALC_FOUND_ROWS i.id as id, ANY_VALUE(i.permission), ANY_VALUE(i.date_published), ANY_VALUE(i.date_unpublish),
+			        ANY_VALUE(i.date_to_display), COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+			        ANY_VALUE(i.position) as position, ANY_VALUE(wd.text) as title
 			  FROM nv_items i, nv_webdictionary d
 			  LEFT JOIN nv_webdictionary wd
 			    ON wd.node_id = d.node_id
@@ -227,7 +227,6 @@ function nvweb_search($vars=array())
 			 LIMIT '.$vars['items'].'
 			OFFSET '.$offset
 		);
-
 
 		$rs = $DB->result();
 		$total = $DB->foundRows();
