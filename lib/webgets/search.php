@@ -191,9 +191,36 @@ function nvweb_search($vars=array())
         $orderby = nvweb_list_get_orderby($order);
 
         if(empty($vars['items']) || $vars['items']=='0')
+        {
             $vars['items'] = 500; //2147483647; // maximum integer
+            // NOTE: having >500 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
+        }
+        else if(!is_numeric($vars['items']))
+        {
+            $max_items = "";
+
+            // the number of items is defined by a property
+            $max_items = nvweb_properties(array(
+                'property'	=> 	$vars['items']
+            ));
+
+            if(empty($max_items) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+            {
+                $max_items = nvweb_properties(array(
+                    'mode'	    =>	'block_group_block',
+                    'property'  => $vars['items'],
+                    'id'        =>	$vars['nvlist_parent_item']->id,
+                    'uid'       => $vars['nvlist_parent_item']->uid
+                ));
+            }
+
+            if(!empty($max_items))
+                $vars['items'] = $max_items;
+            else
+                $vars['items'] = 500; // default maximum
+        }
+
         // TODO: try to optimize nvlist generation to use less memory and increase the maximum number of items
-        // NOTE: anyway, having >500 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
 
 		$DB->query('	
 			SELECT SQL_CALC_FOUND_ROWS i.id as id, ANY_VALUE(i.permission), ANY_VALUE(i.date_published), ANY_VALUE(i.date_unpublish),

@@ -596,11 +596,12 @@ class layout
 			{
 				$main_title = $ws->name;
 				$main_url = $url;
+                $main_config_url = '?fid=websites&act=2&id='.$ws->id;
 			}
 			else			
 				$extruder .= '<div class="voice {}" style=" display: none; ">
 								<a href="'.$url.'" target="_blank"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/house_link.png" width="16px" height="16px" /></a>
-								<a class="label" href="?act=0&wid='.$ws->id.'">'.$ws->name.'</a>
+								<a class="label" href="?act=0&wid='.$ws->id.'">'.$ws->name.'</a>								
 							  </div>';
 		}
 
