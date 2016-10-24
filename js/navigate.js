@@ -1868,7 +1868,7 @@ function navigate_dropbox_load_video(name, value)
                 return false;
             }
 
-            $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_url+"\" />");
+            $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_cache_absolute+"&width=80&height=60&border=false\" />");
 
             if(data.mime=='video/youtube' || data.mime=='video/vimeo')
             {

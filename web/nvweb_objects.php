@@ -140,8 +140,9 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			
 			$path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
 			
-			$etag_add = '';		
-		
+			$etag_add = '';
+
+            clearstatcache();
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filemtime($path).'-'.$item->permission.$etag_add);
 						
 			header('ETag: "'.$etag.'"');
@@ -200,4 +201,5 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
         $DB->disconnect();
 	exit;
 }
+
 ?>

@@ -540,6 +540,14 @@ function nvweb_properties_render($property, $vars)
             if(isset($vars['height']))
                 $add .= ' height="'.$vars['height'].'" ';
 
+            $url_add = '&type=image';
+            if(isset($vars['width']))
+                $url_add .= '&width='.$vars['width'].'';
+            if(isset($vars['height']))
+                $url_add .= '&height='.$vars['height'].'';
+            if(isset($vars['border']))
+                $url_add .= '&border='.$vars['border'].'';
+
             if(strpos($video_id, '#')!==false)
                 list($provider, $reference) = explode("#", $video_id);
 
@@ -588,11 +596,11 @@ function nvweb_properties_render($property, $vars)
                     break;
 
                 case 'thumbnail_url':
-                    $out = $file->extra['thumbnail_url'];
+                    $out = file::file_url($file->extra['thumbnail_cache']).$url_add;
                     break;
 
                 case 'thumbnail':
-                    $out = '<img src="'.$file->extra['thumbnail_url'].'" class="'.$vars['class'].'" '.$add.' />';
+                    $out = '<img src="'.file::file_url($file->extra['thumbnail_cache']).$url_add.'" class="'.$vars['class'].'" '.$add.' />';
                     break;
 
                 case 'reference':
@@ -707,7 +715,7 @@ function nvweb_properties_render($property, $vars)
 
 		default:	
 	}
-	
+
 	return $out;	
 }
 

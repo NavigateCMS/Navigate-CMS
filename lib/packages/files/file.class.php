@@ -191,6 +191,8 @@ class file
 
     public function load_from_youtube($reference, $cache=true)
     {
+        global $website;
+
         // check cache before trying to download oembed info
         if($cache)  $cache = 30 * 24 * 60; // 30 days
         else        $cache = 0;
@@ -221,12 +223,16 @@ class file
         $this->permission	= 0;
         $this->enabled		= 1;
 
+        $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg', "youtube", $reference);
+
         $this->extra        = array(
             'reference'  =>  $reference,
             'link'      =>  'https://www.youtube.com/watch?v='.$reference,
             'thumbnail' =>  'https://img.youtube.com/vi/'.$reference.'/default.jpg',
-            'thumbnail_big' => 'https://img.youtube.com/vi/'.$reference.'/0.jpg',
+            'thumbnail_big' => 'https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg',
             'thumbnail_url' => str_replace('http://', 'https://', $info->thumbnail_url),
+            'thumbnail_cache' => 'private/'.$website->id.'/thumbnails/video-youtube-'.$reference,
+            'thumbnail_cache_absolute' => file::file_url('private/'.$website->id.'/thumbnails/video-youtube-'.$reference).'&type=image',
             'duration' => '',
             'embed_code'  => '<iframe src="https://www.youtube.com/embed/'.$reference.'?feature=oembed&rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>'
         );
@@ -234,6 +240,8 @@ class file
 
     public function load_from_vimeo($reference, $cache=true)
     {
+        global $website;
+
         if($cache)  $cache = 30 * 24 * 60; // 30 days
         else        $cache = 0;
 
@@ -260,13 +268,40 @@ class file
         $this->permission	= 0;
         $this->enabled		= 1;
 
+        $this->video_thumbnail_retrieve($info->thumbnail_url, "vimeo", $reference);
+
         $this->extra        = array(
             'reference'  =>  $info->video_id,
             'link'      =>  'https://www.vimeo.com/'.$reference,
             'thumbnail_url' => str_replace('http://', 'https://', $info->thumbnail_url),
+            'thumbnail_big' => str_replace('http://', 'https://', $info->thumbnail_url),
+            'thumbnail_cache' => 'private/'.$website->id.'/thumbnails/video-vimeo-'.$reference,
+            'thumbnail_cache_absolute' => file::file_url('private/'.$website->id.'/thumbnails/video-vimeo-'.$reference).'&type=image',
             'duration' => '',
             'embed_code'  => '<iframe src="https://player.vimeo.com/video/'.$reference.'?" frameborder="0" allowfullscreen></iframe>'
         );
+    }
+
+    public function video_thumbnail_retrieve($image_url, $provider, $reference)
+    {
+        global $website;
+
+        // check if we have the image already downloaded
+        $video_thumbnail_path = NAVIGATE_PRIVATE.'/'.$website->id.'/thumbnails/video-'.$provider.'-'.$reference;
+
+        clearstatcache();
+        if( !file_exists($video_thumbnail_path) ||
+            filemtime($video_thumbnail_path) > 7 * 86400 ||
+            filesize($video_thumbnail_path) < 256
+        )
+        {
+            // download the image from the source
+            $video_thumbnail_data = file_get_contents($image_url);
+            file_put_contents($video_thumbnail_path, $video_thumbnail_data);
+        }
+
+        // return the path to the real file to be able to create a thumbnail
+        return $video_thumbnail_path;
     }
 	
 	
@@ -1133,15 +1168,23 @@ class file
         global $website;
 
 		if(is_numeric($this->id))
-			$path = NAVIGATE_PRIVATE.'/'.$this->website.'/files/'.$this->id;		
+		{
+            $path = NAVIGATE_PRIVATE . '/' . $this->website . '/files/' . $this->id;
+        }
 		else
         {
             if(file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$this->id))
-                $path = NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$this->id;
+            {
+                $path = NAVIGATE_PATH . '/themes/' . $website->theme . '/' . $this->id;
+            }
             else if(file_exists(NAVIGATE_PATH.'/'.$this->id))
-                $path = NAVIGATE_PATH.'/'.$this->id;
+            {
+                $path = NAVIGATE_PATH . '/' . $this->id;
+            }
             else
+            {
                 $path = $this->id;
+            }
         }
 
 		return $path;
@@ -2232,6 +2275,7 @@ class file
 	    else
 		    $url = NAVIGATE_DOWNLOAD.'?id='.$id.$disposition;
 
+
         return $url;
     }
 
@@ -2293,7 +2337,6 @@ class file
 
 		return $tmp;
 	}
-
 }
 
 ?>

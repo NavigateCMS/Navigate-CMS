@@ -2308,7 +2308,6 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 		$paginator_func = function() use ($params, $paginator_html)
 		{
 			global $html;
-
 			$html = nvweb_replace_tag_contents(
 				$params['paginator_tag_id'],
 				$paginator_html,
