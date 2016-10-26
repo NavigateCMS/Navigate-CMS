@@ -1929,7 +1929,7 @@ function nvweb_list_parse_filters($raw, $object='item')
             {
                 foreach($value as $comp_type => $comp_value)
                 {
-                    if(substr($comp_value, 0, 1)=='$')
+                    if(!is_array($comp_value) && substr($comp_value, 0, 1)=='$')
                     {
                         if(!isset($_REQUEST[substr($comp_value, 1)]))
                             continue;   // ignore this filter
@@ -1949,6 +1949,33 @@ function nvweb_list_parse_filters($raw, $object='item')
                                                     element = "item" AND
                                                     value '.$comparators[$comp_type].' '.protect($comp_value, null, true).'
                                             )';
+                    }
+                    else if($comp_type == 'like' || $comp_type == 'not_like')
+                    {
+                        if(is_array($comp_value))
+                        {
+                            // multivalue, query with REGEXP: http://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_regexp
+                            $filters[] = ' AND i.id IN ( 
+                                             SELECT node_id 
+                                               FROM nv_properties_items
+                                              WHERE website = '.$website->id.' AND
+                                                    property_id = '.protect($key).' AND
+                                                    element = "item" AND
+                                                    value '.($comp_type=='like'? 'REGEXP' : 'NOT REGEXP').' "'.implode('|', $comp_value).'"
+                                            )';
+                        }
+                        else
+                        {
+                            // single value, standard LIKE
+                            $filters[] = ' AND i.id IN ( 
+                                             SELECT node_id 
+                                               FROM nv_properties_items
+                                              WHERE website = '.$website->id.' AND
+                                                    property_id = '.protect($key).' AND
+                                                    element = "item" AND
+                                                    value '.($comp_type=='like'? 'LIKE' : 'NOT LIKE').' '.protect('%'.$comp_value.'%', null, true).'
+                                            )';
+                        }
                     }
                     else if($comp_type == 'in' || $comp_type == 'nin')
                     {
@@ -2037,7 +2064,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                 {
                     foreach($value as $comp_type => $comp_value)
                     {
-                        if(substr($comp_value, 0, 1)=='$')
+                        if(!is_array($comp_value) && substr($comp_value, 0, 1)=='$')
                         {
                             if(!isset($_REQUEST[substr($comp_value, 1)]))
                                 continue;   // ignore this filter
@@ -2047,7 +2074,22 @@ function nvweb_list_parse_filters($raw, $object='item')
                         }
 
                         if(isset($comparators[$comp_type]))
-                            $filters[] = ' AND '.$field.' '.$comparators[$comp_type].' '.protect($comp_value, null, true);
+                        {
+                            $filters[] = ' AND ' . $field . ' ' . $comparators[$comp_type] . ' ' . protect($comp_value, null, true);
+                        }
+                        else if($comp_type == 'like' || $comp_type == 'not_like')
+                        {
+                            if(is_array($comp_value))
+                            {
+                                // multivalue, query with REGEXP: http://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_regexp
+                                $filters[] = ' AND ' . $field . ' ' . ($comp_type == 'like' ? 'REGEXP' : 'NOT REGEXP') . ' "' . implode('|' . $comp_value) . '"';
+                            }
+                            else
+                            {
+                                // single value, standard LIKE
+                                $filters[] = ' AND ' . $field . ' ' . ($comp_type == 'like' ? 'LIKE' : 'NOT LIKE') . ' ' . protect('%' . $comp_value . '%', null, true);
+                            }
+                        }
                         else if($comp_type == 'in' || $comp_type == 'nin')
                         {
                             if($comp_type == 'nin')
