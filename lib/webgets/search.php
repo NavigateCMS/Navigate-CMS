@@ -55,12 +55,24 @@ function nvweb_search($vars=array())
             if(substr($what, 0, 1)=='-')
             {
                 $likes[] = 'd.text NOT LIKE '.protect('%'.substr($what, 1).'%').
-                           'AND p.value NOT LIKE '.protect('%'.substr($what, 1).'%');
+                            '    AND i.id IN( 
+                                            SELECT p.node_id
+                                             FROM   nv_properties_items p 
+                                             WHERE  p.element = "item" AND 
+                                                    p.website = '.protect($website->id).' AND
+                                                    p.value NOT LIKE '.protect('%'.substr($what, 1).'%').'
+                                        )';
             }
             else
             {
 			    $likes[] = 'd.text LIKE '.protect('%'.$what.'%').
-			               ' OR p.value LIKE '.protect('%'.$what.'%');
+			               '    OR i.id IN( 
+			                        SELECT  p.node_id
+			                         FROM   nv_properties_items p 
+			                         WHERE  p.element = "item" AND 
+			                                p.website = '.protect($website->id).' AND
+			                                p.value LIKE '.protect('%'.$what.'%').'
+                                )';
             }
         }
 
@@ -75,7 +87,9 @@ function nvweb_search($vars=array())
 
         if(!empty($search_archive[2]))
             $vars['categories'] = $search_archive[2];
-		
+
+        $categories = NULL;
+
 		if(isset($vars['categories']))
 		{
 	        if($vars['categories']=='all')
@@ -106,7 +120,7 @@ function nvweb_search($vars=array())
 	                    'property'	=> 	$vars['categories']
 	                ));
 	            }
-	
+
 	            if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
 	            {
 	                $categories = nvweb_properties(array(
@@ -114,7 +128,10 @@ function nvweb_search($vars=array())
 	                    'property' => $vars['categories']
 	                ));
 	            }
-	
+
+	            if(empty($categories))
+	                $categories = $vars['categories'];
+
 	            if(!is_array($categories))
 	            {
 	                $categories = explode(',', $categories);
@@ -220,37 +237,35 @@ function nvweb_search($vars=array())
                 $vars['items'] = 500; // default maximum
         }
 
-        // TODO: try to optimize nvlist generation to use less memory and increase the maximum number of items
-
-		$DB->query('	
-			SELECT SQL_CALC_FOUND_ROWS i.id as id, ANY_VALUE(i.permission), ANY_VALUE(i.date_published), ANY_VALUE(i.date_unpublish),
-			        ANY_VALUE(i.date_to_display), COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-			        ANY_VALUE(i.position) as position, ANY_VALUE(wd.text) as title
-			  FROM nv_items i, nv_webdictionary d
-			  LEFT JOIN nv_webdictionary wd
-			    ON wd.node_id = d.node_id
-			   AND wd.lang =  '.protect($current['lang']).'
-			   AND wd.node_type = "item"
-			   AND wd.website = '.protect($website->id).'
-			  LEFT JOIN nv_properties_items p
-			    ON p.node_id = d.node_id
-			   AND p.element = "item"
-			   AND p.website = '.protect($website->id).'
-			 WHERE i.website = '.$website->id.'
-			   AND i.permission <= '.$permission.'
-			   AND (i.date_published = 0 OR i.date_published < '.core_time().')
-			   AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
-			   AND (i.access = 0 OR i.access = '.$access.')
-			   AND d.website = '.protect($website->id).'
-			   AND d.node_id = i.id
-			   AND d.lang =  '.protect($current['lang']).'
-			   AND (d.node_type = "item" OR d.node_type = "tags")
-			   AND (
-			   	'.implode(' AND ', $likes).'
-			   )
-			   '.(empty($categories)? '' : 'AND category IN('.implode(",", $categories).')').'
-          GROUP BY i.id
-			 '.$orderby.'
+        // TODO: try to optimize search to use less memory and increase the maximum number of items
+		$DB->query('
+            SELECT SQL_CALC_FOUND_ROWS rs.id
+            FROM (
+                SELECT  i.id as id, i.permission, i.date_published, i.date_unpublish,
+                        i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+                        i.position as position, wd.text as title
+                  FROM nv_items i, nv_webdictionary d
+                  LEFT JOIN nv_webdictionary wd
+                    ON wd.node_id = d.node_id
+                   AND wd.lang =  ' . protect($current['lang']) . '
+                   AND wd.node_type = "item"
+                   AND wd.website = ' . protect($website->id) . '			  
+                 WHERE i.website = ' . $website->id . '
+                   AND i.permission <= ' . $permission . '
+                   AND (i.date_published = 0 OR i.date_published < ' . core_time() . ')
+                   AND (i.date_unpublish = 0 OR i.date_unpublish > ' . core_time() . ')
+                   AND (i.access = 0 OR i.access = ' . $access . ')
+                   AND d.website = ' . protect($website->id) . '
+                   AND d.node_id = i.id
+                   AND d.lang =  ' . protect($current['lang']) . '
+                   AND (d.node_type = "item" OR d.node_type = "tags")
+                   AND (
+                    ' . implode(' AND ', $likes) . '
+                   )
+                   ' . (empty($categories) ? '' : 'AND category IN(' . implode(",", $categories) . ')') . '
+                 ' . $orderby . '
+             ) rs
+             GROUP BY rs.id
 			 LIMIT '.$vars['items'].'
 			OFFSET '.$offset
 		);
