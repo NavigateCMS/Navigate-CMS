@@ -579,7 +579,7 @@ function nvweb_object_enabled($object)
 
 	switch($object->permission)
 	{
-		case 2:	//
+		case 2:
 			$enabled = false;
 			break;
 			
@@ -591,7 +591,11 @@ function nvweb_object_enabled($object)
 		default:
 			$enabled = true;
 	}
-		
+
+	// the following check is mainly used for blocks
+	if(property_exists($object, 'enabled') && $enabled)
+        $enabled = ($object->enabled=='1');
+
 	$enabled = $enabled && (empty($object->date_published) || ($object->date_published < core_time()));
 	$enabled = $enabled && (empty($object->date_unpublish) || ($object->date_unpublish > core_time()));
 
@@ -646,7 +650,7 @@ function nvweb_source_url($type, $id, $lang='')
 
     if($type=='theme')
     {
-        // find the first PUBLIC & PUBLISHED article / item / structure element
+        // find the first PUBLIC & PUBLISHED article / element / structure category
         // that is using the template type given in $id
         $template_type = $id;
         $id = '';
