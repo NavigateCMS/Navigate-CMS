@@ -1389,9 +1389,11 @@ function nvweb_list_get_orderby($order)
 
         case 'newest':
         case 'latest':
-        default:
             $orderby = 'ORDER BY pdate DESC';
             break;
+
+        default:
+
     }
 
     return $orderby;
@@ -1873,6 +1875,7 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 function nvweb_list_parse_filters($raw, $object='item')
 {
     global $website;
+    global $current;
 
     $filters = array();
 
@@ -1916,6 +1919,15 @@ function nvweb_list_parse_filters($raw, $object='item')
                     if(empty($value)) // ignore empty values
                         continue;
                 }
+                else if(strpos($value, 'property.') === 0)
+                {
+                    // retrieve the property value
+                    $value = nvweb_properties(
+                        array(
+                            'property' => str_replace("property.", "", $value)
+                        )
+                    );
+                }
 
                 $filters[] = ' AND i.id IN ( SELECT node_id 
                                                FROM nv_properties_items
@@ -1937,6 +1949,15 @@ function nvweb_list_parse_filters($raw, $object='item')
                         $comp_value = $_REQUEST[substr($comp_value, 1)];
                         if(empty($comp_value)) // ignore empty values
                             continue;
+                    }
+                    else if(!is_array($comp_value) && strpos($comp_value, 'property.') === 0)
+                    {
+                        // retrieve the property value
+                        $comp_value = nvweb_properties(
+                            array(
+                                'property' => str_replace("property.", "", $comp_value)
+                            )
+                        );
                     }
 
                     if(isset($comparators[$comp_type]))
@@ -1986,6 +2007,9 @@ function nvweb_list_parse_filters($raw, $object='item')
 
                         if(!is_array($comp_value))
                             $comp_value = explode(",", $comp_value);
+
+                        if(empty($comp_value))
+                            $comp_value = array(0); // avoid SQL query exception
 
                         $filters[] = ' AND i.id IN ( 
                                             SELECT node_id 
@@ -2057,6 +2081,15 @@ function nvweb_list_parse_filters($raw, $object='item')
                         if(empty($value)) // ignore empty values
                             continue;
                     }
+                    else if(strpos($value, 'property.') === 0)
+                    {
+                        // retrieve the property value
+                        $value = nvweb_properties(
+                            array(
+                                'property' => str_replace("property.", "", $value)
+                            )
+                        );
+                    }
 
                     $filters[] = ' AND '.$field.' = '.protect($value);
                 }
@@ -2071,6 +2104,15 @@ function nvweb_list_parse_filters($raw, $object='item')
                             $comp_value = $_REQUEST[substr($comp_value, 1)];
                             if(empty($comp_value)) // ignore empty values
                                 continue;
+                        }
+                        else if(!is_array($comp_value) && strpos($comp_value, 'property.') === 0)
+                        {
+                            // retrieve the property value
+                            $comp_value = nvweb_properties(
+                                array(
+                                    'property' => str_replace("property.", "", $comp_value)
+                                )
+                            );
                         }
 
                         if(isset($comparators[$comp_type]))
@@ -2097,17 +2139,25 @@ function nvweb_list_parse_filters($raw, $object='item')
                             else
                                 $comp_type = 'IN';
 
-                            $filters[] = ' AND '.$field.' '.$comp_type.'('.
-                                implode(
+                            if(is_array($comp_value))
+                            {
+                                $comp_value = implode(
                                     ",",
                                     array_map(
-                                        function($v)
+                                        function ($v)
                                         {
                                             return protect($v);
                                         },
                                         array_values($comp_value)
                                     )
-                                ).')';
+                                );
+                            }
+                            else if(empty($comp_value))
+                            {
+                                $comp_value = 0; // avoid SQL query exception
+                            }
+
+                            $filters[] = ' AND '.$field.' '.$comp_type.'('.$comp_value.')';
                         }
                     }
                 }
