@@ -12,10 +12,10 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 	header('Cache-Control: private');
 	header('Pragma: private');
 
-    $type = $_REQUEST['type'];
-	$id = $_REQUEST['id'];
+    $type = @$_REQUEST['type'];
+	$id = @$_REQUEST['id'];
 	
-	if(!empty($_REQUEST['id']))
+	if(!empty($id))
 	{
 		if(is_numeric($id))
 			$item->load($id);
@@ -26,10 +26,13 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 	if(empty($type) && !empty($item->type)) 
 		$type = $item->type;
 
-	// Check file access authorization
-	$enabled = nvweb_object_enabled($item);
-	if(!$enabled && !$ignorePermissions)
-		$type = 'not_allowed';
+    // if the type requested is not a special type, check its access permissions
+    if(!in_array($type, array("blank", "transparent", "flag")))
+    {
+        $enabled = nvweb_object_enabled($item);
+        if (!$enabled && !$ignorePermissions)
+            $type = 'not_allowed';
+    }
 
     switch($type)
 	{
@@ -48,7 +51,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			
 			$etag = base64_encode($path.filemtime($path));
 			header('ETag: "'.$etag.'"');
-			
+
 			// check the browser cache and stop downloading again the file
 			$cached = file::cacheHeaders(filemtime($path), $etag);			
 
@@ -197,6 +200,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 	}
 	
 	session_write_close();
+
 	if($DB)
         $DB->disconnect();
 	exit;

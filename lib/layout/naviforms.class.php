@@ -523,7 +523,7 @@ class naviforms
                 skin: "navigatecms-cupertino",
                 			    
 			    plugins: [
-				    "compat3x",
+				    "compat3x noneditable",
 				    "advlist autolink nv_link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
@@ -547,6 +547,8 @@ class naviforms
 				
 			    browser_spellcheck: true,
                 spellchecker_language: "'.$lang.'",
+                
+                noneditable_noneditable_class: "fa",    // without this, TinyMCE removes the Font Awesome icons when editing the content
                 
                 media_live_embeds: false, // disable iframe loading (like videos) to allow resizing
                 

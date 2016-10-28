@@ -165,7 +165,7 @@ $current_version = update::latest_installed();
 
         </div>
         <div style="float: right;">
-            <?php echo APP_NAME;?> v<?php echo $current_version->version;?> r<?php echo $current_version->revision;?>, &copy; <?php echo date('Y');?>
+            <?php echo APP_NAME;?> v<?php echo $current_version->version;?>, &copy; <?php echo date('Y');?>
         </div>    
         <div style=" clear: both; "></div>
      </div>
@@ -361,9 +361,7 @@ $(document).ready(function()
         }
     }
 ?>
-
 </html>
-
 <?php
 	$DB->disconnect();
 ?>
