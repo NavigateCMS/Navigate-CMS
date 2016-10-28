@@ -1050,6 +1050,99 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
             break;
 
+        case 'elements':
+            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+            $field[] = '<label>'.$property_name.'</label>';
+
+            $field[] = $naviforms->textfield("property-".$property->id);
+
+	        if(!empty($property->helper))
+	        {
+		        $helper_text = $property->helper;
+		        if(!empty($object))
+			        $helper_text = $object->t($helper_text);
+		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
+	        }
+            $field[] = '</div>';
+
+            $template_filter = @$property->element_template;
+            if(empty($template_filter))
+                $template_filter = $property->item_template;
+
+            $layout->add_script('			                
+                $("#property-'.$property->id.'").tagit({
+                    removeConfirmation: true,
+                    allowSpaces: true,
+                    singleField: true,
+                    singleFieldDelimiter: ",",
+                    placeholderText: "+",
+                    autocompleteOnly: true,
+                    autocomplete: {
+                        delay: 0, 
+                        minLength: 1,
+                        source: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item&format=tagit&page_limit=10&template='.$template_filter.'"
+                    },
+                    afterTagAdded: function(event, ui)
+                    {                           
+                        var tags = $(this).tagit("assignedValues");
+                        if(tags.length > 0) tags = tags.join(",");
+                        else                tags = "";
+                            
+                        $("#property-'.$property->id.'").val(tags).trigger("change");
+                    },
+                    afterTagRemoved: function(event, ui)
+                    {
+                        var tags = $(this).tagit("assignedValues");
+                        if(tags.length > 0) tags = tags.join(",");
+                        else                tags = "";
+
+                        $("#property-'.$property->id.'").val(tags).trigger("change");
+                    }
+                });
+                                
+                $("#property-'.$property->id.'").next().sortable(
+                {
+                    items: ">li:not(.tagit-new)",
+                    update: function(ui, event)
+                    {
+                        var tags = $("#property-'.$property->id.'").tagit("assignedValues");
+                        if(tags.length > 0) tags = tags.join(",");
+                        else                tags = "";
+
+                        $("#property-'.$property->id.'").val(tags).trigger("change");
+                    }
+                });    
+			');
+
+            if(!empty($property->value))
+            {
+                $values = explode(",", $property->value);
+                $values = array_filter($values);
+
+                foreach($values as $cid)
+                {
+                    $content_title = $DB->query_single(
+                        'text',
+                        'nv_webdictionary',
+                        '   node_type = "item" AND
+                        website = "'.$ws->id.'" AND
+                        node_id = '.protect($cid).' AND
+                        subtype = "title" AND
+                        lang = "'.$ws->languages_published[0].'"'
+                    );
+
+                    $layout->add_script('
+                        $("#property-'.$property->id.'").tagit("createTag", "'.$content_title.'", "", "", "'.$cid.'");                
+                    ');
+                }
+
+                $layout->add_script('
+                    $("#property-'.$property->id.'").trigger("change");
+                ');
+            }
+
+            break;
+
         case 'webuser_groups':
             $webuser_groups = webuser_group::all_in_array();
 

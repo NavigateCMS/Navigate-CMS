@@ -106,7 +106,7 @@ class layout
         $this->add_script_tag('js/plugins/jquery.dialogextend.js');
 		$this->add_script_tag('js/plugins/lazyload.js');
 		
-		$this->add_script_tag('lib/external/jquery-tag-it/js/tag-it.js');
+		$this->add_script_tag('lib/external/jquery-tag-it/js/tag-it.navigate-cms.js');
 		$this->add_style_tag('lib/external/jquery-tag-it/css/jquery.tagit.css');
 
         $this->add_style_tag('js/jstree/themes/default/style.css');

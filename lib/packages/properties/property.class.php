@@ -30,23 +30,25 @@ class property
 		// boolean
 		// text (multilanguage)
 		// textarea (default multilanguage)
-		// Date
-		// Date & Time
-		// Link (default multilanguage)
-		// Image (optional multilanguage)
-		// File
-        // Color
-		// Comment
-		// Rating
-		// Country
-		// Coordinates
-        // Video
-        // Source code (optional multilanguage)
-        // Rich text area (default multilanguage)
-        // Web user groups
-        // Category (Structure entry)
-        // Categories (Multiple structure entries)
-		// Product (not yet!)
+		// date
+		// date & time
+		// link (default multilanguage)
+		// image (optional multilanguage)
+		// file
+        // color
+		// comment
+		// rating
+		// country
+		// coordinates
+        // video
+        // source code (optional multilanguage)
+        // rich text area (default multilanguage)
+        // web user groups
+        // category (Structure entry)
+        // categories (Multiple structure entries)
+        // element (a specific content element)
+        // elements (a selection of content elements)
+		// product (not yet!)
 	
 	public function load($id)
 	{
@@ -815,7 +817,7 @@ class property
             // item (select2): if no selection, the form does not send a value (HTML);
             // if we don't set an empty value, Navigate would take that as non-existant field and would set the default value,
             // which is different as the user may really want to set "empty" as the value
-            if($property->type=='item' && !isset($_REQUEST['property-'.$property->id]))
+            if(($property->type=='element' || $property->type=='item') && !isset($_REQUEST['property-'.$property->id]))
                 $property_value = "";
 
             // remove the old property row

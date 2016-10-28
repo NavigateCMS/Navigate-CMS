@@ -631,6 +631,10 @@ function run()
 	        if(isset($_REQUEST['embedding']))
                 $template_filter = ' AND nvi.embedding = '.protect($_REQUEST['embedding']).' ';
 
+            $text = $_REQUEST['title'];
+            if(!empty($_REQUEST['term'])) // tagit request
+                $text = $_REQUEST['term'];
+
             $DB->query('
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
 				  FROM nv_webdictionary nvw, nv_items nvi
@@ -640,7 +644,8 @@ function run()
 				   AND nvw.subtype = "title"
 				   AND nvw.website = '.$website->id.'
 				   AND nvw.website = nvi.website
-				   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+				   AND nvw.text LIKE '.protect('%'.$text.'%').'
+		        GROUP BY nvw.node_id, nvw.text
 		        ORDER BY nvw.text ASC
 			     LIMIT '.intval($_REQUEST['page_limit']).'
 			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
@@ -668,7 +673,20 @@ function run()
 				}
 			}
 
-            echo json_encode(array('items' => $rows, 'totalCount' => $total));
+			if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
+            {
+                echo json_encode(array('items' => $rows, 'totalCount' => $total));
+            }
+            else if($_REQUEST['format'] == 'tagit')
+            {
+                $tags_json = array();
+                foreach($rows as $row)
+                {
+                    $tags_json[] = json_decode('{ "id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'" }');
+                }
+                echo json_encode($tags_json);
+            }
+
             core_terminate();
             break;
 			
@@ -1612,15 +1630,15 @@ function items_form($item)
 				if(count($website->languages_list) > 1)
 				{
                     $tags_copy_select = $naviforms->selectfield(
-		                    '',
-		                    array_keys($ws_languages),
-		                    array_values($ws_languages),
-		                    '',
-		                    '',
-		                    false,
-		                    '',
-		                    ' width: auto; position: absolute; margin-top: 1px; ',
-		                    false
+                        '',
+                        array_keys($ws_languages),
+                        array_values($ws_languages),
+                        '',
+                        '',
+                        false,
+                        '',
+                        ' width: auto; position: absolute; margin-top: 1px; ',
+                        false
                     );
 
 					$tags_copy_select = '
@@ -1653,8 +1671,7 @@ function items_form($item)
                 );
 			}
 
-			$layout->add_script('
-			                
+			$layout->add_script('			                
                 $("#tags-'.$lang.'").tagit({
                     removeConfirmation: true,
                     allowSpaces: true,
@@ -1710,8 +1727,7 @@ function items_form($item)
                         $("#tags-'.$lang.'").val(tags);
                         $("#tags-'.$lang.'").trigger("change");                                                
                     }
-                });
-                
+                });                
 			');
 
 			// script#4

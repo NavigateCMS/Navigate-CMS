@@ -661,6 +661,10 @@ function nvweb_properties_render($property, $vars)
 	        }
             break;
 
+        case 'elements':
+            $out = $property->value;
+            break;
+
         case 'element':
         case 'item': // deprecated
             $return = @$vars['return'];
