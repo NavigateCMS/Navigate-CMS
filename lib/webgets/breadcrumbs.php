@@ -8,6 +8,7 @@ function nvweb_breadcrumbs($vars=array())
 	global $current;
 	global $DB;
 	global $structure;
+    global $events;
 
 	$out = '';
 
@@ -41,8 +42,8 @@ function nvweb_breadcrumbs($vars=array())
 		$parent = $breadcrumbs[0];
 		while($parent > 0)
 		{
-			$parent = nvweb_breadcrumbs_parent($parent);			
-			$breadcrumbs[] = $parent;
+			$parent = nvweb_breadcrumbs_parent($parent);
+			    $breadcrumbs[] = $parent;
 		}
 			
 		$vars['from'] = intval($vars['from']) + 1;
@@ -50,6 +51,14 @@ function nvweb_breadcrumbs($vars=array())
 		nvweb_menu_load_dictionary();
 		
 		$breadcrumbs = array_reverse($breadcrumbs);
+
+        $events->trigger(
+            'breadcrumbs',
+            'hierarchy',
+            array(
+                'hierarchy' => &$breadcrumbs
+            )
+        );
 		
 		for($i = $vars['from']; $i < count($breadcrumbs); $i++)
 		{
@@ -68,12 +77,8 @@ function nvweb_breadcrumbs($vars=array())
 
 function nvweb_breadcrumbs_parent($category_id)
 {
-	$parent = 0;
-
 	$category = new structure();
 	$category->load($category_id);
-	$parent = $category->parent;	
-	
-	return $parent;
+	return $category->parent;
 }
 ?>
