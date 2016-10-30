@@ -30,6 +30,8 @@ class webuser
 	public $access; // 0: allowed, 1 => blocked, 2 => allowed within a date range
 	public $access_begin;   // timestamp, 0 => infinite
 	public $access_end; // timestamp, 0 => infinite
+
+    public $properties;
   	
 	public function load($id)
 	{
@@ -198,6 +200,9 @@ class webuser
  				DELETE FROM nv_webuser_profiles
 				 WHERE webuser = '.intval($this->id)
             );
+
+            // remove properties
+            property::remove_properties('webuser', $this->id);
 
             // finally remove webuser account
             $DB->execute('
@@ -655,6 +660,67 @@ class webuser
 		
 		return ($data->total <= 0);
 	}
+
+    public function property($property_name, $raw=false)
+    {
+        global $theme;
+
+        // load properties if not already done
+        if(empty($this->properties))
+            $this->properties = property::load_properties('webuser', $theme->name, 'webuser', $this->id);
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                if($raw)
+                    $out = $this->properties[$p]->value;
+                else
+                    $out = $this->properties[$p]->value;
+
+                break;
+            }
+        }
+
+        return $out;
+    }
+
+    public function property_definition($property_name)
+    {
+        global $theme;
+
+        // load properties if not already done
+        if(empty($this->properties))
+            $this->properties = property::load_properties('webuser', $theme->name, 'webuser', $this->id);
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                $out = $this->properties[$p];
+                break;
+            }
+        }
+
+        return $out;
+    }
+
+    public function property_exists($property_name)
+    {
+        global $theme;
+
+        // load properties if not already done
+        if(empty($this->properties))
+            $this->properties = property::load_properties('webuser', $theme->name, 'webuser', $this->id);
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+                return true;
+        }
+        return false;
+    }
+
 
     public static function export($type='csv')
     {

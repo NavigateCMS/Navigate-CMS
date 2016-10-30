@@ -22,6 +22,7 @@ class theme
     public $block_groups;
 	public $blocks;
 	public $templates;
+    public $webusers;
 	
 	public $dictionary;
 	public $dictionaries;
@@ -55,6 +56,7 @@ class theme
 		$this->blocks = (array)$theme->blocks;
 		$this->block_groups = (array)$theme->block_groups;
 		$this->templates = (array)$theme->templates;
+		$this->webusers = (array)$theme->webusers;
         $this->content_samples = (array)$theme->content_samples;
 
 		$this->content_samples_parse(null);

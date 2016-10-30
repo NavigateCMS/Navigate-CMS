@@ -1,7 +1,7 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 
-function navigate_property_layout_form($element, $template, $item, $item_id)
+function navigate_property_layout_form($element, $template, $object, $object_id)
 {
     global $website;
     global $layout;
@@ -12,8 +12,8 @@ function navigate_property_layout_form($element, $template, $item, $item_id)
 	// load the element properties
 	//$properties = property::elements($element, $template);
 
-	// load the item property values
-	$properties = property::load_properties($element, $template, $item, $item_id);
+	// load the property values of the object
+	$properties = property::load_properties($element, $template, $object, $object_id);
 
 	// generate the form
 	for($p = 0; $p < count($properties); $p++)

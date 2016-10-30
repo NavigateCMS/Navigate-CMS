@@ -564,15 +564,15 @@ class property
 		return true;	
 	}	
 	
-	public static function load_properties_associative($element, $template, $item_type, $item_id)
+	public static function load_properties_associative($element, $template, $object_type, $object_id)
 	{
 		// maybe we have cache of the current website?
 		global $properties;
 		
-		if(isset($properties[$item_type.'-'.$item_id]))
-			$props = $properties[$item_type.'-'.$item_id];
+		if(isset($properties[$object_type.'-'.$object_id]))
+			$props = $properties[$object_type.'-'.$object_id];
 		else
-			$props = property::load_properties($element, $template, $item_type, $item_id);
+			$props = property::load_properties($element, $template, $object_type, $object_id);
 
 		// now create the associative array by property name => value
 		$associative_properties = array();
@@ -589,34 +589,34 @@ class property
 		return $associative_properties;
 	}	
 	
-	public static function load_properties($element, $template, $item_type, $item_id, $item_uid=null)
+	public static function load_properties($element, $template, $object_type, $object_id, $item_uid=null)
 	{
 		global $DB;
 		global $website;
         global $theme;
 
-        if($item_type == 'block_group_block')
+        if($object_type == 'block_group_block')
         {
-            $block = block::block_group_block($template, $item_id);
+            $block = block::block_group_block($template, $object_id);
             $e_properties = $block->properties;
 
             // we must find the block group ID to search the assigned property values
-            // $item_id MUST BE the numeric ID of the block group
+            // $object_id MUST BE the numeric ID of the block group
             if(!empty($template))
             {
                 $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$website->id);
-                $item_id = $block_group_id;
+                $object_id = $block_group_id;
                 if(empty($block_group_id))
-                    $item_id = 0;
+                    $object_id = 0;
             }
         }
-        else if($item_type == 'extension_block')
+        else if($object_type == 'extension_block')
         {
             // in this case, the parameters must match the following:
             //      $element => (not used)
             //      $template => type of the block in the extension definition
-            //      $item_type => "extension_block"
-            //      $item_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition); if null, we have to find the right value
+            //      $object_type => "extension_block"
+            //      $object_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition); if null, we have to find the right value
             //      $item_uid => the unique id assigned to the block in the block_group
 
             // find the extension block definition, to get the list of properties
@@ -630,41 +630,46 @@ class property
                 }
             }
 
-            if(empty($item_id))
+            if(empty($object_id))
             {
                 // we need to find the block_group ID by checking the block uid
                 $block_group_id = $DB->query_single('id', 'nv_block_groups', ' blocks LIKE '.protect('%'.$item_uid.'%').' AND website = '.$website->id);
-                $item_id = $block_group_id;
+                $object_id = $block_group_id;
                 if(empty($block_group_id))
-                    $item_id = 0;
+                    $object_id = 0;
             }
             // we must find the REAL numeric block group ID (based on its code) to get the assigned property values
-            // at the end, $item_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
+            // at the end, $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
             else if(!empty($template))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($item_id).' AND website = '.$website->id);
-                $item_id = $block_group_id;
+                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($object_id).' AND website = '.$website->id);
+                $object_id = $block_group_id;
                 if(empty($block_group_id))
-                    $item_id = 0;
+                    $object_id = 0;
             }
 
-            $item_type = "block_group-extension-block";
+            $object_type = "block_group-extension-block";
+        }
+        else if($object_type == 'webuser')
+        {
+            // the properties set in the theme definition
+            $e_properties = $theme->webusers['properties'];
         }
         else
         {
 		    // load properties associated with the element type
-		    $e_properties = property::elements($template, $item_type);
+		    $e_properties = property::elements($template, $object_type);
         }
 
-		// load multilanguage strings
-		$dictionary = webdictionary::load_element_strings('property-'.$item_type, $item_id, $item_uid);
+		// load the values for multilanguage strings
+		$dictionary = webdictionary::load_element_strings('property-'.$object_type, $object_id, $item_uid);
 
-		// load custom properties values
+		// load the assigned (simple) properties values
         // check node_uid empty or NULL to mantain compatibility with Navigate CMS < 2.2
 		$DB->query('
 		    SELECT * FROM nv_properties_items
- 			 WHERE element = '.protect($item_type).'
-			   AND node_id = '.protect($item_id).
+ 			 WHERE element = '.protect($object_type).'
+			   AND node_id = '.protect($object_id).
 			   (empty($item_uid)? '' : ' AND ( node_uid = '.protect($item_uid).' OR node_uid = "" OR node_uid IS NULL )').'
 			   AND website = '.$website->id,
             'array'
@@ -721,35 +726,36 @@ class property
 	}
 
     // called when using navigate cms
-	public static function save_properties_from_post($item_type, $item_id, $template=null, $element=null, $item_uid=null)
+	public static function save_properties_from_post($object_type, $object_id, $template=null, $element=null, $object_uid=null)
 	{
 		global $DB;
 		global $website;
+        global $theme;
 		
 		$dictionary = array();
 
 		// load properties associated with the element type
-        if($item_type=='block_group_block')
+        if($object_type=='block_group_block')
         {
             $block = block::block_group_block($template, $element);
             $properties = $block->properties;
 
-            if(!is_numeric($item_id))
+            if(!is_numeric($object_id))
             {
                 $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$website->id);
-                $item_id = $block_group_id;
+                $object_id = $block_group_id;
                 if(empty($block_group_id))
-                    $item_id = 0;
+                    $object_id = 0;
             }
         }
-        else if($item_type=='extension_block')
+        else if($object_type=='extension_block')
         {
             // in this case, the parameters must match the following:
             //      $element => (not used)
             //      $template => type of the block in the extension definition
-            //      $item_type => "extension_block"
-            //      $item_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition)
-            //      $item_uid => the unique id assigned to the block in the block_group
+            //      $object_type => "extension_block"
+            //      $object_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition)
+            //      $object_uid => the unique id assigned to the block in the block_group
 
             // find the extension block definition, to get the list of properties
             $extensions_blocks = extension::blocks();
@@ -763,16 +769,21 @@ class property
             }
 
             // we must find the REAL numeric block group ID (based on its code) to get the assigned property values
-            // $item_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
+            // $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
             if(!empty($template))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($item_id).' AND website = '.$website->id);
-                $item_id = $block_group_id;
+                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($object_id).' AND website = '.$website->id);
+                $object_id = $block_group_id;
                 if(empty($block_group_id))
-                    $item_id = 0;
+                    $object_id = 0;
             }
 
-            $item_type = "block_group-extension-block";
+            $object_type = "block_group-extension-block";
+        }
+        else if($object_type == 'webuser')
+        {
+            // the properties set in the theme definition
+            $properties = $theme->webusers['properties'];
         }
         else
         {
@@ -825,9 +836,9 @@ class property
                 DELETE
                      FROM nv_properties_items
                     WHERE property_id = '.protect($property->id).'
-                      AND element = '.protect($item_type).'
-                      AND node_id = '.protect($item_id).
-                      (empty($item_uid)? '' : ' AND node_uid = '.protect($item_uid)).'
+                      AND element = '.protect($object_type).'
+                      AND node_id = '.protect($object_id).
+                      (empty($object_uid)? '' : ' AND node_uid = '.protect($object_uid)).'
                       AND website = '.$website->id
             );
 
@@ -840,17 +851,17 @@ class property
                         :website,
                         :property_id,
                         :type,
-                        :item_id,
-                        :item_uid,
+                        :object_id,
+                        :object_uid,
                         :name,
                         :value
                     )',
                 array(
                     ':website' => $website->id,
                     ':property_id' => $property->id,
-                    ':type' => $item_type,
-                    ':item_id' => value_or_default($item_id, 0),
-                    ':item_uid' => value_or_default($item_uid, ""),
+                    ':type' => $object_type,
+                    ':object_id' => value_or_default($object_id, 0),
+                    ':object_uid' => value_or_default($object_uid, ""),
                     ':name' => value_or_default($property->name, $property->id),
                     ':value' => value_or_default($property_value, "")
                 )
@@ -890,12 +901,12 @@ class property
 		if(!empty($dictionary))
         {
             $property_element = $_REQUEST['property-element'];
-            if($item_type=='block_group_block')
+            if($object_type=='block_group_block')
                 $property_element = 'block_group_block';
-            else if($item_type=='block_group-extension-block')
+            else if($object_type=='block_group-extension-block')
                 $property_element = 'block_group-extension-block';
 
-			webdictionary::save_element_strings('property-'.$property_element, $item_id, $dictionary, $website->id, $item_uid);
+			webdictionary::save_element_strings('property-'.$property_element, $object_id, $dictionary, $website->id, $object_uid);
         }
 
         return true;
@@ -907,7 +918,7 @@ class property
     // dates => timestamps
     // coordinates (ID => array("latitude" => ..., "longitude" => ...)
     // change only the given properties, not the other existing ones
-    public static function save_properties_from_array($item_type, $item_id, $template, $properties_assoc=array(), $ws=null, $node_uid="")
+    public static function save_properties_from_array($object_type, $object_id, $template, $properties_assoc=array(), $ws=null, $node_uid="")
    	{
    		global $DB;
    		global $website;
@@ -917,25 +928,25 @@ class property
 
    		$dictionary = array();
 
-        $property_item_type = $item_type;   // item_type: item, structure, block, block_group_block
+        $property_object_type = $object_type;   // object_type: item, structure, block, block_group_block
 
-        if($item_type=='block_group_block')
+        if($object_type=='block_group_block')
         {
             // we have to identify the block subtype: block, block_type, block_group_block or extension_block
             // so we can get its properties definition
-            if(!is_numeric($item_id))
+            if(!is_numeric($object_id))
             {
                 // assume there can only be one block group of the same type
                 $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$ws->id);
-                $item_id = $block_group_id;
+                $object_id = $block_group_id;
                 if(empty($block_group_id))
-                    $item_id = 0;
+                    $object_id = 0;
             }
 
             if(!empty($node_uid))
             {
                 $bg = new block_group();
-                $bg->load($item_id);
+                $bg->load($object_id);
 
                 for($b=0; $b < count($bg->blocks); $b++)
                 {
@@ -945,7 +956,7 @@ class property
                         if($bg->blocks[$b]['type']=='extension')
                         {
                             // an extension block
-                            $property_item_type = 'block_group-extension-block';
+                            $property_object_type = 'block_group-extension-block';
 
                             // load the extension, if installed in this instance
                             $extension = new extension();
@@ -972,7 +983,7 @@ class property
                         else
                         {
                             // a block group block
-                            $property_item_type = 'block_group_block';
+                            $property_object_type = 'block_group_block';
                             $block = block::block_group_block($template, $block_id);
                         }
                         // note: standard blocks don't "embed" their properties in a block group,
@@ -995,7 +1006,7 @@ class property
         }
         else
         {
-            $properties = property::elements($template, $item_type);
+            $properties = property::elements($template, $object_type);
         }
         
         if(!is_array($properties))
@@ -1054,8 +1065,8 @@ class property
             $DB->execute('
 				DELETE FROM nv_properties_items
                 	  WHERE property_id = '.protect($property->id).'
-                        AND element = '.protect($property_item_type).'
-                        AND node_id = '.protect($item_id).
+                        AND element = '.protect($property_object_type).'
+                        AND node_id = '.protect($object_id).
                         (empty($node_uid)? '' : ' AND node_uid = '.protect($node_uid)).'
                         AND website = '.$ws->id
             );
@@ -1069,7 +1080,7 @@ class property
 						:website,
 						:property_id,
 						:type,
-						:item_id,
+						:object_id,
 						:node_uid,
 						:name,
 						:value
@@ -1077,8 +1088,8 @@ class property
                 array(
                     ':website' => $ws->id,
                     ':property_id' => $property->id,
-                    ':type' => $property_item_type,
-                    ':item_id' => value_or_default($item_id, 0),
+                    ':type' => $property_object_type,
+                    ':object_id' => value_or_default($object_id, 0),
                     ':node_uid' => value_or_default($node_uid, ""),
                     ':name' => $property->name,
                     ':value' => value_or_default($value, "")
@@ -1103,7 +1114,7 @@ class property
    		}
 
    		if(!empty($dictionary))
-        	webdictionary::save_element_strings('property-'.$property_item_type, $item_id, $dictionary, $ws->id, $node_uid);
+        	webdictionary::save_element_strings('property-'.$property_object_type, $object_id, $dictionary, $ws->id, $node_uid);
 
        return true;
    	}

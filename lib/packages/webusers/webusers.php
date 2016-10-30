@@ -2,6 +2,7 @@
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 
 function run()
 {
@@ -130,6 +131,7 @@ function run()
 				try
 				{
 					$item->save();
+                    property::save_properties_from_post('webuser', $item->id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
@@ -428,6 +430,7 @@ function webusers_form($item)
 	global $user;
 	global $DB;
 	global $website;
+    global $theme;
 	global $layout;
     global $events;
 	
@@ -785,6 +788,17 @@ function webusers_form($item)
 			$naviforms->textfield('webuser-social_website', $item->social_website)
         )
     );
+
+    if(!empty($theme->webusers['properties']))
+    {
+        $properties_html = navigate_property_layout_form('webuser', $theme->name, 'webuser', $item->id);
+
+        if(!empty($properties_html))
+        {
+            $navibars->add_tab(t(77, "Properties"));
+            $navibars->add_tab_content($properties_html);
+        }
+    }
 
 	if(!empty($item->id))
         $layout->navigate_notes_dialog('webuser', $item->id);

@@ -128,13 +128,19 @@ class structure
 
 		if(!empty($this->id))
 		{
-			// remove dictionary elements
+			// remove dictionary entries
 			webdictionary::save_element_strings('structure', $this->id, array());
-			// remove path elements
+
+            // remove paths
 			path::saveElementPaths('structure', $this->id, array(), $this->website);
-			// remove all votes assigned to the element
-			webuser_vote::remove_object_votes('structure', $this->id);			
-			
+
+            // remove all votes assigned
+			webuser_vote::remove_object_votes('structure', $this->id);
+
+            // remove the properties
+            property::remove_properties('structure', $this->id);
+
+            // remove the structure entry
 			$DB->execute('
 				DELETE FROM nv_structure
 					WHERE id = '.intval($this->id).'
