@@ -740,7 +740,9 @@ function blocks_form($item)
 
 	$navibars->form();
 
-    $navibars->add_content('<script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>');
+    $navibars->add_content('
+        <script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>
+    ');
 
 	$navibars->add_tab(t(43, "Main"));
 	
@@ -1211,6 +1213,30 @@ function blocks_form($item)
 						$editor_width = '500px';
 				}
 
+                $translate_menu = '';
+                if(!empty($translate_extensions))
+                {
+                    $translate_extensions_titles = array();
+                    $translate_extensions_actions = array();
+
+                    foreach($translate_extensions as $te)
+                    {
+                        if($te['enabled']=='0') continue;
+                        $translate_extensions_titles[] = $te['title'];
+                        $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'trigger-content-'.$lang.'-'.$lang.'\', \''.$lang.'\');';
+                    }
+
+                    if(!empty($translate_extensions_actions))
+                    {
+                        $translate_menu = $naviforms->splitbutton(
+                            'translate_'.$lang,
+                            '<img src="img/icons/silk/comment.png" align="absmiddle"> '.t(188, 'Translate'),
+                            $translate_extensions_actions,
+                            $translate_extensions_titles
+                        );
+                    }
+                }
+
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(9, "Content").'
@@ -1221,7 +1247,12 @@ function blocks_form($item)
 							'</span>'.
 						'</label>',
                         $naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $editor_width, $lang),
-                        ''
+                        '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
+                        '<label>&nbsp;</label>',
+                        $translate_menu,
+                        (!empty($theme->content_samples)? '<button onclick="navigate_blocks_copy_from_theme_samples(\'trigger-content-'.$lang.'\', \'trigger\', \''.$lang.'\', \''."tinymce".'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                        '</div>',
+                        '<br />'
                     ),
 					'',
 					'lang="'.$lang.'"'
@@ -1550,6 +1581,30 @@ function blocks_form($item)
 					});
             	');
             }
+
+            $layout->add_content('           
+                <div id="navigate_blocks_copy_from_theme_samples" style=" display: none; ">
+                    <div class="navigate-form-row">
+                        <label>'.t(79, 'Template').'</label>
+                        <select id="navigate_blocks_copy_from_theme_samples_options"
+                                name="navigate_blocks_copy_from_theme_samples_options"
+                                onchange="navigate_blocks_copy_from_theme_samples_preview(this.value, $(this).attr(\'type\'), $(this).find(\'option:selected\').attr(\'source\'));">
+                        </select>
+                    </div>
+                    <div class="navigate-form-row">
+                        <div id="navigate_blocks_copy_from_theme_samples_text"
+                             name="navigate_blocks_copy_from_theme_samples_text"
+                             style="border: 1px solid #CCCCCC; float: left; height: auto; min-height: 20px; overflow: auto; width: 97%; padding: 3px; background: #f7f7f7;">
+                        </div>
+                        <div id="navigate_blocks_copy_from_theme_samples_text_raw" style=" display: none; "></div>
+                    </div>
+                </div>
+            ');
+
+            $layout->add_script('
+                var theme_content_samples = '.json_encode($theme->content_samples).';
+                var website_theme = "'.$website->theme.'";
+            ');
 	        break;
   	}
 
