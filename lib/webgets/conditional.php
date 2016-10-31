@@ -398,6 +398,13 @@ function nvweb_conditional($vars=array())
                         ( $item->comments_enabled_to == 1 && !empty($webuser->id)))
                         $out = $item_html;
                 }
+                else if($vars['allowed']=='false')
+                {
+                    // comments not allowed for anyone or for webusers but there is no webuser active right now
+                    if( $item->comments_enabled_to == 0 ||
+                        ( $item->comments_enabled_to == 1 && empty($webuser->id)))
+                        $out = $item_html;
+                }
             }
             else if(isset($vars['min']) && ($comments_count >= intval($vars['min'])))
             {
