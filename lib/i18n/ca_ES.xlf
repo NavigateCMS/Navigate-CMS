@@ -3889,6 +3889,12 @@
 				<target>Usuari web</target>
 			</segment>
 		</unit>
+		<unit id="648">
+			<segment>
+				<source>An e-mail with a temporary password has been sent to your e-mail account.</source>
+				<target>S'ha enviat un correu electrònic amb una contrassenya temporal a la teva adreça.</target>
+			</segment>
+		</unit>
 
 	</file>
 </xliff>
