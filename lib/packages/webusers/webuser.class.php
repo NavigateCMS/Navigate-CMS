@@ -469,6 +469,12 @@ class webuser
 		
 		return false;		
 	}
+
+	public function check_password($password)
+    {
+        $match = ($this->password ==  md5(mb_strtolower($this->username).':'.APP_REALM.':'.$password));
+        return $match;
+    }
 	
 	public function set_password($newpass)
 	{
