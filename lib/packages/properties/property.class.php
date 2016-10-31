@@ -143,7 +143,7 @@ class property
             $ws = new website();
             $ws->load($website_id);
             $ws_theme = new theme();
-            $ws_theme->load($website->theme);
+            $ws_theme->load($ws->theme);
         }
 
         if(is_string($theme_option))
@@ -225,6 +225,81 @@ class property
 
         if(empty($this->value) && empty($this->id))
             $this->value = $this->dvalue;
+
+        if(is_object($this->value))
+            $this->value = (array)$this->value;
+    }
+
+    public function load_from_webuser($property_id, $webuser_id=null)
+    {
+        global $website;
+        global $theme;
+        global $webuser;
+
+        $wu = $webuser;
+        if(!empty($webuser_id))
+        {
+            $wu = new webuser();
+            $wu->load($webuser_id);
+        }
+
+        $ws = $website;
+        $ws_theme = $theme;
+        if($wu->website != $website->id)
+        {
+            $ws = new website();
+            $ws->load($wu->website);
+            $ws_theme = new theme();
+            $ws_theme->load($ws->theme);
+        }
+
+        if(empty($ws_theme->webusers['properties']))
+            $ws_theme->webusers['properties'] = array();
+
+        foreach($ws_theme->webusers['properties'] as $to)
+        {
+            if($to->id==$property_id || $to->name==$property_id)
+            {
+                $webuser_option = $to;
+                $webuser_option->element = 'webuser';
+                break;
+            }
+        }
+
+        $this->id = $webuser_option->id;
+        $this->website = $ws->id;
+       	$this->element = $webuser_option->element;
+       	$this->template = '';
+       	$this->name = $webuser_option->name;
+       	$this->type = $webuser_option->type;
+       	$this->options = (array)$webuser_option->options;
+       	$this->dvalue = $webuser_option->dvalue;	// default value
+        $this->width = $webuser_option->width;
+       	$this->multilanguage = $webuser_option->multilanguage;
+       	$this->helper = $webuser_option->helper;
+        $this->function = $webuser_option->function;
+        $this->conditional = $webuser_option->conditional;
+       	$this->position = 0;
+       	$this->enabled = 1;
+        // decimal format extra fields
+        $this->precision    = $webuser_option->precision;
+        $this->prefix       = $webuser_option->prefix;
+        $this->suffix       = $webuser_option->suffix;
+
+        if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
+            $this->name = $ws_theme->t(substr($this->name, 1));
+
+        if(substr($this->helper, 0, 1)=='@')
+            $this->helper = $ws_theme->t(substr($this->helper, 1));
+
+        $values = property::load_properties_associative('webuser', '', 'webuser', $wu->id);
+
+        $this->value = $values[$this->id];
+
+        if(is_null($this->value) && !empty($this->dvalue))
+        {
+            $this->value = $this->dvalue;
+        }
 
         if(is_object($this->value))
             $this->value = (array)$this->value;
@@ -428,7 +503,12 @@ class property
         }
         else
         {
-            if($element == 'block')
+            if($element == 'webuser')
+            {
+                // webuser properties (set in theme definition)
+                $data = $theme->webusers['properties'];
+            }
+            else if($element == 'block')
             {
                 // block type properties
                 for($b=0; $b < count($theme->blocks); $b++)
@@ -922,6 +1002,7 @@ class property
    	{
    		global $DB;
    		global $website;
+        global $theme;
 
         if(empty($ws))
             $ws = $website;
@@ -1008,7 +1089,7 @@ class property
         {
             $properties = property::elements($template, $object_type);
         }
-        
+
         if(!is_array($properties))
             $properties = array();
 
@@ -1061,7 +1142,7 @@ class property
             if(is_null($value))
                 $value = ""; // should not be needed because of value_or_default, but doing this here fixes some warnings
 
-           // remove the old element
+            // remove the old property value row
             $DB->execute('
 				DELETE FROM nv_properties_items
                 	  WHERE property_id = '.protect($property->id).'
@@ -1095,6 +1176,8 @@ class property
                     ':value' => value_or_default($value, "")
                 )
             );
+
+            // $error = $DB->get_last_error();
 
             // set the dictionary for the multilanguage properties
             $default_language = '';

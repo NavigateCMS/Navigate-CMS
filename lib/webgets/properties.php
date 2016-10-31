@@ -9,6 +9,7 @@ function nvweb_properties($vars=array())
 	global $current;
 	global $cache;
 	global $properties;
+    global $webuser;
 
 	$out = '';
 
@@ -19,6 +20,13 @@ function nvweb_properties($vars=array())
             $wproperty->load_from_theme($vars['property']);
             if(!empty($wproperty))
                 $out = nvweb_properties_render($wproperty, $vars);
+            break;
+
+        case 'webuser':
+            $wuproperty = new property();
+            $wuproperty->load_from_webuser($vars['property']);
+            if(!empty($wuproperty))
+                $out = nvweb_properties_render($wuproperty, $vars);
             break;
 
         case 'element':
@@ -343,6 +351,7 @@ function nvweb_properties_render($property, $vars)
 
             switch(@$vars['return'])
             {
+                case 'value':
                 case 'values':
                     $out = $property->value;
                     break;
