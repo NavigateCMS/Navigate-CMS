@@ -1879,9 +1879,16 @@ function nvweb_list_parse_filters($raw, $object='item')
 
     $filters = array();
 
-    $raw = str_replace("'", '"', $raw);
+    if(!is_array($raw))
+    {
+        $raw = str_replace("'", '"', $raw);
+        $aFilters = json_decode($raw, true);
+    }
+    else
+    {
+        $aFilters = $raw;
+    }
 
-    $aFilters = json_decode($raw, true);
     if(APP_DEBUG && json_last_error() > 0)
         firephp_nv::log($raw, json_last_error_msg());
 
@@ -1929,13 +1936,14 @@ function nvweb_list_parse_filters($raw, $object='item')
                     );
                 }
 
-                $filters[] = ' AND i.id IN ( SELECT node_id 
-                                               FROM nv_properties_items
-                                              WHERE website = '.$website->id.' AND
-                                                    property_id = '.protect($key).' AND
-                                                    element = "item" AND
-                                                    value = '.protect($value).'
-                                           )';
+                $filters[] = ' AND i.id IN ( 
+                                 SELECT node_id 
+                                   FROM nv_properties_items
+                                  WHERE website = '.$website->id.' AND
+                                        property_id = '.protect($key).' AND
+                                        element = "item" AND
+                                        value = '.protect($value).'
+                               )';
             }
             else
             {
@@ -1962,40 +1970,43 @@ function nvweb_list_parse_filters($raw, $object='item')
 
                     if(isset($comparators[$comp_type]))
                     {
-                        $filters[] = ' AND i.id IN ( 
-                                             SELECT node_id 
-                                               FROM nv_properties_items
-                                              WHERE website = '.$website->id.' AND
-                                                    property_id = '.protect($key).' AND
-                                                    element = "item" AND
-                                                    value '.$comparators[$comp_type].' '.protect($comp_value, null, true).'
-                                            )';
+                        $filters[] = ' 
+                            AND i.id IN ( 
+                                 SELECT node_id 
+                                   FROM nv_properties_items
+                                  WHERE website = '.$website->id.' AND
+                                        property_id = '.protect($key).' AND
+                                        element = "item" AND
+                                        value '.$comparators[$comp_type].' '.protect($comp_value, null, true).'
+                            )';
                     }
                     else if($comp_type == 'like' || $comp_type == 'not_like')
                     {
                         if(is_array($comp_value))
                         {
                             // multivalue, query with REGEXP: http://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_regexp
-                            $filters[] = ' AND i.id IN ( 
-                                             SELECT node_id 
-                                               FROM nv_properties_items
-                                              WHERE website = '.$website->id.' AND
-                                                    property_id = '.protect($key).' AND
-                                                    element = "item" AND
-                                                    value '.($comp_type=='like'? 'REGEXP' : 'NOT REGEXP').' "'.implode('|', $comp_value).'"
-                                            )';
+                            $filters[] = ' 
+                                AND i.id IN ( 
+                                     SELECT node_id 
+                                       FROM nv_properties_items
+                                      WHERE website = '.$website->id.' AND
+                                            property_id = '.protect($key).' AND
+                                            element = "item" AND
+                                            value '.($comp_type=='like'? 'REGEXP' : 'NOT REGEXP').' "'.implode('|', $comp_value).'"
+                                )';
                         }
                         else
                         {
                             // single value, standard LIKE
-                            $filters[] = ' AND i.id IN ( 
-                                             SELECT node_id 
-                                               FROM nv_properties_items
-                                              WHERE website = '.$website->id.' AND
-                                                    property_id = '.protect($key).' AND
-                                                    element = "item" AND
-                                                    value '.($comp_type=='like'? 'LIKE' : 'NOT LIKE').' '.protect('%'.$comp_value.'%', null, true).'
-                                            )';
+                            $filters[] = ' 
+                                AND i.id IN ( 
+                                     SELECT node_id 
+                                       FROM nv_properties_items
+                                      WHERE website = '.$website->id.' AND
+                                            property_id = '.protect($key).' AND
+                                            element = "item" AND
+                                            value '.($comp_type=='like'? 'LIKE' : 'NOT LIKE').' '.protect('%'.$comp_value.'%', null, true).'
+                                )';
                         }
                     }
                     else if($comp_type == 'in' || $comp_type == 'nin')
@@ -2011,24 +2022,25 @@ function nvweb_list_parse_filters($raw, $object='item')
                         if(empty($comp_value))
                             $comp_value = array(0); // avoid SQL query exception
 
-                        $filters[] = ' AND i.id IN ( 
-                                            SELECT node_id 
-                                              FROM nv_properties_items
-                                             WHERE website = '.$website->id.' AND
-                                                    property_id = '.protect($key).' AND
-                                                    element = "item" AND
-                                                    value '.$comp_type.'('.
-                                                        implode(
-                                                            ",",
-                                                            array_map(
-                                                                function($v)
-                                                                {
-                                                                    return protect($v);
-                                                                },
-                                                                array_values($comp_value)
-                                                            )
-                                                        ).')
-                                            )';
+                        $filters[] = ' 
+                            AND i.id IN ( 
+                                SELECT node_id 
+                                  FROM nv_properties_items
+                                 WHERE website = '.$website->id.' AND
+                                        property_id = '.protect($key).' AND
+                                        element = "item" AND
+                                        value '.$comp_type.'('.
+                                            implode(
+                                                ",",
+                                                array_map(
+                                                    function($v)
+                                                    {
+                                                        return protect($v);
+                                                    },
+                                                    array_values($comp_value)
+                                                )
+                                            ).')
+                            )';
                     }
                 }
             }
