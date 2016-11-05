@@ -1190,8 +1190,8 @@ class file
 		return $path;
 	}
 
-    // precondition: the file must exist in the website "files" folder
-    // if not, you must set "move_uploaded_file" parameter to true and give the full path on tmp_name
+    // if the file is uploaded by a form, you must set "move_uploaded_file" parameter to true
+    // $tmp_name allows giving a full path to the file or just the filename, which has to be already in the private "files" folder of the current webiste
     public static function register_upload($tmp_name, $target_name, $parent, $mime=NULL, $move_uploaded_file=false)
     {
         global $website;
@@ -1207,10 +1207,15 @@ class file
             $tmp_name = $uploaded_file_temp;
         }
 
-        if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name))
+        if(strpos($tmp_name, '/') === 0)
+            $tmp_file_path = $tmp_name;
+        else
+            $tmp_file_path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name;
+
+        if(file_exists($tmp_file_path))
         {
             if(empty($mime))
-                $mime = file::getMime($target_name, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
+                $mime = file::getMime($target_name, $tmp_file_path);
 
             $target_name = rawurldecode($target_name);
 
@@ -1230,11 +1235,11 @@ class file
             $file->type = $mime[1];
             $file->parent = intval($parent);
             $file->name = $target_name;
-            $file->size = filesize(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
+            $file->size = filesize($tmp_file_path);
 
             if($file->type == 'image')
             {
-                $dimensions = file::image_dimensions(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name);
+                $dimensions = file::image_dimensions($tmp_file_path);
                 $file->width = $dimensions['width'];
                 $file->height = $dimensions['height'];
             }
@@ -1247,7 +1252,7 @@ class file
             $file->save();
 
             rename(
-                NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name,
+                $tmp_file_path,
                 NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$file->id
             );
 
