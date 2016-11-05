@@ -1168,32 +1168,33 @@ function nvweb_template_tweaks($html)
 
 /*
 	convert nv:// paths to real links
-	right now there are two possibilities, where id is a numeric value
-	nv://element/id (or elements, or item)
-	nv://structure/id   (or category)
+	right now there are two possibilities (ID is a numeric value)
+	nv://element/ID (or elements, or item)
+	nv://structure/ID   (or category)
 */
 function nvweb_template_convert_nv_paths($html)
 {
-	preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9])+/", $html, $matches);
+	preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9]+)+/", $html, $matches);
 
 	if(!empty($matches) && !empty($matches[0]))
 	{
 		$matches = $matches[0];
 		foreach($matches as $match)
 		{
-			$parts = explode('/', $match);
+			$parts = explode('/', str_replace('nv://', '', $match));
+
 			$url = "";
-			switch($parts[2])
+			switch($parts[0])
 			{
 				case 'element':
 				case 'item':
 				case 'elements':
-					$url = nvweb_source_url("item", $parts[3]);
+					$url = nvweb_source_url("element", $parts[1]);
 					break;
 				
 				case 'structure':
 				case 'category':
-					$url = nvweb_source_url("structure", $parts[3]);
+					$url = nvweb_source_url("structure", $parts[1]);
 					break;
 				
 				default:
@@ -1201,7 +1202,11 @@ function nvweb_template_convert_nv_paths($html)
 			}
 
 			if(!empty($url))
-				$html = str_replace($match, $url, $html);
+				$html = str_replace(
+				    array('"'.$match.'"', "'".$match."'"),
+				    array('"'.$url.'"', "'".$url."'"),
+                    $html
+                );
 		}
 	}
 

@@ -159,7 +159,6 @@ function nvweb_load_website_by_url($url, $exit=true)
 	if(empty($websites))
 	{
         // no 'real' website found using this address
-
 		if($subdomain == 'nv')
 		{
             /*
@@ -700,6 +699,9 @@ function nvweb_source_url($type, $id, $lang='')
         if(empty($id))
             return "";
     }
+
+    if($type=='element')
+        $type = 'item';
 
     $url = $DB->query_single(
 		'path',
