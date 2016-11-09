@@ -291,7 +291,56 @@ function nvweb_webuser($vars=array())
             break;
 
         case 'avatar':
-            // TODO return webuser's avatar image
+            $size = '48';
+            $extra = '';
+            if(!empty($vars['size']))
+                $size = intval($vars['size']);
+
+            if(!empty($vars['border']))
+                $extra .= '&border='.$vars['border'];
+
+            if(!empty($webuser->avatar))
+            {
+                $out = '<img class="'.$vars['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$webuser->avatar.'" width="'.$size.'px" height="'.$size.'px"/>';
+            }
+            else if(!empty($vars['default']))
+            {
+                // the comment creator has not an avatar, but the template wants to show a default one
+                // 3 cases:
+                //  numerical   ->  ID of the avatar image file in Navigate CMS
+                //  absolute path (http://www...)
+                //  relative path (/img/avatar.png) -> path to the avatar file included in the THEME used
+                if(is_numeric($vars['default']))
+                    $out = '<img class="'.$vars['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$vars['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                else if(strpos($vars['default'], 'http://')===0)
+                    $out = '<img class="'.$vars['class'].'" src="'.$vars['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                else if($vars['default']=='none')
+                    $out = ''; // no image
+                else
+                    $out = '<img class="'.$vars['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$vars['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+            }
+            else // empty avatar, try to get a libravatar/gravatar or show a blank avatar
+            {
+                $gravatar_hash = "";
+                $gravatar_default = 'blank';
+                if(!empty($vars['gravatar_default']))
+                    $gravatar_default = $vars['gravatar_default'];
+
+                if(!empty($webuser->email))
+                {
+                    $gravatar_hash = md5( strtolower( trim( $webuser->email ) ) );
+                }
+
+                if(!empty($gravatar_hash) && $gravatar_default != 'none')
+                {
+                    // gravatar real url: https://www.gravatar.com/avatar/
+                    // we use libravatar to get more userbase
+                    $gravatar_url = 'https://seccdn.libravatar.org/avatar/' . $gravatar_hash . '?s='.$size.'&d='.$gravatar_default;
+                    $out = '<img class="'.$vars['class'].'" src="'.$gravatar_url.'" width="'.$size.'px" height="'.$size.'px"/>';
+                }
+                else
+                    $out = '<img class="'.$vars['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+            }
             break;
 
         case 'newsletter_subscribe':
