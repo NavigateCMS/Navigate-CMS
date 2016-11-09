@@ -111,7 +111,11 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			if((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true'))
 			{
 				$border = ($_REQUEST['border']=='false'? false : true);
+
                 $path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
+                if(empty($path))
+                    die();
+
 				$etag_add  = '-'.$width.'-'.$height.'-'.$border.'-'.$quality;
 				$item->name = $width.'x'.$height.'-'.$item->name;
 				$item->size = filesize($path);

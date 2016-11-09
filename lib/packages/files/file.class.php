@@ -216,20 +216,20 @@ class file
         $this->mime			= 'video/youtube';
         $this->width		= $info->width;
         $this->height		= $info->height;
-
         $this->uploaded_by	= $info->author_name;
-
         $this->access		= 0;
         $this->permission	= 0;
         $this->enabled		= 1;
 
-        $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg', "youtube", $reference);
+        $vtpath = $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg', "youtube", $reference);
+        if(empty($vtpath)) // for some videos, maxresdefault is not available, so try to retrieve the alternative hqdefault thumbnail
+            $vtpath = $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/hqdefault.jpg', "youtube", $reference);
 
         $this->extra        = array(
             'reference'  =>  $reference,
             'link'      =>  'https://www.youtube.com/watch?v='.$reference,
             'thumbnail' =>  'https://img.youtube.com/vi/'.$reference.'/default.jpg',
-            'thumbnail_big' => 'https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg',
+            'thumbnail_big' => 'https://img.youtube.com/vi/'.$reference.'/hqdefault.jpg',
             'thumbnail_url' => str_replace('http://', 'https://', $info->thumbnail_url),
             'thumbnail_cache' => 'private/'.$website->id.'/thumbnails/video-youtube-'.$reference,
             'thumbnail_cache_absolute' => file::file_url('private/'.$website->id.'/thumbnails/video-youtube-'.$reference).'&type=image',
@@ -286,17 +286,21 @@ class file
     {
         global $website;
 
-        // check if we have the image already downloaded
         $video_thumbnail_path = NAVIGATE_PRIVATE.'/'.$website->id.'/thumbnails/video-'.$provider.'-'.$reference;
 
         clearstatcache();
+
+        // check if we have the image already downloaded (recently and correctly)
         if( !file_exists($video_thumbnail_path) ||
-            filemtime($video_thumbnail_path) > 7 * 86400 ||
+            filemtime($video_thumbnail_path) + 7 * 86400 > time() ||
             filesize($video_thumbnail_path) < 256
         )
         {
             // download the image from the source
             $video_thumbnail_data = file_get_contents($image_url);
+            if(empty($video_thumbnail_data))
+                return;
+
             file_put_contents($video_thumbnail_path, $video_thumbnail_data);
         }
 
@@ -841,6 +845,10 @@ class file
         if(!get_class($item)=='file')
             return;
 
+        // precondition, the original image file must exist
+        if(!file_exists($item->absolute_path()) || filesize($item->absolute_path()) < 1)
+            return;
+
 		$original  = $item->absolute_path();
 		$thumbnail = '';
 
@@ -853,7 +861,7 @@ class file
 		if($border===true || $border==='true' || $border===1)
 			$border = 1;
 		else 
-			$border = 0;		
+			$border = 0;
 
         // do we have the thumbnail already created for this image?
 
@@ -992,9 +1000,12 @@ class file
             rename($handle->file_dst_pathname, $thumbnail);
             clearstatcache(true, $thumbnail);
 
+            if(!file_exists($thumbnail) || filesize($thumbnail) < 1)
+                return NULL;
+
             // try to recompress the png thumbnail file to achieve the minimum file size,
             // only if some extra apps are available
-            if(extension_loaded('imagick') && file_exists($thumbnail))
+            if(extension_loaded('imagick'))
             {
                 $im = new Imagick($thumbnail);
                 $image_alpha_range = $im->getImageChannelRange(Imagick::CHANNEL_ALPHA);
