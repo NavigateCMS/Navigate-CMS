@@ -511,53 +511,68 @@ function dashboard_panel_recent_changes($params)
 
     /* NV USER LOG */
     $DB->query('
-        SELECT a.username, a.action, a.function_lid, a.function_icon, a.function_id, a.item_id, a.title, MAX(a.action_date) as date
-          FROM (SELECT u.username, ul.action, f.lid as function_lid, f.icon as function_icon, f.id as function_id, ul.item as item_id, ul.item_title as title, ul.date as action_date
-                  FROM nv_users_log ul, nv_users u, nv_functions f
-                 WHERE u.id = ul.user
-                   AND ul.action IN ("save", "remove")
-                   AND ul.website = 1
-                   AND f.id = ul.function
-                ORDER BY action_date DESC
-              LIMIT 200) a
-        GROUP BY a.username, a.action, a.function_lid, a.function_icon, a.function_id, a.item_id, a.title                        
-        LIMIT 10
+        SELECT u.username, ul.action, f.lid as function_lid, f.icon as function_icon, f.id as function_id, 
+               ul.item as item_id, ul.item_title as title, ul.date as action_date
+          FROM nv_users_log ul, nv_users u, nv_functions f
+         WHERE u.id = ul.user
+           AND ul.action IN ("save", "remove")
+           AND ul.website = '.$website->id.'
+           AND f.id = ul.function
+        ORDER BY action_date DESC
+          LIMIT 100
     ', 'array');
     $users_log = $DB->result();
 
     if(!empty($users_log))
     {
         $users_log_html = '';
+        $r = -1;
         for($e = 0; $e < 10; $e++)
         {
-            if(!@$users_log[$e]) break;
-            if(empty($users_log[$e]['title']))
+            $r++;
+            if(!@$users_log[$r]) break;
+
+            // row is repeated? (same action than the last action with only changing the timestamp?)
+            if( $r > 0 && (
+                $users_log[$r]['username'] == $users_log[$r-1]['username'] &&
+                $users_log[$r]['action'] == $users_log[$r-1]['action'] &&
+                $users_log[$r]['function_id'] == $users_log[$r-1]['function_id'] &&
+                $users_log[$r]['item_id'] == $users_log[$r-1]['item_id'] &&
+                $users_log[$r]['title'] == $users_log[$r-1]['title']
+                )
+            )
             {
-                $users_log[$e]['title'] = '('.t(282, 'Untitled').')';
-                if($users_log[$e]['function_id'] == 10) // function: Elements
+                $e--;
+                continue;  // ignore this row
+            }
+
+            if(empty($users_log[$r]['title']))
+            {
+                $users_log[$r]['title'] = '('.t(282, 'Untitled').')';
+                if($users_log[$r]['function_id'] == 10) // function: Elements
                 {
                     // try to retrieve the title, as it may be assigned later
-                    $title = $DB->query_single('text', 'nv_webdictionary', 'website = '.$website->id.' AND node_type = "item" AND node_id = '.$users_log[$e]['item_id'].' AND subtype = "title"', 'id ASC');
+                    $title = $DB->query_single('text', 'nv_webdictionary', 'website = '.$website->id.' AND node_type = "item" AND node_id = '.$users_log[$r]['item_id'].' AND subtype = "title"', 'id ASC');
                     if(!empty($title))
-                        $users_log[$e]['title'] = $title;
+                        $users_log[$r]['title'] = $title;
                 }
             }
 
-            if($users_log[$e]['action']=='save')
+            if($users_log[$r]['action']=='save')
             {
                 $users_log_html .= '
                     <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
-                    '<a href="?fid='.$users_log[$e]['function_id'].'&act=2&id='.$users_log[$e]['item_id'].'" title="'.core_ts2date($users_log[$e]['date'], true).' - '.t($users_log[$e]['function_lid']).'">'.
-                    '<span>'.core_ts2elapsed_time($users_log[$e]['date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_green.png" align="absmiddle">'.$users_log[$e]['username'] . ' <img align="absmiddle" src="'.$users_log[$e]['function_icon'].'" align="absmiddle"> ' . $users_log[$e]['title'].
+                    '<a href="?fid='.$users_log[$r]['function_id'].'&act=2&id='.$users_log[$r]['item_id'].'" title="'.core_ts2date($users_log[$r]['date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
+                    '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_green.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . $users_log[$r]['title'].
                     '</a>'.
                     '</div>';
             }
-            else if($users_log[$e]['action']=='remove')
+            else if($users_log[$r]['action']=='remove')
             {
                 $users_log_html .= '
                     <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
-                    '<a href="?fid='.$users_log[$e]['function_id'].'" title="'.core_ts2date($users_log[$e]['date'], true).' - '.t($users_log[$e]['function_lid']).'">'.
-                    '<span>'.core_ts2elapsed_time($users_log[$e]['date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_red.png" align="absmiddle">'.$users_log[$e]['username'] . ' <img align="absmiddle" src="'.$users_log[$e]['function_icon'].'" align="absmiddle"> ' . $users_log[$e]['title'].
+                    '<a href="?fid='.$users_log[$r]['function_id'].'" title="'.core_ts2date($users_log[$r]['date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
+                    '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_red.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . $users_log[$r]['title'].
                     '</a>'.
                     '</div>';
             }
