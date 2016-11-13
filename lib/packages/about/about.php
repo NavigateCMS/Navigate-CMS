@@ -71,7 +71,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4</a><br />'
+			'<a href="https://github.com/christiaan/tinymce-codemirror" target="_blank">TinyMCE CodeMirror plugin v1.4+ (commit #1d31634)</a><br />'
 		)
 	);
 

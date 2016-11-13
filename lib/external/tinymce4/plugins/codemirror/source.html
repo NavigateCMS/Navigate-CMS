@@ -37,11 +37,14 @@ function inArray(key, arr)
 		indentOnInit: userSettings.indentOnInit || false,
 		config: {// Default config
 			mode: 'htmlmixed',
+			theme: 'default',
 			lineNumbers: true,
 			lineWrapping: true,
-			indentUnit: 1,
-			tabSize: 1,
+			indentUnit: 2,
+			tabSize: 2,
+			indentWithTabs: true,
 			matchBrackets: true,
+            saveCursorPosition: true,
 			styleActiveLine: true
 		},
 		jsFiles: [// Default JS files
@@ -103,7 +106,10 @@ function inArray(key, arr)
 
 	// Borrowed from codemirror.js themeChanged function. Sets the theme's class names to the html element.
 	// Without this, the background color outside of the codemirror wrapper element remains white.
-	// document.documentElement.className += CMsettings.config.theme.replace(/(^|\s)\s*/g, " cm-s-");
+    // [TMP] commented temporary, cause JS error: Uncaught TypeError: Cannot read property 'replace' of undefined
+    if(CMsettings.config.theme) {
+    	document.documentElement.className += CMsettings.config.theme.replace(/(^|\s)\s*/g, " cm-s-");
+    }
 
 	window.onload = start;
 }());
@@ -129,10 +135,17 @@ function start()
 
 	// Set CodeMirror cursor and bookmark to same position as cursor was in TinyMCE:
 	var html = editor.getContent({source_view: true});
-	editor.selection.getBookmark();
-	html = html.replace(/<span\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
-	editor.dom.remove(editor.dom.select('.CmCaReT'));
 
+    // [FIX] #6 z-index issue with table panel and source code dialog
+    //	editor.selection.getBookmark();
+    
+	html = html.replace(/<span\s+style="display: none;"\s+class="CmCaReT"([^>]*)>([^<]*)<\/span>/gm, String.fromCharCode(chr));
+	editor.dom.remove(editor.dom.select('.CmCaReT'));
+    
+    // Hide TinyMCE toolbar panels, [FIX] #6 z-index issue with table panel and source code dialog
+    // https://github.com/christiaan/tinymce-codemirror/issues/6
+    tinymce.each(editor.contextToolbars, function(toolbar) { if (toolbar.panel) { toolbar.panel.hide(); } });
+    
 	CodeMirror.defineInitHook(function(inst)
 	{
 		// Move cursor to correct position:
@@ -169,10 +182,11 @@ function findDepth(haystack, needle)
 	"use strict";
 
 	var idx = haystack.indexOf(needle), depth = 0, x;
-	for (x = idx; x >= 0; x--) {
+	for (x = idx -1; x >= 0; x--) {
 		switch(haystack.charAt(x)) {
 			case '<': depth--; break;
 			case '>': depth++; break;
+			case '&': depth++; break;
 		}
 	}
 	return depth;
@@ -203,7 +217,18 @@ function submit()
 	}
 
 	// Submit HTML to TinyMCE:
-	editor.setContent(codemirror.getValue().replace(cc, '<span id="CmCaReT"></span>'));
+    // [FIX] Cursor position inside JS, style or &nbps;
+    // Workaround to fix cursor position if inside script tag
+    var code = codemirror.getValue();
+    if(code.search(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi) !== -1 || code.search(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi) !== -1)
+    {
+    	editor.setContent(codemirror.getValue().replace(cc, ''));
+    }
+    else
+    {
+        editor.setContent(codemirror.getValue().replace(cc, '<span id="CmCaReT"></span>'));
+    }
+    
 	editor.isNotDirty = !isDirty;
 	if (isDirty) {
 		editor.nodeChanged();
@@ -220,7 +245,6 @@ function submit()
 
 </script>
 <style type="text/css">
-
 body {
 	margin: 0;
 }
@@ -235,6 +259,11 @@ body {
 	background: #e8f2ff !important;
 }
 
+.cm-trailingspace {
+	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
+	background-position: bottom left;
+	background-repeat: repeat-x;
+}
 </style>
 </head>
 <body></body>
