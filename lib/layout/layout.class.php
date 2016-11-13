@@ -733,6 +733,7 @@ class layout
                 494: "'.t(494, 'Searching...').'",
                 495: "'.t(495, 'Please enter at least {number} characters').'",
                 496: "'.t(496, 'You can only select {number} items').'",
+                497: "'.t(497, "Do you really want to erase this data?").'",
                 499: "'.t(499, 'Open').'",
                 500: "'.t(500, 'Rename').'",
                 501: "'.t(501, 'Previous').'",

@@ -1243,7 +1243,8 @@ function blocks_form($item)
 							<span class="editor_selector" for="trigger-content-'.$lang.'">'.
 								//'<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
 								'<i class="fa fa-border fa-fw fa-lg fa-file-text-o active" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
-								'<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i>'.
+                                '<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i> '.
+                                '<i class="fa fa-border fa-fw fa-lg fa-eraser" data-action="clear" title="'.t(208, "Remove all content").'"></i>'.
 							'</span>'.
 						'</label>',
                         $naviforms->editorfield('trigger-content-'.$lang, @$item->trigger['trigger-content'][$lang], $editor_width, $lang),
