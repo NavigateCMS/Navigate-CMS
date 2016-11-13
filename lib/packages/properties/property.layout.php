@@ -579,7 +579,6 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                 $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
                 $field[] = $naviforms->editorfield("property-".$property->id."-".$lang, $property->value[$lang], $width, NULL, $website_id);
-	            $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
@@ -587,7 +586,40 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			            $helper_text = $object->t($helper_text);
 		            $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
+
+                // additional control buttons
+                $translate_menu = '';
+                if(!empty($translate_extensions))
+                {
+                    $translate_extensions_titles = array();
+                    $translate_extensions_actions = array();
+
+                    foreach($translate_extensions as $te)
+                    {
+                        if($te['enabled']=='0') continue;
+                        $translate_extensions_titles[] = $te['title'];
+                        $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'property-'.$property->id.'-'.$lang.'\', \''.$lang.'\');';
+                    }
+
+                    if(!empty($translate_extensions_actions))
+                    {
+                        $translate_menu = $naviforms->splitbutton(
+                            'translate_'.$lang,
+                            '<img src="img/icons/silk/comment.png" align="absmiddle"> '.t(188, 'Translate'),
+                            $translate_extensions_actions,
+                            $translate_extensions_titles
+                        );
+                    }
+                }
+
+                $field[] = '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">';
+                $field[] = '<label>&nbsp;</label>';
+                $field[] = $translate_menu;
+                $field[] = '<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from"><img src="img/icons/silk/page_white_copy.png" align="absmiddle">'.t(189, 'Copy from').'...</button> ';
+                $field[] = (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'property-'.$property->id.'-'.$lang.'\', \''.$property->id.'\', \''.$lang.'\', \'tinymce\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : '');
                 $field[] = '</div>';
+
+                $field[] = '</div>'; // divformrow
 
 	            if($property->multilanguage == 'false')
 		            break;
@@ -1250,9 +1282,15 @@ function navigate_property_layout_scripts($website_id="")
 		{
 			$(".navigate-form-row-property-action").on("click", function(e)
 			{
+			    var that = this;
+			
 				e.stopPropagation();
 				e.preventDefault();
-				navigate_properties_copy_from_dialog(this);
+				
+				if(!$(this).parent().hasClass("navigate-form-row"))
+				    that = $(this).parent();
+				
+				navigate_properties_copy_from_dialog(that);
 			});
 		});
 	');
