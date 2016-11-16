@@ -719,6 +719,46 @@ function nvweb_list($vars=array())
 		$out[] = $item_html;
 	}
 
+    if(count($rs)==0)
+    {
+        // special case, no results found
+        // get the nv list template and parse only the conditional: <nvlist_conditional by="count" value="empty"> (or value=0)
+        $item_html = $vars['template'];
+
+        // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
+        unset($nested_condition_fragments);
+        list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html);
+
+        // remove all tags except (selfclosing) nvlist_conditional_placeholder
+        $item_html = strip_tags($item_html, '<nvlist_conditional_placeholder>');
+
+        $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing=true
+
+        while(!empty($conditional_placeholder_tags))
+        {
+            $tag = $conditional_placeholder_tags[0];
+            $conditional = $nested_conditional_fragments[$tag["attributes"]["id"]];
+
+            $conditional_html_output = nvweb_list_parse_conditional(
+                $conditional,
+                NULL,
+                $conditional['nvlist_conditional_template'],
+                $i,
+                count($rs)
+            );
+
+            $item_html = str_replace(
+                $tag["full_tag"],
+                $conditional_html_output,
+                $item_html
+            );
+
+            $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
+        }
+
+        $out[] = $item_html;
+    }
+
 	if(isset($vars['paginator']) && $vars['paginator']!='false')
 		$out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars);
 
@@ -1889,6 +1929,21 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         else
         {
             // no match, discard this conditional
+            $out = '';
+        }
+    }
+    else if($tag['attributes']['by']=='count')
+    {
+        // check the number of results found
+        // note: this is called also WHEN resultset is empty
+        if( $tag['attributes']['value'] == $total    ||
+            ($tag['attributes']['value'] == "empty" && $total == 0)
+        )
+        {
+            $out = $item_html;
+        }
+        else
+        {
             $out = '';
         }
     }
