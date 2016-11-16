@@ -604,7 +604,7 @@ function structure_form($item)
 	
 	$navibars->add_actions(
 	    array(
-	        (!empty($item->id)? '<a href="?fid=structure&act=edit&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+	        (!empty($item->id)? '<a href="?fid=structure&act=edit&parent='.$item->parent.'&template='.$item->template.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
 			'<a href="?fid=structure&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/sitemap_color.png"> '.t(61, 'Tree').'</a>',
 			'search_form'
         )
@@ -658,6 +658,9 @@ function structure_form($item)
             });
         }
     ');
+
+    if(empty($item->template) && isset($_GET['template']))
+        $item->template = $_GET['template'];
 
 	$templates = template::elements('structure');
 	$template_select = $naviforms->select_from_object_array('template', $templates, 'id', 'title', $item->template);
