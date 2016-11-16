@@ -199,51 +199,94 @@ function nvweb_conditional($vars=array())
                 $property_value = $property_value[$current['lang']];
 
             // check the given condition
-            if(isset($vars['property_value']))
-            {
-                if( $property_value == $vars['property_value']  ||
-                    ($property_value=='1' && $vars['property_value']=='true') ||
-                    (empty($property_value) && $vars['property_value']=='false') ||
-                    ($property_value=='0' && $vars['property_value']=='false')
-                )
-                {
-                    // parse the contents of this condition on this round
-                    $out = $item_html;
-                }
-                else
-                {
-                    // remove this conditional html code on this round
-                    $out = '';
-                }
-            }
-            else if(isset($vars['empty']) || isset($vars['property_empty']))
+            if(isset($vars['empty']) || isset($vars['property_empty']))
             {
                 if(@$vars['empty']=='true' || @$vars['property_empty']=='true')
                 {
                     if(empty($property_value))
-                    {
-                        // parse the contents of this condition on this round
                         $out = $item_html;
-                    }
                     else
-                    {
-                        // remove this conditional html code on this round
                         $out = '';
-                    }
                 }
                 else if(@$vars['empty']=='false' || @$vars['property_empty']=='false')
                 {
                     if(!empty($property_value))
-                    {
-                        // parse the contents of this condition on this round
                         $out = $item_html;
-                    }
                     else
-                    {
-                        // remove this conditional html code on this round
                         $out = '';
-                    }
                 }
+            }
+            else if(isset($vars['property_value']))
+            {
+                $condition_value = $vars['property_value'];
+
+                switch($vars['property_compare'])
+                {
+                    case '>':
+                    case 'gt':
+                        $condition = ($property_value > $condition_value);
+                        break;
+
+                    case '<':
+                    case 'lt':
+                        $condition = ($property_value < $condition_value);
+                        break;
+
+                    case '>=':
+                    case '=>':
+                    case 'gte':
+                        $condition = ($property_value >= $condition_value);
+                        break;
+
+                    case '<=':
+                    case '=<':
+                    case 'lte':
+                        $condition = ($property_value <= $condition_value);
+                        break;
+
+                    case 'in':
+                        $condition_values = explode(",", $condition_value);
+                        $condition = in_array($property_value, $condition_values);
+                        break;
+
+                    case 'nin':
+                        $condition_values = explode(",", $condition_value);
+                        $condition = !in_array($property_value, $condition_values);
+                        break;
+
+                    case '!=':
+                    case 'neq':
+                        if(is_numeric($property_value))
+                        {
+                            if($condition_value == 'true' || $condition_value===true)
+                                $condition_value = '1';
+                            else if($condition_value == 'false' || $condition_value===false)
+                                $condition_value = '0';
+                        }
+
+                        $condition = ($property_value != $condition_value);
+                        break;
+
+                    case '=':
+                    case '==':
+                    case 'eq':
+                    default:
+                        if(is_numeric($property_value))
+                        {
+                            if($condition_value == 'true' || $condition_value===true)
+                                $condition_value = '1';
+                            else if($condition_value == 'false' || $condition_value===false)
+                                $condition_value = '0';
+                        }
+
+                        $condition = ($property_value == $condition_value);
+                        break;
+                }
+
+                if($condition)
+                    $out = $item_html;
+                else
+                    $out = '';
             }
             break;
 
@@ -256,15 +299,9 @@ function nvweb_conditional($vars=array())
                 $templates = array($vars['template']);
 
             if(in_array($item->template, $templates))
-            {
-                // the template matches the condition, apply
                 $out = $item_html;
-            }
             else
-            {
-                // remove this conditional html code on this round
                 $out = '';
-            }
             break;
 
         case 'section':
@@ -278,7 +315,6 @@ function nvweb_conditional($vars=array())
             }
             else
             {
-                // remove this conditional html code on this round
                 $out = '';
             }
             break;
