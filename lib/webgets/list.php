@@ -1519,6 +1519,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
     if($tag['attributes']['by']=='property')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         $property_name = $tag['attributes']['property_id'];
         if(empty($property_name))
             $property_name = $tag['attributes']['property_name'];
@@ -1595,6 +1597,16 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                     $condition = ($property_value <= $condition_value);
                     break;
 
+                case 'in':
+                    $condition_values = explode(",", $condition_value);
+                    $condition = in_array($property_value, $condition_values);
+                    break;
+
+                case 'nin':
+                    $condition_values = explode(",", $condition_value);
+                    $condition = !in_array($property_value, $condition_values);
+                    break;
+
                 case '!=':
                 case 'neq':
                     if(is_numeric($property_value))
@@ -1638,6 +1650,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='template' || $tag['attributes']['by']=='templates')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         $templates = array();
         if(isset($tag['attributes']['templates']))
             $templates = explode(",", $tag['attributes']['templates']);
@@ -1669,6 +1683,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='position')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         if(isset($tag['attributes']['each']))
         {
             if($position % $tag['attributes']['each'] == 0) // condition applies
@@ -1731,6 +1747,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='block')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         // $item may be a block object or a block group block type
 
         if(isset($tag['attributes']['type']))
@@ -1771,6 +1789,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='block_type')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         // $item is a block type defined in a block group (to add a title before listing blocks of that kind)
         if(isset($tag['attributes']['type']) && $item->_object_type == "block_group_block_type")
         {
@@ -1791,6 +1811,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='access')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         $access = 0;
         switch($tag['attributes']['access'])
         {
@@ -1823,6 +1845,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='gallery')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         if($tag['attributes']['empty']=='true')
         {
             if(empty($item->galleries[0]))
@@ -1836,6 +1860,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='tags')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         if($tag['attributes']['empty']=='true')
         {
             if(empty($item->dictionary[$current['lang']]['tags']))
@@ -1849,6 +1875,8 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     }
     else if($tag['attributes']['by']=='structure')
     {
+        if(empty($item)) return ''; // can't parse values of empty objects
+
         if( isset($tag['attributes']['show_in_menus']) && isset($item->visible) )
         {
 	        if($item->visible == 1 && in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
