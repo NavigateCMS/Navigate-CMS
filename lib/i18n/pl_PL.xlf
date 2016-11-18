@@ -1515,25 +1515,25 @@ go modyfikować</target>
 		<unit id="251">
 			<segment>
 				<source>Private</source>
-				<target>Private</target>
+				<target>Prywatne</target>
 			</segment>
 		</unit>
 		<unit id="252">
 			<segment>
 				<source>Comments enabled for</source>
-				<target>Comments enabled for</target>
+				<target>Komentarze włączone dla</target
 			</segment>
 		</unit>
 		<unit id="253">
 			<segment>
 				<source>Nobody</source>
-				<target>Nobody</target>
+				<target>Nikt</target>
 			</segment>
 		</unit>
 		<unit id="254">
 			<segment>
 				<source>Everybody</source>
-				<target>Everybody</target>
+				<target>Każdy</target>
 			</segment>
 		</unit>
 		<unit id="255">
@@ -1545,31 +1545,31 @@ go modyfikować</target>
 		<unit id="256">
 			<segment>
 				<source>Leave blank to accept all comments</source>
-				<target>Leave blank to accept all comments</target>
+				<target>Zostaw puste, aby zaakceptować wszystkie komentarze</target>
 			</segment>
 		</unit>
 		<unit id="257">
 			<segment>
 				<source>To revise</source>
-				<target>To revise</target>
+				<target>Przejrzeć</target>
 			</segment>
 		</unit>
 		<unit id="258">
 			<segment>
 				<source>Publish</source>
-				<target>Publish</target>
+				<target>Opublikuj</target>
 			</segment>
 		</unit>
 		<unit id="259">
 			<segment>
 				<source>Unpublish</source>
-				<target>Unpublish</target>
+				<target>Wycofaj publikację</target>
 			</segment>
 		</unit>
 		<unit id="260">
 			<segment>
 				<source>Drag and drop files to upload them</source>
-				<target>Drag and drop files to upload them</target>
+				<target>Przeciągnij i upuść pliki, aby je wczytać</target>
 			</segment>
 		</unit>
 		<unit id="261">
