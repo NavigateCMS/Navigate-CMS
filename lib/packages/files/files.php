@@ -771,11 +771,13 @@ function files_item_properties($item)
 												navigate_notification(data);
 										}
 									});
-									$(this).dialog("close");								
+									$(this).dialog("close");		
+                                    $("#navigate-delete-dialog").remove();
 								},
 								"'.t(58, 'Cancel').'": function()
 								{
 									$(this).dialog("close");
+									$("#navigate-delete-dialog").remove();
 								}
 							}
 						});

@@ -401,8 +401,8 @@ img
 #navigate-status-progressbar-label
 {
     position: absolute;
-    left: 44%;
-    top: 0px;
+    left: 42%;
+    top: 0;
     font-weight: normal;
     text-shadow: 1px 1px 0 #fff;
     font-size: 10px;

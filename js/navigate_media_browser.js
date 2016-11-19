@@ -768,7 +768,8 @@ function navigate_contextmenu_delete_dialog(callback, params)
                 text: navigate_lang_dictionary[35],
                 click: function()
                 {
-                    $(this).dialog("close");
+                    $("#navigate-contextmenu-delete-dialog").dialog("close");
+                    $("#navigate-contextmenu-delete-dialog").remove();
                     if(callback)
                         callback(params);
                 }
@@ -777,7 +778,8 @@ function navigate_contextmenu_delete_dialog(callback, params)
                 text: navigate_lang_dictionary[58],
                 click: function()
                 {
-                    $(this).dialog("close");
+                    $("#navigate-contextmenu-delete-dialog").dialog("close");
+                    $("#navigate-contextmenu-delete-dialog").remove();
                 }
             }
         ]
