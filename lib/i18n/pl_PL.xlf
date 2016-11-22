@@ -2208,31 +2208,31 @@
 		<unit id="365">
 			<segment>
 				<source>Install</source>
-				<target>Install</target>
+				<target>Instaluj</target>
 			</segment>
 		</unit>
 		<unit id="366">
 			<segment>
 				<source>Log</source>
-				<target>Log</target>
+				<target>Dziennik</target>
 			</segment>
 		</unit>
 		<unit id="367">
 			<segment>
 				<source>Themes</source>
-				<target>Themes</target>
+				<target>Motywy</target>
 			</segment>
 		</unit>
 		<unit id="368">
 			<segment>
 				<source>Theme</source>
-				<target>Theme</target>
+				<target>Motyw</target>
 			</segment>
 		</unit>
 		<unit id="369">
 			<segment>
 				<source>More on</source>
-				<target>More on</target>
+				<target>Więcej</target>
 			</segment>
 		</unit>
 		<unit id="370">
@@ -2244,25 +2244,28 @@
 		<unit id="371">
 			<segment>
 				<source>Installing a new theme removes the settings of the old one.</source>
-				<target>Installing a new theme removes the settings of the old one.</target>
+				<target>Zainstalowanie nowego motywu usuwa ustawiania motywu
+				starego.</target>
 			</segment>
 		</unit>
 		<unit id="372">
 			<segment>
 				<source>The list of available block types may change and also the properties assigned to items could be lost.</source>
-				<target>The list of available block types may change and also the properties assigned to items could be lost.</target>
+				<target>Lista dostępnych typów blokowych może się zmienić, jak
+				też właściwości przypisane do elementu mogą być utracone.
+				</target>
 			</segment>
 		</unit>
 		<unit id="373">
 			<segment>
 				<source>Are you sure you want to continue?</source>
-				<target>Are you sure you want to continue?</target>
+				<target>Czy jesteś pewien, że chcesz kontynuować?</target>
 			</segment>
 		</unit>
 		<unit id="374">
 			<segment>
 				<source>Item installed successfully.</source>
-				<target>Item installed successfully.</target>
+				<target>Element zainstalowany z powodzeniem.</target>
 			</segment>
 		</unit>
 		<unit id="375">
@@ -2274,85 +2277,87 @@
 		<unit id="376">
 			<segment>
 				<source>Blog entry</source>
-				<target>Blog entry</target>
+				<target>Wpis do blogu</target>
 			</segment>
 		</unit>
 		<unit id="377">
 			<segment>
 				<source>Contact</source>
-				<target>Contact</target>
+				<target>Kontakt</target>
 			</segment>
 		</unit>
 		<unit id="378">
 			<segment>
 				<source>License</source>
-				<target>License</target>
+				<target>Licencja</target>
 			</segment>
 		</unit>
 		<unit id="379">
 			<segment>
 				<source>Post a comment</source>
-				<target>Post a comment</target>
+				<target>Wstaw komentarz</target>
 			</segment>
 		</unit>
 		<unit id="380">
 			<segment>
 				<source>Message</source>
-				<target>Message</target>
+				<target>Wiadomość</target>
 			</segment>
 		</unit>
 		<unit id="381">
 			<segment>
 				<source>E-Mail will not be published</source>
-				<target>E-Mail will not be published</target>
+				<target>E-Mail nie będzie opublikowany</target>
 			</segment>
 		</unit>
 		<unit id="382">
 			<segment>
 				<source>Submit</source>
-				<target>Submit</target>
+				<target>Zatwierdź</target>
 			</segment>
 		</unit>
 		<unit id="383">
 			<segment>
 				<source>Sign in or Sign up to post a comment</source>
-				<target>Sign in or Sign up to post a comment</target>
+				<target>Zaloguj się lub Zarejestruj, aby dodać komentarz
+				</target>
 			</segment>
 		</unit>
 		<unit id="384">
 			<segment>
 				<source>Comments on this entry are closed</source>
-				<target>Comments on this entry are closed</target>
+				<target>Komentarze do tego wpisu są zamknięte</target>
 			</segment>
 		</unit>
 		<unit id="385">
 			<segment>
 				<source>Please don't leave any field blank</source>
-				<target>Please don't leave any field blank</target>
+				<target>Proszę nie zostawić żadnego pustego miejsca</target>
 			</segment>
 		</unit>
 		<unit id="386">
 			<segment>
 				<source>Your comment has been received and will be published shortly</source>
-				<target>Your comment has been received and will be published shortly</target>
+				<target>Twój komentarz otrzymano, i zostanie on wkrótce
+				opublikowany</target>
 			</segment>
 		</unit>
 		<unit id="387">
 			<segment>
 				<source>New comment</source>
-				<target>New comment</target>
+				<target>Nowy komentarz</target>
 			</segment>
 		</unit>
 		<unit id="388">
 			<segment>
 				<source>Review comments</source>
-				<target>Review comments</target>
+				<target>Przegląd komentarzy</target>
 			</segment>
 		</unit>
 		<unit id="389">
 			<segment>
 				<source>Backspace key protection</source>
-				<target>Backspace key protection</target>
+				<target>Ochrona klawisza Backspace</target>
 			</segment>
 		</unit>
 		<unit id="390">
@@ -2364,37 +2369,38 @@
 		<unit id="391">
 			<segment>
 				<source>Trying to send a test e-mail...</source>
-				<target>Trying to send a test e-mail...</target>
+				<target>Próba wysłania testowego e-mail...</target>
 			</segment>
 		</unit>
 		<unit id="392">
 			<segment>
 				<source>E-Mail sent</source>
-				<target>E-Mail sent</target>
+				<target>E-Mail wysłany</target>
 			</segment>
 		</unit>
 		<unit id="393">
 			<segment>
 				<source>Standard banner sizes</source>
-				<target>Standard banner sizes</target>
+				<target>Standardowe rozmiary baneru</target>
 			</segment>
 		</unit>
 		<unit id="394">
 			<segment>
 				<source>Fixed</source>
-				<target>Fixed</target>
+				<target>Naprawione</target>
 			</segment>
 		</unit>
 		<unit id="395">
 			<segment>
 				<source>"Fixed" assigns a static position when the order is random</source>
-				<target>"Fixed" assigns a static position when the order is random</target>
+				<target>"Naprawione" przypisuje pozycję statyczną, gdy
+				porządek jest losowy</target>
 			</segment>
 		</unit>
 		<unit id="396">
 			<segment>
 				<source>All categories</source>
-				<target>All categories</target>
+				<target>Wszystkie kategorie</target>
 			</segment>
 		</unit>
 		<unit id="397">
@@ -2412,13 +2418,13 @@
 		<unit id="399">
 			<segment>
 				<source>Random</source>
-				<target>Random</target>
+				<target>Losowa</target>
 			</segment>
 		</unit>
 		<unit id="400">
 			<segment>
 				<source>Enter 0 to display all</source>
-				<target>Enter 0 to display all</target>
+				<target>Wprowadź 0, aby wyświetlić wszystkie</target>
 			</segment>
 		</unit>
 		<unit id="401">
