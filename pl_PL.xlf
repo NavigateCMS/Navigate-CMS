@@ -1,0 +1,3914 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-US" trgLang="pl-PL">
+	<file>
+		<unit id="0">
+			<segment>
+				<source>Navigate</source>
+				<target>Navigate</target>
+			</segment>
+		</unit>
+		<unit id="1">
+			<segment>
+				<source>User</source>
+				<target>Użytkownik</target>
+			</segment>
+		</unit>
+		<unit id="2">
+			<segment>
+				<source>Password</source>
+				<target>Hasło</target>
+			</segment>
+		</unit>
+		<unit id="3">
+			<segment>
+				<source>Enter</source>
+				<target>Enter</target>
+			</segment>
+		</unit>
+		<unit id="4">
+			<segment>
+				<source>Login incorrect.</source>
+				<target>Login niepoprawny.</target>
+			</segment>
+		</unit>
+		<unit id="5">
+			<segment>
+				<source>Log out</source>
+				<target>Wyloguj</target>
+			</segment>
+		</unit>
+		<unit id="6">
+			<segment>
+				<source>Loading</source>
+				<target>Wczytywanie</target>
+			</segment>
+		</unit>
+		<unit id="7">
+			<segment>
+				<source>Configuration</source>
+				<target>Konfiguracja</target>
+			</segment>
+		</unit>
+		<unit id="8">
+			<segment>
+				<source>Web</source>
+				<target>WWW</target>
+			</segment>
+		</unit>
+		<unit id="9">
+			<segment>
+				<source>Content</source>
+				<target>Zawartość</target>
+			</segment>
+		</unit>
+		<unit id="10">
+			<segment>
+				<source>Shop</source>
+				<target>Sklep</target>
+			</segment>
+		</unit>
+		<unit id="11">
+			<segment>
+				<source>Multimedia</source>
+				<target>Multimedia</target>
+			</segment>
+		</unit>
+		<unit id="12">
+			<segment>
+				<source>Tools</source>
+				<target>Narzędzia</target>
+			</segment>
+		</unit>
+		<unit id="13">
+			<segment>
+				<source>Not found</source>
+				<target>Nie znaleziono</target>
+			</segment>
+		</unit>
+		<unit id="14">
+			<segment>
+				<source>Preferences</source>
+				<target>Preferencje</target>
+			</segment>
+		</unit>
+		<unit id="15">
+			<segment>
+				<source>Users</source>
+				<target>Użytkownicy</target>
+			</segment>
+		</unit>
+		<unit id="16">
+			<segment>
+				<source>Structure</source>
+				<target>Struktura</target>
+			</segment>
+		</unit>
+		<unit id="17">
+			<segment>
+				<source>Permissions</source>
+				<target>Uprawnienia</target>
+			</segment>
+		</unit>
+		<unit id="18">
+			<segment>
+				<source>Home</source>
+				<target>Strona domowa</target>
+			</segment>
+		</unit>
+		<unit id="19">
+			<segment>
+				<source>Structure</source>
+				<target>Struktura</target>
+			</segment>
+		</unit>
+		<unit id="20">
+			<segment>
+				<source>Templates</source>
+				<target>Szablony</target>
+			</segment>
+		</unit>
+		<unit id="21">
+			<segment>
+				<source>Dictionary</source>
+				<target>Słownik</target>
+			</segment>
+		</unit>
+		<unit id="22">
+			<segment>
+				<source>Elements</source>
+				<target>Elementy</target>
+			</segment>
+		</unit>
+		<unit id="23">
+			<segment>
+				<source>Blocks</source>
+				<target>Bloki</target>
+			</segment>
+		</unit>
+		<unit id="24">
+			<segment>
+				<source>Web users</source>
+				<target>Użytkownicy WWW</target>
+			</segment>
+		</unit>
+		<unit id="25">
+			<segment>
+				<source>Products</source>
+				<target>Produkty</target>
+			</segment>
+		</unit>
+		<unit id="26">
+			<segment>
+				<source>Orders</source>
+				<target>Zamówienia</target>
+			</segment>
+		</unit>
+		<unit id="27">
+			<segment>
+				<source>Rates</source>
+				<target>Stawki</target>
+			</segment>
+		</unit>
+		<unit id="28">
+			<segment>
+				<source>Shipping</source>
+				<target>Dostawa</target>
+			</segment>
+		</unit>
+		<unit id="29">
+			<segment>
+				<source>Images</source>
+				<target>Obrazy</target>
+			</segment>
+		</unit>
+		<unit id="30">
+			<segment>
+				<source>Videos</source>
+				<target>W+ideo</target>
+			</segment>
+		</unit>
+		<unit id="31">
+			<segment>
+				<source>Audio</source>
+				<target>Audio</target>
+			</segment>
+		</unit>
+		<unit id="32">
+			<segment>
+				<source>Documents</source>
+				<target>Dokumenty</target>
+			</segment>
+		</unit>
+		<unit id="33">
+			<segment>
+				<source>Newsletters</source>
+				<target>Biuletyny</target>
+			</segment>
+		</unit>
+		<unit id="34">
+			<segment>
+				<source>Save</source>
+				<target>Zapisz</target>
+			</segment>
+		</unit>
+		<unit id="35">
+			<segment>
+				<source>Delete</source>
+				<target>Usuń</target>
+			</segment>
+		</unit>
+		<unit id="36">
+			<segment>
+				<source>Media</source>
+				<target>Media</target>
+			</segment>
+		</unit>
+		<unit id="37">
+			<segment>
+				<source>E-Mail confirmed</source>
+				<target>E-Mail potwierdzony</target>
+			</segment>
+		</unit>
+		<unit id="38">
+			<segment>
+				<source>Create</source>
+				<target>Utwórz</target>
+			</segment>
+		</unit>
+		<unit id="39">
+			<segment>
+				<source>List</source>
+				<target>Lista</target>
+			</segment>
+		</unit>
+		<unit id="40">
+			<segment>
+				<source>History</source>
+				<target>Historia</target>
+			</segment>
+		</unit>
+		<unit id="41">
+			<segment>
+				<source>Search</source>
+				<target>Szukaj</target>
+			</segment>
+		</unit>
+		<unit id="42">
+			<segment>
+				<source>Ready</source>
+				<target>Gotowy</target>
+			</segment>
+		</unit>
+		<unit id="43">
+			<segment>
+				<source>Main</source>
+				<target>Główny</target>
+			</segment>
+		</unit>
+		<unit id="44">
+			<segment>
+				<source>E-Mail</source>
+				<target>E-Mail</target>
+			</segment>
+		</unit>
+		<unit id="45">
+			<segment>
+				<source>Profile</source>
+				<target>Profil</target>
+			</segment>
+		</unit>
+		<unit id="46">
+			<segment>
+				<source>Language</source>
+				<target>Język</target>
+			</segment>
+		</unit>
+		<unit id="47">
+			<segment>
+				<source>Blocked</source>
+				<target>Zablokowane</target>
+			</segment>
+		</unit>
+		<unit id="48">
+			<segment>
+				<source>Leave empty to keep current value</source>
+				<target>Zostaw puste, aby zachować bieżącą wartość</target>
+			</segment>
+		</unit>
+		<unit id="49">
+			<segment>
+				<source>Decimal separator</source>
+				<target>Separator dziesiętny</target>
+			</segment>
+		</unit>
+		<unit id="50">
+			<segment>
+				<source>Date format</source>
+				<target>Format daty</target>
+			</segment>
+		</unit>
+		<unit id="51">
+			<segment>
+				<source>List</source>
+				<target>Lista</target>
+			</segment>
+		</unit>
+		<unit id="52">
+			<segment>
+				<source>(new)</source>
+				<target>(nowa)</target>
+			</segment>
+		</unit>
+		<unit id="53">
+			<segment>
+				<source>Data successfully saved</source>
+				<target>Data zapisana z powodzeniem</target>
+			</segment>
+		</unit>
+		<unit id="54">
+			<segment>
+				<source>Text</source>
+				<target>Tekst</target>
+			</segment>
+		</unit>
+		<unit id="55">
+			<segment>
+				<source>Item successfully deleted</source>
+				<target>Element usunięty z powodzeniem</target>
+			</segment>
+		</unit>
+		<unit id="56">
+			<segment>
+				<source>Unexpected error</source>
+				<target>Nieoczekiwny błąd</target>
+			</segment>
+		</unit>
+		<unit id="57">
+			<segment>
+				<source>Do you really want to delete the item?</source>
+				<target>Czy naprawdę usunąć ten element?</target>
+			</segment>
+		</unit>
+		<unit id="58">
+			<segment>
+				<source>Cancel</source>
+				<target>Anuluj</target>
+			</segment>
+		</unit>
+		<unit id="59">
+			<segment>
+				<source>Confirmation</source>
+				<target>Potwierdzenie</target>
+			</segment>
+		</unit>
+		<unit id="60">
+			<segment>
+				<source>Do you really want to delete the selected items?</source>
+				<target>Czy naprawdę usunąć wybrane elementy?</target>
+			</segment>
+		</unit>
+		<unit id="61">
+			<segment>
+				<source>Tree</source>
+				<target>Drzewo</target>
+			</segment>
+		</unit>
+		<unit id="62">
+			<segment>
+				<source>Statistics</source>
+				<target>Statystyka</target>
+			</segment>
+		</unit>
+		<unit id="63">
+			<segment>
+				<source>Languages</source>
+				<target>Języki</target>
+			</segment>
+		</unit>
+		<unit id="64">
+			<segment>
+				<source>Published</source>
+				<target>Opublikowane</target>
+			</segment>
+		</unit>
+		<unit id="65">
+			<segment>
+				<source>Enabled</source>
+				<target>Włączone</target>
+			</segment>
+		</unit>
+		<unit id="66">
+			<segment>
+				<source>Priority</source>
+				<target>Priorytet</target>
+			</segment>
+		</unit>
+		<unit id="67">
+			<segment>
+				<source>Title</source>
+				<target>Tytuł</target>
+			</segment>
+		</unit>
+		<unit id="68">
+			<segment>
+				<source>Status</source>
+				<target>Status</target>
+			</segment>
+		</unit>
+		<unit id="69">
+			<segment>
+				<source>Published</source>
+				<target>Opublikowane</target>
+			</segment>
+		</unit>
+		<unit id="70">
+			<segment>
+				<source>Private</source>
+				<target>Prywatne</target>
+			</segment>
+		</unit>
+		<unit id="71">
+			<segment>
+				<source>Closed</source>
+				<target>Zamknięte</target>
+			</segment>
+		</unit>
+		<unit id="72">
+			<segment>
+				<source>Drag the rows to assign priorities</source>
+				<target>Przeciągnij rzędy, aby uzyskać priorytety</target>
+			</segment>
+		</unit>
+		<unit id="73">
+			<segment>
+				<source>Children</source>
+				<target>Elementy potomne</target>
+			</segment>
+		</unit>
+		<unit id="74">
+			<segment>
+				<source>Paths</source>
+				<target>Scieżki</target>
+			</segment>
+		</unit>
+		<unit id="75">
+			<segment>
+				<source>Path</source>
+				<target>Scieżka</target>
+			</segment>
+		</unit>
+		<unit id="76">
+			<segment>
+				<source>Visible</source>
+				<target>Widoczny</target>
+			</segment>
+		</unit>
+		<unit id="77">
+			<segment>
+				<source>Properties</source>
+				<target>Właściwości</target>
+			</segment>
+		</unit>
+		<unit id="78">
+			<segment>
+				<source>Category</source>
+				<target>Kategoria</target>
+			</segment>
+		</unit>
+		<unit id="79">
+			<segment>
+				<source>Template</source>
+				<target>Szablon</target>
+			</segment>
+		</unit>
+		<unit id="80">
+			<segment>
+				<source>Permission</source>
+				<target>Uprawnienie</target>
+			</segment>
+		</unit>
+		<unit id="81">
+			<segment>
+				<source>Hidden</source>
+				<target>Ukryte</target>
+			</segment>
+		</unit>
+		<unit id="82">
+			<segment>
+				<source>File</source>
+				<target>Plik</target>
+			</segment>
+		</unit>
+		<unit id="83">
+			<segment>
+				<source>Leave blank to disable</source>
+				<target>Pozostawić puste, aby wyłączyć</target>
+			</segment>
+		</unit>
+		<unit id="84">
+			<segment>
+				<source>Parent</source>
+				<target>Element macierzysty</target>
+			</segment>
+		</unit>
+		<unit id="85">
+			<segment>
+				<source>Publish date</source>
+				<target>Data publikacji</target>
+			</segment>
+		</unit>
+		<unit id="86">
+			<segment>
+				<source>Date</source>
+				<target>Data</target>
+			</segment>
+		</unit>
+		<unit id="87">
+			<segment>
+				<source>Association</source>
+				<target>Stowarzyszenie</target>
+			</segment>
+		</unit>
+		<unit id="88">
+			<segment>
+				<source>Galleries</source>
+				<target>Galerie</target>
+			</segment>
+		</unit>
+		<unit id="89">
+			<segment>
+				<source>Files</source>
+				<target>Pliki</target>
+			</segment>
+		</unit>
+		<unit id="90">
+			<segment>
+				<source>Unpublish date</source>
+				<target>Cofnij publikację daty</target>
+			</segment>
+		</unit>
+		<unit id="91">
+			<segment>
+				<source>Day of month</source>
+				<target>Dzień miesiąca</target>
+			</segment>
+		</unit>
+		<unit id="92">
+			<segment>
+				<source>Close</source>
+				<target>Zamknij</target>
+			</segment>
+		</unit>
+		<unit id="93">
+			<segment>
+				<source>Hour</source>
+				<target>Godzina</target>
+			</segment>
+		</unit>
+		<unit id="94">
+			<segment>
+				<source>Minute</source>
+				<target>Minuta</target>
+			</segment>
+		</unit>
+		<unit id="95">
+			<segment>
+				<source>Month</source>
+				<target>Miesiąc</target>
+			</segment>
+		</unit>
+		<unit id="96">
+			<segment>
+				<source>Second</source>
+				<target>Sekunda</target>
+			</segment>
+		</unit>
+		<unit id="97">
+			<segment>
+				<source>Timezone</source>
+				<target>Strefa czasowa</target>
+			</segment>
+		</unit>
+		<unit id="98">
+			<segment>
+				<source>Select a date</source>
+				<target>Wybierz datę</target>
+			</segment>
+		</unit>
+		<unit id="99">
+			<segment>
+				<source>Year</source>
+				<target>Rok</target>
+			</segment>
+		</unit>
+		<unit id="100">
+			<segment>
+				<source>Free</source>
+				<target>Wolny</target>
+			</segment>
+		</unit>
+		<unit id="101">
+			<segment>
+				<source>January</source>
+				<target>Styczeń</target>
+			</segment>
+		</unit>
+		<unit id="102">
+			<segment>
+				<source>February</source>
+				<target>Luty</target>
+			</segment>
+		</unit>
+		<unit id="103">
+			<segment>
+				<source>March</source>
+				<target>Marzec</target>
+			</segment>
+		</unit>
+		<unit id="104">
+			<segment>
+				<source>April</source>
+				<target>Kwiecień</target>
+			</segment>
+		</unit>
+		<unit id="105">
+			<segment>
+				<source>May</source>
+				<target>Maj</target>
+			</segment>
+		</unit>
+		<unit id="106">
+			<segment>
+				<source>June</source>
+				<target>Czerwiec</target>
+			</segment>
+		</unit>
+		<unit id="107">
+			<segment>
+				<source>July</source>
+				<target>Lipiec</target>
+			</segment>
+		</unit>
+		<unit id="108">
+			<segment>
+				<source>August</source>
+				<target>Sierpień</target>
+			</segment>
+		</unit>
+		<unit id="109">
+			<segment>
+				<source>September</source>
+				<target>Wrzesień</target>
+			</segment>
+		</unit>
+		<unit id="110">
+			<segment>
+				<source>October</source>
+				<target>Październik</target>
+			</segment>
+		</unit>
+		<unit id="111">
+			<segment>
+				<source>November</source>
+				<target>Listopad</target>
+			</segment>
+		</unit>
+		<unit id="112">
+			<segment>
+				<source>December</source>
+				<target>Grudzień</target>
+			</segment>
+		</unit>
+		<unit id="113">
+			<segment>
+				<source>Jan</source>
+				<target>Sty</target>
+			</segment>
+		</unit>
+		<unit id="114">
+			<segment>
+				<source>Feb</source>
+				<target>Lut</target>
+			</segment>
+		</unit>
+		<unit id="115">
+			<segment>
+				<source>Mar</source>
+				<target>Mar</target>
+			</segment>
+		</unit>
+		<unit id="116">
+			<segment>
+				<source>Apr</source>
+				<target>Kwi</target>
+			</segment>
+		</unit>
+		<unit id="117">
+			<segment>
+				<source>May</source>
+				<target>Maj</target>
+			</segment>
+		</unit>
+		<unit id="118">
+			<segment>
+				<source>Jun</source>
+				<target>Cze</target>
+			</segment>
+		</unit>
+		<unit id="119">
+			<segment>
+				<source>Jul</source>
+				<target>Lip</target>
+			</segment>
+		</unit>
+		<unit id="120">
+			<segment>
+				<source>Aug</source>
+				<target>Sie</target>
+			</segment>
+		</unit>
+		<unit id="121">
+			<segment>
+				<source>Sep</source>
+				<target>Wrz</target>
+			</segment>
+		</unit>
+		<unit id="122">
+			<segment>
+				<source>Oct</source>
+				<target>Paź</target>
+			</segment>
+		</unit>
+		<unit id="123">
+			<segment>
+				<source>Nov</source>
+				<target>Lis</target>
+			</segment>
+		</unit>
+		<unit id="124">
+			<segment>
+				<source>Dec</source>
+				<target>Gru</target>
+			</segment>
+		</unit>
+		<unit id="125">
+			<segment>
+				<source>Monday</source>
+				<target>Poniedziałek</target>
+			</segment>
+		</unit>
+		<unit id="126">
+			<segment>
+				<source>Tuesday</source>
+				<target>Wtorek</target>
+			</segment>
+		</unit>
+		<unit id="127">
+			<segment>
+				<source>Wednesday</source>
+				<target>Środa</target>
+			</segment>
+		</unit>
+		<unit id="128">
+			<segment>
+				<source>Thursday</source>
+				<target>Czwartek</target>
+			</segment>
+		</unit>
+		<unit id="129">
+			<segment>
+				<source>Friday</source>
+				<target>Piątek</target>
+			</segment>
+		</unit>
+		<unit id="130">
+			<segment>
+				<source>Saturday</source>
+				<target>Sobota</target>
+			</segment>
+		</unit>
+		<unit id="131">
+			<segment>
+				<source>Sunday</source>
+				<target>Niedziela</target>
+			</segment>
+		</unit>
+		<unit id="132">
+			<segment>
+				<source>Mon</source>
+				<target>Pon</target>
+			</segment>
+		</unit>
+		<unit id="133">
+			<segment>
+				<source>Tue</source>
+				<target>Wto</target>
+			</segment>
+		</unit>
+		<unit id="134">
+			<segment>
+				<source>Wed</source>
+				<target>Śro</target>
+			</segment>
+		</unit>
+		<unit id="135">
+			<segment>
+				<source>Thu</source>
+				<target>Czw</target>
+			</segment>
+		</unit>
+		<unit id="136">
+			<segment>
+				<source>Fri</source>
+				<target>Pią</target>
+			</segment>
+		</unit>
+		<unit id="137">
+			<segment>
+				<source>Sat</source>
+				<target>Sob</target>
+			</segment>
+		</unit>
+		<unit id="138">
+			<segment>
+				<source>Sun</source>
+				<target>Nie</target>
+			</segment>
+		</unit>
+		<unit id="139">
+			<segment>
+				<source>Back</source>
+				<target>Wstecz</target>
+			</segment>
+		</unit>
+		<unit id="140">
+			<segment>
+				<source>Load</source>
+				<target>Wczytaj</target>
+			</segment>
+		</unit>
+		<unit id="141">
+			<segment>
+				<source>Folder</source>
+				<target>Katalog</target>
+			</segment>
+		</unit>
+		<unit id="142">
+			<segment>
+				<source>Select files</source>
+				<target>Wybierz pliki</target>
+			</segment>
+		</unit>
+		<unit id="143">
+			<segment>
+				<source>Add files to upload queue and push the button to start the process</source>
+				<target>Dodaj pliki, aby wczytać kolejkę i naciśnij przycisk,
+				aby rozpocząć ten proces</target>
+			</segment>
+		</unit>
+		<unit id="144">
+			<segment>
+				<source>Filename</source>
+				<target>Nazwa pliku</target>
+			</segment>
+		</unit>
+		<unit id="145">
+			<segment>
+				<source>Size</source>
+				<target>Rozmiar</target>
+			</segment>
+		</unit>
+		<unit id="146">
+			<segment>
+				<source>Select files</source>
+				<target>Wybierz pliki</target>
+			</segment>
+		</unit>
+		<unit id="147">
+			<segment>
+				<source>Start upload</source>
+				<target>Zacznij wczytywanie</target>
+			</segment>
+		</unit>
+		<unit id="148">
+			<segment>
+				<source>Stop current upload</source>
+				<target>Zatrzymaj bieżące wczytywanie</target>
+			</segment>
+		</unit>
+		<unit id="149">
+			<segment>
+				<source>Start upload queue</source>
+				<target>Zacznij wczytywać kolejkę</target>
+			</segment>
+		</unit>
+		<unit id="150">
+			<segment>
+				<source>Drag and drop files here</source>
+				<target>Przeciągnij i upuść pliki tutaj</target>
+			</segment>
+		</unit>
+		<unit id="151">
+			<segment>
+				<source>The selected items will be permanently deleted.
+				</source>
+				<target>Wybrane elementy będą trwale usunięte.</target>
+			</segment>
+		</unit>
+		<unit id="152">
+			<segment>
+				<source>Continue</source>
+				<target>Kontynuuj</target>
+			</segment>
+		</unit>
+		<unit id="153">
+			<segment>
+				<source>Embedding link</source>
+				<target>Odsyłacz osadzony</target>
+			</segment>
+		</unit>
+		<unit id="154">
+			<segment>
+				<source>Download link</source>
+				<target>Pobierz odsyłacz</target>
+			</segment>
+		</unit>
+		<unit id="155">
+			<segment>
+				<source>Width</source>
+				<target>Szerokość</target>
+			</segment>
+		</unit>
+		<unit id="156">
+			<segment>
+				<source>Height</source>
+				<target>Wysokość</target>
+			</segment>
+		</unit>
+		<unit id="157">
+			<segment>
+				<source>Image</source>
+				<target>Obraz</target>
+			</segment>
+		</unit>
+		<unit id="158">
+			<segment>
+				<source>Thumbnail</source>
+				<target>Miniatura</target>
+			</segment>
+		</unit>
+		<unit id="159">
+			<segment>
+				<source>Name</source>
+				<target>Nazwa</target>
+			</segment>
+		</unit>
+		<unit id="160">
+			<segment>
+				<source>Type</source>
+				<target>Typ</target>
+			</segment>
+		</unit>
+		<unit id="161">
+			<segment>
+				<source>Generic</source>
+				<target>Ogólny</target>
+			</segment>
+		</unit>
+		<unit id="162">
+			<segment>
+				<source>Embedding</source>
+				<target>Osadzenie</target>
+			</segment>
+		</unit>
+		<unit id="163">
+			<segment>
+				<source>Embedded</source>
+				<target>Osadzony</target>
+			</segment>
+		</unit>
+		<unit id="164">
+			<segment>
+				<source>Own path</source>
+				<target>Własna ścieżka</target>
+			</segment>
+		</unit>
+		<unit id="165">
+			<segment>
+				<source>The full content is shown in category view.
+				Ex. "Who we are"</source>
+				<target>Pełna zawartość jest widoczna za pomocą widoku
+				kategorii. Przykł. "Kim jesteśmy"</target>
+			</segment>
+		</unit>
+		<unit id="166">
+			<segment>
+				<source>Content is accessed via its own path.
+				Ex. "News"</source>
+				<target>Zawartość jest dostepna poprzez swoją własną ścieżkę.
+				Przykł. "Nowiny"</target>
+			</segment>
+		</unit>
+		<unit id="167">
+			<segment>
+				<source>Types</source>
+				<target>Typy</target>
+			</segment>
+		</unit>
+		<unit id="168">
+			<segment>
+				<source>Notes</source>
+				<target>Notatki</target>
+			</segment>
+		</unit>
+		<unit id="169">
+			<segment>
+				<source>You can leave a field blank to keep the size
+				free</source>
+				<target>Można pozostawić puste pole, aby utrzymać swobodny
+				rozmiar</target>
+			</segment>
+		</unit>
+		<unit id="170">
+			<segment>
+				<source>Edit</source>
+				<target>Modyfikuj</target>
+			</segment>
+		</unit>
+		<unit id="171">
+			<segment>
+				<source>Order</source>
+				<target>Porządek</target>
+			</segment>
+		</unit>
+		<unit id="172">
+			<segment>
+				<source>Action</source>
+				<target>Działanie</target>
+			</segment>
+		</unit>
+		<unit id="173">
+			<segment>
+				<source>Follow URL</source>
+				<target>Idź za URL</target>
+			</segment>
+		</unit>
+		<unit id="174">
+			<segment>
+				<source>Open URL (new window)</source>
+				<target>Otwórz URL (nowe okno)</target>
+			</segment>
+		</unit>
+		<unit id="175">
+			<segment>
+				<source>Download file</source>
+				<target>Pobierz plik</target>
+			</segment>
+		</unit>
+		<unit id="176">
+			<segment>
+				<source>Watch image</source>
+				<target>Spójrz na obraz</target>
+			</segment>
+		</unit>
+		<unit id="177">
+			<segment>
+				<source>Website</source>
+				<target>Witryna WWW</target>
+			</segment>
+		</unit>
+		<unit id="178">
+			<segment>
+				<source>Services</source>
+				<target>Usługi</target>
+			</segment>
+		</unit>
+		<unit id="179">
+			<segment>
+				<source>Thumbnails</source>
+				<target>Miniatury</target>
+			</segment>
+		</unit>
+		<unit id="180">
+			<segment>
+				<source>Item</source>
+				<target>Element</target>
+			</segment>
+		</unit>
+		<unit id="181">
+			<segment>
+				<source>Hidden</source>
+				<target>Ukryty</target>
+			</segment>
+		</unit>
+		<unit id="182">
+			<segment>
+				<source>Rollover image</source>
+				<target>Przewiń obraz</target>
+			</segment>
+		</unit>
+		<unit id="183">
+			<segment>
+				<source>Do nothing</source>
+				<target>Nic nie rób</target>
+			</segment>
+		</unit>
+		<unit id="184">
+			<segment>
+				<source>Web page</source>
+				<target>Strona WWW</target>
+			</segment>
+		</unit>
+		<unit id="185">
+			<segment>
+				<source>Searching items</source>
+				<target>Przegladane elementy</target>
+			</segment>
+		</unit>
+		<unit id="186">
+			<segment>
+				<source>Adobe Flash</source>
+				<target>Adobe Flash</target>
+			</segment>
+		</unit>
+		<unit id="187">
+			<segment>
+				<source>Home page</source>
+				<target>Strona domowa</target>
+			</segment>
+		</unit>
+		<unit id="188">
+			<segment>
+				<source>Translate</source>
+				<target>Tłumacz</target>
+			</segment>
+		</unit>
+		<unit id="189">
+			<segment>
+				<source>Copy from</source>
+				<target>Kopiuj z</target>
+			</segment>
+		</unit>
+		<unit id="190">
+			<segment>
+				<source>Ok</source>
+				<target>Ok</target>
+			</segment>
+		</unit>
+		<unit id="191">
+			<segment>
+				<source>Source</source>
+				<target>Źródło</target>
+			</segment>
+		</unit>
+		<unit id="192">
+			<segment>
+				<source>Double click on a row to edit it</source>
+				<target>Kliknij dwa razy na rząd, aby go modyfikować</target>
+			</segment>
+		</unit>
+		<unit id="193">
+			<segment>
+				<source>Value</source>
+				<target>Wartość</target>
+			</segment>
+		</unit>
+		<unit id="194">
+			<segment>
+				<source>Option</source>
+				<target>Opcja</target>
+			</segment>
+		</unit>
+		<unit id="195">
+			<segment>
+				<source>Text area</source>
+				<target>Obszar tekstowy</target>
+			</segment>
+		</unit>
+		<unit id="196">
+			<segment>
+				<source>Date and time</source>
+				<target>Data i czas</target>
+			</segment>
+		</unit>
+		<unit id="197">
+			<segment>
+				<source>Link</source>
+				<target>Odsyłacz</target>
+			</segment>
+		</unit>
+		<unit id="198">
+			<segment>
+				<source>Product</source>
+				<target>Produkt</target>
+			</segment>
+		</unit>
+		<unit id="199">
+			<segment>
+				<source>Default value</source>
+				<target>Wartość domyślna</target>
+			</segment>
+		</unit>
+		<unit id="200">
+			<segment>
+				<source>Options</source>
+				<target>Opcje</target>
+			</segment>
+		</unit>
+		<unit id="201">
+			<segment>
+				<source>One line per option, following the format:
+				value#title</source>
+				<target>Jedna linia na wiersz, nastepujący format:
+				wartość#tytuł</target>
+			</segment>
+		</unit>
+		<unit id="202">
+			<segment>
+				<source>Enter only the value</source>
+				<target>Wprowadź tylko wartość</target>
+			</segment>
+		</unit>
+		<unit id="203">
+			<segment>
+				<source>Same value for all languages</source>
+				<target>Ta sama wartość dla wszystkich języków</target>
+			</segment>
+		</unit>
+		<unit id="204">
+			<segment>
+				<source>File ID</source>
+				<target>ID pliku</target>
+			</segment>
+		</unit>
+		<unit id="205">
+			<segment>
+				<source>Comment</source>
+				<target>Komentarz</target>
+			</segment>
+		</unit>
+		<unit id="206">
+			<segment>
+				<source>Boolean</source>
+				<target>Wartość logiczna (boolean)</target>
+			</segment>
+		</unit>
+		<unit id="207">
+			<segment>
+				<source>Default timezone</source>
+				<target>Domyślna strefa czasowa</target>
+			</segment>
+		</unit>
+		<unit id="208">
+			<segment>
+				<source>Remove all content</source>
+				<target>Usuń całą zawartość</target>
+			</segment>
+		</unit>
+		<unit id="209">
+			<segment>
+				<source>Minutes</source>
+				<target>Minuty</target>
+			</segment>
+		</unit>
+		<unit id="210">
+			<segment>
+				<source>Gallery</source>
+				<target>Galeria</target>
+			</segment>
+		</unit>
+		<unit id="211">
+			<segment>
+				<source>Multiple option</source>
+				<target>Opcja wielokrotna</target>
+			</segment>
+		</unit>
+		<unit id="212">
+			<segment>
+				<source>Write values separated by commas</source>
+				<target>Wpisz wartości oddzielone przecinkami</target>
+			</segment>
+		</unit>
+		<unit id="213">
+			<segment>
+				<source>Image caption</source>
+				<target>Podpis obrazu</target>
+			</segment>
+		</unit>
+		<unit id="214">
+			<segment>
+				<source>Product</source>
+				<target>Produkt</target>
+			</segment>
+		</unit>
+		<unit id="215">
+			<segment>
+				<source>Credits</source>
+				<target>Podziękowania</target>
+			</segment>
+		</unit>
+		<unit id="216">
+			<segment>
+				<source>Created by</source>
+				<target>Stworzone przez</target>
+			</segment>
+		</unit>
+		<unit id="217">
+			<segment>
+				<source>Tested by</source>
+				<target>Testowane przez</target>
+			</segment>
+		</unit>
+		<unit id="218">
+			<segment>
+				<source>External libraries</source>
+				<target>Biblioteki zewnętrzne</target>
+			</segment>
+		</unit>
+		<unit id="219">
+			<segment>
+				<source>Copyright</source>
+				<target>Copyright</target>
+			</segment>
+		</unit>
+		<unit id="220">
+			<segment>
+				<source>Version</source>
+				<target>Wersja</target>
+			</segment>
+		</unit>
+		<unit id="221">
+			<segment>
+				<source>Jump to</source>
+				<target>Przeskocz do</target>
+			</segment>
+		</unit>
+		<unit id="222">
+			<segment>
+				<source>Rating</source>
+				<target>Ocena</target>
+			</segment>
+		</unit>
+		<unit id="223">
+			<segment>
+				<source>Default value 5 stars, if you want a different value:
+				default_value#number_of_stars</source>
+				<target>Wartość domyślna 5 gwiazdek, jeśli chcesz inną
+				wartość: wartość_domyślna#ilość_gwiazdek</target>
+			</segment>
+		</unit>
+		<unit id="224">
+			<segment>
+				<source>Country</source>
+				<target>Kraj</target>
+			</segment>
+		</unit>
+		<unit id="225">
+			<segment>
+				<source>Alpha-2 country code</source>
+				<target>Kod kraju Alpha-2</target>
+			</segment>
+		</unit>
+		<unit id="226">
+			<segment>
+				<source>Creation date</source>
+				<target>Data utworzenia</target>
+			</segment>
+		</unit>
+		<unit id="227">
+			<segment>
+				<source>Modification date</source>
+				<target>Data modyfikacji</target>
+			</segment>
+		</unit>
+		<unit id="228">
+			<segment>
+				<source>Subdomain</source>
+				<target>Subdomena</target>
+			</segment>
+		</unit>
+		<unit id="229">
+			<segment>
+				<source>Domain</source>
+				<target>Domena</target>
+			</segment>
+		</unit>
+		<unit id="230">
+			<segment>
+				<source>Ex.</source>
+				<target>Przykł.</target>
+			</segment>
+		</unit>
+		<unit id="231">
+			<segment>
+				<source>Server</source>
+				<target>Serwer</target>
+			</segment>
+		</unit>
+		<unit id="232">
+			<segment>
+				<source>Port</source>
+				<target>Port</target>
+			</segment>
+		</unit>
+		<unit id="233">
+			<segment>
+				<source>Address</source>
+				<target>Adres</target>
+			</segment>
+		</unit>
+		<unit id="234">
+			<segment>
+				<source>More elements</source>
+				<target>Więcej elementów</target>
+			</segment>
+		</unit>
+		<unit id="235">
+			<segment>
+				<source>File saved successfully.</source>
+				<target>Plik zapisano z powodzeniem.</target>
+			</segment>
+		</unit>
+		<unit id="236">
+			<segment>
+				<source>Sections</source>
+				<target>Sekcje</target>
+			</segment>
+		</unit>
+		<unit id="237">
+			<segment>
+				<source>Code</source>
+				<target>Kod</target>
+			</segment>
+		</unit>
+		<unit id="238">
+			<segment>
+				<source>Main content</source>
+				<target>Zawartość główna</target>
+			</segment>
+		</unit>
+		<unit id="239">
+			<segment>
+				<source>Section</source>
+				<target>Sekcja</target>
+			</segment>
+		</unit>
+		<unit id="240">
+			<segment>
+				<source>Functions</source>
+				<target>Funkcje</target>
+			</segment>
+		</unit>
+		<unit id="241">
+			<segment>
+				<source>Web sites</source>
+				<target>Witryny WWW</target>
+			</segment>
+		</unit>
+		<unit id="242">
+			<segment>
+				<source>Icon</source>
+				<target>Ikona</target>
+			</segment>
+		</unit>
+		<unit id="243">
+			<segment>
+				<source>Profiles</source>
+				<target>Profile</target>
+			</segment>
+		</unit>
+		<unit id="244">
+			<segment>
+				<source>Menus</source>
+				<target>Menu</target>
+			</segment>
+		</unit>
+		<unit id="245">
+			<segment>
+				<source>Notes</source>
+				<target>Notatki</target>
+			</segment>
+		</unit>
+		<unit id="246">
+			<segment>
+				<source>Avatar</source>
+				<target>Avatar</target>
+			</segment>
+		</unit>
+		<unit id="247">
+			<segment>
+				<source>Registration date</source>
+				<target>Data rejestracji</target>
+			</segment>
+		</unit>
+		<unit id="248">
+			<segment>
+				<source>Birth date</source>
+				<target>Data urodzenia</target>
+			</segment>
+		</unit>
+		<unit id="249">
+			<segment>
+				<source>Newsletter</source>
+				<target>Biuletyn</target>
+			</segment>
+		</unit>
+		<unit id="250">
+			<segment>
+				<source>Comments</source>
+				<target>Komentarze</target>
+			</segment>
+		</unit>
+		<unit id="251">
+			<segment>
+				<source>Private</source>
+				<target>Prywatne</target>
+			</segment>
+		</unit>
+		<unit id="252">
+			<segment>
+				<source>Comments enabled for</source>
+				<target>Komentarze włączone dla</target
+			</segment>
+		</unit>
+		<unit id="253">
+			<segment>
+				<source>Nobody</source>
+				<target>Nikt</target>
+			</segment>
+		</unit>
+		<unit id="254">
+			<segment>
+				<source>Everybody</source>
+				<target>Każdy</target>
+			</segment>
+		</unit>
+		<unit id="255">
+			<segment>
+				<source>Moderator</source>
+				<target>Moderator</target>
+			</segment>
+		</unit>
+		<unit id="256">
+			<segment>
+				<source>Leave blank to accept all comments</source>
+				<target>Zostaw puste, aby zaakceptować wszystkie komentarze</target>
+			</segment>
+		</unit>
+		<unit id="257">
+			<segment>
+				<source>To revise</source>
+				<target>Przejrzeć</target>
+			</segment>
+		</unit>
+		<unit id="258">
+			<segment>
+				<source>Publish</source>
+				<target>Opublikuj</target>
+			</segment>
+		</unit>
+		<unit id="259">
+			<segment>
+				<source>Unpublish</source>
+				<target>Wycofaj publikację</target>
+			</segment>
+		</unit>
+		<unit id="260">
+			<segment>
+				<source>Drag and drop files to upload them</source>
+				<target>Przeciągnij i upuść pliki, aby je wczytać</target>
+			</segment>
+		</unit>
+		<unit id="261">
+			<segment>
+				<source>Uploading</source>
+				<target>Wczytywanie</target>
+			</segment>
+		</unit>
+		<unit id="262">
+			<segment>
+				<source>Error uploading file</source>
+				<target>Błąd wczytywania pliku</target>
+			</segment>
+		</unit>
+		<unit id="263">
+			<segment>
+				<source>Contact e-mails</source>
+				<target>Kontakt e-mail</target>
+			</segment>
+		</unit>
+		<unit id="264">
+			<segment>
+				<source>One item per row</source>
+				<target>Jeden element w rzędzie</target>
+			</segment>
+		</unit>
+		<unit id="265">
+			<segment>
+				<source>Labels</source>
+				<target>Etykiety</target>
+			</segment>
+		</unit>
+		<unit id="266">
+			<segment>
+				<source>Author</source>
+				<target>Autor</target>
+			</segment>
+		</unit>
+		<unit id="267">
+			<segment>
+				<source>Editor</source>
+				<target>Edytor</target>
+			</segment>
+		</unit>
+		<unit id="268">
+			<segment>
+				<source>Raw</source>
+				<target>Rząd</target>
+			</segment>
+		</unit>
+		<unit id="269">
+			<segment>
+				<source>HTML code</source>
+				<target>Kod HTML</target>
+			</segment>
+		</unit>
+		<unit id="270">
+			<segment>
+				<source>Auto save in progress</source>
+				<target>Postęp autozapisu</target>
+			</segment>
+		</unit>
+		<unit id="271">
+			<segment>
+				<source>Auto save completed</source>
+				<target>Autozapis ukończony</target>
+			</segment>
+		</unit>
+		<unit id="272">
+			<segment>
+				<source>Video</source>
+				<target>Wideo</target>
+			</segment>
+		</unit>
+		<unit id="273">
+			<segment>
+				<source>Auto save</source>
+				<target>Autozapis</target>
+			</segment>
+		</unit>
+		<unit id="274">
+			<segment>
+				<source>Preview</source>
+				<target>Podgląd</target>
+			</segment>
+		</unit>
+		<unit id="275">
+			<segment>
+				<source>Recent elements</source>
+				<target>Elementy bieżące</target>
+			</segment>
+		</unit>
+		<unit id="276">
+			<segment>
+				<source>Recent comments</source>
+				<target>Komentarze bieżące</target>
+			</segment>
+		</unit>
+		<unit id="277">
+			<segment>
+				<source>Most seen elements</source>
+				<target>Przeważnie oglądane elementy</target>
+			</segment>
+		</unit>
+		<unit id="278">
+			<segment>
+				<source>Web summary</source>
+				<target>Podsumowanie WWW</target>
+			</segment>
+		</unit>
+		<unit id="279">
+			<segment>
+				<source>Pages available</source>
+				<target>Dostępne strony</target>
+			</segment>
+		</unit>
+		<unit id="280">
+			<segment>
+				<source>Page views</source>
+				<target>Widoki stron</target>
+			</segment>
+		</unit>
+		<unit id="281">
+			<segment>
+				<source>Comments to revise</source>
+				<target>Komentarze do przejrzenia</target>
+			</segment>
+		</unit>
+		<unit id="282">
+			<segment>
+				<source>Untitled</source>
+				<target>Bez tytułu</target>
+			</segment>
+		</unit>
+		<unit id="283">
+			<segment>
+				<source>Show in menus</source>
+				<target>Pokaż w menu</target>
+			</segment>
+		</unit>
+		<unit id="284">
+			<segment>
+				<source>Africa</source>
+				<target>Afryka</target>
+			</segment>
+		</unit>
+		<unit id="285">
+			<segment>
+				<source>Update</source>
+				<target>Aktualizuj</target>
+			</segment>
+		</unit>
+		<unit id="286">
+			<segment>
+				<source>Drag to reorder. Double click to assign image
+				captions.</source>
+				<target>Przeciągnij, aby zmienić porządek. Kliknij dwukrotnie, 					aby uzyskać podpisy</target>
+			</segment>
+		</unit>
+		<unit id="287">
+			<segment>
+				<source>Protocol</source>
+				<target>Protokół</target>
+			</segment>
+		</unit>
+		<unit id="288">
+			<segment>
+				<source>Secure site (requires certificate)</source>
+				<target>Bezpieczna witryna (wymaga certyfikatu)</target>
+			</segment>
+		</unit>
+		<unit id="289">
+			<segment>
+				<source>Update Navigate</source>
+				<target>Aktualizuj Navigate</target>
+			</segment>
+		</unit>
+		<unit id="290">
+			<segment>
+				<source>Current version</source>
+				<target>Wersja bieżąca</target>
+			</segment>
+		</unit>
+		<unit id="291">
+			<segment>
+				<source>Latest version</source>
+				<target>Wersja najnowsza</target>
+			</segment>
+		</unit>
+		<unit id="292">
+			<segment>
+				<source>Available updates</source>
+				<target>Aktualizacje dostępne</target>
+			</segment>
+		</unit>
+		<unit id="293">
+			<segment>
+				<source>Application successfully updated</source>
+				<target>Program zaktualizowany z powodzeniem</target>
+			</segment>
+		</unit>
+		<unit id="294">
+			<segment>
+				<source>Error updating.</source>
+				<target>Błąd aktualizacji.</target>
+			</segment>
+		</unit>
+		<unit id="295">
+			<segment>
+				<source>Expand all</source>
+				<target>Rozszerz wszystko</target>
+			</segment>
+		</unit>
+		<unit id="296">
+			<segment>
+				<source>Top pages</source>
+				<target>Strony "Top"</target>
+			</segment>
+		</unit>
+		<unit id="297">
+			<segment>
+				<source>Coordinates</source>
+				<target>Współrzędne</target>
+			</segment>
+		</unit>
+		<unit id="298">
+			<segment>
+				<source>Latitude</source>
+				<target>Szerokość geograficzna</target>
+			</segment>
+		</unit>
+		<unit id="299">
+			<segment>
+				<source>Longitude</source>
+				<target>Długość geograficzna</target>
+			</segment>
+		</unit>
+		<unit id="300">
+			<segment>
+				<source>Map</source>
+				<target>Mapa</target>
+			</segment>
+		</unit>
+		<unit id="301">
+			<segment>
+				<source>Double click on a place to set the coordinates</source>
+				<target>Kliknij dwukrotnie na miejsce, aby uzyskać współrzędne				</target>
+			</segment>
+		</unit>
+		<unit id="302">
+			<segment>
+				<source>Help</source>
+				<target>Pomoc</target>
+			</segment>
+		</unit>
+		<unit id="303">
+			<segment>
+				<source>Manual update</source>
+				<target>Aktualizacja ręczna</target>
+			</segment>
+		</unit>
+		<unit id="304">
+			<segment>
+				<source>Gender</source>
+				<target>Płeć</target>
+			</segment>
+		</unit>
+		<unit id="305">
+			<segment>
+				<source>Male</source>
+				<target>Mężczyzna</target>
+			</segment>
+		</unit>
+		<unit id="306">
+			<segment>
+				<source>Female</source>
+				<target>Kobieta</target>
+			</segment>
+		</unit>
+		<unit id="307">
+			<segment>
+				<source>Unspecified</source>
+				<target>Nie określona</target>
+			</segment>
+		</unit>
+		<unit id="308">
+			<segment>
+				<source>Personal</source>
+				<target>Osobisty</target>
+			</segment>
+		</unit>
+		<unit id="309">
+			<segment>
+				<source>Social</source>
+				<target>Społeczny</target>
+			</segment>
+		</unit>
+		<unit id="310">
+			<segment>
+				<source>America</source>
+				<target>Ameryka</target>
+			</segment>
+		</unit>
+		<unit id="311">
+			<segment>
+				<source>Antartica</source>
+				<target>Antarktyda</target>
+			</segment>
+		</unit>
+		<unit id="312">
+			<segment>
+				<source>Arctic</source>
+				<target>Arktyka</target>
+			</segment>
+		</unit>
+		<unit id="313">
+			<segment>
+				<source>Asia</source>
+				<target>Azja</target>
+			</segment>
+		</unit>
+		<unit id="314">
+			<segment>
+				<source>Atlantic</source>
+				<target>Atlantyk</target>
+			</segment>
+		</unit>
+		<unit id="315">
+			<segment>
+				<source>Europe</source>
+				<target>Europa</target>
+			</segment>
+		</unit>
+		<unit id="316">
+			<segment>
+				<source>Indian</source>
+				<target>Ocean Indyjski</target>
+			</segment>
+		</unit>
+		<unit id="317">
+			<segment>
+				<source>Pacific</source>
+				<target>Pacyfik</target>
+			</segment>
+		</unit>
+		<unit id="318">
+			<segment>
+				<source>Zip code</source>
+				<target>Kod pocztowy</target>
+			</segment>
+		</unit>
+		<unit id="319">
+			<segment>
+				<source>Location</source>
+				<target>Lokalizacja</target>
+			</segment>
+		</unit>
+		<unit id="320">
+			<segment>
+				<source>Phone</source>
+				<target>Telefon</target>
+			</segment>
+		</unit>
+		<unit id="321">
+			<segment>
+				<source>Allowed</source>
+				<target>Dozwolone</target>
+			</segment>
+		</unit>
+		<unit id="322">
+			<segment>
+				<source>Jump to another branch</source>
+				<target>Przeskocz do innej gałęzi</target>
+			</segment>
+		</unit>
+		<unit id="323">
+			<segment>
+				<source>Jump to an element</source>
+				<target>Przeskocz do elementu</target>
+			</segment>
+		</unit>
+		<unit id="324">
+			<segment>
+				<source>New window</source>
+				<target>Nowe okno</target>
+			</segment>
+		</unit>
+		<unit id="325">
+			<segment>
+				<source>Branch</source>
+				<target>Gałąź</target>
+			</segment>
+		</unit>
+		<unit id="326">
+			<segment>
+				<source>Web feeds</source>
+				<target>Kanały internetowe</target>
+			</segment>
+		</unit>
+		<unit id="327">
+			<segment>
+				<source>Extensions</source>
+				<target>Rozszerzenia</target>
+			</segment>
+		</unit>
+		<unit id="328">
+			<segment>
+				<source>Favicon</source>
+				<target>Favicon</target>
+			</segment>
+		</unit>
+		<unit id="329">
+			<segment>
+				<source>Backups</source>
+				<target>Kopie zapasowe</target>
+			</segment>
+		</unit>
+		<unit id="330">
+			<segment>
+				<source>Categories</source>
+				<target>Kategorie</target>
+			</segment>
+		</unit>
+		<unit id="331">
+			<segment>
+				<source>Format</source>
+				<target>Format</target>
+			</segment>
+		</unit>
+		<unit id="332">
+			<segment>
+				<source>Views</source>
+				<target>Widoki</target>
+			</segment>
+		</unit>
+		<unit id="333">
+			<segment>
+				<source>Recommended</source>
+				<target>Polecane</target>
+			</segment>
+		</unit>
+		<unit id="334">
+			<segment>
+				<source>Description</source>
+				<target>Opis</target>
+			</segment>
+		</unit>
+		<unit id="335">
+			<segment>
+				<source>Entries</source>
+				<target>Wpisy</target>
+			</segment>
+		</unit>
+		<unit id="336">
+			<segment>
+				<source>Display</source>
+				<target>Wyświetl</target>
+			</segment>
+		</unit>
+		<unit id="337">
+			<segment>
+				<source>Summary</source>
+				<target>Podsumowanie</target>
+			</segment>
+		</unit>
+		<unit id="338">
+			<segment>
+				<source>Uploaded %d/%d files</source>
+				<target>Wczytane %d/%d pliki</target>
+			</segment>
+		</unit>
+		<unit id="339">
+			<segment>
+				<source>N/A</source>
+				<target>N/A</target>
+			</segment>
+		</unit>
+		<unit id="340">
+			<segment>
+				<source>File extension error</source>
+				<target>Błąd rozszerzenia pliku</target>
+			</segment>
+		</unit>
+		<unit id="341">
+			<segment>
+				<source>File size error</source>
+				<target>Błąd rozmiaru pliku</target>
+			</segment>
+		</unit>
+		<unit id="342">
+			<segment>
+				<source>Init error</source>
+				<target>Błąd Init</target>
+			</segment>
+		</unit>
+		<unit id="343">
+			<segment>
+				<source>HTTP Error</source>
+				<target>Błąd HTTP</target>
+			</segment>
+		</unit>
+		<unit id="344">
+			<segment>
+				<source>Security error</source>
+				<target>Błąd bezpieczeństwa</target>
+			</segment>
+		</unit>
+		<unit id="345">
+			<segment>
+				<source>Generic error</source>
+				<target>Błąd ogólny</target>
+			</segment>
+		</unit>
+		<unit id="346">
+			<segment>
+				<source>IO error</source>
+				<target>Błąd IO</target>
+			</segment>
+		</unit>
+		<unit id="347">
+			<segment>
+				<source>Stop upload</source>
+				<target>Zatrzymaj wczytywanie</target>
+			</segment>
+		</unit>
+		<unit id="348">
+			<segment>
+				<source>Add files</source>
+				<target>Dodaj pliki</target>
+			</segment>
+		</unit>
+		<unit id="349">
+			<segment>
+				<source>Start upload</source>
+				<target>Zacznij wczytywanie</target>
+			</segment>
+		</unit>
+		<unit id="350">
+			<segment>
+				<source>%d files queued</source>
+				<target>%d plików w kolejce</target>
+			</segment>
+		</unit>
+		<unit id="351">
+			<segment>
+				<source>New update available!</source>
+				<target>Dostępna nowa aktualizacja!</target>
+			</segment>
+		</unit>
+		<unit id="352">
+			<segment>
+				<source>Votes</source>
+				<target>Głosowania</target>
+			</segment>
+		</unit>
+		<unit id="353">
+			<segment>
+				<source>Score</source>
+				<target>Wynik</target>
+			</segment>
+		</unit>
+		<unit id="354">
+			<segment>
+				<source>Reset</source>
+				<target>Reset</target>
+			</segment>
+		</unit>
+		<unit id="355">
+			<segment>
+				<source>Votes reset</source>
+				<target>Resetuj głosowanie</target>
+			</segment>
+		</unit>
+		<unit id="356">
+			<segment>
+				<source>last 90 days</source>
+				<target>ostatnie 90 dni</target>
+			</segment>
+		</unit>
+		<unit id="357">
+			<segment>
+				<source>User votes</source>
+				<target>Głosowania użytkownika</target>
+			</segment>
+		</unit>
+		<unit id="358">
+			<segment>
+				<source>Hidden to everybody</source>
+				<target>Ukryte dla każdego</target>
+			</segment>
+		</unit>
+		<unit id="359">
+			<segment>
+				<source>Visible only to Navigate CMS users</source>
+				<target>Widoczne tylko dla użytkowników Navigate CMS</target>
+			</segment>
+		</unit>
+		<unit id="360">
+			<segment>
+				<source>Visible to everybody</source>
+				<target>Widoczne dla każdego</target>
+			</segment>
+		</unit>
+		<unit id="361">
+			<segment>
+				<source>Web users only</source>
+				<target>Tylko uzytkownicy WWW</target>
+			</segment>
+		</unit>
+		<unit id="362">
+			<segment>
+				<source>Not signed in</source>
+				<target>Nie zalogowany</target>
+			</segment>
+		</unit>
+		<unit id="363">
+			<segment>
+				<source>Users who have not yet signed up or signed in</source>
+				<target>Użtykownicy, którzy jeszcze się nie zarejestrowali
+					lub nie zalogowali</target>
+			</segment>
+		</unit>
+		<unit id="364">
+			<segment>
+				<source>Access</source>
+				<target>Dostęp</target>
+			</segment>
+		</unit>
+		<unit id="365">
+			<segment>
+				<source>Install</source>
+				<target>Install</target>
+			</segment>
+		</unit>
+		<unit id="366">
+			<segment>
+				<source>Log</source>
+				<target>Log</target>
+			</segment>
+		</unit>
+		<unit id="367">
+			<segment>
+				<source>Themes</source>
+				<target>Themes</target>
+			</segment>
+		</unit>
+		<unit id="368">
+			<segment>
+				<source>Theme</source>
+				<target>Theme</target>
+			</segment>
+		</unit>
+		<unit id="369">
+			<segment>
+				<source>More on</source>
+				<target>More on</target>
+			</segment>
+		</unit>
+		<unit id="370">
+			<segment>
+				<source>Demo</source>
+				<target>Demo</target>
+			</segment>
+		</unit>
+		<unit id="371">
+			<segment>
+				<source>Installing a new theme removes the settings of the old one.</source>
+				<target>Installing a new theme removes the settings of the old one.</target>
+			</segment>
+		</unit>
+		<unit id="372">
+			<segment>
+				<source>The list of available block types may change and also the properties assigned to items could be lost.</source>
+				<target>The list of available block types may change and also the properties assigned to items could be lost.</target>
+			</segment>
+		</unit>
+		<unit id="373">
+			<segment>
+				<source>Are you sure you want to continue?</source>
+				<target>Are you sure you want to continue?</target>
+			</segment>
+		</unit>
+		<unit id="374">
+			<segment>
+				<source>Item installed successfully.</source>
+				<target>Item installed successfully.</target>
+			</segment>
+		</unit>
+		<unit id="375">
+			<segment>
+				<source>Blog</source>
+				<target>Blog</target>
+			</segment>
+		</unit>
+		<unit id="376">
+			<segment>
+				<source>Blog entry</source>
+				<target>Blog entry</target>
+			</segment>
+		</unit>
+		<unit id="377">
+			<segment>
+				<source>Contact</source>
+				<target>Contact</target>
+			</segment>
+		</unit>
+		<unit id="378">
+			<segment>
+				<source>License</source>
+				<target>License</target>
+			</segment>
+		</unit>
+		<unit id="379">
+			<segment>
+				<source>Post a comment</source>
+				<target>Post a comment</target>
+			</segment>
+		</unit>
+		<unit id="380">
+			<segment>
+				<source>Message</source>
+				<target>Message</target>
+			</segment>
+		</unit>
+		<unit id="381">
+			<segment>
+				<source>E-Mail will not be published</source>
+				<target>E-Mail will not be published</target>
+			</segment>
+		</unit>
+		<unit id="382">
+			<segment>
+				<source>Submit</source>
+				<target>Submit</target>
+			</segment>
+		</unit>
+		<unit id="383">
+			<segment>
+				<source>Sign in or Sign up to post a comment</source>
+				<target>Sign in or Sign up to post a comment</target>
+			</segment>
+		</unit>
+		<unit id="384">
+			<segment>
+				<source>Comments on this entry are closed</source>
+				<target>Comments on this entry are closed</target>
+			</segment>
+		</unit>
+		<unit id="385">
+			<segment>
+				<source>Please don't leave any field blank</source>
+				<target>Please don't leave any field blank</target>
+			</segment>
+		</unit>
+		<unit id="386">
+			<segment>
+				<source>Your comment has been received and will be published shortly</source>
+				<target>Your comment has been received and will be published shortly</target>
+			</segment>
+		</unit>
+		<unit id="387">
+			<segment>
+				<source>New comment</source>
+				<target>New comment</target>
+			</segment>
+		</unit>
+		<unit id="388">
+			<segment>
+				<source>Review comments</source>
+				<target>Review comments</target>
+			</segment>
+		</unit>
+		<unit id="389">
+			<segment>
+				<source>Backspace key protection</source>
+				<target>Backspace key protection</target>
+			</segment>
+		</unit>
+		<unit id="390">
+			<segment>
+				<source>Test</source>
+				<target>Test</target>
+			</segment>
+		</unit>
+		<unit id="391">
+			<segment>
+				<source>Trying to send a test e-mail...</source>
+				<target>Trying to send a test e-mail...</target>
+			</segment>
+		</unit>
+		<unit id="392">
+			<segment>
+				<source>E-Mail sent</source>
+				<target>E-Mail sent</target>
+			</segment>
+		</unit>
+		<unit id="393">
+			<segment>
+				<source>Standard banner sizes</source>
+				<target>Standard banner sizes</target>
+			</segment>
+		</unit>
+		<unit id="394">
+			<segment>
+				<source>Fixed</source>
+				<target>Fixed</target>
+			</segment>
+		</unit>
+		<unit id="395">
+			<segment>
+				<source>"Fixed" assigns a static position when the order is random</source>
+				<target>"Fixed" assigns a static position when the order is random</target>
+			</segment>
+		</unit>
+		<unit id="396">
+			<segment>
+				<source>All categories</source>
+				<target>All categories</target>
+			</segment>
+		</unit>
+		<unit id="397">
+			<segment>
+				<source>Maximum</source>
+				<target>Maximum</target>
+			</segment>
+		</unit>
+		<unit id="398">
+			<segment>
+				<source>Minimum</source>
+				<target>Minimum</target>
+			</segment>
+		</unit>
+		<unit id="399">
+			<segment>
+				<source>Random</source>
+				<target>Random</target>
+			</segment>
+		</unit>
+		<unit id="400">
+			<segment>
+				<source>Enter 0 to display all</source>
+				<target>Enter 0 to display all</target>
+			</segment>
+		</unit>
+		<unit id="401">
+			<segment>
+				<source>Your browser does not support HTML5</source>
+				<target>Your browser does not support HTML5</target>
+			</segment>
+		</unit>
+		<unit id="402">
+			<segment>
+				<source>Please select fewer files</source>
+				<target>Please select fewer files</target>
+			</segment>
+		</unit>
+		<unit id="403">
+			<segment>
+				<source>File too large</source>
+				<target>File too large</target>
+			</segment>
+		</unit>
+		<unit id="404">
+			<segment>
+				<source>Order by</source>
+				<target>Order by</target>
+			</segment>
+		</unit>
+		<unit id="405">
+			<segment>
+				<source>Selection</source>
+				<target>Selection</target>
+			</segment>
+		</unit>
+		<unit id="406">
+			<segment>
+				<source>Remember me</source>
+				<target>Remember me</target>
+			</segment>
+		</unit>
+		<unit id="407">
+			<segment>
+				<source>Forgot password?</source>
+				<target>Forgot password?</target>
+			</segment>
+		</unit>
+		<unit id="408">
+			<segment>
+				<source>Order is only used on lists ordered by priority</source>
+				<target>Order is only used on lists ordered by priority</target>
+			</segment>
+		</unit>
+		<unit id="409">
+			<segment>
+				<source>Size</source>
+				<target>Size</target>
+			</segment>
+		</unit>
+		<unit id="410">
+			<segment>
+				<source>Begin backup</source>
+				<target>Begin backup</target>
+			</segment>
+		</unit>
+		<unit id="411">
+			<segment>
+				<source>Task progress</source>
+				<target>Task progress</target>
+			</segment>
+		</unit>
+		<unit id="412">
+			<segment>
+				<source>Restore</source>
+				<target>Restore</target>
+			</segment>
+		</unit>
+		<unit id="413">
+			<segment>
+				<source>Waiting to begin</source>
+				<target>Waiting to begin</target>
+			</segment>
+		</unit>
+		<unit id="414">
+			<segment>
+				<source>Exporting database</source>
+				<target>Exporting database</target>
+			</segment>
+		</unit>
+		<unit id="415">
+			<segment>
+				<source>Copying themes and templates</source>
+				<target>Copying themes and templates</target>
+			</segment>
+		</unit>
+		<unit id="416">
+			<segment>
+				<source>Copying extensions</source>
+				<target>Copying extensions</target>
+			</segment>
+		</unit>
+		<unit id="417">
+			<segment>
+				<source>Copying uploads</source>
+				<target>Copying uploads</target>
+			</segment>
+		</unit>
+		<unit id="418">
+			<segment>
+				<source>Creating archive</source>
+				<target>Creating archive</target>
+			</segment>
+		</unit>
+		<unit id="419">
+			<segment>
+				<source>Process complete</source>
+				<target>Process complete</target>
+			</segment>
+		</unit>
+		<unit id="420">
+			<segment>
+				<source>Estimated size</source>
+				<target>Estimated size</target>
+			</segment>
+		</unit>
+		<unit id="421">
+			<segment>
+				<source>Created on</source>
+				<target>Created on</target>
+			</segment>
+		</unit>
+		<unit id="422">
+			<segment>
+				<source>Uploading to server</source>
+				<target>Uploading to server</target>
+			</segment>
+		</unit>
+		<unit id="423">
+			<segment>
+				<source>Refresh</source>
+				<target>Refresh</target>
+			</segment>
+		</unit>
+		<unit id="424">
+			<segment>
+				<source>Preparing process</source>
+				<target>Preparing process</target>
+			</segment>
+		</unit>
+		<unit id="425">
+			<segment>
+				<source>Order the elements of a category (unless the template forces other sorting)</source>
+				<target>Order the elements of a category (unless the template forces other sorting)</target>
+			</segment>
+		</unit>
+		<unit id="426">
+			<segment>
+				<source>Enter "1" for true, "0" for false</source>
+				<target>Enter "1" for true, "0" for false</target>
+			</segment>
+		</unit>
+		<unit id="427">
+			<segment>
+				<source>Security protocol</source>
+				<target>Security protocol</target>
+			</segment>
+		</unit>
+		<unit id="428">
+			<segment>
+				<source>(no category)</source>
+				<target>(no category)</target>
+			</segment>
+		</unit>
+		<unit id="429">
+			<segment>
+				<source>Reset statistics</source>
+				<target>Reset statistics</target>
+			</segment>
+		</unit>
+		<unit id="430">
+			<segment>
+				<source>Do you really want to remove all statistics of this website?</source>
+				<target>Do you really want to remove all statistics of this website?</target>
+			</segment>
+		</unit>
+		<unit id="431">
+			<segment>
+				<source>Style</source>
+				<target>Style</target>
+			</segment>
+		</unit>
+		<unit id="432">
+			<segment>
+				<source>Read only mode</source>
+				<target>Read only mode</target>
+			</segment>
+		</unit>
+		<unit id="433">
+			<segment>
+				<source>Resize uploaded images</source>
+				<target>Resize uploaded images</target>
+			</segment>
+		</unit>
+		<unit id="434">
+			<segment>
+				<source>Keep original file</source>
+				<target>Keep original file</target>
+			</segment>
+		</unit>
+		<unit id="435">
+			<segment>
+				<source>Maximum width or height</source>
+				<target>Maximum width or height</target>
+			</segment>
+		</unit>
+		<unit id="436">
+			<segment>
+				<source>Used as a class in HTML elements</source>
+				<target>Used as a class in HTML elements</target>
+			</segment>
+		</unit>
+		<unit id="437">
+			<segment>
+				<source>Block</source>
+				<target>Block</target>
+			</segment>
+		</unit>
+		<unit id="438">
+			<segment>
+				<source>Order</source>
+				<target>Order</target>
+			</segment>
+		</unit>
+		<unit id="439">
+			<segment>
+				<source>Error loading theme</source>
+				<target>Error loading theme</target>
+			</segment>
+		</unit>
+		<unit id="440">
+			<segment>
+				<source>Error saving the data, please do an external backup of your changes to prevent data loss</source>
+				<target>Error saving the data, please do an external backup of your changes to prevent data loss</target>
+			</segment>
+		</unit>
+		<unit id="441">
+			<segment>
+				<source>Color</source>
+				<target>Color</target>
+			</segment>
+		</unit>
+		<unit id="442">
+			<segment>
+				<source>Hexadecimal color code</source>
+				<target>Hexadecimal color code</target>
+			</segment>
+		</unit>
+		<unit id="443">
+			<segment>
+				<source>All</source>
+				<target>All</target>
+			</segment>
+		</unit>
+		<unit id="444">
+			<segment>
+				<source>You left some required fields blank.</source>
+				<target>You left some required fields blank.</target>
+			</segment>
+		</unit>
+		<unit id="445">
+			<segment>
+				<source>Your contact request has been sent. We will contact you shortly.</source>
+				<target>Your contact request has been sent. We will contact you shortly.</target>
+			</segment>
+		</unit>
+		<unit id="446">
+			<segment>
+				<source>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</source>
+				<target>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</target>
+			</segment>
+		</unit>
+		<unit id="447">
+			<segment>
+				<source>Portfolio</source>
+				<target>Portfolio</target>
+			</segment>
+		</unit>
+		<unit id="448">
+			<segment>
+				<source>Portfolio item</source>
+				<target>Portfolio item</target>
+			</segment>
+		</unit>
+		<unit id="449">
+			<segment>
+				<source>Enter your Navigate CMS username or e-mail address</source>
+				<target>Enter your Navigate CMS username or e-mail address</target>
+			</segment>
+		</unit>
+		<unit id="450">
+			<segment>
+				<source>Click on the link below to change your password</source>
+				<target>Click on the link below to change your password</target>
+			</segment>
+		</unit>
+		<unit id="451">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</source>
+				<target>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</target>
+			</segment>
+		</unit>
+		<unit id="452">
+			<segment>
+				<source>E-mail could not be sent; please contact the administrator</source>
+				<target>E-mail could not be sent; please contact the administrator</target>
+			</segment>
+		</unit>
+		<unit id="453">
+			<segment>
+				<source>Couldn't find this username or e-mail address</source>
+				<target>Couldn't find this username or e-mail address</target>
+			</segment>
+		</unit>
+		<unit id="454">
+			<segment>
+				<source>An e-mail with a confirmation link has been sent to your e-mail account.</source>
+				<target>An e-mail with a confirmation link has been sent to your e-mail account.</target>
+			</segment>
+		</unit>
+		<unit id="455">
+			<segment>
+				<source>Your new password has been activated.</source>
+				<target>Your new password has been activated.</target>
+			</segment>
+		</unit>
+		<unit id="456">
+			<segment>
+				<source>Edit in Navigate CMS</source>
+				<target>Edit in Navigate CMS</target>
+			</segment>
+		</unit>
+		<unit id="457">
+			<segment>
+				<source>Information</source>
+				<target>Information</target>
+			</segment>
+		</unit>
+		<unit id="458">
+			<segment>
+				<source>Edit in place</source>
+				<target>Edit in place</target>
+			</segment>
+		</unit>
+		<unit id="459">
+			<segment>
+				<source>Settings</source>
+				<target>Settings</target>
+			</segment>
+		</unit>
+		<unit id="460">
+			<segment>
+				<source>Disable</source>
+				<target>Disable</target>
+			</segment>
+		</unit>
+		<unit id="461">
+			<segment>
+				<source>Install from file</source>
+				<target>Install from file</target>
+			</segment>
+		</unit>
+		<unit id="462">
+			<segment>
+				<source>Enable</source>
+				<target>Enable</target>
+			</segment>
+		</unit>
+		<unit id="463">
+			<segment>
+				<source>Update available</source>
+				<target>Update available</target>
+			</segment>
+		</unit>
+		<unit id="464">
+			<segment>
+				<source>Favorite</source>
+				<target>Favorite</target>
+			</segment>
+		</unit>
+		<unit id="465">
+			<segment>
+				<source>Favorites</source>
+				<target>Favorites</target>
+			</segment>
+		</unit>
+		<unit id="466">
+			<segment>
+				<source>Spam</source>
+				<target>Spam</target>
+			</segment>
+		</unit>
+		<unit id="467">
+			<segment>
+				<source>Scope</source>
+				<target>Scope</target>
+			</segment>
+		</unit>
+		<unit id="468">
+			<segment>
+				<source>Integer</source>
+				<target>Integer</target>
+			</segment>
+		</unit>
+		<unit id="469">
+			<segment>
+				<source>String</source>
+				<target>String</target>
+			</segment>
+		</unit>
+		<unit id="470">
+			<segment>
+				<source>System</source>
+				<target>System</target>
+			</segment>
+		</unit>
+		<unit id="471">
+			<segment>
+				<source>Variant</source>
+				<target>Variant</target>
+			</segment>
+		</unit>
+		<unit id="472">
+			<segment>
+				<source>Add</source>
+				<target>Add</target>
+			</segment>
+		</unit>
+		<unit id="473">
+			<segment>
+				<source>Region</source>
+				<target>Region</target>
+			</segment>
+		</unit>
+		<unit id="474">
+			<segment>
+				<source>Server locale</source>
+				<target>Server locale</target>
+			</segment>
+		</unit>
+		<unit id="475">
+			<segment>
+				<source>Export</source>
+				<target>Export</target>
+			</segment>
+		</unit>
+		<unit id="476">
+			<segment>
+				<source>Copy to clipboard</source>
+				<target>Copy to clipboard</target>
+			</segment>
+		</unit>
+		<unit id="477">
+			<segment>
+				<source>Duplicate</source>
+				<target>Duplicate</target>
+			</segment>
+		</unit>
+		<unit id="478">
+			<segment>
+				<source>Item duplicated successfully.</source>
+				<target>Item duplicated successfully.</target>
+			</segment>
+		</unit>
+		<unit id="479">
+			<segment>
+				<source>Structure entry</source>
+				<target>Structure entry</target>
+			</segment>
+		</unit>
+		<unit id="480">
+			<segment>
+				<source>Export sample content</source>
+				<target>Export sample content</target>
+			</segment>
+		</unit>
+		<unit id="481">
+			<segment>
+				<source>Select all</source>
+				<target>Select all</target>
+			</segment>
+		</unit>
+		<unit id="482">
+			<segment>
+				<source>All sample files should be placed in a folder. Navigate CMS will also add files used in contents.</source>
+				<target>All sample files should be placed in a folder. Navigate CMS will also add files used in contents.</target>
+			</segment>
+		</unit>
+		<unit id="483">
+			<segment>
+				<source>Do you really want to import the default website for the selected theme?</source>
+				<target>Do you really want to import the default website for the selected theme?</target>
+			</segment>
+		</unit>
+		<unit id="484">
+			<segment>
+				<source>Demo website</source>
+				<target>Demo website</target>
+			</segment>
+		</unit>
+		<unit id="485">
+			<segment>
+				<source>Aliases</source>
+				<target>Aliases</target>
+			</segment>
+		</unit>
+		<unit id="486">
+			<segment>
+				<source>Alias</source>
+				<target>Alias</target>
+			</segment>
+		</unit>
+		<unit id="487">
+			<segment>
+				<source>Real URL</source>
+				<target>Real URL</target>
+			</segment>
+		</unit>
+		<unit id="488">
+			<segment>
+				<source>Rich textarea</source>
+				<target>Rich textarea</target>
+			</segment>
+		</unit>
+		<unit id="489">
+			<segment>
+				<source>Source code</source>
+				<target>Source code</target>
+			</segment>
+		</unit>
+		<unit id="490">
+			<segment>
+				<source>ID of the file or public video URL</source>
+				<target>ID of the file or public video URL</target>
+			</segment>
+		</unit>
+		<unit id="491">
+			<segment>
+				<source>Class</source>
+				<target>Class</target>
+			</segment>
+		</unit>
+		<unit id="492">
+			<segment>
+				<source>No matches found</source>
+				<target>No matches found</target>
+			</segment>
+		</unit>
+		<unit id="493">
+			<segment>
+				<source>Loading more results...</source>
+				<target>Loading more results...</target>
+			</segment>
+		</unit>
+		<unit id="494">
+			<segment>
+				<source>Searching...</source>
+				<target>Searching...</target>
+			</segment>
+		</unit>
+		<unit id="495">
+			<segment>
+				<source>Please enter at least {number} characters</source>
+				<target>Please enter at least {number} characters</target>
+			</segment>
+		</unit>
+		<unit id="496">
+			<segment>
+				<source>You can only select {number} items</source>
+				<target>You can only select {number} items</target>
+			</segment>
+		</unit>
+		<unit id="497">
+			<segment>
+				<source>Do you really want to erase this data?</source>
+				<target>Do you really want to erase this data?</target>
+			</segment>
+		</unit>
+		<unit id="498">
+			<segment>
+				<source>Additional scripts</source>
+				<target>Additional scripts</target>
+			</segment>
+		</unit>
+		<unit id="499">
+			<segment>
+				<source>Open</source>
+				<target>Open</target>
+			</segment>
+		</unit>
+		<unit id="500">
+			<segment>
+				<source>Rename</source>
+				<target>Rename</target>
+			</segment>
+		</unit>
+		<unit id="501">
+			<segment>
+				<source>Previous</source>
+				<target>Previous</target>
+			</segment>
+		</unit>
+		<unit id="502">
+			<segment>
+				<source>Next</source>
+				<target>Next</target>
+			</segment>
+		</unit>
+		<unit id="503">
+			<segment>
+				<source>Now</source>
+				<target>Now</target>
+			</segment>
+		</unit>
+		<unit id="504">
+			<segment>
+				<source>Time</source>
+				<target>Time</target>
+			</segment>
+		</unit>
+		<unit id="505">
+			<segment>
+				<source>Redirect to</source>
+				<target>Redirect to</target>
+			</segment>
+		</unit>
+		<unit id="506">
+			<segment>
+				<source>Groups</source>
+				<target>Groups</target>
+			</segment>
+		</unit>
+		<unit id="507">
+			<segment>
+				<source>Deselect all</source>
+				<target>Deselect all</target>
+			</segment>
+		</unit>
+		<unit id="508">
+			<segment>
+				<source>Collapse</source>
+				<target>Collapse</target>
+			</segment>
+		</unit>
+		<unit id="509">
+			<segment>
+				<source>Expand</source>
+				<target>Expand</target>
+			</segment>
+		</unit>
+		<unit id="510">
+			<segment>
+				<source>Selected items</source>
+				<target>Selected items</target>
+			</segment>
+		</unit>
+		<unit id="511">
+			<segment>
+				<source>Available items</source>
+				<target>Available items</target>
+			</segment>
+		</unit>
+		<unit id="512">
+			<segment>
+				<source>Selected web user groups</source>
+				<target>Selected web user groups</target>
+			</segment>
+		</unit>
+		<unit id="513">
+			<segment>
+				<source>Metatags</source>
+				<target>Metatags</target>
+			</segment>
+		</unit>
+		<unit id="514">
+			<segment>
+				<source>Additional headers</source>
+				<target>Additional headers</target>
+			</segment>
+		</unit>
+		<unit id="515">
+			<segment>
+				<source>Not found paths</source>
+				<target>Not found paths</target>
+			</segment>
+		</unit>
+		<unit id="516">
+			<segment>
+				<source>Show a blank page</source>
+				<target>Show a blank page</target>
+			</segment>
+		</unit>
+		<unit id="517">
+			<segment>
+				<source>Redirect to home page</source>
+				<target>Redirect to home page</target>
+			</segment>
+		</unit>
+		<unit id="518">
+			<segment>
+				<source>Use the 404 template of a theme (if exists)</source>
+				<target>Use the 404 template of a theme (if exists)</target>
+			</segment>
+		</unit>
+		<unit id="519">
+			<segment>
+				<source>Send a 404 HTTP error header</source>
+				<target>Send a 404 HTTP error header</target>
+			</segment>
+		</unit>
+		<unit id="520">
+			<segment>
+				<source>No website found; a default one has been created.</source>
+				<target>No website found; a default one has been created.</target>
+			</segment>
+		</unit>
+		<unit id="521">
+			<segment>
+				<source>Extra</source>
+				<target>Extra</target>
+			</segment>
+		</unit>
+		<unit id="522">
+			<segment>
+				<source>Remove Spam</source>
+				<target>Remove Spam</target>
+			</segment>
+		</unit>
+		<unit id="523">
+			<segment>
+				<source>This action can NOT be undone</source>
+				<target>This action can NOT be undone</target>
+			</segment>
+		</unit>
+		<unit id="524">
+			<segment>
+				<source>Items removed successfully</source>
+				<target>Items removed successfully</target>
+			</segment>
+		</unit>
+		<unit id="525">
+			<segment>
+				<source>Remove comment (without confirmation)</source>
+				<target>Remove comment (without confirmation)</target>
+			</segment>
+		</unit>
+		<unit id="526">
+			<segment>
+				<source>Translations</source>
+				<target>Translations</target>
+			</segment>
+		</unit>
+		<unit id="527">
+			<segment>
+				<source>Marketplace</source>
+				<target>Marketplace</target>
+			</segment>
+		</unit>
+		<unit id="528">
+			<segment>
+				<source>Available</source>
+				<target>Available</target>
+			</segment>
+		</unit>
+		<unit id="529">
+			<segment>
+				<source>It has not been possible to download the item from the marketplace.</source>
+				<target>It has not been possible to download the item from the marketplace.</target>
+			</segment>
+		</unit>
+		<unit id="530">
+			<segment>
+				<source>You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.</source>
+				<target>You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.</target>
+			</segment>
+		</unit>
+		<unit id="531">
+			<segment>
+				<source>Sorry for the inconvenience.</source>
+				<target>Sorry for the inconvenience.</target>
+			</segment>
+		</unit>
+		<unit id="532">
+			<segment>
+				<source>Navigate CMS Marketplace</source>
+				<target>Navigate CMS Marketplace</target>
+			</segment>
+		</unit>
+		<unit id="533">
+			<segment>
+				<source>Find element by title</source>
+				<target>Find element by title</target>
+			</segment>
+		</unit>
+		<unit id="534">
+			<segment>
+				<source>You can only select elements which have their own path (no category embedded elements)</source>
+				<target>You can only select elements which have their own path (no category embedded elements)</target>
+			</segment>
+		</unit>
+		<unit id="535">
+			<segment>
+				<source>Find user by name</source>
+				<target>Find user by name</target>
+			</segment>
+		</unit>
+		<unit id="536">
+			<segment>
+				<source>Keywords</source>
+				<target>Keywords</target>
+			</segment>
+		</unit>
+		<unit id="537">
+			<segment>
+				<source>Can't remove the theme because it is currently being used by another website.</source>
+				<target>Can't remove the theme because it is currently being used by another website.</target>
+			</segment>
+		</unit>
+		<unit id="538">
+			<segment>
+				<source>Private comment</source>
+				<target>Private comment</target>
+			</segment>
+		</unit>
+		<unit id="539">
+			<segment>
+				<source>Document</source>
+				<target>Document</target>
+			</segment>
+		</unit>
+		<unit id="540">
+			<segment>
+				<source>Focal point</source>
+				<target>Focal point</target>
+			</segment>
+		</unit>
+		<unit id="541">
+			<segment>
+				<source>Your email has been successfully subscribed to the newsletter</source>
+				<target>Your email has been successfully subscribed to the newsletter</target>
+			</segment>
+		</unit>
+		<unit id="542">
+			<segment>
+				<source>There was a problem subscribing your email to the newsletter</source>
+				<target>There was a problem subscribing your email to the newsletter</target>
+			</segment>
+		</unit>
+		<unit id="543">
+			<segment>
+				<source>Block type</source>
+				<target>Block type</target>
+			</segment>
+		</unit>
+		<unit id="544">
+			<segment>
+				<source>Block groups</source>
+				<target>Block groups</target>
+			</segment>
+		</unit>
+		<unit id="545">
+			<segment>
+				<source>Content author</source>
+				<target>Content author</target>
+			</segment>
+		</unit>
+		<unit id="546">
+			<segment>
+				<source>Actions</source>
+				<target>Actions</target>
+			</segment>
+		</unit>
+		<unit id="547">
+			<segment>
+				<source>Multi language</source>
+				<target>Multi language</target>
+			</segment>
+		</unit>
+		<unit id="548">
+			<segment>
+				<source>Method</source>
+				<target>Method</target>
+			</segment>
+		</unit>
+		<unit id="549">
+			<segment>
+				<source>Links</source>
+				<target>Links</target>
+			</segment>
+		</unit>
+		<unit id="550">
+			<segment>
+				<source>Help text</source>
+				<target>Help text</target>
+			</segment>
+		</unit>
+		<unit id="551">
+			<segment>
+				<source>Date to display</source>
+				<target>Date to display</target>
+			</segment>
+		</unit>
+		<unit id="552">
+			<segment>
+				<source>Exclusions</source>
+				<target>Exclusions</target>
+			</segment>
+		</unit>
+		<unit id="553">
+			<segment>
+				<source>Fragments</source>
+				<target>Fragments</target>
+			</segment>
+		</unit>
+		<unit id="554">
+			<segment>
+				<source>Hide</source>
+				<target>Hide</target>
+			</segment>
+		</unit>
+		<unit id="555">
+			<segment>
+				<source>Item has been successfully published</source>
+				<target>Item has been successfully published</target>
+			</segment>
+		</unit>
+		<unit id="556">
+			<segment>
+				<source>Block from group</source>
+				<target>Block from group</target>
+			</segment>
+		</unit>
+		<unit id="557">
+			<segment>
+				<source>Poll</source>
+				<target>Poll</target>
+			</segment>
+		</unit>
+		<unit id="558">
+			<segment>
+				<source>Question</source>
+				<target>Question</target>
+			</segment>
+		</unit>
+		<unit id="559">
+			<segment>
+				<source>Answers</source>
+				<target>Answers</target>
+			</segment>
+		</unit>
+		<unit id="560">
+			<segment>
+				<source>Vote</source>
+				<target>Vote</target>
+			</segment>
+		</unit>
+		<unit id="561">
+			<segment>
+				<source>Create a new folder</source>
+				<target>Create a new folder</target>
+			</segment>
+		</unit>
+		<unit id="562">
+			<segment>
+				<source>Results</source>
+				<target>Results</target>
+			</segment>
+		</unit>
+		<unit id="563">
+			<segment>
+				<source>Last seen</source>
+				<target>Last seen</target>
+			</segment>
+		</unit>
+		<unit id="564">
+			<segment>
+				<source>%s seconds ago</source>
+				<target>%s seconds ago</target>
+			</segment>
+		</unit>
+		<unit id="565">
+			<segment>
+				<source>one minute ago</source>
+				<target>one minute ago</target>
+			</segment>
+		</unit>
+		<unit id="566">
+			<segment>
+				<source>%m minutes ago</source>
+				<target>%m minutes ago</target>
+			</segment>
+		</unit>
+		<unit id="567">
+			<segment>
+				<source>an hour ago</source>
+				<target>an hour ago</target>
+			</segment>
+		</unit>
+		<unit id="568">
+			<segment>
+				<source>%h hours ago</source>
+				<target>%h hours ago</target>
+			</segment>
+		</unit>
+		<unit id="569">
+			<segment>
+				<source>yesterday</source>
+				<target>yesterday</target>
+			</segment>
+		</unit>
+		<unit id="570">
+			<segment>
+				<source>%d days ago</source>
+				<target>%d days ago</target>
+			</segment>
+		</unit>
+		<unit id="571">
+			<segment>
+				<source>a week ago</source>
+				<target>a week ago</target>
+			</segment>
+		</unit>
+		<unit id="572">
+			<segment>
+				<source>%w weeks ago</source>
+				<target>%w weeks ago</target>
+			</segment>
+		</unit>
+		<unit id="573">
+			<segment>
+				<source>a month ago</source>
+				<target>a month ago</target>
+			</segment>
+		</unit>
+		<unit id="574">
+			<segment>
+				<source>%m months ago</source>
+				<target>%m months ago</target>
+			</segment>
+		</unit>
+		<unit id="575">
+			<segment>
+				<source>one year ago</source>
+				<target>one year ago</target>
+			</segment>
+		</unit>
+		<unit id="576">
+			<segment>
+				<source>%y years ago</source>
+				<target>%y years ago</target>
+			</segment>
+		</unit>
+		<unit id="577">
+			<segment>
+				<source>Latest modifications</source>
+				<target>Latest modifications</target>
+			</segment>
+		</unit>
+		<unit id="578">
+			<segment>
+				<source>Could not connect to check updates</source>
+				<target>Could not connect to check updates</target>
+			</segment>
+		</unit>
+		<unit id="579">
+			<segment>
+				<source>Latest searches</source>
+				<target>Latest searches</target>
+			</segment>
+		</unit>
+		<unit id="580">
+			<segment>
+				<source>Used in this page</source>
+				<target>Used in this page</target>
+			</segment>
+		</unit>
+		<unit id="581">
+			<segment>
+				<source>None</source>
+				<target>None</target>
+			</segment>
+		</unit>
+		<unit id="582">
+			<segment>
+				<source>default</source>
+				<target>default</target>
+			</segment>
+		</unit>
+		<unit id="583">
+			<segment>
+				<source>Same width</source>
+				<target>Same width</target>
+			</segment>
+		</unit>
+		<unit id="584">
+			<segment>
+				<source>Same height</source>
+				<target>Same height</target>
+			</segment>
+		</unit>
+		<unit id="585">
+			<segment>
+				<source>Same width &amp; height (scaled)</source>
+				<target>Same width &amp; height (scaled)</target>
+			</segment>
+		</unit>
+		<unit id="586">
+			<segment>
+				<source>Same width &amp; height (cropped)</source>
+				<target>Same width &amp; height (cropped)</target>
+			</segment>
+		</unit>
+		<unit id="587">
+			<segment>
+				<source>Full available width</source>
+				<target>Full available width</target>
+			</segment>
+		</unit>
+		<unit id="588">
+			<segment>
+				<source>Replace image</source>
+				<target>Replace image</target>
+			</segment>
+		</unit>
+		<unit id="589">
+			<segment>
+				<source>North America</source>
+				<target>North America</target>
+			</segment>
+		</unit>
+		<unit id="590">
+			<segment>
+				<source>South America</source>
+				<target>South America</target>
+			</segment>
+		</unit>
+		<unit id="591">
+			<segment>
+				<source>Oceania</source>
+				<target>Oceania</target>
+			</segment>
+		</unit>
+		<unit id="592">
+			<segment>
+				<source>Company</source>
+				<target>Company</target>
+			</segment>
+		</unit>
+		<unit id="593">
+			<segment>
+				<source>Add new child</source>
+				<target>Add new child</target>
+			</segment>
+		</unit>
+		<unit id="594">
+			<segment>
+				<source>Set as homepage</source>
+				<target>Set as homepage</target>
+			</segment>
+		</unit>
+		<unit id="595">
+			<segment>
+				<source>Right now the homepage is set from a structure element which allows multi language redirect.</source>
+				<target>Right now the homepage is set from a structure element which allows multi language redirect.</target>
+			</segment>
+		</unit>
+		<unit id="596">
+			<segment>
+				<source>Do you want to enter a fixed path for the homepage?</source>
+				<target>Do you want to enter a fixed path for the homepage?</target>
+			</segment>
+		</unit>
+		<unit id="597">
+			<segment>
+				<source>Share files in Media browser</source>
+				<target>Share files in Media browser</target>
+			</segment>
+		</unit>
+		<unit id="598">
+			<segment>
+				<source>Only between websites of the current Navigate CMS installation</source>
+				<target>Only between websites of the current Navigate CMS installation</target>
+			</segment>
+		</unit>
+		<unit id="599">
+			<segment>
+				<source>Sorry, can't display a theme block type info</source>
+				<target>Sorry, can't display a theme block type info</target>
+			</segment>
+		</unit>
+		<unit id="600">
+			<segment>
+				<source>Share</source>
+				<target>Share</target>
+			</segment>
+		</unit>
+		<unit id="601">
+			<segment>
+				<source>Import</source>
+				<target>Import</target>
+			</segment>
+		</unit>
+		<unit id="602">
+			<segment>
+				<source>Edit language</source>
+				<target>Edit language</target>
+			</segment>
+		</unit>
+		<unit id="603">
+			<segment>
+				<source>Replace URLs</source>
+				<target>Replace URLs</target>
+			</segment>
+		</unit>
+		<unit id="604">
+			<segment>
+				<source>Old</source>
+				<target>Old</target>
+			</segment>
+		</unit>
+		<unit id="605">
+			<segment>
+				<source>New</source>
+				<target>New</target>
+			</segment>
+		</unit>
+		<unit id="606">
+			<segment>
+				<source>Double quotes not allowed, use single quotes only</source>
+				<target>Double quotes not allowed, use single quotes only</target>
+			</segment>
+		</unit>
+		<unit id="607">
+			<segment>
+				<source>Click on the link below to confirm your account</source>
+				<target>Click on the link below to confirm your account</target>
+			</segment>
+		</unit>
+		<unit id="608">
+			<segment>
+				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
+				<target>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</target>
+			</segment>
+		</unit>
+		<unit id="609">
+			<segment>
+				<source>Click a day of the month selected to update the value</source>
+				<target>Click a day of the month selected to update the value</target>
+			</segment>
+		</unit>
+		<unit id="610">
+			<segment>
+				<source>Sorry, you are not allowed to execute the requested function</source>
+				<target>Sorry, you are not allowed to execute the requested function</target>
+			</segment>
+		</unit>
+		<unit id="611">
+			<segment>
+				<source>Choose</source>
+				<target>Choose</target>
+			</segment>
+		</unit>
+		<unit id="612">
+			<segment>
+				<source>Manages all websites</source>
+				<target>Manages all websites</target>
+			</segment>
+		</unit>
+		<unit id="613">
+			<segment>
+				<source>Most used</source>
+				<target>Most used</target>
+			</segment>
+		</unit>
+		<unit id="614">
+			<segment>
+				<source>Edit with TinyMCE</source>
+				<target>Edit with TinyMCE</target>
+			</segment>
+		</unit>
+		<unit id="615">
+			<segment>
+				<source>Edit as source code</source>
+				<target>Edit as source code</target>
+			</segment>
+		</unit>
+		<unit id="616">
+			<segment>
+				<source>Edit with NV Composer</source>
+				<target>Edit with NV Composer</target>
+			</segment>
+		</unit>
+		<unit id="617">
+			<segment>
+				<source>Extension</source>
+				<target>Extension</target>
+			</segment>
+		</unit>
+		<unit id="618">
+			<segment>
+				<source>Change the status to Published to be able to see the item on the future publication date currently assigned</source>
+				<target>Change the status to Published to be able to see the item on the future publication date currently assigned</target>
+			</segment>
+		</unit>
+		<unit id="619">
+			<segment>
+				<source>Template changed, please Save now to see the changes in the next tabs</source>
+				<target>Template changed, please Save now to see the changes in the next tabs</target>
+			</segment>
+		</unit>
+		<unit id="620">
+			<segment>
+				<source>Insert</source>
+				<target>Insert</target>
+			</segment>
+		</unit>
+		<unit id="621">
+			<segment>
+				<source>Append</source>
+				<target>Append</target>
+			</segment>
+		</unit>
+		<unit id="622">
+			<segment>
+				<source>Date range</source>
+				<target>Date range</target>
+			</segment>
+		</unit>
+		<unit id="623">
+			<segment>
+				<source>Begin</source>
+				<target>Begin</target>
+			</segment>
+		</unit>
+		<unit id="624">
+			<segment>
+				<source>End</source>
+				<target>End</target>
+			</segment>
+		</unit>
+		<unit id="625">
+			<segment>
+				<source>Empty paths</source>
+				<target>Empty paths</target>
+			</segment>
+		</unit>
+		<unit id="626">
+			<segment>
+				<source>Display the home page, without changing the route</source>
+				<target>Display the home page, without changing the route</target>
+			</segment>
+		</unit>
+		<unit id="627">
+			<segment>
+				<source>Remove</source>
+				<target>Remove</target>
+			</segment>
+		</unit>
+		<unit id="628">
+			<segment>
+				<source>Move to the beginning</source>
+				<target>Move to the beginning</target>
+			</segment>
+		</unit>
+		<unit id="629">
+			<segment>
+				<source>Move to the end</source>
+				<target>Move to the end</target>
+			</segment>
+		</unit>
+		<unit id="630">
+			<segment>
+				<source>Element</source>
+				<target>Element</target>
+			</segment>
+		</unit>
+		<unit id="631">
+			<segment>
+				<source>Dynamic URL</source>
+				<target>Dynamic URL</target>
+			</segment>
+		</unit>
+		<unit id="632">
+            <segment>
+                <source>Replace text</source>
+                <target>Replace text</target>
+            </segment>
+        </unit>
+        <unit id="633">
+            <segment>
+                <source>Word separator in paths</source>
+                <target>Word separator in paths</target>
+            </segment>
+        </unit>
+        <unit id="634">
+            <segment>
+                <source>Hyphen</source>
+                <target>Hyphen</target>
+            </segment>
+        </unit>
+        <unit id="635">
+            <segment>
+                <source>Underscore</source>
+                <target>Underscore</target>
+            </segment>
+        </unit>
+		<unit id="636">
+			<segment>
+				<source>Existing paths will not be modified</source>
+				<target>Existing paths will not be modified</target>
+			</segment>
+		</unit>
+		<unit id="637">
+			<segment>
+				<source>Website notes</source>
+				<target>Website notes</target>
+			</segment>
+		</unit>
+		<unit id="638">
+			<segment>
+				<source>Disabled blocks are not compatible with the current block group type</source>
+				<target>Disabled blocks are not compatible with the current block group type</target>
+			</segment>
+		</unit>
+		<unit id="639">
+			<segment>
+				<source>Restore panel</source>
+				<target>Restore panel</target>
+			</segment>
+		</unit>
+		<unit id="640">
+			<segment>
+				<source>Default arrangement</source>
+				<target>Default arrangement</target>
+			</segment>
+		</unit>
+		<unit id="641">
+			<segment>
+				<source>It will only be shown if the template supports it</source>
+				<target>It will only be shown if the template supports it</target>
+			</segment>
+		</unit>
+		<unit id="642">
+			<segment>
+				<source>Redirect to a website page</source>
+				<target>Redirect to a website page</target>
+			</segment>
+		</unit>
+		<unit id="643">
+			<segment>
+				<source>Decimal</source>
+				<target>Decimal</target>
+			</segment>
+		</unit>
+		<unit id="644">
+			<segment>
+				<source>Thousands separator</source>
+				<target>Thousands separator</target>
+			</segment>
+		</unit>
+		<unit id="645">
+			<segment>
+				<source>No results found</source>
+				<target>No results found</target>
+			</segment>
+		</unit>
+		<unit id="646">
+			<segment>
+				<source>Show all unselectable blocks</source>
+				<target>Show all unselectable blocks</target>
+			</segment>
+		</unit>
+		<unit id="647">
+			<segment>
+				<source>Web user</source>
+				<target>Web user</target>
+			</segment>
+		</unit>
+		<unit id="648">
+			<segment>
+				<source>An e-mail with a temporary password has been sent to your e-mail account.</source>
+				<target>An e-mail with a temporary password has been sent to your e-mail account.</target>
+			</segment>
+		</unit>
+
+	</file>
+</xliff>
