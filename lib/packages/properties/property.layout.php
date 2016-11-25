@@ -398,6 +398,27 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			}
 			$field[] = '</div>';
 
+            $layout->add_script('
+                // auto parse standard Google Maps URLs when pasting them in the latitude field
+                $("#property-'.$property->id.'-latitude").on("keyup", function()
+                {
+                    var value = $(this).val();                                        
+                    if(value.indexOf("https://www.google")==0)
+                    {                    
+                        // locate the @ symbol
+                        value = value.substr(value.indexOf("@")+1);
+                        value = value.substr(0, value.indexOf("z"));
+                        value = value.split(",");
+                                                                        
+                        if(value.length == 3) // parsed values seem fine
+                        {
+                            $("#property-'.$property->id.'-latitude").val(value[0]);                            
+                            $("#property-'.$property->id.'-longitude").val(value[1]);                            
+                        }
+                    }
+                });
+            ');
+
 			$layout->add_script('
 				var property_'.$property->id.'_lmap = null;
 			    var marker = null;
