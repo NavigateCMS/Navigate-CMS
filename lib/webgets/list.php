@@ -2330,7 +2330,17 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
     foreach($_GET as $key => $val)
     {
         if($key=='page' || $key=='route') continue;
-        $url_suffix .= '&'.$key.'='.$val;
+        if(is_array($val))
+        {
+            foreach($val as $val_item)
+            {
+                $url_suffix .= '&' . $key . '[]=' . $val_item;
+            }
+        }
+        else
+        {
+            $url_suffix .= '&' . $key . '=' . $val;
+        }
     }
 
     if($pages > 1)
