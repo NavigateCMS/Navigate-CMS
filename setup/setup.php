@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.1.2');
+	define('APP_VERSION', '2.1.4');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -317,6 +317,7 @@ function navigate_install_requirements()
     $pre_folder_path = str_replace('//', '/', $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
     $pre_folder_path = 'http://'.$pre_folder_path;
     $pre_folder_path = rtrim($pre_folder_path, '/');
+    $pre_folder_path = rtrim($pre_folder_path, '\\');
 	?>
     <h2>
 	    <a href="http://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_requirements" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
@@ -429,6 +430,7 @@ function navigate_install_configuration()
     // f.e. http://www.yourwebsite.com (for www.yourwebsite.com/navigate)
     $navigate_parent_url = 'http://'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
     $navigate_parent_url = rtrim($navigate_parent_url, '/');
+    $navigate_parent_url = rtrim($navigate_parent_url, '\\');
 
     $app_owner_default = substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.'));
     $app_owner_default = str_replace('www.', '', $app_owner_default);

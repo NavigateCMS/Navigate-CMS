@@ -415,12 +415,6 @@ class file
         if($groups == 'g')
             $groups = '';
 
-        if(!isset($this->uploaded_by))
-            $this->uploaded_by = '';
-
-		if(empty($this->website))
-			$this->website = $website->id;
-
         $ok = $DB->execute('
             INSERT INTO nv_files
             (   id, website, type, parent, name, size, mime,
@@ -436,7 +430,7 @@ class file
               :permission, :access, :groups, :system, :enabled
             )',
             array(
-				":website" => $this->website,
+				":website" => value_or_default($this->website, $website->id),
 				":type" => $this->type,
 				":parent" => $this->parent,
 				":fname" => $this->name,
@@ -448,7 +442,7 @@ class file
 				":title" => json_encode($this->title),
 				":description" => json_encode($this->description),
 				":date_added" => $this->date_added,
-				":uploaded_by" => $this->uploaded_by,
+				":uploaded_by" => value_or_default($this->uploaded_by, 0),
 				":permission" => intval($this->permission),
 				":access" => intval($this->access),
 				":groups" => $groups,
@@ -467,7 +461,6 @@ class file
 	public function update()
 	{
 		global $DB;
-		global $website;
 
         $groups = '';
         if(is_array($this->groups))
