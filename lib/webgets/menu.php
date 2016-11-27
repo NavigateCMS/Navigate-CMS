@@ -42,7 +42,7 @@ function nvweb_menu($vars=array())
 		//	we want the categories under Products [6]: "Computers" [8] and "Mobile Phones" [9]
 		//	of: 2 (second item in the main structure)
 		//  <nv object="nvweb" name="menu" of="2" />
-		$parent = $structure['cat-0'][$of-1]->id;
+		$parent = $structure['cat-0'][intval($of)-1]->id;
 	}
 
     if(empty($current['hierarchy']))	// calculate

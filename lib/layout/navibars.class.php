@@ -35,14 +35,15 @@ class navibars
 					$actions[$search_form_pos][] = '<img onclick="$(this).next().triggerHandler(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';
 					$actions[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" navitable_quicksearch($(\'#navigate-quicksearch\').val()); return false;">';
 				}
-				else // other screen
+				else // other screen than a list
 				{
 					$actions[$search_form_pos][] = '<img onclick="$(this).next().trigger(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';					
-					$actions[$search_form_pos][] = '<form method="POST" action="?fid='.$_REQUEST['fid'].'&act=0&quicksearch=true">';
+					$actions[$search_form_pos][] = '<form method="GET" action="?">';
 				}
 					
 				$actions[$search_form_pos][] = '	<input type="hidden" name="fid" value="'.$_REQUEST['fid'].'" />';
-				$actions[$search_form_pos][] = '	<input type="hidden" name="act" value="0" />';				
+				$actions[$search_form_pos][] = '	<input type="hidden" name="act" value="list" />';
+				$actions[$search_form_pos][] = '	<input type="hidden" name="quicksearch" value="true" />';
 				$actions[$search_form_pos][] = '	<input type="text" id="navigate-quicksearch" name="navigate-quicksearch" size="16" value="" placeholder="'.t(41, 'Search').'...">';
 				$actions[$search_form_pos][] = '</form>';
             
