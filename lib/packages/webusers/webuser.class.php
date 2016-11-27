@@ -10,7 +10,7 @@ class webuser
 	public $email_verification_date;
     public $groups;
 	public $fullname;
-	public $gender; // male / female / (empty)
+	public $gender; // male / female / company / (empty)
 	public $avatar;
 	public $birthdate;
 	public $language; // ISO 639-1 (2 chars) (en => English, es => Español)

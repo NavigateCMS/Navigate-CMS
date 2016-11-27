@@ -862,8 +862,7 @@
 		<unit id="143">
 			<segment>
 				<source>Add files to upload queue and push the button to start the process</source>
-				<target>Dodaj pliki, aby wczytać kolejkę i naciśnij przycisk,
-					aby rozpocząć ten proces</target>
+				<target>Dodaj pliki, aby wczytać kolejkę i naciśnij przycisk, aby rozpocząć ten proces</target>
 			</segment>
 		</unit>
 		<unit id="144">
@@ -1528,7 +1527,7 @@
 		<unit id="252">
 			<segment>
 				<source>Comments enabled for</source>
-				<target>Komentarze włączone dla</target
+				<target>Komentarze włączone dla</target>
 			</segment>
 		</unit>
 		<unit id="253">
