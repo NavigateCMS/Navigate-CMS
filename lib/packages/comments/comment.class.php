@@ -54,8 +54,8 @@ class comment
 		$this->url		    = $_REQUEST['comment-url'];
 		$this->status		= intval($_REQUEST['comment-status']);
 		$this->message		= $_REQUEST['comment-message'];
-		$this->date_created	= (empty($_REQUEST['comment-date_created'])? '' : core_date2ts($_REQUEST['comment-date_created']));
-	}	
+		$this->date_created	= core_date2ts($_REQUEST['comment-date_created']);
+	}
 	
 	
 	public function save()
@@ -90,7 +90,13 @@ class comment
 
 		$message = htmlentities($this->message, ENT_COMPAT, 'UTF-8', true);
 
-		$ok = $DB->execute('
+        if(empty($this->date_created))
+            $this->date_created = core_time();
+
+        if(empty($this->ip))
+            $this->ip = core_ip();
+
+        $ok = $DB->execute('
  			INSERT INTO nv_comments
 				(	id, website, item, user, name, email, url, ip,
 					date_created, date_modified, last_modified_by,
@@ -108,8 +114,8 @@ class comment
 				":name" => empty($this->name)? "" : $this->name,
 				":email" => empty($this->email)? "" : $this->email,
 				":url" => empty($this->url)? "" : $this->url,
-				":ip" => core_ip(),
-				":date_created" => core_time(),
+				":ip" => $this->ip,
+				":date_created" => $this->date_created,
 				":date_modified" => 0,
 				":last_modified_by" => 0,
 				":status" => value_or_default($this->status, 0),
@@ -121,8 +127,6 @@ class comment
             throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
-		$this->ip = core_ip();
-		$this->date_created = core_time();
 
 		return true;
 	}	

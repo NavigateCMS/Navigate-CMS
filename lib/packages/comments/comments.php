@@ -490,15 +490,15 @@ function comments_form($item)
         ));
 	}
 	
-	if($item->date_created > 0)
-	{												
-		$navibars->add_tab_content_row(
-            array(
-                '<label>'.t(226, 'Date created').'</label>',
-	            $naviforms->datefield('comment-date_created', $item->date_created, true)
-            )
-        );
-	}
+	if(empty($item->date_created))
+	    $item->date_created = time();
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(226, 'Date created').'</label>',
+            $naviforms->datefield('comment-date_created', $item->date_created, true)
+        )
+    );
 	
 	if($item->date_modified > 0)
 	{
