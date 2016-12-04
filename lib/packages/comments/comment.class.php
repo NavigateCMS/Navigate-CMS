@@ -14,6 +14,7 @@ class comment
 	public $date_modified;
     public $last_modified_by;
 	public $status; //  -1 => To review  0 => Published  1 => Private    2 => Hidden   3 => Spam
+    public $reply_to;
 	public $message;
 
     public function load($id)
@@ -42,6 +43,7 @@ class comment
 		$this->date_modified= $main->date_modified;		
 		$this->last_modified_by  = $main->last_modified_by;
 		$this->status		= $main->status;
+		$this->reply_to		= $main->reply_to;
 		$this->message		= html_entity_decode($main->message, ENT_COMPAT, "UTF-8");
 	}
 	
@@ -54,6 +56,7 @@ class comment
 		$this->url		    = $_REQUEST['comment-url'];
 		$this->status		= intval($_REQUEST['comment-status']);
 		$this->message		= $_REQUEST['comment-message'];
+		$this->reply_to		= $_REQUEST['comment-reply_to'];
 		$this->date_created	= core_date2ts($_REQUEST['comment-date_created']);
 	}
 	
@@ -100,7 +103,7 @@ class comment
  			INSERT INTO nv_comments
 				(	id, website, item, user, name, email, url, ip,
 					date_created, date_modified, last_modified_by,
-					status, message
+					reply_to, status, message
 				)
 				VALUES
 				( 	0, :website, :item, :user, :name, :email, :url, :ip,
@@ -118,6 +121,7 @@ class comment
 				":date_created" => $this->date_created,
 				":date_modified" => 0,
 				":last_modified_by" => 0,
+				":reply_to" => value_or_default($this->reply_to, 0),
 				":status" => value_or_default($this->status, 0),
 				":message" => $message
 			)
@@ -149,6 +153,7 @@ class comment
               date_created = :date_created,
               date_modified = :date_modified,
               last_modified_by = :last_modified_by,
+              reply_to = :reply_to,
               status = :status,
               message = :message
             WHERE id = :id
@@ -162,6 +167,7 @@ class comment
 				":date_created" => $this->date_created,
 				":date_modified" => core_time(),
 				":last_modified_by" => value_or_default($user->id, 0),
+				":reply_to" => value_or_default($this->reply_to, 0),
 				":status" => value_or_default($this->status, 0),
 				":message" => $message,
 				":id" => $this->id
@@ -243,6 +249,18 @@ class comment
 
         if($ok)
             return $count;
+    }
+
+    public function get_name()
+    {
+        if(!empty($this->user))
+        {
+            $w = new webuser();
+            $w->load($this->user);
+            return $w->username;
+        }
+        else
+            return $this->name;
     }
 
 	public static function __set_state(array $obj)

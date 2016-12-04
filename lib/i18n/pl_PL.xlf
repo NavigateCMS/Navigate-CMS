@@ -3914,6 +3914,12 @@
 				<target>An e-mail with a temporary password has been sent to your e-mail account.</target>
 			</segment>
 		</unit>
-
+		<unit id="649">
+			<segment>
+				<source>In reply to</source>
+				<target>In reply to</target>
+				<note>used in comments to define which is the parent comment in a hierarchy</note>
+			</segment>
+		</unit>
 	</file>
 </xliff>

@@ -3895,6 +3895,12 @@
 				<target>S'ha enviat un correu electrònic amb una contrassenya temporal a la teva adreça.</target>
 			</segment>
 		</unit>
-
+		<unit id="649">
+			<segment>
+				<source>In reply to</source>
+				<target>En resposta a</target>
+				<note>used in comments to define which is the parent comment in a hierarchy</note>
+			</segment>
+		</unit>
 	</file>
 </xliff>

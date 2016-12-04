@@ -3895,6 +3895,12 @@
 				<target>Eine E-Mail mit einem temporären Passwort wurde an Ihr E-Mail-Konto gesendet.</target>
 			</segment>
 		</unit>
-
+		<unit id="649">
+			<segment>
+				<source>In reply to</source>
+				<target>als Antwort auf</target>
+				<note>used in comments to define which is the parent comment in a hierarchy</note>
+			</segment>
+		</unit>
 	</file>
 </xliff>

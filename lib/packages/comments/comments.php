@@ -177,6 +177,34 @@ function run()
             core_terminate();
             break;
 
+        case 'json_find_comment': // json find comment by text search (for "in reply to" autocomplete)
+            $DB->query('SELECT c.id, c.date_created, c.name, u.username, c.message
+						  FROM nv_comments c
+						  LEFT JOIN nv_webusers u ON c.user = u.id
+						 WHERE
+						    c.website = '.$website->id.' AND
+						    c.item = '.$_REQUEST['node_id'].' AND
+						    c.date_created <= '.$_REQUEST['maxdate'].' AND
+						    c.id <> '.$_REQUEST['exclude'].' AND						     
+						    (   c.name LIKE ' . protect('%' . $_REQUEST['search'] . '%') . ' OR
+						        c.message LIKE ' . protect('%' . $_REQUEST['search'] . '%') . ' OR
+						        u.username LIKE ' . protect('%' . $_REQUEST['search'] . '%') . '
+                            )                          
+				      ORDER BY c.date_created DESC
+					     LIMIT 30',
+                'array');
+
+            $rows = $DB->result();
+            $total = $DB->foundRows();
+
+            for($r=0; $r < count($rows); $r++)
+                $rows[$r]['text'] = '<i class="fa fa-user"></i> '.$rows[$r]['name'].$rows[$r]['username'].' <i class="fa fa-clock-o"></i> '.core_ts2date($rows[$r]['date_created'], true);
+
+            echo json_encode(array('items' => $rows, 'totalCount' => $total));
+
+            core_terminate();
+            break;
+
         case 91: // json search title request (for "item" autocomplete)
 			$DB->query('SELECT DISTINCT node_id as id, text as label, text as value
 						  FROM nv_webdictionary
@@ -419,7 +447,7 @@ function comments_form($item)
 	$navibars->add_tab_content_row(array(
         '<label>'.t(1, 'User').'</label>',
 		$naviforms->selectfield('comment-user', $webuser_id, $webuser_username, $item->user, null, false, null, null, false),
-        '<span style="display: none;" id="item-comments_moderator-helper">'.t(535, "Find user by name").'</span>'
+        '<span style="display: none;" id="comment-user-helper">'.t(535, "Find user by name").'</span>'
 	));
 
     $layout->add_script('
@@ -476,6 +504,67 @@ function comments_form($item)
         '<label>'.t(177, 'Website').'</label>',
         $naviforms->textfield('comment-url', $item->url))
     );
+
+
+    $reply_to_comment = '';
+    if(empty($item->reply_to))
+    {
+        $item->reply_to = '';
+    }
+    else
+    {
+        $c = new comment();
+        $c->load($item->reply_to);
+        $reply_to_comment = $c->get_name().'&nbsp;&nbsp;&nbsp;'.core_ts2date($c->date_created, true).'</span>';
+    }
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(649, 'In reply to').'</label>',
+        $naviforms->selectfield('comment-reply_to', $item->reply_to, array($reply_to_comment), $item->reply_to, null, false, null, null, false)
+    ));
+
+    $layout->add_script('
+        $("#comment-reply_to").select2(                                                         
+        {
+            placeholder: "",
+            minimumInputLength: 1,
+            ajax: {
+                url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments&act=json_find_comment",
+                dataType: "json",
+                delay: 100,
+                data: function (params)
+                {
+                    return {
+                        search: params.term,
+                        node_id: $("#comment-item").val(),
+                        maxdate: '.$item->date_created.',
+                        exclude: '.$item->id.',
+                        nd: new Date().getTime(),
+                        page_limit: 30, // page size
+                        page: params.page // page number
+                    };
+                },
+		        processResults: function (data, params)
+		        {	        
+		            params.page = params.page || 1;
+		            return {
+						results: data.items,
+						pagination: { more: (params.page * 30) < data.total_count }
+					};
+                }
+            },
+            templateSelection: function(row)
+			{
+				if(row.id)
+					return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+				else
+					return row.text;
+			},
+			escapeMarkup: function (markup) { return markup; },
+            triggerChange: true,
+            allowClear: true
+        });
+    ');
 									
 	$navibars->add_tab_content_row(array(
         '<label>'.t(54, 'Text').'</label>',

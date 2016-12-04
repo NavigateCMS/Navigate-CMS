@@ -3895,6 +3895,12 @@
 				<target>Se ha enviado un correo electrónico con una contraseña temporal a tu dirección.</target>
 			</segment>
 		</unit>
-
+		<unit id="649">
+			<segment>
+				<source>In reply to</source>
+				<target>En respuesta a</target>
+				<note>used in comments to define which is the parent comment in a hierarchy</note>
+			</segment>
+		</unit>
 	</file>
 </xliff>
