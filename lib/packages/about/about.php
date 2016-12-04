@@ -93,7 +93,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.20</a><br />'
+			'<a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome v4.7</a><br />'
 		)
 	);
 
