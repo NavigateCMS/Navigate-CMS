@@ -527,7 +527,7 @@ class naviforms
 				    "advlist autolink nv_link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
-				    "codesample codemirror imagetools importcss paste magicline nv_rollups" // add fullpage to edit full HTML code with head and body tags
+				    "codesample codemirror imagetools importcss paste magicline fontawesome nv_rollups" // add fullpage to edit full HTML code with head and body tags
 				],
 				
 				external_plugins: {

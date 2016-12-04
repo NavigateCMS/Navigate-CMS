@@ -1094,6 +1094,11 @@ i.mce-i-attribs
     filter: grayscale(50%);
 }
 
+.mce-btn-small .mce-ico.mce-i-flag
+{
+	font-family: FontAwesome;
+}
+
 
 /* editor selector (future) nv composer / tinymce / source code */
 span.editor_selector
