@@ -538,6 +538,32 @@ class property
                     }
                 }
             }
+            else if($element == 'comment')
+            {
+                // properties of the comments of a certain template type
+                $theme_template = new template();
+                if(!empty($website_id))
+                {
+                    // force loading website information
+                    $ws = new website();
+                    $ws->load($website_id);
+                    $ws_theme = $ws->theme;
+                }
+
+                $theme_template->load_from_theme($template, $ws_theme);
+
+                $comments_properties = $theme_template->comments->properties;
+
+                if(empty($comments_properties))
+                    $comments_properties = array();
+
+                $data = array();
+
+                for($p=0; $p < count($comments_properties); $p++)
+                {
+                    $data[] = $comments_properties[$p];
+                }
+            }
             else
             {
                 // properties of a theme template
@@ -732,10 +758,10 @@ class property
         }
         else if($object_type == 'webuser')
         {
-            // the properties set in the theme definition
+            // the properties are set in the theme definition
             $e_properties = $theme->webusers['properties'];
         }
-        else
+        else // item, structure, block, comment
         {
 		    // load properties associated with the element type
 		    $e_properties = property::elements($template, $object_type);

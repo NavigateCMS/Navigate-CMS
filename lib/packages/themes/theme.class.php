@@ -96,7 +96,7 @@ class theme
         return $ok;
     }
 	
-	public function templates()
+	public function templates($type=NULL)
 	{		
 		$data = array();
 
@@ -108,6 +108,9 @@ class theme
 			$template->id = $template->type;
 			$template->title = $this->template_title($template->type);
 			$data[] = $template;
+
+            if($type == $template->id)
+                return $template;
 		}
 		
 		return $data;

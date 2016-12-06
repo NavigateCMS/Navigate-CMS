@@ -9,9 +9,6 @@ function navigate_property_layout_form($element, $template, $object, $object_id)
 	$out = array();
     $property_rows = array();
 	
-	// load the element properties
-	//$properties = property::elements($element, $template);
-
 	// load the property values of the object
 	$properties = property::load_properties($element, $template, $object, $object_id);
 

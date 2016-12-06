@@ -1,6 +1,9 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
+
 
 function run()
 {
@@ -116,6 +119,7 @@ function run()
 				try
 				{
 					$item->save();
+                    property::save_properties_from_post('comment', $item->id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
@@ -305,12 +309,12 @@ function comments_list()
 
 function comments_form($item)
 {
-	global $user;
 	global $DB;
-	global $website;
-	global $layout;
+    global $website;
+    global $layout;
     global $events;
-	
+    global $theme;
+
 	$navibars = new navibars();
 	$naviforms = new naviforms();
 	
@@ -601,8 +605,10 @@ function comments_form($item)
 	}
 			
 	$navibars->add_tab_content_row(
-        array(	'<label>'.t(68, 'Status').'</label>',
-                $naviforms->selectfield('comment-status',
+        array(
+            '<label>'.t(68, 'Status').'</label>',
+            $naviforms->selectfield(
+                'comment-status',
                 array(
                         0 => 0,
                         1 => 1,
@@ -631,6 +637,24 @@ function comments_form($item)
         )
     );
 
+    if(!empty($item->item))
+    {
+        $element = new item();
+        $element->load($item->item);
+
+        $template = $theme->templates($element->template);
+        if(is_object($template->comments) && isset($template->comments->properties))
+        {
+            $properties_html = navigate_property_layout_form('comment', $element->template, 'comment', $item->id);
+
+            if(!empty($properties_html))
+            {
+                $navibars->add_tab(t(77, "Properties"));
+                $navibars->add_tab_content($properties_html);
+            }
+        }
+    }
+
     $events->trigger(
         'comment',
         'edit',
@@ -643,4 +667,5 @@ function comments_form($item)
 										
 	return $navibars->generate();
 }
+
 ?>

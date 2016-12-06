@@ -2021,7 +2021,7 @@ function items_form($item)
 			$navibars->add_tab_content($properties_html);
 		}
 
-		if($template->comments > 0 || $template->comments==='true')
+		if($template->comments > 0 || $template->comments=='true' || $template->comments===true || is_object($template->comments))
 		{
 			$navibars->add_tab(t(250, "Comments"));	 // tab #5
 			

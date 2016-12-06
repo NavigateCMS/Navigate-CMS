@@ -1014,6 +1014,24 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'item_title':
                     $out = $item->item_title;
                     break;
+
+                case 'property':
+                    $c = new comment();
+                    $c->load_from_resultset(array($item));
+
+                    // pass all nvlist tag parameters to properties nvweb, but some attribute/values take preference
+                    $nvweb_properties_parameters = array_replace(
+                        $tag['attributes'],
+                        array(
+                            'mode'		=>	'comment',
+                            'id'		=>	$c->id,
+                            'template'	=>	$c->element_template(),
+                            'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name'])
+                        )
+                    );
+
+                    $out = nvweb_properties($nvweb_properties_parameters);
+                    break;
 			}
 			break;
 

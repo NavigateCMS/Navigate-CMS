@@ -208,6 +208,27 @@ function nvweb_properties($vars=array())
 				}
 			}			
 			break;
+
+        case 'comment':
+            if(!isset($properties['comment-'.$vars['id']]))
+                $properties['comment-'.$vars['id']] = property::load_properties("comment", $vars['template'], 'comment', $vars['id']);
+
+            $current_properties	= $properties['comment-'.$vars['id']];
+
+            // now we find the property requested
+            if(!is_array($current_properties)) $current_properties = array();
+            foreach($current_properties as $property)
+            {
+                if($property->id == $vars['property'] || $property->name == $vars['property'])
+                {
+                    if($vars['return']=='object')
+                        $out = $property;
+                    else
+                        $out = nvweb_properties_render($property, $vars);
+                    break;
+                }
+            }
+            break;
 		
 		default:
             // find the property source by its name
@@ -521,8 +542,9 @@ function nvweb_properties_render($property, $vars)
 			break;
 			
 		case 'rating':
-			// half stars always enabled
+			// half stars are always enabled (ratings fixed to 0..10)
 			$out = $property->value;
+
 			// we want nearest integer down
 			if($vars['option']=='floor')
 				$out = floor($out/2); 

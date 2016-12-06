@@ -60,7 +60,6 @@ class comment
 		$this->date_created	= core_date2ts($_REQUEST['comment-date_created']);
 	}
 	
-	
 	public function save()
 	{
 		if(!empty($this->id))
@@ -261,6 +260,18 @@ class comment
         }
         else
             return $this->name;
+    }
+
+    public function element_template()
+    {
+        global $DB;
+
+        $out = "";
+
+        if(!empty($this->item))
+            $out = $DB->query_single('template', 'nv_items', 'id='.$this->item);
+
+        return $out;
     }
 
 	public static function __set_state(array $obj)
