@@ -875,6 +875,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
         case 'comments':
             switch($tag['attributes']['value'])
 			{
+                case 'id':
+                    $out = $item->id;
+                    break;
+
 				case 'avatar':
 					$size = '48';
                     $extra = '';
@@ -1013,6 +1017,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'item_title':
                     $out = $item->item_title;
+                    break;
+
+                case 'reply_to':
+                    $out = $item->reply_to;
                     break;
 
                 case 'property':
