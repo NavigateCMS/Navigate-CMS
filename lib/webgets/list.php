@@ -606,7 +606,7 @@ function nvweb_list($vars=array())
 			$item->load($rs[$i]->id);
 			$item->date_to_display = $rs[$i]->pdate;
 		}
-        else if($vars['source']=='rss' || $vars['source']=='twitter'  || $vars['source']=='block_link')
+        else if($vars['source']=='rss' || $vars['source']=='twitter' || $vars['source']=='block_link')
         {
             // item is virtually created
             $item = $rs[$i];
@@ -1021,6 +1021,12 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'reply_to':
                     $out = $item->reply_to;
+                    break;
+
+                case 'depth':
+                    $c = new comment();
+                    $c->load_from_resultset(array($item));
+                    $out = $c->depth();
                     break;
 
                 case 'property':

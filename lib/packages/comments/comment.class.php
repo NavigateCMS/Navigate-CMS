@@ -107,7 +107,7 @@ class comment
 				VALUES
 				( 	0, :website, :item, :user, :name, :email, :url, :ip,
 					:date_created, :date_modified, :last_modified_by,
-					:status, :message)
+					:reply_to, :status, :message)
 			',
 			array(
 				":website" => value_or_default($this->website, $website->id),
@@ -250,7 +250,7 @@ class comment
             return $count;
     }
 
-    public function get_name()
+    public function author_name()
     {
         if(!empty($this->user))
         {
@@ -260,6 +260,74 @@ class comment
         }
         else
             return $this->name;
+    }
+
+    public function depth()
+    {
+        global $DB;
+        $out = 0;
+
+        if(!empty($this->depth)) // already calculated!
+            return $this->depth;
+
+        if(!empty($this->reply_to))
+        {
+            $parent = $this->reply_to;
+            while(!empty($parent))
+            {
+                $out++;
+                $parent = $DB->query_single('reply_to', 'nv_comments', 'id = ' . $parent);
+            }
+        }
+
+        $this->depth = $out;
+
+        return $out;
+    }
+
+    public function get_replies($recursive=true)
+    {
+        global $DB;
+
+        $out = array();
+
+        // replies are always ordered by ascending date creation
+
+        $DB->query('
+            SELECT nvc.*, nvwu.username, nvwu.avatar 
+             FROM nv_comments nvc
+             LEFT OUTER JOIN nv_webusers nvwu
+                          ON nvwu.id = nvc.user
+            WHERE nvc.reply_to = '.$this->id.' AND
+                  nvc.website = '.$this->website.' AND
+                  nvc.status = 0
+            ORDER BY nvc.date_created ASC'
+        );
+
+        $rs = $DB->result();
+
+        if($recursive)
+        {
+            for($r=0; $r < count($rs); $r++)
+            {
+                $c = new comment();
+                $c->load_from_resultset(array($rs[$r]));
+                $replies = $c->get_replies();
+
+                $out[] = $rs[$r];
+                if(!empty($replies))
+                {
+                    foreach($replies as $reply)
+                        $out[] = $reply;
+                }
+            }
+        }
+        else
+        {
+            $out = $rs;
+        }
+
+        return $out;
     }
 
     public function element_template()

@@ -483,7 +483,7 @@ function nvweb_comments($vars=array())
 		case 'comments':
             setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
-			list($comments, $comments_total) = nvweb_comments_list(); // get all comments of the current entry
+			list($comments, $comments_total) = nvweb_comments_list(0, NULL, NULL, $vars['order']); // get all comments of the current entry
 
 			if(empty($vars['avatar_size']))
 				$vars['avatar_size'] = '48';
@@ -499,8 +499,12 @@ function nvweb_comments($vars=array())
 				else
 					$avatar = '<img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
 
+                $comment = new comment();
+                $comment->load_from_resultset(array($comments[$c]));
+                $depth = 'data-depth="'.$comment->depth().'"';
+
 				$out .= '
-					<div class="comment">
+					<div class="comment"'.$depth.'>
 						<div class="comment-avatar">'.$avatar.'</div>
 						<div class="comment-username">'.(!empty($comments[$c]->username)? $comments[$c]->username : $comments[$c]->name).'</div>
 						<div class="comment-date">'.Encoding::toUTF8(strftime($vars['date_format'], $comments[$c]->date_created)).'</div>
@@ -515,13 +519,15 @@ function nvweb_comments($vars=array())
 	return $out;
 }
 
-function nvweb_comments_list($offset=0, $limit=2147483647, $permission=NULL, $order='oldest')
+function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='oldest')
 {
 	global $DB;
 	global $website;
 	global $current;
 
-    if($order=='newest')
+    $limit = value_or_default($limit, 2147483647);
+
+    if($order=='newest' || $order=='hierarchy_newest')
         $orderby = "nvc.date_created DESC";
     else
         $orderby = "nvc.date_created ASC";
@@ -539,19 +545,79 @@ function nvweb_comments_list($offset=0, $limit=2147483647, $permission=NULL, $or
         $element->load($current['id']);
     }
 
-    $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
-				  FROM nv_comments nvc
-				 LEFT OUTER JOIN nv_webusers nvwu
-							  ON nvwu.id = nvc.user
-				 WHERE nvc.website = '.protect($website->id).'
-				   AND nvc.item = '.protect($element->id).'
-				   AND status = 0
-				ORDER BY '.$orderby.'
-				LIMIT '.$limit.'
-			   OFFSET '.$offset);
+    if(strpos($order, 'hierarchy')!==false)
+    {
+        // list comments keeping hierarchy
+        // MySQL (still) does not have recursive queries, meanwhile we apply the following procedure:
+        // find all comments of 0-depth (root level) and calculate if they have any reply
+        // then, in PHP, parse the results and load (recursively) all replies and subreplies
+        // in the result array, INSERT the additional results in the position where they must be respecting the order requested (oldest/newest)
+        // note 1: this procedure allows optimization, for now we've made it work
+        // note 2: the only drawback is that offset/limit it's only taken into account for the root level comments, so the
+        //         number of results is variable on each request; we found that an acceptable drawback
 
-	$rs = $DB->result();
-	$total = $DB->foundRows();
+        $DB->query('
+            SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar,
+                   (SELECT COUNT(nvcr.id) 
+                      FROM nv_comments nvcr 
+                     WHERE nvcr.reply_to = nvc.id 
+                       AND nvcr.status = 0
+                   ) AS replies
+              FROM nv_comments nvc
+             LEFT OUTER JOIN nv_webusers nvwu
+                          ON nvwu.id = nvc.user
+             WHERE nvc.website = ' . protect($website->id) . '
+               AND nvc.item = ' . protect($element->id) . '
+               AND nvc.status = 0
+               AND nvc.reply_to = 0
+            ORDER BY ' . $orderby . '
+            LIMIT ' . $limit . '
+           OFFSET ' . $offset
+        );
+
+        $rs = $DB->result();
+
+        $out = array();
+
+        for($r=0; $r < count($rs); $r++)
+        {
+            $rows_to_add = array();
+            if($rs[$r]->replies > 0)
+            {
+                $c = new comment();
+                $c->load_from_resultset(array($rs[$r]));
+                $rows_to_add = $c->get_replies();
+            }
+
+            $out[] = $rs[$r];
+            if(!empty($rows_to_add))
+            {
+                foreach($rows_to_add as $rta)
+                    $out[] = $rta;
+            }
+        }
+
+        $rs = $out;
+        $total = count($rs);
+    }
+    else // plain list
+    {
+        $DB->query('
+            SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
+              FROM nv_comments nvc
+             LEFT OUTER JOIN nv_webusers nvwu
+                          ON nvwu.id = nvc.user
+             WHERE nvc.website = ' . protect($website->id) . '
+               AND nvc.item = ' . protect($element->id) . '
+               AND nvc.status = 0
+            ORDER BY ' . $orderby . '
+            LIMIT ' . $limit . '
+           OFFSET ' . $offset
+        );
+
+        $rs = $DB->result();
+        $total = $DB->foundRows();
+    }
 
 	return array($rs, $total);
 }

@@ -202,7 +202,7 @@ function run()
             $total = $DB->foundRows();
 
             for($r=0; $r < count($rows); $r++)
-                $rows[$r]['text'] = '<i class="fa fa-user"></i> '.$rows[$r]['name'].$rows[$r]['username'].' <i class="fa fa-clock-o"></i> '.core_ts2date($rows[$r]['date_created'], true);
+                $rows[$r]['text'] = '<span title="'.core_string_cut($rows[$r]['message'], 100).'"><i class="fa fa-user"></i> '.$rows[$r]['name'].$rows[$r]['username'].' <i class="fa fa-clock-o"></i> '.core_ts2date($rows[$r]['date_created'], true).'</span>';
 
             echo json_encode(array('items' => $rows, 'totalCount' => $total));
 
@@ -519,7 +519,7 @@ function comments_form($item)
     {
         $c = new comment();
         $c->load($item->reply_to);
-        $reply_to_comment = $c->get_name().'&nbsp;&nbsp;&nbsp;'.core_ts2date($c->date_created, true).'</span>';
+        $reply_to_comment = $c->author_name().'&nbsp;&nbsp;&nbsp;'.core_ts2date($c->date_created, true);
     }
 
     $navibars->add_tab_content_row(array(
@@ -541,8 +541,8 @@ function comments_form($item)
                     return {
                         search: params.term,
                         node_id: $("#comment-item").val(),
-                        maxdate: '.$item->date_created.',
-                        exclude: '.$item->id.',
+                        maxdate: '.($item->date_created + 0).',
+                        exclude: '.($item->id + 0).',
                         nd: new Date().getTime(),
                         page_limit: 30, // page size
                         page: params.page // page number
