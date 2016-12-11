@@ -33,10 +33,11 @@ class language
 		if(empty($xliff))   // just use the default language (English)
 			return;
 
-		foreach($xliff->file[0]->unit as $unit)
+		foreach($xliff->file[0]->body[0]->{"trans-unit"} as $unit)
 		{
 			$lid = intval($unit->attributes()->id);
-			$this->lang[$lid] = (string)$unit->segment->target;
+			$this->lang[$lid] = (string)$unit->target;
+            $this->lang[$lid] = str_replace("\n", "", $this->lang[$lid]);
 		}
 	}
 

@@ -1,3906 +1,3259 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="en-US" trgLang="de-DE">
-	<file>
-		<unit id="0">
-			<segment>
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en-US" target-language="de-DE" datatype="plaintext" original="">
+		<body>
+
+			<trans-unit id="0">
 				<source>Navigate</source>
 				<target>Navigate</target>
-			</segment>
-		</unit>
-		<unit id="1">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="1">
 				<source>User</source>
 				<target>Benutzer</target>
-			</segment>
-		</unit>
-		<unit id="2">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="2">
 				<source>Password</source>
 				<target>Passwort</target>
-			</segment>
-		</unit>
-		<unit id="3">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="3">
 				<source>Enter</source>
 				<target>Enter</target>
-			</segment>
-		</unit>
-		<unit id="4">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="4">
 				<source>Login incorrect</source>
 				<target>Login-Daten nicht korrekt</target>
-			</segment>
-		</unit>
-		<unit id="5">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="5">
 				<source>Log out</source>
 				<target>Log out</target>
-			</segment>
-		</unit>
-		<unit id="6">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="6">
 				<source>Loading</source>
 				<target>Lädt</target>
-			</segment>
-		</unit>
-		<unit id="7">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="7">
 				<source>Configuration</source>
 				<target>Konfiguration</target>
-			</segment>
-		</unit>
-		<unit id="8">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="8">
 				<source>Web</source>
 				<target>Web</target>
-			</segment>
-		</unit>
-		<unit id="9">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="9">
 				<source>Content</source>
 				<target>Inhalt</target>
-			</segment>
-		</unit>
-		<unit id="10">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="10">
 				<source>Shop</source>
 				<target>Shop</target>
-			</segment>
-		</unit>
-		<unit id="11">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="11">
 				<source>Multimedia</source>
 				<target>Multimedia</target>
-			</segment>
-		</unit>
-		<unit id="12">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="12">
 				<source>Tools</source>
 				<target>Werkzeuge</target>
-			</segment>
-		</unit>
-		<unit id="13">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="13">
 				<source>Not found</source>
 				<target>Nicht gefunden</target>
-			</segment>
-		</unit>
-		<unit id="14">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="14">
 				<source>Preferences</source>
 				<target>Einstellungen</target>
-			</segment>
-		</unit>
-		<unit id="15">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="15">
 				<source>Users</source>
 				<target>Benutzer</target>
-			</segment>
-		</unit>
-		<unit id="16">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="16">
 				<source>Structure</source>
 				<target>Struktur</target>
-			</segment>
-		</unit>
-		<unit id="17">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="17">
 				<source>Permissions</source>
 				<target>Rechte</target>
-			</segment>
-		</unit>
-		<unit id="18">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="18">
 				<source>Home</source>
 				<target>Home</target>
-			</segment>
-		</unit>
-		<unit id="19">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="19">
 				<source>Structure</source>
 				<target>Struktur</target>
-			</segment>
-		</unit>
-		<unit id="20">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="20">
 				<source>Templates</source>
 				<target>Templates</target>
-			</segment>
-		</unit>
-		<unit id="21">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="21">
 				<source>Dictionary</source>
 				<target>Wörterbuch</target>
-			</segment>
-		</unit>
-		<unit id="22">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="22">
 				<source>Elements</source>
 				<target>Elemente</target>
-			</segment>
-		</unit>
-		<unit id="23">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="23">
 				<source>Blocks</source>
 				<target>Blöcke</target>
-			</segment>
-		</unit>
-		<unit id="24">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="24">
 				<source>Web users</source>
 				<target>Registrierte Benutzer</target>
-			</segment>
-		</unit>
-		<unit id="25">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="25">
 				<source>Products</source>
 				<target>Produkte</target>
-			</segment>
-		</unit>
-		<unit id="26">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="26">
 				<source>Orders</source>
 				<target>Bestellungen</target>
-			</segment>
-		</unit>
-		<unit id="27">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="27">
 				<source>Rates</source>
 				<target>Tarife</target>
-			</segment>
-		</unit>
-		<unit id="28">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="28">
 				<source>Shipping</source>
 				<target>Versand</target>
-			</segment>
-		</unit>
-		<unit id="29">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="29">
 				<source>Images</source>
 				<target>Bilder</target>
-			</segment>
-		</unit>
-		<unit id="30">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="30">
 				<source>Videos</source>
 				<target>Videos</target>
-			</segment>
-		</unit>
-		<unit id="31">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="31">
 				<source>Audio</source>
 				<target>Audio</target>
-			</segment>
-		</unit>
-		<unit id="32">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="32">
 				<source>Documents</source>
 				<target>Dokumente</target>
-			</segment>
-		</unit>
-		<unit id="33">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="33">
 				<source>Newsletters</source>
 				<target>Newsletter</target>
-			</segment>
-		</unit>
-		<unit id="34">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="34">
 				<source>Save</source>
 				<target>Speichern</target>
-			</segment>
-		</unit>
-		<unit id="35">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="35">
 				<source>Delete</source>
 				<target>Löschen</target>
-			</segment>
-		</unit>
-		<unit id="36">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="36">
 				<source>Media</source>
 				<target>Medien</target>
-			</segment>
-		</unit>
-		<unit id="37">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="37">
 				<source>E-Mail confirmed</source>
 				<target>E-Mail bestätigen</target>
-			</segment>
-		</unit>
-		<unit id="38">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="38">
 				<source>Create</source>
 				<target>Neu</target>
-			</segment>
-		</unit>
-		<unit id="39">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="39">
 				<source>List</source>
 				<target>Liste</target>
-			</segment>
-		</unit>
-		<unit id="40">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="40">
 				<source>History</source>
 				<target>Verlauf</target>
-			</segment>
-		</unit>
-		<unit id="41">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="41">
 				<source>Search</source>
 				<target>Suche</target>
-			</segment>
-		</unit>
-		<unit id="42">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="42">
 				<source>Ready</source>
 				<target>Bereit</target>
-			</segment>
-		</unit>
-		<unit id="43">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="43">
 				<source>Main</source>
 				<target>Allgemein</target>
-			</segment>
-		</unit>
-		<unit id="44">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="44">
 				<source>E-Mail</source>
 				<target>E-Mail</target>
-			</segment>
-		</unit>
-		<unit id="45">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="45">
 				<source>Profile</source>
 				<target>Profil</target>
-			</segment>
-		</unit>
-		<unit id="46">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="46">
 				<source>Language</source>
 				<target>Sprache</target>
-			</segment>
-		</unit>
-		<unit id="47">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="47">
 				<source>Blocked</source>
 				<target>Blockiert</target>
-			</segment>
-		</unit>
-		<unit id="48">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="48">
 				<source>Leave empty to keep current value</source>
 				<target>Leer lassen um den aktuellen Wert zu übernehmen</target>
-			</segment>
-		</unit>
-		<unit id="49">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="49">
 				<source>Decimal separator</source>
 				<target>Dezimalseparator</target>
-			</segment>
-		</unit>
-		<unit id="50">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="50">
 				<source>Date format</source>
 				<target>Datumsformat</target>
-			</segment>
-		</unit>
-		<unit id="51">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="51">
 				<source>List</source>
 				<target>Liste</target>
-			</segment>
-		</unit>
-		<unit id="52">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="52">
 				<source>(new)</source>
 				<target>(neu)</target>
-			</segment>
-		</unit>
-		<unit id="53">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="53">
 				<source>Data successfully saved</source>
 				<target>Daten erfolgreich gespeichert</target>
-			</segment>
-		</unit>
-		<unit id="54">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="54">
 				<source>Text</source>
 				<target>Text</target>
-			</segment>
-		</unit>
-		<unit id="55">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="55">
 				<source>Item successfully deleted</source>
 				<target>Element erfolgreich gelöscht</target>
-			</segment>
-		</unit>
-		<unit id="56">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="56">
 				<source>Unexpected error</source>
 				<target>Unerwarteter Fehler</target>
-			</segment>
-		</unit>
-		<unit id="57">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="57">
 				<source>Do you really want to delete the item?</source>
 				<target>Möchtest du dieses Element wirklich löschen?</target>
-			</segment>
-		</unit>
-		<unit id="58">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="58">
 				<source>Cancel</source>
 				<target>Abbrechen</target>
-			</segment>
-		</unit>
-		<unit id="59">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="59">
 				<source>Confirmation</source>
 				<target>Bestätigung</target>
-			</segment>
-		</unit>
-		<unit id="60">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="60">
 				<source>Do you really want to delete the selected items?</source>
 				<target>Möchtest du die ausgewählten Elemente wirklich löschen?</target>
-			</segment>
-		</unit>
-		<unit id="61">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="61">
 				<source>Tree</source>
 				<target>Baum</target>
-			</segment>
-		</unit>
-		<unit id="62">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="62">
 				<source>Statistics</source>
 				<target>Statistiken</target>
-			</segment>
-		</unit>
-		<unit id="63">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="63">
 				<source>Languages</source>
 				<target>Sprachen</target>
-			</segment>
-		</unit>
-		<unit id="64">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="64">
 				<source>Published</source>
 				<target>Veröffentlicht</target>
-			</segment>
-		</unit>
-		<unit id="65">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="65">
 				<source>Enabled</source>
 				<target>Aktiviert</target>
-			</segment>
-		</unit>
-		<unit id="66">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="66">
 				<source>Priority</source>
 				<target>Priorität</target>
-			</segment>
-		</unit>
-		<unit id="67">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="67">
 				<source>Title</source>
 				<target>Titel</target>
-			</segment>
-		</unit>
-		<unit id="68">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="68">
 				<source>Status</source>
 				<target>Status</target>
-			</segment>
-		</unit>
-		<unit id="69">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="69">
 				<source>Published</source>
 				<target>Veröffentlicht</target>
-			</segment>
-		</unit>
-		<unit id="70">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="70">
 				<source>Private</source>
 				<target>Privat</target>
-			</segment>
-		</unit>
-		<unit id="71">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="71">
 				<source>Closed</source>
 				<target>Geschlossen</target>
-			</segment>
-		</unit>
-		<unit id="72">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="72">
 				<source>Drag the rows to assign priorities</source>
 				<target>Verschiebe die Reihen um Prioritäten zuzuweisen</target>
-			</segment>
-		</unit>
-		<unit id="73">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="73">
 				<source>Children</source>
 				<target>Unterkategorie</target>
-			</segment>
-		</unit>
-		<unit id="74">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="74">
 				<source>Paths</source>
 				<target>Pfade</target>
-			</segment>
-		</unit>
-		<unit id="75">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="75">
 				<source>Path</source>
 				<target>Pfad</target>
-			</segment>
-		</unit>
-		<unit id="76">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="76">
 				<source>Visible</source>
 				<target>Sichtbar</target>
-			</segment>
-		</unit>
-		<unit id="77">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="77">
 				<source>Properties</source>
 				<target>Eigenschaften</target>
-			</segment>
-		</unit>
-		<unit id="78">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="78">
 				<source>Category</source>
 				<target>Kategorie</target>
-			</segment>
-		</unit>
-		<unit id="79">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="79">
 				<source>Template</source>
 				<target>Template</target>
-			</segment>
-		</unit>
-		<unit id="80">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="80">
 				<source>Permission</source>
 				<target>Rechte</target>
-			</segment>
-		</unit>
-		<unit id="81">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="81">
 				<source>Hidden</source>
 				<target>Versteckt</target>
-			</segment>
-		</unit>
-		<unit id="82">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="82">
 				<source>File</source>
 				<target>Datei</target>
-			</segment>
-		</unit>
-		<unit id="83">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="83">
 				<source>Leave blank to disable</source>
 				<target>Zum Deaktivieren frei lassen</target>
-			</segment>
-		</unit>
-		<unit id="84">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="84">
 				<source>Parent</source>
 				<target>Übergeordnete Kategorie</target>
-			</segment>
-		</unit>
-		<unit id="85">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="85">
 				<source>Publish date</source>
 				<target>Veröffentlichungsdatum</target>
-			</segment>
-		</unit>
-		<unit id="86">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="86">
 				<source>Date</source>
 				<target>Datum</target>
-			</segment>
-		</unit>
-		<unit id="87">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="87">
 				<source>Association</source>
 				<target>Verknüpfung</target>
-			</segment>
-		</unit>
-		<unit id="88">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="88">
 				<source>Galleries</source>
 				<target>Galerien</target>
-			</segment>
-		</unit>
-		<unit id="89">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="89">
 				<source>Files</source>
 				<target>Dateien</target>
-			</segment>
-		</unit>
-		<unit id="90">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="90">
 				<source>Unpublish date</source>
 				<target>Unveröffentlicht seit</target>
-			</segment>
-		</unit>
-		<unit id="91">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="91">
 				<source>Day of month</source>
 				<target>Tag des Monats</target>
-			</segment>
-		</unit>
-		<unit id="92">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="92">
 				<source>Close</source>
 				<target>Schließen</target>
-			</segment>
-		</unit>
-		<unit id="93">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="93">
 				<source>Hour</source>
 				<target>Stunde</target>
-			</segment>
-		</unit>
-		<unit id="94">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="94">
 				<source>Minute</source>
 				<target>Minute</target>
-			</segment>
-		</unit>
-		<unit id="95">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="95">
 				<source>Month</source>
 				<target>Monat</target>
-			</segment>
-		</unit>
-		<unit id="96">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="96">
 				<source>Second</source>
 				<target>Sekunde</target>
-			</segment>
-		</unit>
-		<unit id="97">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="97">
 				<source>Timezone</source>
 				<target>Zeitzone</target>
-			</segment>
-		</unit>
-		<unit id="98">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="98">
 				<source>Select a date</source>
 				<target>Wähle ein Datum</target>
-			</segment>
-		</unit>
-		<unit id="99">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="99">
 				<source>Year</source>
 				<target>Jahr</target>
-			</segment>
-		</unit>
-		<unit id="100">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="100">
 				<source>Free</source>
 				<target>Frei</target>
-			</segment>
-		</unit>
-		<unit id="101">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="101">
 				<source>January</source>
 				<target>Januar</target>
-			</segment>
-		</unit>
-		<unit id="102">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="102">
 				<source>February</source>
 				<target>Februar</target>
-			</segment>
-		</unit>
-		<unit id="103">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="103">
 				<source>March</source>
 				<target>März</target>
-			</segment>
-		</unit>
-		<unit id="104">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="104">
 				<source>April</source>
 				<target>April</target>
-			</segment>
-		</unit>
-		<unit id="105">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="105">
 				<source>May</source>
 				<target>Mai</target>
-			</segment>
-		</unit>
-		<unit id="106">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="106">
 				<source>June</source>
 				<target>Juni</target>
-			</segment>
-		</unit>
-		<unit id="107">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="107">
 				<source>July</source>
 				<target>Juli</target>
-			</segment>
-		</unit>
-		<unit id="108">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="108">
 				<source>August</source>
 				<target>August</target>
-			</segment>
-		</unit>
-		<unit id="109">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="109">
 				<source>September</source>
 				<target>September</target>
-			</segment>
-		</unit>
-		<unit id="110">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="110">
 				<source>October</source>
 				<target>Oktober</target>
-			</segment>
-		</unit>
-		<unit id="111">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="111">
 				<source>November</source>
 				<target>November</target>
-			</segment>
-		</unit>
-		<unit id="112">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="112">
 				<source>December</source>
 				<target>Dezember</target>
-			</segment>
-		</unit>
-		<unit id="113">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="113">
 				<source>Jan</source>
 				<target>Jan</target>
-			</segment>
-		</unit>
-		<unit id="114">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="114">
 				<source>Feb</source>
 				<target>Feb</target>
-			</segment>
-		</unit>
-		<unit id="115">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="115">
 				<source>Mar</source>
 				<target>Mär</target>
-			</segment>
-		</unit>
-		<unit id="116">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="116">
 				<source>Apr</source>
 				<target>Apr</target>
-			</segment>
-		</unit>
-		<unit id="117">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="117">
 				<source>May</source>
 				<target>Mai</target>
-			</segment>
-		</unit>
-		<unit id="118">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="118">
 				<source>Jun</source>
 				<target>Jun</target>
-			</segment>
-		</unit>
-		<unit id="119">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="119">
 				<source>Jul</source>
 				<target>Jul</target>
-			</segment>
-		</unit>
-		<unit id="120">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="120">
 				<source>Aug</source>
 				<target>Aug</target>
-			</segment>
-		</unit>
-		<unit id="121">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="121">
 				<source>Sep</source>
 				<target>Sep</target>
-			</segment>
-		</unit>
-		<unit id="122">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="122">
 				<source>Oct</source>
 				<target>Okt</target>
-			</segment>
-		</unit>
-		<unit id="123">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="123">
 				<source>Nov</source>
 				<target>Nov</target>
-			</segment>
-		</unit>
-		<unit id="124">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="124">
 				<source>Dec</source>
 				<target>Dez</target>
-			</segment>
-		</unit>
-		<unit id="125">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="125">
 				<source>Monday</source>
 				<target>Montag</target>
-			</segment>
-		</unit>
-		<unit id="126">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="126">
 				<source>Tuesday</source>
 				<target>Dienstag</target>
-			</segment>
-		</unit>
-		<unit id="127">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="127">
 				<source>Wednesday</source>
 				<target>Mittwoch</target>
-			</segment>
-		</unit>
-		<unit id="128">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="128">
 				<source>Thursday</source>
 				<target>Donnerstag</target>
-			</segment>
-		</unit>
-		<unit id="129">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="129">
 				<source>Friday</source>
 				<target>Freitag</target>
-			</segment>
-		</unit>
-		<unit id="130">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="130">
 				<source>Saturday</source>
 				<target>Samstag</target>
-			</segment>
-		</unit>
-		<unit id="131">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="131">
 				<source>Sunday</source>
 				<target>Sonntag</target>
-			</segment>
-		</unit>
-		<unit id="132">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="132">
 				<source>Mon</source>
 				<target>Mo</target>
-			</segment>
-		</unit>
-		<unit id="133">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="133">
 				<source>Tue</source>
 				<target>Di</target>
-			</segment>
-		</unit>
-		<unit id="134">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="134">
 				<source>Wed</source>
 				<target>Mi</target>
-			</segment>
-		</unit>
-		<unit id="135">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="135">
 				<source>Thu</source>
 				<target>Do</target>
-			</segment>
-		</unit>
-		<unit id="136">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="136">
 				<source>Fri</source>
 				<target>Fr</target>
-			</segment>
-		</unit>
-		<unit id="137">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="137">
 				<source>Sat</source>
 				<target>Sa</target>
-			</segment>
-		</unit>
-		<unit id="138">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="138">
 				<source>Sun</source>
 				<target>So</target>
-			</segment>
-		</unit>
-		<unit id="139">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="139">
 				<source>Back</source>
 				<target>Zurück</target>
-			</segment>
-		</unit>
-		<unit id="140">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="140">
 				<source>Load</source>
 				<target>Hochladen</target>
-			</segment>
-		</unit>
-		<unit id="141">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="141">
 				<source>Folder</source>
 				<target>Ordner</target>
-			</segment>
-		</unit>
-		<unit id="142">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="142">
 				<source>Select files</source>
 				<target>Dateien wählen</target>
-			</segment>
-		</unit>
-		<unit id="143">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="143">
 				<source>Add files to upload queue and push the button to start the process</source>
 				<target>Füge Dateien zur Warteschlange hinzu und klicke auf den Button um den Upload zu starten</target>
-			</segment>
-		</unit>
-		<unit id="144">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="144">
 				<source>Filename</source>
 				<target>Dateiname</target>
-			</segment>
-		</unit>
-		<unit id="145">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="145">
 				<source>Size</source>
 				<target>Größe</target>
-			</segment>
-		</unit>
-		<unit id="146">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="146">
 				<source>Select files</source>
 				<target>Dateien wählen</target>
-			</segment>
-		</unit>
-		<unit id="147">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="147">
 				<source>Start upload</source>
 				<target>Upload starten</target>
-			</segment>
-		</unit>
-		<unit id="148">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="148">
 				<source>Stop current upload</source>
 				<target>Aktuellen Upload abbrechen</target>
-			</segment>
-		</unit>
-		<unit id="149">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="149">
 				<source>Start upload queue</source>
 				<target>Upload-Warteschlange starten</target>
-			</segment>
-		</unit>
-		<unit id="150">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="150">
 				<source>Drag and drop files here</source>
 				<target>Ziehe Dateien per Drag 'n' Drop hierher</target>
-			</segment>
-		</unit>
-		<unit id="151">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="151">
 				<source>The selected items will be permanently deleted.</source>
 				<target>Das gewählte Element wird dauerhaft gelöscht</target>
-			</segment>
-		</unit>
-		<unit id="152">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="152">
 				<source>Continue</source>
 				<target>Weiter</target>
-			</segment>
-		</unit>
-		<unit id="153">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="153">
 				<source>Embedding link</source>
 				<target>Link zum Einbetten</target>
-			</segment>
-		</unit>
-		<unit id="154">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="154">
 				<source>Download link</source>
 				<target>Download-Link</target>
-			</segment>
-		</unit>
-		<unit id="155">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="155">
 				<source>Width</source>
 				<target>Breite</target>
-			</segment>
-		</unit>
-		<unit id="156">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="156">
 				<source>Height</source>
 				<target>Höhe</target>
-			</segment>
-		</unit>
-		<unit id="157">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="157">
 				<source>Image</source>
 				<target>Bild</target>
-			</segment>
-		</unit>
-		<unit id="158">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="158">
 				<source>Thumbnail</source>
 				<target>Thumbnail</target>
-			</segment>
-		</unit>
-		<unit id="159">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="159">
 				<source>Name</source>
 				<target>Name</target>
-			</segment>
-		</unit>
-		<unit id="160">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="160">
 				<source>Type</source>
 				<target>Typ</target>
-			</segment>
-		</unit>
-		<unit id="161">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="161">
 				<source>Generic</source>
 				<target>Allgemein</target>
-			</segment>
-		</unit>
-		<unit id="162">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="162">
 				<source>Embedding</source>
 				<target>Einbettung</target>
-			</segment>
-		</unit>
-		<unit id="163">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="163">
 				<source>Embedded</source>
 				<target>Eingebettet</target>
-			</segment>
-		</unit>
-		<unit id="164">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="164">
 				<source>Own path</source>
 				<target>Eigener Pfad</target>
-			</segment>
-		</unit>
-		<unit id="165">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="165">
 				<source>The full content is shown in category view. Ex. "Who we are"</source>
 				<target>Der gesamte Inhalt wird in der Kategorienansicht angezeigt. Bsp. "Wer wir sind"</target>
-			</segment>
-		</unit>
-		<unit id="166">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="166">
 				<source>Content is accessed via its own path. Ex. "News"</source>
 				<target>Der Inhalt ist über einen eigenen Pfad erreichbar. Bsp. "Neuigkeiten"</target>
-			</segment>
-		</unit>
-		<unit id="167">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="167">
 				<source>Types</source>
 				<target>Typen</target>
-			</segment>
-		</unit>
-		<unit id="168">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="168">
 				<source>Notes</source>
 				<target>Notizen</target>
-			</segment>
-		</unit>
-		<unit id="169">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="169">
 				<source>You can leave a field blank to keep the size free</source>
 				<target>Du kannst ein Feld frei lassen um die Größe flexibel zu lassen</target>
-			</segment>
-		</unit>
-		<unit id="170">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="170">
 				<source>Edit</source>
 				<target>Bearbeiten</target>
-			</segment>
-		</unit>
-		<unit id="171">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="171">
 				<source>Order</source>
 				<target>Sortieren</target>
-			</segment>
-		</unit>
-		<unit id="172">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="172">
 				<source>Action</source>
 				<target>Aktion</target>
-			</segment>
-		</unit>
-		<unit id="173">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="173">
 				<source>Follow URL</source>
 				<target>Der URL folgen</target>
-			</segment>
-		</unit>
-		<unit id="174">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="174">
 				<source>Open URL (new window)</source>
 				<target>URL öffnen (in neuem Fenster)</target>
-			</segment>
-		</unit>
-		<unit id="175">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="175">
 				<source>Download file</source>
 				<target>Datei herunterladen</target>
-			</segment>
-		</unit>
-		<unit id="176">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="176">
 				<source>Watch image</source>
 				<target>Bild ansehen</target>
-			</segment>
-		</unit>
-		<unit id="177">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="177">
 				<source>Website</source>
 				<target>Website</target>
-			</segment>
-		</unit>
-		<unit id="178">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="178">
 				<source>Services</source>
 				<target>Andere Dienste</target>
-			</segment>
-		</unit>
-		<unit id="179">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="179">
 				<source>Thumbnails</source>
 				<target>Thumbnails</target>
-			</segment>
-		</unit>
-		<unit id="180">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="180">
 				<source>Item</source>
 				<target>Element</target>
-			</segment>
-		</unit>
-		<unit id="181">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="181">
 				<source>Hidden</source>
 				<target>Versteckt</target>
-			</segment>
-		</unit>
-		<unit id="182">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="182">
 				<source>Rollover image</source>
 				<target>Rollover-Bild</target>
-			</segment>
-		</unit>
-		<unit id="183">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="183">
 				<source>Do nothing</source>
 				<target>Nichts tun</target>
-			</segment>
-		</unit>
-		<unit id="184">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="184">
 				<source>Web page</source>
 				<target>Webseite</target>
-			</segment>
-		</unit>
-		<unit id="185">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="185">
 				<source>Searching items</source>
 				<target>Elemente suchen</target>
-			</segment>
-		</unit>
-		<unit id="186">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="186">
 				<source>Adobe Flash</source>
 				<target>Adobe Flash</target>
-			</segment>
-		</unit>
-		<unit id="187">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="187">
 				<source>Home page</source>
 				<target>Homepage</target>
-			</segment>
-		</unit>
-		<unit id="188">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="188">
 				<source>Translate</source>
 				<target>Übersetzen</target>
-			</segment>
-		</unit>
-		<unit id="189">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="189">
 				<source>Copy from</source>
 				<target>Kopieren von</target>
-			</segment>
-		</unit>
-		<unit id="190">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="190">
 				<source>Ok</source>
 				<target>Ok</target>
-			</segment>
-		</unit>
-		<unit id="191">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="191">
 				<source>Source</source>
 				<target>Quelle</target>
-			</segment>
-		</unit>
-		<unit id="192">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="192">
 				<source>Double click on a row to edit it</source>
 				<target>Doppelklicke auf eine Reihe um sie zu bearbeiten</target>
-			</segment>
-		</unit>
-		<unit id="193">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="193">
 				<source>Value</source>
 				<target>Wert</target>
-			</segment>
-		</unit>
-		<unit id="194">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="194">
 				<source>Option</source>
 				<target>Option</target>
-			</segment>
-		</unit>
-		<unit id="195">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="195">
 				<source>Text area</source>
 				<target>Textfeld</target>
-			</segment>
-		</unit>
-		<unit id="196">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="196">
 				<source>Date and time</source>
 				<target>Datum und Uhrzeit</target>
-			</segment>
-		</unit>
-		<unit id="197">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="197">
 				<source>Link</source>
 				<target>Link</target>
-			</segment>
-		</unit>
-		<unit id="198">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="198">
 				<source>Product</source>
 				<target>Produkt</target>
-			</segment>
-		</unit>
-		<unit id="199">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="199">
 				<source>Default value</source>
 				<target>Vorgegebener Wert</target>
-			</segment>
-		</unit>
-		<unit id="200">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="200">
 				<source>Options</source>
 				<target>Optionen</target>
-			</segment>
-		</unit>
-		<unit id="201">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="201">
 				<source>One line per option, following the format: value#title</source>
 				<target>Eine Zeile pro Option in diesem Format: Wert#Bezeichnung</target>
-			</segment>
-		</unit>
-		<unit id="202">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="202">
 				<source>Enter only the value</source>
 				<target>Gib nur den Wert ein</target>
-			</segment>
-		</unit>
-		<unit id="203">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="203">
 				<source>Same value for all languages</source>
 				<target>Der gleiche Wert für alle Sprachen</target>
-			</segment>
-		</unit>
-		<unit id="204">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="204">
 				<source>File ID</source>
 				<target>Datei-ID</target>
-			</segment>
-		</unit>
-		<unit id="205">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="205">
 				<source>Comment</source>
 				<target>Kommentar</target>
-			</segment>
-		</unit>
-		<unit id="206">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="206">
 				<source>Boolean</source>
 				<target>Boolean</target>
-			</segment>
-		</unit>
-		<unit id="207">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="207">
 				<source>Default timezone</source>
 				<target>Vorgegebene Zeitzone</target>
-			</segment>
-		</unit>
-		<unit id="208">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="208">
 				<source>Remove all content</source>
 				<target>Alle Inhalte entfernen</target>
-			</segment>
-		</unit>
-		<unit id="209">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="209">
 				<source>Minutes</source>
 				<target>Minuten</target>
-			</segment>
-		</unit>
-		<unit id="210">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="210">
 				<source>Gallery</source>
 				<target>Galerie</target>
-			</segment>
-		</unit>
-		<unit id="211">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="211">
 				<source>Multiple option</source>
 				<target>Mehrfachauswahl</target>
-			</segment>
-		</unit>
-		<unit id="212">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="212">
 				<source>Write values separated by commas</source>
 				<target>Gib die Werte durch Kommas getrennt ein</target>
-			</segment>
-		</unit>
-		<unit id="213">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="213">
 				<source>Image caption</source>
 				<target>Bildunterschrift</target>
-			</segment>
-		</unit>
-		<unit id="214">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="214">
 				<source>Product</source>
 				<target>Produkt</target>
-			</segment>
-		</unit>
-		<unit id="215">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="215">
 				<source>Credits</source>
 				<target>Credits</target>
-			</segment>
-		</unit>
-		<unit id="216">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="216">
 				<source>Created by</source>
 				<target>Erstellt von</target>
-			</segment>
-		</unit>
-		<unit id="217">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="217">
 				<source>Tested by</source>
 				<target>Getestet von</target>
-			</segment>
-		</unit>
-		<unit id="218">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="218">
 				<source>External libraries</source>
 				<target>Externe Bibliotheken</target>
-			</segment>
-		</unit>
-		<unit id="219">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="219">
 				<source>Copyright</source>
 				<target>Copyright</target>
-			</segment>
-		</unit>
-		<unit id="220">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="220">
 				<source>Version</source>
 				<target>Version</target>
-			</segment>
-		</unit>
-		<unit id="221">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="221">
 				<source>Jump to</source>
 				<target>Springe zu</target>
-			</segment>
-		</unit>
-		<unit id="222">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="222">
 				<source>Rating</source>
 				<target>Bewertung</target>
-			</segment>
-		</unit>
-		<unit id="223">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="223">
 				<source>Default value 5 stars, if you want a different value: default_value#number_of_stars</source>
 				<target>Vorgegebener Wert 5 Sterne, wenn du einen anderen Wert willst: vorgegebener_wert#anzahl_der_sterne</target>
-			</segment>
-		</unit>
-		<unit id="224">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="224">
 				<source>Country</source>
 				<target>Land</target>
-			</segment>
-		</unit>
-		<unit id="225">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="225">
 				<source>Alpha-2 country code</source>
 				<target>Alpha-2 Ländercode</target>
-			</segment>
-		</unit>
-		<unit id="226">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="226">
 				<source>Creation date</source>
 				<target>Erstellungsdatum</target>
-			</segment>
-		</unit>
-		<unit id="227">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="227">
 				<source>Modification date</source>
 				<target>Modifikationsdatum</target>
-			</segment>
-		</unit>
-		<unit id="228">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="228">
 				<source>Subdomain</source>
 				<target>Subdomain</target>
-			</segment>
-		</unit>
-		<unit id="229">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="229">
 				<source>Domain</source>
 				<target>Domain</target>
-			</segment>
-		</unit>
-		<unit id="230">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="230">
 				<source>Ex.</source>
 				<target>Bsp.</target>
-			</segment>
-		</unit>
-		<unit id="231">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="231">
 				<source>Server</source>
 				<target>Server</target>
-			</segment>
-		</unit>
-		<unit id="232">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="232">
 				<source>Port</source>
 				<target>Port</target>
-			</segment>
-		</unit>
-		<unit id="233">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="233">
 				<source>Address</source>
 				<target>Adresse</target>
-			</segment>
-		</unit>
-		<unit id="234">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="234">
 				<source>More elements</source>
 				<target>Mehr Elemente</target>
-			</segment>
-		</unit>
-		<unit id="235">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="235">
 				<source>File saved successfully</source>
 				<target>Datei erfolgreich gespeichert</target>
-			</segment>
-		</unit>
-		<unit id="236">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="236">
 				<source>Sections</source>
 				<target>Sektionen</target>
-			</segment>
-		</unit>
-		<unit id="237">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="237">
 				<source>Code</source>
 				<target>Code</target>
-			</segment>
-		</unit>
-		<unit id="238">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="238">
 				<source>Main content</source>
 				<target>Hauptinhalt</target>
-			</segment>
-		</unit>
-		<unit id="239">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="239">
 				<source>Section</source>
 				<target>Sektion</target>
-			</segment>
-		</unit>
-		<unit id="240">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="240">
 				<source>Functions</source>
 				<target>Funktionen</target>
-			</segment>
-		</unit>
-		<unit id="241">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="241">
 				<source>Web sites</source>
 				<target>Websites</target>
-			</segment>
-		</unit>
-		<unit id="242">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="242">
 				<source>Icon</source>
 				<target>Icon</target>
-			</segment>
-		</unit>
-		<unit id="243">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="243">
 				<source>Profiles</source>
 				<target>Profile</target>
-			</segment>
-		</unit>
-		<unit id="244">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="244">
 				<source>Menus</source>
 				<target>Menüs</target>
-			</segment>
-		</unit>
-		<unit id="245">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="245">
 				<source>Notes</source>
 				<target>Notizen</target>
-			</segment>
-		</unit>
-		<unit id="246">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="246">
 				<source>Avatar</source>
 				<target>Avatar</target>
-			</segment>
-		</unit>
-		<unit id="247">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="247">
 				<source>Registration date</source>
 				<target>Registrierungsdatum</target>
-			</segment>
-		</unit>
-		<unit id="248">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="248">
 				<source>Birth date</source>
 				<target>Geburtsdatum</target>
-			</segment>
-		</unit>
-		<unit id="249">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="249">
 				<source>Newsletter</source>
 				<target>Newsletter</target>
-			</segment>
-		</unit>
-		<unit id="250">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="250">
 				<source>Comments</source>
 				<target>Kommentare</target>
-			</segment>
-		</unit>
-		<unit id="251">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="251">
 				<source>Private</source>
 				<target>Privat</target>
-			</segment>
-		</unit>
-		<unit id="252">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="252">
 				<source>Comments enabled for</source>
 				<target>Kommentare aktiviert für</target>
-			</segment>
-		</unit>
-		<unit id="253">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="253">
 				<source>Nobody</source>
 				<target>Niemanden</target>
-			</segment>
-		</unit>
-		<unit id="254">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="254">
 				<source>Everybody</source>
 				<target>Jeden</target>
-			</segment>
-		</unit>
-		<unit id="255">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="255">
 				<source>Moderator</source>
 				<target>Moderator</target>
-			</segment>
-		</unit>
-		<unit id="256">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="256">
 				<source>Leave blank to accept all comments</source>
 				<target>Leer lassen um alle Kommentare zuzulassen</target>
-			</segment>
-		</unit>
-		<unit id="257">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="257">
 				<source>To revise</source>
 				<target>Zu überarbeiten</target>
-			</segment>
-		</unit>
-		<unit id="258">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="258">
 				<source>Publish</source>
 				<target>Veröffentlichen</target>
-			</segment>
-		</unit>
-		<unit id="259">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="259">
 				<source>Unpublish</source>
 				<target>Veröffentlichung rückgängig machen</target>
-			</segment>
-		</unit>
-		<unit id="260">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="260">
 				<source>Drag and drop files to upload them</source>
 				<target>Ziehe Dateien per Drag 'n' Drop um sie hochzuladen</target>
-			</segment>
-		</unit>
-		<unit id="261">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="261">
 				<source>Uploading</source>
 				<target>Lädt hoch</target>
-			</segment>
-		</unit>
-		<unit id="262">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="262">
 				<source>Error uploading file</source>
 				<target>Fehler beim Hochladen der Datei</target>
-			</segment>
-		</unit>
-		<unit id="263">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="263">
 				<source>Contact e-mails</source>
 				<target>Kontakt-E-Mails</target>
-			</segment>
-		</unit>
-		<unit id="264">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="264">
 				<source>One item per row</source>
 				<target>Ein Eintrag pro Zeile</target>
-			</segment>
-		</unit>
-		<unit id="265">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="265">
 				<source>Labels</source>
 				<target>Label</target>
-			</segment>
-		</unit>
-		<unit id="266">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="266">
 				<source>Author</source>
 				<target>Autor</target>
-			</segment>
-		</unit>
-		<unit id="267">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="267">
 				<source>Editor</source>
 				<target>Editor</target>
-			</segment>
-		</unit>
-		<unit id="268">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="268">
 				<source>Raw</source>
 				<target>Unformatiert</target>
-			</segment>
-		</unit>
-		<unit id="269">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="269">
 				<source>HTML code</source>
 				<target>HTML-Code</target>
-			</segment>
-		</unit>
-		<unit id="270">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="270">
 				<source>Auto save in progress</source>
 				<target>Autospeichern läuft</target>
-			</segment>
-		</unit>
-		<unit id="271">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="271">
 				<source>Auto save completed</source>
 				<target>Autospeichern abgeschlossen</target>
-			</segment>
-		</unit>
-		<unit id="272">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="272">
 				<source>Video</source>
 				<target>Video</target>
-			</segment>
-		</unit>
-		<unit id="273">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="273">
 				<source>Auto save</source>
 				<target>Autospeichern</target>
-			</segment>
-		</unit>
-		<unit id="274">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="274">
 				<source>Preview</source>
 				<target>Vorschau</target>
-			</segment>
-		</unit>
-		<unit id="275">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="275">
 				<source>Recent elements</source>
 				<target>Kürzlich bearbeitet</target>
-			</segment>
-		</unit>
-		<unit id="276">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="276">
 				<source>Recent comments</source>
 				<target>Neuste Kommentare</target>
-			</segment>
-		</unit>
-		<unit id="277">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="277">
 				<source>Most seen elements</source>
 				<target>Meist betrachtet</target>
-			</segment>
-		</unit>
-		<unit id="278">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="278">
 				<source>Web summary</source>
 				<target>Web-Übersicht</target>
-			</segment>
-		</unit>
-		<unit id="279">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="279">
 				<source>Pages available</source>
 				<target>Verfügbare Seiten</target>
-			</segment>
-		</unit>
-		<unit id="280">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="280">
 				<source>Page views</source>
 				<target>Pageviews</target>
-			</segment>
-		</unit>
-		<unit id="281">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="281">
 				<source>Comments to revise</source>
 				<target>Kommentare zur Überarbeitung</target>
-			</segment>
-		</unit>
-		<unit id="282">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="282">
 				<source>Untitled</source>
 				<target>Ohne Titel</target>
-			</segment>
-		</unit>
-		<unit id="283">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="283">
 				<source>Show in menus</source>
 				<target>In Menüs anzeigen</target>
-			</segment>
-		</unit>
-		<unit id="284">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="284">
 				<source>Africa</source>
 				<target>Afrika</target>
-			</segment>
-		</unit>
-		<unit id="285">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="285">
 				<source>Update</source>
 				<target>Update</target>
-			</segment>
-		</unit>
-		<unit id="286">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="286">
 				<source>Drag to reorder. Double click to assign image captions.</source>
 				<target>Verschieben um die Reihenfolge zu ändern. Doppelklicken um die Bildunterschrift einzugeben</target>
-			</segment>
-		</unit>
-		<unit id="287">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="287">
 				<source>Protocol</source>
 				<target>Protokoll</target>
-			</segment>
-		</unit>
-		<unit id="288">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="288">
 				<source>Secure site (requires certificate)</source>
 				<target>Sichere Seite (benötigt ein Zertifikat)</target>
-			</segment>
-		</unit>
-		<unit id="289">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="289">
 				<source>Update Navigate</source>
 				<target>Navigate updaten</target>
-			</segment>
-		</unit>
-		<unit id="290">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="290">
 				<source>Current version</source>
 				<target>Aktuelle Version</target>
-			</segment>
-		</unit>
-		<unit id="291">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="291">
 				<source>Latest version</source>
 				<target>Letzte Version</target>
-			</segment>
-		</unit>
-		<unit id="292">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="292">
 				<source>Available updates</source>
 				<target>Verfügbare Updates</target>
-			</segment>
-		</unit>
-		<unit id="293">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="293">
 				<source>Application successfully updated</source>
 				<target>Die Anwendung wurde erfolgreich aktualisiert</target>
-			</segment>
-		</unit>
-		<unit id="294">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="294">
 				<source>Error updating.</source>
 				<target>Fehler beim Aktualisieren</target>
-			</segment>
-		</unit>
-		<unit id="295">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="295">
 				<source>Expand all</source>
 				<target>Alle aufklappen</target>
-			</segment>
-		</unit>
-		<unit id="296">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="296">
 				<source>Top pages</source>
 				<target>Meistbesuchte Seiten</target>
-			</segment>
-		</unit>
-		<unit id="297">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="297">
 				<source>Coordinates</source>
 				<target>Koordinaten</target>
-			</segment>
-		</unit>
-		<unit id="298">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="298">
 				<source>Latitude</source>
 				<target>Breitengrad</target>
-			</segment>
-		</unit>
-		<unit id="299">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="299">
 				<source>Longitude</source>
 				<target>Längengrad</target>
-			</segment>
-		</unit>
-		<unit id="300">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="300">
 				<source>Map</source>
 				<target>Karte</target>
-			</segment>
-		</unit>
-		<unit id="301">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="301">
 				<source>Double click on a place to set the coordinates</source>
 				<target>Doppelklicke auf einen Ort um die Koordinaten zu setzen</target>
-			</segment>
-		</unit>
-		<unit id="302">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="302">
 				<source>Help</source>
 				<target>Hilfe</target>
-			</segment>
-		</unit>
-		<unit id="303">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="303">
 				<source>Manual update</source>
 				<target>Manuelles Update</target>
-			</segment>
-		</unit>
-		<unit id="304">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="304">
 				<source>Gender</source>
 				<target>Geschlecht</target>
-			</segment>
-		</unit>
-		<unit id="305">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="305">
 				<source>Male</source>
 				<target>Männlich</target>
-			</segment>
-		</unit>
-		<unit id="306">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="306">
 				<source>Female</source>
 				<target>Weiblich</target>
-			</segment>
-		</unit>
-		<unit id="307">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="307">
 				<source>Unspecified</source>
 				<target>Nicht angegeben</target>
-			</segment>
-		</unit>
-		<unit id="308">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="308">
 				<source>Personal</source>
 				<target>Persönliche Angaben</target>
-			</segment>
-		</unit>
-		<unit id="309">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="309">
 				<source>Social</source>
 				<target>Social Media</target>
-			</segment>
-		</unit>
-		<unit id="310">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="310">
 				<source>America</source>
 				<target>Amerika</target>
-			</segment>
-		</unit>
-		<unit id="311">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="311">
 				<source>Antartica</source>
 				<target>Antarktis</target>
-			</segment>
-		</unit>
-		<unit id="312">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="312">
 				<source>Arctic</source>
 				<target>Arktis</target>
-			</segment>
-		</unit>
-		<unit id="313">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="313">
 				<source>Asia</source>
 				<target>Asien</target>
-			</segment>
-		</unit>
-		<unit id="314">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="314">
 				<source>Atlantic</source>
 				<target>Atlantik</target>
-			</segment>
-		</unit>
-		<unit id="315">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="315">
 				<source>Europe</source>
 				<target>Europa</target>
-			</segment>
-		</unit>
-		<unit id="316">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="316">
 				<source>Indian</source>
 				<target>Indien</target>
-			</segment>
-		</unit>
-		<unit id="317">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="317">
 				<source>Pacific</source>
 				<target>Pazifik</target>
-			</segment>
-		</unit>
-		<unit id="318">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="318">
 				<source>Zip code</source>
 				<target>Postleitzahl</target>
-			</segment>
-		</unit>
-		<unit id="319">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="319">
 				<source>Location</source>
 				<target>Ort</target>
-			</segment>
-		</unit>
-		<unit id="320">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="320">
 				<source>Phone</source>
 				<target>Telefon</target>
-			</segment>
-		</unit>
-		<unit id="321">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="321">
 				<source>Allowed</source>
 				<target>Erlaubt</target>
-			</segment>
-		</unit>
-		<unit id="322">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="322">
 				<source>Jump to another branch</source>
 				<target>Springe zu einem anderen Zweig</target>
-			</segment>
-		</unit>
-		<unit id="323">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="323">
 				<source>Jump to an element</source>
 				<target>Springe zu einem Element</target>
-			</segment>
-		</unit>
-		<unit id="324">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="324">
 				<source>New window</source>
 				<target>Neues Fenster</target>
-			</segment>
-		</unit>
-		<unit id="325">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="325">
 				<source>Branch</source>
 				<target>Zweig</target>
-			</segment>
-		</unit>
-		<unit id="326">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="326">
 				<source>Web feeds</source>
 				<target>Web-Feeds</target>
-			</segment>
-		</unit>
-		<unit id="327">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="327">
 				<source>Extensions</source>
 				<target>Erweiterungen</target>
-			</segment>
-		</unit>
-		<unit id="328">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="328">
 				<source>Favicon</source>
 				<target>Favicon</target>
-			</segment>
-		</unit>
-		<unit id="329">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="329">
 				<source>Backups</source>
 				<target>Backups</target>
-			</segment>
-		</unit>
-		<unit id="330">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="330">
 				<source>Categories</source>
 				<target>Kategorien</target>
-			</segment>
-		</unit>
-		<unit id="331">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="331">
 				<source>Format</source>
 				<target>Format</target>
-			</segment>
-		</unit>
-		<unit id="332">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="332">
 				<source>Views</source>
 				<target>Views</target>
-			</segment>
-		</unit>
-		<unit id="333">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="333">
 				<source>Recommended</source>
 				<target>Empfohlen</target>
-			</segment>
-		</unit>
-		<unit id="334">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="334">
 				<source>Description</source>
 				<target>Beschreibung</target>
-			</segment>
-		</unit>
-		<unit id="335">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="335">
 				<source>Entries</source>
 				<target>Einträge</target>
-			</segment>
-		</unit>
-		<unit id="336">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="336">
 				<source>Display</source>
 				<target>Anzeigen</target>
-			</segment>
-		</unit>
-		<unit id="337">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="337">
 				<source>Summary</source>
 				<target>Zusammenfassung</target>
-			</segment>
-		</unit>
-		<unit id="338">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="338">
 				<source>Uploaded %d/%d files</source>
 				<target>%d/%d Dateien hochgeladen</target>
-			</segment>
-		</unit>
-		<unit id="339">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="339">
 				<source>N/A</source>
 				<target>Nicht verfügbar</target>
-			</segment>
-		</unit>
-		<unit id="340">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="340">
 				<source>File extension error</source>
 				<target>Dateierweiterungsfehler</target>
-			</segment>
-		</unit>
-		<unit id="341">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="341">
 				<source>File size error</source>
 				<target>Dateigrößenfehler</target>
-			</segment>
-		</unit>
-		<unit id="342">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="342">
 				<source>Init error</source>
 				<target>Inizialisierungsfehler</target>
-			</segment>
-		</unit>
-		<unit id="343">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="343">
 				<source>HTTP Error</source>
 				<target>HTTP-Fehler</target>
-			</segment>
-		</unit>
-		<unit id="344">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="344">
 				<source>Security error</source>
 				<target>Sicherheitsfehler</target>
-			</segment>
-		</unit>
-		<unit id="345">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="345">
 				<source>Generic error</source>
 				<target>Allgemeiner Fehler</target>
-			</segment>
-		</unit>
-		<unit id="346">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="346">
 				<source>IO error</source>
 				<target>Eingabe/Ausgabe-Fehler</target>
-			</segment>
-		</unit>
-		<unit id="347">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="347">
 				<source>Stop upload</source>
 				<target>Upload stoppen</target>
-			</segment>
-		</unit>
-		<unit id="348">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="348">
 				<source>Add files</source>
 				<target>Dateien hinzufügen</target>
-			</segment>
-		</unit>
-		<unit id="349">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="349">
 				<source>Start upload</source>
 				<target>Upload starten</target>
-			</segment>
-		</unit>
-		<unit id="350">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="350">
 				<source>%d files queued</source>
 				<target>%d Dateien in der Warteschlange</target>
-			</segment>
-		</unit>
-		<unit id="351">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="351">
 				<source>New update available!</source>
 				<target>Neues Update verfügbar!</target>
-			</segment>
-		</unit>
-		<unit id="352">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="352">
 				<source>Votes</source>
 				<target>Stimmen</target>
-			</segment>
-		</unit>
-		<unit id="353">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="353">
 				<source>Score</source>
 				<target>Ergebnis</target>
-			</segment>
-		</unit>
-		<unit id="354">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="354">
 				<source>Reset</source>
 				<target>Zurücksetzen</target>
-			</segment>
-		</unit>
-		<unit id="355">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="355">
 				<source>Votes reset</source>
 				<target>Zurückgesetzte Stimmen</target>
-			</segment>
-		</unit>
-		<unit id="356">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="356">
 				<source>last 90 days</source>
 				<target>Die letzten 90 Tage</target>
-			</segment>
-		</unit>
-		<unit id="357">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="357">
 				<source>User votes</source>
 				<target>Benutzerstimmen</target>
-			</segment>
-		</unit>
-		<unit id="358">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="358">
 				<source>Hidden to everybody</source>
 				<target>Für niemanden sichtbar</target>
-			</segment>
-		</unit>
-		<unit id="359">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="359">
 				<source>Visible only to Navigate CMS users</source>
 				<target>Nur für Navigate CMS Benutzer sichtbar</target>
-			</segment>
-		</unit>
-		<unit id="360">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="360">
 				<source>Visible to everybody</source>
 				<target>Für alle sichtbar</target>
-			</segment>
-		</unit>
-		<unit id="361">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="361">
 				<source>Web users only</source>
 				<target>Nur registrierte Benutzer</target>
-			</segment>
-		</unit>
-		<unit id="362">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="362">
 				<source>Not signed in</source>
 				<target>Nicht registriert</target>
-			</segment>
-		</unit>
-		<unit id="363">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="363">
 				<source>Users who have not yet signed up or signed in</source>
 				<target>Benutzer, die sich noch nicht registriert oder angemeldet haben</target>
-			</segment>
-		</unit>
-		<unit id="364">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="364">
 				<source>Access</source>
 				<target>Zugang</target>
-			</segment>
-		</unit>
-		<unit id="365">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="365">
 				<source>Install</source>
 				<target>Installieren</target>
-			</segment>
-		</unit>
-		<unit id="366">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="366">
 				<source>Log</source>
 				<target>Log</target>
-			</segment>
-		</unit>
-		<unit id="367">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="367">
 				<source>Themes</source>
 				<target>Themes</target>
-			</segment>
-		</unit>
-		<unit id="368">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="368">
 				<source>Theme</source>
 				<target>Theme</target>
-			</segment>
-		</unit>
-		<unit id="369">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="369">
 				<source>More on</source>
 				<target>Mehr über</target>
-			</segment>
-		</unit>
-		<unit id="370">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="370">
 				<source>Demo</source>
 				<target>Demo</target>
-			</segment>
-		</unit>
-		<unit id="371">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="371">
 				<source>Installing a new theme removes the settings of the old one.</source>
 				<target>Beim Installation eines neuen Themes werden die Einstellungen des alten gelöscht.</target>
-			</segment>
-		</unit>
-		<unit id="372">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="372">
 				<source>The list of available block types may change and also the properties assigned to items could be lost.</source>
 				<target>Die Liste der verfügbaren Block-Typen kann sich ändern und auch die Eigenschaften, die Elementen zugewiesen sind, können verloren gehen.</target>
-			</segment>
-		</unit>
-		<unit id="373">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="373">
 				<source>Are you sure you want to continue?</source>
 				<target>Bist du sicher, dass du fortfahren willst?</target>
-			</segment>
-		</unit>
-		<unit id="374">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="374">
 				<source>Item installed successfully</source>
 				<target>Element erfolgreich installiert</target>
-			</segment>
-		</unit>
-		<unit id="375">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="375">
 				<source>Blog</source>
 				<target>Blog</target>
-			</segment>
-		</unit>
-		<unit id="376">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="376">
 				<source>Blog entry</source>
 				<target>Blog-Eintrag</target>
-			</segment>
-		</unit>
-		<unit id="377">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="377">
 				<source>Contact</source>
 				<target>Kontakt</target>
-			</segment>
-		</unit>
-		<unit id="378">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="378">
 				<source>License</source>
 				<target>Lizenz</target>
-			</segment>
-		</unit>
-		<unit id="379">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="379">
 				<source>Post a comment</source>
 				<target>Schreibe einen Kommentar</target>
-			</segment>
-		</unit>
-		<unit id="380">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="380">
 				<source>Message</source>
 				<target>Nachricht</target>
-			</segment>
-		</unit>
-		<unit id="381">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="381">
 				<source>E-Mail will not be published</source>
 				<target>Die E-Mail-Adresse wird nicht veröffentlicht</target>
-			</segment>
-		</unit>
-		<unit id="382">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="382">
 				<source>Submit</source>
 				<target>Abschicken</target>
-			</segment>
-		</unit>
-		<unit id="383">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="383">
 				<source>Sign in or Sign up to post a comment</source>
 				<target>Registriere dich oder melde dich an um einen Kommentar zu verfassen</target>
-			</segment>
-		</unit>
-		<unit id="384">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="384">
 				<source>Comments on this entry are closed</source>
 				<target>Das Kommentieren ist für diesen Eintrag deaktiviert</target>
-			</segment>
-		</unit>
-		<unit id="385">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="385">
 				<source>Please don't leave any field blank</source>
 				<target>Bitte lasse keines der Felder leer</target>
-			</segment>
-		</unit>
-		<unit id="386">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="386">
 				<source>Your comment has been received and will be published shortly</source>
 				<target>Dein Kommentar ist eingegangen und wird in Kürze veröffentlicht</target>
-			</segment>
-		</unit>
-		<unit id="387">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="387">
 				<source>New comment</source>
 				<target>Neue Kommentare</target>
-			</segment>
-		</unit>
-		<unit id="388">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="388">
 				<source>Review comments</source>
 				<target>Kommentare bearbeiten</target>
-			</segment>
-		</unit>
-		<unit id="389">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="389">
 				<source>Backspace key protection</source>
 				<target>Backspace-Taste gesichert</target>
-			</segment>
-		</unit>
-		<unit id="390">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="390">
 				<source>Test</source>
 				<target>Test</target>
-			</segment>
-		</unit>
-		<unit id="391">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="391">
 				<source>Trying to send a test e-mail...</source>
 				<target>Versuche die E-Mail zu versenden ...</target>
-			</segment>
-		</unit>
-		<unit id="392">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="392">
 				<source>E-Mail sent</source>
 				<target>E-Mail versendet</target>
-			</segment>
-		</unit>
-		<unit id="393">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="393">
 				<source>Standard banner sizes</source>
 				<target>Standard Banner-Größen</target>
-			</segment>
-		</unit>
-		<unit id="394">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="394">
 				<source>Fixed</source>
 				<target>Fixiert</target>
-			</segment>
-		</unit>
-		<unit id="395">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="395">
 				<source>"Fixed" assigns a static position when the order is random</source>
 				<target>"Fixiert" weist eine feste Position zu, wenn die Anordnung zufällig ist</target>
-			</segment>
-		</unit>
-		<unit id="396">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="396">
 				<source>All categories</source>
 				<target>Alle Kategorien</target>
-			</segment>
-		</unit>
-		<unit id="397">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="397">
 				<source>Maximum</source>
 				<target>Maximum</target>
-			</segment>
-		</unit>
-		<unit id="398">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="398">
 				<source>Minimum</source>
 				<target>Minimum</target>
-			</segment>
-		</unit>
-		<unit id="399">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="399">
 				<source>Random</source>
 				<target>Zufällig</target>
-			</segment>
-		</unit>
-		<unit id="400">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="400">
 				<source>Enter 0 to display all</source>
 				<target>Gib 0 ein um alle anzuzeigen</target>
-			</segment>
-		</unit>
-		<unit id="401">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="401">
 				<source>Your browser does not support HTML5</source>
 				<target>Dein Browser unterstützt kein HTML5</target>
-			</segment>
-		</unit>
-		<unit id="402">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="402">
 				<source>Please select fewer files</source>
 				<target>Bitte wähle weniger Dateien aus</target>
-			</segment>
-		</unit>
-		<unit id="403">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="403">
 				<source>File too large</source>
 				<target>Datei zu groß</target>
-			</segment>
-		</unit>
-		<unit id="404">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="404">
 				<source>Order by</source>
 				<target>Sortieren nach</target>
-			</segment>
-		</unit>
-		<unit id="405">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="405">
 				<source>Selection</source>
 				<target>Auswahl</target>
-			</segment>
-		</unit>
-		<unit id="406">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="406">
 				<source>Remember me</source>
 				<target>Erinnere dich an mich</target>
-			</segment>
-		</unit>
-		<unit id="407">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="407">
 				<source>Forgot password?</source>
 				<target>Passwort vergessen</target>
-			</segment>
-		</unit>
-		<unit id="408">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="408">
 				<source>Order is only used on lists ordered by priority</source>
 				<target>Die Reihenfolge wird nur auf Listen angewandt, die nach Priorität sortiert sind</target>
-			</segment>
-		</unit>
-		<unit id="409">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="409">
 				<source>Size</source>
 				<target>Größe</target>
-			</segment>
-		</unit>
-		<unit id="410">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="410">
 				<source>Begin backup</source>
 				<target>Backup starten</target>
-			</segment>
-		</unit>
-		<unit id="411">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="411">
 				<source>Task progress</source>
 				<target>Fortschritt der Aufgabe</target>
-			</segment>
-		</unit>
-		<unit id="412">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="412">
 				<source>Restore</source>
 				<target>Wiederherstellen</target>
-			</segment>
-		</unit>
-		<unit id="413">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="413">
 				<source>Waiting to begin</source>
 				<target>Warte auf Beginn</target>
-			</segment>
-		</unit>
-		<unit id="414">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="414">
 				<source>Exporting database</source>
 				<target>Datenbank wird exportiert</target>
-			</segment>
-		</unit>
-		<unit id="415">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="415">
 				<source>Copying themes and templates</source>
 				<target>Themes und Templates werden kopiert</target>
-			</segment>
-		</unit>
-		<unit id="416">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="416">
 				<source>Copying extensions</source>
 				<target>Extensions werden kopiert</target>
-			</segment>
-		</unit>
-		<unit id="417">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="417">
 				<source>Copying uploads</source>
 				<target>Uploads werden kopiert</target>
-			</segment>
-		</unit>
-		<unit id="418">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="418">
 				<source>Creating archive</source>
 				<target>Das Archiv wird erstellt</target>
-			</segment>
-		</unit>
-		<unit id="419">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="419">
 				<source>Process complete</source>
 				<target>Der Vorgang ist abgeschlossen</target>
-			</segment>
-		</unit>
-		<unit id="420">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="420">
 				<source>Estimated size</source>
 				<target>Geschätzte Größe</target>
-			</segment>
-		</unit>
-		<unit id="421">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="421">
 				<source>Created on</source>
 				<target>Erstellt am</target>
-			</segment>
-		</unit>
-		<unit id="422">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="422">
 				<source>Uploading to server</source>
 				<target>Lädt auf den Server hoch</target>
-			</segment>
-		</unit>
-		<unit id="423">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="423">
 				<source>Refresh</source>
 				<target>Neu laden</target>
-			</segment>
-		</unit>
-		<unit id="424">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="424">
 				<source>Preparing process</source>
 				<target>Vorgang wird vorbereitet</target>
-			</segment>
-		</unit>
-		<unit id="425">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="425">
 				<source>Order the elements of a category (unless the template forces other sorting)</source>
 				<target>Sortiere die Elemente einer Kategorie (es sei denn das Template gibt eine bestimmte Reihenfolge vor)</target>
-			</segment>
-		</unit>
-		<unit id="426">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="426">
 				<source>Enter "1" for true, "0" for false</source>
 				<target>Gib "1" für wahr ein und "0" für falsch</target>
-			</segment>
-		</unit>
-		<unit id="427">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="427">
 				<source>Security protocol</source>
 				<target>Sicherheitsprotokoll</target>
-			</segment>
-		</unit>
-		<unit id="428">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="428">
 				<source>(no category)</source>
 				<target>(keine Kategorie)</target>
-			</segment>
-		</unit>
-		<unit id="429">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="429">
 				<source>Reset statistics</source>
 				<target>Statistiken zurücksetzen</target>
-			</segment>
-		</unit>
-		<unit id="430">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="430">
 				<source>Do you really want to remove all statistics of this website?</source>
 				<target>Möchtest du wirklich alle Statistiken dieser Website löschen?</target>
-			</segment>
-		</unit>
-		<unit id="431">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="431">
 				<source>Style</source>
 				<target>Stil</target>
-			</segment>
-		</unit>
-		<unit id="432">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="432">
 				<source>Read only mode</source>
 				<target>Read-Only-Modus</target>
-			</segment>
-		</unit>
-		<unit id="433">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="433">
 				<source>Resize uploaded images</source>
 				<target>Größe der hochgeladenen Bilder ändern</target>
-			</segment>
-		</unit>
-		<unit id="434">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="434">
 				<source>Keep original file</source>
 				<target>Original-Datei übernehmen</target>
-			</segment>
-		</unit>
-		<unit id="435">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="435">
 				<source>Maximum width or height</source>
 				<target>Maximale Breite oder Höhe</target>
-			</segment>
-		</unit>
-		<unit id="436">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="436">
 				<source>Used as a class in HTML elements</source>
 				<target>Als Klasse in HTML-Elementen verwendet</target>
-			</segment>
-		</unit>
-		<unit id="437">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="437">
 				<source>Block</source>
 				<target>Block</target>
-			</segment>
-		</unit>
-		<unit id="438">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="438">
 				<source>Order</source>
 				<target>Reihenfolge</target>
-			</segment>
-		</unit>
-		<unit id="439">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="439">
 				<source>Error loading theme</source>
 				<target>Fehler beim Laden des Themes</target>
-			</segment>
-		</unit>
-		<unit id="440">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="440">
 				<source>Error saving the data, please do an external backup of your changes to prevent data loss</source>
 				<target>Fehler beim Speichern der Daten, bitte führe ein externes Backup deiner Daten durch um Datenverlust zu vermeiden.</target>
-			</segment>
-		</unit>
-		<unit id="441">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="441">
 				<source>Color</source>
 				<target>Farbe</target>
-			</segment>
-		</unit>
-		<unit id="442">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="442">
 				<source>Hexadecimal color code</source>
 				<target>Hexadezimaler Farbcode</target>
-			</segment>
-		</unit>
-		<unit id="443">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="443">
 				<source>All</source>
 				<target>Alle</target>
-			</segment>
-		</unit>
-		<unit id="444">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="444">
 				<source>You left some required fields blank.</source>
 				<target>Du hast einige notwendige Felder leer gelassen.</target>
-			</segment>
-		</unit>
-		<unit id="445">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="445">
 				<source>Your contact request has been sent. We will contact you shortly.</source>
 				<target>Deine Kontaktanfrage wurde abgeschickt. Wir werden uns in Kürze mit dir in Verbindung setzen.</target>
-			</segment>
-		</unit>
-		<unit id="446">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="446">
 				<source>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</source>
 				<target>Es tut uns leid, aber deine Kontaktanfrage konnte nicht abgeschickt werden. Bitte versuche es noch einmal oder finde einen anderen Weg um mit uns Kontakt aufzunehmen</target>
-			</segment>
-		</unit>
-		<unit id="447">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="447">
 				<source>Portfolio</source>
 				<target>Portfolio</target>
-			</segment>
-		</unit>
-		<unit id="448">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="448">
 				<source>Portfolio item</source>
 				<target>Portfolio-Element</target>
-			</segment>
-		</unit>
-		<unit id="449">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="449">
 				<source>Enter your Navigate CMS username or e-mail address</source>
 				<target>Gib deinen Navigate CMS Benutzernamen oder deine E-Mail-Adresse ein</target>
-			</segment>
-		</unit>
-		<unit id="450">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="450">
 				<source>Click on the link below to change your password</source>
 				<target>Klicke auf den Link unten um dein Passwort zu ändern</target>
-			</segment>
-		</unit>
-		<unit id="451">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="451">
 				<source>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</source>
 				<target>Dies ist eine automatische E-Mail, die im Zuge einer Passwort-Anforderung versendet wurde. Wenn du diese Nachricht irrtümlicherweise bekommen hast, ignoriere sie einfach.</target>
-			</segment>
-		</unit>
-		<unit id="452">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="452">
 				<source>E-mail could not be sent; please contact the administrator</source>
 				<target>Die E-Mail konnte nicht versendet werden; Bitte kontaktiere den Administrator</target>
-			</segment>
-		</unit>
-		<unit id="453">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="453">
 				<source>Couldn't find this username or e-mail address</source>
 				<target>Der Benutzername oder die E-Mail-Adresse wurde nicht gefunden</target>
-			</segment>
-		</unit>
-		<unit id="454">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="454">
 				<source>An e-mail with a confirmation link has been sent to your e-mail account.</source>
 				<target>Eine E-Mail mit einem Bestätigungscode wurde an deine E-Mail-Adresse geschickt.</target>
-			</segment>
-		</unit>
-		<unit id="455">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="455">
 				<source>Your new password has been activated.</source>
 				<target>Dein neues Passwort ist nun aktiv</target>
-			</segment>
-		</unit>
-		<unit id="456">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="456">
 				<source>Edit in Navigate CMS</source>
 				<target>In Navigate CMS bearbeiten</target>
-			</segment>
-		</unit>
-		<unit id="457">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="457">
 				<source>Information</source>
 				<target>Information</target>
-			</segment>
-		</unit>
-		<unit id="458">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="458">
 				<source>Edit in place</source>
 				<target>Auf der Seite bearbeiten</target>
-			</segment>
-		</unit>
-		<unit id="459">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="459">
 				<source>Settings</source>
 				<target>Einstellungen</target>
-			</segment>
-		</unit>
-		<unit id="460">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="460">
 				<source>Disable</source>
 				<target>Deaktivieren</target>
-			</segment>
-		</unit>
-		<unit id="461">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="461">
 				<source>Install from file</source>
 				<target>Von einer Datei installieren</target>
-			</segment>
-		</unit>
-		<unit id="462">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="462">
 				<source>Enable</source>
 				<target>Aktivieren</target>
-			</segment>
-		</unit>
-		<unit id="463">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="463">
 				<source>Update available</source>
 				<target>Update verfügbar</target>
-			</segment>
-		</unit>
-		<unit id="464">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="464">
 				<source>Favorite</source>
 				<target>Favorit</target>
-			</segment>
-		</unit>
-		<unit id="465">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="465">
 				<source>Favorites</source>
 				<target>Favoriten</target>
-			</segment>
-		</unit>
-		<unit id="466">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="466">
 				<source>Spam</source>
 				<target>Spam</target>
-			</segment>
-		</unit>
-		<unit id="467">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="467">
 				<source>Scope</source>
 				<target>Geltungsbereich</target>
-			</segment>
-		</unit>
-		<unit id="468">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="468">
 				<source>Integer</source>
 				<target>Integer</target>
-			</segment>
-		</unit>
-		<unit id="469">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="469">
 				<source>String</source>
 				<target>String</target>
-			</segment>
-		</unit>
-		<unit id="470">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="470">
 				<source>System</source>
 				<target>System</target>
-			</segment>
-		</unit>
-		<unit id="471">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="471">
 				<source>Variant</source>
 				<target>Variante</target>
-			</segment>
-		</unit>
-		<unit id="472">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="472">
 				<source>Add</source>
 				<target>Hinzufügen</target>
-			</segment>
-		</unit>
-		<unit id="473">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="473">
 				<source>Region</source>
 				<target>Region</target>
-			</segment>
-		</unit>
-		<unit id="474">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="474">
 				<source>Server locale</source>
 				<target>Server locale</target>
-			</segment>
-		</unit>
-		<unit id="475">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="475">
 				<source>Export</source>
 				<target>Exportieren</target>
-			</segment>
-		</unit>
-		<unit id="476">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="476">
 				<source>Copy to clipboard</source>
 				<target>In die Zwischenablage kopieren</target>
-			</segment>
-		</unit>
-		<unit id="477">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="477">
 				<source>Duplicate</source>
 				<target>Duplizieren</target>
-			</segment>
-		</unit>
-		<unit id="478">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="478">
 				<source>Item duplicated successfully.</source>
 				<target>Element erfolgreich dupliziert.</target>
-			</segment>
-		</unit>
-		<unit id="479">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="479">
 				<source>Structure entry</source>
 				<target>Struktureintrag</target>
-			</segment>
-		</unit>
-		<unit id="480">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="480">
 				<source>Export sample content</source>
 				<target>Exportiere Beispiel-Inhalt</target>
-			</segment>
-		</unit>
-		<unit id="481">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="481">
 				<source>Select all</source>
 				<target>Alle auswählen</target>
-			</segment>
-		</unit>
-		<unit id="482">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="482">
 				<source>All sample files should be placed in a folder. Navigate CMS will also add files used in contents.</source>
 				<target>Alle Beispiel-Dateien sollten sich in einem Ordner befinden. Navigate CMS wird Dateien hinzufügen, die für den Inhalt verwendet werden.</target>
-			</segment>
-		</unit>
-		<unit id="483">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="483">
 				<source>Do you really want to import the default website for the selected theme?</source>
 				<target>Willst du für das ausgewählte Theme wirklich die Default-Website importieren?</target>
-			</segment>
-		</unit>
-		<unit id="484">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="484">
 				<source>Demo website</source>
 				<target>Demo-Website</target>
-			</segment>
-		</unit>
-		<unit id="485">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="485">
 				<source>Aliases</source>
 				<target>Aliase</target>
-			</segment>
-		</unit>
-		<unit id="486">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="486">
 				<source>Alias</source>
 				<target>Alias</target>
-			</segment>
-		</unit>
-		<unit id="487">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="487">
 				<source>Real URL</source>
 				<target>Echte URL</target>
-			</segment>
-		</unit>
-		<unit id="488">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="488">
 				<source>Rich textarea</source>
 				<target>Textfeld mit Formatierungsmöglichkeiten</target>
-			</segment>
-		</unit>
-		<unit id="489">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="489">
 				<source>Source code</source>
 				<target>Quellcode</target>
-			</segment>
-		</unit>
-		<unit id="490">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="490">
 				<source>ID of the file or public video URL</source>
 				<target>ID der Datei oder öffentliche URL des Videos</target>
-			</segment>
-		</unit>
-		<unit id="491">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="491">
 				<source>Class</source>
 				<target>Klasse</target>
-			</segment>
-		</unit>
-		<unit id="492">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="492">
 				<source>No matches found</source>
 				<target>Keine Übereinstimmungen gefunden</target>
-			</segment>
-		</unit>
-		<unit id="493">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="493">
 				<source>Loading more results...</source>
 				<target>Lade weitere Ergebnisse...</target>
-			</segment>
-		</unit>
-		<unit id="494">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="494">
 				<source>Searching...</source>
 				<target>Suche...</target>
-			</segment>
-		</unit>
-		<unit id="495">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="495">
 				<source>Please enter at least {number} characters</source>
 				<target>Bitte gib mindestens {number} Zeichen ein</target>
-			</segment>
-		</unit>
-		<unit id="496">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="496">
 				<source>You can only select {number} items</source>
 				<target>Du kannst nur {number} Elemente auswählen</target>
-			</segment>
-		</unit>
-		<unit id="497">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="497">
 				<source>Do you really want to erase this data?</source>
 				<target>Willst du diese Daten wirklich löschen?</target>
-			</segment>
-		</unit>
-		<unit id="498">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="498">
 				<source>Additional scripts</source>
 				<target>Zusätzliche Script</target>
-			</segment>
-		</unit>
-		<unit id="499">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="499">
 				<source>Open</source>
 				<target>Öffnen</target>
-			</segment>
-		</unit>
-		<unit id="500">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="500">
 				<source>Rename</source>
 				<target>Umbenennen</target>
-			</segment>
-		</unit>
-		<unit id="501">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="501">
 				<source>Previous</source>
 				<target>Vorheriges</target>
-			</segment>
-		</unit>
-		<unit id="502">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="502">
 				<source>Next</source>
 				<target>Nächstes</target>
-			</segment>
-		</unit>
-		<unit id="503">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="503">
 				<source>Now</source>
 				<target>Jetzt</target>
-			</segment>
-		</unit>
-		<unit id="504">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="504">
 				<source>Time</source>
 				<target>Zeit</target>
-			</segment>
-		</unit>
-		<unit id="505">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="505">
 				<source>Redirect to</source>
 				<target>Weiterleiten nach</target>
-			</segment>
-		</unit>
-		<unit id="506">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="506">
 				<source>Groups</source>
 				<target>Gruppen</target>
-			</segment>
-		</unit>
-		<unit id="507">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="507">
 				<source>Deselect all</source>
 				<target>Auswahl für alle aufheben</target>
-			</segment>
-		</unit>
-		<unit id="508">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="508">
 				<source>Collapse</source>
 				<target>Zuklappen</target>
-			</segment>
-		</unit>
-		<unit id="509">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="509">
 				<source>Expand</source>
 				<target>Aufklappen</target>
-			</segment>
-		</unit>
-		<unit id="510">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="510">
 				<source>Selected items</source>
 				<target>Ausgewählte Elemente</target>
-			</segment>
-		</unit>
-		<unit id="511">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="511">
 				<source>Available items</source>
 				<target>Verfügbare Elemente</target>
-			</segment>
-		</unit>
-		<unit id="512">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="512">
 				<source>Selected web user groups</source>
 				<target>Ausgewählte Web-Usergroups</target>
-			</segment>
-		</unit>
-		<unit id="513">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="513">
 				<source>Metatags</source>
 				<target>Metatags</target>
-			</segment>
-		</unit>
-		<unit id="514">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="514">
 				<source>Additional headers</source>
 				<target>Zusätzlicher Header</target>
-			</segment>
-		</unit>
-		<unit id="515">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="515">
 				<source>Not found paths</source>
 				<target>Wenn der Pfad nicht gefunden wird</target>
-			</segment>
-		</unit>
-		<unit id="516">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="516">
 				<source>Show a blank page</source>
 				<target>Eine leere Seite zeigen</target>
-			</segment>
-		</unit>
-		<unit id="517">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="517">
 				<source>Redirect to home page</source>
 				<target>Zur Homepage weiterleiten</target>
-			</segment>
-		</unit>
-		<unit id="518">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="518">
 				<source>Use the 404 template of a theme (if exists)</source>
 				<target>404-Template dieses Themes anzeigen (wenn es existiert)</target>
-			</segment>
-		</unit>
-		<unit id="519">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="519">
 				<source>Send a 404 HTTP error header</source>
 				<target>404 HTTP Fehler-Header senden</target>
-			</segment>
-		</unit>
-		<unit id="520">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="520">
 				<source>No website found; a default one has been created.</source>
 				<target>Keine Website gefunden; eine Default-Seite wurde erstellt.</target>
-			</segment>
-		</unit>
-		<unit id="521">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="521">
 				<source>Extra</source>
 				<target>Extra</target>
-			</segment>
-		</unit>
-		<unit id="522">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="522">
 				<source>Remove Spam</source>
 				<target>Spam löschen</target>
-			</segment>
-		</unit>
-		<unit id="523">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="523">
 				<source>This action can NOT be undone.</source>
 				<target>Diese Aktion kann NICHT rückgängig gemacht werden.</target>
-			</segment>
-		</unit>
-		<unit id="524">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="524">
 				<source>Items removed successfully</source>
 				<target>Elemente erfolgreich gelöscht</target>
-			</segment>
-		</unit>
-		<unit id="525">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="525">
 				<source>Remove comment (without confirmation)</source>
 				<target>Lösche Kommentar (ohne Bestätigung)</target>
-			</segment>
-		</unit>
-		<unit id="526">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="526">
 				<source>Translations</source>
 				<target>Übersetzungen</target>
-			</segment>
-		</unit>
-		<unit id="527">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="527">
 				<source>Marketplace</source>
 				<target>Marktplatz</target>
-			</segment>
-		</unit>
-		<unit id="528">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="528">
 				<source>Available</source>
 				<target>Verfügbar</target>
-			</segment>
-		</unit>
-		<unit id="529">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="529">
 				<source>It has not been possible to download the item from the marketplace.</source>
 				<target>Es war nicht möglich, die Artikel aus dem Markt herunterladen.</target>
-			</segment>
-		</unit>
-		<unit id="530">
-			<segment>
-				<source>You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.</source>
-				<target>Sie müssen Ihre Marketplace Armaturenbrett besuchen und laden Sie die Datei, dann verwenden Sie die <strong>Install from file </strong> Sie in der Aktionsleiste auf der rechten Seite zu finden.</target>
-			</segment>
-		</unit>
-		<unit id="531">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="530">
+				<source>You have to visit your Marketplace Dashboard and download the file, then use the <![CDATA[<strong>Install from file</strong>]]> button you'll find in the actions bar on the right.</source>
+				<target>Sie müssen Ihre Marketplace Armaturenbrett besuchen und laden Sie die Datei, dann verwenden Sie die <![CDATA[<strong>Install from file </strong>]]> Sie in der Aktionsleiste auf der rechten Seite zu finden.</target>
+			</trans-unit>
+
+			<trans-unit id="531">
 				<source>Sorry for the inconvenience.</source>
 				<target>Sorry für die Unannehmlichkeiten.</target>
-			</segment>
-		</unit>
-		<unit id="532">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="532">
 				<source>Navigate CMS Marketplace</source>
 				<target>Navigate CMS Marketplace</target>
-			</segment>
-		</unit>
-		<unit id="533">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="533">
 				<source>Find element by title</source>
 				<target>Finden Element nach Titel</target>
-			</segment>
-		</unit>
-		<unit id="534">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="534">
 				<source>You can only select elements which have their own path (no category embedded elements)</source>
 				<target>Sie können nur Elemente, die ihren eigenen Weg haben (keine Kategorie eingebettete Elemente)</target>
-			</segment>
-		</unit>
-		<unit id="535">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="535">
 				<source>Find user by name</source>
 				<target>Finden Sie den Benutzernamen</target>
-			</segment>
-		</unit>
-		<unit id="536">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="536">
 				<source>Keywords</source>
 				<target>Stichworte</target>
-			</segment>
-		</unit>
-		<unit id="537">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="537">
 				<source>Can't remove the theme because it is currently being used by another website.</source>
 				<target>Kann das Theme nicht zu entfernen, da sie derzeit von einer anderen Website verwendet.</target>
-			</segment>
-		</unit>
-		<unit id="538">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="538">
 				<source>Private comment</source>
 				<target>Privat Kommentar</target>
-			</segment>
-		</unit>
-		<unit id="539">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="539">
 				<source>Document</source>
 				<target>Dokument</target>
-			</segment>
-		</unit>
-		<unit id="540">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="540">
 				<source>Focal point</source>
 				<target>Mittelpunkt</target>
-			</segment>
-		</unit>
-		<unit id="541">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="541">
 				<source>Your email has been successfully subscribed to the newsletter.</source>
 				<target>Ihre E-Mail wurde erfolgreich mit dem Newsletter.</target>
-			</segment>
-		</unit>
-		<unit id="542">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="542">
 				<source>There was a problem subscribing your email to the newsletter.</source>
 				<target>Es gab ein Problem Ihre E-Mail abonnieren Sie den Newsletter.</target>
-			</segment>
-		</unit>
-		<unit id="543">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="543">
 				<source>Block type</source>
 				<target>Blocktyp</target>
-			</segment>
-		</unit>
-		<unit id="544">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="544">
 				<source>Block groups</source>
 				<target>Blockgruppen</target>
-			</segment>
-		</unit>
-		<unit id="545">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="545">
 				<source>Content author</source>
 				<target>Inhalt Autor</target>
-			</segment>
-		</unit>
-		<unit id="546">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="546">
 				<source>Actions</source>
 				<target>Aktionen</target>
-			</segment>
-		</unit>
-		<unit id="547">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="547">
 				<source>Multi language</source>
 				<target>Multi-Language</target>
-			</segment>
-		</unit>
-		<unit id="548">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="548">
 				<source>Method</source>
 				<target>Verfahren</target>
-			</segment>
-		</unit>
-		<unit id="549">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="549">
 				<source>Links</source>
 				<target>Links</target>
-			</segment>
-		</unit>
-		<unit id="550">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="550">
 				<source>Help text</source>
 				<target>Quickinfo</target>
-			</segment>
-		</unit>
-		<unit id="551">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="551">
 				<source>Date to display</source>
 				<target>Datum angezeigt</target>
-			</segment>
-		</unit>
-		<unit id="552">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="552">
 				<source>Exclusions</source>
 				<target>Ausschlüsse</target>
-			</segment>
-		</unit>
-		<unit id="553">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="553">
 				<source>Fragments</source>
 				<target>Fragmente</target>
-			</segment>
-		</unit>
-		<unit id="554">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="554">
 				<source>Hide</source>
 				<target>Verbergen</target>
-			</segment>
-		</unit>
-		<unit id="555">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="555">
 				<source>Item has been successfully published</source>
 				<target>Der Artikel wurde veröffentlicht</target>
-			</segment>
-		</unit>
-		<unit id="556">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="556">
 				<source>Block from group</source>
 				<target>Block Gruppe</target>
-			</segment>
-		</unit>
-		<unit id="557">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="557">
 				<source>Poll</source>
 				<target>Umfrage</target>
-			</segment>
-		</unit>
-		<unit id="558">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="558">
 				<source>Question</source>
 				<target>Frage</target>
-			</segment>
-		</unit>
-		<unit id="559">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="559">
 				<source>Answers</source>
 				<target>Antworten</target>
-			</segment>
-		</unit>
-		<unit id="560">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="560">
 				<source>Vote</source>
 				<target>Wählen</target>
-			</segment>
-		</unit>
-		<unit id="561">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="561">
 				<source>Create a new folder</source>
 				<target>Erstellen Sie einen Ordner</target>
-			</segment>
-		</unit>
-		<unit id="562">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="562">
 				<source>Results</source>
 				<target>Ergebnisse</target>
-			</segment>
-		</unit>
-		<unit id="563">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="563">
 				<source>Last seen</source>
 				<target>Letzter Besuch</target>
-			</segment>
-		</unit>
-		<unit id="564">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="564">
 				<source>%s seconds ago</source>
 				<target>vor %s sekunden</target>
-			</segment>
-		</unit>
-		<unit id="565">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="565">
 				<source>one minute ago</source>
 				<target>vor einer minute</target>
-			</segment>
-		</unit>
-		<unit id="566">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="566">
 				<source>%m minutes ago</source>
 				<target>vor %m minuten</target>
-			</segment>
-		</unit>
-		<unit id="567">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="567">
 				<source>an hour ago</source>
 				<target>vor einer stunde</target>
-			</segment>
-		</unit>
-		<unit id="568">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="568">
 				<source>%h hours ago</source>
 				<target>vor %h stunden</target>
-			</segment>
-		</unit>
-		<unit id="569">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="569">
 				<source>yesterday</source>
 				<target>gestern</target>
-			</segment>
-		</unit>
-		<unit id="570">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="570">
 				<source>%d days ago</source>
 				<target>vor %d tagen</target>
-			</segment>
-		</unit>
-		<unit id="571">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="571">
 				<source>a week ago</source>
 				<target>vor einer woche</target>
-			</segment>
-		</unit>
-		<unit id="572">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="572">
 				<source>%w weeks ago</source>
 				<target>vor %w wochen</target>
-			</segment>
-		</unit>
-		<unit id="573">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="573">
 				<source>a month ago</source>
 				<target>vor einem monat</target>
-			</segment>
-		</unit>
-		<unit id="574">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="574">
 				<source>%m months ago</source>
 				<target>vor %m monaten</target>
-			</segment>
-		</unit>
-		<unit id="575">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="575">
 				<source>one year ago</source>
 				<target>vor einem jahr</target>
-			</segment>
-		</unit>
-		<unit id="576">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="576">
 				<source>%y years ago</source>
 				<target>vor %y jahren</target>
-			</segment>
-		</unit>
-		<unit id="577">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="577">
 				<source>Latest modifications</source>
 				<target>Neueste Änderungen</target>
-			</segment>
-		</unit>
-		<unit id="578">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="578">
 				<source>Could not connect to check updates</source>
 				<target>Es konnte keine Verbindung zu Updates</target>
-			</segment>
-		</unit>
-		<unit id="579">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="579">
 				<source>Latest searches</source>
 				<target>Letzte Suchanfragen</target>
-			</segment>
-		</unit>
-		<unit id="580">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="580">
 				<source>Used in this page</source>
 				<target>Dieser Artikel wird von dieser Seite verwendet</target>
-			</segment>
-		</unit>
-		<unit id="581">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="581">
 				<source>None</source>
 				<target>Keine</target>
-			</segment>
-		</unit>
-		<unit id="582">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="582">
 				<source>default</source>
 				<target>default</target>
-			</segment>
-		</unit>
-		<unit id="583">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="583">
 				<source>Same width</source>
 				<target>gleiche Breite</target>
-			</segment>
-		</unit>
-		<unit id="584">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="584">
 				<source>Same height</source>
 				<target>gleiche Höhe</target>
-			</segment>
-		</unit>
-		<unit id="585">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="585">
 				<source>Same width &amp; height (scaled)</source>
 				<target>gleiche Breite und Höhe (Skala)</target>
-			</segment>
-		</unit>
-		<unit id="586">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="586">
 				<source>Same width &amp; height (cropped)</source>
 				<target>gleiche Breite und Höhe (geerntet)</target>
-			</segment>
-		</unit>
-		<unit id="587">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="587">
 				<source>Full available width</source>
 				<target>volle verfügbare Breite</target>
-			</segment>
-		</unit>
-		<unit id="588">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="588">
 				<source>Replace image</source>
 				<target>Bild ersetzen</target>
-			</segment>
-		</unit>
-		<unit id="589">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="589">
 				<source>North America</source>
 				<target>Nordamerika</target>
-			</segment>
-		</unit>
-		<unit id="590">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="590">
 				<source>South America</source>
 				<target>Südamerika</target>
-			</segment>
-		</unit>
-		<unit id="591">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="591">
 				<source>Oceania</source>
 				<target>Ozeanien</target>
-			</segment>
-		</unit>
-		<unit id="592">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="592">
 				<source>Company</source>
 				<target>Unternehmen</target>
-			</segment>
-		</unit>
-		<unit id="593">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="593">
 				<source>Add new child</source>
 				<target>Neuen Kind</target>
-			</segment>
-		</unit>
-		<unit id="594">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="594">
 				<source>Set as homepage</source>
 				<target>Als Startseite festlegen</target>
-			</segment>
-		</unit>
-		<unit id="595">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="595">
 				<source>Right now the homepage is set from a structure element which allows multi language redirect.</source>
 				<target>Im Augenblick ist die Homepage von einem Strukturelement, das Multi-Language-Umleitung ermöglicht gesetzt.</target>
-			</segment>
-		</unit>
-		<unit id="596">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="596">
 				<source>Do you want to enter a fixed path for the homepage?</source>
 				<target>Möchten Sie einen festen Pfad für die Homepage eingeben?</target>
-			</segment>
-		</unit>
-		<unit id="597">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="597">
 				<source>Share files in Media browser</source>
 				<target>Gemeinsame Nutzung von Dateien im Media-Browser</target>
-			</segment>
-		</unit>
-		<unit id="598">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="598">
 				<source>Only between websites of the current Navigate CMS installation</source>
 				<target>Nur zwischen den Websites der aktuellen Navigate CMS-Installation</target>
-			</segment>
-		</unit>
-		<unit id="599">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="599">
 				<source>Sorry, can't display a theme block type info.</source>
 				<target>Sorry, kann nicht ein Thema Bausteintyp Informationen angezeigt werden soll.</target>
-			</segment>
-		</unit>
-		<unit id="600">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="600">
 				<source>Share</source>
 				<target>Aktie</target>
-			</segment>
-		</unit>
-		<unit id="601">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="601">
 				<source>Import</source>
 				<target>Import</target>
-			</segment>
-		</unit>
-		<unit id="602">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="602">
 				<source>Edit language</source>
 				<target>Edit sprache</target>
-			</segment>
-		</unit>
-		<unit id="603">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="603">
 				<source>Replace URLs</source>
 				<target>Ersetzen URLs</target>
-			</segment>
-		</unit>
-		<unit id="604">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="604">
 				<source>Old</source>
 				<target>Alt</target>
-			</segment>
-		</unit>
-		<unit id="605">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="605">
 				<source>New</source>
 				<target>Neu</target>
-			</segment>
-		</unit>
-		<unit id="606">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="606">
 				<source>Double quotes not allowed, use single quotes only</source>
 				<target>Anführungszeichen nicht erlaubt, verwenden Sie nur einfache Anführungszeichen</target>
-			</segment>
-		</unit>
-		<unit id="607">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="607">
 				<source>Click on the link below to confirm your account</source>
 				<target>Klicken Sie auf den Link unten, um Ihr Konto zu bestätigen</target>
-			</segment>
-		</unit>
-		<unit id="608">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="608">
 				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
 				<target>Dies ist eine automatische E-Mail als Folge einer Petition Prozess Newsletter-Abonnement gesendet. Wenn Sie diese E-Mail irrtümlich erhalten haben, einfach ignorieren.</target>
-			</segment>
-		</unit>
-		<unit id="609">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="609">
 				<source>Click a day of the month selected to update the value</source>
 				<target>Klicken Sie auf einen Tag des Monats ausgewählt, um den Wert zu aktualisieren</target>
-			</segment>
-		</unit>
-		<unit id="610">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="610">
 				<source>Sorry, you are not allowed to execute the requested function.</source>
 				<target>Sie sind leider nicht die gewünschte Funktion ausführen darf.</target>
-			</segment>
-		</unit>
-		<unit id="611">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="611">
 				<source>Choose</source>
 				<target>Wählen</target>
-			</segment>
-		</unit>
-		<unit id="612">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="612">
 				<source>Manages all websites</source>
 				<target>Verwaltet alle Websites</target>
-			</segment>
-		</unit>
-		<unit id="613">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="613">
 				<source>Most used</source>
 				<target>Am meisten benutzt</target>
-			</segment>
-		</unit>
-		<unit id="614">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="614">
 				<source>Edit with TinyMCE</source>
 				<target>Bearbeiten Sie mit TinyMCE</target>
-			</segment>
-		</unit>
-		<unit id="615">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="615">
 				<source>Edit as source code</source>
 				<target>Bearbeiten als Quellcode</target>
-			</segment>
-		</unit>
-		<unit id="616">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="616">
 				<source>Edit with NV Composer</source>
 				<target>Bearbeiten mit NV Composer</target>
-			</segment>
-		</unit>
-		<unit id="617">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="617">
 				<source>Extension</source>
 				<target>Erweiterung</target>
-			</segment>
-		</unit>
-		<unit id="618">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="618">
 				<source>Change the status to Published to be able to see the item on the future publication date currently assigned</source>
 				<target>Ändern Sie den Status auf Veröffentlicht in der Lage sein den auf die Zukunft Veröffentlichungsdatum zu sehen aktuell zugewiesenen</target>
-			</segment>
-		</unit>
-		<unit id="619">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="619">
 				<source>Template changed, please Save now to see the changes in the next tabs</source>
 				<target>Vorlage geändert, bitte Speichern Sie nun die Änderungen in den nächsten Tabs zu sehen</target>
-			</segment>
-		</unit>
-		<unit id="620">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="620">
 				<source>Insert</source>
 				<target>Einfügen</target>
-			</segment>
-		</unit>
-		<unit id="621">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="621">
 				<source>Append</source>
 				<target>Anhängen</target>
-			</segment>
-		</unit>
-		<unit id="622">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="622">
 				<source>Date range</source>
 				<target>Datumsbereich</target>
-			</segment>
-		</unit>
-		<unit id="623">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="623">
 				<source>Begin</source>
 				<target>Beginnen</target>
-			</segment>
-		</unit>
-		<unit id="624">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="624">
 				<source>End</source>
 				<target>Ende</target>
-			</segment>
-		</unit>
-		<unit id="625">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="625">
 				<source>Empty paths</source>
 				<target>Leere Pfade</target>
-			</segment>
-		</unit>
-		<unit id="626">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="626">
 				<source>Display the home page, without changing the route</source>
 				<target>Zeigen Sie die Homepage, ohne die Route zu ändern</target>
-			</segment>
-		</unit>
-		<unit id="627">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="627">
 				<source>Remove</source>
 				<target>Entfernen</target>
-			</segment>
-		</unit>
-		<unit id="628">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="628">
 				<source>Move to the beginning</source>
 				<target>An den Anfang</target>
-			</segment>
-		</unit>
-		<unit id="629">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="629">
 				<source>Move to the end</source>
 				<target>Zum Ende</target>
-			</segment>
-		</unit>
-        <unit id="630">
-            <segment>
-                <source>Element</source>
-                <target>Element</target>
-            </segment>
-        </unit>
-        <unit id="631">
-            <segment>
-                <source>Dynamic URL</source>
-                <target>Dynamische URL</target>
-            </segment>
-        </unit>
-        <unit id="632">
-            <segment>
-                <source>Replace text</source>
-                <target>Ersetzen von Text</target>
-            </segment>
-        </unit>
-		<unit id="633">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="630">
+				<source>Element</source>
+				<target>Element</target>
+			</trans-unit>
+
+			<trans-unit id="631">
+				<source>Dynamic URL</source>
+				<target>Dynamische URL</target>
+			</trans-unit>
+
+			<trans-unit id="632">
+				<source>Replace text</source>
+				<target>Ersetzen von Text</target>
+			</trans-unit>
+
+			<trans-unit id="633">
 				<source>Word separator in paths</source>
 				<target>Wortbegrenzungszeichen in Pfade</target>
-			</segment>
-		</unit>
-		<unit id="634">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="634">
 				<source>Hyphen</source>
 				<target>Bindestrich</target>
-			</segment>
-		</unit>
-		<unit id="635">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="635">
 				<source>Underscore</source>
 				<target>Unterstrich</target>
-			</segment>
-		</unit>
-        <unit id="636">
-            <segment>
-                <source>Existing paths will not be modified</source>
-                <target>Bestehende Wege werden nicht verändert</target>
-            </segment>
-        </unit>
-		<unit id="637">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="636">
+				<source>Existing paths will not be modified</source>
+				<target>Bestehende Wege werden nicht verändert</target>
+			</trans-unit>
+
+			<trans-unit id="637">
 				<source>Website notes</source>
 				<target>Website Notizen</target>
-			</segment>
-		</unit>
-		<unit id="638">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="638">
 				<source>Disabled blocks are not compatible with the current block group type</source>
 				<target>Die gesperrten Blöcke sind nicht kompatibel mit dem aktiven Typ der Blockgruppe</target>
-			</segment>
-		</unit>
-		<unit id="639">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="639">
 				<source>Restore panel</source>
 				<target>Wiederherstellen Panel</target>
-			</segment>
-		</unit>
-		<unit id="640">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="640">
 				<source>Default arrangement</source>
 				<target>Standardanordnung</target>
-			</segment>
-		</unit>
-		<unit id="641">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="641">
 				<source>It will only be shown if the template supports it</source>
 				<target>Es wird nur dann angezeigt, wenn die Vorlage unterstützt</target>
-			</segment>
-		</unit>
-		<unit id="642">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="642">
 				<source>Redirect to a website page</source>
 				<target>Umleitung auf eine Seite, auf der Website</target>
-			</segment>
-		</unit>
-		<unit id="643">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="643">
 				<source>Dezimal</source>
 				<target>Dezimal</target>
-			</segment>
-		</unit>
-		<unit id="644">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="644">
 				<source>Thousands separator</source>
 				<target>Tausendertrennzeichen</target>
-			</segment>
-		</unit>
-		<unit id="645">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="645">
 				<source>No results found</source>
 				<target>Keine Ergebnisse</target>
-			</segment>
-		</unit>
-		<unit id="646">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="646">
 				<source>Show all unselectable blocks</source>
 				<target>Alle unselectable Blöcke</target>
-			</segment>
-		</unit>
-		<unit id="647">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="647">
 				<source>Web user</source>
 				<target>Web-Benutzer</target>
-			</segment>
-		</unit>
-		<unit id="648">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="648">
 				<source>An e-mail with a temporary password has been sent to your e-mail account.</source>
 				<target>Eine E-Mail mit einem temporären Passwort wurde an Ihr E-Mail-Konto gesendet.</target>
-			</segment>
-		</unit>
-		<unit id="649">
-			<segment>
+			</trans-unit>
+
+			<trans-unit id="649">
 				<source>In reply to</source>
 				<target>als Antwort auf</target>
 				<note>used in comments to define which is the parent comment in a hierarchy</note>
-			</segment>
-		</unit>
+			</trans-unit>
+
+		</body>
 	</file>
 </xliff>
