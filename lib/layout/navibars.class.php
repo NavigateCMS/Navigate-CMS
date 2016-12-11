@@ -44,7 +44,7 @@ class navibars
 				$actions[$search_form_pos][] = '	<input type="hidden" name="fid" value="'.$_REQUEST['fid'].'" />';
 				$actions[$search_form_pos][] = '	<input type="hidden" name="act" value="list" />';
 				$actions[$search_form_pos][] = '	<input type="hidden" name="quicksearch" value="true" />';
-				$actions[$search_form_pos][] = '	<input type="text" id="navigate-quicksearch" name="navigate-quicksearch" size="16" value="" placeholder="'.t(41, 'Search').'...">';
+				$actions[$search_form_pos][] = '	<input type="text" id="navigate-quicksearch" name="navigate-quicksearch" size="16" value="" placeholder="'.t(41, 'Search').'…">';
 				$actions[$search_form_pos][] = '</form>';
             
 				$actions[$search_form_pos] = implode("\n", $actions[$search_form_pos]);

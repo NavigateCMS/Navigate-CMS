@@ -560,7 +560,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
 				$field[] = '<label>'.$property_name.' '.$language_info.'</label>';
 				$field[] = $naviforms->textarea("property-".$property->id."-".$lang, $property->value[$lang], 4, 48, $style);
-				$field[] = '<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
+				$field[] = '<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'…"><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;
@@ -692,7 +692,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
                 $field[] = '<label>'.$property_name.'</label>';
                 $field[] = $naviforms->scriptarea("property-".$property->id, $property->value);
-	            $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
+	            $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'…"><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
@@ -719,7 +719,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                     $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                     $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
                     $field[] = $naviforms->scriptarea("property-".$property->id."-".$lang, $property->value[$lang]);
-	                $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'..."><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
+	                $field[] = '&nbsp;<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from" title="'.t(189, 'Copy from').'…"><img src="img/icons/silk/page_white_copy.png" align="absmiddle"></button>';
 	                if(!empty($property->helper))
 	                {
 		                $helper_text = $property->helper;

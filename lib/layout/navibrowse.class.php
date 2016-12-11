@@ -487,7 +487,7 @@ class navibrowse
                     height: 350,
                     width: 500,
                     modal: true,
-                    title: "'.t(221, 'Jump to').'...",
+                    title: "'.t(221, 'Jump to').'…",
                     buttons: 
                     {
                         "'.t(58, 'Cancel').'": function() 

@@ -1543,7 +1543,7 @@ function websites_form($item)
 	$layout->add_script('
 		$("#mail_test").on("click", function()
 		{
-			navigate_status("'.t(391, "Trying to send a test e-mail...").'", "loader", true);
+			navigate_status("'.t(391, "Trying to send a test e-mail…").'", "loader", true);
 			$.ajax({
 			  type: "POST",
 			  url: "?fid='.$_GET['fid'].'&act=email_test",

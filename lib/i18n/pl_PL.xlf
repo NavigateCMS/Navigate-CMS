@@ -1977,8 +1977,8 @@
 			</trans-unit>
 
 			<trans-unit id="391">
-				<source>Trying to send a test e-mail...</source>
-				<target>Próba wysłania testowego e-mail...</target>
+				<source>Trying to send a test e-mail…</source>
+				<target>Próba wysłania testowego e-mail…</target>
 			</trans-unit>
 
 			<trans-unit id="392">
@@ -2488,13 +2488,13 @@
 			</trans-unit>
 
 			<trans-unit id="493">
-				<source>Loading more results...</source>
-				<target>Loading more results...</target>
+				<source>Loading more results…</source>
+				<target>Loading more results…</target>
 			</trans-unit>
 
 			<trans-unit id="494">
-				<source>Searching...</source>
-				<target>Searching...</target>
+				<source>Searching…</source>
+				<target>Searching…</target>
 			</trans-unit>
 
 			<trans-unit id="495">

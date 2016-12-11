@@ -1645,7 +1645,7 @@ function items_form($item)
 
 					$tags_copy_select = '
 						<div style=" position: relative; margin-left: 600px; margin-top: -57px; width: 200px; height: 68px; ">
-							<a href="#" class="uibutton" title="'.t(189, "Copy from").'..."
+							<a href="#" class="uibutton" title="'.t(189, "Copy from").'…"
 							   onclick=" navigate_items_tags_copy_from_language($(this).next().val(), \''.$lang.'\'); return false; ">
 								<img src="img/icons/silk/page_white_copy.png" width="16" height="16" align="absmiddle" style=" cursor: pointer; " />
 							</a>&nbsp;'.

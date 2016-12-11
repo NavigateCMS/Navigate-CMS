@@ -953,7 +953,7 @@ class layout
         $html[] = '         </select>';
 
 		// search box
-		$html[] = '		    <div id="media_browser_search"><input type="text" value="" placeholder="'.t(41, 'Search').'..." name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
+		$html[] = '		    <div id="media_browser_search"><input type="text" value="" placeholder="'.t(41, 'Search').'…" name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
 		$html[] = 		'</div>';
 		
 		$html[] = '		<div id="navigate_media_browser_items"></div>';

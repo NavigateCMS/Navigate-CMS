@@ -1963,8 +1963,8 @@
             </trans-unit>
             
 			<trans-unit id="391">
-                <source>Trying to send a test e-mail...</source>
-                <target>Intentant enviar un correu de prova...</target>
+                <source>Trying to send a test e-mail…</source>
+                <target>Intentant enviar un correu de prova…</target>
             </trans-unit>
             
 			<trans-unit id="392">
@@ -2479,13 +2479,13 @@
             </trans-unit>
             
 			<trans-unit id="493">
-                <source>Loading more results...</source>
-                <target>Carregant més dades...</target>
+                <source>Loading more results…</source>
+                <target>Carregant més dades…</target>
             </trans-unit>
             
 			<trans-unit id="494">
-                <source>Searching...</source>
-                <target>Cercant...</target>
+                <source>Searching…</source>
+                <target>Cercant…</target>
             </trans-unit>
             
 			<trans-unit id="495">
