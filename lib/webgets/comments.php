@@ -243,11 +243,28 @@ function nvweb_comments($vars=array())
                 $comment->status = $status;
                 $comment->message = $comment_message;
 
+                $properties = array();
+
+                // check if there are comment properties values
+                if(isset($vars['field-properties-prefix']))
+                {
+                    // check every possible property
+                    $e_properties = property::elements($current['template'], 'comment');
+                    for($ep=0; $ep < count($e_properties); $ep++)
+                    {
+                        if(isset($_POST[$vars['field-properties-prefix'] . $e_properties[$ep]->id]))
+                            $properties[$e_properties[$ep]->id] = $_POST[$vars['field-properties-prefix'] . $e_properties[$ep]->id];
+                    }
+                }
+
                 // trigger the "new_comment" event through the extensions system before inserting it!
                 $extensions_messages = $events->trigger(
                     'comment',
                     'before_insert',
-                    array('comment' => $comment)
+                    array(
+                        'comment' => $comment,
+                        'properties' => $properties
+                    )
                 );
 
                 foreach($extensions_messages as $ext_name => $ext_result)
@@ -264,6 +281,8 @@ function nvweb_comments($vars=array())
                 }
 
                 $comment->insert();
+                if(!empty($properties))
+                    property::save_properties_from_array('comment', $comment->id, $current['template'], $properties);
 
                 // reload the element to retrieve the new comments
                 $element = new item();
@@ -277,7 +296,8 @@ function nvweb_comments($vars=array())
                     'comment',
                     'after_insert',
                     array(
-                        'comment' => &$comment
+                        'comment' => &$comment,
+                        'properties' => $properties
                     )
                 );
 
@@ -359,7 +379,7 @@ function nvweb_comments($vars=array())
 
 				$message = '<html><head>'.$one_click_actions.'</head><body>'.$message.'</body></html>';
 
-                foreach($website->contact_emails as $contact_address)
+                foreach ($website->contact_emails as $contact_address)
                 {
                     @nvweb_send_email(
                         $website->name . ' | ' . $webgets[$webget]['translations']['new_comment'],

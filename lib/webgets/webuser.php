@@ -280,7 +280,7 @@ function nvweb_webuser($vars=array())
             // TODO
             // pre checks: correct form, not spambot, email not empty and valid
             // get the profile data from the form
-            // more checks: password strenght & confirmation, etc.
+            // more checks: password strength & confirmation, etc.
             // save the new webuser account
             // prepare account confirmation (unless not required by webget attributes)
             //      leave the account blocked

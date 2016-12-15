@@ -80,6 +80,9 @@ class comment
 				 WHERE id = '.intval($this->id).'
                LIMIT 1 '
 			);
+
+            // remove all properties of the comment
+            property::remove_properties('comment', $this->id);
 		}
 		
 		return $DB->get_affected_rows();		
