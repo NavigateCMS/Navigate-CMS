@@ -1518,9 +1518,14 @@ function nvweb_list_isolate_conditionals($item_html)
     {
         $tag = $conditional_tags[0];
 
-        $template_end = nvweb_list_find_closing_conditional_tag($item_html, $tag['offset'] + strlen($tag['full_tag']));
+        $template_end = nvweb_list_find_closing_conditional_tag($item_html, $tag['offset']); // + strlen($tag['full_tag']));
+
         $tag['length'] = $template_end - $tag['offset'] + strlen('</nvlist_conditional>'); // remove tag characters
-        $conditional_template = substr($item_html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nvlist_conditional>') - strlen($tag['full_tag'])));
+        $conditional_template = substr(
+            $item_html,
+            ($tag['offset'] + strlen($tag['full_tag'])), // start
+            ($tag['length'] - strlen('</nvlist_conditional>') - strlen($tag['full_tag'])) // length
+        );
 
         // find inner conditionals before replacing the conditional found
         list($conditional_template, $nested_sub_conditionals_fragments) = nvweb_list_isolate_conditionals($conditional_template);
@@ -1541,47 +1546,53 @@ function nvweb_list_isolate_conditionals($item_html)
 
 function nvweb_list_find_closing_conditional_tag($html, $offset)
 {
-    $loops = 0;
     $found = false;
+    $level = 0;
+    $closing_tag_position = 0;
+    $loops = 0;
 
-    while(!$found)
+    // find next nvlist_conditional tag (opening or closing)
+    // if it is an opening tag --> level + 1
+    // if it is a closing tag --> level - 1
+    //      if level = 0, that's the closing tag we were looking for
+    //      else repeat from current offset
+
+    while(!$found && $loops < 1000)
     {
-        // find next '</nv>' occurrence from offset
+        $next_opening = stripos($html, '<nvlist_conditional ', $offset);
         $next_closing = stripos($html, '</nvlist_conditional>', $offset);
 
-        // check if there is a special '<nv>' opening tag (list, search, conditional) before the next closing found tag
-        $next_opening = stripos_array(
-            $html,
-            array(
-                '<nvlist_conditional ',
-            ),
-            $offset
-        );
-
-        if(!$next_opening)
+        if($next_opening!==false && $next_opening < $next_closing)
         {
-            $found = true;
+            // there is an opening tag before a closing tag, so there is an inner nvlist_conditional
+            // move the offset to the opening tag found
+            $offset = $next_opening + strlen('<nvlist_conditional ');
+            $level++;
         }
         else
         {
-            $found = $next_opening > $next_closing;
-
-            if(!$found)
+            // found a closing tag without an inner nvlist_conditional opening tag
+            $level--;
+            if($level > 0)
             {
                 $offset = $next_closing + strlen('</nvlist_conditional>');
-                $loops++;
+            }
+            else
+            {
+                $closing_tag_position = $next_closing;
+                $found = true;
             }
         }
 
-        if(!$found && ($offset > strlen($html) || $loops > 1000))
-            break;
+        $loops++;
     }
 
     if(!$found)
-        $next_closing = false;
+        $closing_tag_position = false;
 
-    return $next_closing;
+    return $closing_tag_position;
 }
+
 
 function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total)
 {
