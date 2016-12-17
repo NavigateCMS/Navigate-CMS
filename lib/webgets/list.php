@@ -1647,6 +1647,12 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         $condition = false;
         if(isset($tag['attributes']['property_empty']))
         {
+            // special case: for multilanguage properties check the active language
+            if($property_definition->type == 'text' && is_array($property_value))
+            {
+                $property_value = $property_value[$current['lang']];
+            }
+
             if( $tag['attributes']['property_empty']=='true' && empty($property_value) ||
                 $tag['attributes']['property_empty']=='false' && !empty($property_value)
             )
