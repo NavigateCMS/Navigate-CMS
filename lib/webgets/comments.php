@@ -201,6 +201,9 @@ function nvweb_comments($vars=array())
 				if(empty($vars['field-url']))       $vars['field-url'] = 'reply-url';
 				if(empty($vars['field-message']))   $vars['field-message'] = 'reply-message';
 
+                if(!empty($vars['element']))
+                    $element = $vars['element'];
+
 				$comment_name = @$_REQUEST[$vars['field-name']];
 				$comment_email = @$_REQUEST[$vars['field-email']];
 				$comment_url = @$_REQUEST[$vars['field-url']];
@@ -249,7 +252,7 @@ function nvweb_comments($vars=array())
                 if(isset($vars['field-properties-prefix']))
                 {
                     // check every possible property
-                    $e_properties = property::elements($current['template'], 'comment');
+                    $e_properties = property::elements($element->template, 'comment');
                     for($ep=0; $ep < count($e_properties); $ep++)
                     {
                         if(isset($_POST[$vars['field-properties-prefix'] . $e_properties[$ep]->id]))
@@ -282,13 +285,13 @@ function nvweb_comments($vars=array())
 
                 $comment->insert();
                 if(!empty($properties))
-                    property::save_properties_from_array('comment', $comment->id, $current['template'], $properties);
+                    property::save_properties_from_array('comment', $comment->id, $element->template, $properties);
 
                 // reload the element to retrieve the new comments
                 $element = new item();
                 $element->load($comment->item);
 
-                if($current['type']=='item')
+                if($current['type']=='item' && !isset($vars['element']))
                     $current['object'] = $element;
 
                 // trigger the "new_comment" event through the extensions system
@@ -329,6 +332,8 @@ function nvweb_comments($vars=array())
 
                 $hash = sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails) );
 
+                $base_url = nvweb_source_url('element', $element->id);
+
                 $message = navigate_compose_email(array(
                     array(
                         'title' => t(9, 'Content'),
@@ -354,9 +359,9 @@ function nvweb_comments($vars=array())
                         'footer' =>
                             '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid=10&act=2&tab=5&id='.$element->id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
-                            '<a style=" color: #008830" href="'.nvweb_self_url().'?nv_approve_comment&id='.$comment->id.'&hash='.$hash.'">'.t(258, "Publish").'</a>'.
+                            '<a style=" color: #008830" href="'.$base_url.'?nv_approve_comment&id='.$comment->id.'&hash='.$hash.'">'.t(258, "Publish").'</a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
-                            '<a style=" color: #FF0090" href="'.nvweb_self_url().'?nv_remove_comment&id='.$comment->id.'&hash='.$hash.'">'.t(525, "Remove comment (without confirmation)").'</a>'
+                            '<a style=" color: #FF0090" href="'.$base_url.'?nv_remove_comment&id='.$comment->id.'&hash='.$hash.'">'.t(525, "Remove comment (without confirmation)").'</a>'
                     )
                 ));
 
