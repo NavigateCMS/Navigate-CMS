@@ -312,14 +312,19 @@ class webuser_vote
 	public static function remove_object_votes($object, $object_id)
 	{
 		global $DB;
-		
+
 		if(empty($object) || empty($object_id))
 			return;
 		
 		$DB->execute('
 			DELETE FROM nv_webuser_votes
-			      WHERE object = '.protect($object).'
-				    AND object_id = '.protect($object_id)
+			      WHERE object = :object
+				    AND object_id = :object_id
+            ',
+            array(
+                ':object' => $object,
+                ':object_id' => $object_id
+            )
 		);
 							  
 		$table = array(
@@ -328,14 +333,18 @@ class webuser_vote
 			'product' => 'nv_products'
 		);
 
-		if(empty($table['object']))
+		if(empty($table[$object]))
 			return;
-		
+
 		$DB->execute('
 			UPDATE '.$table[$object].' 
 			   SET votes = 0,
 			   	   score = 0
-			 WHERE id = '.protect($object_id)
+			 WHERE id = :id
+			 LIMIT 1',
+            array(
+                ':id' => $object_id
+            )
 		);							  
 	}
 

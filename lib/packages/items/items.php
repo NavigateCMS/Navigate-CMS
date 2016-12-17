@@ -2138,8 +2138,7 @@ function items_form($item)
 				{
 				    navigate_confirmation_dialog(
 				        function()
-                        {
-                            navigate_notification("'.t(355, 'Votes reset').'");                           
+                        {                         
                             $.post("?fid=items&act=votes_reset&id='.$item->id.'", function(data)
                             {
                                 $("#navigate-panel-web-summary").addClass("ui-state-disabled");
