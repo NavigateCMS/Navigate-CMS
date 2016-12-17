@@ -599,7 +599,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 		switch($tag['attributes']['object'])
 		{
 			case 'list':
-                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset'] + strlen($tag['full_tag']));
+                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
 				$list = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
@@ -622,7 +622,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 				break;	
 
 			case 'search':
-                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset'] + strlen($tag['full_tag']));
+                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
 				$search = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 								
@@ -645,7 +645,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 				break;
 
             case 'conditional':
-                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset'] + strlen($tag['full_tag']));
+                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
                 $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
                 $conditional = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
@@ -674,6 +674,66 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 
 function nvweb_templates_find_closing_list_tag($html, $offset)
 {
+    $found = false;
+    $level = 0;
+    $closing_tag_position = 0;
+    $loops = 0;
+
+    // find next nv object="" tag (opening or closing)
+    // if it is an opening tag --> level + 1
+    // if it is a closing tag --> level - 1
+    //      if level = 0, that's the closing tag we were looking for
+    //      else repeat from current offset
+    while(!$found && $loops < 2000)
+    {
+        // check if there is a special '<nv>' opening tag (list, search, conditional) before the next closing found tag
+        $next_opening = stripos_array(
+            $html,
+            array(
+                '<nv object="list" ',
+                '<nv object="search" ',
+                '<nv object="conditional" '
+            ),
+            $offset
+        );
+
+        // find next '</nv>' occurrence from offset
+        $next_closing = stripos($html, '</nv>', $offset);
+
+        if($next_opening!==false && $next_opening < $next_closing)
+        {
+            // there is an opening tag before a closing tag, so there is an inner nvlist_conditional
+            // move the offset to the opening tag found
+            $offset = $next_opening + strlen('<nv object="');
+            $level++;
+        }
+        else
+        {
+            // found a closing tag without an inner nvlist_conditional opening tag
+            $level--;
+            if($level > 0)
+            {
+                $offset = $next_closing + strlen('</nv>');
+            }
+            else
+            {
+                $closing_tag_position = $next_closing;
+                $found = true;
+            }
+        }
+
+        $loops++;
+    }
+
+    if(!$found)
+        $closing_tag_position = false;
+
+    return $closing_tag_position;
+
+
+    /*
+
+
     // no support for nested lists
     // $template_end = strpos($html, '</nv>', $tag['offset']);
     // return $template_end;
@@ -721,6 +781,7 @@ function nvweb_templates_find_closing_list_tag($html, $offset)
         $next_closing = false;
 
     return $next_closing;
+    */
 }
 
 function nvweb_replace_tag_contents($tag_id, $content, $html)

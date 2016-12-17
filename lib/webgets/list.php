@@ -108,8 +108,8 @@ function nvweb_list($vars=array())
 
 	if(empty($vars['items']) || $vars['items']=='0')
 	{
-        $vars['items'] = 500; //2147483647; // maximum integer
-        // NOTE: having >500 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
+        $vars['items'] = 5000; //2147483647; // maximum integer
+        // NOTE: having >5000 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
     }
     else if(!is_numeric($vars['items']))
     {
@@ -1484,7 +1484,7 @@ function nvweb_list_isolate_lists($item_html)
         {
             case 'list':
             case 'search':
-                $template_end = nvweb_templates_find_closing_list_tag($item_html, $tag['offset'] + strlen($tag['full_tag']));
+                $template_end = nvweb_templates_find_closing_list_tag($item_html, $tag['offset']);
                 $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
                 $list_template = substr($item_html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
