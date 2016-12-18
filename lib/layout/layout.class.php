@@ -750,7 +750,8 @@ class layout
                 588: "'.t(588, "Replace image").'",
                 601: "'.t(601, "Import").'",
                 620: "'.t(620, "Insert").'",
-                621: "'.t(621, "Append").'"                
+                621: "'.t(621, "Append").'",
+                627: "'.t(627, "Remove").'"                                
             };
         ');
 
