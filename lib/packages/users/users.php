@@ -439,32 +439,50 @@ function users_form($item)
 
 	foreach($websites as $ws_id => $ws_name)
 	{
-		$ws_tabs .= '<div id="navigate-permissions-websites-tab-'.$ws_id.'" data-website="'.$ws_id.'">';
+        $rows = nvweb_permissions_rows($ws_id, 'user', $item->id);
 
-		$navitable = new navitable("permissions_list_website_".$ws_id);
+        $ws_tabs .= '<div id="navigate-permissions-websites-tab-'.$ws_id.'" data-website="'.$ws_id.'">';
 
-	    $navitable->setURL('?fid=permissions&act=list&website='.$ws_id.'&object=user&object_id='.$item->id);
-	    $navitable->setDataIndex('name');
-	    $navitable->disableSelect();
-		$navitable->disableStatusBar();
+        $ws_tabs .= '<div id="permissions_list_website_'.$ws_id.'">';
 
-	    $navitable->addCol('id', 'id', "100", "false", "left", false, "true");
-	    $navitable->addCol(t(159, 'Name'), 'name', "100", "false", "left");
-	    $navitable->addCol(t(467, 'Scope'), 'scope', "40", "false", "left");
-	    $navitable->addCol(t(160, 'Type'), 'type', "40", "false", "left");
-	    $navitable->addCol(t(193, 'Value'), 'value', "100", "false", "left", array('type' => 'custom'));
+        $ws_tabs .= '<table class="treeTable ui-corner-all">';
 
-	    $navitable->setLoadCallback("navigate_permissions_list_callback(this);");
+        $ws_tabs .= '
+            <thead>
+                <tr class="ui-state-default ui-th-column">
+                    <th width="25%">'.t(159, 'Name').'</th>
+                    <th width="13%">'.t(467, 'Scope').'</th>
+                    <th width="12%">'.t(160, 'Type').'</th>
+                    <th width="50%">'.t(193, 'Value').'</th>
+                </tr>
+            </thead>
+        ';
 
-	    $ws_tabs .= $navitable->generate();
+        for($r=0; $r < count($rows); $r++)
+        {
+            $ws_tabs .= '<tr id="'.$rows[$r][0].'">';
 
-		$ws_tabs .= '</div>';
+            $ws_tabs .= '    <td>'.$rows[$r][1].'</td>';
+            $ws_tabs .= '    <td>'.$rows[$r][2].'</td>';
+            $ws_tabs .= '    <td>'.$rows[$r][3].'</td>';
+            $ws_tabs .= '    <td>'.$rows[$r][4].'</td>';
 
-		$layout->add_script('
-			$("#permissions_list_website_'.$ws_id.'").data("website", '.$ws_id.');
+            $ws_tabs .= '</tr>';
+        }
+
+        $ws_tabs .= '</table>';
+
+        $ws_tabs .= '</div>';
+
+        $ws_tabs .= '</div>';
+
+        $layout->add_script('
+			$("#permissions_list_website_'.$ws_id.'").data("website", '.$ws_id.');            
 		');
 
-		$navibars->add_content(navigate_permissions_structure_selector($ws_id, $ws_name));
+        $scripts_after_load[] = 'navigate_permissions_list_callback($("#permissions_list_website_'.$ws_id.'"));';
+
+        $navibars->add_content(navigate_permissions_structure_selector($ws_id, $ws_name));
 	}
 
 	$ws_tabs.= '</div>';
@@ -481,7 +499,11 @@ function users_form($item)
 	');
 
 	$layout->add_script('
-		$.getScript("lib/packages/permissions/permissions.js?r='.$current_version->revision.'");
+		$.getScript("lib/packages/permissions/permissions.js?r='.$current_version->revision.'", function()
+		{
+		    navigate_window_resize();
+			'.implode("\n", $scripts_after_load).'
+		});
 	');
 
     return $navibars->generate();

@@ -1597,13 +1597,14 @@ function navigate_selector_upgrade(el)
     );
 
     // autoclose select2 after clearing
-    $(el).on("select2:unselecting", function (e)
-    {
-        $(this).select2("val", "");
-        $(this).val("");
-        e.preventDefault();
-        $(this).trigger("change");
-    });
+    if($(el).attr("multiple")!="multiple") {
+        $(el).on("select2:unselecting", function (e) {
+            $(this).select2("val", "");
+            $(this).val("");
+            e.preventDefault();
+            $(this).trigger("change");
+        });
+    }
 
     // force defined width
     if(width)

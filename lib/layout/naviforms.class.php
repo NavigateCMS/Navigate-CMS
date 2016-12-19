@@ -388,8 +388,8 @@ class naviforms
             $swatches_js = "null";
 
         $layout->add_script('
-            $("#'.$name.'").colorpicker({
-                altField: "#'.$name.'-selector > div",
+            $("input[name=\"'.$name.'\"]").colorpicker({
+                altField: $("input[name=\"'.$name.'\"]").next().find("> div"),
                 altOnChange: true,
                 regional: "'.$user->language.'",
                 colorFormat: ["#HEX"],
@@ -401,25 +401,25 @@ class naviforms
                 position: {
                     my: "left top",
                     at: "right+8 top",
-                    of: "#'.$name.'-selector"
+                    of: $("input[name=\"'.$name.'\"]").next()
                 },
                 okOnEnter: true,
                 revert: true,
                 swatches: '.$swatches_js.',
                 swatchesWidth: 80,
                 open: function(event, color)
-                {
+                {                
                     if($(".ui-colorpicker-dialog").position().top + $(".ui-colorpicker-dialog").height() > $(window).height())                    
                         $(".ui-colorpicker-dialog").css("top", $(window).height() - $(".ui-colorpicker-dialog").height() - 8);
-                
-                    $("#'.$name.'").data("previous", $("#'.$name.'").val());
-                    $("#'.$name.'-selector").children().css("backgroundColor", $("#'.$name.'").data("previous"));
-                    $("#'.$name.'").colorpicker("setColor", $("#'.$name.'").data("previous"));
+                                        
+                    $("input[name=\"'.$name.'\"]").data("previous", $("input[name=\"'.$name.'\"]").val());
+                    $("input[name=\"'.$name.'\"]").next().children().css("backgroundColor", $("input[name=\"'.$name.'\"]").data("previous"));
+                    $("input[name=\"'.$name.'\"]").colorpicker("setColor", $("input[name=\"'.$name.'\"]").data("previous"));
                 },
                 cancel: function(event, color)
                 {
-                    $("#'.$name.'").val($("#'.$name.'").data("previous"));
-                    $("#'.$name.'-selector").children().css("backgroundColor", $("#'.$name.'").data("previous"));
+                    $("input[name=\"'.$name.'\"]").val($("input[name=\"'.$name.'\"]").data("previous"));
+                    $("input[name=\"'.$name.'\"]").next().children().css("backgroundColor", $("input[name=\"'.$name.'\"]").data("previous"));
                 }
             });
         ');

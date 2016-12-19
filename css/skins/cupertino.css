@@ -1376,6 +1376,7 @@ table.treeTable
 	cursor: default;
 	border-top: solid 1px transparent;
 	border-bottom: solid 1px #ccc;
+	background-color: #fff;
 }
 
 .treeTable tr .ui-state-highlight
@@ -1397,6 +1398,11 @@ table.treeTable
     ms-user-select: none;
     -o-user-select: none;
     user-select: none;
+}
+
+.treeTable div[data-description] span.ui-icon
+{
+	margin-top: 4px;
 }
 
 .navitree_table_adder
