@@ -192,6 +192,7 @@ class permission
         $definitions = array();
         $definitions['system'] = json_decode(file_get_contents(NAVIGATE_PATH.'/lib/permissions/navigatecms.json'), true);
         $definitions['functions'] = json_decode(file_get_contents(NAVIGATE_PATH.'/lib/permissions/functions.json'), true);
+        $definitions['settings'] = json_decode(file_get_contents(NAVIGATE_PATH.'/lib/permissions/settings.json'), true);
 
         $definitions['extensions'] = array();
         $extensions = extension::list_installed();
@@ -233,7 +234,7 @@ class permission
     {
         global $user;
 
-        $scopes = array('system', 'functions', 'extensions');
+        $scopes = array('system', 'functions', 'settings', 'extensions');
         $definition = '';
         // force loading all permissions definitions (if not already done)
         $foo = $user->permission('');
@@ -264,7 +265,7 @@ class permission
             $ws = $website->id;
 
         // load all permission definitions: system, functions, extensions
-        $scopes = array('system', 'functions', 'extensions');
+        $scopes = array('system', 'functions', 'settings', 'extensions');
 
         if(empty($definitions))
             $definitions = permission::get_definitions();

@@ -24,6 +24,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
     $permissions_definitions = array_merge(
         $permissions_definitions['system'],
         $permissions_definitions['functions'],
+        $permissions_definitions['settings'],
         $permissions_definitions['extensions']
     );
 
@@ -41,6 +42,8 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
 
         if($permissions_definitions[$i]['scope']=='functions')
             $scope = t(240, 'Functions');
+        else if($permissions_definitions[$i]['scope']=='settings')
+            $scope = t(459, 'Settings');
         else if($permissions_definitions[$i]['scope']=='extensions')
             $scope = t(327, 'Extensions');
 
@@ -123,7 +126,9 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                 $type = t(441, 'Color');
                 $control = $naviforms->colorfield(
                     $field_name,
-                    $permissions_values[$permissions_definitions[$i]['name']]
+                    $permissions_values[$permissions_definitions[$i]['name']],
+                    array(),
+                    'navigate_permission_change_text'
                 );
                 break;
 
@@ -135,7 +140,6 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                     $permissions_values[$permissions_definitions[$i]['name']],
                     '99%',
                     'navigate_permission_change_text(this);'
-                //'onclick="this.focus();"'
                 );
                 break;
         }
@@ -265,4 +269,5 @@ function navigate_permissions_structure_selector($ws_id, $ws_name)
 
 	return $out;
 }
+
 ?>

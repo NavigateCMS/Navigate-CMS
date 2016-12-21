@@ -364,7 +364,7 @@ class naviforms
 		return $out;
 	}
 
-    public function colorfield($name, $value="#ffffff",$swatches=array())
+    public function colorfield($name, $value="#ffffff", $swatches=array(), $onchange='')
     {
         global $layout;
         global $user;
@@ -415,6 +415,10 @@ class naviforms
                     $("input[name=\"'.$name.'\"]").data("previous", $("input[name=\"'.$name.'\"]").val());
                     $("input[name=\"'.$name.'\"]").next().children().css("backgroundColor", $("input[name=\"'.$name.'\"]").data("previous"));
                     $("input[name=\"'.$name.'\"]").colorpicker("setColor", $("input[name=\"'.$name.'\"]").data("previous"));
+                },
+                select: function(event, color)
+                {
+                    '.(!empty($onchange)? $onchange.'($("input[name=\"'.$name.'\"]"))' : '').'                    
                 },
                 cancel: function(event, color)
                 {
