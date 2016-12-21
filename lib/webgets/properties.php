@@ -303,7 +303,7 @@ function nvweb_properties_render($property, $vars)
     global $session;
     global $theme;
     global $structure;
-	
+
 	$out = '';
 
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
@@ -657,7 +657,9 @@ function nvweb_properties_render($property, $vars)
 
             switch($return)
             {
+                case 'title':
                 case 'name':
+                    nvweb_menu_load_dictionary();
                     $out = $structure['dictionary'][$property->value];
                     break;
 
@@ -672,7 +674,27 @@ function nvweb_properties_render($property, $vars)
             break;
 
         case 'categories':
-            $out = $property->value;
+            $return = @$vars['return'];
+
+            $value = explode(",", $property->value);
+            $position = intval(@vars['position']) + 0;
+
+            switch($return)
+            {
+                case 'title':
+                case 'name':
+                    nvweb_menu_load_dictionary();
+                    $out = $structure['dictionary'][$value[$position]];
+                    break;
+
+                case 'url':
+                case 'link':
+                    $out = nvweb_source_url('structure', $value[$position]);
+                    break;
+
+                default:
+                    $out = $property->value;
+            }
             break;
 
         case 'country':
