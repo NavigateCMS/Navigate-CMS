@@ -11,7 +11,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.1.4');
+	define('APP_VERSION', '2.2');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -1731,6 +1731,5 @@ function navigate_install_load_language()
 	
 	return $lang;
 }
-
 //	$DB->disconnect();
 ?>
