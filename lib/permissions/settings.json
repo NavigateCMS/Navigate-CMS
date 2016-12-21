@@ -1,0 +1,26 @@
+[
+    {
+        "name": "nvweb.contact.background_color",
+        "scope": "settings",
+        "function": "nvweb.contact",
+        "description": "Define the background color used when composing automatic emails",
+        "type": "color",
+        "dvalue": "#E5F1FF"
+    },
+    {
+        "name": "nvweb.contact.text_color",
+        "scope": "settings",
+        "function": "nvweb.contact",
+        "description": "Define the text color used when composing automatic emails",
+        "type": "color",
+        "dvalue": "#595959"
+    },
+    {
+        "name": "nvweb.contact.titles_color",
+        "scope": "settings",
+        "function": "nvweb.contact",
+        "description": "Define the titles color used when composing automatic emails",
+        "type": "color",
+        "dvalue": "#595959"
+    }
+]

@@ -60,7 +60,7 @@
             
 			<trans-unit id="11" approved="yes">
                 <source>Multimedia</source>
-                <target>Multimedia</target>
+                <target>Multimèdia</target>
             </trans-unit>
             
 			<trans-unit id="12" approved="yes">
@@ -3266,6 +3266,12 @@
                 <note>used in comments to define which is the parent comment in a hierarchy</note>
             </trans-unit>
 
+            <trans-unit id="650" approved="yes">
+                <source>Receipt confirmation</source>
+                <target>Justificant de recepció</target>
+            </trans-unit>
+
         </body>
     </file>
+
 </xliff>

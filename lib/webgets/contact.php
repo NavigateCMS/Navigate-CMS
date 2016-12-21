@@ -30,7 +30,8 @@ function nvweb_contact($vars=array())
             'message' => t(380, 'Message'),
             'fields_blank' => t(444, 'You left some required fields blank.'),
             'contact_request_sent' => t(445, 'Your contact request has been sent. We will contact you shortly.'),
-            'contact_request_failed' => t(446, 'We\'re sorry. Your contact request could not be sent. Please try again or find another way to contact us.')
+            'contact_request_failed' => t(446, 'We\'re sorry. Your contact request could not be sent. Please try again or find another way to contact us.'),
+            'receipt_confirmation' => t(650, 'Receipt confirmation')
 		);
 
 		// theme translations 
@@ -42,7 +43,8 @@ function nvweb_contact($vars=array())
 			"message": "Message",
 		    "fields_blank": "You left some required fields blank.",
 		    "contact_request_sent": "Your contact request has been sent. We will contact you shortly.",
-		    "contact_request_failed": "We're sorry. Your contact request could not be sent. Please try again or find another way to contact us."
+		    "contact_request_failed": "We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.",
+		    "receipt_confirmation": "Receipt confirmation"
 
 		*/
 		if(!empty($website->theme) && method_exists($theme, 't'))
@@ -154,6 +156,25 @@ function nvweb_contact($vars=array())
 
                 if($sent)
                 {
+                    if(!empty($vars['receipt_confirmation_email']))
+                    {
+                        $confirmation_email = '';
+                        if($vars['receipt_confirmation_email'] == 'webuser')
+                            $confirmation_email = $webuser->email;
+                        else
+                            $confirmation_email = $_POST[$vars['receipt_confirmation_email']];
+
+                        if(!empty($confirmation_email))
+                        {
+                            nvweb_send_email(
+                                $subject.' ('.$webgets[$webget]['translations']['receipt_confirmation'].')',
+                                $message,
+                                $confirmation_email,
+                                $attachments
+                            );
+                        }
+                    }
+
                     $events->trigger(
                         'contact',
                         'sent',
@@ -225,9 +246,25 @@ function nvweb_contact_notify($vars, $is_error, $message)
 
 function nvweb_contact_generate($fields)
 {
+    global $website;
+    global $DB;
+
     $out = array();
 
-    $out[] = '<div style=" background: #E5F1FF; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
+    // default colors
+    $background_color = '#E5F1FF';
+    $text_color = '#595959';
+    $title_color = '#595959';
+
+    $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.contact.background_color").' AND website = '.protect($website->id), 'id DESC');
+    $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.contact.text_color").' AND website = '.protect($website->id), 'id DESC');
+    $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.contact.titles_color").' AND website = '.protect($website->id), 'id DESC');
+
+    if(!empty($background_color_db))    $background_color = str_replace('"', '', $background_color_db);
+    if(!empty($text_color_db))          $text_color = str_replace('"', '', $text_color_db);
+    if(!empty($title_color_db))         $title_color = str_replace('"', '', $title_color_db);
+
+    $out[] = '<div style=" background: '.$background_color.'; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
 
     if(is_array($fields))
     {
@@ -251,10 +288,10 @@ function nvweb_contact_generate($fields)
 		        $value = $_FILES[$field]['name'];
 
             $out[] = '<div style="margin: 25px 0px 10px 0px;">';
-            $out[] = '    <div style="color: #595959; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
+            $out[] = '    <div style="color: '.$title_color.'; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
             $out[] = '</div>';
             $out[] = '<div style=" background: #fff; border-radius: 6px; padding: 10px; margin-top: 5px; line-height: 25px; text-align: justify; ">';
-            $out[] = '    <div class="text" style="color: #595959; font-size: 16px; font-style: italic; font-family: Verdana;">'.$value.'</div>';
+            $out[] = '    <div class="text" style="color: '.$text_color.'; font-size: 16px; font-style: italic; font-family: Verdana;">'.$value.'</div>';
             $out[] = '</div>';
         }
     }
@@ -265,4 +302,5 @@ function nvweb_contact_generate($fields)
 
     return implode("\n", $out);
 }
+
 ?>

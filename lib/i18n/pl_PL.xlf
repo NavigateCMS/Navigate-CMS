@@ -3273,6 +3273,12 @@
 				<note>used in comments to define which is the parent comment in a hierarchy</note>
 			</trans-unit>
 
+			<trans-unit id="650">
+				<source>Receipt confirmation</source>
+				<target>Receipt confirmation</target>
+			</trans-unit>
+
 		</body>
 	</file>
+
 </xliff>
