@@ -20,5 +20,11 @@
     "extensions.install": "Lassen Sie Erweiterungen zu installieren",
     "extensions.marketplace": "Zugang zum Markt zulassen",
     "extensions.delete": "Lassen Sie das Löschen Erweiterungen",
-    "extensions.allowed": "Lassen Sie die ausgewählten Erweiterungen (leer bedeutet alle) läuft"
+    "extensions.allowed": "Lassen Sie die ausgewählten Erweiterungen (leer bedeutet alle) läuft",
+    "nvweb.comments.background_color": "Definieren Sie die Hintergrundfarbe, die beim Erstellen automatischer E-Mails verwendet wird",
+    "nvweb.comments.text_color": "Definieren Sie die Textfarbe, die beim Erstellen automatischer E-Mails verwendet wird",
+    "nvweb.comments.titles_color": "Definieren Sie die Titelfarbe, die beim Verfassen automatischer E-Mails verwendet wird",
+    "nvweb.contact.background_color": "Definieren Sie die Hintergrundfarbe, die beim Erstellen automatischer E-Mails verwendet wird",
+    "nvweb.contact.text_color": "Definieren Sie die Textfarbe, die beim Erstellen automatischer E-Mails verwendet wird",
+    "nvweb.contact.titles_color": "Definieren Sie die Titelfarbe, die beim Verfassen automatischer E-Mails verwendet wird"
 }

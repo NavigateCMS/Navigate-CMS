@@ -20,5 +20,11 @@
     "extensions.install": "Permetre instal·lar extensions",
     "extensions.marketplace": "Permetre accedir al mercat",
     "extensions.delete": "Permetre eliminar extensions",
-    "extensions.allowed": "Permetre executar les extensions escollides (buit indica totes)"
+    "extensions.allowed": "Permetre executar les extensions escollides (buit indica totes)",
+    "nvweb.comments.background_color": "Defineix el color de fons utilitzat al preparar emails automàticament",
+    "nvweb.comments.text_color": "Defineix el color del text utilitzat al preparar emails automàticament",
+    "nvweb.comments.titles_color": "Defineix el color dels títols utilitzats al preparar emails automàticament",
+    "nvweb.contact.background_color": "Defineix el color de fons utilitzat al preparar emails automàticament",
+    "nvweb.contact.text_color": "Defineix el color del text utilitzat al preparar emails automàticament",
+    "nvweb.contact.titles_color": "Defineix el color dels títols utilitzats al preparar emails automàticament"
 }

@@ -334,6 +334,19 @@ function nvweb_comments($vars=array())
 
                 $base_url = nvweb_source_url('element', $element->id);
 
+                // default colors
+                $background_color = '#E5F1FF';
+                $text_color = '#595959';
+                $title_color = '#595959';
+
+                $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.comments.background_color").' AND website = '.protect($website->id), 'id DESC');
+                $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.comments.text_color").' AND website = '.protect($website->id), 'id DESC');
+                $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.comments.titles_color").' AND website = '.protect($website->id), 'id DESC');
+
+                if(!empty($background_color_db))    $background_color = str_replace('"', '', $background_color_db);
+                if(!empty($text_color_db))          $text_color = str_replace('"', '', $text_color_db);
+                if(!empty($title_color_db))         $title_color = str_replace('"', '', $title_color_db);
+
                 $message = navigate_compose_email(array(
                     array(
                         'title' => t(9, 'Content'),
@@ -363,6 +376,10 @@ function nvweb_comments($vars=array())
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
                             '<a style=" color: #FF0090" href="'.$base_url.'?nv_remove_comment&id='.$comment->id.'&hash='.$hash.'">'.t(525, "Remove comment (without confirmation)").'</a>'
                     )
+                ), array(
+                    'background' => $background_color,
+                    'title-color' => $title_color,
+                    'content-color' => $text_color
                 ));
 
                 // trying to implement One-Click actions (used in Google GMail)

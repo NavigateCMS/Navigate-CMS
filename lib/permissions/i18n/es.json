@@ -20,5 +20,11 @@
     "extensions.install": "Permitir instalar extensiones",
     "extensions.marketplace": "Permitir acceso al mercado",
     "extensions.delete": "Permitir eliminar extensiones",
-    "extensions.allowed": "Permitir ejecutar las extensiones seleccionadas (vacío indica todas)"
+    "extensions.allowed": "Permitir ejecutar las extensiones seleccionadas (vacío indica todas)",
+    "nvweb.comments.background_color": "Define el color de fondo utilizado al preparar emails automáticamente",
+    "nvweb.comments.text_color": "Define el color del texto utilizado al preparar emails automáticamente",
+    "nvweb.comments.titles_color": "Define el color de los títulos utilizados al preparar emails automáticamente",
+    "nvweb.contact.background_color": "Define el color de fondo utilizado al preparar emails automáticamente",
+    "nvweb.contact.text_color": "Define el color del texto utilizado al preparar emails automáticamente",
+    "nvweb.contact.titles_color": "Define el color de los títulos utilizados al preparar emails automáticamente"
 }
