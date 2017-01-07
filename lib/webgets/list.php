@@ -771,6 +771,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	global $website;
 	global $structure;
 	global $DB;
+    global $webuser;
 
 	$out = '';
 
@@ -863,6 +864,42 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         $out = $item->id;
                     else // source = 'item'?
                         $out = $item->category;
+                    break;
+
+                case 'count':
+                    // how many elements have been assigned to this category? (and can be seen by the current webuser)
+
+                    $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
+
+                    // public access / webuser based / webuser groups based
+                    $access = 2;
+                    if(!empty($current['webuser']))
+                    {
+                        $access = 1;
+                        if(!empty($webuser->groups))
+                        {
+                            $access_groups = array();
+                            foreach($webuser->groups as $wg)
+                            {
+                                if(empty($wg))
+                                    continue;
+                                $access_groups[] = 'groups LIKE "%g'.$wg.'%"';
+                            }
+                            if(!empty($access_groups))
+                                $access_extra = ' OR (access = 3 AND ('.implode(' OR ', $access_groups).'))';
+                        }
+                    }
+
+                    $out = $DB->query_single(
+                        'COUNT(id)',
+                        'nv_items',
+                        ' category = '.protect($item->id).' AND
+                          website = '.protect($item->website).' AND
+                          permission <= '.$permission.' AND 
+                          (date_published = 0 OR date_published < '.core_time().') AND 
+                          (date_unpublish = 0 OR date_unpublish > '.core_time().') AND 
+                          (access = 0 OR access = '.$access.$access_extra.')
+                        ');
                     break;
 
 				default:

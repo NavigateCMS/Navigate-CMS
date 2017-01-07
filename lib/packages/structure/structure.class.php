@@ -306,6 +306,46 @@ class structure
 
         return $elements;
     }
+
+    public function elements_count()
+    {
+        global $DB;
+        global $webuser;
+        $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
+
+        // public access / webuser based / webuser groups based
+        $access = 2;
+        if(!empty($current['webuser']))
+        {
+            $access = 1;
+            if(!empty($webuser->groups))
+            {
+                $access_groups = array();
+                foreach($webuser->groups as $wg)
+                {
+                    if(empty($wg))
+                        continue;
+                    $access_groups[] = 'groups LIKE "%g'.$wg.'%"';
+                }
+                if(!empty($access_groups))
+                    $access_extra = ' OR (access = 3 AND ('.implode(' OR ', $access_groups).'))';
+            }
+        }
+
+        $out = $DB->query_single(
+            'COUNT(id)',
+            'nv_items',
+            ' category = '.protect($this->id).' AND
+              website = '.protect($this->website).' AND
+              permission <= '.$permission.' AND 
+              (date_published = 0 OR date_published < '.core_time().') AND 
+              (date_unpublish = 0 OR date_unpublish > '.core_time().') AND 
+              (access = 0 OR access = '.$access.$access_extra.')
+            ');
+
+
+        return $out;
+    }
 	
 	public static function loadTree($id_parent=0, $ws_id=null)
 	{
