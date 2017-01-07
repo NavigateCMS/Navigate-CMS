@@ -438,8 +438,8 @@ function nvweb_properties_render($property, $vars)
                 $target = '_self';
             }
 
-            if(strpos($link, '://')===false)
-                $link = $website->absolute_path() . $link;
+            if(strpos($link, '://')===false && strpos($link, 'mailto:')===false)
+                $link = nvweb_prepare_link($link);
 
             if($vars['link']==='false')
             {
@@ -677,7 +677,7 @@ function nvweb_properties_render($property, $vars)
             $return = @$vars['return'];
 
             $value = explode(",", $property->value);
-            $position = intval(@vars['position']) + 0;
+            $position = intval(@$vars['position']) + 0;
 
             switch($return)
             {
