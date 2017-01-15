@@ -54,8 +54,12 @@ function nvweb_list($vars=array())
         else if(!is_numeric($vars['categories']))
         {
             // if "categories" attribute has a comma, then we suppose it is a list of comma separated values
-            // if not, then maybe we want to get the categories from a specific property of the current page
-            if(strpos($vars['categories'], ',')===false)
+            // if not, then maybe we want to get the categories from a request parameter or from a specific property of the current page
+            if(strpos($vars['categories'], '$')===0)
+            {
+                $categories = explode(",", $_REQUEST[substr($vars['categories'], 1)]);
+            }
+            else if(strpos($vars['categories'], ',')===false)
             {
                 $categories = nvweb_properties(array(
                     'property'	=> 	$vars['categories']
@@ -211,7 +215,11 @@ function nvweb_list($vars=array())
 		$templates = "";
         if(!empty($vars['templates']))
         {
-	        $templates = explode(",", $vars['templates']);
+            if(strpos($vars['templates'], '$')===0)
+                $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            else
+	            $templates = explode(",", $vars['templates']);
+
 	        $templates = array_filter($templates);
 			$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
         }
@@ -389,7 +397,11 @@ function nvweb_list($vars=array())
 	            $templates = "";
 		        if(!empty($vars['templates']))
 		        {
-			        $templates = explode(",", $vars['templates']);
+                    if(strpos($vars['templates'], '$')===0)
+                        $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+                    else
+                        $templates = explode(",", $vars['templates']);
+
 			        $templates = array_filter($templates);
 					$templates = ' AND i.template IN ("'.implode('","', $templates).'")';
 		        }
@@ -533,7 +545,11 @@ function nvweb_list($vars=array())
 		$templates = "";
         if(!empty($vars['templates']))
         {
-	        $templates = explode(",", $vars['templates']);
+            if(strpos($vars['templates'], '$')===0)
+                $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            else
+                $templates = explode(",", $vars['templates']);
+
 	        $templates = array_filter($templates);
 	        if($embedded=='1')
 				$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
