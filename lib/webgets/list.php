@@ -157,6 +157,66 @@ function nvweb_list($vars=array())
             $exclude = '';
     }
 
+    // search parameter (by now ELEMENTS only!)
+    $search = '';
+    if(!empty($vars['search']))
+    {
+        // prepare and execute the search
+        $search_what = $vars['search'];
+
+        if(substr($vars['search'], 0, 1)=='$')
+            $search_what = $_REQUEST[substr($vars['search'], 1)];
+
+        $search_what = explode(' ', $search_what);
+        $search_what = array_filter($search_what);
+
+        if(empty($search_what))
+            $search_what = array();
+
+        $search = array();
+        $search[] = ' 1=1 ';
+
+        foreach ($search_what as $what)
+        {
+            if (substr($what, 0, 1) == '-')
+            {
+                $search[] = 'i.id IN (
+                                SELECT search_nwdi.node_id
+                                FROM nv_webdictionary search_nwdi
+                                WHERE search_nwdi.node_type IN ("item", "property-item") AND
+                                      search_nwdi.website = ' . protect($website->id) . ' AND
+                                      search_nwdi.text NOT LIKE ' . protect('%' . substr($what, 1) . '%') .
+                        '    ) 
+                             AND i.id IN( 
+                                SELECT search_npi.node_id
+                                 FROM   nv_properties_items search_npi 
+                                 WHERE  search_npi.element = "item" AND 
+                                        search_npi.website = ' . protect($website->id) . ' AND
+                                        search_npi.value NOT LIKE ' . protect('%' . substr($what, 1) . '%') . '
+                        )';
+            }
+            else
+            {
+                $search[] = 'i.id IN (
+                                SELECT search_nwdi.node_id
+                                FROM nv_webdictionary search_nwdi
+                                WHERE search_nwdi.node_type IN ("item", "property-item") AND
+                                      search_nwdi.website = ' . protect($website->id) . ' AND
+                                      search_nwdi.text LIKE ' . protect('%' . $what . '%') .
+                        '    )
+                             OR i.id IN( 
+                                SELECT  search_npi.node_id
+                                 FROM   nv_properties_items search_npi
+                                 WHERE  search_npi.element = "item" AND 
+                                        search_npi.website = ' . protect($website->id) . ' AND
+                                        search_npi.value LIKE ' . protect('%' . $what . '%') . '
+                            )';
+            }
+        }
+
+        $search = ' AND ( ' . implode(' AND ', $search) . ' ) ';
+    }
+
 	// retrieve entries
 
     // calculate the offset of the first element to retrieve
@@ -588,6 +648,7 @@ function nvweb_list($vars=array())
 			   AND d.node_id = i.id
 			   AND d.lang = '.protect($current['lang']).'
              '.$filters.'
+             '.$search.'
 		     '.$templates.'
 			 '.$exclude.'
 			 '.$orderby.'
