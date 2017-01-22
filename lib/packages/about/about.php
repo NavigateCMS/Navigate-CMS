@@ -312,6 +312,13 @@ function about_layout()
 	    )
     );
 
+    $navibars->add_tab_content_row(
+	    array(
+	    '<label>Polish</label>',
+        '<a href="https://github.com/stpk007" target="_blank">Stanisław Krukowski (https://github.com/stpk007)</a><br />'
+	    )
+    );
+
     return $navibars->generate();
 }
 

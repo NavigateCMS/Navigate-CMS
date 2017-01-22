@@ -1,7 +1,9 @@
 <?php
-@ini_set('magic_quotes_runtime', 0);
 error_reporting(E_ALL ^ E_NOTICE);
+@ini_set('display_errors', 1);
+@ini_set('magic_quotes_runtime', 0);
 @session_start();
+date_default_timezone_set("UTC");
 
 if(!empty($_POST['NAVIGATE_FOLDER']))
     $_SESSION['NAVIGATE_FOLDER'] = $_POST['NAVIGATE_FOLDER'];
@@ -11,7 +13,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.2');
+	define('APP_VERSION', '2.2.1');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -330,6 +332,7 @@ function navigate_install_requirements()
                 <option value="es-es_ES" <?php echo ($_SESSION['navigate_install_lang']=='es')? 'selected="selected"' : '';?>>Español</option>
                 <option value="de-de_DE" <?php echo ($_SESSION['navigate_install_lang']=='de')? 'selected="selected"' : '';?>>Deutsch</option>
                 <option value="ca-ca_ES" <?php echo ($_SESSION['navigate_install_lang']=='ca')? 'selected="selected"' : '';?>>Català</option>
+                <option value="pl-pl_PL" <?php echo ($_SESSION['navigate_install_lang']=='pl')? 'selected="selected"' : '';?>>Polski</option>
             </select>
         </div>
         <div id="tabs">
