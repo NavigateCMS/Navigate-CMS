@@ -1472,7 +1472,7 @@ function nvweb_template_processes($html)
 function nvweb_webget_load($webget_name)
 {				
 	global $website;
-	
+
 	$fname = 'nvweb_'.$webget_name;
 	if(!function_exists($fname))
 	{

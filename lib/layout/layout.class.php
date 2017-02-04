@@ -286,17 +286,21 @@ class layout
 		}
 		else
 		{
-            $javascripts = glob('cache/scripts.min.*');
+            $javascripts = glob('cache/scripts.*.min.*');
+
 			if(empty($javascripts))
-			{			
-				$tmp = '';
-				foreach($this->scripts as $jsfile)
-				{
-					$jsfile_content = file_get_contents($jsfile);	
-					$tmp .= mb_convert_encoding($jsfile_content, 'UTF-8', mb_detect_encoding($jsfile_content, 'UTF-8, ISO-8859-1', true));
-					$tmp .= "\n";
-				}
-				file_put_contents('cache/scripts.js', $tmp);
+			{
+			    if(!file_exists('cache/scripts.js') || filesize('cache/scripts.js')==0)
+                {
+                    $tmp = '';
+                    foreach ($this->scripts as $jsfile)
+                    {
+                        $jsfile_content = file_get_contents($jsfile);
+                        $tmp .= mb_convert_encoding($jsfile_content, 'UTF-8', mb_detect_encoding($jsfile_content, 'UTF-8, ISO-8859-1', true));
+                        $tmp .= "\n";
+                    }
+                    file_put_contents('cache/scripts.js', $tmp);
+                }
 
 				/*
 				if(JAVA_RUNTIME!='')
