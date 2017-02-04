@@ -76,6 +76,11 @@ function nvweb_webuser($vars=array())
                 $out = $webuser->fullname;
             break;
 
+        case 'phone':
+            if(!empty($webuser->phone))
+                $out = $webuser->phone;
+            break;
+
         case 'gender':
             if(!empty($webuser->gender))
                 $out = $webuser->gender;
@@ -271,9 +276,7 @@ function nvweb_webuser($vars=array())
                         }
                         break;
                 }
-
             }
-
             break;
 
         case 'signup':
@@ -287,7 +290,14 @@ function nvweb_webuser($vars=array())
             //      generate an activation key
             //      send confirmation email
             // if no account confirmation is required, auto login
+            break;
 
+        case 'comments':
+            // number of comments posted (and published) by the current logged in webuser
+            if(!empty($webuser->id))
+                $out = comment::webuser_comments_count($webuser->id);
+            else
+                $out = 0;
             break;
 
         case 'avatar':

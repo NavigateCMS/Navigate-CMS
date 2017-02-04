@@ -345,7 +345,27 @@ class comment
         return $out;
     }
 
-	public static function __set_state(array $obj)
+    public static function webuser_comments_count($webuser_id)
+    {
+        global $DB;
+        global $website;
+
+        $DB->query('  
+            SELECT COUNT(*) AS total 
+            FROM nv_comments 
+            WHERE website = '.protect($website->id).' 
+            AND user = '.protect($webuser_id).'
+            AND status = 0'
+        );
+
+        $out = $DB->result('total');
+        if(is_array($out))
+            $out = $out[0];
+
+        return $out;
+    }
+
+    public static function __set_state(array $obj)
 	{
 		$tmp = new comment();
 		foreach($obj as $key => $val)
