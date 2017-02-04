@@ -58,10 +58,10 @@ class block_group
             {
                 if(is_numeric($this->blocks[$b]))
                 {
-                        $this->blocks[$b] = array(
-                            "type" => "block",
-                            "id" => $this->blocks[$b]
-                        );
+                    $this->blocks[$b] = array(
+                        "type" => "block",
+                        "id" => $this->blocks[$b]
+                    );
                 }
                 else if(!empty($this->blocks[$b]))
                 {

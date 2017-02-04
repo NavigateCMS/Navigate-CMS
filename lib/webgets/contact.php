@@ -152,7 +152,11 @@ function nvweb_contact($vars=array())
                     $subject = ' | '.$theme->t($subject);
                 $subject = $website->name.$subject;
 
-                $sent = nvweb_send_email($subject, $message, $website->contact_emails, $attachments);
+                $recipients = $website->contact_emails;
+                if(!empty($vars['recipients']))
+                    $recipients = $vars['recipients'];
+
+                $sent = nvweb_send_email($subject, $message, $recipients, $attachments);
 
                 if($sent)
                 {
@@ -182,7 +186,8 @@ function nvweb_contact($vars=array())
                             'subject' => $subject,
                             'message' => $message,
                             'form' => @$vars['form'],
-                            'emails' => $website->contact_emails
+                            'emails' => $recipients,
+                            'files' => $attachments
                         )
                     );
                     $out = nvweb_contact_notify($vars, false, $webgets[$webget]['translations']['contact_request_sent']);
