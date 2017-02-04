@@ -1104,6 +1104,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					}
 					break;
 
+                case 'webuser_comments':
+                    if(!empty($item->user))
+                        $out = comment::webuser_comments_count($item->user);
+                    else
+                        $out = "";
+                    break;
+
                 case 'website':
                     if(!empty($item->url))
                     {
