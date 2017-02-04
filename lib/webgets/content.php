@@ -15,6 +15,10 @@ function nvweb_content($vars=array())
 	$out = '';	
 	switch(@$vars['mode'])
 	{
+        case 'id':
+            $out = $current['object']->id;
+            break;
+
 		case 'title':
 			if($current['type']=='structure')
 			{
