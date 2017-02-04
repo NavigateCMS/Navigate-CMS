@@ -115,6 +115,8 @@ class update
 	
 	public static function latest_available()
 	{
+	    $latest_version_endpoint = 'http://update.navigatecms.com/latest';
+
         $context = stream_context_create(array(
                 'http' => array(
                     'timeout' => 10
@@ -122,11 +124,13 @@ class update
             )
         );
 
-		$latest_update = @file_get_contents(
-            'http://update.navigatecms.com/latest',
-            0,
-            $context
-        );
+		$latest_update = @file_get_contents($latest_version_endpoint, 0, $context);
+
+        if(empty($latest_update))
+        {
+            // try with curl
+            $latest_update = @core_http_request($latest_version_endpoint);
+        }
 
 		// if update info could not be loaded set the same version installed, to avoid looking for updates if the connection cannot be established
 		if(empty($latest_update))
@@ -158,6 +162,8 @@ class update
 	
 	public static function updates_available()
 	{
+	    $updates_list_endpoint = 'http://update.navigatecms.com/from?revision=';
+
 		$latest_installed = update::latest_installed();
         $context = stream_context_create(array(
                 'http' => array(
@@ -165,11 +171,15 @@ class update
                 )
             )
         );
-		$list = file_get_contents(
-            'http://update.navigatecms.com/from?revision='.$latest_installed->revision,
-            0,
-            $context
-        );
+
+		$list = file_get_contents($updates_list_endpoint.$latest_installed->revision, 0, $context);
+
+        if(empty($list))
+        {
+            // try with curl, if available
+            $list = core_http_request($updates_list_endpoint.$latest_installed->revision);
+        }
+
 		$list = json_decode($list, true);
 		if(!$list) $list = array();
 		$list = array_values($list);
