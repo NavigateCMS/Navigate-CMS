@@ -58,6 +58,10 @@ function nvweb_list($vars=array())
             if(strpos($vars['categories'], '$')===0)
             {
                 $categories = explode(",", $_REQUEST[substr($vars['categories'], 1)]);
+
+                // if categories parameter is empty, then default to the root category
+                if(empty($categories) || empty($categories[0]))
+                    $categories = array(0);
             }
             else if(strpos($vars['categories'], ',')===false)
             {
@@ -69,10 +73,10 @@ function nvweb_list($vars=array())
             if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
             {
                 $categories = nvweb_properties(array(
-                    'mode'	    =>	'block_group_block',
-                    'property'  => $vars['categories'],
-                    'id'        =>	$vars['nvlist_parent_item']->id,
-                    'uid'       => $vars['nvlist_parent_item']->uid
+                    'mode'     => 'block_group_block',
+                    'property' => $vars['categories'],
+                    'id'       => $vars['nvlist_parent_item']->id,
+                    'uid'      => $vars['nvlist_parent_item']->uid
                 ));
             }
 
@@ -263,8 +267,7 @@ function nvweb_list($vars=array())
     $rs = NULL;
 
     // TODO: try to optimize nvlist generation to use less memory and increase the maximum number of items
-
-	if(($vars['source']=='structure' || $vars['source']=='category') && !empty($categories))
+    if(($vars['source']=='structure' || $vars['source']=='category') && !empty($categories))
 	{
         $orderby = str_replace('i.', 's.', $orderby);
 
@@ -283,6 +286,7 @@ function nvweb_list($vars=array())
 	        $templates = array_filter($templates);
 			$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
         }
+
 
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
@@ -402,7 +406,7 @@ function nvweb_list($vars=array())
 
                         if(!empty($bgba[$bgb['id']])) // get the definition for that "block group block" type
                         {
-                            $bgbo = $bgba[$bgb['id']];
+                            $bgbo = clone $bgba[$bgb['id']];
                             $bgbo->uid = $bgb['uid'];
                             $rs[] = clone $bgbo;
                         }
@@ -435,6 +439,8 @@ function nvweb_list($vars=array())
             }
             $total = count($rs);
         }
+        else    // block group block empty, just return without content
+            return "";
     }
     else if($vars['source']=='gallery')
     {
@@ -543,7 +549,7 @@ function nvweb_list($vars=array())
     {
         list($rs, $total) = nvweb_list_get_from_twitter($vars['username'], @$vars['cache'], $offset, $vars['items'], $permission, $order);
     }
-	else if(!empty($vars['source']))
+	else if(!empty($vars['source']) && !in_array($vars['source'], array('item', 'element')))
 	{
 		// CUSTOM data source
         if($vars['source']=='comment')
@@ -558,12 +564,16 @@ function nvweb_list($vars=array())
 		if(function_exists($fname))
 			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order, $vars);
     }
+    else if(!in_array($vars['source'], array('item', 'element')))
+    {
+        return ''; // ignore this list definition, return empty content
+    }
 
     $categories = array_filter($categories);
 
 	// DATA SOURCE not given or ERROR ===> items
 	if((empty($vars['source']) || !is_numeric($total)) && !empty($categories))
-	{
+    {
         /*
          * TO DO: design decision ... lists should show items from published categories which has unpublished parent?
          *
@@ -592,7 +602,6 @@ function nvweb_list($vars=array())
         // now we would have to mark the children categories also as unpublished
 
         */
-
         $filters = '';
         if(!empty($vars['filter']))
             $filters = nvweb_list_parse_filters($vars['filter'], 'items');
@@ -658,6 +667,7 @@ function nvweb_list($vars=array())
 		$DB->query($query);
 
 		$rs = $DB->result();
+
 		$total = $DB->foundRows();
 	}
 
@@ -731,11 +741,13 @@ function nvweb_list($vars=array())
         // get the nv list template
 		$item_html = $vars['template'];
 
+        // TODO: pending optimization; there is no need do the isolation of lists and conditionals for each loop
+
         // first we need to isolate the nested nv lists/searches
         unset($nested_lists_fragments);
         list($item_html, $nested_lists_fragments) = nvweb_list_isolate_lists($item_html);
 
-        // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
+        // now, parse the nvlist_conditional tags (with html source code inside (and maybe other nvlist tags))
         unset($nested_condition_fragments);
         list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html);
 
@@ -786,11 +798,14 @@ function nvweb_list($vars=array())
         // restore & process nested lists (if any)
         foreach($nested_lists_fragments as $nested_list_uid => $nested_list_vars)
         {
-            $nested_list_vars['nvlist_parent_vars'] = $vars;
-            $nested_list_vars['nvlist_parent_type'] = $vars['source'];
-            $nested_list_vars['nvlist_parent_item'] = $item;
-            $content = nvweb_list($nested_list_vars);
-            $item_html = str_replace('<!--#'.$nested_list_uid.'#-->', $content, $item_html);
+            if(strpos($item_html, '<!--#'.$nested_list_uid.'#-->')!==false)
+            {
+                $nested_list_vars['nvlist_parent_vars'] = $vars;
+                $nested_list_vars['nvlist_parent_type'] = $vars['source'];
+                $nested_list_vars['nvlist_parent_item'] = clone $item;
+                $content = nvweb_list($nested_list_vars);
+                $item_html = str_replace('<!--#' . $nested_list_uid . '#-->', $content, $item_html);
+            }
         }
 
 		$out[] = $item_html;
@@ -1602,9 +1617,11 @@ function nvweb_list_isolate_lists($item_html)
                 $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
                 $list_template = substr($item_html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
-                $nested_list_vars = array_merge($tag['attributes'], array('template' => $list_template));
                 $nested_list_uid = uniqid('nvlist-');
-                $nested_lists_fragments[$nested_list_uid] = $nested_list_vars;
+                $nested_lists_fragments[$nested_list_uid] = array_merge(
+                    $tag['attributes'],
+                    array('template' => $list_template)
+                );
 
                 $item_html = substr_replace($item_html, '<!--#'.$nested_list_uid.'#-->', $tag['offset'], $tag['length']);
                 $changed = true;
