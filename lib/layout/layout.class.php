@@ -219,6 +219,7 @@ class layout
 		else
 		{
             $stylesheets = glob('cache/*.css');
+
 			if(empty($stylesheets))
 			{
 				$tmp = '';

@@ -156,6 +156,34 @@ function nvweb_contact($vars=array())
                 if(!empty($vars['recipients']))
                     $recipients = $vars['recipients'];
 
+                $event_messages = $events->trigger(
+                    'contact',
+                    'before_sending',
+                    array(
+                        'subject' => &$subject,
+                        'message' => &$message,
+                        'vars' => &$vars,
+                        'emails' => &$recipients,
+                        'files' => &$attachments
+                    )
+                );
+
+                if(!empty($event_messages))
+                {
+                    $out = array();
+                    foreach($event_messages as $module => $result)
+                    {
+                        if(isset($result['error']) && !empty($result['error']))
+                            $out[] = $result['error'];
+                    }
+
+                    if(!empty($out))
+                    {
+                        $out = nvweb_contact_notify($vars, true, implode('<br />', $out));
+                        return $out;
+                    }
+                }
+
                 $sent = nvweb_send_email($subject, $message, $recipients, $attachments);
 
                 if($sent)

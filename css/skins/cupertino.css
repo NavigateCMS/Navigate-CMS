@@ -2710,6 +2710,11 @@ div.jGrowl div.jGrowl-closer:hover
 	height: 22px;
 }
 
+.select2-container--open
+{
+	z-index: 700000;
+}
+
 .select2-container--open .select2-dropdown
 {
 	background: #E8EDFF;
