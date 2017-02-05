@@ -863,7 +863,7 @@ class file
 
         if(file_exists($thumbnail_path_jpg))
         {
-            // ok, a file exists, but it's older than the image file? (original image file has changed)
+            // ok, a file exists, but it's older than the image file? (so the original image file has changed)
             if(filemtime($thumbnail_path_jpg) > filemtime($original))
             {
                 // the thumbnail already exists and is up to date
@@ -1001,10 +1001,19 @@ class file
             if(extension_loaded('imagick'))
             {
                 $im = new Imagick($thumbnail);
-                $image_alpha_range = $im->getImageChannelRange(Imagick::CHANNEL_ALPHA);
+                //$image_alpha_range = $im->getImageChannelRange(Imagick::CHANNEL_ALPHA);
+                //$image_alpha_extrema = $im->getImageChannelExtrema(Imagick::CHANNEL_ALPHA);
                 //$image_alpha_mean = $im->getImageChannelMean(Imagick::CHANNEL_ALPHA);
+                /*
                 $image_is_opaque = (    $image_alpha_range['minima']==0 &&
                                         $image_alpha_range['maxima']==0 );
+                */
+
+                // is the image fully opaque?
+                $image_alpha_mean = $im->getImageChannelMean(Imagick::CHANNEL_ALPHA);
+                $image_is_opaque = ( $image_alpha_mean['mean']==0 || $image_alpha_mean['mean']==1)
+                                   &&
+                                   ( $image_alpha_mean['standardDeviation']==0 );
 
                 // autorotate image based on EXIF data
                 $im_original = new Imagick($original);
