@@ -200,7 +200,7 @@ function about_layout()
 											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.2</a><br />'));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://code.google.com/a/apache-extras.org/p/phpmailer/" target="_blank">PHP Mailer v5.2.2</a><br />'));
+											'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v5.2.22</a><br />'));
 
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://qtip2.com" target="_blank">qTip2 v2.2.1</a><br />'));
