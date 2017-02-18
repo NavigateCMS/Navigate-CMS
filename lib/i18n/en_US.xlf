@@ -3259,6 +3259,11 @@
 				<target>Receipt confirmation</target>
 			</trans-unit>
 
+			<trans-unit id="651" approved="yes">
+				<source>Disable SSL peer validation</source>
+				<target>Disable SSL peer validation</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

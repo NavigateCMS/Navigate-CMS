@@ -3271,6 +3271,11 @@
                 <target>Justificant de recepció</target>
             </trans-unit>
 
+            <trans-unit id="651" approved="yes">
+                <source>Disable SSL peer validation</source>
+                <target>Desactivar la validació de parells SSL</target>
+            </trans-unit>
+
         </body>
     </file>
 

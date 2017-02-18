@@ -38,6 +38,7 @@ class website
 	public $mail_address;
 	public $mail_password;
     public $mail_security;
+    public $mail_ignore_ssl_security;
 	public $contact_emails;
 	public $favicon;
 	
@@ -107,13 +108,14 @@ class website
 		$this->metatags			    = json_decode($main->metatags, true);
 		$this->favicon			= $main->favicon;
 			
-		$this->mail_mailer		= $main->mail_mailer;
-		$this->mail_server		= $main->mail_server;
-		$this->mail_port		= $main->mail_port;
-        $this->mail_security	= $main->mail_security;
-		$this->mail_user		= $main->mail_user;
-		$this->mail_address		= $main->mail_address;
-		$this->mail_password	= $main->mail_password;	
+		$this->mail_mailer		            = $main->mail_mailer;
+		$this->mail_server		            = $main->mail_server;
+		$this->mail_port		            = $main->mail_port;
+        $this->mail_security	            = $main->mail_security;
+        $this->mail_ignore_ssl_security	    = $main->mail_ignore_ssl_security;
+		$this->mail_user		            = $main->mail_user;
+		$this->mail_address		            = $main->mail_address;
+        $this->mail_password	            = $main->mail_password;
 		
 		$this->theme			= $main->theme;
 		$this->theme_options	= json_decode($main->theme_options);
@@ -174,6 +176,7 @@ class website
 		$this->mail_server		= $_REQUEST['mail_server'];
 		$this->mail_port		= intval($_REQUEST['mail_port']);
         $this->mail_security	= intval($_REQUEST['mail_security']);
+        $this->mail_ignore_ssl_security = ($_REQUEST['mail_ignore_ssl_security']=='1'? 1 : 0);
 		$this->mail_user		= $_REQUEST['mail_user'];
 		$this->mail_address		= $_REQUEST['mail_address'];
 
@@ -409,8 +412,8 @@ class website
                 word_separator, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
                 additional_scripts, permission,
-                mail_mailer, mail_server, mail_port, mail_security, mail_user, mail_address, mail_password, contact_emails,
-                homepage, default_timezone, metatag_description, metatag_keywords, metatags,
+                mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
+                contact_emails, homepage, default_timezone, metatag_description, metatag_keywords, metatags,
                 favicon, theme, theme_options, block_types
             )
             VALUES
@@ -440,6 +443,7 @@ class website
               :mail_server,
               :mail_port,
               :mail_security,
+              :mail_ignore_ssl_security,
               :mail_user,
               :mail_address,
               :mail_password,
@@ -480,6 +484,7 @@ class website
 				":mail_server" => value_or_default($this->mail_server, ''),
 				":mail_port" => value_or_default($this->mail_port, 25),
 				":mail_security" => value_or_default($this->mail_security, 0),
+				":mail_ignore_ssl_security" => value_or_default($this->mail_ignore_ssl_security, 1),
 				":mail_user" => value_or_default($this->mail_user, ''),
 				":mail_address" => value_or_default($this->mail_address, ''),
 				":mail_password" => value_or_default($this->mail_password, ''),
@@ -573,6 +578,7 @@ class website
                     mail_server = ?,
                     mail_port = ?,
                     mail_security = ?,
+                    mail_ignore_ssl_security = ?,
                     mail_user = ?,
                     mail_address = ?,
                     mail_password = ?,
@@ -612,6 +618,7 @@ class website
                 value_or_default($this->mail_server, ""),
                 value_or_default($this->mail_port, 25),
                 value_or_default($this->mail_security, 0),
+                value_or_default($this->mail_ignore_ssl_security, 1),
                 value_or_default($this->mail_user, ""),
                 value_or_default($this->mail_address, ""),
                 value_or_default($this->mail_password, ""),

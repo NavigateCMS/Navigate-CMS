@@ -225,7 +225,8 @@ function run()
 			$website->mail_port = $_REQUEST['mail_port'];
 			$website->mail_address = $_REQUEST['mail_address'];
 			$website->mail_user = $_REQUEST['mail_user'];
-            $website->mail_security = ($_REQUEST['mail_security']=="true" || $_REQUEST['mail_security']=="1")? "1" : "0";
+            $website->mail_security = $_REQUEST['mail_security'];
+            $website->mail_ignore_ssl_security = $_REQUEST['mail_ignore_ssl_security'];
 
 			if(!empty($_REQUEST['mail_password']))
 				$website->mail_password = $_REQUEST['mail_password'];
@@ -1491,6 +1492,15 @@ function websites_form($item)
         )
     );
 
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+            $naviforms->checkbox('mail_ignore_ssl_security', ($item->mail_ignore_ssl_security=='1')),
+            '<span>'.t(651, 'Disable SSL peer validation').'</span>'
+        )
+    );
+
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(1, 'User').'</label>',
@@ -1551,10 +1561,11 @@ function websites_form($item)
 				 mail_mailer: $("input[name=\"mail_mailer[]\"]:checked").val(),
 				 mail_server: $("#mail_server").val(),
 				 mail_port: $("#mail_port").val(),
-				 mail_security: $("#mail_security").is(":checked"),
+				 mail_security: $("#mail_security").val(),
 				 mail_user: $("#mail_user").val(),
 				 mail_address: $("#mail_address").val(),
 				 mail_password: $("#mail_password").val(),
+				 mail_ignore_ssl_security: $("#mail_security_ignore_ssl").is(":checked"),
 				 send_to: $("#contact_emails").val()
 			  },
 			  success: function(data)

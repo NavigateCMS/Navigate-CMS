@@ -1200,16 +1200,20 @@ ul.tinymce_nv_link_ajax_selector
 	position: absolute;
 	left: -9999px;
 }
+
 [type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label,
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label {
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label
+{
 	position: relative;
 	padding-left: 25px;
 	cursor: pointer;
+	width: auto;
 }
 
 /* checkbox aspect */
 [type="checkbox"]:not(:checked):not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before,
-[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before {
+[type="checkbox"]:checked:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label:before
+{
 	content: '';
 	position: absolute;
 	left:0; top: 2px;
@@ -1297,6 +1301,12 @@ label:hover:before
 	margin-top: 3px;
 	display: inline-block;
 	height: auto;
+}
+
+
+[type="checkbox"]:not(.raw-checkbox):not(.ui-helper-hidden-accessible):not(.cbox) + label + span:not(.navigate-form-row-info)
+{
+	line-height: 20px;
 }
 
 

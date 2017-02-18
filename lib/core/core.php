@@ -425,7 +425,21 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         if($website->mail_security=='1')    // SSL/TLS
             $mail->SMTPSecure = "ssl";
         if($website->mail_security=='2')    // STARTTLS
+        {
             $mail->SMTPSecure = "tls";
+        }
+
+        if($website->mail_ignore_ssl_security)
+        {
+            // some servers have incorrect security settings, missing certificates, etc.
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
 
         $mail->Username   = $website->mail_user;
         $mail->Password   = $website->mail_password;

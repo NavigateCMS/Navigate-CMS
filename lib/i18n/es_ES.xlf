@@ -3259,6 +3259,11 @@
 				<target>Confirmación de entrega</target>
 			</trans-unit>
 
+			<trans-unit id="651" approved="yes">
+				<source>Disable SSL peer validation</source>
+				<target>Desactivar la validación de pares SSL</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

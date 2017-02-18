@@ -3259,6 +3259,11 @@
 				<target>Empfangsbestätigung</target>
 			</trans-unit>
 
+			<trans-unit id="651" approved="yes">
+				<source>Disable SSL peer validation</source>
+				<target>Deaktivieren der SSL-Peer-Validierung</target>
+			</trans-unit>
+
 		</body>
 	</file>
 
