@@ -197,7 +197,7 @@ function about_layout()
 											'<a href="https://github.com/ROMB/jquery-dialogextend" target="_blank">jQuery Dialog Extend plugin v2.0.4</a><br />' ));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',											
-											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.2</a><br />'));
+											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.24.2</a><br />'));
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v5.2.22</a><br />'));
