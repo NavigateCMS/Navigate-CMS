@@ -97,7 +97,7 @@ class database
 	{
 		$this->lastError = '';
 		$this->lastResult = '';
-		
+
 		switch($fetch_mode)
 		{
 			case 'array':
@@ -224,7 +224,9 @@ class database
 		try
 		{
 			if(empty($prepared))
-				$this->lastAffectedRows = $this->db->exec($sql);	
+            {
+                $this->lastAffectedRows = $this->db->exec($sql);
+            }
 			else
 			{			
 				if(is_array($prepared))

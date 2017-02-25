@@ -936,6 +936,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
         case 'categories':
             $hierarchy = structure::hierarchy(0, $website_id);
+
             $selected = explode(',', $property->value);
             if(!is_array($selected))
                 $selected = array($property->value);

@@ -161,7 +161,7 @@ function nvweb_list($vars=array())
             $exclude = '';
     }
 
-    // search parameter (by now ELEMENTS only!)
+    // search parameter (for now only ELEMENTS!)
     $search = '';
     if(!empty($vars['search']))
     {
@@ -170,6 +170,25 @@ function nvweb_list($vars=array())
 
         if(substr($vars['search'], 0, 1)=='$')
             $search_what = $_REQUEST[substr($vars['search'], 1)];
+
+        if(!empty($search_what))
+        {
+            $DB->execute('
+                INSERT INTO nv_search_log
+                  (id, website, date, webuser, origin, text, request)
+                VALUES
+                  (0, :website, :date, :webuser, :origin, :text, :request)
+              ',
+              array(
+                'website' => $website->id,
+                'date'    => time(),
+                'webuser' => value_or_default($webuser->id, 0),
+                'origin'  => (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']),
+                'text'    => $search_what,
+                'request' => json_encode(array_merge($_GET, $_POST))
+              )
+            );
+        }
 
         $search_what = explode(' ', $search_what);
         $search_what = array_filter($search_what);
@@ -1371,7 +1390,8 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
             }
             break;
 
-        case 'item':	// useful also for source="structure" (but some are nonsense: title, comments, etc)
+        case 'element': // useful also for source="structure" (but some are nonsense: title, comments, etc)
+        case 'item':
 		default:
 			switch($tag['attributes']['value'])
 			{

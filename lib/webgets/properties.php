@@ -200,8 +200,11 @@ function nvweb_properties($vars=array())
 
 			$current_properties	= $properties['structure-'.$vars['id']];
 			
-			// now we find the property requested
-			if(!is_array($current_properties)) $current_properties = array();
+			// now we try to find the property requested
+
+            if(!is_array($current_properties))
+			    $current_properties = array();
+
 			foreach($current_properties as $property)
 			{
 				if($property->id == $vars['property'] || $property->name == $vars['property'])
@@ -273,7 +276,7 @@ function nvweb_properties($vars=array())
 			}
 			else if($current['type']=='article')
 			{
-				// TO DO
+				// TODO
 			}
             else
             {
@@ -285,7 +288,9 @@ function nvweb_properties($vars=array())
             }
 
 			// now we find the property requested
-			if(!is_array($current_properties)) $current_properties = array();
+			if(!is_array($current_properties))
+			    $current_properties = array();
+
 			foreach($current_properties as $property)
             {
                 if($property->id == $vars['property'] || $property->name == $vars['property'])

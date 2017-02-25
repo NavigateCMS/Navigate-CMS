@@ -32,8 +32,9 @@ require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
 require_once(NAVIGATE_PATH.'/lib/external/idna_convert/idna_convert.class.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
-require_once(NAVIGATE_PATH.'/lib/external/firephp/FirePHP.class.php');
-require_once(NAVIGATE_PATH.'/lib/external/firephp/navigatecms_firephp.class.php');
+
+require_once(NAVIGATE_PATH.'/lib/external/firephp/FirePHP.class.php'); // To Be Removed
+require_once(NAVIGATE_PATH.'/lib/external/firephp/navigatecms_firephp.class.php'); // To Be Removed
 
 disable_magic_quotes();
 

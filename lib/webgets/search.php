@@ -23,21 +23,18 @@ function nvweb_search($vars=array())
 	if(isset($_REQUEST[$vars['request']]) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
         // LOG search request
-        $wu_id = 0;
-        if(!empty($webuser->id))
-            $wu_id = $webuser->id;
-
         $DB->execute('
             INSERT INTO nv_search_log
-              (id, website, date, webuser, origin, text)
+              (id, website, date, webuser, origin, text, request)
             VALUES
-              (0, :website, :date, :webuser, :origin, :text)
+              (0, :website, :date, :webuser, :origin, :text, :request)
         ', array(
             'website' => $website->id,
             'date' => time(),
-            'webuser' => $wu_id,
+            'webuser' => value_or_default($webuser->id, 0),
             'origin' => (empty($_SERVER['HTTP_REFERER'])? '' : $_SERVER['HTTP_REFERER']),
             'text' => $search_what,
+            'request' => json_encode(array_merge($_GET, $_POST))
         ));
 
         // prepare and execute the search

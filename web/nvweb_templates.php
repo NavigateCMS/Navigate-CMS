@@ -1435,7 +1435,7 @@ function nvweb_template_processes($html)
 
 		nvweb_after_body(
 			"html",
-			'<div id="nv_webuser_verify_email_confirmed" style=" transition: all 1s; text-align: center; width: 40%; margin: -48px 30% 0 30%; top: 50%; color: #555; position: fixed; z-index: 1000000; background: rgba(240, 255, 240, 0.7); box-shadow: 0 0 7px -2px #777;  ">
+			'<div id="nv_webuser_verify_email_confirmed" style=" transition: all 1s; text-align: center; width: 40%; padding: 12px; margin: -48px 30% 0 30%; top: 50%; color: #555; position: fixed; z-index: 1000000; background: rgba(240, 255, 240, 0.7); box-shadow: 0 0 7px -2px #777;  ">
 				<span style="vertical-align: middle; font-size: 200%; ">&#10003;</span>
 				&nbsp;&nbsp;
 				<span style="font-size: 125%; vertical-align: middle; ">'.$text.'</span>
