@@ -1203,6 +1203,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $c = new comment();
                     $c->load_from_resultset(array($item));
                     $out = $c->depth();
+                    if(isset($tag['max']) && $out > $tag['max'])
+                    {
+                        $out = $tag['max'];
+                    }
+                    if(isset($tag['min']) && $out < $tag['min'])
+                    {
+                        $out = $tag['min'];
+                    }
                     break;
 
                 case 'property':
