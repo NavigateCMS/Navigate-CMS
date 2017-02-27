@@ -397,7 +397,6 @@ function nvweb_list($vars=array())
                             if(!empty($bgbo->categories))
                             {
                                 $bgbo_cat_found = false;
-
                                 foreach($categories as $list_cat)
                                 {
                                     if(in_array($list_cat, $bgbo->categories))
@@ -409,13 +408,35 @@ function nvweb_list($vars=array())
 
                             if(!empty($bgbo->exclusions))
                             {
+                                $bgbo_cat_found = false;
                                 foreach($categories as $list_cat)
                                 {
                                     if(in_array($list_cat, $bgbo->exclusions))
-                                        continue; // skip this block
+                                        $bgbo_cat_found = true;
                                 }
+
+                                if($bgbo_cat_found) // block excluded categories match the current list categories, skip this block
+                                    continue;
                             }
 
+                            // inclusion/exclusion by specific elements
+                            if(!empty($bgbo->elements))
+                            {
+                                if($current['type']=='item')
+                                {
+                                    if(isset($bgbo->elements['exclusions']) && in_array($current['id'], $bgbo->elements['exclusions']))
+                                    {
+                                        // do not include this block in this element's page!
+                                        continue;
+                                    }
+
+                                    if(isset($bgbo->elements['selection']) && !in_array($current['id'], $bgbo->elements['selection']))
+                                    {
+                                        // block not associated with the current item, ignore!
+                                        continue;
+                                    }
+                                }
+                            }
                             $rs[] = $bgbo;
                         }
                         break;
