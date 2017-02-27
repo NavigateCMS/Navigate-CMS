@@ -527,6 +527,9 @@ function comments_form($item)
         $naviforms->selectfield('comment-reply_to', $item->reply_to, array($reply_to_comment), $item->reply_to, null, false, null, null, false)
     ));
 
+    if(empty($item->date_created))
+        $item->date_created = time();
+
     $layout->add_script('
         $("#comment-reply_to").select2(                                                         
         {
@@ -540,7 +543,7 @@ function comments_form($item)
                 {
                     return {
                         search: params.term,
-                        node_id: $("#comment-item").val(),
+                        node_id: $("#comment-item").val(), 
                         maxdate: '.($item->date_created + 0).',
                         exclude: '.($item->id + 0).',
                         nd: new Date().getTime(),
