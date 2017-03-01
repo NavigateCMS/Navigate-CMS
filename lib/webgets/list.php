@@ -2092,6 +2092,17 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
         $access = 0;
         switch($tag['attributes']['access'])
         {
+            case 'navigate_user':
+                if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+                {
+                    $access = 0; // everybody
+                }
+                else
+                {
+                    $access = -1; // nobody!
+                }
+                break;
+
             case 3:
             case 'webuser_groups':
                 $access = 3;

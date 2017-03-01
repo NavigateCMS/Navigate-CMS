@@ -321,8 +321,20 @@ function nvweb_conditional($vars=array())
 
         case 'access':
             $access = 0;
+
             switch($vars['access'])
             {
+                case 'navigate_user':
+                    if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+                    {
+                        $access = 0; // everybody
+                    }
+                    else
+                    {
+                        $access = -1; // nobody!
+                    }
+                    break;
+
                 case 3:
                 case 'webuser_groups':
                     $access = 3;
