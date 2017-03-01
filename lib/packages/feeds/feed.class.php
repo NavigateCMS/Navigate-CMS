@@ -234,24 +234,23 @@ class feed
 	
 		if(!$permission)
             return;
-	
-		$feed = new UniversalFeedCreator(); 
+
+        $feed = new UniversalFeedCreator();
 		
 		$feed->encoding = 'UTF-8';
-		
 		$feed->title = $item->dictionary[$current['lang']]['title'];
 		$feed->description = $item->dictionary[$current['lang']]['description'];
-		
 		$feed->link = $website->absolute_path();
 		$feed->syndicationURL = $website->absolute_path().$item->paths[$current['lang']];
-	
+
 		if(!empty($item->image))
 		{
 			$image = new FeedImage(); 
 			$image->url = $website->absolute_path().'/object?type=image&amp;id='.$item->image;
 			$image->link = $website->absolute_path(); 
-			//$image->description = $vars['dictionary_description']; 
-			$feed->image = $image; 
+			//$image->description = $feed->title;
+			$image->title = $feed->title;
+			$feed->image = $image;
 		}
 	
 		if(!empty($item->categories[0]))
@@ -294,7 +293,7 @@ class feed
 		
 					$fitem = new FeedItem(); 
 					$fitem->title = $texts[$current['lang']]['title'];
-					$fitem->link = $website->absolute_path().$paths[$current['lang']];
+					$fitem->link = $website->absolute_path().rawurlencode($paths[$current['lang']]);
 					
 					switch($item->content)
 					{
@@ -303,8 +302,11 @@ class feed
 							break;
 
 						case 'content':
-							$fitem->description = $texts[$current['lang']]['section-main'];
-							break;				
+							$html = $texts[$current['lang']]['section-main'];
+                            $html = nvweb_template_tweaks($html);
+                            $html = nvweb_template_convert_nv_paths($html);
+                            $fitem->description = $html;
+							break;
 													
 						case 'summary':
 						default:
@@ -387,8 +389,8 @@ class feed
 		if($item->format=="RSS2.0")
 		{
 			// add extra tweaks to improve the feed
+			$xml = str_replace('<rss ', '<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" ', $xml);
 
-			$xml = str_replace('<rss ', '<rss xmlns:webfeeds="http://webfeeds.org/rss/1.0" ', $xml);
 			// also available:
 			// <webfeeds:cover image="http://yoursite.com/a-large-cover-image.png" />\n
 			// <webfeeds:accentColor>00FF00</webfeeds:accentColor>

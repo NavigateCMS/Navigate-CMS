@@ -486,6 +486,14 @@ function nvweb_route_parse($route="")
                                            WHERE id = '.$current['id'].'
                                              AND website = '.$website->id);
                     }
+
+                    if(strpos('<rss')!==false)
+                        header('Content-Type: application/rss+xml');
+                    else if(strpos('<atom')!==false)
+                        header('Content-Type: application/atom+xml');
+                    else if(strpos('<xml')!==false)
+                        header('Content-Type: application/xml');
+
 					echo $out;
 					nvweb_clean_exit();
 				}
