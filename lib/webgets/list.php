@@ -171,7 +171,7 @@ function nvweb_list($vars=array())
         if(substr($vars['search'], 0, 1)=='$')
             $search_what = $_REQUEST[substr($vars['search'], 1)];
 
-        if(!empty($search_what))
+        if(!empty($search_what) && !isset($_SESSION['APP_USER#'.APP_UNIQUE]))
         {
             $DB->execute('
                 INSERT INTO nv_search_log
@@ -203,36 +203,40 @@ function nvweb_list($vars=array())
         {
             if (substr($what, 0, 1) == '-')
             {
-                $search[] = 'i.id IN (
-                                SELECT search_nwdi.node_id
-                                FROM nv_webdictionary search_nwdi
-                                WHERE search_nwdi.node_type IN ("item", "property-item") AND
-                                      search_nwdi.website = ' . protect($website->id) . ' AND
-                                      search_nwdi.text NOT LIKE ' . protect('%' . substr($what, 1) . '%') .
-                        '    ) 
-                             AND i.id IN( 
-                                SELECT search_npi.node_id
-                                 FROM   nv_properties_items search_npi 
-                                 WHERE  search_npi.element = "item" AND 
-                                        search_npi.website = ' . protect($website->id) . ' AND
-                                        search_npi.value NOT LIKE ' . protect('%' . substr($what, 1) . '%') . '
-                        )';
+                $search[] = '(
+                                i.id NOT IN (
+                                    SELECT search_nwdi.node_id
+                                    FROM nv_webdictionary search_nwdi
+                                    WHERE search_nwdi.node_type IN ("item", "property-item") AND
+                                          search_nwdi.website = ' . protect($website->id) . ' AND
+                                          search_nwdi.text LIKE ' . protect('%' . substr($what, 1) . '%') .
+                            '    ) 
+                                 AND i.id NOT IN( 
+                                    SELECT search_npi.node_id
+                                     FROM   nv_properties_items search_npi 
+                                     WHERE  search_npi.element = "item" AND 
+                                            search_npi.website = ' . protect($website->id) . ' AND
+                                            search_npi.value LIKE ' . protect('%' . substr($what, 1) . '%') . '
+                                 )
+                            )';
             }
             else
             {
-                $search[] = 'i.id IN (
-                                SELECT search_nwdi.node_id
-                                FROM nv_webdictionary search_nwdi
-                                WHERE search_nwdi.node_type IN ("item", "property-item") AND
-                                      search_nwdi.website = ' . protect($website->id) . ' AND
-                                      search_nwdi.text LIKE ' . protect('%' . $what . '%') .
-                        '    )
-                             OR i.id IN( 
-                                SELECT  search_npi.node_id
-                                 FROM   nv_properties_items search_npi
-                                 WHERE  search_npi.element = "item" AND 
-                                        search_npi.website = ' . protect($website->id) . ' AND
-                                        search_npi.value LIKE ' . protect('%' . $what . '%') . '
+                $search[] = '(
+                                i.id IN (
+                                    SELECT search_nwdi.node_id
+                                    FROM nv_webdictionary search_nwdi
+                                    WHERE search_nwdi.node_type IN ("item", "property-item") AND
+                                          search_nwdi.website = ' . protect($website->id) . ' AND
+                                          search_nwdi.text LIKE ' . protect('%' . $what . '%') .
+                            '    )
+                                 OR i.id IN( 
+                                    SELECT  search_npi.node_id
+                                     FROM   nv_properties_items search_npi
+                                     WHERE  search_npi.element = "item" AND 
+                                            search_npi.website = ' . protect($website->id) . ' AND
+                                            search_npi.value LIKE ' . protect('%' . $what . '%') . '
+                                )
                             )';
             }
         }

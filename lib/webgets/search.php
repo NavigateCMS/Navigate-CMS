@@ -22,20 +22,23 @@ function nvweb_search($vars=array())
 
 	if(isset($_REQUEST[$vars['request']]) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
-        // LOG search request
-        $DB->execute('
-            INSERT INTO nv_search_log
-              (id, website, date, webuser, origin, text, request)
-            VALUES
-              (0, :website, :date, :webuser, :origin, :text, :request)
-        ', array(
-            'website' => $website->id,
-            'date' => time(),
-            'webuser' => value_or_default($webuser->id, 0),
-            'origin' => (empty($_SERVER['HTTP_REFERER'])? '' : $_SERVER['HTTP_REFERER']),
-            'text' => $search_what,
-            'request' => json_encode(array_merge($_GET, $_POST))
-        ));
+        if(!isset($_SESSION['APP_USER#'.APP_UNIQUE])) // ignore searches requested by a navigate cms
+        {
+            // LOG search request
+            $DB->execute('
+                INSERT INTO nv_search_log
+                  (id, website, date, webuser, origin, text, request)
+                VALUES
+                  (0, :website, :date, :webuser, :origin, :text, :request)
+            ', array(
+                'website' => $website->id,
+                'date'    => time(),
+                'webuser' => value_or_default($webuser->id, 0),
+                'origin'  => (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']),
+                'text'    => $search_what,
+                'request' => json_encode(array_merge($_GET, $_POST))
+            ));
+        }
 
         // prepare and execute the search
 		$search_what = explode(' ', $search_what);
@@ -52,12 +55,12 @@ function nvweb_search($vars=array())
             if(substr($what, 0, 1)=='-')
             {
                 $likes[] = 'd.text NOT LIKE '.protect('%'.substr($what, 1).'%').
-                            '    AND i.id IN( 
+                            '    AND i.id NOT IN( 
                                             SELECT p.node_id
                                              FROM   nv_properties_items p 
                                              WHERE  p.element = "item" AND 
                                                     p.website = '.protect($website->id).' AND
-                                                    p.value NOT LIKE '.protect('%'.substr($what, 1).'%').'
+                                                    p.value LIKE '.protect('%'.substr($what, 1).'%').'
                                         )';
             }
             else
