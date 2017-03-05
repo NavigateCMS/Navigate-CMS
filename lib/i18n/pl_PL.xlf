@@ -3279,6 +3279,11 @@
                 <target>Zlikwidowano subskrypcji</target>
             </trans-unit>
 
+            <trans-unit id="655">
+                <source>Subscribe to comments on this entry</source>
+                <target>Zapisz się do komentarzy do tego wpisu</target>
+            </trans-unit>
+
         </body>
     </file>
 

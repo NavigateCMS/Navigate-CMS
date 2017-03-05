@@ -40,7 +40,8 @@ function nvweb_comments($vars=array())
             'please_dont_leave_any_field_blank' => t(385, 'Please don\'t leave any field blank'),
             'your_comment_has_been_received_and_will_be_published_shortly' => t(386, 'Your comment has been received and will be published shortly'),
             'new_comment' => t(387, 'New comment'),
-            'review_comments' => t(388, 'Review comments')
+            'review_comments' => t(388, 'Review comments'),
+            'comments_subscription' => t(655, "Subscribe to comments on this entry")
 		);
 
 		// theme translations
@@ -59,7 +60,8 @@ function nvweb_comments($vars=array())
 			"please_dont_leave_any_field_blank": "Please don't leave any field blank",
 			"your_comment_has_been_received_and_will_be_published_shortly": "Your comment has been received and will be published shortly",
 			"new_comment": "New comment",
-			"review_comments": "Review comments"
+			"review_comments": "Review comments",
+		    "comments_subscription": "Subscribe to comments on this entry"
 		*/
 
 		if(!empty($website->theme) && method_exists($theme, 't'))
@@ -200,6 +202,8 @@ function nvweb_comments($vars=array())
 				if(empty($vars['field-email']))     $vars['field-email'] = 'reply-email';
 				if(empty($vars['field-url']))       $vars['field-url'] = 'reply-url';
 				if(empty($vars['field-message']))   $vars['field-message'] = 'reply-message';
+				if(empty($vars['field-subscribe'])) $vars['field-subscribe'] = 'reply-subscribe';
+				if(empty($vars['field-reply_to']))  $vars['field-reply_to'] = 'reply-to-comment';
 
                 if(!empty($vars['element']))
                     $element = $vars['element'];
@@ -208,7 +212,8 @@ function nvweb_comments($vars=array())
 				$comment_email = @$_REQUEST[$vars['field-email']];
 				$comment_url = @$_REQUEST[$vars['field-url']];
 				$comment_message = @$_REQUEST[$vars['field-message']];
-                $comment_subscribe = (@$_REQUEST[$vars['field-subscribe']]=='1')? 1 : 0;
+                $comment_subscribe = (@in_array($_REQUEST[$vars['field-subscribe']], array('1', true, 'true')))? 1 : 0;
+                $comment_reply_to = @$_REQUEST[$vars['field-reply_to']];
 
 				if( ( (empty($comment_name)  ||  empty($comment_email)) && empty($webuser->id) )
                     ||
@@ -246,6 +251,7 @@ function nvweb_comments($vars=array())
                 $comment->date_modified = 0;
                 $comment->status = $status;
                 $comment->subscribed = value_or_default($comment_subscribe, 0);
+                $comment->reply_to = value_or_default($comment_reply_to, 0);
                 $comment->message = $comment_message;
 
                 $properties = array();
@@ -426,9 +432,11 @@ function nvweb_comments($vars=array())
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
+							<input type="hidden" name="reply-to-comment" value="0" />
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['name'].'</label> <input type="text" name="reply-name" value="" /></div>
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['email'].' *</label> <input type="text" name="reply-email" value="" /></div>
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
+							<div class="comments-reply-field"><label><input type="checkbox" name="reply-subscribe" value="1" /> '.$webgets[$webget]['translations']['comments_subscription'].'</label></div>
 							<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->
 							<div class="comments-reply-field comments-reply-field-info-email"><label>&nbsp;</label> * '.$webgets[$webget]['translations']['email_will_not_be_published'].'</div>
 							<div class="comments-reply-field comments-reply-field-submit"><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
@@ -478,9 +486,11 @@ function nvweb_comments($vars=array())
 						<br />
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
+							<input type="hidden" name="reply-to-comment" value="0" />
 							<div class="comments-reply-field"><label style="display: none;">&nbsp;</label> <img src="'.$avatar_url.'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
 							<br />
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
+							<div class="comments-reply-field"><label><input type="checkbox" name="reply-subscribe" value="1" /> '.$webgets[$webget]['translations']['comments_subscription'].'</label></div>
 							<!-- {{navigate-comments-reply-extra-fields-placeholder}} -->
 							<div class="comments-reply-field-submit"><input class="comments-reply-submit" type="submit" value="'.$webgets[$webget]['translations']['submit'].'" /></div>
 						</form>

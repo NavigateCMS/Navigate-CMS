@@ -372,6 +372,20 @@ class comment
         global $DB;
         global $lang;
 
+        // default colors
+        $background_color = '#E5F1FF';
+        $text_color = '#595959';
+        $title_color = '#595959';
+
+        $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.comments.background_color").' AND website = '.protect($this->website), 'id DESC');
+        $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.comments.text_color").' AND website = '.protect($this->website), 'id DESC');
+        $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = '.protect("nvweb.comments.titles_color").' AND website = '.protect($this->website), 'id DESC');
+
+        if(!empty($background_color_db))    $background_color = str_replace('"', '', $background_color_db);
+        if(!empty($text_color_db))          $text_color = str_replace('"', '', $text_color_db);
+        if(!empty($title_color_db))         $title_color = str_replace('"', '', $title_color_db);
+
+
         if($this->pending_revision && $this->status == 0)
         {
             $website = new website();
@@ -447,6 +461,11 @@ class comment
                                         $ulang->t(653, 'Unsubscribe from comments notifications related to this content') .
                                         '</a>'
                                 )
+                            ),
+                            array(
+                                'background' => $background_color,
+                                'title-color' => $title_color,
+                                'content-color' => $text_color
                             )
                         );
                         navigate_send_email($subject, $body, array($swu->email), array(), true);
@@ -484,6 +503,11 @@ class comment
                                         $ulang->t(653, 'Unsubscribe from comments notifications related to this content') .
                                         '</a>'
                                 )
+                            ),
+                            array(
+                                'background' => $background_color,
+                                'title-color' => $title_color,
+                                'content-color' => $text_color
                             )
                         );
                         navigate_send_email($subject, $body, array($subscriber->email), array(), true);

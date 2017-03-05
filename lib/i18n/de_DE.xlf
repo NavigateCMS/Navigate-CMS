@@ -3279,6 +3279,11 @@
 				<target>Abgebrochenes Abonnement</target>
 			</trans-unit>
 
+			<trans-unit id="655">
+				<source>Subscribe to comments on this entry</source>
+				<target>Kommentare zu diesem Eintrag abonnieren</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

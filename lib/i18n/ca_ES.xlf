@@ -3291,6 +3291,11 @@
                 <target>Subscripció cancel·lada</target>
             </trans-unit>
 
+            <trans-unit id="655" approved="yes">
+                <source>Subscribe to comments on this entry</source>
+                <target>Vull subscriure'm als comentaris d'aquesta entrada</target>
+            </trans-unit>
+
         </body>
     </file>
 
