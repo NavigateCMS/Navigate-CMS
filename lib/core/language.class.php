@@ -19,9 +19,8 @@ class language
 		global $DB;
 				
 		$DB->query('SELECT * FROM nv_languages WHERE code = '.protect($code));
-		
-		$data = $DB->first();		
-		
+		$data = $DB->first();
+
 		$this->id 	= $data->id;
 		$this->code = $data->code;
 		$this->name = $data->name;

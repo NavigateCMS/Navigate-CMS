@@ -1455,6 +1455,36 @@ function nvweb_template_processes($html)
 		);
 	}
 
+    if(isset($session['nv.comments/unsubscribe']))
+    {
+        unset($session['nv.comments/unsubscribe']);
+
+        $text = $theme->t("unsubscribed_ok");
+        if(empty($text) || $text=="unsubscribed_ok")
+            $text = t(654, "Cancelled subscription");
+
+        nvweb_after_body(
+            "html",
+            '<div id="nv_comments_subscription_cancelled_notice" style=" transition: all 1s; text-align: center; width: 40%; padding: 12px; margin: -48px 30% 0 30%; top: 50%; color: #555; position: fixed; z-index: 1000000; background: rgba(239, 228, 176, 0.7); box-shadow: 0 0 7px -2px #777;  ">
+				<span style="vertical-align: middle; font-size: 200%; ">&#10003;</span>
+				&nbsp;&nbsp;
+				<span style="font-size: 125%; vertical-align: middle; ">'.$text.'</span>
+			</div>'
+        );
+
+        nvweb_after_body(
+            "js",
+            'setTimeout(function() {
+				document.getElementById("nv_comments_subscription_cancelled_notice").style.opacity = 0;
+				setTimeout(function()
+				{
+					document.getElementById("nv_comments_subscription_cancelled_notice").style.display = "none";
+				},
+				1000);
+			}, 8000);'
+        );
+    }
+
 	return $html;
 }
 

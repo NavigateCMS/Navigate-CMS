@@ -3264,6 +3264,21 @@
 				<target>Deaktivieren der SSL-Peer-Validierung</target>
 			</trans-unit>
 
+			<trans-unit id="652" approved="yes">
+				<source>Subscribed</source>
+				<target>Gezeichnet</target>
+			</trans-unit>
+
+			<trans-unit id="653" approved="yes">
+				<source>Unsubscribe from comments notifications related to this content</source>
+				<target>Abmelden von Anmerkungen Benachrichtigungen zu diesem Inhalt</target>
+			</trans-unit>
+
+			<trans-unit id="654" approved="yes">
+				<source>Cancelled subscription</source>
+				<target>Abgebrochenes Abonnement</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

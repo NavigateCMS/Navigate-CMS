@@ -208,6 +208,7 @@ function nvweb_comments($vars=array())
 				$comment_email = @$_REQUEST[$vars['field-email']];
 				$comment_url = @$_REQUEST[$vars['field-url']];
 				$comment_message = @$_REQUEST[$vars['field-message']];
+                $comment_subscribe = (@$_REQUEST[$vars['field-subscribe']]=='1')? 1 : 0;
 
 				if( ( (empty($comment_name)  ||  empty($comment_email)) && empty($webuser->id) )
                     ||
@@ -244,6 +245,7 @@ function nvweb_comments($vars=array())
                 $comment->date_created = core_time();
                 $comment->date_modified = 0;
                 $comment->status = $status;
+                $comment->subscribed = value_or_default($comment_subscribe, 0);
                 $comment->message = $comment_message;
 
                 $properties = array();

@@ -3264,6 +3264,21 @@
 				<target>Disable SSL peer validation</target>
 			</trans-unit>
 
+			<trans-unit id="652" approved="yes">
+				<source>Subscribed</source>
+				<target>Subscribed</target>
+			</trans-unit>
+
+			<trans-unit id="653" approved="yes">
+				<source>Unsubscribe from comments notifications related to this content</source>
+				<target>Unsubscribe from comments notifications related to this content</target>
+			</trans-unit>
+
+			<trans-unit id="654" approved="yes">
+				<source>Cancelled subscription</source>
+				<target>Cancelled subscription</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

@@ -585,6 +585,13 @@ function comments_form($item)
             $item->ip
         ));
 	}
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(652, 'Subscribed').'</label>',
+        $naviforms->checkbox('comment-subscribed', $item->subscribed)
+    ));
+
+
 	
 	if(empty($item->date_created))
 	    $item->date_created = time();

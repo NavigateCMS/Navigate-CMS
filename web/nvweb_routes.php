@@ -284,6 +284,18 @@ function nvweb_route_parse($route="")
 			}
 			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage());
 			break;
+
+        case 'nv.comments/unsubscribe':
+			$cid = $_REQUEST['cid'];
+			$hash = $_REQUEST['hash'];
+			if(!empty($hash) && !empty($cid))
+			{
+				$ok = comment::notifications_unsubscribe($cid, $hash);
+				if($ok)
+					$session['nv.comments/unsubscribe'] = time();
+			}
+			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage());
+			break;
 			
 		case 'node':
 			if($node > 0)

@@ -15,7 +15,15 @@ class comment
     public $last_modified_by;
 	public $status; //  -1 => To review  0 => Published  1 => Private    2 => Hidden   3 => Spam
     public $reply_to;
+    public $subscribed; // 0 => no, 1 => yes
 	public $message;
+
+    private $pending_revision; // keep pending revision flag until next reload
+
+    public function __construct()
+    {
+        $this->pending_revision = true;
+    }
 
     public function load($id)
 	{
@@ -44,7 +52,9 @@ class comment
 		$this->last_modified_by  = $main->last_modified_by;
 		$this->status		= $main->status;
 		$this->reply_to		= $main->reply_to;
+		$this->subscribed	= $main->subscribed;
 		$this->message		= html_entity_decode($main->message, ENT_COMPAT, "UTF-8");
+        $this->pending_revision = ($main->status == -1);
 	}
 	
 	public function load_from_post()
@@ -57,6 +67,7 @@ class comment
 		$this->status		= intval($_REQUEST['comment-status']);
 		$this->message		= $_REQUEST['comment-message'];
 		$this->reply_to		= $_REQUEST['comment-reply_to'];
+		$this->subscribed	= $_REQUEST['comment-subscribed'];
 		$this->date_created	= core_date2ts($_REQUEST['comment-date_created']);
 	}
 	
@@ -101,16 +112,19 @@ class comment
         if(empty($this->ip))
             $this->ip = core_ip();
 
+        if(empty($this->website))
+            $this->website = $website->id;
+
         $ok = $DB->execute('
  			INSERT INTO nv_comments
 				(	id, website, item, user, name, email, url, ip,
 					date_created, date_modified, last_modified_by,
-					reply_to, status, message
+					reply_to, subscribed, status, message
 				)
 				VALUES
 				( 	0, :website, :item, :user, :name, :email, :url, :ip,
 					:date_created, :date_modified, :last_modified_by,
-					:reply_to, :status, :message)
+					:reply_to, :subscribed, :status, :message)
 			',
 			array(
 				":website" => value_or_default($this->website, $website->id),
@@ -124,6 +138,7 @@ class comment
 				":date_modified" => 0,
 				":last_modified_by" => 0,
 				":reply_to" => value_or_default($this->reply_to, 0),
+				":subscribed" => value_or_default($this->subscribed, 0),
 				":status" => value_or_default($this->status, 0),
 				":message" => $message
 			)
@@ -133,6 +148,8 @@ class comment
             throw new Exception($DB->get_last_error());
 		
 		$this->id = $DB->get_last_id();
+
+        $this->notify_subscribed();
 
 		return true;
 	}	
@@ -156,6 +173,7 @@ class comment
               date_modified = :date_modified,
               last_modified_by = :last_modified_by,
               reply_to = :reply_to,
+              subscribed = :subscribed,
               status = :status,
               message = :message
             WHERE id = :id
@@ -170,13 +188,17 @@ class comment
 				":date_modified" => core_time(),
 				":last_modified_by" => value_or_default($user->id, 0),
 				":reply_to" => value_or_default($this->reply_to, 0),
+				":subscribed" => value_or_default($this->subscribed, 0),
 				":status" => value_or_default($this->status, 0),
 				":message" => $message,
 				":id" => $this->id
 			)
 		);
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+		    throw new Exception($DB->get_last_error());
+
+        $this->notify_subscribed();
 		
 		return true;
 	}
@@ -345,6 +367,162 @@ class comment
         return $out;
     }
 
+    public function notify_subscribed()
+    {
+        global $DB;
+        global $lang;
+
+        if($this->pending_revision && $this->status == 0)
+        {
+            $website = new website();
+            $website->load($this->website);
+            $lang = $website->languages_published[0];
+
+            $item = new item();
+            $item->load($this->item);
+
+            // find users subscribed to the same content (except the author of the current comment)
+            $DB->query('
+                SELECT id, user, email 
+                 FROM nv_comments
+                WHERE website = ' . $this->website . '.
+                  AND item = ' . $this->item . '
+                  AND subscribed = 1
+            ');
+
+            $subscribers = $DB->result();
+
+            $emailed_to = array();
+            $users_emailed_to = array();
+
+            if (!empty($subscribers))
+            {
+                // send an email notification telling there is a new comment
+                foreach ($subscribers as $subscriber)
+                {
+                    if (!empty($subscriber->user) && !in_array($subscriber->user, $users_emailed_to))
+                    {
+                        $users_emailed_to[] = $subscriber->user;
+                        $swu = new webuser();
+                        $swu->load($subscriber->user);
+                        $emailed_to[] = $swu->email;
+
+                        if($swu->language == $lang->code)
+                        {
+                            $ulang = $lang;
+                        }
+                        else
+                        {
+                            $ulang = new language();
+                            $ulang->load($swu->language);
+                        }
+
+                        // compose and send email
+                        $content_title = $item->dictionary[$swu->language]['title'];
+                        if (empty($content_title))
+                            $content_title = $item->dictionary[$lang]['title'];
+
+                        $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $content_title . ']';
+                        $content = '<a href="' . nvweb_source_url('item', $item->id, $swu->language) . '" target="_blank">' . $content_title . '</a>';
+                        $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $item->id);
+
+                        $body = navigate_compose_email(
+                            array(
+                                array(
+                                    'title'   => $ulang->t(177, "Website"),
+                                    'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+                                ),
+                                array(
+                                    'title'   => $ulang->t(9, "Content"),
+                                    'content' => $content
+                                ),
+                                array(
+                                    'title'   => $ulang->t(387, "New comment"),
+                                    'content' => $this->author_name() . ', ' . core_ts2date($this->date_created, true) .
+                                        '<br /><br />' .
+                                        core_string_cut($this->message, 100)
+                                ),
+                                array(
+                                    'footer' => '<a href="' . $unsubscribe_link . '">' .
+                                        $ulang->t(653, 'Unsubscribe from comments notifications related to this content') .
+                                        '</a>'
+                                )
+                            )
+                        );
+                        navigate_send_email($subject, $body, array($swu->email), array(), true);
+                    }
+                    else if (!empty($subscriber->email) && !in_array($subscriber->email, $emailed_to))
+                    {
+                        $emailed_to[] = $subscriber->email;
+
+                        $ulang = new language();
+                        $ulang->load($website->languages_published[0]);
+
+                        // send email
+                        $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
+                        $content = '<a href="' . nvweb_source_url('item', $item->id, $ulang->code) . '" target="_blank">' . $item->dictionary[$ulang->code]['title'] . '</a>';
+                        $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $item->id);
+
+                        $body = navigate_compose_email(
+                            array(
+                                array(
+                                    'title'   => $ulang->t(177, "Website"),
+                                    'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+                                ),
+                                array(
+                                    'title'   => $ulang->t(9, "Content"),
+                                    'content' => $content
+                                ),
+                                array(
+                                    'title'   => $ulang->t(387, "New comment"),
+                                    'content' => $this->author_name() . ', ' . core_ts2date($this->date_created, true) .
+                                        '<br /><br />' .
+                                        core_string_cut($this->message, 100)
+                                ),
+                                array(
+                                    'footer' => '<a href="' . $unsubscribe_link . '">' .
+                                        $ulang->t(653, 'Unsubscribe from comments notifications related to this content') .
+                                        '</a>'
+                                )
+                            )
+                        );
+                        navigate_send_email($subject, $body, array($subscriber->email), array(), true);
+                    }
+                }
+            }
+        }
+    }
+
+    public static function notifications_unsubscribe($cid, $hash)
+    {
+        global $DB;
+
+        $c = new comment();
+        $c->load(intval($cid));
+
+        $hash_check = md5(APP_UNIQUE . $c->id . '#' . $c->item);
+        if($hash == $hash_check)
+        {
+            if(!empty($c->user))
+            {
+                $DB->execute(
+                    'UPDATE nv_comments SET subscribed = 0 WHERE item = :item AND user = :user',
+                    array(':item' => $c->item, ':user' => $c->user)
+                );
+            }
+            else
+            {
+                $DB->execute(
+                    'UPDATE nv_comments SET subscribed = 0 WHERE item = :item AND email = :email',
+                    array(':item' => $c->item, ':email' => $c->email)
+                );
+            }
+        }
+
+        $error = $DB->error();
+        return empty($error);
+    }
+
     public static function webuser_comments_count($webuser_id)
     {
         global $DB;
@@ -375,5 +553,4 @@ class comment
 	}
 
 }
-
 ?>

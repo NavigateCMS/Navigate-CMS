@@ -3264,6 +3264,21 @@
                 <target>Wyłącz walidacja Uczestnik komunikacji SSL</target>
             </trans-unit>
 
+            <trans-unit id="652" approved="yes">
+                <source>Subscribed</source>
+                <target>Subskrybowany</target>
+            </trans-unit>
+
+            <trans-unit id="653">
+                <source>Unsubscribe from comments notifications related to this content</source>
+                <target>Rezygnacja z komentarzami zgłoszeń związanych z tą zawartością</target>
+            </trans-unit>
+
+            <trans-unit id="654">
+                <source>Cancelled subscription</source>
+                <target>Zlikwidowano subskrypcji</target>
+            </trans-unit>
+
         </body>
     </file>
 

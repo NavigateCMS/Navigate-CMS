@@ -3264,6 +3264,21 @@
 				<target>Desactivar la validación de pares SSL</target>
 			</trans-unit>
 
+			<trans-unit id="652" approved="yes">
+				<source>Subscribed</source>
+				<target>Suscrito</target>
+			</trans-unit>
+
+			<trans-unit id="653" approved="yes">
+				<source>Unsubscribe from comments notifications related to this content</source>
+				<target>No deseo recibir más notificaciones de comentarios relacionados con este contenido</target>
+			</trans-unit>
+
+			<trans-unit id="654" approved="yes">
+				<source>Cancelled subscription</source>
+				<target>Suscripción cancelada</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

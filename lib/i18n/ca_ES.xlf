@@ -3276,6 +3276,21 @@
                 <target>Desactivar la validació de parells SSL</target>
             </trans-unit>
 
+            <trans-unit id="652" approved="yes">
+                <source>Subscribed</source>
+                <target>Subscrit</target>
+            </trans-unit>
+
+            <trans-unit id="653" approved="yes">
+                <source>Unsubscribe from comments notifications related to this content</source>
+                <target>No vull rebre més notificacions de comentaris relacionades amb aquest contingut</target>
+            </trans-unit>
+
+            <trans-unit id="654" approved="yes">
+                <source>Cancelled subscription</source>
+                <target>Subscripció cancel·lada</target>
+            </trans-unit>
+
         </body>
     </file>
 
