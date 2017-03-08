@@ -166,13 +166,16 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 		case 'rating':
 			$default = explode('#', $property->dvalue);
 			$stars = $default[1];
-			if(empty($stars)) $stars = 5;
-			$inputs = $stars*2; // half stars ALWAYS enabled
+
+			if(empty($stars))
+			    $stars = 5;
+
+            $inputs = $stars*2; // half stars ALWAYS enabled
 			
 			if($property->value == $property->dvalue)
                 $property->value = intval($default[0]) * 2;
 		
-			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" style=" height: 18px; ">';
+			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" style=" min-height: 18px; ">';
 			$field[] = '<label>'.$property_name.'</label>';
 			for($i=1; $i <= $inputs; $i++)
 			{		

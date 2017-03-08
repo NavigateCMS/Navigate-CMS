@@ -18,6 +18,8 @@ class comment
     public $subscribed; // 0 => no, 1 => yes
 	public $message;
 
+    public $properties;
+
     private $pending_revision; // keep pending revision flag until next reload
 
     public function __construct()
@@ -317,7 +319,6 @@ class comment
         $out = array();
 
         // replies are always ordered by ascending date creation
-
         $DB->query('
             SELECT nvc.*, nvwu.username, nvwu.avatar 
              FROM nv_comments nvc
@@ -366,6 +367,73 @@ class comment
 
         return $out;
     }
+
+    public function property($property_name, $raw=false)
+    {
+        global $DB;
+
+        // load properties if not already done
+        if(empty($this->properties))
+        {
+            $template = $DB->query_single('template', 'nv_items', 'id = '.$this->item);
+            $this->properties = property::load_properties('comment', $template, 'comment', $this->id);
+        }
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                $out = $this->properties[$p]->value;
+                break;
+            }
+        }
+
+        return $out;
+    }
+
+    public function property_definition($property_name)
+    {
+        global $DB;
+
+        // load properties if not already done
+        if(empty($this->properties))
+        {
+            $template = $DB->query_single('template', 'nv_items', 'id = '.$this->item);
+            $this->properties = property::load_properties('comment', $template, 'comment', $this->id);
+        }
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                $out = $this->properties[$p];
+                break;
+            }
+        }
+
+        return $out;
+    }
+
+    public function property_exists($property_name)
+    {
+        global $DB;
+
+        // load properties if not already done
+        if(empty($this->properties))
+        {
+            $template = $DB->query_single('template', 'nv_items', 'id = '.$this->item);
+            $this->properties = property::load_properties('comment', $template, 'comment', $this->id);
+        }
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+                return true;
+        }
+        return false;
+    }
+
+
 
     public function notify_subscribed()
     {

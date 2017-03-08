@@ -729,7 +729,8 @@ function nvweb_list($vars=array())
         // prepare a standard  $item  with the current element
 		if($vars['source']=='comments' || $vars['source']=='comment')
 		{
-			$item = $rs[$i];
+		    $item = new comment();
+            $item->load_from_resultset(array($rs[$i]));
 		}
 		else if($vars['source']=='structure' || $vars['source']=='category')
 		{
@@ -1129,7 +1130,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					break;
 
 				case 'username':
-					$out = (!empty($item->username)? $item->username : $item->name);
+					$out = $item->author_name();
 					if($tag['attributes']['linked']=='true' && !empty($out))
 					{
 						if(!empty($item->url))
@@ -1587,6 +1588,12 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 					$out = nvweb_properties($nvweb_properties_parameters);
 					break;
+
+                case 'function':
+                    $function = @$tag['attributes']['function'];
+                    if(!empty($function) && function_exists($function))
+                        $out = call_user_func($function, array('item' => $item, 'vars' => $tag['attributes']));
+                    break;
 
 				default:
                     // maybe a special tag not related to a source? (unimplemented)

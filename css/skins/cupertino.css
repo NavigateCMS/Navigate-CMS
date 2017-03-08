@@ -3174,6 +3174,10 @@ div.block_group_block .actions a:hover
 	opacity: .75;
 }
 
+.star-rating-control
+{
+	display: inline-block;
+}
 
 /* timepicker addon styles */
 /* http://trentrichardson.com/examples/timepicker/ */
