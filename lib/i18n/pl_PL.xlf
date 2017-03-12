@@ -1435,7 +1435,7 @@
 
             <trans-unit id="286" approved="yes">
                 <source>Drag to reorder. Double click to assign image captions.</source>
-                <target>Przeciągnij, aby zmienić porządek. Kliknij dwukrotnie, aby uzyskać podpisy obrazów</target>
+                <target>Przeciągnij, aby zmienić porządek. Kliknij dwukrotnie, aby uzyskać podpisy obrazów.</target>
             </trans-unit>
 
             <trans-unit id="287" approved="yes">
@@ -2655,7 +2655,7 @@
 
             <trans-unit id="530" approved="yes">
                 <source>You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.</source>
-                <target>Musisz odwiedzić Tablicę Rozdzielczą Rynku i pobrać plik, a następnie użyć przycisku <strong>Instaluj z pliku</strong>, który znajdziesz w pasku działań po prawej stronie.</target>
+                <target>Musisz odwiedzić swoją Tablicę Rozdzielczą Rynku i pobrać plik, a następnie użyć przycisku <strong>Instaluj z pliku</strong>, który znajdziesz w pasku działań po prawej stronie.</target>
             </trans-unit>
 
             <trans-unit id="531" approved="yes">
@@ -3045,7 +3045,7 @@
 
             <trans-unit id="608" approved="yes">
                 <source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
-                <target>To jest automatyczny e-mail, przesłany w wyniku zapisania się na biuletyn. Jeśli otrzymałeś /otrzymałaś ten list na skutek błędu, to po prostu go zignoruj</target>
+                <target>To jest automatyczny e-mail, przesłany w wyniku zapisania się na biuletyn. Jeśli otrzymałeś /otrzymałaś ten list na skutek błędu, to po prostu go zignoruj.</target>
             </trans-unit>
 
             <trans-unit id="609" approved="yes">
@@ -3282,6 +3282,21 @@
             <trans-unit id="655">
                 <source>Subscribe to comments on this entry</source>
                 <target>Zapisz się do komentarzy do tego wpisu</target>
+            </trans-unit>
+
+            <trans-unit id="656">
+                <source>Additional styles</source>
+                <target>Dodatkowe style</target>
+            </trans-unit>
+
+            <trans-unit id="657">
+                <source>Tracking scripts</source>
+                <target>śledzenie skryptów</target>
+            </trans-unit>
+
+            <trans-unit id="658">
+                <source>disabled for Navigate CMS users</source>
+                <target>wyłączone dla użytkowników Navigate CMS</target>
             </trans-unit>
 
         </body>

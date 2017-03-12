@@ -122,8 +122,14 @@ function nvweb_metatags($vars=array())
 	$out = '<title>'.$website->name.$section.'</title>'."\n";
 	$out.= $metatags;
 		
-	if(!empty($website->additional_scripts) && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+	if(!empty($website->tracking_scripts) && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+		nvweb_after_body('html', $website->tracking_scripts);
+
+	if(!empty($website->additional_scripts))
 		nvweb_after_body('html', $website->additional_scripts);
+
+    if(!empty($website->additional_styles))
+		nvweb_after_body('html', $website->additional_styles);
 
     $events->trigger(
         'metatags',

@@ -37,6 +37,7 @@ require_once(NAVIGATE_PATH.'/lib/external/firephp/FirePHP.class.php'); // To Be 
 require_once(NAVIGATE_PATH.'/lib/external/firephp/navigatecms_firephp.class.php'); // To Be Removed
 
 disable_magic_quotes();
+@ini_set('default_charset', 'utf-8');
 
 $max_upload = (int)(ini_get('upload_max_filesize'));
 $max_post = (int)(ini_get('post_max_size'));
@@ -46,9 +47,8 @@ define('NAVIGATE_UPLOAD_MAX_SIZE', min($max_upload, $max_post, $memory_limit));
 // Suppress DateTime warnings
 $nv_default_timezone = @date_default_timezone_get();
 if(empty($nv_default_timezone))
-{
     $nv_default_timezone = 'UTC';
-}
+
 date_default_timezone_set($nv_default_timezone);
 
 include_once(NAVIGATE_PATH.'/cfg/session.php');

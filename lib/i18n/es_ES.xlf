@@ -3284,6 +3284,21 @@
 				<target>Quiero suscribirme a los comentarios de esta entrada</target>
 			</trans-unit>
 
+			<trans-unit id="656" approved="yes">
+				<source>Additional styles</source>
+				<target>Estilos adicionales</target>
+			</trans-unit>
+
+			<trans-unit id="657" approved="yes">
+				<source>Tracking scripts</source>
+				<target>Scripts de seguimiento</target>
+			</trans-unit>
+
+			<trans-unit id="658" approved="yes">
+				<source>disabled for Navigate CMS users</source>
+				<target>desactivados para los usuarios de Navigate CMS</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

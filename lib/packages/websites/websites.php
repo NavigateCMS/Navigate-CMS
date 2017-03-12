@@ -1668,15 +1668,66 @@ function websites_form($item)
 
     /* SERVICES TAB */
 
-    $navibars->add_tab(t(178, "Services"));
+    $navibars->add_tab('HTML');
+
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(160, "Type").'</label>',
+            $naviforms->buttonset(
+                'website_additional_code',
+                array(
+                    'tracking_scripts' => t(657, 'Tracking scripts'),
+                    'additional_scripts' => t(498, 'Additional scripts'),
+                    'additional_styles' => t(656, 'Additional styles')
+                ),
+                (!isset($_REQUEST['website_additional_code'][0])? 'tracking_scripts' : $_REQUEST['website_additional_code'][0]),
+                "navigate_change_website_additional_code(this);"
+            )
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(657, 'Tracking scripts').'<br /><span style="font-weight: normal;">('.t(658, "disabled for Navigate CMS users").')</span></label>',
+            $naviforms->scriptarea('tracking_scripts', $item->tracking_scripts, 'js', ' width: 600px; height: 250px; ' ),
+            '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript"&gt;...&lt;/script&gt;</div>'
+        ),
+        'tracking_scripts_wrapper'
+    );
 
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(498, 'Additional scripts').'</label>',
             $naviforms->scriptarea('additional_scripts', $item->additional_scripts, 'js', ' width: 600px; height: 250px; ' ),
             '<div style="clear: both;"><label>&nbsp;</label>&lt;script type="text/javascript"&gt;...&lt;/script&gt;</div>'
-        )
+        ),
+        'additional_scripts_wrapper'
     );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(656, 'Additional styles').'</label>',
+            $naviforms->scriptarea('additional_styles', $item->additional_styles, 'css', ' width: 600px; height: 250px; ' ),
+            '<div style="clear: both;"><label>&nbsp;</label>&lt;style&gt;...&lt;/style&gt;</div>'
+        ),
+        'additional_styles_wrapper'
+    );
+
+    $layout->add_script('
+        function navigate_change_website_additional_code(el)
+        {        
+            var selected = $("input[name=\'website_additional_code[]\']:checked").val();
+        
+            if(typeof(el)!="undefined")
+                selected = $(el).prev().attr("value");         
+            
+            $("#tracking_scripts_wrapper,#additional_scripts_wrapper,#additional_styles_wrapper").hide();
+            $("#"+selected+"_wrapper").show();
+            
+            $(navigate_codemirror_instances).each(function() { this.refresh(); } );
+        }
+        
+        navigate_change_website_additional_code();
+    ');
 
 
     if(!empty($item->theme))

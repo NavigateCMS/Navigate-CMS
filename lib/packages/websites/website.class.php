@@ -20,7 +20,9 @@ class website
     public $comments_enabled_for;
     public $comments_default_moderator;
     public $share_files_media_browser;
+	public $tracking_scripts;
 	public $additional_scripts;
+	public $additional_styles;
 	public $permission;	//  0 => public | 1 => private | 2 => only navigate users
 	public $block_types;    // deprecated, will be removed in NV 3.0!!!
 	public $homepage;
@@ -98,7 +100,9 @@ class website
         $this->comments_default_moderator   = $main->comments_default_moderator;
 		$this->share_files_media_browser    = $main->share_files_media_browser;
 
+		$this->tracking_scripts             = $main->tracking_scripts;
 		$this->additional_scripts           = $main->additional_scripts;
+		$this->additional_styles            = $main->additional_styles;
 		$this->permission		= $main->permission;
 		$this->block_types		= mb_unserialize($main->block_types);
 		$this->homepage			= $main->homepage;	
@@ -164,7 +168,9 @@ class website
         $this->comments_default_moderator   =   $_REQUEST['comments_default_moderator'];
 		$this->share_files_media_browser    =   intval($_REQUEST['share_files_media_browser']);
 
-		$this->additional_scripts     = $_REQUEST['additional_scripts'];
+		$this->tracking_scripts             = $_REQUEST['tracking_scripts'];
+		$this->additional_scripts           = $_REQUEST['additional_scripts'];
+		$this->additional_styles            = $_REQUEST['additional_styles'];
 
 		if(empty($_REQUEST['homepage_from_structure']))
 			$this->homepage			= $_REQUEST['homepage'];
@@ -411,7 +417,7 @@ class website
                 languages, languages_published, aliases,
                 word_separator, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
-                additional_scripts, permission,
+                tracking_scripts, additional_scripts, additional_styles, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
                 contact_emails, homepage, default_timezone, metatag_description, metatag_keywords, metatags,
                 favicon, theme, theme_options, block_types
@@ -437,7 +443,9 @@ class website
               :comments_enabled_for,
               :comments_default_moderator,
               :share_files_media_browser,
+              :tracking_scripts,
               :additional_scripts,
+              :additional_styles,
               :permission,
               :mail_mailer,
               :mail_server,
@@ -478,7 +486,9 @@ class website
 				":comments_enabled_for" => value_or_default($this->comments_enabled_for, 0),
 				":comments_default_moderator" => value_or_default($this->comments_default_moderator, ''),
 				":share_files_media_browser" => value_or_default($this->share_files_media_browser, 0),
+				":tracking_scripts" => value_or_default($this->tracking_scripts, ''),
 				":additional_scripts" => value_or_default($this->additional_scripts, ''),
+				":additional_styles" => value_or_default($this->additional_styles, ''),
 				":permission" => $this->permission,
 				":mail_mailer" => value_or_default($this->mail_mailer, ''),
 				":mail_server" => value_or_default($this->mail_server, ''),
@@ -572,7 +582,9 @@ class website
                     comments_enabled_for = ?,
 					comments_default_moderator = ?,
 					share_files_media_browser = ?,
+                    tracking_scripts = ?,
                     additional_scripts = ?,
+                    additional_styles = ?,
                     permission = ?,
                     mail_mailer = ?,
                     mail_server = ?,
@@ -612,7 +624,9 @@ class website
                 $this->comments_enabled_for,
                 $this->comments_default_moderator,
                 $this->share_files_media_browser,
+                $this->tracking_scripts,
                 $this->additional_scripts,
+                $this->additional_styles,
                 $this->permission,
                 value_or_default($this->mail_mailer, ""),
                 value_or_default($this->mail_server, ""),

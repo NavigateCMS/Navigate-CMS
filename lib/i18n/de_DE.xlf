@@ -3284,6 +3284,21 @@
 				<target>Kommentare zu diesem Eintrag abonnieren</target>
 			</trans-unit>
 
+			<trans-unit id="656">
+				<source>Additional styles</source>
+				<target>Zusätzliche Stile</target>
+			</trans-unit>
+
+			<trans-unit id="657">
+				<source>Tracking scripts</source>
+				<target>Tracking scripts</target>
+			</trans-unit>
+
+			<trans-unit id="658">
+				<source>disabled for Navigate CMS users</source>
+				<target>Deaktiviert für Navigate CMS Benutzer</target>
+			</trans-unit>
+
 		</body>
 	</file>
 
