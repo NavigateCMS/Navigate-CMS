@@ -647,7 +647,7 @@ class naviforms
 	                    {
 	                        navigate_tinymce_event({type: "focus"}, "'.$name.'", true);
 	                    }, 25);
-				    });			    				    
+				    });					    		    				   
                 },
                 
                 // just after rendering this tinymce 
@@ -695,7 +695,13 @@ class naviforms
                     });
                     
                     // deprecated, but the only way we found to set the button on on init
-	                tinyMCE.get("'.$name.'").controlManager.setActive("magicline", true);	                
+	                tinyMCE.get("'.$name.'").controlManager.setActive("magicline", true);
+	                	                
+                    // user warning to avoid losing unsaved changes
+                    editor.on("change", function()
+                    {
+                        navigate_beforeunload_register();
+                    });
                 }
             });
         ');

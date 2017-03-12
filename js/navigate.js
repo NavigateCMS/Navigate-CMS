@@ -1,7 +1,8 @@
 var navigatecms = {
     forms: {
         datepicker:		{ }
-    }
+    },
+    beforeunload: false
 };
 var navigate_menu_current_tab;
 var navigate_lang_dictionary = Array();
@@ -718,8 +719,40 @@ function navigate_unselect_text()
 	$(document.body).blur().focus();
 }
 
+function navigate_beforeunload_confirmation(event)
+{
+    navigate_unselect_text();
+    console.log(navigate.beforeunload);
+
+    if(navigate.beforeunload)
+    {
+        var confirmationMessage = "\o/";
+        event.returnValue = confirmationMessage;        // Gecko, Trident, Chrome 34+
+        return confirmationMessage;                     // Gecko, WebKit, Chrome <34
+    }
+    return;
+}
+
+function navigate_beforeunload_register()
+{
+    if(!navigate.beforeunload)
+    {
+        window.addEventListener("beforeunload", navigate_beforeunload_confirmation, true);
+        navigate.beforeunload = true;
+    }
+}
+
+function navigate_beforeunload_unregister()
+{
+    navigate.beforeunload = false;
+    window.removeEventListener("beforeunload", navigate_beforeunload_confirmation, true);
+}
+
 function navigate_tabform_submit(formNum)
 {
+    // remove beforeunload warning, if any
+    navigate_beforeunload_unregister();
+
 	var tab = parseInt($('#navigate-content-tabs').children('div:visible').attr('id').replace("navigate-content-tabs-", "")) - 1;
 	if(tab < 0) tab = 0;
 	var url = $('#navigate-content').find('form').eq(formNum).attr('action');	
@@ -852,7 +885,7 @@ function navigate_hide_context_menus(e)
     }, 50);
 }
 
-function phpjs_function_exists(function_name) 
+function phpjs_function_exists(function_name)
 {
     // Checks if the function exists  
     // 
