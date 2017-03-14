@@ -33,8 +33,11 @@ require_once(NAVIGATE_PATH.'/lib/external/idna_convert/idna_convert.class.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 
-require_once(NAVIGATE_PATH.'/lib/external/firephp/FirePHP.class.php'); // To Be Removed
-require_once(NAVIGATE_PATH.'/lib/external/firephp/navigatecms_firephp.class.php'); // To Be Removed
+require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
+require_once(NAVIGATE_PATH.'/lib/external/tracy/src/tracy.php');
+
+
+/* prepare PHP to run Navigate CMS */
 
 disable_magic_quotes();
 @ini_set('default_charset', 'utf-8');
@@ -51,9 +54,12 @@ if(empty($nv_default_timezone))
 
 date_default_timezone_set($nv_default_timezone);
 
-include_once(NAVIGATE_PATH.'/cfg/session.php');
-
 if(!defined("APP_UNIQUE"))
     define("APP_UNIQUE", "nv_default");
+
+debugger::init();
+include_once(NAVIGATE_PATH.'/cfg/session.php');
+debugger::dispatch();
+
 
 ?>

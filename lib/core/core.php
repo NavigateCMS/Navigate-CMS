@@ -1035,7 +1035,7 @@ function debug_json_error($prepend='')
     }
 
     if(!empty($error) && (APP_DEBUG || $_GET['debug']=='true'))
-        firephp_nv::log($prepend.$error);
+        debugger::console($prepend.$error);
 }
 
 

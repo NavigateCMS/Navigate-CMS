@@ -2231,7 +2231,7 @@ function nvweb_list_parse_filters($raw, $object='item')
     }
 
     if(APP_DEBUG && json_last_error() > 0)
-        firephp_nv::log($raw, json_last_error_msg());
+        debugger::console($raw, json_last_error_msg());
 
     $comparators = array(
         'eq' => '=',

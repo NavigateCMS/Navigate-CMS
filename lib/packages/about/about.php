@@ -121,11 +121,19 @@ function about_layout()
 		)
 	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="http://www.firephp.org" target="_blank">FirePHPCore Server Library 0.3</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    	'<label>&nbsp;</label>',
+        '<a href="https://tracy.nette.org/" target="_blank">Tracy – PHP debugger v2.4.6</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="http://mind2soft.com/labs/jquery/multiselect/" target="_blank">jQuery UIx Multiselect v2.0RC</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+            '<a href="http://mind2soft.com/labs/jquery/multiselect/" target="_blank">jQuery UIx Multiselect v2.0RC</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(
 		array(

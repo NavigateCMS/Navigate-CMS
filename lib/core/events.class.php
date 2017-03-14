@@ -47,7 +47,7 @@ class events
         foreach($this->events[$module][$event] as $trigger)
         {
             if(APP_DEBUG)
-                firephp_nv::log($trigger, $module.'/'.$event);
+                debugger::console($trigger, $module.'/'.$event);
 
             $messages[$trigger['extension']] = call_user_func($trigger['function'], $parameter);
         }

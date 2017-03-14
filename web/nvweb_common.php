@@ -27,8 +27,8 @@ require_once(NAVIGATE_PATH.'/lib/external/php-ixr/IXR_Library.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
 
-require_once(NAVIGATE_PATH.'/lib/external/firephp/FirePHP.class.php');
-require_once(NAVIGATE_PATH.'/lib/external/firephp/navigatecms_firephp.class.php');
+require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
+require_once(NAVIGATE_PATH.'/lib/external/tracy/src/tracy.php');
 
 require_once(NAVIGATE_PATH.'/web/nvweb_routes.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_templates.php');
@@ -37,8 +37,26 @@ require_once(NAVIGATE_PATH.'/web/nvweb_plugins.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_xmlrpc.php');
 
 disable_magic_quotes();
+@ini_set('default_charset', 'utf-8');
 
+$max_upload = (int)(ini_get('upload_max_filesize'));
+$max_post = (int)(ini_get('post_max_size'));
+$memory_limit = (int)(ini_get('memory_limit'));
+define('NAVIGATE_UPLOAD_MAX_SIZE', min($max_upload, $max_post, $memory_limit));
+
+// Suppress DateTime warnings
+$nv_default_timezone = @date_default_timezone_get();
+if(empty($nv_default_timezone))
+    $nv_default_timezone = 'UTC';
+
+date_default_timezone_set($nv_default_timezone);
+
+if(!defined("APP_UNIQUE"))
+    define("APP_UNIQUE", "nv_default");
+
+debugger::init();
 include_once(NAVIGATE_PATH.'/cfg/session.php');
+debugger::dispatch();
 
 if(!defined('APP_UNIQUE'))
     define('APP_UNIQUE', 'nv_default');
