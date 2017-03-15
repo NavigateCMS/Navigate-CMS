@@ -20,7 +20,7 @@ class debugger
         if(!APP_DEBUG)
         {
             Tracy\Debugger::$showBar = false;
-            Tracy\Debugger::$logSeverity = E_ERROR | E_WARNING;
+            Tracy\Debugger::$logSeverity = E_ERROR | E_WARNING | E_PARSE;
         }
     }
 

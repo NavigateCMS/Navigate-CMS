@@ -12,11 +12,11 @@ function run()
 	$out = '';
 	$item = new website();
 
-	switch($_REQUEST['act'])
+	switch(@$_REQUEST['act'])
 	{
 		case 'json':
 		case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch(@$_REQUEST['oper'])
 			{
 				case 'search_links': // active website only!
 					$text = $_REQUEST['text'];
@@ -364,7 +364,7 @@ function websites_list()
         )
     );
 
-	if($_REQUEST['quicksearch']=='true')
+	if(@$_REQUEST['quicksearch']=='true')
 		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
 
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');

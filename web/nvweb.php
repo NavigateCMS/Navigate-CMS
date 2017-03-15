@@ -156,7 +156,7 @@ try
         $webuser = new webuser();
     }
 
-	$current['webuser'] = $session['webuser'];
+	$current['webuser'] = @$session['webuser'];
 
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 	date_default_timezone_set($webuser->timezone? $webuser->timezone : $website->default_timezone);

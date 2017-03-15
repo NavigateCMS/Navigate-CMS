@@ -31,7 +31,7 @@ class file
 	{
 		global $DB;
 		global $website;
-		
+
 		if(!is_numeric($id) && strpos($id, '#')===false)
 		{
 			// then it may be a http/https path?, so create a virtual file object
@@ -118,6 +118,7 @@ class file
 		$this->enabled		= $main->enabled;
 
         // to get the array of groups first we remove the "g" character
+        $groups = '';
         if(!empty($main->groups))
         {
             if(!is_array($main->groups))
@@ -128,6 +129,7 @@ class file
             else
                 $this->groups = $main->groups;
         }
+
         if(!is_array($this->groups))
             $this->groups = array($groups);
 
@@ -642,7 +644,7 @@ class file
 					return true;					
 				}
 			} 
-			else if(!empty($etag) && ($_SERVER['HTTP_IF_NONE_MATCH'] == $etag))
+			else if(!empty($etag) && (@$_SERVER['HTTP_IF_NONE_MATCH'] == $etag))
 			{
 				header("HTTP/1.0 304 Not Modified");
 				return true;

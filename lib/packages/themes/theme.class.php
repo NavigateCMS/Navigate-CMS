@@ -23,7 +23,8 @@ class theme
 	public $blocks;
 	public $templates;
     public $webusers;
-	
+
+    public $sections;
 	public $dictionary;
 	public $dictionaries;
 	
@@ -65,11 +66,14 @@ class theme
 		// added some code to keep compatibility with existing themes
 		for($t=0; $t < count($this->templates); $t++)
 		{
-			for($s=0; $s < count($this->templates[$t]->sections); $s++)
-			{
-				if(!isset($this->templates[$t]->sections[$s]->id))
-					$this->templates[$t]->sections[$s]->id = $this->templates[$t]->sections[$s]->code;
-			}
+		    if(isset($this->templates[$t]->sections))
+            {
+                for ($s = 0; $s < count($this->templates[$t]->sections); $s++)
+                {
+                    if (!isset($this->templates[$t]->sections[$s]->id))
+                        $this->templates[$t]->sections[$s]->id = $this->templates[$t]->sections[$s]->code;
+                }
+            }
 
 			// remove spaces in "uses" attribute value, if declared
             if(isset($this->templates[$t]->uses))

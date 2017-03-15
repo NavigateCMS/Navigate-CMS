@@ -842,7 +842,10 @@ class website
         // determine stylesheets for content (website > theme + default navigate cms)
         $content_css = array();
 
-        $content_css[] = NAVIGATE_URL.'/css/tools/tinymce.defaults.css';
+        if(defined('NAVIGATE_URL'))
+            $content_css[] = NAVIGATE_URL . '/css/tools/tinymce.defaults.css';
+        else
+            $content_css[] = '/css/tools/tinymce.defaults.css';
 
         // deprecated field (will be removed at some time)
         if(!empty($this->tinymce_css))
@@ -869,7 +872,7 @@ class website
                 $style_content_css = explode(',', $ws_theme->styles->$style->$name);
                 foreach($style_content_css as $scc)
                 {
-                    if(strpos($scc, 'http')===false)
+                    if(strpos($scc, 'http')===false && defined('NAVIGATE_URL'))
                         $content_css[] = NAVIGATE_URL.'/themes/'.$this->theme.'/'.$scc.'?bogus='.time();
                     else
                         $content_css[] = $scc;

@@ -100,7 +100,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 		    if(empty($height)) $height = "";
 
             // get target quality (only for jpeg thumbnails!)
-            $quality = $_REQUEST['quality'];
+            $quality = @$_REQUEST['quality'];
             if(empty($quality))
                 $quality = 95;
 			
@@ -110,7 +110,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 
 			if((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true'))
 			{
-				$border = ($_REQUEST['border']=='false'? false : true);
+				$border = (@$_REQUEST['border']=='false'? false : true);
 
                 $path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
                 if(empty($path))
