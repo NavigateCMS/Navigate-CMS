@@ -223,7 +223,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://leafletjs.com" target="_blank">Leaflet 1.0.0-rc3</a><br />'
+			'<a href="http://leafletjs.com" target="_blank">Leaflet 1.0.3</a><br />'
 		)
 	);
 

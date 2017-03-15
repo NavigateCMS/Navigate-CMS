@@ -174,7 +174,7 @@ class Debugger
 		) {
 			self::exceptionHandler(new \RuntimeException("Unable to set 'display_errors' because function ini_set() is disabled."));
 		}
-		error_reporting(E_ALL);
+		error_reporting(E_ALL ^ E_NOTICE); // navigate cms modification (added  ^ E_NOTICE)
 
 		if (self::$enabled) {
 			return;
