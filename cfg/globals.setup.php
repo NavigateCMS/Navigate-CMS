@@ -40,8 +40,8 @@ mb_internal_encoding("UTF-8");	/* Set internal character encoding to UTF-8 */
 ini_set('display_errors', false);
 if(APP_DEBUG)
 {
-	ini_set('display_errors', true);
-	error_reporting(E_ALL ^ E_NOTICE);		
+    ini_set('display_errors', true);
+    ini_set('display_startup_errors', true);
 }
 
 ?>
