@@ -1,0 +1,27 @@
+{
+  "name": "raty-fa",
+  "version": "0.1.2",
+  "homepage": "https://github.com/Jacob87/raty-fa",
+  "authors": [
+    "Jacob Overgaard",
+    "Washington Botelho <wbotelhos@gmail.com>"
+  ],
+  "description": "jQuery Raty FA is a plugin that generates a customizable star rating with Font Awesome",
+  "main": "./lib/jquery.raty-fa.js",
+  "keywords": [
+    "jquery",
+    "raty",
+    "rating",
+    "star",
+    "font-awesome",
+    "fa"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -3174,9 +3174,26 @@ div.block_group_block .actions a:hover
 	opacity: .75;
 }
 
-.star-rating-control
+.nv_property_rating_control
 {
 	display: inline-block;
+}
+
+.nv_property_rating_control i
+{
+	font-size: 16px;
+	color: #2779AA;
+	margin-right: 2px;
+}
+
+.nv_property_rating_control i.off
+{
+	color: #aaa;
+}
+
+.nv_property_rating_control i.half
+{
+	color: #2779AA;
 }
 
 /* timepicker addon styles */

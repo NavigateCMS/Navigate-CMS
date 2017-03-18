@@ -111,10 +111,7 @@ class layout
 
         $this->add_style_tag('js/jstree/themes/default/style.css');
 		$this->add_script_tag('js/jstree/jstree.js');
-
-		$this->add_script_tag('js/star-rating/jquery.rating.js');
-		$this->add_script_tag('js/star-rating/jquery.MetaData.js');		
-		$this->add_style_tag('js/star-rating/jquery.rating.css');
+        $this->add_script_tag('lib/external/raty-fa/lib/jquery.raty-fa.js');
 
 		$this->add_script_tag('js/plugins/dropzone.js');
 
@@ -201,6 +198,7 @@ class layout
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-es.js');
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-ca.js');
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-de.js');
+		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-pl.js');
 		$this->add_style_tag('lib/external/colorpicker/jquery.colorpicker.css');
 
         $this->add_script_tag('lib/external/jquery.uix.multiselect/js/jquery-multiselect-2.0.js');
