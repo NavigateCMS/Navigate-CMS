@@ -293,7 +293,9 @@ class feed
 		
 					$fitem = new FeedItem(); 
 					$fitem->title = $texts[$current['lang']]['title'];
-					$fitem->link = $website->absolute_path().rawurlencode($paths[$current['lang']]);
+
+                    $encoded_path = implode('/', array_map('urlencode', explode('/', $paths[$current['lang']])));
+					$fitem->link = $website->absolute_path().$encoded_path;
 					
 					switch($item->content)
 					{
