@@ -164,26 +164,34 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			break;
 
 		case 'rating':
-			$default = explode('#', $property->dvalue);
-			$stars = $default[1];
+            $half_stars_enabled = value_or_default($property->max, true);
+            if(isset($property->max))
+            {
+                $stars = $property->max;
+                if(!isset($property->value))
+                    $property->value = $property->dvalue;
+            }
+            else // navigate cms < 2.2 compatability
+            {
+                $default = explode('#', $property->dvalue);
+                $stars = @$default[1];
 
-			if(empty($stars))
-			    $stars = 5;
+                // if no default value is specified, we take the old navigate 1.x half star format, that is:
+                // defaults to 5 stars with half stars enabled (so 10 stars), having to divide by two the value in the website
+                if(empty($stars))
+                    $stars = 10;
 
-            $inputs = $stars*2; // half stars ALWAYS enabled
-			
-			if($property->value == $property->dvalue)
-                $property->value = intval($default[0]) * 2;
-		
+                $half_stars_enabled = false;
+
+                if($property->value == $property->dvalue)
+                    $property->value = intval($default[0]);
+            }
+
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" style=" min-height: 18px; ">';
 			$field[] = '<label>'.$property_name.'</label>';
-			for($i=1; $i <= $inputs; $i++)
-			{		
-				$checked = '';
-				if($property->value == $i)
-                    $checked = ' checked="checked" ';
-				$field[] = '<input type="radio" name="property-'.$property->id.'" class="star {split:2}" value="'.$i.'" '.$checked.' />';
-			}
+            $field[] = $naviforms->textfield("property-".$property->id, $property->value, '30px');
+            $field[] = '<div id="property-'.$property->id.'_control" class="nv_property_rating_control" data-half-stars="'.$half_stars_enabled.'" data-stars="'.$stars.'" data-property="property-'.$property->id.'"></div>';
+
 			if(!empty($property->helper))
 			{
 				$helper_text = $property->helper;

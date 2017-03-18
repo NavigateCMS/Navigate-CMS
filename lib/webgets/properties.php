@@ -553,12 +553,10 @@ function nvweb_properties_render($property, $vars)
 			break;
 			
 		case 'rating':
-			// half stars are always enabled (ratings fixed to 0..10)
 			$out = $property->value;
-
 			// we want nearest integer down
 			if($vars['option']=='floor')
-				$out = floor($out/2); 
+				$out = floor($out);
 			break;
 
         case 'color':
