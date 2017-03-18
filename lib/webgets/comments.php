@@ -163,7 +163,7 @@ function nvweb_comments($vars=array())
                 $comment = new comment();
                 $comment->load($_GET['id']);
 
-                if(!empty($comment->id) && $comment->status == -1) // comment is still not reviewed
+                if(!empty($comment->id) && $comment->status <= 0) // comment is still not reviewed or already published
                 {
                     $hash = $_GET['hash'];
                     if($hash == sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails)))

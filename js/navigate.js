@@ -722,7 +722,6 @@ function navigate_unselect_text()
 function navigate_beforeunload_confirmation(event)
 {
     navigate_unselect_text();
-    console.log(navigate.beforeunload);
 
     if(navigate.beforeunload)
     {
