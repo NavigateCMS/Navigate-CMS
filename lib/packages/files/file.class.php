@@ -708,6 +708,7 @@ class file
 
         if(function_exists('finfo_open') && !empty($absolute_path))
         {
+            clearstatcache();
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $absolute_path);
             finfo_close($finfo);
@@ -739,16 +740,20 @@ class file
 	
 	public function refresh()
 	{
-		global $website;
-		
-		$dims = $this->image_dimensions(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$this->id);
-		$this->width = $dims['width'];
-		$this->height = $dims['height'];
-		$this->size = filesize(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$this->id);
+	    $filepath = NAVIGATE_PRIVATE . '/' . $this->website . '/files/' . $this->id;
+        clearstatcache();
+
+        if($this->type == 'image')
+        {
+            $dims = $this->image_dimensions($filepath);
+            $this->width = $dims['width'];
+            $this->height = $dims['height'];
+        }
+		$this->size = filesize($filepath);
 		
 		$this->save();
 		
-		$thumbs = glob(NAVIGATE_PRIVATE.'/'.$website->id.'/thumbnails/*-'.$this->id);
+		$thumbs = glob(NAVIGATE_PRIVATE.'/'.$this->website.'/thumbnails/*-'.$this->id);
 		if(is_array($thumbs))	
 		{
 			foreach($thumbs as $t)	

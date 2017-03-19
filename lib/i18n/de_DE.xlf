@@ -3299,6 +3299,11 @@
 				<target>Deaktiviert für Navigate CMS Benutzer</target>
 			</trans-unit>
 
+			<trans-unit id="659">
+				<source>Replace file</source>
+				<target>Datei ersetzen</target>
+			</trans-unit>
+
 		</body>
 	</file>
 

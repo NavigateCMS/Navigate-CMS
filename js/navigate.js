@@ -167,16 +167,7 @@ $(window).on('load', function()
 
     $('.navigate-droppable').on("dblclick", 'img[data-src-original]', function()
     {
-        $('<div style="text-align: center;"><img style="width: 100%; object-fit: scale-down; object-position: 50% 0;" src="'+$(this).attr("data-src-original")+'" /></div>').dialog({
-            autoOpen: true,
-            modal: true,
-            width: '92%',
-            height: $(window).height() * 0.9,
-            title: $(this).attr("title")
-        }).dialogExtend(
-        {
-            maximizable: true
-        });
+        navigate_image_preview($(this).attr("data-src-original"), $(this).attr("title"));
     });
 
     $(".navigate-hidemenu-link").on("click", function()
@@ -314,6 +305,20 @@ function navigate_window_resize()
         if( $('.navibrowse-items,.navigrid-items').height() < $('.navibrowse,.navigrid').height() )
             $('.navibrowse-items,.navigrid-items').height( $('.navibrowse,.navigrid').height() - $('.navibrowse-path').height()  - 10 );
     }
+}
+
+function navigate_image_preview(src, title)
+{
+    $('<div style="text-align: center;"><img style="width: 100%; object-fit: scale-down; object-position: 50% 0;" src="'+src+'" /></div>').dialog({
+        autoOpen: true,
+        modal: true,
+        width: '92%',
+        height: $(window).height() * 0.9,
+        title: title
+    }).dialogExtend(
+    {
+        maximizable: true
+    });
 }
 
 function navigate_status(text, img, status, percentage)

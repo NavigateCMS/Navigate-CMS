@@ -3311,6 +3311,11 @@
                 <target>desactivats pels usuaris de Navigate CMS</target>
             </trans-unit>
 
+            <trans-unit id="659" approved="yes">
+                <source>Replace file</source>
+                <target>Reemplaçar fitxer</target>
+            </trans-unit>
+
         </body>
     </file>
 

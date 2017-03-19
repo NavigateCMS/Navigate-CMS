@@ -249,8 +249,46 @@ function run()
 		case 2:	// show/edit item properties
         case "edit":
 			$item->load($_REQUEST['id']);
-			
-			if(isset($_REQUEST['form-sent']))
+
+            if(@$_REQUEST['op']=='replace_file')
+            {
+                if($_FILES['file-replace']['error'] == 0)
+                {
+                    $destination = NAVIGATE_PRIVATE.'/'.$item->website.'/files/'.$item->id;
+                    $filesize = filesize($_FILES['file-replace']['tmp_name']);
+
+                    if($filesize > 0) // not an empty file, continue
+                    {
+                        @unlink($destination);
+                        $item->size = $filesize;
+
+                        if(move_uploaded_file($_FILES['file-replace']['tmp_name'], $destination))
+                        {
+                            $mime = file::getMime($_FILES['file-replace']['name'], $destination);
+                            $item->mime = $mime[0];
+                            $item->type = $mime[1];
+                            $item->date_added = core_time();
+                            $item->uploaded_by = (empty($user->id) ? '0' : $user->id);
+                            $item->refresh(); // including save
+
+                            $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+                        }
+                        else
+                        {
+                            $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                        }
+                    }
+                    else
+                    {
+                        $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                    }
+                }
+                else
+                {
+                    $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                }
+            }
+			else if(isset($_REQUEST['form-sent']))
 			{
 				$item->load_from_post();
 				try
@@ -725,7 +763,29 @@ function files_item_properties($item)
 
     $layout->navigate_media_browser();	// we can use media browser in this function
 
-	//$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/clipboard.png"> NaviM+</a>'));
+	$navibars->add_actions(
+	    array(
+	        '<a href="#" id="file-replace-trigger"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_refresh.png"> '.t(659, "Replace file").'</a>'
+        )
+    );
+
+    $layout->add_script('
+        $("#file-replace-trigger").on("click", function(e)
+        {
+            e.stopPropagation();
+            e.preventDefault();
+            $(this).parent().find("form").remove();
+            $(this).after(\'<form action="?fid=files&act=edit&op=replace_file&id='.$item->id.'" enctype="multipart/form-data" method="post"><input type="file" name="file-replace" style=" display: none;" /></form>\');
+            $(this).next().find("input").on("change", function()
+            {
+                if($(this).val()!="")
+                    $(this).parent().submit();
+            });
+            $(this).next().find("input").trigger("click");
+    
+            return false;
+        });
+    ');
 								
 	$navibars->add_actions(
 		array(
@@ -743,12 +803,12 @@ function files_item_properties($item)
 			'search_form'
 		)
 	);
-										
+
 	$delete_html = array();
 	$delete_html[] = '<script language="javascript" type="text/javascript">';
 	$delete_html[] = 'function navigate_delete_dialog()';		
 	$delete_html[] = '{';				
-	$delete_html[] = '$("<div id=\"navigate-delete-dialog\" class=\"hidden\">'.t(57, 'Do you really want to delete this item?').'</div>").dialog(
+	$delete_html[] = '$("<div id=\"navigate-delete-dialog\">'.t(57, 'Do you really want to delete this item?').'</div>").dialog(
 					  {
 							resizable: true,
 							height: 150,
@@ -933,14 +993,6 @@ function files_item_properties($item)
 		$naviforms->checkbox('enabled', $item->enabled),
         )
     );
-																				
-/*										
-	$navibars->add_tab_content_row(array(	'<label>'.t(153, 'Embed link').'</label>',
-											'<a href="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline" target="_blank">'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline</a>'));
-
-	$navibars->add_tab_content_row(array(	'<label>'.t(154, 'Download link').'</label>',
-											'<a href="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=attachment">'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=attachment</a>'));
-*/
 
 	$website_root = $website->absolute_path(true).'/object';
 	if(empty($website_root)) $website_root = NVWEB_OBJECT;
@@ -956,6 +1008,16 @@ function files_item_properties($item)
         '<a href="'.$website_root.'?id='.$item->id.'&disposition=attachment">'.$website_root.'?id='.$item->id.'&disposition=attachment</a>'
         )
     );
+
+/*
+    $navibars->add_tab_content_row(
+        array(
+            //'<label>'.t(-1, 'Replace file').'</label>',
+            '<button id="file-replace-trigger">'.t(-1, 'Replace file').'</button>',
+            '<input type="file" class="hidden" name="file-replace" id="file-replace" />'
+        )
+    );
+*/
 										
 	if($item->type == 'image')
 	{
@@ -1012,12 +1074,21 @@ function files_item_properties($item)
 			<a href="#" class="button" onclick="navigate_pixlr_edit();"><img src="'.NAVIGATE_URL.'/img/logos/pixlr.png" width="100px" height="42px" /></a>
 		'));
 
+
+        $original = NAVIGATE_DOWNLOAD.'?wid='.$item->website.'&id='.$item->id.'&disposition=inline';
         $navibars->add_tab_content_row(
             array(
                 '<label>'.t(274, 'Preview').'</label>',
-                '<div><img id="image-preview" src="'.$website_root.'?id='.$item->id.'&disposition=inline&seed='.core_time().'" width="400px" /></div>'
+                '<div><img id="image-preview" src="'.$original.'&seed='.core_time().'" width="400px" /></div>'
             )
         );
+
+        $layout->add_script('
+            $("#image-preview").on("dblclick", function()
+            {
+                navigate_image_preview($(this).attr("src"), $("#name").val());
+            });
+        ');
 
         $navibars->add_tab_content_row(
             array(
