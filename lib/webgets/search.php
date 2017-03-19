@@ -22,7 +22,8 @@ function nvweb_search($vars=array())
 
 	if(isset($_REQUEST[$vars['request']]) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
-        if(!isset($_SESSION['APP_USER#'.APP_UNIQUE])) // ignore searches requested by a navigate cms
+        // ignore searches requested by a navigate cms user or explicitly ignored by the template
+        if(!isset($_SESSION['APP_USER#'.APP_UNIQUE]) && @!($vars['log']=='false'))
         {
             // LOG search request
             $DB->execute('

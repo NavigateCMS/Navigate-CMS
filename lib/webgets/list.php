@@ -173,21 +173,25 @@ function nvweb_list($vars=array())
 
         if(!empty($search_what) && !isset($_SESSION['APP_USER#'.APP_UNIQUE]))
         {
-            $DB->execute('
-                INSERT INTO nv_search_log
-                  (id, website, date, webuser, origin, text, request)
-                VALUES
-                  (0, :website, :date, :webuser, :origin, :text, :request)
-              ',
-              array(
-                'website' => $website->id,
-                'date'    => time(),
-                'webuser' => value_or_default($webuser->id, 0),
-                'origin'  => (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']),
-                'text'    => $search_what,
-                'request' => json_encode(array_merge($_GET, $_POST))
-              )
-            );
+            // ignore searches requested by a navigate cms user or explicitly ignored by the template
+            if(@!($vars['log']=='false'))
+            {
+                $DB->execute('
+                    INSERT INTO nv_search_log
+                      (id, website, date, webuser, origin, text, request)
+                    VALUES
+                      (0, :website, :date, :webuser, :origin, :text, :request)
+                  ',
+                    array(
+                        'website' => $website->id,
+                        'date'    => time(),
+                        'webuser' => value_or_default($webuser->id, 0),
+                        'origin'  => (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']),
+                        'text'    => $search_what,
+                        'request' => json_encode(array_merge($_GET, $_POST))
+                    )
+                );
+            }
         }
 
         $search_what = explode(' ', $search_what);
