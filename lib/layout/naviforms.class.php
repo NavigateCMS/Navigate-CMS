@@ -733,7 +733,8 @@ class naviforms
             {
                 $f = new file();
                 $f->load($value);
-                $out[] = '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$f->id.'&amp;disposition=inline&amp;width=75&amp;height=75" />';
+                $out[] = '<img title="'.$f->name.'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$f->id.'&amp;disposition=inline&amp;width=75&amp;height=75"
+                                                    data-src-original="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$f->id.'&amp;disposition=inline" />';
             }
             else if($media=='video')
             {
@@ -855,6 +856,7 @@ class naviforms
                         <li action="permissions"><a href="#"><span class="ui-icon ui-icon-key"></span>'.t(17, "Permissions").'</a></li>
                         <li action="focalpoint"><a href="#"><span class="ui-icon ui-icon-image"></span>'.t(540, "Focal point").'</a></li>
                         <li action="description"><a href="#"><span class="ui-icon ui-icon-comment"></span>'.t(334, 'Description').'</a></li>
+                        <li action="preview"><a href="#"><span class="ui-icon ui-icon-zoomin"></span>'.t(274, 'Preview').'</a></li>
                     </ul>
                 ';
                 
@@ -907,6 +909,10 @@ class naviforms
 		                                    navigate_contextmenu_description_dialog(file_id, $("#'.$name.'-droppable"), data.title, data.description);
 		                                }
 		                            );
+		                            break;
+		                            
+		                            case "preview":
+		                                $("#'.$name.'-droppable img[data-src-original]").trigger("dblclick");
 		                            break;
 		                        }
 		                    });

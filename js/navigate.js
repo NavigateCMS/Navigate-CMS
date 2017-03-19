@@ -165,6 +165,20 @@ $(window).on('load', function()
         $(this).slideUp();
     });
 
+    $('.navigate-droppable').on("dblclick", 'img[data-src-original]', function()
+    {
+        $('<div style="text-align: center;"><img style="width: 100%; object-fit: scale-down; object-position: 50% 0;" src="'+$(this).attr("data-src-original")+'" /></div>').dialog({
+            autoOpen: true,
+            modal: true,
+            width: '92%',
+            height: $(window).height() * 0.9,
+            title: $(this).attr("title")
+        }).dialogExtend(
+        {
+            maximizable: true
+        });
+    });
+
     $(".navigate-hidemenu-link").on("click", function()
     {
         if($('.navigate-session').is(':visible'))

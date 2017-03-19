@@ -1252,6 +1252,7 @@ function files_media_browser($limit = 50, $offset = 0)
 	            $f->description = json_decode($f->description, true);
 
 				$icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&width=75&height=75';
+				$original = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline';
 				$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
 				               mediatype="'.$f->type.'"
 				               mimetype="'.$f->mime.'"
@@ -1260,10 +1261,10 @@ function files_media_browser($limit = 50, $offset = 0)
 				               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               download-link="'.$download_link.'"
-				               data-file-id="'.$f->id.'"
+				               data-file-id="'.$f->id.'"				               
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-				               <div class="file-image-wrapper"><img src="'.$icon.'" title="'.$f->name.'" /></div>
+				               <div class="file-image-wrapper"><img src="'.$icon.'" title="'.$f->name.'" data-src-original="'.$original.'" /></div>
 	                      </div>';
 			}
 	        else if($f->type == 'youtube')
