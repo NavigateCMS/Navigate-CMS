@@ -21,6 +21,7 @@ class comment
     public $properties;
 
     private $pending_revision; // keep pending revision flag until next reload
+    public $avatar; // auto loaded from user avatar
 
     public function __construct()
     {
@@ -56,7 +57,9 @@ class comment
 		$this->reply_to		= $main->reply_to;
 		$this->subscribed	= $main->subscribed;
 		$this->message		= html_entity_decode($main->message, ENT_COMPAT, "UTF-8");
+
         $this->pending_revision = ($main->status == -1);
+        $this->avatar       = $main->avatar;
 	}
 	
 	public function load_from_post()
@@ -287,6 +290,24 @@ class comment
         }
         else
             return $this->name;
+    }
+
+    public function author_avatar()
+    {
+        if(!empty($this->avatar))
+        {
+            return $this->avatar;
+        }
+        else if(!empty($this->user))
+        {
+            $w = new webuser();
+            $w->load($this->user);
+            return $w->avatar;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public function depth()

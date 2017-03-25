@@ -1066,9 +1066,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     if(!empty($tag['attributes']['border']))
 						$extra .= '&border='.$tag['attributes']['border'];
 
-					if(!empty($item->avatar))
+                    $avatar = $item->author_avatar();
+					if(!empty($avatar))
 					{
-						$out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$item->avatar.'" width="'.$size.'px" height="'.$size.'px"/>';
+						$out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$avatar.'" width="'.$size.'px" height="'.$size.'px"/>';
 					}
 					else if(!empty($tag['attributes']['default']))
                     {
