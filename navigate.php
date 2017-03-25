@@ -128,7 +128,7 @@ if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES
     $_SESSION['themes_updates'] = @theme::latest_available();
 }
 
-$idn = new idna_convert();
+$idn = new \Mso\IdnaConvert\IdnaConvert();
 $lang = new language();
 $lang->load($user->language);
 

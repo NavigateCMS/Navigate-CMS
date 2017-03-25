@@ -13,7 +13,7 @@ global $plugins;
 global $events;
 global $webgets;
 
-$idn = new idna_convert();
+$idn = new \Mso\IdnaConvert\IdnaConvert();
 $events = new events();
 
 // create database connection
@@ -63,7 +63,7 @@ try
     if(!empty($website->folder) && strpos('/'.$route, $website->folder)===0)
         $route = substr('/'.$route, strlen($website->folder)+1);
 
-    $nvweb_absolute = $idn->encode($website->absolute_path());
+    $nvweb_absolute = $idn->encodeUri($website->absolute_path());
 
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
 	define('NVWEB_OBJECT', $nvweb_absolute.'/object');

@@ -377,7 +377,7 @@ function nvweb_template_parse($template)
 			            break;
 
 		            case "url":
-			            $content = $idn->encode($website->absolute_path(false));
+			            $content = $idn->encodeUri($website->absolute_path(false));
 			            $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
 			            break;
 

@@ -43,7 +43,15 @@ function nvweb_load_website_by_url($url, $exit=true)
 	$host = $parsed['host']; // subdomain.domain.tld
 	$path = $parsed['path']; // [/folder]page
 
-    $host = $idn->decode($host);
+    if(filter_var($host, FILTER_VALIDATE_IP) !== false)
+    {
+        // is an ip, do nothing
+    }
+    else
+    {
+        // is not an ip
+        $host = $idn->decode($host);
+    }
 
     // look for website aliases
     $DB->query('SELECT aliases FROM nv_websites', 'array');
@@ -121,7 +129,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 				//        right now we only redirect to the real path
 				$url = $real . $add_to_real;
 
-				header('location: ' . $idn->encode($url));
+				header('location: ' . $idn->encodeUri($url));
 				nvweb_clean_exit();
 			}
         }

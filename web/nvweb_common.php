@@ -20,7 +20,16 @@ require_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/extensions/extension.class.php');
 
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/idna_convert.class.php');
+// IDNA converter to allow unicode characters in URLs
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/UnicodeTranscoderInterface.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/UnicodeTranscoder.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/NamePrepDataInterface.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/NamePrepData.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/PunycodeInterface.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/Punycode.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/EncodingHelper.php');
+require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/IdnaConvert.php');
+
 require_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
 require_once(NAVIGATE_PATH.'/lib/external/php-ixr/IXR_Library.php');
 
