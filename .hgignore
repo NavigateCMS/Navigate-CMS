@@ -10,6 +10,7 @@ private/1/thumbnails/*
 private/1/webgets/*
 private/1/templates/*
 private/oembed/*
+private/tmp/*
 setup/*.zip
 cfg/globals.php
 private/thumbnails/*
