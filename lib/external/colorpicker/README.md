@@ -1,8 +1,10 @@
 jQuery.colorpicker
 ==================
-Version 1.1.5
+Version 1.2.9
 
-Copyright &copy; 2011-2015 Martijn W. van der Lee.
+[![License](https://img.shields.io/github/license/vanderlee/colorpicker.svg)]()
+
+Copyright &copy; 2011-2017 Martijn W. van der Lee.
 Licensed under the MIT.
 
 Full-featured colorpicker for jQueryUI with full theming support.
@@ -33,27 +35,58 @@ Features
 		memory for colors.
 -	Documented
 -	Limited Unit tests (QUnit-based)
+-	Disable/enable
+-	Keyboard support
 
 Download
 --------
 Install with bower using `bower install colorpicker`.
 
-jQuery v1.7.1 or higher required. (Will not work with v1.6 or before).
+jQuery 1.7.1 or higher required. (Will not work with v1.6 or before).
 
-jQueryUI v1.8.0 or higher required.
+jQueryUI 1.8.0 or higher required.
+
+For jQuery 3.0.0 or higher, you must use jQueryUI 1.12.0 or higher.
 
 Current version: https://github.com/vanderlee/colorpicker/archive/master.zip
 
 Source code on Github: https://github.com/vanderlee/colorpicker
 
+jQueryUI custom build
+---------------------
+If you download a custom build of jQueryUI, you need these components:
+
+*	Dialog (includes Core, Widget, Mouse, Position, Draggable and Resizable)
+*	Fade Effect (only if you use the `showAnim` option, includes Effects Core)
+
+To use the `parts/jquery.ui.colorpicker-rgbslider.js` plugin, you must add:
+
+*	Slider (includes Core, Widget and Mouse)
+
+To use the demo page included in the documentation, you must add:
+
+*	Tabs (includes Core and Widget)
+
 Browser support
 ---------------
-Tested with v1.0.7
+Tested various versions of this plugin with the following browsers:
 
--	Chrome 31
--	FireFox 25
--	Opera 17
--	Internet Explorer 10
+-	Chrome 31-54
+-	FireFox 25-48
+-	Opera 17-39
+-	Internet Explorer 10-11
+-	Edge 20-25
+
+Keyboard support
+----------------
+You can use the arrow keys to move the cursors on the map and bar controls.
+Steps are measures in on-screen pixels.
+
+Holding the `shift` key while using the arrow keys takes steps 10x larger.
+Pressing the `page down` and `page up` keys does the same for vertical movement.
+
+Holding the `ctrl` key while using the arrow keys takes you to the edges.
+Pressing the `home` and `end` keys does the same for vertical movement.
 
 Documentation
 =============
@@ -175,6 +208,14 @@ predefined formats HEX3 and EXACT. For example, this array will output
 HEX3 format if possible or HEX format otherwise:
 
 *	``['HEX3', 'HEX']``
+
+###	disabled (false)
+Disable or enable the colorpicker and all it's controls by setting this option.
+
+If you disable the `input` using the `disabled` HTML attribute before attaching
+a colorpicker, it will automatically be disabled.
+
+You can change this option using the `option` method call.
 
 ###	draggable (true)
 Make the dialog draggable if the header is visible and the dialog is

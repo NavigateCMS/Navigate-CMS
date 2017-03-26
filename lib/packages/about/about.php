@@ -220,7 +220,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://idnaconv.net" target="_blank">Net_IDNA v1.1.0</a><br />'
+			'<a href="http://idnaconv.net" target="_blank">IDNA Convert v1.1.0</a><br />'
 		)
 	);
 
@@ -272,8 +272,12 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/yatt/jquery.base64/" target="_blank">jQuery.base64 v2013.03.26</a><br />' ));
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://vanderlee.github.io/colorpicker/" target="_blank">jQuery.colorpicker v1.1.5</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://vanderlee.github.io/colorpicker/" target="_blank">jQuery.colorpicker v1.2.9</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));
