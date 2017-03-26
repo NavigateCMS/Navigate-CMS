@@ -14,7 +14,7 @@ namespace Tracy;
 class Bar
 {
 	/** @var IBarPanel[] */
-	private $panels = [];
+	private $panels = array();
 
 	/** @var bool */
 	private $useSession;
@@ -56,10 +56,18 @@ class Bar
 	 */
 	public function render()
 	{
-		$useSession = $this->useSession && session_status() === PHP_SESSION_ACTIVE;
+        if(version_compare(phpversion(), '5.4', '>='))
+        {
+            $useSession = $this->useSession && (session_status() === PHP_SESSION_ACTIVE);
+        }
+        else
+        {
+            $useSession = $this->useSession;
+        }
 		$redirectQueue = &$_SESSION['_tracy']['redirect'];
 
-		foreach (['bar', 'redirect', 'bluescreen'] as $key) {
+		foreach (array('bar', 'redirect', 'bluescreen') as $key)
+		{
 			$queue = &$_SESSION['_tracy'][$key];
 			$queue = array_slice((array) $queue, -10, NULL, TRUE);
 			$queue = array_filter($queue, function ($item) {
@@ -71,25 +79,25 @@ class Bar
 			return;
 
 		} elseif (Helpers::isAjax()) {
-			$rows[] = (object) ['type' => 'ajax', 'panels' => $this->renderPanels('-ajax')];
+			$rows[] = (object) array('type' => 'ajax', 'panels' => $this->renderPanels('-ajax'));
 			$dumps = Dumper::fetchLiveData();
 			$contentId = $useSession ? $_SERVER['HTTP_X_TRACY_AJAX'] . '-ajax' : NULL;
 
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
 			Dumper::fetchLiveData();
 			Dumper::$livePrefix = count($redirectQueue) . 'p';
-			$redirectQueue[] = [
+			$redirectQueue[] = array(
 				'panels' => $this->renderPanels('-r' . count($redirectQueue)),
 				'dumps' => Dumper::fetchLiveData(),
 				'time' => time(),
-			];
+            );
 			return;
 
 		} else {
-			$rows[] = (object) ['type' => 'main', 'panels' => $this->renderPanels()];
+			$rows[] = (object) array('type' => 'main', 'panels' => $this->renderPanels());
 			$dumps = Dumper::fetchLiveData();
 			foreach (array_reverse((array) $redirectQueue) as $info) {
-				$rows[] = (object) ['type' => 'redirect', 'panels' => $info['panels']];
+				$rows[] = (object) array('type' => 'redirect', 'panels' => $info['panels']);
 				$dumps += $info['dumps'];
 			}
 			$redirectQueue = NULL;
@@ -102,7 +110,7 @@ class Bar
 		$content = Helpers::fixEncoding(ob_get_clean());
 
 		if ($contentId) {
-			$_SESSION['_tracy']['bar'][$contentId] = ['content' => $content, 'dumps' => $dumps, 'time' => time()];
+			$_SESSION['_tracy']['bar'][$contentId] = array('content' => $content, 'dumps' => $dumps, 'time' => time());
 		}
 
 		if (Helpers::isHtmlMode()) {
@@ -124,7 +132,7 @@ class Bar
 		});
 
 		$obLevel = ob_get_level();
-		$panels = [];
+		$panels = array();
 
 		foreach ($this->panels as $id => $panel) {
 			$idHtml = preg_replace('#[^a-z0-9]+#i', '-', $id) . $suffix;
@@ -147,7 +155,7 @@ class Bar
 				$panelHtml = "<h1>Error: $id</h1><div class='tracy-inner'>" . nl2br(Helpers::escapeHtml($e)) . '</div>';
 				unset($e);
 			}
-			$panels[] = (object) ['id' => $idHtml, 'tab' => $tab, 'panel' => $panelHtml];
+			$panels[] = (object) array('id' => $idHtml, 'tab' => $tab, 'panel' => $panelHtml);
 		}
 
 		restore_error_handler();
@@ -171,7 +179,14 @@ class Bar
 			return TRUE;
 		}
 
-		$this->useSession = session_status() === PHP_SESSION_ACTIVE;
+        if(version_compare(phpversion(), '5.4', '>='))
+        {
+            $this->useSession = (session_status() === PHP_SESSION_ACTIVE);
+        }
+        else
+        {
+            $this->useSession = true;
+        }
 
 		if ($this->useSession && Helpers::isAjax()) {
 			header('X-Tracy-Ajax: 1'); // session must be already locked
@@ -202,21 +217,21 @@ class Bar
 
 	private function renderAssets()
 	{
-		$css = array_map('file_get_contents', [
+		$css = array_map('file_get_contents', array(
 			__DIR__ . '/assets/Bar/bar.css',
 			__DIR__ . '/assets/Toggle/toggle.css',
 			__DIR__ . '/assets/Dumper/dumper.css',
 			__DIR__ . '/assets/BlueScreen/bluescreen.css',
-		]);
+        ));
 		$css = json_encode(preg_replace('#\s+#u', ' ', implode($css)));
 		echo "(function(){var el = document.createElement('style'); el.className='tracy-debug'; el.textContent=$css; document.head.appendChild(el);})();\n";
 
-		array_map('readfile', [
+		array_map('readfile', array(
 			__DIR__ . '/assets/Bar/bar.js',
 			__DIR__ . '/assets/Toggle/toggle.js',
 			__DIR__ . '/assets/Dumper/dumper.js',
 			__DIR__ . '/assets/BlueScreen/bluescreen.js',
-		]);
+        ));
 	}
 
 }

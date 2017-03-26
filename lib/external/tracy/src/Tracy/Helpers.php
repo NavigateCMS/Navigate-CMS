@@ -48,7 +48,7 @@ class Helpers
 	{
 		if (Debugger::$editor && $file && is_file($file)) {
 			$file = strtr($file, Debugger::$editorMapping);
-			return strtr(Debugger::$editor, ['%file' => rawurlencode($file), '%line' => $line ? (int) $line : 1]);
+			return strtr(Debugger::$editor, array('%file' => rawurlencode($file), '%line' => $line ? (int) $line : 1));
 		}
 	}
 
@@ -88,7 +88,8 @@ class Helpers
 	 */
 	public static function getClass($obj)
 	{
-		return explode("\x00", get_class($obj))[0];
+	    $x =  explode("\x00", get_class($obj));
+		return $x[0];
 	}
 
 
@@ -96,14 +97,14 @@ class Helpers
 	public static function fixStack($exception)
 	{
 		if (function_exists('xdebug_get_function_stack')) {
-			$stack = [];
+			$stack = array();
 			foreach (array_slice(array_reverse(xdebug_get_function_stack()), 2, -1) as $row) {
-				$frame = [
+				$frame = array(
 					'file' => $row['file'],
 					'line' => $row['line'],
 					'function' => isset($row['function']) ? $row['function'] : '*unknown*',
-					'args' => [],
-				];
+					'args' => array(),
+                );
 				if (!empty($row['class'])) {
 					$frame['type'] = isset($row['type']) && $row['type'] === 'dynamic' ? '->' : '::';
 					$frame['class'] = $row['class'];
@@ -128,7 +129,7 @@ class Helpers
 	/** @internal */
 	public static function errorTypeToString($type)
 	{
-		$types = [
+		$types = array(
 			E_ERROR => 'Fatal Error',
 			E_USER_ERROR => 'User Error',
 			E_RECOVERABLE_ERROR => 'Recoverable Error',
@@ -144,7 +145,7 @@ class Helpers
 			E_STRICT => 'Strict standards',
 			E_DEPRECATED => 'Deprecated',
 			E_USER_DEPRECATED => 'User Deprecated',
-		];
+        );
 		return isset($types[$type]) ? $types[$type] : 'Unknown error';
 	}
 
@@ -169,8 +170,10 @@ class Helpers
 		$message = $e->getMessage();
 		if (!$e instanceof \Error && !$e instanceof \ErrorException) {
 			// do nothing
-		} elseif (preg_match('#^Call to undefined function (\S+\\\\)?(\w+)\(#', $message, $m)) {
-			$funcs = array_merge(get_defined_functions()['internal'], get_defined_functions()['user']);
+		} elseif (preg_match('#^Call to undefined function (\S+\\\\)?(\w+)\(#', $message, $m))
+        {
+            $defined_functions = get_defined_functions();
+			$funcs = array_merge($defined_functions['internal'], $defined_functions['user']);
 			$hint = self::getSuggestion($funcs, $m[1] . $m[2]) ?: self::getSuggestion($funcs, $m[2]);
 			$message = "Call to undefined function $m[2](), did you mean $hint()?";
 
@@ -247,4 +250,66 @@ class Helpers
 			: NULL;
 	}
 
+}
+
+// helper to make Tracy compatible with PHP 5.3
+if (!function_exists('http_response_code'))
+{
+    function http_response_code($code = NULL) {
+        $prev_code = (isset($GLOBALS['http_response_code']) ? $GLOBALS['http_response_code'] : 200);
+
+        if ($code === NULL) {
+            return $prev_code;
+        }
+
+        switch ($code) {
+            case 100: $text = 'Continue'; break;
+            case 101: $text = 'Switching Protocols'; break;
+            case 200: $text = 'OK'; break;
+            case 201: $text = 'Created'; break;
+            case 202: $text = 'Accepted'; break;
+            case 203: $text = 'Non-Authoritative Information'; break;
+            case 204: $text = 'No Content'; break;
+            case 205: $text = 'Reset Content'; break;
+            case 206: $text = 'Partial Content'; break;
+            case 300: $text = 'Multiple Choices'; break;
+            case 301: $text = 'Moved Permanently'; break;
+            case 302: $text = 'Moved Temporarily'; break;
+            case 303: $text = 'See Other'; break;
+            case 304: $text = 'Not Modified'; break;
+            case 305: $text = 'Use Proxy'; break;
+            case 400: $text = 'Bad Request'; break;
+            case 401: $text = 'Unauthorized'; break;
+            case 402: $text = 'Payment Required'; break;
+            case 403: $text = 'Forbidden'; break;
+            case 404: $text = 'Not Found'; break;
+            case 405: $text = 'Method Not Allowed'; break;
+            case 406: $text = 'Not Acceptable'; break;
+            case 407: $text = 'Proxy Authentication Required'; break;
+            case 408: $text = 'Request Time-out'; break;
+            case 409: $text = 'Conflict'; break;
+            case 410: $text = 'Gone'; break;
+            case 411: $text = 'Length Required'; break;
+            case 412: $text = 'Precondition Failed'; break;
+            case 413: $text = 'Request Entity Too Large'; break;
+            case 414: $text = 'Request-URI Too Large'; break;
+            case 415: $text = 'Unsupported Media Type'; break;
+            case 500: $text = 'Internal Server Error'; break;
+            case 501: $text = 'Not Implemented'; break;
+            case 502: $text = 'Bad Gateway'; break;
+            case 503: $text = 'Service Unavailable'; break;
+            case 504: $text = 'Gateway Time-out'; break;
+            case 505: $text = 'HTTP Version not supported'; break;
+            default:
+                trigger_error('Unknown http status code ' . $code, E_USER_ERROR); // exit('Unknown http status code "' . htmlentities($code) . '"');
+                return $prev_code;
+        }
+
+        $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+        header($protocol . ' ' . $code . ' ' . $text);
+        $GLOBALS['http_response_code'] = $code;
+
+        // original function always returns the previous or current code
+        return $prev_code;
+    }
 }

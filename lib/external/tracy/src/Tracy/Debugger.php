@@ -50,7 +50,7 @@ class Debugger
 	public static $scream = FALSE;
 
 	/** @var array of callables specifies the functions that are automatically called after fatal error */
-	public static $onFatalError = [];
+	public static $onFatalError = array();
 
 	/********************* Debugger::dump() ****************d*g**/
 
@@ -95,7 +95,7 @@ class Debugger
 	public static $editor = 'editor://open/?file=%file&line=%line';
 
 	/** @var array replacements in path */
-	public static $editorMapping = [];
+	public static $editorMapping = array();
 
 	/** @var string command to open browser (use 'start ""' in Windows) */
 	public static $browser;
@@ -180,12 +180,12 @@ class Debugger
 			return;
 		}
 
-		register_shutdown_function([__CLASS__, 'shutdownHandler']);
-		set_exception_handler([__CLASS__, 'exceptionHandler']);
-		set_error_handler([__CLASS__, 'errorHandler']);
+		register_shutdown_function(array(__CLASS__, 'shutdownHandler'));
+		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
+		set_error_handler(array(__CLASS__, 'errorHandler'));
 
-		array_map('class_exists', ['Tracy\Bar', 'Tracy\BlueScreen', 'Tracy\DefaultBarPanel', 'Tracy\Dumper',
-			'Tracy\FireLogger', 'Tracy\Helpers', 'Tracy\Logger']);
+		array_map('class_exists', array('Tracy\Bar', 'Tracy\BlueScreen', 'Tracy\DefaultBarPanel', 'Tracy\Dumper',
+			'Tracy\FireLogger', 'Tracy\Helpers', 'Tracy\Logger'));
 
 		self::dispatch();
 		self::$enabled = TRUE;
@@ -197,16 +197,24 @@ class Debugger
 	 */
 	public static function dispatch()
 	{
-		if (self::$productionMode) {
-			return;
+        $session_status_check = false; // default value
+        if(version_compare(phpversion(), '5.4', '>='))
+            $session_status_check = session_status() !== PHP_SESSION_ACTIVE;
 
-		} elseif (headers_sent($file, $line) || ob_get_length()) {
+		if (self::$productionMode)
+		{
+			return;
+		}
+		elseif (headers_sent($file, $line) || ob_get_length())
+        {
 			throw new \LogicException(
 				__METHOD__ . '() called after some output has been sent. '
 				. ($file ? "Output started at $file:$line." : 'Try Tracy\OutputDebugger to find where output started.')
 			);
 
-		} elseif (self::$enabled && session_status() !== PHP_SESSION_ACTIVE) {
+		}
+		elseif (self::$enabled && $session_status_check)
+        {
 			ini_set('session.use_cookies', '1');
 			ini_set('session.use_only_cookies', '1');
 			ini_set('session.use_trans_sid', '0');
@@ -243,7 +251,7 @@ class Debugger
 		self::$reserved = NULL;
 
 		$error = error_get_last();
-		if (in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR], TRUE)) {
+		if (in_array($error['type'], array(E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE, E_RECOVERABLE_ERROR, E_USER_ERROR), TRUE)) {
 			self::exceptionHandler(
 				Helpers::fixStack(new ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line'])),
 				FALSE
@@ -415,7 +423,7 @@ class Debugger
 	{
 		while (ob_get_level() > self::$obLevel) {
 			$status = ob_get_status();
-			if (in_array($status['name'], ['ob_gzhandler', 'zlib output compression'])) {
+			if (in_array($status['name'], array('ob_gzhandler', 'zlib output compression'))) {
 				break;
 			}
 			$fnc = $status['chunk_size'] || !$errorOccurred ? 'ob_end_flush' : 'ob_end_clean';
@@ -436,11 +444,11 @@ class Debugger
 	{
 		if (!self::$blueScreen) {
 			self::$blueScreen = new BlueScreen;
-			self::$blueScreen->info = [
+			self::$blueScreen->info = array(
 				'PHP ' . PHP_VERSION,
 				isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : NULL,
 				'Tracy ' . self::VERSION,
-			];
+            );
 		}
 		return self::$blueScreen;
 	}
@@ -510,18 +518,18 @@ class Debugger
 	{
 		if ($return) {
 			ob_start(function () {});
-			Dumper::dump($var, [
+			Dumper::dump($var, array(
 				Dumper::DEPTH => self::$maxDepth,
 				Dumper::TRUNCATE => self::$maxLength,
-			]);
+            ));
 			return ob_get_clean();
 
 		} elseif (!self::$productionMode) {
-			Dumper::dump($var, [
+			Dumper::dump($var, array(
 				Dumper::DEPTH => self::$maxDepth,
 				Dumper::TRUNCATE => self::$maxLength,
 				Dumper::LOCATION => self::$showLocation,
-			]);
+            ));
 		}
 
 		return $var;
@@ -535,7 +543,7 @@ class Debugger
 	 */
 	public static function timer($name = NULL)
 	{
-		static $time = [];
+		static $time = array();
 		$now = microtime(TRUE);
 		$delta = isset($time[$name]) ? $now - $time[$name] : 0;
 		$time[$name] = $now;
@@ -558,11 +566,11 @@ class Debugger
 			if (!$panel) {
 				self::getBar()->addPanel($panel = new DefaultBarPanel('dumps'), 'Tracy:dumps');
 			}
-			$panel->data[] = ['title' => $title, 'dump' => Dumper::toHtml($var, (array) $options + [
+			$panel->data[] = array('title' => $title, 'dump' => Dumper::toHtml($var, (array) $options + array(
 				Dumper::DEPTH => self::$maxDepth,
 				Dumper::TRUNCATE => self::$maxLength,
 				Dumper::LOCATION => self::$showLocation ?: Dumper::LOCATION_CLASS | Dumper::LOCATION_SOURCE,
-			])];
+            )));
 		}
 		return $var;
 	}

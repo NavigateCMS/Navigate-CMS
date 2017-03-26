@@ -22,7 +22,10 @@ function run()
 					$text = $_REQUEST['text'];
 					$lang = $_REQUEST['lang'];
 					if(empty($lang))
-						$lang = array_keys($website->languages)[0];
+                    {
+                        $lang = array_keys($website->languages);
+                        $lang = $lang[0];
+                    }
 
 					$DB->query('
 						SELECT p.path, d.text

@@ -24,7 +24,7 @@ class FireLogger implements ILogger
 	public $maxLength = 150;
 
 	/** @var array  */
-	private $payload = ['logs' => []];
+	private $payload = array('logs' => array());
 
 
 	/**
@@ -38,7 +38,7 @@ class FireLogger implements ILogger
 			return FALSE;
 		}
 
-		$item = [
+		$item = array(
 			'name' => 'PHP',
 			'level' => $priority,
 			'order' => count($this->payload['logs']),
@@ -46,7 +46,7 @@ class FireLogger implements ILogger
 			'template' => '',
 			'message' => '',
 			'style' => 'background:#767ab6',
-		];
+        );
 
 		$args = func_get_args();
 		if (isset($args[0]) && is_string($args[0])) {
@@ -85,16 +85,16 @@ class FireLogger implements ILogger
 			}
 		}
 
-		$item['exc_info'] = ['', '', []];
-		$item['exc_frames'] = [];
+		$item['exc_info'] = array('', '', array());
+		$item['exc_frames'] = array();
 
 		foreach ($trace as $frame) {
-			$frame += ['file' => NULL, 'line' => NULL, 'class' => NULL, 'type' => NULL, 'function' => NULL, 'object' => NULL, 'args' => NULL];
-			$item['exc_info'][2][] = [$frame['file'], $frame['line'], "$frame[class]$frame[type]$frame[function]", $frame['object']];
+			$frame += array('file' => NULL, 'line' => NULL, 'class' => NULL, 'type' => NULL, 'function' => NULL, 'object' => NULL, 'args' => NULL);
+			$item['exc_info'][2][] = array($frame['file'], $frame['line'], "$frame[class]$frame[type]$frame[function]", $frame['object']);
 			$item['exc_frames'][] = $frame['args'];
 		}
 
-		if (isset($args[0]) && in_array($args[0], [self::DEBUG, self::INFO, self::WARNING, self::ERROR, self::CRITICAL], TRUE)) {
+		if (isset($args[0]) && in_array($args[0], array(self::DEBUG, self::INFO, self::WARNING, self::ERROR, self::CRITICAL), TRUE)) {
 			$item['level'] = array_shift($args);
 		}
 
@@ -132,7 +132,7 @@ class FireLogger implements ILogger
 
 			} elseif ($level < $this->maxDepth || !$this->maxDepth) {
 				$var[$marker] = TRUE;
-				$res = [];
+				$res = array();
 				foreach ($var as $k => &$v) {
 					if ($k !== $marker) {
 						$res[$this->jsonDump($k)] = $this->jsonDump($v, $level + 1);
@@ -147,13 +147,13 @@ class FireLogger implements ILogger
 
 		} elseif (is_object($var)) {
 			$arr = (array) $var;
-			static $list = [];
+			static $list = array();
 			if (in_array($var, $list, TRUE)) {
 				return "\xE2\x80\xA6RECURSION\xE2\x80\xA6";
 
 			} elseif ($level < $this->maxDepth || !$this->maxDepth) {
 				$list[] = $var;
-				$res = ["\x00" => '(object) ' . Helpers::getClass($var)];
+				$res = array("\x00" => '(object) ' . Helpers::getClass($var));
 				foreach ($arr as $k => &$v) {
 					if (isset($k[0]) && $k[0] === "\x00") {
 						$k = substr($k, strrpos($k, "\x00") + 1);

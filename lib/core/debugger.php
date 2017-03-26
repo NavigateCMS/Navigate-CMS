@@ -8,6 +8,10 @@ class debugger
             note: if you don't want your users to see Tracy fatal errors, set "PRODUCTION" instead of "DEVELOPMENT")
         */
         error_reporting(E_ALL | E_WARNING | E_PARSE);
+
+        if(!file_exists(NAVIGATE_PRIVATE . '/tmp'))
+            @mkdir(NAVIGATE_PRIVATE . '/tmp');
+
         Tracy\Debugger::enable(
             Tracy\Debugger::DEVELOPMENT,
             NAVIGATE_PRIVATE . '/tmp'

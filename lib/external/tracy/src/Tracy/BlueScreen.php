@@ -14,13 +14,13 @@ namespace Tracy;
 class BlueScreen
 {
 	/** @var string[] */
-	public $info = [];
+	public $info = array();
 
 	/** @var callable[] */
-	private $panels = [];
+	private $panels = array();
 
 	/** @var string[] paths to be collapsed in stack trace (e.g. core libraries) */
-	public $collapsePaths = [];
+	public $collapsePaths = array();
 
 	/** @var int  */
 	public $maxDepth = 3;
@@ -62,7 +62,7 @@ class BlueScreen
 			ob_start(function () {});
 			$this->renderTemplate($exception, __DIR__ . '/assets/BlueScreen/content.phtml');
 			$contentId = $_SERVER['HTTP_X_TRACY_AJAX'];
-			$_SESSION['_tracy']['bluescreen'][$contentId] = ['content' => ob_get_clean(), 'dumps' => Dumper::fetchLiveData(), 'time' => time()];
+			$_SESSION['_tracy']['bluescreen'][$contentId] = array('content' => ob_get_clean(), 'dumps' => Dumper::fetchLiveData(), 'time' => time());
 
 		} else {
 			$this->renderTemplate($exception, __DIR__ . '/assets/BlueScreen/page.phtml');
@@ -102,12 +102,12 @@ class BlueScreen
 			: NULL;
 		$lastError = $exception instanceof \ErrorException || $exception instanceof \Error ? NULL : error_get_last();
 		$dump = function($v) {
-			return Dumper::toHtml($v, [
+			return Dumper::toHtml($v, array(
 				Dumper::DEPTH => $this->maxDepth,
 				Dumper::TRUNCATE => $this->maxLength,
 				Dumper::LIVE => TRUE,
 				Dumper::LOCATION => Dumper::LOCATION_CLASS,
-			]);
+            ));
 		};
 		$nonce = Helpers::getNonce();
 
@@ -121,7 +121,7 @@ class BlueScreen
 	private function renderPanels($ex)
 	{
 		$obLevel = ob_get_level();
-		$res = [];
+		$res = array();
 		foreach ($this->panels as $callback) {
 			try {
 				$panel = call_user_func($callback, $ex);
@@ -137,10 +137,10 @@ class BlueScreen
 				ob_end_clean();
 			}
 			is_callable($callback, TRUE, $name);
-			$res[] = (object) [
+			$res[] = (object) array(
 				'tab' => "Error in panel $name",
 				'panel' => nl2br(Helpers::escapeHtml($e)),
-			];
+            );
 		}
 		return $res;
 	}
@@ -183,7 +183,7 @@ class BlueScreen
 			ini_set('highlight.string', '#080');
 		}
 
-		$source = str_replace(["\r\n", "\r"], "\n", $source);
+		$source = str_replace(array("\r\n", "\r"), "\n", $source);
 		$source = explode("\n", highlight_string($source, TRUE));
 		$out = $source[0]; // <code><span color=highlight.html>
 		$source = str_replace('<br />', "\n", $source[1]);
@@ -193,7 +193,7 @@ class BlueScreen
 			$out = preg_replace_callback('#">\$(\w+)(&nbsp;)?</span>#', function ($m) use ($vars) {
 				return array_key_exists($m[1], $vars)
 					? '" title="'
-						. str_replace('"', '&quot;', trim(strip_tags(Dumper::toHtml($vars[$m[1]], [Dumper::DEPTH => 1]))))
+						. str_replace('"', '&quot;', trim(strip_tags(Dumper::toHtml($vars[$m[1]], array(Dumper::DEPTH => 1)))))
 						. $m[0]
 					: $m[0];
 			}, $out);
@@ -231,7 +231,7 @@ class BlueScreen
 
 		foreach ($source as $n => $s) {
 			$spans += substr_count($s, '<span') - substr_count($s, '</span');
-			$s = str_replace(["\r", "\n"], ['', ''], $s);
+			$s = str_replace(array("\r", "\n"), array('', ''), $s);
 			preg_match_all('#<[^>]+>#', $s, $tags);
 			if ($n == $line) {
 				$out .= sprintf(
