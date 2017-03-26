@@ -282,8 +282,12 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://verlok.github.io/lazyload" target="_blank">LazyLoad v:e3cd449 (Mar 10 2016)</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://verlok.github.io/lazyload" target="_blank">LazyLoad v5.1.1</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://scripts.incutio.com/xmlrpc/" target="_blank">Incutio XML-RPC Library for PHP v1.7.4</a><br />' ));
