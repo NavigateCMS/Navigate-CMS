@@ -152,7 +152,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="http://www.plupload.com/" target="_blank">Plupload v2.0.0</a><br />'
+			'<a href="http://www.plupload.com/" target="_blank">Plupload v2.3.1</a><br />'
 		)
 	);
 
