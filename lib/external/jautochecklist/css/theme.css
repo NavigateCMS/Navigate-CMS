@@ -1,0 +1,9 @@
+/*deactivate a theme that you don't need for performance reason*/
+
+/*Minified version*/
+/*@import url(theme/bootstrap2.min.css);*/
+/*@import url(theme/bootstrap3.min.css);*/
+
+/*Uncompressed version*/
+@import url(theme/bootstrap2.css);
+@import url(theme/bootstrap3.css);

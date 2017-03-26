@@ -179,8 +179,12 @@ function about_layout()
     $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://plugins.jquery.com/project/query-object" target="_blank">jQuery.query v2.1.8 (22-Jun-2010)</a><br />' ));
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://code.google.com/p/jautochecklist/" target="_blank">jAutochecklist v1.12</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="http://iflyingangel.com/jautochecklist" target="_blank">jAutochecklist v1.3.1</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/" target="_blank">jQuery mb.extruder v2.5</a><br />' ));
@@ -216,7 +220,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://idnaconv.net" target="_blank">Net_IDNA v0.9.0</a><br />'
+			'<a href="http://idnaconv.net" target="_blank">Net_IDNA v1.1.0</a><br />'
 		)
 	);
 

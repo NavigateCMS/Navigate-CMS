@@ -1,0 +1,32 @@
+.bootstrap3.jAutochecklist_wrapper {height: 34px; border-radius: 4px}
+.bootstrap3 .jAutochecklist_dropdown_wrapper {border-radius: 4px}
+.bootstrap3 .jAutochecklist_dropdown_wrapper:hover {background: #EBEBEB}
+.bootstrap3 .jAutochecklist_arrow {padding-top: 5px; margin-right: 8px}
+.bootstrap3 .jAutochecklist_popup {bottom: 45px}
+.bootstrap3 .jAutochecklist_remove_all {top: 7px; background-color: transparent}
+.bootstrap3 .jAutochecklist_arrow, .bootstrap3 .jAutochecklist_arrow:hover {background: transparent}
+.bootstrap3 .jAutochecklist_remove_all, .bootstrap3 .jAutochecklist_remove_all:hover {background-color: transparent}
+.bootstrap3 .jAutochecklist_arrow div {border-width: 4px 4px 0}
+.bootstrap3 .jAutochecklist_result {padding-left: 18px;line-height: 28px}
+.bootstrap3 .jAutochecklist_listItem {line-height: 18px}
+.bootstrap3 .jAutochecklist_dropdown input {padding: 0 18px}
+.bootstrap3 .jAutochecklist_list {padding: 5px 0; border-radius: 4px; margin-top: 2px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2)}
+.bootstrap3 .jAutochecklist_listItem, .bootstrap3 .jAutochecklist_noresult {padding: 3px 20px}
+.bootstrap3 .jAutochecklist_listItem:hover {
+    text-shadow: none;
+    color: black;
+    background: #f5f5f5;
+    filter: none;
+}
+.bootstrap3 .jAutochecklist_listItem.selected {
+    text-shadow: none;
+    color: white;
+    background: #428BCA;
+    filter: none;
+}
+.bootstrap3 .jAutochecklist_listItem.jAutochecklist_listItem_group_empty { font-size: 11px; text-transform:uppercase; color: #999;}
+.bootstrap3 .jAutochecklist_listItem.jAutochecklist_listItem_group_empty.selected {color: white}
+.bootstrap3.jAutochecklist_single .jAutochecklist_listItem.jAutochecklist_listItem_group_empty:hover {
+    background: white;
+    background: rgba(255, 255, 255, 0.95);
+}
