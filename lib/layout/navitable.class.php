@@ -269,10 +269,18 @@ class navitable
                 break;
 
             case 'in': // is in
-                if(!empty($compareValue))
+                if(!empty($compareValue) || $compareValue=="0")
                 {
-                    $compareValue = explode(",", $compareValue);
-                    $compareValue = array_filter($compareValue);
+                    if(strpos($compareValue, ",")!==false)
+                    {
+                        $compareValue = explode(",", $compareValue);
+                        $compareValue = array_filter($compareValue);
+                    }
+                    else
+                    {
+                        $compareValue = array($compareValue);
+                    }
+
                     $compareValue = array_map(
                         function($v)
                         {

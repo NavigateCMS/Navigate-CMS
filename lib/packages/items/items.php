@@ -138,10 +138,8 @@ function run()
 							 OFFSET '.$offset;
 
 					if(!$DB->query($sql, 'array'))
-					{
-						throw new Exception($DB->get_last_error());	
-					}
-					
+						throw new Exception($DB->get_last_error());
+
 					$dataset = $DB->result();	
 					$total = $DB->foundRows();
 
@@ -914,7 +912,12 @@ function items_list()
                 	"margin-top": "0px",
                 	"padding": "0px"
             	})
-            	.on("click", items_list_choose_categories);
+            	.on("click", function(e)
+            	{
+            	    e.stopPropagation();
+            	    e.preventDefault();
+            	    setTimeout(items_list_choose_categories, 150);
+                });
 
             $("#jqgh_items_list_category span.ui-button-text").css({"padding-top": "0", "padding-bottom": "0"});
         }
@@ -922,6 +925,7 @@ function items_list()
 
     // add categories filter
     $hierarchy = structure::hierarchy();
+    array_unshift($hierarchy, (object) array('id' => 0, 'label' => t(428, "(no category)")));
     $hierarchy = structure::hierarchyListClasses($hierarchy);
 
     $navibars->add_content('<div id="filter_categories_window" style="display: none;">'.$hierarchy.'</div>');
@@ -1023,7 +1027,7 @@ function items_form($item)
 		$navibars->add_actions(
             array(
 	            ($user->permission('items.create')=='true'?
-	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S" data-action="save">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
 				</a>' : "")
             )
@@ -1034,7 +1038,7 @@ function items_form($item)
 		$navibars->add_actions(
             array(
 	            (($user->permission('items.edit')=='true' || $item->author == $user->id) ?
-	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S">
+	            '<a href="#" onclick="navigate_items_tabform_submit(1);" title="Ctrl+S" data-action="save">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
 				</a>' : ""),
 	            ($user->permission("items.delete") == 'true'?
@@ -1857,6 +1861,10 @@ function items_form($item)
 			{
 				navigate_items_select_language("'.$onload_language.'");
 				navigate_change_association("'.(empty($item->id)? 'category' : $item->association).'");
+				
+	            // try to prevent erroneus "Unsaved changes" message when the user is about to save
+	            $("#navigate-content-actions a[data-action=save]").on("mouseenter", navigate_beforeunload_unregister);
+	            
 				setTimeout(function()
 				{
 					$(navigate_codemirror_instances).each(function() { this.refresh(); } );
