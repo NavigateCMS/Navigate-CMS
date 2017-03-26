@@ -1855,7 +1855,7 @@ function items_form($item)
 		$onload_language = $_REQUEST['tab_language'];
 		if(empty($onload_language))
 			$onload_language = $website->languages_list[0];
-			
+
 		$layout->add_script('
 			function navigate_items_onload()
 			{

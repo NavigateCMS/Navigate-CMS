@@ -497,8 +497,11 @@ class Debugger
 	 */
 	public static function getFireLogger()
 	{
-		if (!self::$fireLogger) {
+		if (!self::$fireLogger)
+		{
 			self::$fireLogger = new FireLogger;
+            self::$fireLogger->maxDepth = self::$maxDepth;
+            self::$fireLogger->maxLength = self::$maxLength;
 		}
 		return self::$fireLogger;
 	}

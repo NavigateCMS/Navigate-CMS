@@ -16,6 +16,9 @@ class debugger
             Tracy\Debugger::DEVELOPMENT,
             NAVIGATE_PRIVATE . '/tmp'
         );
+
+        Tracy\Debugger::$maxDepth = PHP_INT_MAX; // default: 3
+        Tracy\Debugger::$maxLength = PHP_INT_MAX; // default: 150
     }
 
     static function dispatch()

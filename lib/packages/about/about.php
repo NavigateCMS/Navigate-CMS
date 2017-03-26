@@ -124,7 +124,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     	'<label>&nbsp;</label>',
-        '<a href="https://tracy.nette.org/" target="_blank">Tracy – PHP debugger v2.4.6</a><br />'
+        '<a href="https://tracy.nette.org/" target="_blank">Tracy – PHP debugger v2.4.6 (NV modified version)</a><br />'
 		)
 	);
 
