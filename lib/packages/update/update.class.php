@@ -427,6 +427,10 @@ class update
         for($t=0; $t < count($navigatecms_cache); $t++)
             @unlink($navigatecms_cache[$t]);
 
+        $navigatecms_cache = glob(NAVIGATE_PATH . '/cache/*.js');
+        for($t=0; $t < count($navigatecms_cache); $t++)
+            @unlink($navigatecms_cache[$t]);
+
         $tinymce_cache = glob(NAVIGATE_PATH . '/lib/external/tinymce/*.gz');
         for($t=0; $t < count($tinymce_cache); $t++)
             @unlink($tinymce_cache[$t]);

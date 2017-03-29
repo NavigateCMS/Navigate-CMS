@@ -99,7 +99,7 @@ function update_list()
         $latest_available->Version = $current_version->version;
         $latest_available->Revision = $current_version->revision;
     }
-	
+
 	if($latest_available->Revision > $current_version->revision)
 		$navibars->add_actions(	 array(	'<a href="?fid=update&act=install_next_update&debug"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"> '.t(289, 'Update Navigate').' <img src="img/icons/silk/bullet_go.png" align="absmiddle" /> '.$updates_available[0]['Version'].' r'.$updates_available[0]['Revision'].'</a>') );
 		
@@ -107,6 +107,8 @@ function update_list()
 	$current[] = '<div class="navigate-panels-summary ui-corner-all" style=" width: 234px; height: 118px; ">';
 	$current[] = '	<h2><img src="img/navigate-logo-150x70.png" /><br />' . $current_version->version . ' r'.$current_version->revision . '</h2>';
 	$current[] = '</div>';
+
+    $navibars->add_actions(	 array(	'<a href="?fid=update&act=cache_clean&debug"><img height="16" align="absmiddle" width="16" src="img/icons/silk/lightning_delete.png"> '.t(660, 'Clear cache').'</a>') );
 	
 	$navibars->add_tab_content_panel('<img src="img/navigate.png" width="16px" height="16px" align="absmiddle" /> '.t(290, 'Current version'), $current, 'navigate-panel-current-version', '250px', '184px');	
 

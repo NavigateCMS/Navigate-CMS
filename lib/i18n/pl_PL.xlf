@@ -3304,6 +3304,11 @@
                 <target>Zamień plik</target>
             </trans-unit>
 
+            <trans-unit id="660" approved="yes">
+                <source>Clear cache</source>
+                <target>Wyczyść pamięć podręczną</target>
+            </trans-unit>
+
         </body>
     </file>
 

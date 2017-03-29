@@ -3316,6 +3316,11 @@
                 <target>Reemplaçar fitxer</target>
             </trans-unit>
 
+            <trans-unit id="660" approved="yes">
+                <source>Clear cache</source>
+                <target>Netejar memòria cau</target>
+            </trans-unit>
+
         </body>
     </file>
 
