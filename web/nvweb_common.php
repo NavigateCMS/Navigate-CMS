@@ -45,6 +45,9 @@ require_once(NAVIGATE_PATH.'/web/nvweb_objects.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_plugins.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_xmlrpc.php');
 
+// preload widely used webgets
+require_once(NAVIGATE_PATH.'/lib/webgets/list.php');
+
 disable_magic_quotes();
 @ini_set('default_charset', 'utf-8');
 

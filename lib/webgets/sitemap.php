@@ -20,7 +20,7 @@ function nvweb_sitemap($vars=array())
             // HOMEPAGE
 
             $out[] = '  <url>';
-            $out[] = '      <loc>'.NVWEB_ABSOLUTE.$website->homepage().'</loc>';
+            $out[] = '      <loc>'.nvweb_sitemap_escape_xml(NVWEB_ABSOLUTE.$website->homepage()).'</loc>';
             $out[] = '      <lastmod>'.date(DATE_W3C, time()).'</lastmod>';
             $out[] = '      <changefreq>daily</changefreq>';
             $out[] = '      <priority>1</priority>';
@@ -55,7 +55,7 @@ function nvweb_sitemap($vars=array())
                     $value = NVWEB_ABSOLUTE.$value;
 
                 $out[] = '  <url>';
-                $out[] = '      <loc>'.$value.'</loc>';
+                $out[] = '      <loc>'.nvweb_sitemap_escape_xml($value).'</loc>';
                 $out[] = '      <lastmod>'.date(DATE_W3C, time()).'</lastmod>';
                 $out[] = '      <changefreq>weekly</changefreq>';
                 $out[] = '      <priority>0.75</priority>';
@@ -89,7 +89,7 @@ function nvweb_sitemap($vars=array())
             foreach($item_paths as $key => $value)
             {
                 $out[] = '  <url>';
-                $out[] = '      <loc>'.NVWEB_ABSOLUTE.$value[0].'</loc>';
+                $out[] = '      <loc>'.nvweb_sitemap_escape_xml(NVWEB_ABSOLUTE.$value[0]).'</loc>';
                 $out[] = '      <lastmod>'.date(DATE_W3C, $value[1]).'</lastmod>';
                 $out[] = '      <changefreq>monthly</changefreq>';
                 $out[] = '      <priority>0.5</priority>';
@@ -104,4 +104,16 @@ function nvweb_sitemap($vars=array())
 
 	return implode("\n", $out);
 }
+
+function nvweb_sitemap_escape_xml($url)
+{
+    $url = str_replace(
+        array('<', '>', '&', '"', "'"),
+        array('&lt;', '&gt;', '&amp;', '&quot;', "&apos;"),
+        $url
+    );
+
+    return $url;
+}
+
 ?>
