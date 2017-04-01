@@ -633,7 +633,11 @@ function run()
             if(!empty($_REQUEST['term'])) // tagit request
                 $text = $_REQUEST['term'];
 
-            $DB->query('
+            $limit = intval($_REQUEST['page_limit']);
+            if(empty($limit)) $limit = null;
+            $limit = value_or_default($limit, 1000);
+            
+            $sql = '
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
 				  FROM nv_webdictionary nvw, nv_items nvi
 				 WHERE nvw.node_type = "item"
@@ -642,13 +646,19 @@ function run()
 				   AND nvw.subtype = "title"
 				   AND nvw.website = '.$website->id.'
 				   AND nvw.website = nvi.website
-				   AND nvw.text LIKE '.protect('%'.$text.'%').'
+				   AND ( nvw.text LIKE ' . protect('%' . $text . '%') . ' 
+				        OR
+				        ( nvi.id LIKE  ' . protect('%' . $text . '%') . ' 
+				          AND
+				          nvw.lang = '.protect($website->languages_published[0]).'
+				        )
+				       )
 		        GROUP BY nvw.node_id, nvw.text
 		        ORDER BY nvw.text ASC
-			     LIMIT '.intval($_REQUEST['page_limit']).'
-			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1)),
-                'array');
+			     LIMIT '.$limit.'
+			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
 
+            $DB->query($sql, 'array');
             $rows = $DB->result();
 			$total = $DB->foundRows();
 
@@ -869,6 +879,11 @@ function items_list()
 			'<a href="?fid='.$_REQUEST['fid'].'&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
         )
+    );
+
+    $navibars->search_form_suggest(
+        "?fid=items&act=json_find_item&format=tagit&page_limit=12",
+        "?fid=items&act=edit&id="
     );
 	
 	if($_REQUEST['quicksearch']=='true')
@@ -1098,6 +1113,11 @@ function items_form($item)
 			'<a href="?fid=items&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
         )
+    );
+
+    $navibars->search_form_suggest(
+        "?fid=items&act=json_find_item&format=tagit&page_limit=12",
+        "?fid=items&act=edit&id="
     );
 
 	// languages

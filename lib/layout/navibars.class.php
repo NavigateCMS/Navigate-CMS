@@ -76,6 +76,31 @@ class navibars
 		$this->elements['actions'][] = '<div class="ui-corner-all">'.$actions.'</div>';
 	}
 
+	function search_form_suggest($search_url, $edit_url)
+    {
+        global $layout;
+
+        $layout->add_script('
+            $("#navigate-quicksearch").autocomplete(
+            {
+                source: "'.$search_url.'",                
+                minLength: 2,
+                position: { my : "right top", at: "right bottom" },
+                classes: {"ui.autocomplete": "navi-ui-widget-shadow"},
+                select: function( event, ui ) 
+                {
+                    window.location.replace("'.$edit_url.'" + ui.item.id);
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) 
+            {
+                return $("<li></li>")
+                    .data("item.autocomplete", item)
+                    .append("<a>" + item.label + " <span>#" + item.id + "</span></a>")
+                    .appendTo(ul);
+            };                        
+        ');
+    }
+
 	function form($tag="", $action="")
 	{
 		if(empty($action))

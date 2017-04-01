@@ -94,9 +94,16 @@ class item
 		$this->paths			= path::loadElementPaths('item', $this->id);
 
         // to get the array of groups first we remove the "g" character
-        $groups = str_replace('g', '', $main->groups);
-        $this->groups = explode(',', $groups);
-        if(!is_array($this->groups))  $this->groups = array($groups);
+        $this->groups           = $main->groups;
+        if(!is_array($this->groups))
+        {
+            // to get the array of groups first we remove the "g" character
+            $groups = str_replace('g', '', $this->groups);
+            $this->groups = explode(',', $groups);
+        }
+
+        if(!is_array($this->groups))
+            $this->groups = array($this->groups);
 
         if($this->association == 'free')
             $this->category = '';
