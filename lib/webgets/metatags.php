@@ -94,7 +94,7 @@ function nvweb_metatags($vars=array())
 		$favicon = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$website->favicon.'&amp;disposition=inline';
         $metatags .= "\n".'<link rel="shortcut icon" href="'.$favicon.'" />';
 	}
-	
+
 	// website public feeds
 	$DB->query('SELECT id FROM nv_feeds 
 				 WHERE website = '.$website->id.'
@@ -120,7 +120,36 @@ function nvweb_metatags($vars=array())
 	}
 
 	$out = '<title>'.$website->name.$section.'</title>'."\n";
-	$out.= $metatags;
+
+    // current page metatags
+
+    // page - available languages
+    $item = new stdClass();
+    switch($current['type'])
+    {
+        case 'item':
+            $item = new item();
+            $item->load_from_resultset(array($current['object']));
+            break;
+
+        case 'structure':
+            $item = new structure();
+            $item->load_from_resultset(array($current['object']));
+            break;
+
+        default:
+    }
+
+    if(is_array($item->paths) && !empty($item->paths))
+    {
+        foreach($item->paths as $path_lang => $path_route)
+        {
+            if(in_array($path_lang, $website->languages_published) )
+                $metatags .= "\n". '<link rel="alternate" hreflang="'.$current['lang'].'" href="'.nvweb_prepare_link('/'.$current['route']).'" />';
+        }
+    }
+
+    $out.= $metatags."\n";
 		
 	if(!empty($website->tracking_scripts) && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 		nvweb_after_body('html', $website->tracking_scripts);
