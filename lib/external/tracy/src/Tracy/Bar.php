@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the Tracy (https://tracy.nette.org)
  * Copyright (c) 2004 David Grudl (https://davidgrudl.com)
@@ -59,6 +58,7 @@ class Bar
         if(version_compare(phpversion(), '5.4', '>='))
         {
             $useSession = $this->useSession && (session_status() === PHP_SESSION_ACTIVE);
+            $async = true;
         }
         else
         {
@@ -115,6 +115,7 @@ class Bar
 
 		if (Helpers::isHtmlMode()) {
 			$nonce = Helpers::getNonce();
+            $async = false;
 			require __DIR__ . '/assets/Bar/loader.phtml';
 		}
 	}

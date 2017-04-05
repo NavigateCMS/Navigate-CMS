@@ -2,6 +2,8 @@
 
 class debugger
 {
+    public static $timers;
+
     static function init()
     {
         /* prepare Tracy debugger
@@ -37,7 +39,7 @@ class debugger
         return Tracy\Debugger::dump($variable);
     }
 
-    static function barDump($message, $title="", $options=array())
+    static function bar_dump($message, $title="", $options=array())
     {
         return Tracy\Debugger::barDump($message, $title, $options);
     }
@@ -52,8 +54,11 @@ class debugger
 
     static function console($message, $title="")
     {
+        if(is_array($message) || is_object($message))
+            $message = print_r($message, true);
+
         if(!empty($title))
-            $message = $title .': '.$message;
+            $message = $title .":\n".$message;
 
         return Tracy\Debugger::fireLog($message);
     }
@@ -62,16 +67,43 @@ class debugger
     {
         return Tracy\Debugger::timer($name);
     }
+
+    static function stop_timer($name)
+    {
+        self::$timers[][$name] = (int)(self::timer($name)*1000);
+    }
+
+    static function get_timers($format='array')
+    {
+        if($format=='list')
+        {
+            $list = "";
+            for($i=0; $i < count(self::$timers); $i++)
+            {
+                $key = array_keys(self::$timers[$i]);
+                $key = $key[0];
+                $val = self::$timers[$i][$key];
+
+                $list .= $key.': '.$val;
+                $list .= "\n";
+            }
+
+            return $list;
+
+        }
+        else
+            return self::$timers;
+    }
 }
 
-// workaround to make older FirePHP calls work with new debugger integration
+// workaround to make older FirePHP calls work with new debugger integration (will be deprecated in Navigate CMS 3.0)
 class firephp_nv
 {
     static function log($message, $title="")
     {
+        debugger::console("DEPECRATED call firephp_nv::log(), please use debugger::console()");
         return debugger::console($message, $title);
     }
 }
-
 
 ?>
