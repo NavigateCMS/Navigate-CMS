@@ -1803,416 +1803,451 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
     $out = '';
 
-    if($tag['attributes']['by']=='property')
+    switch($tag['attributes']['by'])
     {
-        if(empty($item)) return ''; // can't parse values of empty objects
+        case 'property':
+            if(empty($item)) return ''; // can't parse values of empty objects
 
-        $property_name = $tag['attributes']['property_id'];
-        if(empty($property_name))
-            $property_name = $tag['attributes']['property_name'];
+            $property_name = $tag['attributes']['property_id'];
+            if(empty($property_name))
+                $property_name = $tag['attributes']['property_name'];
 
-        if(!method_exists($item, 'property'))
-            return "";
+            if(!method_exists($item, 'property'))
+                return "";
 
-        $property_value = $item->property($property_name);
-        $property_definition = $item->property_definition($property_name);
+            $property_value = $item->property($property_name);
+            $property_definition = $item->property_definition($property_name);
 
-        $condition_value = $tag['attributes']['property_value'];
+            $condition_value = $tag['attributes']['property_value'];
 
-        if(in_array($property_definition->type, array('image', "file")))
-        {
-            if($property_value == '0')
-                $property_value = "";
-        }
-
-        // process special comparing values
-        switch($property_definition->type)
-        {
-            case 'date':
-                if($condition_value == 'today')
-                {
-                    $now = getdate(core_time());
-                    $condition_value = mktime(0, 0, 0, $now['mon'], $now['mday'], $now['year']);
-                }
-                else if($condition_value == 'now')
-                {
-                    $condition_value = core_time();
-                }
-                break;
-
-            case 'boolean':
-                if($property_value=="" && isset($property_definition->dvalue))
-                    $property_value = $property_definition->dvalue;
-
-                break;
-        }
-
-        $condition = false;
-        if(isset($tag['attributes']['property_empty']))
-        {
-            // special case: for multilanguage properties check the active language
-            if($property_definition->type == 'text' && is_array($property_value))
+            if(in_array($property_definition->type, array('image', "file")))
             {
-                $property_value = $property_value[$current['lang']];
+                if($property_value == '0')
+                    $property_value = "";
             }
 
-            if( $tag['attributes']['property_empty']=='true' && empty($property_value) ||
-                $tag['attributes']['property_empty']=='false' && !empty($property_value)
-            )
+            // process special comparing values
+            switch($property_definition->type)
             {
-                $condition = true;
-            }
-        }
-        else
-        {
-            switch($tag['attributes']['property_compare'])
-            {
-                case '>':
-                case 'gt':
-                    $condition = ($property_value > $condition_value);
-                    break;
-
-                case '<':
-                case 'lt':
-                    $condition = ($property_value < $condition_value);
-                    break;
-
-                case '>=':
-                case '=>':
-                case 'gte':
-                    $condition = ($property_value >= $condition_value);
-                    break;
-
-                case '<=':
-                case '=<':
-                case 'lte':
-                    $condition = ($property_value <= $condition_value);
-                    break;
-
-                case 'in':
-                    $condition_values = explode(",", $condition_value);
-                    $condition = in_array($property_value, $condition_values);
-                    break;
-
-                case 'nin':
-                    $condition_values = explode(",", $condition_value);
-                    $condition = !in_array($property_value, $condition_values);
-                    break;
-
-                case '!=':
-                case 'neq':
-                    if(is_numeric($property_value))
+                case 'date':
+                    if($condition_value == 'today')
                     {
-                        if($condition_value == 'true' || $condition_value===true)
-                            $condition_value = '1';
-                        else if($condition_value == 'false' || $condition_value===false)
-                            $condition_value = '0';
+                        $now = getdate(core_time());
+                        $condition_value = mktime(0, 0, 0, $now['mon'], $now['mday'], $now['year']);
                     }
-
-                    $condition = ($property_value != $condition_value);
-                    break;
-
-                case '=':
-                case '==':
-                case 'eq':
-                default:
-                    if(is_numeric($property_value))
+                    else if($condition_value == 'now')
                     {
-                        if($condition_value == 'true' || $condition_value===true)
-                            $condition_value = '1';
-                        else if($condition_value == 'false' || $condition_value===false)
-                            $condition_value = '0';
+                        $condition_value = core_time();
                     }
-
-                    $condition = ($property_value == $condition_value);
-                    break;
-            }
-        }
-
-        if($condition)
-        {
-            // parse the contents of this condition on this round
-            $out = $item_html;
-        }
-        else
-        {
-            // remove this conditional html code on this round
-            $out = '';
-        }
-    }
-    else if($tag['attributes']['by']=='template' || $tag['attributes']['by']=='templates')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        $templates = array();
-        if(isset($tag['attributes']['templates']))
-            $templates = explode(",", $tag['attributes']['templates']);
-        else if(isset($tag['attributes']['template']))
-            $templates = array($tag['attributes']['template']);
-
-        if(empty($item->template))
-        {
-            // check if the item is embedded in a category, so we have to get the template from the category, not the item
-            if(get_class($item) == 'item' && $item->association == 'category' && $item->embedding == 1)
-			{
-				// assign template from its category
-				$item_category = new structure();
-				$item_category->load($item->category);
-				$item->template = $item_category->template;
-			}
-        }
-
-        if(in_array($item->template, $templates))
-        {
-            // the template matches the condition, apply
-            $out = $item_html;
-        }
-        else
-        {
-            // remove this conditional html code on this round
-            $out = '';
-        }
-    }
-    else if($tag['attributes']['by']=='position')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        if(isset($tag['attributes']['each']))
-        {
-            if($position % $tag['attributes']['each'] == 0) // condition applies
-                $out = $item_html;
-            else // remove the full nvlist_conditional tag, doesn't apply here
-                $out = '';
-        }
-        else if(isset($tag['attributes']['range']))
-        {
-            list($pos_min, $pos_max) = explode('-', $tag['attributes']['range']);
-
-            if(($position+1) >= $pos_min && ($position+1) <= $pos_max)
-                $out = $item_html;
-            else
-                $out = '';
-        }
-        else if(isset($tag['attributes']['position']))
-        {
-            switch($tag['attributes']['position'])
-            {
-                case 'first':
-                    if($position == 0)
-                        $out = $item_html;
-                    else
-                        $out = '';
                     break;
 
-                case 'not_first':
-                    if($position > 0)
-                        $out = $item_html;
-                    else
-                        $out = '';
-                    break;
+                case 'boolean':
+                    if($property_value=="" && isset($property_definition->dvalue))
+                        $property_value = $property_definition->dvalue;
 
-                case 'last':
-                    if($position == ($total-1))
-                        $out = $item_html;
-                    else
-                        $out = '';
-                    break;
-
-                case 'not_last':
-                    if($position != ($total-1))
-                        $out = $item_html;
-                    else
-                        $out = '';
-                    break;
-
-                default:
-                    // position "x"?
-                    if($tag['attributes']['position']==='0')
-                        $tag['attributes']['position'] = 1;
-                    if(($position+1) == $tag['attributes']['position'])
-                        $out = $item_html;
-                    else
-                        $out = '';
                     break;
             }
-        }
-    }
-    else if($tag['attributes']['by']=='block')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
 
-        // $item may be a block object or a block group block type
-
-        if(isset($tag['attributes']['type']))
-        {
-            if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+            $condition = false;
+            if(isset($tag['attributes']['property_empty']))
             {
-                $out = $item_html;
-            }
-            else
-            {
-                // no match, discard this conditional
-                $out = '';
-            }
-        }
-
-        // does the block have a link defined?
-        if(isset($tag['attributes']['linked']))
-        {
-            $block_has_link = in_array(
-                $item->action['action-type'][$current['lang']],
-                array("web", "web-n", "file", "image", "javascript")
-            );
-
-            if( $tag['attributes']['linked'] == "true" && $block_has_link)
-            {
-                $out = $item_html;
-            }
-            else if( $tag['attributes']['linked'] == "false" && !$block_has_link)
-            {
-                $out = $item_html;
-            }
-            else
-            {
-                // no match, discard this conditional
-                $out = '';
-            }
-        }
-    }
-    else if($tag['attributes']['by']=='block_type')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        // $item is a block type defined in a block group (to add a title before listing blocks of that kind)
-        if(isset($tag['attributes']['type']) && $item->_object_type == "block_group_block_type")
-        {
-            if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
-            {
-                $out = $item_html;
-            }
-            else
-            {
-                // no match, discard this conditional
-                $out = '';
-            }
-        }
-        else
-        {
-            $out = '';
-        }
-    }
-    else if($tag['attributes']['by']=='access')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        $access = 0;
-        switch($tag['attributes']['access'])
-        {
-            case 'navigate_user':
-                if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+                // special case: for multilanguage properties check the active language
+                if($property_definition->type == 'text' && is_array($property_value))
                 {
-                    $access = 0; // everybody
+                    $property_value = $property_value[$current['lang']];
+                }
+
+                if( $tag['attributes']['property_empty']=='true' && empty($property_value) ||
+                    $tag['attributes']['property_empty']=='false' && !empty($property_value)
+                )
+                {
+                    $condition = true;
+                }
+            }
+            else
+            {
+                switch($tag['attributes']['property_compare'])
+                {
+                    case '>':
+                    case 'gt':
+                        $condition = ($property_value > $condition_value);
+                        break;
+
+                    case '<':
+                    case 'lt':
+                        $condition = ($property_value < $condition_value);
+                        break;
+
+                    case '>=':
+                    case '=>':
+                    case 'gte':
+                        $condition = ($property_value >= $condition_value);
+                        break;
+
+                    case '<=':
+                    case '=<':
+                    case 'lte':
+                        $condition = ($property_value <= $condition_value);
+                        break;
+
+                    case 'in':
+                        $condition_values = explode(",", $condition_value);
+                        $condition = in_array($property_value, $condition_values);
+                        break;
+
+                    case 'nin':
+                        $condition_values = explode(",", $condition_value);
+                        $condition = !in_array($property_value, $condition_values);
+                        break;
+
+                    case '!=':
+                    case 'neq':
+                        if(is_numeric($property_value))
+                        {
+                            if($condition_value == 'true' || $condition_value===true)
+                                $condition_value = '1';
+                            else if($condition_value == 'false' || $condition_value===false)
+                                $condition_value = '0';
+                        }
+
+                        $condition = ($property_value != $condition_value);
+                        break;
+
+                    case '=':
+                    case '==':
+                    case 'eq':
+                    default:
+                        if(is_numeric($property_value))
+                        {
+                            if($condition_value == 'true' || $condition_value===true)
+                                $condition_value = '1';
+                            else if($condition_value == 'false' || $condition_value===false)
+                                $condition_value = '0';
+                        }
+
+                        $condition = ($property_value == $condition_value);
+                        break;
+                }
+            }
+
+            if($condition)
+            {
+                // parse the contents of this condition on this round
+                $out = $item_html;
+            }
+            else
+            {
+                // remove this conditional html code on this round
+                $out = '';
+            }
+            break;
+
+        case 'template':
+        case 'templates':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            $templates = array();
+            if(isset($tag['attributes']['templates']))
+                $templates = explode(",", $tag['attributes']['templates']);
+            else if(isset($tag['attributes']['template']))
+                $templates = array($tag['attributes']['template']);
+
+            if(empty($item->template))
+            {
+                // check if the item is embedded in a category, so we have to get the template from the category, not the item
+                if(get_class($item) == 'item' && $item->association == 'category' && $item->embedding == 1)
+                {
+                    // assign template from its category
+                    $item_category = new structure();
+                    $item_category->load($item->category);
+                    $item->template = $item_category->template;
+                }
+            }
+
+            if(in_array($item->template, $templates))
+            {
+                // the template matches the condition, apply
+                $out = $item_html;
+            }
+            else
+            {
+                // remove this conditional html code on this round
+                $out = '';
+            }
+            break;
+
+        case 'position':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            if(isset($tag['attributes']['each']))
+            {
+                if($position % $tag['attributes']['each'] == 0) // condition applies
+                    $out = $item_html;
+                else // remove the full nvlist_conditional tag, doesn't apply here
+                    $out = '';
+            }
+            else if(isset($tag['attributes']['range']))
+            {
+                list($pos_min, $pos_max) = explode('-', $tag['attributes']['range']);
+
+                if(($position+1) >= $pos_min && ($position+1) <= $pos_max)
+                    $out = $item_html;
+                else
+                    $out = '';
+            }
+            else if(isset($tag['attributes']['position']))
+            {
+                switch($tag['attributes']['position'])
+                {
+                    case 'first':
+                        if($position == 0)
+                            $out = $item_html;
+                        else
+                            $out = '';
+                        break;
+
+                    case 'not_first':
+                        if($position > 0)
+                            $out = $item_html;
+                        else
+                            $out = '';
+                        break;
+
+                    case 'last':
+                        if($position == ($total-1))
+                            $out = $item_html;
+                        else
+                            $out = '';
+                        break;
+
+                    case 'not_last':
+                        if($position != ($total-1))
+                            $out = $item_html;
+                        else
+                            $out = '';
+                        break;
+
+                    default:
+                        // position "x"?
+                        if($tag['attributes']['position']==='0')
+                            $tag['attributes']['position'] = 1;
+                        if(($position+1) == $tag['attributes']['position'])
+                            $out = $item_html;
+                        else
+                            $out = '';
+                        break;
+                }
+            }
+            break;
+
+        case 'block':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            // $item may be a block object or a block group block type
+
+            if(isset($tag['attributes']['type']))
+            {
+                if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+                {
+                    $out = $item_html;
                 }
                 else
                 {
-                    $access = -1; // nobody!
+                    // no match, discard this conditional
+                    $out = '';
                 }
-                break;
+            }
 
-            case 3:
-            case 'webuser_groups':
-                $access = 3;
-                break;
+            // does the block have a link defined?
+            if(isset($tag['attributes']['linked']))
+            {
+                $block_has_link = in_array(
+                    $item->action['action-type'][$current['lang']],
+                    array("web", "web-n", "file", "image", "javascript")
+                );
 
-            case 2:
-            case 'not_signed_in':
-                $access = 2;
-                break;
+                if( $tag['attributes']['linked'] == "true" && $block_has_link)
+                {
+                    $out = $item_html;
+                }
+                else if( $tag['attributes']['linked'] == "false" && !$block_has_link)
+                {
+                    $out = $item_html;
+                }
+                else
+                {
+                    // no match, discard this conditional
+                    $out = '';
+                }
+            }
+            break;
 
-            case 1:
-            case 'signed_in':
-                $access = 1;
-                break;
+        case 'block_type':
+            if(empty($item)) return ''; // can't parse values of empty objects
 
-            case 0:
-            case 'everyone':
-            default:
-                $access = 0;
-                break;
-        }
+            // $item is a block type defined in a block group (to add a title before listing blocks of that kind)
+            if(isset($tag['attributes']['type']) && $item->_object_type == "block_group_block_type")
+            {
+                if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+                {
+                    $out = $item_html;
+                }
+                else
+                {
+                    // no match, discard this conditional
+                    $out = '';
+                }
+            }
+            else
+            {
+                $out = '';
+            }
+            break;
 
-        if($item->access == $access)
-            $out = $item_html;
-        else
+        case 'access':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            $access = 0;
+            switch($tag['attributes']['access'])
+            {
+                case 'navigate_user':
+                    if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+                    {
+                        $access = 0; // everybody
+                    }
+                    else
+                    {
+                        $access = -1; // nobody!
+                    }
+                    break;
+
+                case 3:
+                case 'webuser_groups':
+                    $access = 3;
+                    break;
+
+                case 2:
+                case 'not_signed_in':
+                    $access = 2;
+                    break;
+
+                case 1:
+                case 'signed_in':
+                    $access = 1;
+                    break;
+
+                case 0:
+                case 'everyone':
+                default:
+                    $access = 0;
+                    break;
+            }
+
+            if($item->access == $access)
+                $out = $item_html;
+            else
+                $out = '';
+            break;
+
+        case 'gallery':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            if($tag['attributes']['empty']=='true')
+            {
+                if(empty($item->galleries[0]))
+                    $out = $item_html;
+            }
+            else if($tag['attributes']['empty']=='false')
+            {
+                if(!empty($item->galleries[0]))
+                    $out = $item_html;
+            }
+            break;
+
+        case 'tags':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            if($tag['attributes']['empty']=='true')
+            {
+                if(empty($item->dictionary[$current['lang']]['tags']))
+                    $out = $item_html;
+            }
+            else if($tag['attributes']['empty']=='false')
+            {
+                if(!empty($item->dictionary[$current['lang']]['tags']))
+                    $out = $item_html;
+            }
+            break;
+
+        case 'structure':
+            if(empty($item)) return ''; // can't parse values of empty objects
+
+            if( isset($tag['attributes']['show_in_menus']) && isset($item->visible) )
+            {
+                if($item->visible == 1 && in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
+                    $out = $item_html;
+                else if($item->visible != 1 && !in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
+                    $out = $item_html;
+                else
+                    $out = "";
+            }
+            else
+            {
+                // no match, discard this conditional
+                $out = '';
+            }
+            break;
+
+        case 'count':
+            // check the number of results found
+            // note: this is called also WHEN resultset is empty
+            if( $tag['attributes']['value'] == $total    ||
+                ($tag['attributes']['value'] == "empty" && $total == 0)
+            )
+            {
+                $out = $item_html;
+            }
+            else
+            {
+                $out = '';
+            }
+            break;
+
+        case 'query':
+            switch($tag['attributes']['check'])
+            {
+                case 'field':
+                    if( isset($item->_query->{$tag['attributes']['field']}) &&
+                        !empty($item->_query->{$tag['attributes']['field']})
+                    )
+                    {
+                        $out = $item_html;
+                    }
+                    break;
+
+                case 'field_range':
+                    if( isset($item->_query->{$tag['attributes']['field']}))
+                    {
+                        $min = value_or_default($tag['attributes']['min'], -PHP_INT_MAX);
+                        $max = value_or_default($tag['attributes']['max'], PHP_INT_MAX);
+
+                        if( ($min && $item->_query->{$tag['attributes']['field']} >= $min)  &&
+                            ($max && $item->_query->{$tag['attributes']['field']} <= $max)
+                        )
+                        {
+                            $out = $item_html;
+                        }
+                    }
+                    break;
+
+                default:
+                    $out = '';
+            }
+            break;
+
+        default:
+            // unknown nvlist_conditional, discard
             $out = '';
-    }
-    else if($tag['attributes']['by']=='gallery')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        if($tag['attributes']['empty']=='true')
-        {
-            if(empty($item->galleries[0]))
-                $out = $item_html;
-        }
-        else if($tag['attributes']['empty']=='false')
-        {
-            if(!empty($item->galleries[0]))
-                $out = $item_html;
-        }
-    }
-    else if($tag['attributes']['by']=='tags')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        if($tag['attributes']['empty']=='true')
-        {
-            if(empty($item->dictionary[$current['lang']]['tags']))
-                $out = $item_html;
-        }
-        else if($tag['attributes']['empty']=='false')
-        {
-            if(!empty($item->dictionary[$current['lang']]['tags']))
-                $out = $item_html;
-        }
-    }
-    else if($tag['attributes']['by']=='structure')
-    {
-        if(empty($item)) return ''; // can't parse values of empty objects
-
-        if( isset($tag['attributes']['show_in_menus']) && isset($item->visible) )
-        {
-	        if($item->visible == 1 && in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
-                $out = $item_html;
-	        else if($item->visible != 1 && !in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
-		        $out = $item_html;
-	        else
-		        $out = "";
-        }
-        else
-        {
-            // no match, discard this conditional
-            $out = '';
-        }
-    }
-    else if($tag['attributes']['by']=='count')
-    {
-        // check the number of results found
-        // note: this is called also WHEN resultset is empty
-        if( $tag['attributes']['value'] == $total    ||
-            ($tag['attributes']['value'] == "empty" && $total == 0)
-        )
-        {
-            $out = $item_html;
-        }
-        else
-        {
-            $out = '';
-        }
-    }
-    else // unknown nvlist_conditional, discard
-    {
-        $out = '';
     }
 
     return $out;
