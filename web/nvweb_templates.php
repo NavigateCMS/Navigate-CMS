@@ -174,6 +174,8 @@ function nvweb_template_parse($template)
 			case 'widget':
 			case 'webget':
 			case '':
+                debugger::timer('nvweb-templates-nvweb-'.$tag['attributes']['name']);
+
 				// webgets on lib/webgets have priority over private/webgets
 				nvweb_webget_load($tag['attributes']['name']);
 				
@@ -182,7 +184,9 @@ function nvweb_template_parse($template)
 				$tag['attributes']['nvweb_html'] = $html;	// always pass the current buffered output to the webget
 				
 				if(function_exists($fname))
-					$content = $fname($tag['attributes']);			
+					$content = $fname($tag['attributes']);
+
+                debugger::stop_timer('nvweb-templates-webget-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]');
 				break;
 				
 			case 'root':
@@ -335,7 +339,7 @@ function nvweb_template_parse($template)
 
             case 'theme':
 				// compatibility with Navigate < 1.8.9
-				// deprecated! code will be removed in Navigate 2.0
+				// deprecated! code will be removed in Navigate 3.0
 				if($tag['attributes']['name']=='url')
 				{
 					$tag['attributes']['mode'] = 'url';
@@ -575,14 +579,18 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
         // time to process delayed nvlists and nvsearches
         foreach($current['delayed_nvlists'] as $uid => $vars)
         {
+            debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
             $content = nvweb_list($vars);
             $html = str_replace('<!--#'.$uid.'#-->', $content, $html);
+            debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
         }
 
         foreach($current['delayed_nvsearches'] as $uid => $vars)
         {
+            debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
             $content = nvweb_search($vars);
             $html = str_replace('<!--#'.$uid.'#-->', $content, $html);
+            debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
         }
 
         return $html;
@@ -603,7 +611,6 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
 				$list = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 
-                @include_once(NAVIGATE_PATH.'/lib/webgets/list.php');
 				$vars = array_merge($tag['attributes'], array('template' => $list));
 
                 if($tag['attributes']['delayed']=='true')
@@ -615,7 +622,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                     continue;
                 }
 
+                debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
 				$content = nvweb_list($vars);
+                debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
 				
 				$html = substr_replace($html, $content, $tag['offset'], $tag['length']);
 				$changed = true;
@@ -638,7 +647,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                     continue;
                 }
 
+                debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
                 $content = nvweb_search($vars);
+                debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
 				
 				$html = substr_replace($html, $content, $tag['offset'], $tag['length']);
 				$changed = true;
@@ -983,9 +994,10 @@ function nvweb_template_tweaks($html)
 		$website_absolute_path = NAVIGATE_URL.'/themes/'.$website->theme;
 	else
 		$website_absolute_path = $website->absolute_path(false);
-	
-	// stylesheets
-	$tags = nvweb_tags_extract($html, 'link', NULL, true, 'UTF-8');
+
+    // stylesheets
+    $replacements = array();
+    $tags = nvweb_tags_extract($html, 'link', NULL, true, 'UTF-8');
 	foreach($tags as $tag)
 	{		
 		if(!isset($tag['attributes']['href'])) continue;	
@@ -1005,13 +1017,13 @@ function nvweb_template_tweaks($html)
 			}
 			$tag['new'] .= '/>';
 			
-			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
+            $replacements[$tag['full_tag']] = $tag['new'];
 		}
 	}
 	
 	// scripts
 	$tags = nvweb_tags_extract($html, 'script', NULL, true, 'UTF-8');
-
 	foreach($tags as $tag)
 	{
 		if(!isset($tag['attributes']['src'])) continue;
@@ -1030,12 +1042,20 @@ function nvweb_template_tweaks($html)
 			}
 			$tag['new'] .= '></script>';
 			
-			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
+            $replacements[$tag['full_tag']] = $tag['new'];
 		}
 	}
 
+    $html = str_replace(
+        array_keys($replacements),
+        array_values($replacements),
+        $html
+    );
+
 	// poster attribute (<video>)
-	$tags = nvweb_tags_extract($html, array('video'), false, true, 'UTF-8');
+    $replacements = array();
+    $tags = nvweb_tags_extract($html, array('video'), false, true, 'UTF-8');
 	foreach($tags as $tag)
 	{
 		if(!isset($tag['attributes']['poster'])) continue;
@@ -1055,11 +1075,20 @@ function nvweb_template_tweaks($html)
 			}
 			$tag['new'] .= '>'.$tag['contents'].'</video>';
 
-			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
+            $replacements[$tag['full_tag']] = $tag['new'];
 		}
 	}
 
+    $html = str_replace(
+        array_keys($replacements),
+        array_values($replacements),
+        $html
+    );
+
+
 	// sources (video, audio)
+    $replacements = array();
 	$tags = nvweb_tags_extract($html, array('video', 'audio'), false, true, 'UTF-8');
 	foreach($tags as $tag)
 	{
@@ -1084,14 +1113,21 @@ function nvweb_template_tweaks($html)
 				}
 				$source['new'] .= '>'.$source['contents'].'</source>';
 
-				$html = str_replace($source['full_tag'], $source['new'], $html);
+				//$html = str_replace($source['full_tag'], $source['new'], $html);
+                $replacements[$tag['full_tag']] = $tag['new'];
 			}
 		}
 	}
 
-	// images
-	$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');
+    $html = str_replace(
+        array_keys($replacements),
+        array_values($replacements),
+        $html
+    );
 
+	// images
+    $replacements = array();
+    $tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');
 	foreach($tags as $tag)
 	{
 		if(isset($tag['attributes']['srcset']))
@@ -1125,7 +1161,8 @@ function nvweb_template_tweaks($html)
 			}
 			$tag['new'] .= '/>';
 
-			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
+            $replacements[$tag['full_tag']] = $tag['new'];
 		}
 
 		if(!isset($tag['attributes']['src'])) continue;
@@ -1146,16 +1183,24 @@ function nvweb_template_tweaks($html)
 			}			
 			$tag['new'] .= '/>';
 			
-			$html = str_replace($tag['full_tag'], $tag['new'], $html);
+			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
+            $replacements[$tag['full_tag']] = $tag['new'];
 		}
 	}
+
+    $html = str_replace(
+        array_keys($replacements),
+        array_values($replacements),
+        $html
+    );
+
 
     // replace any "navigate_download.php" request for "/object" request
     $html = nvweb_template_fix_download_paths($html);
 	
 	// tweak 2: convert <a rel="video"> to <video> and <a rel="audio"> to <audio> tags
-	$tags = nvweb_tags_extract($html, 'a', NULL, true, 'UTF-8');
-
+    $replacements = array();
+    $tags = nvweb_tags_extract($html, 'a', NULL, true, 'UTF-8');
 	foreach($tags as $tag)
 	{
 		if($tag['attributes']['rel']=='video' && $tag['attributes']['navigate']=='navigate')
@@ -1170,7 +1215,8 @@ function nvweb_template_tweaks($html)
 			$content[] = '	'.$tag['full_tag'];
 			$content[] = '</video>';
 				
-			$html = str_replace($tag['full_tag'], implode("\n", $content), $html);
+			//$html = str_replace($tag['full_tag'], implode("\n", $content), $html);
+            $replacements[$tag['full_tag']] = implode("\n", $content);
 		}
 		
 		if($tag['attributes']['rel']=='audio' && $tag['attributes']['navigate']=='navigate')
@@ -1185,13 +1231,21 @@ function nvweb_template_tweaks($html)
 			$content[] = '	'.$tag['full_tag'];
 			$content[] = '</audio>';			
 			
-			$html = str_replace($tag['full_tag'], implode("\n", $content), $html);
+			//$html = str_replace($tag['full_tag'], implode("\n", $content), $html);
+            $replacements[$tag['full_tag']] = implode("\n", $content);
 		}		
 	}
-	
+
+    $html = str_replace(
+        array_keys($replacements),
+        array_values($replacements),
+        $html
+    );
+
+
 	// tweak 3: let navigate generate a resized image/thumbnail if width/height is given in the img tag
-	$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');	
-				
+	$tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');
+    $replacements = array();
 	foreach($tags as $tag)
 	{
 		if(!isset($tag['attributes']['src'])) continue;
@@ -1211,11 +1265,20 @@ function nvweb_template_tweaks($html)
 			if($name=='height' && strpos($src, '?')!==false && strpos($value, "%")===false && strpos($src, "&height=")===false)
 				$src .= '&height='.$value;	
 		}
-		
+
 		$tag['new'] = '<img src="'.$src.'" '.$tag['new'].'/>';
-		
-		$html = str_replace($tag['full_tag'], $tag['new'], $html);
+
+        $replacements[$tag['full_tag']] = $tag['new'];
+		//$html = str_replace($tag['full_tag'], $tag['new'], $html);
 	}
+
+	// more efficient than replacing one by one
+	$html = str_replace(
+	    array_keys($replacements),
+        array_values($replacements),
+        $html
+    );
+
 
     // tweak 4: add Navigate CMS content default styles
     $default_css = file_get_contents(NAVIGATE_PATH.'/css/tools/tinymce.defaults.css');
@@ -1358,7 +1421,7 @@ function nvweb_template_oembed_url($url)
     // Flickr: http://www.flickr.com/photos/bees/2362225867
     else if(strpos($url, 'www.flickr.com/photos/'))
     {
-        $oembed_url = 'http://www.flickr.com/services/oembed.json?url='.urlencode($url);
+        $oembed_url = 'https://www.flickr.com/services/oembed.json?url='.urlencode($url);
         $response = nvweb_template_oembed_cache('flickr', $oembed_url);
         if(!empty($response->html))
             $out = $response->html;
@@ -1366,7 +1429,7 @@ function nvweb_template_oembed_url($url)
     // DailyMotion: http://www.dailymotion.com/video/x40gjsb_stock-video-category-nature-landscapes-corsican-nature-island-of-beauty-sea-beach_shortfilms
     else if(strpos($url, 'www.dailymotion.com/video/'))
     {
-        $oembed_url = 'http://www.dailymotion.com/services/oembed?format=json&url='.urlencode($url);
+        $oembed_url = 'https://www.dailymotion.com/services/oembed?format=json&url='.urlencode($url);
         $response = nvweb_template_oembed_cache('dailymotion', $oembed_url);
         if(!empty($response->html))
             $out = $response->html;
@@ -1374,7 +1437,7 @@ function nvweb_template_oembed_url($url)
     // Scribd: https://www.scribd.com/doc/110799637
     else if(strpos($url, 'www.scribd.com/doc/'))
     {
-        $oembed_url = 'http://www.scribd.com/services/oembed?format=json&url='.urlencode($url);
+        $oembed_url = 'https://www.scribd.com/services/oembed?format=json&url='.urlencode($url);
         $response = nvweb_template_oembed_cache('scribd', $oembed_url);
         if(!empty($response->html))
             $out = $response->html;
@@ -1530,6 +1593,5 @@ function nvweb_send_email($subject, $message, $recipients=array(), $attachments=
 {	
 	return navigate_send_email($subject, $message, $recipients, $attachments, $quiet);
 }
-
 
 ?>

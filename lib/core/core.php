@@ -993,7 +993,7 @@ function core_session_remove()
 
 /**
  * Shows the last PHP JSON decoding error.
- * This function needs APP_DEBUG enabled or the url parameter "debug=true".
+ * This function needs APP_DEBUG enabled or the url parameter "debug".
  * The error is sent to the Firebug FirePHP plugin within Mozilla Firefox.
  *
  * @param string $prepend String to prepend before the error (if exists)
@@ -1034,7 +1034,7 @@ function debug_json_error($prepend='')
         }
     }
 
-    if(!empty($error) && (APP_DEBUG || $_GET['debug']=='true'))
+    if(!empty($error) && (APP_DEBUG || isset($_REQUEST['debug'])))
         debugger::console($prepend.$error);
 }
 

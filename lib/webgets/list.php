@@ -719,8 +719,26 @@ function nvweb_list($vars=array())
 		$total = $DB->foundRows();
 	}
 
+	// preprocess list html template, conditionals and nested lists
+
+    // get the nv list template
+    $item_html = $vars['template'];
+
+    // first we need to isolate the nested nv lists/searches
+    unset($nested_lists_fragments);
+    list($item_html, $nested_lists_fragments) = nvweb_list_isolate_lists($item_html);
+
+    // now, parse the nvlist_conditional tags (with html source code inside (and maybe other nvlist tags))
+    unset($nested_condition_fragments);
+    list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html);
+
+    $item_html_preprocessed = $item_html;
+    $nested_lists_fragments_preprocessed = $nested_lists_fragments;
+    $nested_conditional_fragments_preprocessed = $nested_conditional_fragments;
+    $conditional_placeholder_tags_preprocessed = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
+
     // now we have all elements that will be shown in the list
-    // let's apply the nvlist template to each one
+    // let's process the nvlist template for each one
 	for($i = 0; $i < count($rs); $i++)
 	{
         // ignore empty objects
@@ -730,78 +748,79 @@ function nvweb_list($vars=array())
         )
             continue;
 
-        // prepare a standard  $item  with the current element
-		if($vars['source']=='comments' || $vars['source']=='comment')
-		{
-		    $item = new comment();
-            $item->load_from_resultset(array($rs[$i]));
-		}
-		else if($vars['source']=='structure' || $vars['source']=='category')
-		{
-			$item = new structure();
-			$item->load($rs[$i]->id);
-			$item->date_to_display = $rs[$i]->pdate;
-		}
-        else if($vars['source']=='rss' || $vars['source']=='twitter' || $vars['source']=='block_link')
+        // prepare a standard-object called  $item  with the current element
+		switch($vars['source'])
         {
-            // item is virtually created
-            $item = $rs[$i];
-        }
-        else if($vars['source']=='block' || $vars['source']=='block_group')
-        {
-            if(get_class($rs[$i])=='block')
-            {
-                // standard block
+            case 'comment':
+            case 'comments':
+                $item = new comment();
+                $item->load_from_resultset(array($rs[$i]));
+                break;
+
+            case 'structure':
+            case 'category':
+                $item = new structure();
+                $item->load($rs[$i]->id);
+                $item->date_to_display = $rs[$i]->pdate;
+                break;
+
+            case 'rss':
+            case 'twitter':
+            case 'block_link':
+                // item is virtually created
                 $item = $rs[$i];
-            }
-            else if(isset($rs[$i]->_object_type) && ($rs[$i]->_object_type == "block_group_block_type"))
-            {
-                // block type definition (mainly used to add a title before a list of blocks of the same type)
+                break;
+
+            case 'block':
+            case 'block_group':
+                if(get_class($rs[$i])=='block')
+                {
+                    // standard block
+                    $item = $rs[$i];
+                }
+                else if(isset($rs[$i]->_object_type) && ($rs[$i]->_object_type == "block_group_block_type"))
+                {
+                    // block type definition (mainly used to add a title before a list of blocks of the same type)
+                    $item = $rs[$i];
+                }
+                else if(isset($rs[$i]->extension))
+                {
+                    // extension block
+                    $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
+                    $item->type = "extension";
+                    $item->extension = $rs[$i]->extension;
+                    $item->uid = $rs[$i]->uid;
+                }
+                else
+                {
+                    // block from block group
+                    $item = new block();
+                    $item->load_from_block_group($vars['type'], $rs[$i]->id, $rs[$i]->uid);
+                }
+                break;
+
+            case 'gallery':
                 $item = $rs[$i];
-            }
-            else if(isset($rs[$i]->extension))
-            {
-                // extension block
-                $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
-                $item->type = "extension";
-                $item->extension = $rs[$i]->extension;
-                $item->uid = $rs[$i]->uid;
-            }
-            else
-            {
-                // block from block group
-                $item = new block();
-                $item->load_from_block_group($vars['type'], $rs[$i]->id, $rs[$i]->uid);
-            }
+                break;
+
+            case 'element':
+            case 'item':
+            default:
+                $item = new item();
+                $item->load($rs[$i]->id);
+                // if the item comes from a custom source, save the original query result
+                // this allows getting a special field without extra work ;)
+                $item->_query = $rs[$i];
+                break;
         }
-        else if($vars['source']=='gallery')
-        {
-            $item = $rs[$i];
-        }
-		else
-		{
-			$item = new item();
-			$item->load($rs[$i]->id);
-            // if the item comes from a custom source, save the original query result
-            // this allows getting a special field without extra work ;)
-            $item->_query = $rs[$i];
-		}
 
-        // get the nv list template
-		$item_html = $vars['template'];
+        // get the preprocessed template
+        $item_html = $item_html_preprocessed;
+        $nested_lists_fragments = $nested_lists_fragments_preprocessed;
+        $nested_conditional_fragments = $nested_conditional_fragments_preprocessed;
+        $conditional_placeholder_tags = $conditional_placeholder_tags_preprocessed;
 
-        // TODO: pending optimization; there is no need do the isolation of lists and conditionals for each loop
-
-        // first we need to isolate the nested nv lists/searches
-        unset($nested_lists_fragments);
-        list($item_html, $nested_lists_fragments) = nvweb_list_isolate_lists($item_html);
-
-        // now, parse the nvlist_conditional tags (with html source code inside (and maybe other nvlist tags))
-        unset($nested_condition_fragments);
-        list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html);
-
-        $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
-
+        // start processing tags, <nvlist_conditional />
         while(!empty($conditional_placeholder_tags))
         {
             $tag = $conditional_placeholder_tags[0];
@@ -821,13 +840,13 @@ function nvweb_list($vars=array())
                 $item_html
             );
 
+            // we need to check for new conditionals after the previous replace
             $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
         }
 
         // now, parse the (remaining) common nvlist tags (selfclosing tags)
         $template_tags_processed = 0;
         $template_tags = nvweb_tags_extract($item_html, 'nvlist', true, true, 'UTF-8'); // selfclosing = true
-
         while(!empty($template_tags))
 		{
             $tag = $template_tags[0];
@@ -837,6 +856,7 @@ function nvweb_list($vars=array())
             if($template_tags_processed > 500)
                 break;
 
+            // TODO: check if it is really needed to parse the tag based on offsets
             $content = nvweb_list_parse_tag($tag, $item, $vars['source'], $i, ($i+$offset), $total);
             $item_html = str_replace($tag['full_tag'], $content, $item_html);
 
@@ -859,6 +879,7 @@ function nvweb_list($vars=array())
 
 		$out[] = $item_html;
 	}
+
 
     if(count($rs)==0)
     {
