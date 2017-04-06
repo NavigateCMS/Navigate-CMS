@@ -2,6 +2,8 @@
 require_once('../cfg/globals.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_common.php');
 
+debugger::timer('nvweb-page-init');
+
 /* global variables */
 global $DB;
 global $webuser;
@@ -120,10 +122,16 @@ try
 		'js_after_body'		=> array()
 	);
 
+	debugger::stop_timer('nvweb-page-init');
+	debugger::timer('nvweb-load-plugins');
+
     nvweb_plugins_load();
 
 	$current['plugins'] = $plugins;
     $events->extension_backend_bindings(null, true);
+
+	debugger::stop_timer('nvweb-load-plugins');
+	debugger::timer('nvweb-load-webuser');
 
 	if(!empty($session['webuser']))
 		$webuser->load($session['webuser']);
@@ -168,6 +176,9 @@ try
 		ini_set('display_errors', true);
 	}
 
+	debugger::stop_timer('nvweb-load-webuser');
+	debugger::timer('nvweb-parse-route');
+
 	// parse route
 	nvweb_route_parse($current['route']);
 	$permission = nvweb_check_permission();
@@ -187,18 +198,32 @@ try
     if(empty($template))
         throw new Exception('Navigate CMS: no template found!');
 
+	debugger::stop_timer('nvweb-parse-route');
+	debugger::timer('nvweb-template-special-tags');
+
     // parse the special tag "include"
     // also convert curly brackets tags {{nv object=""}} to <nv object="" /> version
     // we do it now because new nv tags could be added before parsing the whole html
     $html = nvweb_template_parse_special($template->file_contents);
 
+	debugger::stop_timer('nvweb-template-special-tags');
+	debugger::timer('nvweb-plugins-event-before_parse');
+
     $current['plugins_called'] = nvweb_plugins_called_in_template($html);
     $html = nvweb_plugins_event('before_parse', $html);
+
+	debugger::stop_timer('nvweb-plugins-event-before_parse');
+	debugger::timer('nvweb-theme-settings');
 	
     $html = nvweb_theme_settings($html);
-	
+
+	debugger::stop_timer('nvweb-theme-settings');
+
+	// debugger timers controlled inside
     $html = nvweb_template_parse_lists($html);
 	$html = nvweb_template_parse($html);
+
+	debugger::timer('nvweb-template-process-new-nv-tags-delayed-lists');
 
 	// if the content has added any nv tag, process them
 	if(strpos($html, '{{nv ')!==false || strpos($html, '<nv '))
@@ -221,6 +246,9 @@ try
 	    }
     }
 
+	debugger::stop_timer('nvweb-template-process-new-nv-tags-delayed-lists');
+	debugger::timer('nvweb-template-after-generation-tweaks');
+
     $html = nvweb_template_oembed_parse($html);
 	$html = nvweb_template_processes($html);
 
@@ -235,15 +263,20 @@ try
 	$html = nvweb_template_tweaks($html);
 	$html = nvweb_template_restore_special($html);
 
+    debugger::stop_timer('nvweb-template-after-generation-tweaks');
+    debugger::timer('nvweb-theme-after_parse-event');
+
 	$events->trigger('theme', 'after_parse', array('html' => &$html));
     $html = nvweb_plugins_event('after_parse', $html);
+
+    debugger::stop_timer('nvweb-theme-after_parse-event');
 
 	$html = nvweb_template_convert_nv_paths($html);
 
 	$_SESSION['nvweb.'.$website->id] = $session;
 	session_write_close();
 
-	if($current['navigate_session']==1 && APP_DEBUG)
+	if($current['navigate_session']==true && APP_DEBUG)
 	{
 		echo $html;
 
@@ -259,7 +292,22 @@ try
 
             echo '['.$key.'] => '.print_r($val, true)."\n";
         }
-        echo "!-->";
+
+		echo "\n\r!--><!--\n\r".'profiling:'."\n\r";
+
+		foreach(debugger::get_timers() as $key => $debugger_timer)
+		{
+			$key = array_keys($debugger_timer);
+			$key = $key[0];
+
+			$val = $debugger_timer[$key];
+			echo '['.$key.'] => '.$val." ms\n";
+		}
+
+		echo "!-->";
+
+		if(isset($_GET['profiling']))
+			debugger::bar_dump(debugger::get_timers('list'));
 	}
 	else
 	{
@@ -297,4 +345,5 @@ catch(Exception $e)
 }
 
 $DB->disconnect();
+
 ?>
