@@ -11,7 +11,7 @@ define('APP_UNIQUE', "{APP_UNIQUE}"); // unique id for this installation
 define('APP_DEBUG', false || isset($_REQUEST['debug']));
 
 /* App installation paths */
-define('NAVIGATE_PARENT', '{NAVIGATE_PARENT}');	// absolute URL to folder which contains the navigate folder (without extra /)
+define('NAVIGATE_PARENT', '{NAVIGATE_PARENT}');	// absolute URL to folder which contains the navigate folder (protocol agnostic and without final slash) [example: '//www.domain.com']
 define('NAVIGATE_FOLDER', "{NAVIGATE_FOLDER}"); // name of the navigate folder (default: /navigate)
 define('NAVIGATE_PATH', "{NAVIGATE_PATH}"); // absolute system path to navigate folder
 

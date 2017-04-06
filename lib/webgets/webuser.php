@@ -30,7 +30,7 @@ function nvweb_webuser($vars=array())
             'click_to_confirm_account' => t(607, "Click on the link below to confirm your account"),
             'email_confirmation_notice' => t(608, "This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it."),
             'forgot_password_success' => t(648, "An e-mail with a temporary password has been sent to your e-mail account."),
-            'forgot_password_error' => t(446, "We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.")
+            'forgot_password_error' => t(446, "We're sorry. Your password reset request could not be sent. Please try again or contact us.")
         );
 
         // theme translations
@@ -43,7 +43,7 @@ function nvweb_webuser($vars=array())
             "click_to_confirm_account": "Click on the link below to confirm your account",
             "email_confirmation_notice": "This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it."
             "forgot_password_success": "An e-mail with a temporary password has been sent to your e-mail account.",
-            "forgot_password_error": "We're sorry. Your contact request could not be sent. Please try again or find another way to contact us."
+            "forgot_password_error": "We're sorry. Your password reset request could not be sent. Please try again or contact us."
         */
         if(!empty($website->theme) && method_exists($theme, 't'))
         {
@@ -159,6 +159,7 @@ function nvweb_webuser($vars=array())
             // pre checks: correct form, not spambot, email not empty and valid
             // load the associated user account
             // create temporary password and send email
+
             // TODO: don't change the password, just generate a link and let the user enter their preferred new password
 
             // a page may have several forms, which one do we have to check?
@@ -279,7 +280,7 @@ function nvweb_webuser($vars=array())
             }
             break;
 
-        case 'signup':
+        case 'sign_up':
             // TODO
             // pre checks: correct form, not spambot, email not empty and valid
             // get the profile data from the form

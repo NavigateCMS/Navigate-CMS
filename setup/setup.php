@@ -13,7 +13,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.3.5');
+	define('APP_VERSION', '2.3.6');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -430,8 +430,9 @@ function navigate_install_configuration()
 	//$navigate_root = str_replace($document_root, '', $navigate_parent_folder);
 
     // absolute URL to the folder that contains navigate folder,
-    // f.e. http://www.yourwebsite.com (for www.yourwebsite.com/navigate)
-    $navigate_parent_url = 'http://'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
+    // f.e. //www.yourwebsite.com (for www.yourwebsite.com/navigate)
+    // keep the protocol agnostic and do not add a final slash
+    $navigate_parent_url = '//'.str_replace("//", "/", $_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
     $navigate_parent_url = rtrim($navigate_parent_url, '/');
     $navigate_parent_url = rtrim($navigate_parent_url, '\\');
 
@@ -1734,5 +1735,6 @@ function navigate_install_load_language()
 	
 	return $lang;
 }
+
 //	$DB->disconnect();
 ?>
