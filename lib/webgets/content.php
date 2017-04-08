@@ -280,7 +280,7 @@ function nvweb_content($vars=array())
 	return $out;
 }
 
-function nvweb_content_comments_count($object_id=NULL)
+function nvweb_content_comments_count($object_id = NULL)
 {
 	global $DB;
 	global $website;
@@ -288,11 +288,7 @@ function nvweb_content_comments_count($object_id=NULL)
 
     $element = $current['object'];
     if($current['type']=='structure')
-    {
-        if(empty($current['structure_elements']))
-            $current['structure_elements'] = $element->elements();
-        $element = $current['structure_elements'][0];
-    }
+        $element = $element->elements(0); // item = structure->elements(first)
 
 	if(empty($object_id))
 		$object_id = $element->id;

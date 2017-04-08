@@ -288,7 +288,7 @@ class structure
 	}
 
     // retrieve all elements associated with this structure entry
-    public function elements()
+    public function elements($position)
     {
         global $DB;
 
@@ -300,13 +300,23 @@ class structure
                 SELECT id
                   FROM nv_items
                  WHERE category = '.$this->id.'
-              ORDER BY position ASC, id ASC');
+              ORDER BY position ASC, id ASC
+            ');
             $ids = $DB->result('id');
 
-            for($i=0; $i < count($ids); $i++)
+            if(!empty($position))
             {
-                $elements[$i] = new item();
-                $elements[$i]->load($ids[$i]);
+                $element = new item();
+                $element->load($ids[$position]);
+                return $element;
+            }
+            else
+            {
+                for($i = 0; $i < count($ids); $i++)
+                {
+                    $elements[$i] = new item();
+                    $elements[$i]->load($ids[$i]);
+                }
             }
         }
 

@@ -22,9 +22,7 @@ function nvweb_list($vars=array())
 	$out = array();
 
 	$webget = 'list';
-
     $categories = array();
-
     $exclude = '';
 
     if($current['type']=='item')
@@ -247,6 +245,7 @@ function nvweb_list($vars=array())
 
         $search = ' AND ( ' . implode(' AND ', $search) . ' ) ';
     }
+
 
 	// retrieve entries
 
@@ -878,6 +877,7 @@ function nvweb_list($vars=array())
         }
 
 		$out[] = $item_html;
+
 	}
 
 
@@ -1529,7 +1529,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					break;
 
 				case 'comments':
-					$out = nvweb_content_comments_count($item->id);
+				    if(method_exists($item, 'comments_count'))
+    					$out = $item->comments_count();
+                    else
+                        $out = nvweb_content_comments_count($item->id);
 					break;
 
 				case 'gallery':

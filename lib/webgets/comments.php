@@ -103,11 +103,7 @@ function nvweb_comments($vars=array())
     // (of course if the element has its own page, it can have its own comments)
     $element = $current['object'];
     if($current['type']=='structure')
-    {
-        if(empty($current['structure_elements']))
-            $current['structure_elements'] = $element->elements();
-        $element = $current['structure_elements'][0];
-    }
+        $element = $element->elements(0); // item = structure->elements(first)
 
 
 	switch(@$vars['mode'])
@@ -589,9 +585,7 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
     $element = $current['object'];
     if($current['type']=='structure')
     {
-        if(empty($current['structure_elements']))
-            $current['structure_elements'] = $element->elements();
-        $element = $current['structure_elements'][0];
+        $element = $element->elements(0); // item = structure->elements(first)
     }
     else if($current['type']=='item')
     {
