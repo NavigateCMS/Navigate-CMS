@@ -33,6 +33,8 @@ class item
     public $dictionary;
     public $paths;
 	public $properties;
+
+    private $_comments_count;
 		
 	public function load($id)
 	{
@@ -613,6 +615,27 @@ class item
 		    $url = '/node/'.$this->id;
         $url = nvweb_prepare_link($url);
         return $url;
+    }
+
+    public function comments_count()
+    {
+        global $DB;
+
+        if(empty($this->_comments_count))
+        {
+            $DB->query('
+                SELECT COUNT(*) as total
+                      FROM nv_comments
+                     WHERE website = ' . protect($this->website) . '
+                       AND item = ' . protect($this->id) . '
+                       AND status = 0'
+            );
+
+            $out = $DB->result('total');
+            $this->_comments_count = $out[0];
+        }
+
+        return $this->_comments_count;
     }
 
     public static function convert_from_rss($articles = array())
