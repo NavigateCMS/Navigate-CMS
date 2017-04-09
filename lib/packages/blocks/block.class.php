@@ -697,6 +697,68 @@ class block
         return $out;
     }
 
+    /* translates a links list from:
+        array (5)
+            icon => array (2)
+                58e8beafe762d => "fa-twitter-square" (17)
+                58e8beafe76cf => "fa-facebook-square" (18)
+            title => array ()
+            link => array (2)
+                58e8beafe762d => "http://twitter.com/navigatecms" (30)
+                58e8beafe76cf => "http://facebook.com/navigatecms" (31)
+            new_window => array (2)
+                58e8beafe762d => "1"
+                58e8beafe76cf => "1"
+            access => array (1)
+                58e8beafe76cf => "1"
+
+        to:
+
+        array(2)
+            0 => stdClass()
+                icon ->
+                title ->
+                link ->
+                new_window ->
+                access ->
+            1 => ...
+    */
+    public static function block_links_list_parse($block_links=array(), $filter_hidden=true)
+    {
+        $rs = array();
+        if(!is_array($block_links))
+            $block_links = array();
+
+        foreach($block_links as $link_key => $links_data)
+        {
+            foreach($links_data as $link_reference => $link_value)
+            {
+                if(!isset($rs[$link_reference]))
+                {
+                    $rs[$link_reference] = new stdClass();
+                    $rs[$link_reference]->id = $link_reference;
+                }
+
+                $rs[$link_reference]->$link_key = $link_value;
+            }
+        }
+
+        $rs = array_filter(
+            $rs,
+            function($v) use ($filter_hidden)
+            {
+                if($filter_hidden && @$v->access > 0)
+                    return false;
+                else
+                    return true;
+            }
+        );
+
+        $rs = array_values($rs);
+
+        return $rs;
+    }
+
     public static function block_group_block($block_group, $block_code)
     {
         global $theme;

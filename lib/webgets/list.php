@@ -354,25 +354,7 @@ function nvweb_list($vars=array())
     {
         // only useful if this nvlist is inside another nv list of source="block"
         $block_links = $vars['nvlist_parent_item']->trigger['trigger-links'][$current['lang']];
-
-        $rs = array();
-        if(!is_array($block_links)) $block_links = array();
-        foreach($block_links as $b_key => $b_data)
-        {
-            if(!is_array($b_data)) $b_data = array();
-            $b_i = 0;
-            foreach($b_data as $b_ref => $b_value)
-            {
-                if(!isset($rs[$b_i]))
-                    $rs[$b_i] = new stdClass();
-
-                if(!isset($rs[$b_i]->id))
-                    $rs[$b_i]->id = $b_ref;
-
-                $rs[$b_i]->$b_key = $b_value;
-                $b_i++;
-            }
-        }
+        $rs = block::block_links_list_parse($block_links);
         $total = count($rs);
     }
     else if($vars['source']=='block_group')
@@ -717,6 +699,7 @@ function nvweb_list($vars=array())
 
 		$total = $DB->foundRows();
 	}
+
 
 	// preprocess list html template, conditionals and nested lists
 

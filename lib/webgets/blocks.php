@@ -448,6 +448,10 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
             foreach($tl['link'] as $key => $link)
             {
                 $new_window = '';
+
+                if(@$tl['access'][$key] > 0) // link is hidden!
+                    continue;
+
                 $title = $tl['title'][$key];
 
                 $link = nvweb_prepare_link($link);

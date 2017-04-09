@@ -679,11 +679,11 @@ function blocks_form($item)
 	{
 		$navibars->add_actions(
             array(
-	            (($user->permission('blocks.edit')=='true') ?
+	            (($user->permission('blocks.edit') == 'true') ?
 	            '<a href="#" onclick="navigate_tabform_submit(1);" title="Ctrl+S">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'
 				</a>' : ""),
-	            ($user->permission("blocks.delete") == 'true'?
+	            ($user->permission("blocks.delete") == 'true' ?
                 '<a href="#" onclick="navigate_delete_dialog();">
 					<img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'
 				</a>' : "")
@@ -1121,9 +1121,10 @@ function blocks_form($item)
                 $navibars->add_tab_content( $naviforms->hidden("trigger-links-table-order-".$lang, "") );
 
                 $table->addHeaderColumn(t(242, 'Icon'), 50);
-                $table->addHeaderColumn(t(67, 'Title'), 200);
+                $table->addHeaderColumn(t(67, 'Title'), 180);
                 $table->addHeaderColumn(t(197, 'Link'), 390);
-                $table->addHeaderColumn('<i class="fa fa-external-link" title="'.t(324, 'New window').'"></i>', 16);
+                $table->addHeaderColumn('<i class="fa fa-lg fa-fw fa-external-link" title="'.t(324, 'New window').'"></i>', 16);
+                $table->addHeaderColumn('<i class="fa fa-lg fa-fw fa-globe" title="'.t(364, 'Access').'"></i>', 20);
                 $table->addHeaderColumn(t(35, 'Remove'), 50);
 
 
@@ -1134,6 +1135,7 @@ function blocks_form($item)
 						'order' => '',
 						'icon' => '',
 						'title' => array('0' => ''),
+						'access' => array('0' => 0),
 						'link' => array('0' => '')
 					);
 				}
@@ -1161,6 +1163,10 @@ function blocks_form($item)
                                 array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
                                                     <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
                                       'align' => 'left'),
+                                array('content' => '<input type="hidden" name="trigger-links-table-access-'.$lang.'['.$uid.']" data-role="access" id="trigger-links-table-access-'.$lang.'['.$uid.']" value="'.value_or_default($tlinks['access'][$key], 0).'" />
+                                                    <i class="fa fa-fw fa-lg fa-eye '.($tlinks['access'][$key]=='1'? 'hidden' : '').'" onclick="navigate_blocks_trigger_links_table_row_access(this);" data-value="0" for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>
+                                                    <i class="fa fa-fw fa-lg fa-eye-slash '.($tlinks['access'][$key]=='1'? '' : 'hidden').'" onclick="navigate_blocks_trigger_links_table_row_access(this);" data-value="1" for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>',
+                                      'align' => 'center'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                             )
                         );
@@ -1183,6 +1189,10 @@ function blocks_form($item)
                         array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']"  data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
                                             <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
                               'align' => 'left'),
+                        array('content' => '<input type="hidden" name="trigger-links-table-access-'.$lang.'['.$uid.']" data-role="access" id="trigger-links-table-access-'.$lang.'['.$uid.']" value="0" />
+                                                    <i class="fa fa-fw fa-lg fa-eye" onclick="navigate_blocks_trigger_links_table_row_visibility(this);" data-value="0"  for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>
+                                                    <i class="fa fa-fw fa-lg fa-eye-slash hidden" onclick="navigate_blocks_trigger_links_table_row_visibility(this);" data-value="1"  for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>',
+                              'align' => 'center'),
                         array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                     )
                 );
