@@ -945,7 +945,7 @@
 
             <trans-unit id="188" approved="yes">
                 <source>Translate</source>
-                <target>Tłumacz</target>
+                <target>Przetłumacz</target>
             </trans-unit>
 
             <trans-unit id="189" approved="yes">
@@ -1775,7 +1775,7 @@
 
             <trans-unit id="354" approved="yes">
                 <source>Reset</source>
-                <target>Resetuj</target>
+                <target>Zresetuj</target>
             </trans-unit>
 
             <trans-unit id="355" approved="yes">
@@ -3269,19 +3269,19 @@
                 <target>Subskrybowany</target>
             </trans-unit>
 
-            <trans-unit id="653">
+            <trans-unit id="653" approved="yes">
                 <source>Unsubscribe from comments notifications related to this content</source>
-                <target>Rezygnacja z komentarzami zgłoszeń związanych z tą zawartością</target>
+                <target>Wypisz się z powiadomień o komentarzach związanych z tą zawartością</target>
             </trans-unit>
 
-            <trans-unit id="654">
+            <trans-unit id="654" approved="yes">
                 <source>Cancelled subscription</source>
-                <target>Zlikwidowano subskrypcji</target>
+                <target>Subskrypcja odrzucona</target>
             </trans-unit>
 
-            <trans-unit id="655">
+            <trans-unit id="655" approved="yes">
                 <source>Subscribe to comments on this entry</source>
-                <target>Zapisz się do komentarzy do tego wpisu</target>
+                <target>Zapisz się do komentarzy na temat tego wpisu</target>
             </trans-unit>
 
             <trans-unit id="656">
