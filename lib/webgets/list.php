@@ -2430,6 +2430,32 @@ function nvweb_list_parse_filters($raw, $object='item')
                                             ).')
                             )';
                     }
+                    else if($comp_type == 'has' || $comp_type == 'hasnot')
+                    {
+                        if($comp_type == 'hasnot')
+                            $comp_type = 'NOT FIND_IN_SET';
+                        else
+                            $comp_type = 'FIND_IN_SET';
+
+                        if(!is_array($comp_value))
+                            $comp_value = explode(",", $comp_value);
+
+                        if(empty($comp_value))
+                            $comp_value = array(0); // avoid SQL query exception
+
+                        foreach($comp_value as $comp_value_part)
+                        {
+                            $filters[] = ' 
+                                AND i.id IN ( 
+                                    SELECT node_id 
+                                      FROM nv_properties_items
+                                     WHERE website = ' . $website->id . ' AND
+                                            property_id = ' . protect($key) . ' AND
+                                            element = "item" AND
+                                            ' . $comp_type . '(' . protect($comp_value_part) .', value)                               
+                                )';
+                        }
+                    }
                 }
             }
         }
@@ -2558,6 +2584,32 @@ function nvweb_list_parse_filters($raw, $object='item')
                             }
 
                             $filters[] = ' AND '.$field.' '.$comp_type.'('.$comp_value.')';
+                        }
+                        else if($comp_type == 'has' || $comp_type == 'hasnot')
+                        {
+                            if($comp_type == 'hasnot')
+                                $comp_type = 'NOT FIND_IN_SET';
+                            else
+                                $comp_type = 'FIND_IN_SET';
+
+                            if(!is_array($comp_value))
+                                $comp_value = explode(",", $comp_value);
+
+                            if(empty($comp_value))
+                                $comp_value = array(); // avoid SQL query exception
+
+                            foreach($comp_value as $comp_value_part)
+                            {
+                                $filters[] = ' 
+                                    AND i.id IN ( 
+                                        SELECT node_id 
+                                          FROM nv_properties_items
+                                         WHERE website = ' . $website->id . ' AND
+                                                property_id = ' . protect($key) . ' AND
+                                                element = "item" AND
+                                                ' . $comp_type . '(' . protect($comp_value_part) .', '.$field.')                               
+                                    )';
+                            }
                         }
                     }
                 }
