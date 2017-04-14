@@ -135,7 +135,6 @@ function nvweb_load_website_by_url($url, $exit=true)
         }
     }
 
-
 	// the host is an IP address or a full domain?
 	$isIP = filter_var($host, FILTER_VALIDATE_IP);
 	if($isIP)
@@ -378,15 +377,45 @@ function nvweb_route_parse($route="")
         // no special route (or already processed), look for the path on navigate routing table
 		default:
 
-			$DB->query('SELECT * FROM nv_paths 
-						 WHERE path = '.protect('/'.$route).' 
-						   AND website = '.$website->id.'
-						 ORDER BY id DESC');
+			$DB->query('
+                SELECT * FROM nv_paths 
+				WHERE path = '.protect('/'.$route).' AND 
+				      website = '.$website->id.'
+				ORDER BY id DESC'
+            );
 			$rs = $DB->result();
+
+			if(empty($rs))
+            {
+                // route not found in navigate cms core
+                // check if any extension knows of this route
+                $ext_results = $events->trigger(
+                    'nvweb',
+                    'find_route',
+                    array(
+                        'route' => $route
+                    )
+                );
+
+                foreach($ext_results as $ext_result)
+                {
+                    if(!empty($ext_result) && is_array($ext_result))
+                    {
+                        // get the first valid result and return
+                        // must simulate a row from nv_paths, with id NULL or 0
+                        // example:
+                        // $rs = array((object)array('id' => 0,'website' => 1,'path' => '/en/contact','type' => 'structure','object_id' => 5,'lang' => 'en'));
+                        $rs = $ext_result;
+                        break;
+                    }
+                }
+            }
 
     		if(empty($rs))
 			{
-				// no valid route found
+                // no one knows about this route,
+                // so we have to take it as a wrong path;
+                // apply the default setting
                 switch($website->wrong_path_action)
                 {
                     case 'homepage':
@@ -424,14 +453,14 @@ function nvweb_route_parse($route="")
 			{
 				// route found!
 				// let's count a hit (except admin)
-				if($current['navigate_session']!=1 && !nvweb_is_bot())
+				if($current['navigate_session']!=1 && !nvweb_is_bot() && !empty($rs[0]->id))
 				{
-					$DB->execute(' UPDATE nv_paths SET views = views + 1 
-								   WHERE id = '.$rs[0]->id.' 
-								     AND website = '.$website->id);
+					$DB->execute(' 
+                        UPDATE nv_paths SET views = views + 1 
+						WHERE id = '.$rs[0]->id.' AND 
+						      website = '.$website->id
+                    );
 				}
-				
-				// set the properties found
 				
 				// set the default language for this route
 				if(!isset($_REQUEST['lang']))
@@ -447,87 +476,87 @@ function nvweb_route_parse($route="")
 				$current['id'] 		 = $rs[0]->object_id;
 				
 				// look for the template associated with this item
-
-				if($current['type']=='structure')
+				switch($current['type'])
 				{
-                    $obj = new structure();
-                    $obj->load($current['id']);
-
-                    // check if it is a direct access to a "jump to another branch" path
-                    if($obj->dictionary[$current['lang']]['action-type']=='jump-branch')
-                    {
-                        $current['id'] = $obj->dictionary[$current['lang']]['action-jump-branch'];
+                    case 'structure':
                         $obj = new structure();
                         $obj->load($current['id']);
-                        header('location: '.NVWEB_ABSOLUTE.$obj->paths[$current['lang']]);
-                        nvweb_clean_exit();
-                    }
-                    else if($obj->dictionary[$current['lang']]['action-type']=='jump-item')
-                    {
-                        $current['id'] = $obj->dictionary[$current['lang']]['action-jump-item'];
-                        $obj = new item();
-                        $obj->load($current['id']);
-                        header('location: '.NVWEB_ABSOLUTE.$obj->paths[$current['lang']]);
-                        nvweb_clean_exit();
-                    }
 
-					$current['object'] = $obj;
-					$current['category'] = $current['id'];
-					
-					if($current['navigate_session']!=1 && !nvweb_is_bot())
-					{
-						$DB->execute(' UPDATE nv_structure SET views = views + 1 
-									    WHERE id = '.protect($current['id']).' 
-										  AND website = '.$website->id);
-					}					
-				}
-				else if($current['type']=='item')
-				{
-					$DB->query('SELECT * FROM nv_items 
-								 WHERE id = '.protect($current['id']).'
-								   AND website = '.$website->id);
+                        // check if it is a direct access to a "jump to another branch" path
+                        if($obj->dictionary[$current['lang']]['action-type']=='jump-branch')
+                        {
+                            $current['id'] = $obj->dictionary[$current['lang']]['action-jump-branch'];
+                            $obj = new structure();
+                            $obj->load($current['id']);
+                            header('location: '.NVWEB_ABSOLUTE.$obj->paths[$current['lang']]);
+                            nvweb_clean_exit();
+                        }
+                        else if($obj->dictionary[$current['lang']]['action-type']=='jump-item')
+                        {
+                            $current['id'] = $obj->dictionary[$current['lang']]['action-jump-item'];
+                            $obj = new item();
+                            $obj->load($current['id']);
+                            header('location: '.NVWEB_ABSOLUTE.$obj->paths[$current['lang']]);
+                            nvweb_clean_exit();
+                        }
 
-					$current['object'] = $DB->first();
-					
-					// let's count a hit (except admin)
-					if($current['navigate_session']!=1 && !nvweb_is_bot())
-					{
-						$DB->execute(' UPDATE nv_items SET views = views + 1 
-									   WHERE id = '.$current['id'].' 
-									     AND website = '.$website->id);
-					}							
-				}
-				else if($current['type']=='feed')
-				{
-					$out = feed::generate_feed($current['id']);
-                    if($current['navigate_session']!=1 && !nvweb_is_bot())
-					{
-                        $DB->execute(' UPDATE nv_feeds SET views = views + 1
-                                           WHERE id = '.$current['id'].'
+                        $current['object'] = $obj;
+                        $current['category'] = $current['id'];
+
+                        if($current['navigate_session']!=1 && !nvweb_is_bot())
+                        {
+                            $DB->execute(' UPDATE nv_structure SET views = views + 1 
+                                            WHERE id = '.protect($current['id']).' 
+                                              AND website = '.$website->id);
+                        }
+                        break;
+
+                    case 'item':
+                        $DB->query('SELECT * FROM nv_items 
+                                     WHERE id = '.protect($current['id']).'
+                                       AND website = '.$website->id);
+
+                        $current['object'] = $DB->first();
+
+                        // let's count a hit (except admin)
+                        if($current['navigate_session']!=1 && !nvweb_is_bot())
+                        {
+                            $DB->execute(' UPDATE nv_items SET views = views + 1 
+                                           WHERE id = '.$current['id'].' 
                                              AND website = '.$website->id);
-                    }
+                        }
+                        break;
 
-                    if(strpos('<rss')!==false)
-                        header('Content-Type: application/rss+xml');
-                    else if(strpos('<atom')!==false)
-                        header('Content-Type: application/atom+xml');
-                    else if(strpos('<xml')!==false)
-                        header('Content-Type: application/xml');
+                    case 'feed':
+                        $out = feed::generate_feed($current['id']);
+                        if($current['navigate_session']!=1 && !nvweb_is_bot())
+                        {
+                            $DB->execute(' UPDATE nv_feeds SET views = views + 1
+                                               WHERE id = '.$current['id'].'
+                                                 AND website = '.$website->id);
+                        }
 
-					echo $out;
-					nvweb_clean_exit();
-				}
-				else
-				{
-					// path exists, but the object type is unknown
-					// maybe the path belongs to an extension?
-					$events->trigger(
-						'nvweb',
-						'routes',
-						array(
-							'path' => $rs[0]
-						)
-					);
+                        if(strpos('<rss')!==false)
+                            header('Content-Type: application/rss+xml');
+                        else if(strpos('<atom')!==false)
+                            header('Content-Type: application/atom+xml');
+                        else if(strpos('<xml')!==false)
+                            header('Content-Type: application/xml');
+
+                        echo $out;
+                        nvweb_clean_exit();
+                        break;
+
+                    default:
+                        // path exists, but the object type is unknown
+                        // maybe the path belongs to an extension?
+                        $events->trigger(
+                            'nvweb',
+                            'routes',
+                            array(
+                                'path' => $rs[0]
+                            )
+                        );
 				}
 
 				$current['template'] = $current['object']->template;
