@@ -243,7 +243,7 @@ function nvweb_properties($vars=array())
             // find the property source by its name
             $current_properties = array();
 
-            // get website theme property
+            // is a theme property?
             $current_properties[] = new property();
             $current_properties[0]->load_from_theme($vars['property']);
 
@@ -333,14 +333,31 @@ function nvweb_properties_render($property, $vars)
 
 		if(!isset($property->value) || !isset($property->value[$current['lang']]))
         {
+            // the property has no value saved (never was edited in Navigate CMS) or
+            // the property has no value defined for the current language
+
             if(isset($property->dvalue->{$current['lang']}))
-    			$property->value[$current['lang']] = $property->dvalue->{$current['lang']};
+            {
+                // good, there is a default value for the language requested
+                $property->value[$current['lang']] = $property->dvalue->{$current['lang']};
+            }
             else
             {
                 if(!is_array($property->value))
                     $property->value = array();
 
-                $property->value[$current['lang']] = $property->dvalue;
+                if(is_object($property->dvalue))
+                    $property->dvalue = (array)$property->dvalue;
+
+                if(is_array($property->dvalue))
+                {
+                    $dvalues = array_values($property->dvalue);
+                    $property->value[$current['lang']] = $dvalues[0];
+                }
+                else
+                {
+                    $property->value[$current['lang']] = $property->dvalue;
+                }
             }
         }
 	}

@@ -17,9 +17,12 @@ class language
 	public function load($code='en')
 	{
 		global $DB;
-				
+
 		$DB->query('SELECT * FROM nv_languages WHERE code = '.protect($code));
 		$data = $DB->first();
+
+		if(empty($data->id))
+		    return;
 
 		$this->id 	= $data->id;
 		$this->code = $data->code;

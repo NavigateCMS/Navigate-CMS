@@ -25,11 +25,20 @@
 function t($id, $default='', $replace=array(), $encodeChars=false)
 {
 	global $lang;
+	global $session;
 
-	if(!method_exists($lang, 't'))	
-		return $default;
+	if(!method_exists($lang, 't'))
+    {
+        $lang = new language();
+        $lang->load($session['lang']);
+    }
 	
-	return $lang->t($id, $default, $replace, $encodeChars);
+	$out = $lang->t($id, $default, $replace, $encodeChars);
+
+	if(empty($out))
+	    $out = $default;
+
+    return $out;
 }
 
 /**

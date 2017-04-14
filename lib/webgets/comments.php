@@ -41,13 +41,16 @@ function nvweb_comments($vars=array())
             'your_comment_has_been_received_and_will_be_published_shortly' => t(386, 'Your comment has been received and will be published shortly'),
             'new_comment' => t(387, 'New comment'),
             'review_comments' => t(388, 'Review comments'),
-            'comments_subscription' => t(655, "Subscribe to comments on this entry")
+            'comments_subscription' => t(655, "Subscribe to comments on this entry"),
+            'comment_published' => t(555, "Item has been successfully published."),
+            'security_error' => t(344, "Security error"),
+            'unexpected_error' => t(56, "Unexpected error"),
+            'comment_deleted' => t(55, "Item successfully deleted")
 		);
 
 		// theme translations
 		// if the web theme has custom translations for this string subtypes, use it (for the user selected language)
 		/* just add the following translations to your json theme dictionary:
-
 			"post_a_comment": "Post a comment",
 			"name": "Name",
 			"email": "E-Mail",
@@ -61,7 +64,11 @@ function nvweb_comments($vars=array())
 			"your_comment_has_been_received_and_will_be_published_shortly": "Your comment has been received and will be published shortly",
 			"new_comment": "New comment",
 			"review_comments": "Review comments",
-		    "comments_subscription": "Subscribe to comments on this entry"
+		    "comments_subscription": "Subscribe to comments on this entry",
+		    "comment_published": "Comment has been successfully published.",
+            "security_error": "Security error",
+            "unexpected_error": "Unexpected error",
+            "comment_deleted": "Comment successfully deleted"
 		*/
 
 		if(!empty($website->theme) && method_exists($theme, 't'))
@@ -125,7 +132,7 @@ function nvweb_comments($vars=array())
                         $comment->status = 0;
                         $comment->save();
 
-                        $response = t(555, "Item has been successfully published.");
+                        $response = $webgets[$webget]['translations']['comment_published'];
 
                         if($vars['notify']=='inline' || $callback=='inline')
                             $out = '<div class="comment-success">'.$response.'</div>';
@@ -134,7 +141,7 @@ function nvweb_comments($vars=array())
                     }
                     else
                     {
-                        $response = t(344, "Security error");
+                        $response = $webgets[$webget]['translations']['security_error'];
 
                         if($vars['notify']=='inline' || $callback_error=='inline')
                             $out = '<div class="comment-error">'.$response.'</div>';
@@ -144,7 +151,7 @@ function nvweb_comments($vars=array())
                 }
                 else
                 {
-                    $response = t(56, "Unexpected error");
+                    $response = $webgets[$webget]['translations']['unexpected_error'];
 
                     if($vars['notify']=='inline' || $callback_error=='inline')
                         $out = '<div class="comment-error">'.$response.'</div>';
@@ -166,7 +173,7 @@ function nvweb_comments($vars=array())
                     {
                         // hash check passed
                         $comment->delete();
-                        $response = t(55, "Item successfully deleted");
+                        $response = $webgets[$webget]['translations']['comment_deleted'];
                         if($vars['notify']=='inline' || $callback=='inline')
                             $out = '<div class="comment-success">'.$response.'</div>';
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
@@ -174,7 +181,7 @@ function nvweb_comments($vars=array())
                     }
                     else
                     {
-                        $response = t(344, "Security error");
+                        $response = $webgets[$webget]['translations']['security_error'];
                         if($vars['notify']=='inline' || $callback_error=='inline')
                             $out = '<div class="comment-error">'.$response.'</div>';
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
@@ -183,7 +190,7 @@ function nvweb_comments($vars=array())
                 }
                 else
                 {
-                    $response = t(56, "Unexpected error");
+                    $response = $webgets[$webget]['translations']['unexpected_error'];
                     if($vars['notify']=='inline' || $callback_error=='inline')
                         $out = '<div class="comment-error">'.$response.'</div>';
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
