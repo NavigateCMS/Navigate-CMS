@@ -20,4 +20,5 @@ themes/ocean
 themes/ocean/*
 themes/*
 plugins/twitter_timeline
+plugins/webuser_login_box
 cache/*
