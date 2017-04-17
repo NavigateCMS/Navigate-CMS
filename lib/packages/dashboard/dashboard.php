@@ -408,12 +408,20 @@ function dashboard_panel_recent_comments($params)
     /* RECENT COMMENTS */
     $comments_limit = 25;
 
-    $DB->query('SELECT nvc.*, nvwu.username, nvwu.avatar
-				  FROM nv_comments nvc
-				  LEFT OUTER JOIN nv_webusers nvwu 
-							  ON nvwu.id = nvc.user
-				  WHERE nvc.website = '.$website->id.'
-				 ORDER BY nvc.date_created DESC LIMIT '.$comments_limit);
+    $DB->query('
+      SELECT nvc.*, nvwu.username, nvwu.avatar, nvwd.text as content_title
+	    FROM nv_comments nvc
+		LEFT OUTER JOIN nv_webusers nvwu 
+				     ON nvwu.id = nvc.user
+        LEFT OUTER JOIN nv_webdictionary nvwd
+              ON nvwd.node_id = nvc.object_id AND
+                 nvwd.website = nvc.website AND
+                 nvwd.node_type = nvc.object_type AND
+                 nvwd.subtype = "title" AND
+                 nvwd.lang = '.protect($website->languages_published[0]).'
+      WHERE nvc.website = '.$website->id.'
+	  ORDER BY nvc.date_created DESC LIMIT '.$comments_limit
+    );
     // removed
     /*
         .. AND nvwu.website = nvc.website
@@ -440,11 +448,12 @@ function dashboard_panel_recent_comments($params)
                 '<div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-'.$comment_status.'">'.
                 '<a href="#" action-href="?fid=comments&act=1&oper=del&ids[]='.$comments[$c]->id.'" style="float: right;"
                         title="'.t(525, "Remove comment (without confirmation)").'" class="navigate-panel-recent-comments-remove">
-                        <span class="ui-icon ui-icon-circle-close"></span>
-                    </a>'.
+                        <span class="ui-icon ui-icon-circle-close"></span>                        
+                 </a>'.
                 '<a href="?fid=comments&act=2&id='.$comments[$c]->id.'">'.
-                core_ts2date($comments[$c]->date_created, true).' '.
-                '<strong>'.(empty($comments[$c]->username)? $comments[$c]->name : $comments[$c]->username).'</strong>'.
+                    core_ts2date($comments[$c]->date_created, true).' '.
+                    '<strong>'.(empty($comments[$c]->username)? $comments[$c]->name : $comments[$c]->username).'</strong>'.
+                    '<div class="subcomment">'.core_string_cut($comments[$c]->content_title, 56).'</div>'.
                 '</a>'.
                 '</div>',
                 '<div id="items-comment-'.$comments[$c]->id.'" class="navigate-panel-recent-comments-element">'.$comments[$c]->message.'</div>');

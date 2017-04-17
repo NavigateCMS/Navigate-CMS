@@ -627,7 +627,8 @@ class item
                 SELECT COUNT(*) as total
                       FROM nv_comments
                      WHERE website = ' . protect($this->website) . '
-                       AND item = ' . protect($this->id) . '
+                       AND object_type = "item"
+                       AND object_id = ' . protect($this->id) . '
                        AND status = 0'
             );
 

@@ -296,7 +296,8 @@ function nvweb_content_comments_count($object_id = NULL)
 	$DB->query('SELECT COUNT(*) as total
 				  FROM nv_comments
 				 WHERE website = '.protect($website->id).'
-				   AND item = '.protect($object_id).'
+				   AND object_type = "item"
+				   AND object_id = '.protect($object_id).'
 				   AND status = 0'
 				);
 													

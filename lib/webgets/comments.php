@@ -244,7 +244,9 @@ function nvweb_comments($vars=array())
                 $comment = new comment();
                 $comment->id = 0;
                 $comment->website = $website->id;
-                $comment->item = $element->id;
+                // TODO: add support for PRODUCTS
+                $comment->object_type = "item";
+                $comment->object_id = $element->id;
                 $comment->user = (empty($webuser->id)? 0 : $webuser->id);
                 $comment->name = $comment_name;
                 $comment->email = filter_var($comment_email, FILTER_SANITIZE_EMAIL);
@@ -298,9 +300,14 @@ function nvweb_comments($vars=array())
                 if(!empty($properties))
                     property::save_properties_from_array('comment', $comment->id, $element->template, $properties);
 
+                // TODO: add support for PRODUCT type
                 // reload the element to retrieve the new comments
-                $element = new item();
-                $element->load($comment->item);
+                if($comment->object_type == "product")
+                    $element = new product();
+                else
+                    $element = new item();
+
+                $element->load($comment->object_id);
 
                 if($current['type']=='item' && !isset($vars['element']))
                     $current['object'] = $element;
@@ -611,6 +618,7 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
         // note 2: the only drawback is that offset/limit it's only taken into account for the root level comments, so the
         //         number of results is variable on each request; we found that an acceptable drawback
 
+        // TODO: add support for PRODUCT comments
         $DB->query('
             SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar,
                    (SELECT COUNT(nvcr.id) 
@@ -622,7 +630,8 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
              LEFT OUTER JOIN nv_webusers nvwu
                           ON nvwu.id = nvc.user
              WHERE nvc.website = ' . protect($website->id) . '
-               AND nvc.item = ' . protect($element->id) . '
+               AND nvc.object_type = "item"
+               AND nvc.object_id = ' . protect($element->id) . '
                AND nvc.status = 0
                AND nvc.reply_to = 0
             ORDER BY ' . $orderby . '
@@ -657,13 +666,15 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
     }
     else // plain list
     {
+        // TODO: add support for PRODUCT comments
         $DB->query('
             SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
               FROM nv_comments nvc
              LEFT OUTER JOIN nv_webusers nvwu
                           ON nvwu.id = nvc.user
              WHERE nvc.website = ' . protect($website->id) . '
-               AND nvc.item = ' . protect($element->id) . '
+               AND nvc.object_type = "item"
+               AND nvc.object_id = ' . protect($element->id) . '
                AND nvc.status = 0
             ORDER BY ' . $orderby . '
             LIMIT ' . $limit . '
@@ -693,9 +704,9 @@ function nvweb_website_comments_list($offset=0, $limit=2147483647, $permission=N
 				 LEFT OUTER JOIN nv_webusers nvwu
 							  ON nvwu.id = nvc.user
 				 LEFT OUTER JOIN nv_webdictionary nvwd
-				              ON nvwd.node_id = nvc.item AND
+				              ON nvwd.node_id = nvc.object_id AND
                                  nvwd.website = nvc.website AND
-                                 nvwd.node_type = "item" AND
+                                 nvwd.node_type = nvc.object_type AND
                                  nvwd.subtype = "title" AND
                                  nvwd.lang = '.protect($current['lang']).'
 				 WHERE nvc.website = '.protect($website->id).'

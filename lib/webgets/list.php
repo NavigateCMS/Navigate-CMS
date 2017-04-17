@@ -769,6 +769,8 @@ function nvweb_list($vars=array())
                 {
                     // extension block
                     $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
+                    if(empty($item)) // empty or inexistant block, ignore
+                        continue;
                     $item->type = "extension";
                     $item->extension = $rs[$i]->extension;
                     $item->uid = $rs[$i]->uid;
@@ -1202,7 +1204,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					break;
 
                 case 'item_url':
-                    $out = nvweb_source_url('item', $item->item, $current['lang']);
+                    $out = nvweb_source_url($item->object_type, $item->object_id, $current['lang']);
                     break;
 
                 case 'item_title':

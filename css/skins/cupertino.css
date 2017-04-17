@@ -2380,6 +2380,17 @@ ul.connectedSortable li
 	white-space: nowrap;
 }
 
+.navigate-panel-body .subcomment
+{
+	font-size: 10px;
+	font-style: italic;
+	padding-left: 0;
+	padding-top: 2px;
+	clear: both;
+	text-align: left;
+	margin-left: 0;
+}
+
 .navigate-panel-recent-feed-element
 {
 	padding: 8px;

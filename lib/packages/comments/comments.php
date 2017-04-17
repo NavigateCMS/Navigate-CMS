@@ -49,7 +49,7 @@ function run()
 					}
 
 					$DB->queryLimit(
-                        'id,item,user,email,date_created,status,message',
+                        'id,object_type,object_id,user,email,date_created,status,message',
                         'nv_comments',
                         $where,
                         $orderby,
@@ -62,7 +62,12 @@ function run()
 					
 					//echo $DB->get_last_error();
 					
-					$out = array();					
+					$out = array();
+
+					$object_types = array(
+					    'item' => t(630, "Element"),
+                        'product' => t(198, "Product")
+                    );
 					
 					$permissions = array(	
 							-1=> '<img src="img/icons/silk/new.png" align="absmiddle" /> '.t(257, 'To review'),	
@@ -80,21 +85,26 @@ function run()
 						$webuser = $DB->query_single('username', 'nv_webusers', ' id = '.$dataset[$i]['user']);
 						
 						// retrieve item title
-						$item = new item();
-						$item->load($dataset[$i]['item']);
-						$title = $item->dictionary[$website->languages_list[0]]['title'];
-					
+                        if($dataset[$i]['object_type'] == "item")
+                            $item = new item();
+                        else if($dataset[$i]['object_type'] == "product")
+                            $item = new product();
+
+                        $item->load($dataset[$i]['object_id']);
+                        $title = $item->dictionary[$website->languages_list[0]]['title'];
+
 						$message = core_string_clean($dataset[$i]['message']);
 						$message = core_string_cut($message, 60, '&hellip;');
 												
 						
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> $title,
-							2	=> core_ts2date($dataset[$i]['date_created'], true),
-							3	=> (empty($dataset[$i]['user'])? $dataset[$i]['email'] : $webuser),
-							4 	=> strip_tags($message),
-							5	=> $permissions[$dataset[$i]['status']]
+							1	=> $object_types[$dataset[$i]['object_type']],
+							2	=> $title,
+							3	=> core_ts2date($dataset[$i]['date_created'], true),
+							4	=> (empty($dataset[$i]['user'])? $dataset[$i]['email'] : $webuser),
+							5 	=> strip_tags($message),
+							6	=> $permissions[$dataset[$i]['status']]
 						);
 					}
 									
@@ -209,24 +219,24 @@ function run()
             core_terminate();
             break;
 
-        case 91: // json search title request (for "item" autocomplete)
+        case "find_object_titles":
+            // json search title request (for "item" autocomplete)
 			$DB->query('SELECT DISTINCT node_id as id, text as label, text as value
 						  FROM nv_webdictionary
-						 WHERE node_type = "item"
+						 WHERE node_type = '.protect($_REQUEST['object_type']).'
 						   AND subtype = "title"
 						   AND website = '.$website->id.' 
 						   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
 				      ORDER BY text ASC
 					     LIMIT 30',
-						'array');
-						// AND lang = '.protect($_REQUEST['lang']).'
+						'array'
+                    // AND lang = '.protect($_REQUEST['lang']).'
+            );
 						
 			echo json_encode($DB->result());
-							  
 			session_write_close();
 			exit;
-			break;			
-
+			break;
 					
 		case 0: // list / search result
 		default:			
@@ -294,12 +304,13 @@ function comments_list()
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
 	$navitable->enableDelete();	
 	
-	$navitable->addCol("ID", 'id', "80", "true", "left");	
-	$navitable->addCol(t(180, 'Item'), 'item', "200", "true", "left");	
-	$navitable->addCol(t(226, 'Date created'), 'date_created', "100", "true", "left");	
+	$navitable->addCol("ID", 'id', "50", "true", "left");
+	$navitable->addCol(t(160, 'Type'), 'object_type', "50", "true", "left");
+	$navitable->addCol(t(9, 'Content'), 'object_id', "220", "true", "left");
+	$navitable->addCol(t(226, 'Date created'), 'date_created', "80", "true", "left");
 	$navitable->addCol(t(1, 'User'), 'user', "100", "true", "left");		
-	$navitable->addCol(t(54, 'Text'), 'message', "200", "true", "left");	
-	$navitable->addCol(t(68, 'Status'), 'status', "80", "true", "center");		
+	$navitable->addCol(t(54, 'Text'), 'message', "250", "true", "left");
+	$navitable->addCol(t(68, 'Status'), 'status', "60", "true", "center");
 
 	$navibars->add_content($navitable->generate());	
 	
@@ -389,39 +400,62 @@ function comments_form($item)
         )
     );
 
-	$navibars->add_tab_content($naviforms->hidden('comment-item', $item->item));
+	$navibars->add_tab_content_row(array(
+            '<label>'.t(160, "Type").'</label>',
+            $naviforms->selectfield(
+                "comment-object_type",
+                array("item", "product"),
+                array(t(630, "Element"), t(198, "Product")),
+                $item->object_type,
+                'comment_object_type_changed(this);'
+            )
+        )
+    );
 
-	if($item->item > 0)
+	$layout->add_script('
+        function comment_object_type_changed()
+        {
+            $("#comment-object_id").val(""); 
+            $("#comment-object-text").val("");
+        }
+	');
+
+	$navibars->add_tab_content($naviforms->hidden('comment-object_id', $item->object_id));
+
+	if($item->object_id > 0)
 	{
-		$content = new item();
-		$content->load($item->item);
+	    if($item->object_type == "product")
+		    $content = new product();
+	    else
+            $content = new item();
+
+		$content->load($item->object_id);
 		$title = $content->dictionary[$website->languages_list[0]]['title'];
 	}
 
 	$navibars->add_tab_content_row(
 		array(
-			'<label>'.t(180, 'Item').'</label>',
-			$naviforms->textfield('comment-item-text', $title),
+			'<label>'.t(9, 'Content').'</label>',
+			$naviforms->textfield('comment-object-text', $title),
 		)
 	);
 																														
 	$layout->add_script('
-		$("#comment-item-text").autocomplete(
+		$("#comment-object-text").autocomplete(
 		{
 			source: function(request, response)
-			{
-				var toFind = {	
-					"title": request.term,
-					"lang": "'.$website->languages[0].'",
-					nd: new Date().getTime()
-				};
-				
+			{						
 				$.ajax(
 					{
-						url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=91",
+						url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments&act=find_object_titles",
 						dataType: "json",
 						method: "GET",
-						data: toFind,
+						data: {	
+                            "title": request.term,
+                            "lang": "'.$website->languages[0].'",
+                            "object_type": $("#object_type").val(),
+                            "nd": new Date().getTime()
+                        },
 						success: function( data ) 
 						{
 							response( data );
@@ -431,7 +465,7 @@ function comments_form($item)
 			minLength: 1,
 			select: function(event, ui) 
 			{
-				$("#comment-item").val(ui.item.id);
+				$("#comment-object_id").val(ui.item.id);
 			}
 		});
 	');	
@@ -647,21 +681,15 @@ function comments_form($item)
         )
     );
 
-    if(!empty($item->item))
+    if(!empty($item->object_id))
     {
-        $element = new item();
-        $element->load($item->item);
+        $template = $item->element_template();
+        $properties_html = navigate_property_layout_form('comment', $template, 'comment', $item->id);
 
-        $template = $theme->templates($element->template);
-        if(is_object($template->comments) && isset($template->comments->properties))
+        if(!empty($properties_html))
         {
-            $properties_html = navigate_property_layout_form('comment', $element->template, 'comment', $item->id);
-
-            if(!empty($properties_html))
-            {
-                $navibars->add_tab(t(77, "Properties"));
-                $navibars->add_tab_content($properties_html);
-            }
+            $navibars->add_tab(t(77, "Properties"));
+            $navibars->add_tab_content($properties_html);
         }
     }
 

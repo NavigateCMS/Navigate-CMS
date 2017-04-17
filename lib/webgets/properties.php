@@ -487,7 +487,7 @@ function nvweb_properties_render($property, $vars)
 				$out = '<a href="'.$link.'" target="'.$target.'">'.$title.'</a>';
             }
 			break;
-			
+
 		case 'image':
 			$add = '';
 			$extra = '';

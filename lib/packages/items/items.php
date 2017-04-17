@@ -119,7 +119,8 @@ function run()
                                     u.username as author_username,
                                     (   SELECT COUNT(*)
                                         FROM nv_comments cm
-                                        WHERE cm.item = i.id
+                                        WHERE cm.object_type = "item"
+                                          AND cm.object_id = i.id
                                           AND cm.website = '.$website->id.'
                                     ) as comments
 							   FROM nv_items i

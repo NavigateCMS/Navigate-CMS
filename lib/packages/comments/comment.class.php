@@ -4,7 +4,8 @@ class comment
 {
 	public $id;
 	public $website;
-	public $item;
+	public $object_type;
+	public $object_id;
 	public $user;
 	public $name;
 	public $email;
@@ -44,7 +45,8 @@ class comment
 		
 		$this->id      		= $main->id;		
 		$this->website      = $main->website;
-		$this->item			= $main->item;
+		$this->object_type	= $main->object_type;
+		$this->object_id	= $main->object_id;
 		$this->user			= $main->user;
    		$this->name		    = $main->name;    
    		$this->email	    = $main->email;    
@@ -64,7 +66,8 @@ class comment
 	
 	public function load_from_post()
 	{
-		$this->item			= $_REQUEST['comment-item'];
+		$this->object_type	= $_REQUEST['comment-object_type'];
+		$this->object_id	= $_REQUEST['comment-object_id'];
 		$this->user			= $_REQUEST['comment-user'];
 		$this->name			= $_REQUEST['comment-name'];
 		$this->email		= $_REQUEST['comment-email'];
@@ -122,18 +125,19 @@ class comment
 
         $ok = $DB->execute('
  			INSERT INTO nv_comments
-				(	id, website, item, user, name, email, url, ip,
+				(	id, website, object_type, object_id, user, name, email, url, ip,
 					date_created, date_modified, last_modified_by,
 					reply_to, subscribed, status, message
 				)
 				VALUES
-				( 	0, :website, :item, :user, :name, :email, :url, :ip,
+				( 	0, :website, :object_type, :object_id, :user, :name, :email, :url, :ip,
 					:date_created, :date_modified, :last_modified_by,
 					:reply_to, :subscribed, :status, :message)
 			',
 			array(
 				":website" => value_or_default($this->website, $website->id),
-				":item" => value_or_default($this->item, 0),
+				":object_type" => value_or_default($this->object_type, "item"),
+				":object_id" => value_or_default($this->object_id, 0),
 				":user" => value_or_default($this->user, 0),
 				":name" => empty($this->name)? "" : $this->name,
 				":email" => empty($this->email)? "" : $this->email,
@@ -169,7 +173,8 @@ class comment
 		$ok = $DB->execute('
  			UPDATE nv_comments
  			SET
- 			  item = :item,
+ 			  object_type = :object_type,
+ 			  object_id = :object_id,
               user = :user,
               name = :name,
               email = :email,
@@ -184,7 +189,8 @@ class comment
             WHERE id = :id
 			',
 			array(
-				":item" => value_or_default($this->item, 0),
+                ":object_type" => value_or_default($this->object_type, "item"),
+                ":object_id" => value_or_default($this->object_id, 0),
 				":user" => value_or_default($this->user, 0),
 				":name" => empty($this->name)? "" : $this->name,
 				":email" => empty($this->email)? "" : $this->email,
@@ -273,8 +279,8 @@ class comment
         $ok = $DB->execute('
 			DELETE FROM nv_comments
              WHERE website = '.protect($website->id).'
-               AND status = 3'
-        );
+               AND status = 3
+        ');
 
         if($ok)
             return $count;
@@ -383,8 +389,14 @@ class comment
 
         $out = "";
 
-        if(!empty($this->item))
-            $out = $DB->query_single('template', 'nv_items', 'id='.$this->item);
+        if(!empty($this->object_id))
+        {
+            if($this->object_type == "item")
+                $out = $DB->query_single('template', 'nv_items', 'id=' . $this->object_id);
+            else if($this->object_type == "product")
+                $out = $DB->query_single('template', 'nv_products', 'id=' . $this->object_id);
+        }
+
 
         return $out;
     }
@@ -396,7 +408,7 @@ class comment
         // load properties if not already done
         if(empty($this->properties))
         {
-            $template = $DB->query_single('template', 'nv_items', 'id = '.$this->item);
+            $template = $this->element_template();
             $this->properties = property::load_properties('comment', $template, 'comment', $this->id);
         }
 
@@ -419,7 +431,7 @@ class comment
         // load properties if not already done
         if(empty($this->properties))
         {
-            $template = $DB->query_single('template', 'nv_items', 'id = '.$this->item);
+            $template = $this->element_template();
             $this->properties = property::load_properties('comment', $template, 'comment', $this->id);
         }
 
@@ -442,7 +454,7 @@ class comment
         // load properties if not already done
         if(empty($this->properties))
         {
-            $template = $DB->query_single('template', 'nv_items', 'id = '.$this->item);
+            $template = $this->element_template();
             $this->properties = property::load_properties('comment', $template, 'comment', $this->id);
         }
 
@@ -453,8 +465,6 @@ class comment
         }
         return false;
     }
-
-
 
     public function notify_subscribed()
     {
@@ -481,15 +491,20 @@ class comment
             $website->load($this->website);
             $lang = $website->languages_published[0];
 
-            $item = new item();
-            $item->load($this->item);
+            if($this->object_type == "item")
+                $item = new item();
+            else
+                $item = new product();
+
+            $item->load($this->object_id);
 
             // find users subscribed to the same content (except the author of the current comment)
             $DB->query('
                 SELECT id, user, email 
                  FROM nv_comments
                 WHERE website = ' . $this->website . '.
-                  AND item = ' . $this->item . '
+                  AND object_type = ' . $this->object_type . '
+                  AND object_id = ' . $this->object_id . '
                   AND subscribed = 1
             ');
 
@@ -527,7 +542,7 @@ class comment
 
                         $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $content_title . ']';
                         $content = '<a href="' . nvweb_source_url('item', $item->id, $swu->language) . '" target="_blank">' . $content_title . '</a>';
-                        $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $item->id);
+                        $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $this->object_type . $this->object_id);
 
                         $body = navigate_compose_email(
                             array(
@@ -569,7 +584,7 @@ class comment
                         // send email
                         $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
                         $content = '<a href="' . nvweb_source_url('item', $item->id, $ulang->code) . '" target="_blank">' . $item->dictionary[$ulang->code]['title'] . '</a>';
-                        $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $item->id);
+                        $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $this->object_type . $this->object_id);
 
                         $body = navigate_compose_email(
                             array(
@@ -613,21 +628,35 @@ class comment
         $c = new comment();
         $c->load(intval($cid));
 
-        $hash_check = md5(APP_UNIQUE . $c->id . '#' . $c->item);
+        $hash_check = md5(APP_UNIQUE . $c->id . '#' . $c->object_type . $c->object_id);
         if($hash == $hash_check)
         {
             if(!empty($c->user))
             {
                 $DB->execute(
-                    'UPDATE nv_comments SET subscribed = 0 WHERE item = :item AND user = :user',
-                    array(':item' => $c->item, ':user' => $c->user)
+                    'UPDATE nv_comments SET subscribed = 0 
+                      WHERE object_type = :object_type
+                        AND object_id = :object_id
+                        AND user = :user',
+                    array(
+                        ':object_type' => $c->object_type,
+                        ':object_id' => $c->object_id,
+                        ':user' => $c->user
+                    )
                 );
             }
             else
             {
                 $DB->execute(
-                    'UPDATE nv_comments SET subscribed = 0 WHERE item = :item AND email = :email',
-                    array(':item' => $c->item, ':email' => $c->email)
+                    'UPDATE nv_comments SET subscribed = 0 
+                      WHERE object_type = :object_type AND 
+                            object_id = :object_id AND
+                            email = :email',
+                    array(
+                        ':object_type' => $c->object_type,
+                        ':object_id' => $c->object_id,
+                        ':email' => $c->email
+                    )
                 );
             }
         }

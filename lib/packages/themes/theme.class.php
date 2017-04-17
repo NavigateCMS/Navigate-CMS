@@ -800,12 +800,12 @@ class theme
 
         foreach($comments_or as $comment)
         {
-            if(empty($comment->item))
+            if(empty($comment->object_id))
                 continue;
 
             $comment->id = 0;
             $comment->website = $ws->id;
-            $comment->item = $items[$comment->item]->id;
+            $comment->object_id = $items[$comment->object_id]->id;
             $comment->ip = '';
             $comment->insert();
         }
