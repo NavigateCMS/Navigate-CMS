@@ -95,7 +95,7 @@ class navibars
             {
                 return $("<li></li>")
                     .data("item.autocomplete", item)
-                    .append("<a>" + item.label + " <span>#" + item.id + "</span></a>")
+                    .append("<a>" + item.label + " <span class=\"small_item_info\">#" + item.id + "</span></a>")
                     .appendTo(ul);
             };                        
         ');

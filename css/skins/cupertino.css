@@ -2821,7 +2821,7 @@ div.jGrowl div.jGrowl-closer:hover
     color: #fff;
 }
 
-.ui-menu .ui-menu-item span
+.ui-menu .ui-menu-item span.small_item_info
 {
 	color: #777;
 	font-size: 8px;
