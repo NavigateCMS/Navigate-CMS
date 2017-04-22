@@ -2101,12 +2101,12 @@ function items_form($item)
 						 LEFT OUTER JOIN nv_webusers nvwu 
 						 			  ON nvwu.id = nvc.user
 						 WHERE nvc.website = '.protect($website->id).'
-						   AND nvc.item = '.protect($item->id).'
+						   AND nvc.object_type = "item"
+						   AND nvc.object_id = '.protect($item->id).'
 						ORDER BY nvc.date_created ASC
 						LIMIT 500');
 												
 			$comments = $DB->result();
-						
 			$comments_total = count($comments);
 			
 			for($c=0; $c < $comments_total; $c++)
