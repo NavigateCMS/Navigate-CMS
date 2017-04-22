@@ -51,14 +51,14 @@ tinymce.init({
 tinymce.init({
     // Define the dashed line, button's background and arrows color
     magicline_color: '#4A8DE0',
-    
+
     // Array of Html elements to check
     magicline_targetedItems: ['DIV','IMG'],
-    
+
     // Define the distance between the mouse and the targeted item
     // at which the magicline will be displayed (in pixel)
     magicline_triggerMargin: 20,
-    
+
     // The element's tagname to insert
     magicline_insertedBlockTag: 'p'
 });
@@ -78,5 +78,7 @@ For instance, the first *DIV* will trigger the display, but the second won't :
 
 * English
 * French
+* Italian
+* Romanian
+* Russian
 * Spanish
-
