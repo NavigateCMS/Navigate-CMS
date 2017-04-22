@@ -82,8 +82,12 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/josh18/TinyMCE-FontAwesome-Plugin" target="_blank">TinyMCE Font Awesome plugin v2.0.8_nv</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/josh18/TinyMCE-FontAwesome-Plugin" target="_blank">TinyMCE Font Awesome plugin v2.0.9_nv</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
 											'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.09</a><br />' ));

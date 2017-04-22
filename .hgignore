@@ -16,9 +16,9 @@ cfg/globals.php
 private/thumbnails/*
 lib/external/tinymce/*.gz
 lib/external/tinymce/server_name
-themes/ocean
-themes/ocean/*
-themes/*
+themes/theme_kit
+themes/ocean.zip
+themes/theme_kit.zip
 plugins/twitter_timeline
 plugins/webuser_login_box
 cache/*
