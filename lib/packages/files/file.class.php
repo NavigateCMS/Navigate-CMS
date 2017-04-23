@@ -997,7 +997,13 @@ class file
 
             $handle->png_compression = 9;
             $handle->process(dirname($thumbnail));
-            rename($handle->file_dst_pathname, $thumbnail);
+
+            if(!empty($handle->error))
+                throw new Exception($handle->error);
+
+            if(!empty($handle->file_dst_pathname))
+                rename($handle->file_dst_pathname, $thumbnail);
+
             clearstatcache(true, $thumbnail);
 
             if(!file_exists($thumbnail) || filesize($thumbnail) < 1)

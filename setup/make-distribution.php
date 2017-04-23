@@ -65,9 +65,13 @@ $DB->query('SHOW TABLES', 'array');
 $tmp = array_keys($DB->first());
 $tmp = $tmp[0];
 $tables = array_values($DB->result($tmp));
+$ignore_tables = array('nv_products');
 
 foreach($tables as $table)
 {
+    if(in_array($table, $ignore_tables))
+        continue;
+
 	$DB->query('SHOW CREATE TABLE '.$table, 'array');
 	$sql[] = 'DROP TABLE IF EXISTS '.$table.';';
 	$table = $DB->first();
@@ -91,7 +95,7 @@ $tables = array(
 				
 foreach($tables as $table)
 {
-	$DB->query('SELECT * FROM '.$table, 'array');
+    $DB->query('SELECT * FROM '.$table, 'array');
 	$rs = $DB->result();
 
 	$rcount = 0;
