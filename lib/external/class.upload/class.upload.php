@@ -2255,6 +2255,11 @@ class upload {
      */
     var $language;
 
+    public function __construct()
+    {
+        // created to avoid PHP 7.x warning about having a
+        // function with the same name as the class
+    }
     /**
      * Init or re-init all the processing variables to their default values
      *

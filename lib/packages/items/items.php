@@ -1300,13 +1300,16 @@ function items_form($item)
         );
 	}
 
-	$navibars->add_tab_content_row(
-		array(
-			'<label>'.t(280, 'Page views').'</label>',
-			$item->views
-		),
-		"div_page_views"
-	);
+    if(!empty($item->id))
+    {
+        $navibars->add_tab_content_row(
+            array(
+                '<label>' . t(280, 'Page views') . '</label>',
+                $item->views
+            ),
+            "div_page_views"
+        );
+    }
 
 	$navibars->add_tab(t(87, "Association")); // tab #1
 

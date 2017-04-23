@@ -392,7 +392,6 @@ class item
 	public function update()
 	{
 		global $DB;
-		global $website;
 		global $events;
 		global $user;
 

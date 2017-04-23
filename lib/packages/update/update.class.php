@@ -7,8 +7,14 @@ class update
 	public $date_updated;
 	public $status;
 	public $changelog;
-	
-	public function load($id)
+
+	public function __construct()
+    {
+        // to avoid PHP 7.x warning about having a
+        // function with the same name as the class
+    }
+
+    public function load($id)
 	{
 		global $DB;
 		global $website;
