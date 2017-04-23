@@ -238,6 +238,10 @@ function nvweb_prepare_link($path)
     {
         $url = $path;
     }
+    else if(substr(strtolower($path), 0, 4)=='www.')
+    {
+        $url = 'http://'.$path;
+    }
     else
     {
         $url = NVWEB_ABSOLUTE.$path;

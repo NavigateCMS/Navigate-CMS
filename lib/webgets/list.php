@@ -1170,13 +1170,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'website':
                     if(!empty($item->url))
                     {
-                        $out = $item->url;
+                        $out = nvweb_prepare_link($item->url);
                     }
                     else if(!empty($item->user))
                     {
                         $wu = new webuser();
                         $wu->load($item->user);
-                        $out = $wu->social_website;
+                        $out = nvweb_prepare_link($wu->social_website);
                     }
 
                     if(empty($out))
@@ -2219,6 +2219,29 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             else
             {
                 $out = '';
+            }
+            break;
+
+        case 'comment':
+
+            switch($tag['attributes']['check'])
+            {
+                case 'website':
+                    if(!empty($item->url))
+                    {
+                        $out = $item_html;
+                    }
+                    else if(!empty($item->user))
+                    {
+                        $wu = new webuser();
+                        $wu->load($item->user);
+                        if(!empty($wu->social_website))
+                            $out = $item_html;
+                    }
+                    break;
+
+                default:
+                    $out = "";
             }
             break;
 
