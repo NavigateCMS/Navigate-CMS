@@ -408,8 +408,9 @@ function core_string2decimal($value)
  * @param string $body
  * @param mixed $recipients An e-mail address string or an array of recipients [name => address, name => ...]
  * @param array $attachments Files or data to be attached. [0][file => "/path/to/file", name => "name_of_the_file_in_the_email"]... [1][data => "binary data", name => "name_of_the_file_in_the_email"]
- * @param boolean $quiet  $attachments Files or data to be attached. [0][file => "/path/to/file", name => "name_of_the_file_in_the_email"]... [1][data => "binary data", name => "name_of_the_file_in_the_email"]
+ * @param boolean $quiet  hide any possible exception message
  * @return boolean True if the mail has been sent, false otherwise
+ *
  */
 function navigate_send_email($subject, $body, $recipients=array(), $attachments=array(), $quiet=false)
 {
@@ -529,6 +530,7 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
 
 	return $ok;
 }
+
 
 /**
  * Checks if a string is not empty after a trim

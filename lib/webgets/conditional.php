@@ -431,11 +431,12 @@ function nvweb_conditional($vars=array())
                 SELECT COUNT(*) as total
 				  FROM nv_comments
 				 WHERE website = '.protect($website->id).'
-				   AND item = '.protect($item->id).'
+				   AND object_id = '.protect($item->id).'
+				   AND object_type = "item"
 				   AND status = 0
             ');
             $rs = $DB->result();
-            $comments_count = $rs[0]->total + 0;
+            $comments_count = intval($rs[0]->total) + 0;
 
             if(isset($vars['allowed']))
             {

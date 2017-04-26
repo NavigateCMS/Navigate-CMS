@@ -148,17 +148,18 @@ function nvweb_load_website_by_url($url, $exit=true)
 		preg_match('/(?:http[s]*\:\/\/)*(.*?)\.(?=[^\/]*\..{2,5})/i', $url, $parts);
 		$subdomain = $parts[1];
 		$domain = $host;
+
 		if(empty($subdomain)) // may be NULL
 			$subdomain = "";
 		else
 			$domain = substr($host, strlen($subdomain)+1);
 	}
 
-	$DB->query('
+    $DB->query('
 		SELECT id, folder
 		  FROM nv_websites
 		 WHERE subdomain = '.protect($subdomain).'
-		   AND (domain = '.protect($domain).' OR domain = '.protect($idn->encode($domain)).') 
+		   AND ( domain = '.protect($domain).' OR domain = '.protect($idn->encode($domain)).' ) 
 		 ORDER BY folder DESC
 	 ');
 	$websites = $DB->result();
