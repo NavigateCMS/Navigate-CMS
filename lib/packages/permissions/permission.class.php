@@ -256,7 +256,7 @@ class permission
         return $definition;
     }
 
-    public static function get_values($who='user', $obj, $definitions=NULL, $ws=null)
+    public static function get_values($who='user', $object=NULL, $definitions=NULL, $ws=null)
     {
         global $DB;
         global $website;
@@ -276,7 +276,7 @@ class permission
             $DB->query('
                 SELECT *
                 FROM nv_permissions
-                WHERE profile = '.protect($obj->profile).'
+                WHERE profile = '.protect($object->profile).'
                   AND (website = 0 OR website = '.protect($ws).')'
             );
             $permissions_profile = $DB->result();
@@ -284,7 +284,7 @@ class permission
             $DB->query('
                 SELECT *
                   FROM nv_permissions
-                 WHERE user = '.protect($obj->id).'
+                 WHERE user = '.protect($object->id).'
                    AND (website = 0 OR website = '.protect($ws).')'
             );
             $permissions_user = $DB->result();
@@ -293,7 +293,7 @@ class permission
         {
             $DB->query('
                 SELECT * FROM nv_permissions
-                 WHERE profile = '.protect($obj->id).'
+                 WHERE profile = '.protect($object->id).'
                  AND (website = 0 OR website = '.protect($ws).')'
             );
 

@@ -3304,12 +3304,18 @@
 				<target>Datei ersetzen</target>
 			</trans-unit>
 
-			<trans-unit id="660" approved="yes">
+			<trans-unit id="660">
 				<source>Clear cache</source>
 				<target>Cache leeren</target>
 			</trans-unit>
 
+			<trans-unit id="661">
+				<source>New web user registration</source>
+				<target>Als Benutzer registrieren web</target>
+			</trans-unit>
+
 		</body>
+
 	</file>
 
 </xliff>

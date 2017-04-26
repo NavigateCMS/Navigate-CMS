@@ -1052,9 +1052,33 @@ function debug_json_error($prepend='')
 
 function navigate_compose_email($data, $style = array('background' => '#E5F1FF', 'title-color' => '#595959', 'content-color' => '#595959'))
 {
+    global $DB;
+
     $body = array();
 
-    $body[] = '<div style=" background: '.$style['background'].'; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
+    if(empty($style))
+    {
+        // default colors
+        $background_color = '#E5F1FF';
+        $title_color = '#595959';
+        $text_color = '#595959';
+
+        $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.background_color") . ' AND website = ' . protect($this->website), 'id DESC');
+        $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.text_color") . ' AND website = ' . protect($this->website), 'id DESC');
+        $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.titles_color") . ' AND website = ' . protect($this->website), 'id DESC');
+
+        if (!empty($background_color_db)) $background_color = str_replace('"', '', $background_color_db);
+        if (!empty($text_color_db)) $text_color = str_replace('"', '', $text_color_db);
+        if (!empty($title_color_db)) $title_color = str_replace('"', '', $title_color_db);
+
+        $style = array(
+            'background' => $background_color,
+            'title-color' => $title_color,
+            'content-color' => $text_color
+        );
+    }
+
+    $body[] = '<div style=" background: '.$style['background'].'; width: 86%; max-width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
 
     foreach($data as $section)
     {

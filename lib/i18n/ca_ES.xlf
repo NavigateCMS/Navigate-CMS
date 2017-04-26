@@ -3321,7 +3321,13 @@
                 <target>Netejar memòria cau</target>
             </trans-unit>
 
+            <trans-unit id="661" approved="yes">
+                <source>New web user registration</source>
+                <target>Nou registre d'usuari web</target>
+            </trans-unit>
+
         </body>
+
     </file>
 
 </xliff>

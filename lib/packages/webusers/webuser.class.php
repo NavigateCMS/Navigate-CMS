@@ -299,6 +299,49 @@ class webuser
                 'webuser' => $this
             )
         );
+
+        // notify about the new webuser account,
+        // only if the current user is not logged in Navigate CMS
+        if( empty($_SESSION['APP_USER#'.APP_UNIQUE]) )
+        {
+            $subject = $website->name . ' | ' . t(661, 'New web user signed up') . ' [' . $this->username . ']';
+
+            $body = navigate_compose_email(
+                array(
+                    array(
+                        'title'   => t(177, "Website"),
+                        'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+                    ),
+                    array(
+                        'title'   => "ID",
+                        'content' => $this->id
+                    ),
+                    array(
+                        'title'   => t(1, "User"),
+                        'content' => value_or_default($this->username, "&nbsp;")
+                    ),
+                    array(
+                        'title'   => t(44, "E-Mail"),
+                        'content' => value_or_default($this->email, "&nbsp;")
+                    ),
+                    array(
+                        'title'   => t(159, "Name"),
+                        'content' => value_or_default($this->fullname, "&nbsp;")
+                    ),
+                    array(
+                        'title'   => t(249, "Newsletter"),
+                        'content' => $this->newsletter? "&#x2714;" : "&mdash;"
+                    ),
+                    array(
+                        'footer' => '<a href="' . NAVIGATE_URL . '?fid=webusers&act=edit&id='.$this->id.'">' .
+                            t(170, 'Edit') .
+                            '</a>'
+                    )
+                )
+            );
+
+            navigate_send_email($subject, $body);
+        }
 		
 		return true;
 	}	

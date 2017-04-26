@@ -3309,7 +3309,13 @@
 				<target>Clear cache</target>
 			</trans-unit>
 
+			<trans-unit id="661" approved="yes">
+				<source>New web user registration</source>
+				<target>New web user registration</target>
+			</trans-unit>
+
 		</body>
+
 	</file>
 
 </xliff>
