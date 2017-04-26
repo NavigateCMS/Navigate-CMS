@@ -893,6 +893,26 @@ class file
         // do we have to create a new thumbnail
 		if(empty($thumbnail) || isset($_GET['force']) || !(file_exists($thumbnail) && filesize($thumbnail) > 0))
 		{
+		    if($item->mime == 'application/pdf')
+            {
+                // try to get thumbnail for a PDF document using Image Magick
+                if(extension_loaded('imagick'))
+                {
+                    $im = new Imagick();
+                    $im->readImage($original);
+                    $im->setCompressionQuality(100);
+                    $im->setImageDepth(300);
+                    $im->setFormat("png");
+                    $im->writeImage($thumbnail_path_png);
+                    $im->destroy();
+                    $original = $thumbnail_path_png;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
 			$thumbnail = $thumbnail_path_png;
 
 			$handle = new upload($original);
@@ -942,7 +962,7 @@ class file
 				if($scale_up_force)
 				{
 					$handle->image_border = array();
-					if($height > width)
+					if($height > $width)
 						$handle->image_ratio_y = true;
 					else
 						$handle->image_ratio_x = true;

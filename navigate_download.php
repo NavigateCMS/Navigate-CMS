@@ -51,9 +51,9 @@ else
 $path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
 
 // pass control to usual website download (ignoring enabled check)
-$_REQUEST['type'] = $item->type;
+//$_REQUEST['type'] = $item->type;
 $_REQUEST['force_resize'] = 'true';
 
-nvweb_object(true, true); // ignore all permissions
+nvweb_object(true, true, $item); // ignore all permissions
 
 ?>

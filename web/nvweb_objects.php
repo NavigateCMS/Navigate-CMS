@@ -1,5 +1,5 @@
 <?php
-function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
+function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL)
 {
 	global $website;
     global $DB;
@@ -7,16 +7,16 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 	session_write_close();
 	ob_end_clean();
 	
-	$item = new file();	
-	
 	header('Cache-Control: private');
 	header('Pragma: private');
 
     $type = @$_REQUEST['type'];
 	$id = @$_REQUEST['id'];
-	
-	if(!empty($id))
+
+	if(empty($item) && !empty($id))
 	{
+        $item = new file();
+
 		if(is_numeric($id))
 			$item->load($id);
 		else
@@ -79,11 +79,14 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false)
 			$cached = file::cacheHeaders(filemtime($path), $etag);			
 
 			if(!$cached)
+            {
                 readfile($path);
+            }
 			break;
 	
 		case 'image':
-		case 'img':			
+		case 'img':
+        case 'thumbnail':
 			if(!$item->enabled && !$ignoreEnabled) 
 				nvweb_clean_exit();
 

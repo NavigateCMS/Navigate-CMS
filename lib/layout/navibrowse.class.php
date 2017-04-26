@@ -316,15 +316,19 @@ class navibrowse
 			$icon = $this->mimeIcon($item->mime, $item->type);
 
 			$thumbnail = '';
+
 			if($item->type == 'image')
 				$thumbnail = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
+
+            if($item->mime == 'application/pdf' && extension_loaded('imagick'))
+                $thumbnail = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&type=thumbnail&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
 
 			if($item->type=='folder')
 			{
 				$html[] = '<div class="navibrowse-folder ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
 				$html[] = '		<img src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
-				$html[] = '</div>';	
+				$html[] = '</div>';
 			}
 			else
 			{
@@ -332,7 +336,7 @@ class navibrowse
                 $html[] = '     <div class="navibrowse-file-access-icons">'.$permissions[$item->permission].$access[$item->access].'</div>';
 				$html[] = '		<img src="'.$icon.'" data-src="'.$thumbnail.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
-				$html[] = '</div>';					
+				$html[] = '</div>';
 			}
 		}
 
@@ -573,4 +577,5 @@ class navibrowse
 		return implode("\n", $html);	
 	}
 }
+
 ?>

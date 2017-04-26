@@ -1303,7 +1303,7 @@ function files_media_browser($limit = 50, $offset = 0)
 		}
 	    else if($media=='youtube')
 	    {
-	        //list($files_shown, $total) = files_youtube_search($offset, $limit, $text, $order);
+	        // list($files_shown, $total) = files_youtube_search($offset, $limit, $text, $order);
 	    }
 		else
 	    {
@@ -1357,6 +1357,10 @@ function files_media_browser($limit = 50, $offset = 0)
 			else
 			{
 				$icon = navibrowse::mimeIcon($f->mime, $f->type);
+
+				if($f->mime == 'application/pdf' && extension_loaded('imagick'))
+                    $icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&type=thumbnail&width=75&height=75';
+
 				$navipath = file::getFullPathTo($f->id);
 				$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
 				               mediatype="'.$f->type.'"
