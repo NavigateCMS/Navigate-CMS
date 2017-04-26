@@ -65,7 +65,15 @@ try
     if(!empty($website->folder) && strpos('/'.$route, $website->folder)===0)
         $route = substr('/'.$route, strlen($website->folder)+1);
 
-    $nvweb_absolute = $idn->encodeUri($website->absolute_path());
+    $nvweb_absolute = $website->absolute_path();
+    try
+    {
+        $nvweb_absolute = $idn->encodeUri($nvweb_absolute);
+    }
+    catch (\InvalidArgumentException $e)
+    {
+        // do nothing, the domain is already in punycode
+    }
 
 	define('NVWEB_ABSOLUTE', $nvweb_absolute);
 	define('NVWEB_OBJECT', $nvweb_absolute.'/object');

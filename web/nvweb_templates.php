@@ -381,7 +381,15 @@ function nvweb_template_parse($template)
 			            break;
 
 		            case "url":
-			            $content = $idn->encodeUri($website->absolute_path(false));
+                        $content = $website->absolute_path();
+                        try
+                        {
+                            $content = $idn->encodeUri($content);
+                        }
+                        catch (\InvalidArgumentException $e)
+                        {
+                            // do nothing, the domain is already in punycode
+                        }
 			            $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
 			            break;
 

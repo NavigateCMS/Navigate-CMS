@@ -158,7 +158,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 		SELECT id, folder
 		  FROM nv_websites
 		 WHERE subdomain = '.protect($subdomain).'
-		   AND domain = '.protect($domain).'
+		   AND (domain = '.protect($domain).' OR domain = '.protect($idn->encode($domain)).') 
 		 ORDER BY folder DESC
 	 ');
 	$websites = $DB->result();
