@@ -8,6 +8,7 @@ class webdictionary
 	public $theme;
 	public $extension;
 	public $node_id;
+	public $node_uid;
 	public $subtype;
 	public $lang;
 	public $text;
@@ -153,18 +154,20 @@ class webdictionary
 		}
 	}
 	
-	
 	public function save()
 	{
 		global $DB;
 
 		// remove all old entries
+        $node_id_filter = '';
+
 		if(!empty($this->node_id))
 		{
 			if(is_numeric($this->node_id))
-				$node_id_filter = ' AND node_id = '.intval($this->node_id);
-			else
-				$node_id_filter = '';
+				$node_id_filter .= ' AND node_id = '.intval($this->node_id);
+
+			if(is_numeric($this->node_uid))
+				$node_id_filter .= ' AND node_uid = '.intval($this->node_uid);
 
 			$DB->execute('
 				DELETE FROM nv_webdictionary 
@@ -184,15 +187,17 @@ class webdictionary
 	public function delete()
 	{
 		global $DB;
-		global $website;
+
+        $node_id_filter = "";
 
 		// remove all old entries
 		if(!empty($this->node_id))
 		{
-			if(is_numeric($this->node_id))
-				$node_id_filter = ' AND node_id = '.intval($this->node_id);
-			else
-				$node_id_filter = '';			
+            if(is_numeric($this->node_id))
+                $node_id_filter .= ' AND node_id = '.intval($this->node_id);
+
+            if(is_numeric($this->node_uid))
+                $node_id_filter .= ' AND node_uid = '.intval($this->node_uid);
 			
 			$DB->execute('
  				DELETE FROM nv_webdictionary
@@ -237,19 +242,20 @@ class webdictionary
 
 			$ok = $DB->execute('
  				INSERT INTO nv_webdictionary
-					(id, website, node_type, node_id, theme, extension, subtype, lang, `text`)
+					(id, website, node_type, node_id, node_uid, theme, extension, subtype, lang, `text`)
 				VALUES
-					( 0, :website, :node_type, :node_id, :theme, :extension, :subtype, :lang, :text)
+					( 0, :website, :node_type, :node_id, :node_uid, :theme, :extension, :subtype, :lang, :text)
 				',
 				array(
 					":website" => $this->website,
 					":node_type" => $this->node_type,
 					":node_id" => (!empty($this->theme) || !empty($this->extension))? 0 : $this->node_id,
-					":theme" => !empty($this->theme)? $this->theme : "",
-					":extension" => !empty($this->extension)? $this->extension : "",
+					":node_uid" => value_or_default($this->node_uid, 0),
+					":theme" => value_or_default($this->theme, ""),
+					":extension" => value_or_default($this->extension, ""),
 					":subtype" => $this->subtype,
 					":lang" => $lang,
-					":text" => $text
+					":text" => value_or_default($text, "")
 				)
 			);
 			
@@ -455,7 +461,7 @@ class webdictionary
 			{
 				$ok = $DB->execute('
 				    INSERT INTO nv_webdictionary
-	                (	id,	website, node_type, theme, extension, node_id, subtype, lang, `text`)
+	                (	id,	website, node_type, theme, extension, node_id, node_uid, subtype, lang, `text`)
 	                VALUES
 	                (	0, :website, :node_type, :theme, :extension, :node_id, :subtype, :lang, :text )',
 					array(
@@ -464,6 +470,7 @@ class webdictionary
 						':theme' => ($type=='theme'? $object : ""),
 						':extension' => ($type=='extension'? $object : ""),
 						':node_id' => (is_numeric($id)? $id : 0),
+						':node_uid' => "",
 						':subtype' => (is_numeric($id)? '' : $id),
 						':lang' => $language,
 						':text' => value_or_default($text, "")
