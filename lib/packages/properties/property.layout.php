@@ -947,90 +947,220 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
         case 'categories':
             $hierarchy = structure::hierarchy(0, $website_id);
-
             $selected = explode(',', $property->value);
             if(!is_array($selected))
                 $selected = array($property->value);
             $categories_list = structure::hierarchyList($hierarchy, $selected);
 
-            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
-            $field[] = '<label>'.$property_name.'</label>';
-            $field[] = '<div class="category_tree" id="categories-tree-property-'.$property->id.'">
-                            <img src="img/icons/silk/world.png" align="absmiddle" /> '.$ws->name.
-                            '<div class="tree_ul">'.$categories_list.'</div>'.
-                        '</div>';
-            $field[] = $naviforms->hidden('property-'.$property->id, $property->value);
-            $field[] = '<label>&nbsp;</label>';
-            $field[] = '<button id="categories_tree_select_all_categories-property-'.$property->id.'">'.t(481, 'Select all').'</button>';
-	        if(!empty($property->helper))
-	        {
-		        $helper_text = $property->helper;
-		        if(!empty($object))
-			        $helper_text = $object->t($helper_text);
-		        $field[] = '<div class="subcomment">'.$helper_text.'</div>';
-	        }
-            $field[] = '</div>';
+            if($property->format == 'list')
+            {
+                $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+                $field[] = '<label>'.$property_name.'</label>';
 
-            $layout->add_script('              
-                $("#categories-tree-property-'.$property->id.' .tree_ul").jstree({
-                    plugins: ["changed", "types", "checkbox"],
-                    "types" :
-                    {
-                        "default":  {   "icon": "img/icons/silk/folder.png"    },
-                        "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
-                    },
-                    "checkbox":
-                    {
-                        three_state: false,
-                        cascade: "undetermined"
-                    },
-                    "core":
-                    {
-                        dblclick_toggle: false
-                    }
-                })
-                .on("dblclick.jstree", function(e)
-                {
-                    e.preventDefault();
-                    e.stopPropagation();
-                
-                    var li = $(e.target).closest("li");
-                    $("#categories-tree-property-'.$property->id.' .tree_ul").jstree("open_node", "#" + li[0].id);
-                
-                    var children_nodes = new Array();
-                    children_nodes.push(li);
-                    $(li).find("li").each(function() {
-                        children_nodes.push("#" + $(this)[0].id);
+                $field[] = $naviforms->textfield("property-".$property->id);
+                $field[] = '<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'" data-action="tree_hierarchy" title="'.t(330, 'Categories').'…"><img src="img/icons/silk/sitemap_color.png" align="absmiddle"></button>';
+
+                $layout->add_script('			                
+                    $("#property-'.$property->id.'").tagit({
+                        removeConfirmation: true,
+                        allowSpaces: true,
+                        singleField: true,
+                        singleFieldDelimiter: ",",
+                        placeholderText: "+",
+                        autocompleteOnly: true,
+                        autocomplete: {
+                            delay: 0, 
+                            minLength: 1,
+                            source: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=structure&act=json_find_structure&format=tagit&page_limit=10"
+                        },
+                        afterTagAdded: function(event, ui)
+                        {                           
+                            var tags = $(this).tagit("assignedValues");
+                            if(tags.length > 0) tags = tags.join(",");
+                            else                tags = "";
+                                
+                            $("#property-'.$property->id.'").val(tags).trigger("change");
+                        },
+                        afterTagRemoved: function(event, ui)
+                        {
+                            var tags = $(this).tagit("assignedValues");
+                            if(tags.length > 0) tags = tags.join(",");
+                            else                tags = "";
+    
+                            $("#property-'.$property->id.'").val(tags).trigger("change");
+                        }
                     });
-                
-                    $("#categories-tree-property-'.$property->id.' .tree_ul").jstree("select_node", children_nodes);
-                
-                    return false;
-                })
-                .on("changed.jstree", function(e, data)
-                {
-                    var i, j, r = [];
-                    var categories = new Array();
-                    $("#property-'.$property->id.'").val("");       
-                
-                    for(i = 0, j = data.selected.length; i < j; i++)
+                                    
+                    $("#property-'.$property->id.'").next().sortable(
                     {
-                        var id = data.instance.get_node(data.selected[i]).data.nodeId;
-                        categories.push(id);
-                    }
-                    
-                    if(categories.length > 0)
-                        $("#property-'.$property->id.'").val(categories);                                                                
-                });
+                        items: ">li:not(.tagit-new)",
+                        update: function(ui, event)
+                        {
+                            var tags = $("#property-'.$property->id.'").tagit("assignedValues");
+                            if(tags.length > 0) tags = tags.join(",");
+                            else                tags = "";
+    
+                            $("#property-'.$property->id.'").val(tags).trigger("change");
+                        }
+                    });    
+                ');
 
-                $("#categories_tree_select_all_categories-property-'.$property->id.'").on("click", function(e)
+                $field[] = '<div style="float: left;" id="tree_wrapper_'.$property->id.'">'.$categories_list.'</div>';
+
+                $layout->add_script('
+                    $("#tree_wrapper_'.$property->id.' span").wrap("<a>").css("cursor", "pointer");
+                    $("#tree_wrapper_'.$property->id.' ul:first").menu({                        
+                        select: function(event, ui)
+                        {
+                            var value = $(ui.item).attr("value");
+                            var text = ($(ui.item).text()).trim();
+                            $("#property-'.$property->id.'").tagit("createTag", text, "", "", value);
+                        }
+                    });
+                    $("#tree_wrapper_'.$property->id.' ul:first").css(
+                        {
+                            "position": "absolute",
+                            "z-index": 1000,
+                            "margin": 1,
+                            "width": $("#tree_path_'.$property->id.'").width()
+                        }
+                    ).addClass("navi-ui-widget-shadow").hide();
+                    $("#tree_wrapper_'.$property->id.'").find(".ui-menu-icon").css("float", "right");
+                    $("#tree_path_'.$property->id.'").on("click", function() 
+                    {
+                        setTimeout(function()
+                        {
+                            $("#tree_wrapper_'.$property->id.' ul:first").fadeIn("fast");
+                        }, 50);
+                    });
+                    
+                    $(".navigate-form-row-property-action[data-field=property-'.$property->id.'][data-action=tree_hierarchy]").on("click", function(e)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                                                
+                        setTimeout(function()
+                            {
+                                $("#tree_wrapper_'.$property->id.' ul:first").show();
+                                $("#tree_wrapper_'.$property->id.' ul:first").offset({
+                                    top: $(".navigate-form-row-property-action[data-field=property-'.$property->id.'][data-action=tree_hierarchy]").offset().top + 8,
+                                    left: $(".navigate-form-row-property-action[data-field=property-'.$property->id.'][data-action=tree_hierarchy]").offset().left + 8                                    
+                                });
+                            },
+                            100
+                        );
+                    });
+                ');
+
+                if(!empty($property->value))
                 {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    $("#categories-tree-property-'.$property->id.' .tree_ul").jstree("select_all");
-                    return false;
-                });                                
-            ');
+                    $values = explode(",", $property->value);
+                    $values = array_filter($values);
+
+                    foreach ($values as $cid)
+                    {
+                        $content_title = $DB->query_single(
+                            'text',
+                            'nv_webdictionary',
+                            '    node_type = "structure" AND
+                                        website = "' . $ws->id . '" AND
+                                        node_id = ' . protect($cid) . ' AND
+                                        subtype = "title" AND
+                                        lang = "' . $ws->languages_published[0] . '"'
+                        );
+
+                        $layout->add_script('
+                            $("#property-' . $property->id . '").tagit("createTag", "' . $content_title . '", "", "", "' . $cid . '");                
+                        ');
+                    }
+
+                    $layout->add_script('
+                        $("#property-' . $property->id . '").trigger("change");
+                    ');
+                }
+            }
+            else if($property->format = 'tree' || empty($property->format))
+            {
+                $field[] = '<div class="navigate-form-row" nv_property="' . $property->id . '">';
+                $field[] = '<label>' . $property_name . '</label>';
+                $field[] = '<div class="category_tree" id="categories-tree-property-' . $property->id . '">
+                                <img src="img/icons/silk/world.png" align="absmiddle" /> ' . $ws->name .
+                    '<div class="tree_ul">' . $categories_list . '</div>' .
+                    '</div>';
+                $field[] = $naviforms->hidden('property-' . $property->id, $property->value);
+                $field[] = '<label>&nbsp;</label>';
+                $field[] = '<button id="categories_tree_select_all_categories-property-' . $property->id . '">' . t(481, 'Select all') . '</button>';
+
+                $layout->add_script('              
+                    $("#categories-tree-property-' . $property->id . ' .tree_ul").jstree({
+                        plugins: ["changed", "types", "checkbox"],
+                        "types" :
+                        {
+                            "default":  {   "icon": "img/icons/silk/folder.png"    },
+                            "leaf":     {   "icon": "img/icons/silk/page_white.png"      }
+                        },
+                        "checkbox":
+                        {
+                            three_state: false,
+                            cascade: "undetermined"
+                        },
+                        "core":
+                        {
+                            dblclick_toggle: false
+                        }
+                    })
+                    .on("dblclick.jstree", function(e)
+                    {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    
+                        var li = $(e.target).closest("li");
+                        $("#categories-tree-property-' . $property->id . ' .tree_ul").jstree("open_node", "#" + li[0].id);
+                    
+                        var children_nodes = new Array();
+                        children_nodes.push(li);
+                        $(li).find("li").each(function() {
+                            children_nodes.push("#" + $(this)[0].id);
+                        });
+                    
+                        $("#categories-tree-property-' . $property->id . ' .tree_ul").jstree("select_node", children_nodes);
+                    
+                        return false;
+                    })
+                    .on("changed.jstree", function(e, data)
+                    {
+                        var i, j, r = [];
+                        var categories = new Array();
+                        $("#property-' . $property->id . '").val("");       
+                    
+                        for(i = 0, j = data.selected.length; i < j; i++)
+                        {
+                            var id = data.instance.get_node(data.selected[i]).data.nodeId;
+                            categories.push(id);
+                        }
+                        
+                        if(categories.length > 0)
+                            $("#property-' . $property->id . '").val(categories);                                                                
+                    });
+    
+                    $("#categories_tree_select_all_categories-property-' . $property->id . '").on("click", function(e)
+                    {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        $("#categories-tree-property-' . $property->id . ' .tree_ul").jstree("select_all");
+                        return false;
+                    });                                
+                ');
+            }
+
+            if (!empty($property->helper))
+            {
+                $helper_text = $property->helper;
+                if (!empty($object))
+                    $helper_text = $object->t($helper_text);
+                $field[] = '<div class="subcomment">' . $helper_text . '</div>';
+            }
+            $field[] = '</div>';
             break;
 
 		case 'element':
@@ -1310,7 +1440,7 @@ function navigate_property_layout_scripts($website_id="")
 	$layout->add_script('
 		$.getScript("lib/packages/properties/properties.js?r='.$current_version->revision.'", function()
 		{
-			$(".navigate-form-row-property-action").on("click", function(e)
+			$(".navigate-form-row-property-action[data-action=copy_from]").on("click", function(e)
 			{
 			    var that = this;
 			

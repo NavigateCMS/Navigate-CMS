@@ -2417,6 +2417,10 @@ ul.connectedSortable li
 	min-height: 100px;
 	background: #e8edff;
 	border-radius: 1px;
+	margin-top: 0;
+	margin-bottom: 0;
+	float: left;
+	margin-right: 8px;
 }
 
 .navigate-form-row ul.tagit li.tagit-new

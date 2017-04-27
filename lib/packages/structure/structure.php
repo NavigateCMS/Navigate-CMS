@@ -120,8 +120,16 @@ function run()
 			break;
 			
 		case 'json_find_item':
-            // find items by its title
+            // find elements by its title
             // the items must have its own path (free OR not embedded to a category)
+
+            $text = $_REQUEST['title'];
+            if(!empty($_REQUEST['term'])) // tagit request
+                $text = $_REQUEST['term'];
+
+            $language_filter = "";
+            if(!empty($_REQUEST['lang']))
+                $language_filter = ' AND nvw.lang = '.protect($_REQUEST['lang']);
 
 			$DB->query('
 				SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as text
@@ -132,10 +140,10 @@ function run()
 				   AND (	nvi.association = "free" OR
 				            (nvi.association = "category" AND nvi.embedding=0)
 				   )
-				   AND nvw.lang = '.protect($_REQUEST['lang']).'
+				   '.$language_filter.'
 				   AND nvw.website = '.$website->id.'
 				   AND nvw.website = nvi.website
-				   AND nvw.text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+				   AND nvw.text LIKE '.protect('%'.$text.'%').'
 		      ORDER BY nvw.text ASC
 			     LIMIT '.intval($_REQUEST['page_limit']).'
 			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
@@ -144,8 +152,71 @@ function run()
 
             $rows = $DB->result();
             $total = $DB->foundRows();
-			echo json_encode(array('items' => $rows, 'totalCount' => $total));
+
+            if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
+            {
+                echo json_encode(array('items' => $rows, 'totalCount' => $total));
+            }
+            else if($_REQUEST['format'] == 'tagit')
+            {
+                $tags_json = array();
+                foreach($rows as $row)
+                {
+                    $tags_json[] = json_decode('{ "id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'" }');
+                }
+                echo json_encode($tags_json);
+            }
+
 			core_terminate();					
+			break;
+
+
+        case 'json_find_structure':
+            // find elements by its title
+            // the items must have its own path (free OR not embedded to a category)
+
+            $text = $_REQUEST['title'];
+            if(!empty($_REQUEST['term'])) // tagit request
+                $text = $_REQUEST['term'];
+
+            $language_filter = "";
+            if(!empty($_REQUEST['lang']))
+                $language_filter = ' AND nvw.lang = '.protect($_REQUEST['lang']);
+
+			$DB->query('
+				SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as text
+				  FROM nv_webdictionary nvw, nv_structure nvs
+				 WHERE nvw.node_type = "structure"
+				   AND nvw.node_id = nvs.id
+				   AND nvw.subtype = "title"
+				   '.$language_filter.'
+				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = nvs.website
+				   AND nvw.text LIKE '.protect('%'.$text.'%').'
+		      ORDER BY nvw.text ASC
+			     LIMIT '.intval($_REQUEST['page_limit']).'
+			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
+				'array'
+			);
+
+            $rows = $DB->result();
+            $total = $DB->foundRows();
+
+            if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
+            {
+                echo json_encode(array('items' => $rows, 'totalCount' => $total));
+            }
+            else if($_REQUEST['format'] == 'tagit')
+            {
+                $tags_json = array();
+                foreach($rows as $row)
+                {
+                    $tags_json[] = json_decode('{ "id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'" }');
+                }
+                echo json_encode($tags_json);
+            }
+
+			core_terminate();
 			break;
 
 		case "search_by_title":  // json search title request (for "copy from" properties dialog)
