@@ -1031,17 +1031,20 @@ function files_item_properties($item)
             'px'
 		));
 
+        $original_image_link = NAVIGATE_DOWNLOAD.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed='.time();
+        if(strpos(NAVIGATE_DOWNLOAD, '//')==0)
+            $original_image_link = 'http:'.$original_image_link;
 
-		$navibars->add_tab_content_row(array(
+        $navibars->add_tab_content_row(array(
             '<label>'.t(170, 'Edit').'</label>',
 		    '
 			<script language="javascript" type="text/javascript">
 				function navigate_pixlr_edit()
-				{
+				{				    				    
 					pixlr.overlay.show({
 						service: "editor",
 						loc: "'.$user->language.'",
-						image:"'.NAVIGATE_DOWNLOAD.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed=" + new Date().getTime(),
+						image: "'.$original_image_link.'",
 						title: "'.$item->name.'",
 						target: "'.NAVIGATE_URL.'/navigate_upload.php?wid='.$website->id.'&engine=pixlr&id='.$item->id.'&session_id='.session_id().'&seed=" + + new Date().getTime(),
 						exit: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=pixlr_exit&id='.$item->id.'&ts=" + + new Date().getTime(),
