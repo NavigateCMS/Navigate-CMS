@@ -216,6 +216,14 @@ class FeedHtmlField {
 	 */
 	var $truncSize, $syndicateHtml;
 
+    /**
+     * Constructor, for PHP5+
+     */
+    function  __construct($parFieldContent)
+	{
+        $this->FeedHtmlField($parFieldContent);
+    }
+
 	/**
 	 * Creates a new instance of FeedHtmlField.
 	 * @param  $string: if given, sets the rawFieldContent property
@@ -705,6 +713,14 @@ class FeedCreator extends HtmlDescribable {
 class FeedDate {
 	var $unix;
 
+    /**
+     * Constructor, for PHP5+
+     */
+    function  __construct($dateString="")
+    {
+        $this->FeedDate($dateString);
+    }
+
 	/**
 	 * Creates a new instance of FeedDate representing a given date.
 	 * Accepts RFC 822, ISO 8601 date formats as well as unix time stamps.
@@ -892,6 +908,14 @@ class RSSCreator091 extends FeedCreator {
 	 */
 	var $RSSVersion;
 
+    /**
+     * Constructor, for PHP5+
+     */
+    function  __construct()
+    {
+        $this->RSSCreator091();
+    }
+
 	function RSSCreator091() {
 		$this->_setRSSVersion("0.91");
 		$this->contentType = "application/rss+xml";
@@ -1045,6 +1069,14 @@ class RSSCreator091 extends FeedCreator {
  */
 class RSSCreator20 extends RSSCreator091 {
 
+    /**
+     * Constructor, for PHP5+
+     */
+    function __construct()
+    {
+        $this->RSSCreator20();
+    }
+
     function RSSCreator20() {
         parent::_setRSSVersion("2.0");
     }
@@ -1060,7 +1092,15 @@ class RSSCreator20 extends RSSCreator091 {
  * @since 1.3
  * @author Scott Reynen <scott@randomchaos.com> and Kai Blankenhorn <kaib@bitfolge.de>
  */
-class PIECreator01 extends FeedCreator {
+class PIECreator01 extends FeedCreator
+{
+    /**
+     * Constructor, for PHP5+
+     */
+    function __construct()
+    {
+        $this->PIECreator01();
+    }
 
 	function PIECreator01() {
 		$this->encoding = "utf-8";
@@ -1117,7 +1157,16 @@ class PIECreator01 extends FeedCreator {
  * @since 1.7.2-mod (modified)
  * @author Mohammad Hafiz Ismail (mypapit@gmail.com)
  */
- class AtomCreator10 extends FeedCreator {
+ class AtomCreator10 extends FeedCreator
+ {
+
+     /**
+      * Constructor, for PHP5+
+      */
+     function __construct()
+     {
+         $this->AtomCreator10();
+     }
 
 	function AtomCreator10() {
 		$this->contentType = "application/atom+xml";
@@ -1264,7 +1313,15 @@ class PIECreator01 extends FeedCreator {
  * @since 1.6
  * @author Kai Blankenhorn <kaib@bitfolge.de>, Scott Reynen <scott@randomchaos.com>
  */
-class AtomCreator03 extends FeedCreator {
+class AtomCreator03 extends FeedCreator
+{
+    /**
+     * Constructor, for PHP5+
+     */
+    function __construct()
+    {
+        $this->AtomCreator03();
+    }
 
 	function AtomCreator03() {
 		$this->contentType = "application/atom+xml";
@@ -1333,7 +1390,15 @@ class AtomCreator03 extends FeedCreator {
  * @since 1.3
  * @author Kai Blankenhorn <kaib@bitfolge.de>
  */
-class MBOXCreator extends FeedCreator {
+class MBOXCreator extends FeedCreator
+{
+    /**
+     * Constructor, for PHP5+
+     */
+    function __construct()
+    {
+        $this->MBOXCreator();
+    }
 
 	function MBOXCreator() {
 		$this->contentType = "text/plain";
@@ -1420,7 +1485,15 @@ class MBOXCreator extends FeedCreator {
  * @author Dirk Clemens, Kai Blankenhorn
  * @since 1.5
  */
-class OPMLCreator extends FeedCreator {
+class OPMLCreator extends FeedCreator
+{
+    /**
+     * Constructor, for PHP5+
+     */
+    function __construct()
+    {
+        $this->OPMLCreator();
+    }
 
 	function OPMLCreator() {
 		$this->encoding = "utf-8";
