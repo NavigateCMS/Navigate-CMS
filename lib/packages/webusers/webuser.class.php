@@ -300,48 +300,7 @@ class webuser
             )
         );
 
-        // notify about the new webuser account,
-        // only if the current user is not logged in Navigate CMS
-        if( empty($_SESSION['APP_USER#'.APP_UNIQUE]) )
-        {
-            $subject = $website->name . ' | ' . t(661, 'New web user signed up') . ' [' . $this->username . ']';
-
-            $body = navigate_compose_email(
-                array(
-                    array(
-                        'title'   => t(177, "Website"),
-                        'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
-                    ),
-                    array(
-                        'title'   => "ID",
-                        'content' => $this->id
-                    ),
-                    array(
-                        'title'   => t(1, "User"),
-                        'content' => value_or_default($this->username, "&nbsp;")
-                    ),
-                    array(
-                        'title'   => t(44, "E-Mail"),
-                        'content' => value_or_default($this->email, "&nbsp;")
-                    ),
-                    array(
-                        'title'   => t(159, "Name"),
-                        'content' => value_or_default($this->fullname, "&nbsp;")
-                    ),
-                    array(
-                        'title'   => t(249, "Newsletter"),
-                        'content' => $this->newsletter? "&#x2714;" : "&mdash;"
-                    ),
-                    array(
-                        'footer' => '<a href="' . NAVIGATE_URL . '?fid=webusers&act=edit&id='.$this->id.'">' .
-                            t(170, 'Edit') .
-                            '</a>'
-                    )
-                )
-            );
-
-            navigate_send_email($subject, $body);
-        }
+        $this->new_webuser_notification();
 		
 		return true;
 	}	
@@ -611,6 +570,8 @@ class webuser
         global $webuser;
         global $website;
 
+        $already_updated = false;
+
         if(is_array($extra))
             $extra = serialize($extra);
 
@@ -622,8 +583,7 @@ class webuser
             ' network_user_id = '.protect($network_user_id)
         );
 
-        // the webuser already exists/is logged in?
-
+        // the webuser already exists or is logged in?
         $wuser = new webuser();
 
         if(!empty($webuser->id))
@@ -649,15 +609,19 @@ class webuser
         }
         else
         {
-            // there is no webuser logged in
+            // there is no webuser logged in, it's a new user!
             if(empty($swuser))
             {
                 // and we don't have any social profile that matches the one used to sign in
-                // Ex. Signed in with Facebook without having a previous webuser account in the current website
+                // Example: signed in with Facebook without having a previous webuser account in the current website
                 $wuser->website = $website->id;
                 $wuser->joindate = core_time();
                 $wuser->lastseen = core_time();
                 $wuser->access = 0;
+                foreach ($data as $field => $value)
+                {   $wuser->$field = $value;    }
+                $already_updated = true;
+
                 $wuser->insert();
 
 	            $DB->execute('
@@ -681,11 +645,14 @@ class webuser
             }
         }
 
-        // either way, now we have a webuser account that we need to update
-        foreach($data as $field => $value)
-            $wuser->$field = $value;
+        if(!$already_updated)
+        {
+            // either way, now we have a webuser account that we need to update
+            foreach ($data as $field => $value)
+                $wuser->$field = $value;
 
-        $wuser->update();
+            $wuser->update();
+        }
 
         return $wuser->id;
     }
@@ -768,6 +735,54 @@ class webuser
                 return true;
         }
         return false;
+    }
+
+    public function new_webuser_notification()
+    {
+        global $website;
+
+        // notify about the new webuser account,
+        // only if the current user is not logged in Navigate CMS
+        if (empty($_SESSION['APP_USER#' . APP_UNIQUE]))
+        {
+            $subject = $website->name . ' | ' . t(661, 'New web user signed up') . ' [' . $this->username . ']';
+
+            $body = navigate_compose_email(
+                array(
+                    array(
+                        'title'   => t(177, "Website"),
+                        'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+                    ),
+                    array(
+                        'title'   => "ID (".t(647,"Webuser").")",
+                        'content' => $this->id
+                    ),
+                    array(
+                        'title'   => t(1, "User"),
+                        'content' => value_or_default($this->username, "&nbsp;")
+                    ),
+                    array(
+                        'title'   => t(44, "E-Mail"),
+                        'content' => value_or_default($this->email, "&nbsp;")
+                    ),
+                    array(
+                        'title'   => t(159, "Name"),
+                        'content' => value_or_default($this->fullname, "&nbsp;")
+                    ),
+                    array(
+                        'title'   => t(249, "Newsletter"),
+                        'content' => $this->newsletter ? "&#x2714;" : "&mdash;"
+                    ),
+                    array(
+                        'footer' => '<a href="' . NAVIGATE_URL . '?fid=webusers&act=edit&id=' . $this->id . '">' .
+                            t(170, 'Edit') .
+                            '</a>'
+                    )
+                )
+            );
+
+            navigate_send_email($subject, $body);
+        }
     }
 
 
