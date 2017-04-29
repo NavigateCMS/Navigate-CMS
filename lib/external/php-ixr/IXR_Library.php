@@ -43,6 +43,11 @@ class IXR_Value
     var $data;
     var $type;
 
+    function __construct($data, $type = false)
+    {
+        $this->IXR_Value($data, $type);
+    }
+
     function IXR_Value($data, $type = false)
     {
         $this->data = $data;
@@ -186,6 +191,11 @@ class IXR_Message
     var $_currentTagContents;
     // The XML parser
     var $_parser;
+
+    function __construct($message)
+    {
+        $this->IXR_Message($message);
+    }
 
     function IXR_Message($message)
     {
@@ -344,6 +354,11 @@ class IXR_Server
     var $callbacks = array();
     var $message;
     var $capabilities;
+
+    function __construct($callbacks = false, $data = false, $wait = false)
+    {
+        $this->IXR_Server($callbacks, $data, $wait);
+    }
 
     function IXR_Server($callbacks = false, $data = false, $wait = false)
     {
@@ -548,6 +563,11 @@ class IXR_Request
     var $args;
     var $xml;
 
+    function __construct($method, $args)
+    {
+        $this->IXR_Request($method, $args);
+    }
+
     function IXR_Request($method, $args)
     {
         $this->method = $method;
@@ -599,6 +619,11 @@ class IXR_Client
 
     // Storage place for an error message
     var $error = false;
+
+    function __construct($server, $path = false, $port = 80, $timeout = 15)
+    {
+        $this->IXR_Client($server, $path, $port, $timeout);
+    }
 
     function IXR_Client($server, $path = false, $port = 80, $timeout = 15)
     {
@@ -741,6 +766,11 @@ class IXR_Error
     var $code;
     var $message;
 
+    function __construct($code, $message)
+    {
+        $this->IXR_Error($code, $message);
+    }
+
     function IXR_Error($code, $message)
     {
         $this->code = $code;
@@ -786,6 +816,11 @@ class IXR_Date {
     var $minute;
     var $second;
     var $timezone;
+
+    function __construct($time)
+    {
+        $this->IXR_Date($time);
+    }
 
     function IXR_Date($time)
     {
@@ -845,6 +880,11 @@ class IXR_Base64
 {
     var $data;
 
+    function __construct($data)
+    {
+        $this->IXR_Base64($data);
+    }
+
     function IXR_Base64($data)
     {
         $this->data = $data;
@@ -866,6 +906,11 @@ class IXR_IntrospectionServer extends IXR_Server
 {
     var $signatures;
     var $help;
+
+    function __construct()
+    {
+        $this->IXR_IntrospectionServer();
+    }
 
     function IXR_IntrospectionServer()
     {
@@ -1029,6 +1074,11 @@ class IXR_ClientMulticall extends IXR_Client
 {
     var $calls = array();
 
+    function __construct($server, $path = false, $port = 80)
+    {
+        $this->IXR_ClientMulticall($server, $path, $port);
+    }
+
     function IXR_ClientMulticall($server, $path = false, $port = 80)
     {
         parent::IXR_Client($server, $path, $port);
@@ -1094,6 +1144,11 @@ class IXR_ClientSSL extends IXR_Client
      * @var string
      */
     var $_passphrase;
+
+    function __construct($server, $path = false, $port = 443, $timeout = false)
+    {
+        $this->IXR_ClientSSL($server, $path, $port, $timeout);
+    }
 
     /**
      * Constructor
@@ -1289,6 +1344,11 @@ class IXR_ClassServer extends IXR_Server
 {
     var $_objects;
     var $_delim;
+
+    function __construct($delim = '.', $wait = false)
+    {
+        $this->IXR_ClassServer($delim, $wait);
+    }
 
     function IXR_ClassServer($delim = '.', $wait = false)
     {
