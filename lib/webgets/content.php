@@ -67,7 +67,7 @@ function nvweb_content($vars=array())
 			$text = $texts[$current['lang']]['main'];
             if(!empty($vars['allowed_tags']))
                 $allowed_tags = explode(',', $vars['allowed_tags']);
-			$out = core_string_cut($text, 300, '&hellip;', $allowed_tags);
+			$out = core_string_cut($text, $length, '&hellip;', $allowed_tags);
 			break;
 
         case 'author':
