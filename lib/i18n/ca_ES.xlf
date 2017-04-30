@@ -985,7 +985,7 @@
             
 			<trans-unit id="196" approved="yes">
                 <source>Date and time</source>
-                <target>Data y hora</target>
+                <target>Data i hora</target>
             </trans-unit>
             
 			<trans-unit id="197" approved="yes">
@@ -3107,7 +3107,7 @@
             
 			<trans-unit id="618" approved="yes">
                 <source>Change the status to Published to be able to the item on the future publication date currently assigned</source>
-                <target>Canvia l'estat a Publicat per a poder veure el contingut en la data de publicación que hi ha assignada</target>
+                <target>Canvia l'estat a Publicat per a poder veure el contingut en la data de publicació que hi ha assignada</target>
             </trans-unit>
             
 			<trans-unit id="619" approved="yes">
