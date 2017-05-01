@@ -129,7 +129,7 @@ if($_REQUEST['action']=='forgot-password')
         'id',
         'nv_users',
         ' username = '.protect($value).' OR
-          email = '.protect($value)
+                 email = '.protect($value)
     );
 
     if(!$found_id)
@@ -284,7 +284,7 @@ $(document).ready(function()
                 {
                     $('#forgot-password-problem').html("<?php echo t(453, "Couldn't find this username or e-mail address", false, true);?>");
                 }
-                else if(data=='not_sent')
+                else// if(data=='not_sent')
                 {
                     $('#forgot-password-problem').html("<?php echo t(452, "E-mail could not be sent; please contact the administrator", false, true);?>");
                 }

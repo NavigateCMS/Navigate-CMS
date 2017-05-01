@@ -710,6 +710,7 @@ class layout
                 141: "'.t(141, 'Folder').'",
                 152: "'.t(152, 'Continue').'",
                 170: "'.t(170, 'Edit').'",
+                171: "'.t(171, 'Order').'",
                 185: "'.t(185, 'Searching elements').'",
                 189: "'.t(189, 'Copy from').'",
                 190: "'.t(190, 'Ok').'",

@@ -469,7 +469,7 @@ class user
 
         $subject = 'Navigate CMS | '.t(407, 'Forgot password?');
 
-        $url = NAVIGATE_PARENT.NAVIGATE_FOLDER.'/login.php?action=password-reset&value='.$this->activation_key;
+        $url = 'http:' . NAVIGATE_PARENT.NAVIGATE_FOLDER.'/login.php?action=password-reset&value='.$this->activation_key;
 
         $out = array();
 

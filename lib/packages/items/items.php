@@ -406,14 +406,27 @@ function run()
 			}
 			break;
 		
-		case 89:
-			if(!empty($_REQUEST['id'])) 
-			{
-				$DB->execute('DELETE FROM nv_webdictionary_history WHERE id = '.intval($_REQUEST['id']).' LIMIT 1');
-				echo 'true';
-			}
-			else
-				echo 'false';
+        case "delete_content_history":
+            $ok = false;
+            if(!empty($_REQUEST['id']))
+            {
+                $ok = $DB->execute('
+                        DELETE FROM nv_webdictionary_history 
+                        WHERE id = :id AND
+                              website = :website
+                        LIMIT 1',
+                    array(
+                        ':id'      => intval($_REQUEST['id']),
+                        ':website' => $website->id
+                    )
+                );
+            }
+
+            if($ok)
+                echo 'true';
+            else
+                echo 'false';
+
 			core_terminate();
 			break;
 			
@@ -444,7 +457,7 @@ function run()
 			break;
 
 		case "search_by_title":
-		case 91: // json search title request (for "copy from" dialog)
+		    // json search title request (for "copy from" dialog)
 			$DB->query('
 				SELECT node_id as id, text as label, text as value
 				  FROM nv_webdictionary
@@ -463,7 +476,7 @@ function run()
 			core_terminate();
 			break;
 
-		case "raw_zone_content": // return raw item contents
+		case "raw_zone_content": // return raw contents from a product
 
 			if(empty($_REQUEST['section']))
 				$_REQUEST['section'] = 'main';
@@ -1672,7 +1685,7 @@ function items_form($item)
                     );
 
 					$tags_copy_select = '
-						<div style=" position: relative; margin-left: 600px; margin-top: -57px; width: 200px; height: 68px; ">
+						<div style=" position: relative; margin-left: 600px; margin-top: 2px; width: 200px; height: 32px; ">
 							<a href="#" class="uibutton" title="'.t(189, "Copy from").'…"
 							   onclick=" navigate_items_tags_copy_from_language($(this).next().val(), \''.$lang.'\'); return false; ">
 								<img src="img/icons/silk/page_white_copy.png" width="16" height="16" align="absmiddle" style=" cursor: pointer; " />
@@ -1683,7 +1696,7 @@ function items_form($item)
 				}
 
 				$tags_top_list = '
-					<div style=" position: relative; margin-left: 600px; margin-top: -93px; width: 200px; height: 92px; ">
+					<div style=" position: relative; margin-left: 600px; margin-top: 24px; width: 200px; height: 32px; ">
 						<a href="#" class="uibutton" onclick=" navigate_items_tags_ranking(\''.$lang.'\', this); return false; ">
 							<img src="img/icons/silk/award_star_gold_3.png" width="16" height="16" align="absmiddle" style=" cursor: pointer; " />
 							'.t(613, "Most used").'
@@ -1839,7 +1852,7 @@ function items_form($item)
 							name="navigate_items_copy_from_history_options" 
 							onchange="navigate_items_copy_from_history_preview(this.value, $(this).attr(\'type\'));">
 					</select>
-					<a href="#" onclick="navigate_items_copy_from_history_remove();"><img src="img/icons/silk/cancel.png" align="absmiddle"></a>
+					<a href="#" onclick="navigate_items_copy_from_history_remove();" title="'.t(35, "Delete").'"><img src="img/icons/silk/cancel.png" align="absmiddle"></a>
 				</div>			
 				<div class="navigate-form-row">
 					<!--<div id="navigate_items_copy_from_history_text"

@@ -471,7 +471,11 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
                 $recipients = array($recipients);
         }
 
-        $mail->SetFrom($website->mail_address, $website->name);
+        $from_email_address = $website->mail_address;
+        if(empty($from_email_address))
+            $from_email_address = 'no-reply@website.com';
+
+        $mail->SetFrom($from_email_address, $website->name);
 
         $mail->IsHTML(true);
 
