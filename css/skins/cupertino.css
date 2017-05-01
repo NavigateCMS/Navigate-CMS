@@ -495,6 +495,7 @@ a.navigate-content-actions-selected
 	padding: 2px;
 	margin: -4px 10px 0 0;	
 	font-size: 11px;
+	font-family: Verdana, sans-serif;
 }
 
 #navigate-content-actions ul.content-actions-submenu
@@ -2414,6 +2415,7 @@ ul.connectedSortable li
 .navigate-form-row ul.tagit
 {
 	max-width: 398px;
+	width: 398px;
 	min-height: 100px;
 	background: #e8edff;
 	border-radius: 1px;
