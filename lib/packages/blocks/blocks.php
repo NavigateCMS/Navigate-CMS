@@ -1038,7 +1038,11 @@ function blocks_form($item)
 	            {
 		            foreach($theme->blocks as $tb)
 		            {
-			            if($tb->code == $item->type && isset($tb->trigger))
+                        // navigate 1.x compatibility
+                        if(!isset($tb->id) && isset($tb->code))
+                            $tb->id = $tb->code;
+
+                        if($tb->id == $item->type && isset($tb->trigger))
 			            {
 				            if(!is_array($tb->trigger))
 					            $tb->trigger = array($tb->trigger);
@@ -1624,7 +1628,11 @@ function blocks_form($item)
         // we need to know if the block is defined in the active theme or in the database (numeric ID)
         foreach($block_types as $bt)
         {
-            if($bt['code']==$item->type)
+            // navigate 1.x compatibility
+            if(!isset($bt['id']) && isset($bt['code']))
+                $bt['id'] = $bt['code'];
+
+            if($bt['id'] == $item->type)
             {
                 $block_type_id = $bt['id'];
                 break;
