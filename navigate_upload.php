@@ -20,7 +20,6 @@ global $config;
 global $layout;
 global $website;
 
-
 // create database connection
 $DB = new database();
 if(!$DB->connect())
@@ -208,6 +207,56 @@ else if($_REQUEST['engine']=='pixlr')
 		}
 	}
 	echo false;
+	core_terminate();
+}
+else if($_REQUEST['engine']=='photopea')
+{
+	if(!empty($_REQUEST['id']) && file_exists($targetDir.'/'.$_REQUEST['id']))
+    {
+		if(!empty($_POST['p']))
+		{
+			// download the file even if the user loads a different page
+			@ignore_user_abort(true);
+
+            $p = json_decode( $_POST["p"] );	// parse JSON
+            $image = $p->versions[0]->data; // always PNG
+            unset($p); // free memory
+            $image = base64_decode($image);
+
+            file_put_contents($targetDir.'/'.$_REQUEST['id'].'.photopea', $image);
+            unset($image);
+
+            $filesize = filesize($targetDir.'/'.$_REQUEST['id'].'.photopea');
+
+            if(file_exists($targetDir.'/'.$_REQUEST['id'].'.photopea') && $filesize > 128)
+			{
+                unlink($targetDir.'/'.$_REQUEST['id']);
+                rename($targetDir.'/'.$_REQUEST['id'].'.photopea', $targetDir.'/'.$_REQUEST['id']);
+
+                header("HTTP/1.1 200 OK");
+                header('Access-Control-Allow-Origin: *');
+                echo 'Image saved! ('.core_bytes($filesize).')'; // output content
+                header('Connection: close');
+
+                // update file info and remove old thumbnails
+                $DB = new database();
+                $DB->connect();
+                $file = new file();
+                $file->load($_REQUEST['id']);
+                $file->refresh();
+                $DB->disconnect();
+			}
+			else
+            {
+                @unlink($targetDir.'/'.$_REQUEST['id'].'.photopea'); // too small, ignore image
+
+                header("HTTP/1.1 200 OK");
+                header('Access-Control-Allow-Origin: *');
+                echo 'ERROR!'; // output content
+                header('Connection: close');
+            }
+		}
+	}
 	core_terminate();
 }
 else if($_REQUEST['engine']=='tinymce')

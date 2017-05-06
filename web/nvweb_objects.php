@@ -130,6 +130,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add);
 			header('ETag: "'.$etag.'"');
 			header('Content-type: '.$item->mime);
+			header('Access-Control-Allow-Origin: *'); // allow external access (f.e. Photopea, Pixlr, etc.)
 			header("Content-Length: ". $item->size);
 			if(empty($_REQUEST['disposition'])) $_REQUEST['disposition'] = 'inline';
 			header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');						
