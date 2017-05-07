@@ -180,7 +180,7 @@ class naviforms
 		return $out;
 	}
 	
-	public function autocomplete($name, $value="", $source, $callback='""', $width="400px")
+	public function autocomplete($name, $value="", $source, $callback='""', $width="400px", $add_custom_value=false)
 	{
 		global $layout;
 		
@@ -192,16 +192,43 @@ class naviforms
             $source = '["'.implode('","', $source).'"]';
         else
             $source = '"'.$source.'"';
-        
+
 		$layout->add_script('
 			$("#'.$name.'").autocomplete(
 			{
 				source: '.$source.',
 				minLength: 1,
-				select: '.$callback.'
+				select: '.$callback.'				
 			});
 		');
-		
+
+        if($add_custom_value)
+        {
+            $uid = uniqid();
+            $out .= ' <a href="#" class="uibutton" data-action="create_custom_value" data-uid="'.$uid.'"><i class="fa fa-plus"></i></a>';
+            $layout->add_script('
+                var naviforms_autocomplete_'.$uid.' = [];
+                
+                $("a[data-action=create_custom_value][data-uid='.$uid.']").on("click", function()
+                {
+                    var text = prompt(navigate_t(159, "Name"));
+                    text = text.trim();
+                    if(text != "")
+                    {
+                        naviforms_autocomplete_'.$uid.'.unshift(text);
+                        $("#'.$name.'").val(text);
+                        $("#'.$name.'").trigger("navigate-added-custom-value");                         
+                    }
+                });
+                
+                $("#'.$name.'").on( "autocompleteresponse", function( event, ui ) 
+                {
+                    for(i in naviforms_autocomplete_'.$uid.')
+                        ui.content.unshift({ "id": "custom-" + new Date().getTime(), "label": naviforms_autocomplete_'.$uid.'[i], "value": naviforms_autocomplete_'.$uid.'[i]});
+                });
+            ');
+        }
+
 		return $out;	
 	}	
 	

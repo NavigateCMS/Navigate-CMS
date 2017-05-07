@@ -476,7 +476,7 @@ function nvweb_webuser($vars=array())
                             )
                         ));
 
-                        @nvweb_send_email($website->name, $message, $wu->email);
+                        nvweb_send_email($website->name, $message, $wu->email);
                         $pending_confirmation = true;
                     }
                 }

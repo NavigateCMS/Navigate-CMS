@@ -621,8 +621,8 @@ a.navigate-content-actions-selected
 .navigate-form-row input
 {
 	font-weight: normal;
-	padding: 4px 3px 3px 5px;
-	margin-left: 0px;
+	padding: 5px 3px 4px 5px;
+	margin-left: 0;
 	background: #E8EDFF;
 	background-image: url("../../img/skins/background_menu_items.png");	
 	border: solid 1px #ccc;
@@ -2692,7 +2692,7 @@ div.jGrowl div.jGrowl-closer:hover
 .select2-container .select2-selection--single,
 .select2-container .select2-selection--multiple
 {
-	height: 25px;
+	height: 24px;
 	border-radius: 2px;
 
 	background: #e8edff url("../../img/skins/background_menu_items.png") repeat scroll 0 0;
@@ -2703,7 +2703,7 @@ div.jGrowl div.jGrowl-closer:hover
 .select2-container .select2-selection--multiple
 {
 	height: auto;
-	min-height: 25px;
+	min-height: 24px;
 	background: #e8edff;
 }
 
