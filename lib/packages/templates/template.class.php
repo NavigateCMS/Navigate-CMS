@@ -343,7 +343,10 @@ class template
 		switch($default)
 		{
 			case '#main#':
-				$out = t(238, 'Main content');
+            case 'main':
+                $out = $theme->t("main");
+                if(empty($out) || $out == 'main')
+				    $out = t(238, 'Main content');
 				break;
 				
 			default:	
@@ -421,8 +424,6 @@ class template
 
         return $out;
     }
-
-
 }
 
 ?>

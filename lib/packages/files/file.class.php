@@ -289,6 +289,7 @@ class file
         global $website;
 
         $video_thumbnail_path = NAVIGATE_PRIVATE.'/'.$website->id.'/thumbnails/video-'.$provider.'-'.$reference;
+        $video_thumbnail_data = "";
 
         clearstatcache();
 
@@ -299,7 +300,9 @@ class file
         )
         {
             // download the image from the source
-            $video_thumbnail_data = file_get_contents($image_url);
+            if(file_exists($image_url))
+                $video_thumbnail_data = file_get_contents($image_url);
+
             if(empty($video_thumbnail_data))
                 return;
 
