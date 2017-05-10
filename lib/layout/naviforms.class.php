@@ -520,22 +520,6 @@ class naviforms
 
         $content_css = $ws->content_stylesheets('tinymce', 'content');
         $content_css_selectable = $ws->content_stylesheets('tinymce', 'content_selectable');
-        
-		/* disabled for tiny mce 4.x, problems with the compressor
-        // remove cache if the server address has changed
-        $tinymce_gz = glob(NAVIGATE_PATH.'/lib/external/tinymce4/*.gz');
-
-        if(!empty($tinymce_gz))
-        {
-            if(file_exists(NAVIGATE_PATH.'/lib/external/tinymce4/server_name'))
-            {
-                $server_name = file_get_contents(NAVIGATE_PATH.'/lib/external/tinymce4/server_name');
-                if($server_name != md5($_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']))
-                    @unlink($tinymce_gz[0]);
-            }
-            file_put_contents(NAVIGATE_PATH.'/lib/external/tinymce4/server_name', md5($_SERVER['SERVER_NAME'].$_SERVER['SCRIPT_NAME']));
-        }
-		*/
 
 		$tinymce_language = $user->language;
 
@@ -1248,6 +1232,7 @@ class naviforms
                 selectAllGroup: "'.t(481, 'Select all').'",
                 deselectAllGroup: "'.t(507, 'Deselect all').'"
             };
+            
             $("#'.$id.'").multiselect({
                 "locale": "navigatecms",
                 splitRatio: 0.55,

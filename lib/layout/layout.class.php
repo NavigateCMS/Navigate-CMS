@@ -164,6 +164,49 @@ class layout
 		// tinymce 4
 		$this->add_script_tag('lib/external/tinymce4/tinymce.min.js');
 		$this->add_script_tag('lib/external/tinymce4/jquery.tinymce.min.js');
+        $this->add_script_tag('lib/external/tinymce4/themes/modern/theme.min.js');
+
+		// tinymce plugins compression (speeds up loading editor)
+		$this->add_script_tag('lib/external/tinymce4/plugins/noneditable/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/advlist/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/compat3x/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/autolink/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/nv_link/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/image/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/lists/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/charmap/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/print/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/preview/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/hr/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/anchor/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/pagebreak/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/searchreplace/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/wordcount/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/visualblocks/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/visualchars/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/fullscreen/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/media/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/nonbreaking/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/table/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/directionality/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/template/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/table/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/textcolor/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/paste/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/colorpicker/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/textpattern/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/codesample/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/codemirror/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/imagetools/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/importcss/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/magicline/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/fontawesome/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/nv_rollups/plugin.min.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/loremipsum/editor_plugin.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/imgmap/editor_plugin.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/style/editor_plugin.js');
+		$this->add_script_tag('lib/external/tinymce4/plugins/xhtmlxtras/editor_plugin.js');
+
 
 		// mb extruder
 		$this->add_style_tag('js/mbextruder/css/mbExtruder.css');
