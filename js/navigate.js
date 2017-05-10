@@ -125,22 +125,15 @@ $(window).on('load', function()
     // actions bar submenus
     $('#navigate-content-actions a.content-actions-submenu-trigger').on('mouseenter click', function(ev)
     {
-        if($(this).next().is(':visible'))
-            $(this).next().hide();
-        else
+        // hide all visible menus in action bar
+        $('#navigate-content-actions a.content-actions-submenu-trigger').next().hide();
+
+        if(!$(this).next().is(':visible'))
         {
             $(this).next().menu().show();
             $(this).next().addClass('navi-ui-widget-shadow');
-
-            // deprecated code
-            /*
-            //var height = 0;
-            $(this).next().children().each(function()
-            { //height = height + $(this).height();
-            });
-            //$(this).next().height(height);
-            */
         }
+
         return false;
     });
 

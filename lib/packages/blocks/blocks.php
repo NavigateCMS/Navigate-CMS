@@ -229,6 +229,43 @@ function run()
 			}
 			break;
 
+        case 'duplicate':
+            if(!empty($_REQUEST['id']))
+            {
+                $item->load(intval($_REQUEST['id']));
+
+                $properties = property::load_properties_associative(
+                    'block', $item->type,
+                    'block', $item->id
+                );
+
+                // try to duplicate
+                $item->id = 0;
+                $ok = $item->insert();
+
+                if($ok)
+                {
+                    // also duplicate block properties
+                    $ok = property::save_properties_from_array('block', $item->id, $item->type, $properties);
+                }
+
+                if($ok)
+                {
+                    $layout->navigate_notification(t(478, 'Item duplicated successfully.'), false, false, 'fa fa-check');
+                    $out = blocks_form($item);
+                }
+                else
+                {
+                    $layout->navigate_notification(t(56, 'Unexpected error.'), false);
+                    $item = new block();
+                    $item->load(intval($_REQUEST['id']));
+                    $out = blocks_form($item);
+                }
+
+                users_log::action($_REQUEST['fid'], $item->id, 'duplicate', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+            }
+            break;
+
         case 'path':
 		case 5:	// search an existing path
 			$DB->query('SELECT path as id, path as label, path as value
@@ -630,6 +667,7 @@ function blocks_form($item)
     global $theme;
 
     $current_version = $_SESSION['current_version'];
+    $extra_actions = array();
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();	
@@ -699,7 +737,21 @@ function blocks_form($item)
                 );
             }
         ');
-	}
+
+        if($user->permission("blocks.create") == 'true')
+            $extra_actions[] = '<a href="?fid=blocks&debug&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+    }
+
+    array_unshift($extra_actions, '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>');
+
+    $events->add_actions(
+        'blocks',
+        array(
+            'item' => null,
+            'navibars' => &$navibars
+        ),
+        $extra_actions
+    );
 
     $group_blocks_links = array();
     list($bg_rs, $bg_total) = block_group::paginated_list(0, 10, 'title', 'desc');
@@ -719,13 +771,14 @@ function blocks_form($item)
             '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
-
-    $navibars->add_actions(
-        array(
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'),
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
-        )
-    );
+    else
+    {
+        $navibars->add_actions(
+            array(
+                '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'
+            )
+        );
+    }
 	
 	$navibars->add_actions(
 		array(
