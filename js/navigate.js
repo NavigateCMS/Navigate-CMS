@@ -1632,6 +1632,7 @@ function navigate_selector_upgrade(el)
 
     // if width was applied, prepare Select2 component to use it instead of its default width
     var width = $(el)[0].style.width;
+    var classes = $(el)[0].className;
 
     $(el).select2(
         {
@@ -1641,8 +1642,10 @@ function navigate_selector_upgrade(el)
     );
 
     // autoclose select2 after clearing
-    if($(el).attr("multiple")!="multiple") {
-        $(el).on("select2:unselecting", function (e) {
+    if($(el).attr("multiple")!="multiple")
+    {
+        $(el).on("select2:unselecting", function (e)
+        {
             $(this).select2("val", "");
             $(this).val("");
             e.preventDefault();
@@ -1653,6 +1656,9 @@ function navigate_selector_upgrade(el)
     // force defined width
     if(width)
         $(el).prev().find('a:first').css('width', width);
+
+    classes = classes.replace("select2 ", "");
+    $(el).next().addClass(classes);
 
     // add custom values, if enabled
     $(el).parent().find('a[data-action="create_custom_value"]').on("click", function()

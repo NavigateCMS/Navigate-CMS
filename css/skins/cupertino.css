@@ -549,6 +549,7 @@ a.navigate-content-actions-selected
 	clear: both;
 	margin-top: 4px;
 	margin-bottom: 8px;
+	padding-top: 1px;
     overflow: hidden;
 }
 
@@ -2687,6 +2688,11 @@ div.jGrowl div.jGrowl-closer:hover
 .navigate-form-row span.select2
 {
 	height: auto;
+}
+
+.select2-align-with-input
+{
+	margin-top: -4px;
 }
 
 .select2-container .select2-selection--single,

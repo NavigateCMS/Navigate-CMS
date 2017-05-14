@@ -31,13 +31,13 @@ class naviforms
 		return implode("\n", $out);	
 	}
 	
-	public function selectfield($id, $values, $texts, $selected_value="", $onChange="", $multiple=false, $titles=array(), $style="", $control_replacement=true, $allow_custom_value=false)
+	public function selectfield($id, $values, $texts, $selected_value="", $onChange="", $multiple=false, $titles=array(), $style="", $control_replacement=true, $allow_custom_value=false, $extra_classes="")
 	{
         $class = '';
         if($control_replacement)
-        {
             $class = 'select2';
-        }
+
+        $class.= ' '.$extra_classes;
 
 		$out = array();
 		if($multiple)
