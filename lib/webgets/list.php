@@ -2227,17 +2227,26 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             switch($tag['attributes']['check'])
             {
                 case 'website':
+                    $has_website = false;
+
                     if(!empty($item->url))
                     {
-                        $out = $item_html;
+                        $has_website = true;
                     }
                     else if(!empty($item->user))
                     {
                         $wu = new webuser();
                         $wu->load($item->user);
                         if(!empty($wu->social_website))
-                            $out = $item_html;
+                            $has_website = true;
                     }
+
+                    if($has_website && (!isset($tag['attributes']['empty']) || $tag['attributes']['empty'] == 'false'))
+                        $out = $item_html;
+                    else if(!$has_website && isset($tag['attributes']['empty']) && $tag['attributes']['empty'] == 'true')
+                        $out = $item_html;
+                    else
+                        $out = "";
                     break;
 
                 default:
