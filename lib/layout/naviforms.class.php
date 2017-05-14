@@ -158,7 +158,13 @@ class naviforms
         if(!empty($action))
             $extra .= ' onkeyup="'.$action.'"';
 
+        if(intval($value) == $value)
+            $value = intval($value);
+
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
+
+		if(!empty($prefix)) $prefix.= " ";
+		if(!empty($suffix)) $suffix = " " . $suffix;
 
         $layout->add_script('
             $("#'.$name.'").inputmask(
