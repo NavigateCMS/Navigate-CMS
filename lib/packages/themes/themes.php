@@ -440,13 +440,18 @@ function themes_grid($list)
 
     $out = $navibars->generate();
 
-	$layout->add_script('
-		$.getScript("lib/packages/themes/themes.js?r='.$current_version->revision.'", function()
-		{
-			navigate_themes_init();
-		});
+    $layout->add_script('
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/themes/themes.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
+                navigate_themes_init();
+	        }
+	    });
 	');
-	
+
 	return $out;
 }
 

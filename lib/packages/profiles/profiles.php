@@ -391,12 +391,17 @@ function profiles_form($item)
 		});
 	');
 
-	$layout->add_script('
-		$.getScript("lib/packages/permissions/permissions.js?r='.$current_version->revision.'", function()
-		{
-			navigate_window_resize();
-			'.implode("\n", $scripts_after_load).'
-		});
+    $layout->add_script('
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/permissions/permissions.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
+                navigate_window_resize();
+			    '.implode("\n", $scripts_after_load).' 
+	        }
+	    });
 	');
 
     return $navibars->generate();

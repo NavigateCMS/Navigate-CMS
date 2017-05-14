@@ -803,10 +803,10 @@ function nvweb_templates_find_closing_list_tag($html, $offset)
     */
 }
 
-function nvweb_replace_tag_contents($tag_id, $content, $html)
+function nvweb_replace_tag_contents($tag_id, $content, $html_source_code)
 {
-	brasofilo_suSetHtmlById( $html, $tag_id, $content );
-	return $html;
+	brasofilo_suSetHtmlById( $html_source_code, $tag_id, $content );
+	return $html_source_code;
 }
 
 

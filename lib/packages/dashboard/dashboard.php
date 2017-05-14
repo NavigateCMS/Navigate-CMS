@@ -224,11 +224,17 @@ function dashboard_create()
 
     $layout->add_script('    
         var navigate_dashboard_panels = '.json_encode($dashboard_panels).';
-        $.getScript(
-            "lib/packages/dashboard/dashboard.js?r='.$current_version->revision.'",
-            function() { navigate_dashboard_run(); }
-        );
-    ');
+
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/dashboard/dashboard.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
+                navigate_dashboard_run();                
+	        }
+	    });
+	');
 
     $events->trigger(
         'dashboard',

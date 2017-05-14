@@ -2326,13 +2326,18 @@ function items_form($item)
             )
         );
     }
-	
-	$layout->add_script('
-		$.getScript("lib/packages/items/items.js?r='.$current_version->revision.'", function()
-		{
-			if(typeof navigate_items_onload == "function")
-				navigate_items_onload();
-		});
+
+    $layout->add_script('
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/items/items.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
+                if(typeof navigate_items_onload == "function")
+				    navigate_items_onload();
+	        }
+	    });
 	');
 
 	return $navibars->generate();

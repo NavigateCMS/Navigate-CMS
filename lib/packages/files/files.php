@@ -740,10 +740,16 @@ function files_browser($parent, $search="")
 	');
 
     $layout->add_script('
-		$.getScript("lib/packages/files/files.js?r='.$current_version->revision.'", function()
-		{
-            navigate_files_onload();
-		});
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/files/files.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
+                if(typeof navigate_files_onload == "function")
+				    navigate_files_onload();
+	        }
+	    });
 	');
 
 	return $navibars->generate();

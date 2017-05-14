@@ -326,6 +326,16 @@ function extensions_grid($list)
         $out = $navibars->generate();
 
         $layout->add_script('
+            $.ajax({
+                type: "GET",
+                dataType: "script",
+                url: "lib/packages/extensions/extensions.js?r='.$current_version->revision.'",
+                complete: function()
+                {                   
+                    navigate_extensions_refresh();
+                }
+            });
+
             $(window).on("load", function()
             {
                 $(".navigrid-item-buttonset").each(function(i, el)
@@ -334,11 +344,6 @@ function extensions_grid($list)
                     $(el).fadeIn();
                     $(".navigrid-extensions-disable").addClass("ui-corner-right");
                 });
-            });
-
-            $.getScript("lib/packages/extensions/extensions.js?r='.$current_version->revision.'", function()
-            {
-                navigate_extensions_refresh();
             });
 
             function navitable_quicksearch(value)

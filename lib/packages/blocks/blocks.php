@@ -3046,12 +3046,16 @@ function block_group_form($item)
         $layout->navigate_notes_dialog('block_group', $item->id);
 
     $layout->add_script('
-        $.getScript("lib/packages/blocks/blocks.js?r='.$current_version->revision.'", 
-            function()
-            {
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/blocks/blocks.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
                 block_groups_onload();
-            });
-    ');
+	        }
+	    });
+	');
 
     return $navibars->generate();
 }

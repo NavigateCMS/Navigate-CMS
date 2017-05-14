@@ -246,6 +246,7 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 			case 'ul':
                 $ul_items = 0;
 				$out[] = '<ul class="menu_level_'.$level.' '.$class.'">';
+
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
 				{
 					if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
