@@ -2,6 +2,8 @@
 @ini_set('max_execution_time','3600');
 @ini_set('max_input_time','3600');
 
+header("Content-Type: application/json");
+
 if(empty($_REQUEST['session_id']))
     die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to retrieve session_id."}, "id" : "id"}');
 
@@ -23,9 +25,7 @@ global $website;
 // create database connection
 $DB = new database();
 if(!$DB->connect())
-{
-	die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());	
-}
+	die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
 
 // session checking
 if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
@@ -365,4 +365,5 @@ else
 		die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 	}
 }
+
 ?>

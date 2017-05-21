@@ -111,11 +111,12 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			if($item->mime == 'image/gif')
 				$resizable = !(file::is_animated_gif($path));
 
-			if((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true'))
+			if(isset($_GET['force']) || ((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true')))
 			{
 				$border = (@$_REQUEST['border']=='false'? false : true);
+				$opacity = value_or_default(@$_REQUEST['opacity'], NULL);
 
-                $path = file::thumbnail($item, $width, $height, $border, NULL, $quality);
+                $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, NULL, $opacity);
                 if(empty($path))
                     die();
 
