@@ -364,6 +364,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
     $width = '';
     $height = '';
     $border = true;
+    $opacity = '';
 
 	if(!empty($type['width']))      $width = $type['width'];
 	if(!empty($type['height']))     $height = $type['height'];
@@ -372,6 +373,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
     if(!empty($vars['width']))      $width = $vars['width'];
     if(!empty($vars['height']))     $height = $vars['height'];
     if(!empty($vars['border']))     $border = $vars['border'];
+    if(!empty($vars['opacity']))    $opacity = '&opacity='.$vars['opacity'];
 
     if(!empty($width))  $sizes.= ' width="'.$width.'" ';
 	if(!empty($height)) $sizes.= ' height="'.$height.'" ';
@@ -380,20 +382,20 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 	{
 		case 'image':
 		    if($vars['return'] == 'url')
-		        return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border;
+		        return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity;
             else
-			    $trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'" '.$sizes.' />';
+			    $trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'" '.$sizes.' />';
 			break;
 			
 		case 'rollover':
             if($vars['return'] == 'url')
-                return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border;
+                return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity;
             else
 			    $trigger_html = '
-                    <img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'"
+                    <img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'"
                          '.$sizes.'
-                         onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';"
-                         onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.'\';" />';
+                         onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'\';"
+                         onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'\';" />';
 			break;
 			
 		case 'flash':

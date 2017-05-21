@@ -16,6 +16,9 @@ function nvweb_gallery($vars=array())
     if(!empty($vars['border']))
         $border = '&border='.$vars['border'];
 
+    if(!empty($vars['opacity']))
+        $border .= '&opacity='.$vars['opacity'];
+
     $items = PHP_INT_MAX; // number of images shown, 0 => all gallery photos
     if(!empty($vars['items']) && $vars['items']!='0')
         $items = intval($vars['items']);

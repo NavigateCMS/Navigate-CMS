@@ -300,11 +300,15 @@ class file
         )
         {
             // download the image from the source
-            if(file_exists($image_url))
-                $video_thumbnail_data = file_get_contents($image_url);
+            $video_thumbnail_data = @file_get_contents($image_url);
 
             if(empty($video_thumbnail_data))
-                return;
+            {
+                // try to retrieve the file via cURL
+                $video_thumbnail_data = @core_file_curl($image_url);
+                if(empty($video_thumbnail_data))
+                    return;
+            }
 
             file_put_contents($video_thumbnail_path, $video_thumbnail_data);
         }
@@ -312,7 +316,6 @@ class file
         // return the path to the real file to be able to create a thumbnail
         return $video_thumbnail_path;
     }
-	
 	
 	public function save()
 	{
@@ -836,7 +839,7 @@ class file
 	}
 
     // $item: file ID or file object
-	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95, $scale_up_force=false)
+	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95, $scale_up_force=false, $opacity=1)
 	{
         if(is_numeric($item))
         {
@@ -869,7 +872,7 @@ class file
         // do we have the thumbnail already created for this image?
 
         // option A) opaque JPEG FILE
-        $thumbnail_path_jpg = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$item_id.'.jpg';
+        $thumbnail_path_jpg = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$opacity.'-'.$item_id.'.jpg';
 
         if(file_exists($thumbnail_path_jpg))
         {
@@ -882,7 +885,7 @@ class file
         }
 
         // option B) transparent PNG FILE
-        $thumbnail_path_png = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$item_id;
+        $thumbnail_path_png = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$opacity.'-'.$item_id;
 		if(file_exists($thumbnail_path_png))
 		{
 			// ok, a file exists, but it's older than the image file? (original image file has changed)
@@ -928,13 +931,18 @@ class file
             $handle->file_max_size = '512M'; // maximum image size: 512M (it really depends on available memory)
 
 			// if needed, calculate width or height with aspect ratio
-			if(empty($width))
+            if(empty($width) && empty($height))
+            {
+                $width = $size['width'];
+                $height = $size['height'];
+            }
+			else if(empty($width))
 			{
 			    if(!empty($size['height']))
 				    $width = round(($height / $size['height']) * $size['width']);
                 else
                     $width = NULL;
-				return file::thumbnail($item, $width, $height, $border, $ftname);
+				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity);
 			}
 			else if(empty($height))
 			{
@@ -942,11 +950,17 @@ class file
 				    $height = round(($width / $size['width']) * $size['height']);
                 else
                     $height = NULL;
-				return file::thumbnail($item, $width, $height, $border, $ftname);
+				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity);
 			}
 
 			$handle->image_x = $width;
 			$handle->image_y = $height;
+
+			if(!empty($opacity) && $opacity != 1)
+            {
+                // set opacity changing CSS decimal notation (0 to 1) to class.upload value (0 to 100)
+                $handle->image_opacity = intval($opacity * 100);
+            }
 
 			if($size['width'] < $width && $size['height'] < $height)
 			{
@@ -1074,7 +1088,7 @@ class file
                 // Now that it's auto-rotated, make sure the EXIF data is correct in case the EXIF gets saved with the image!
                 $im->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 
-                if(!$image_is_opaque)
+                if(!$image_is_opaque || (!empty($opacity) && $opacity < 1))
                 {
                     $im->setImageFormat('PNG32'); // Force a full RGBA image format with full semi-transparency.
                     $im->setBackgroundColor(new ImagickPixel('transparent'));

@@ -345,6 +345,9 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
     if(!is_array($categories))
         $categories = array(intval($categories));
 
+    if($categories[0] == NULL)
+        $categories = array(0);
+
     $where = ' i.website = '.$website->id.'
                AND i.category IN ('.implode(",", $categories).')
                AND i.embedding = '.($embedding? '1' : '0');

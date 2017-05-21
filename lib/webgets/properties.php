@@ -502,13 +502,18 @@ function nvweb_properties_render($property, $vars)
 				$add .= ' width="'.$vars['width'].'" ';
                 $extra .= '&width='.$vars['width'];
             }
+
 			if(isset($vars['height']))
             {
 				$add .= ' height="'.$vars['height'].'" ';
                 $extra .= '&height='.$vars['height'];
             }
+
 			if(isset($vars['border']))
 				$extra .= '&border='.$vars['border'];
+
+			if(isset($vars['opacity']))
+				$extra .= '&opacity='.$vars['opacity'];
 
             if(isset($vars['quality']))
                 $extra .= '&quality='.$vars['quality'];
@@ -620,10 +625,10 @@ function nvweb_properties_render($property, $vars)
             else if($provider == 'youtube')
             {
                 $embed = file::embed('youtube', $reference, $add);
-                if(!empty($vars['part']) || $vars['part']!='embed')
+                if(!empty($vars['part']) || $vars['part']!='embed' || !empty($vars['return']))
                     $file->load_from_youtube($reference);
             }
-            else if($provider == 'vimeo')
+            else if($provider == 'vimeo' || !empty($vars['return']))
             {
                 $embed = file::embed('vimeo', $reference, $add);
                 if(!empty($vars['part']) || $vars['part']!='embed')
@@ -674,7 +679,7 @@ function nvweb_properties_render($property, $vars)
             }
             break;
 			
-		case 'article':
+		case 'product':
 			// TO DO
 			break;
 			
