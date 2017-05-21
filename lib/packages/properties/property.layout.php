@@ -1437,22 +1437,27 @@ function navigate_property_layout_scripts($website_id="")
 		</div>
 	');
 
-	$layout->add_script('
-		$.getScript("lib/packages/properties/properties.js?r='.$current_version->revision.'", function()
-		{
-			$(".navigate-form-row-property-action[data-action=copy_from]").on("click", function(e)
-			{
-			    var that = this;
-			
-				e.stopPropagation();
-				e.preventDefault();
-				
-				if(!$(this).parent().hasClass("navigate-form-row"))
-				    that = $(this).parent();
-				
-				navigate_properties_copy_from_dialog(that);
-			});
-		});
+    $layout->add_script('
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        url: "lib/packages/properties/properties.js?r='.$current_version->revision.'",
+	        complete: function()
+	        {
+                $(".navigate-form-row-property-action[data-action=copy_from]").on("click", function(e)
+                {
+                    var that = this;
+                
+                    e.stopPropagation();
+                    e.preventDefault();
+                    
+                    if(!$(this).parent().hasClass("navigate-form-row"))
+                        that = $(this).parent();
+                    
+                    navigate_properties_copy_from_dialog(that);
+                });
+	        }
+	    });
 	');
 }
 
