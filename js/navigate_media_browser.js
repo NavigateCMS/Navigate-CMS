@@ -769,9 +769,9 @@ function navigate_contextmenu_delete_dialog(callback, params)
                 click: function()
                 {
                     $("#navigate-contextmenu-delete-dialog").dialog("close");
-                    $("#navigate-contextmenu-delete-dialog").remove();
                     if(callback)
                         callback(params);
+                    $("#navigate-contextmenu-delete-dialog").remove();
                 }
             },
             {
@@ -796,9 +796,9 @@ function navigate_media_browser_delete(element)
             url: NAVIGATE_APP + '?fid=files&act=json&op=delete&id=' + itemId,
             success: function(data)
             {
-                if(data=='1')
+                if(data=='1' || data=='true')
                     $(element).fadeOut();
-				else
+				else if(data != "" && data != '""')
 					navigate_notification(data);
             }
         }

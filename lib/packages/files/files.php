@@ -631,7 +631,7 @@ function files_browser($parent, $search="")
 									url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id=" + itemId,
 									success: function(data)
 									{
-										$("#item-"+itemId).remove();
+										$("#item-" + itemId).remove();
 									}
 								});
 							});
@@ -833,7 +833,7 @@ function files_item_properties($item)
 										{
 											if(data=="true" || data=="1")
 												window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";
-											else
+											else if(data!="")
 												navigate_notification(data);
 										}
 									});
