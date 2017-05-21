@@ -226,7 +226,7 @@ class feed
 	
 		if(empty($id))
 			$id = $current['id'];
-	
+
 		$item = new feed();
 		$item->load($id);
 		

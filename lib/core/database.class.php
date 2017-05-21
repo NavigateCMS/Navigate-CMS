@@ -2,7 +2,7 @@
 /**
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2016 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2017 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license GPLv2
  */
@@ -113,6 +113,12 @@ class database
 		try
 		{
 			$statement = $this->db->query($sql);
+
+			// avoid firing a fatal error exception when the result is NULL
+            // and the query is not malformed
+			if(!$statement)
+                return false;
+
 			$statement->setFetchMode($fetch);
 			$this->lastResult = $statement->fetchAll();
 			$statement->closeCursor();

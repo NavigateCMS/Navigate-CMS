@@ -94,14 +94,14 @@ class comment
 		// remove all old entries
 		if(!empty($this->id))
 		{
+            // remove all properties of the comment
+            property::remove_properties('comment', $this->id, $this->website);
+
 			$DB->execute('
  				DELETE FROM nv_comments
 				 WHERE id = '.intval($this->id).'
                LIMIT 1 '
 			);
-
-            // remove all properties of the comment
-            property::remove_properties('comment', $this->id);
 		}
 		
 		return $DB->get_affected_rows();		
@@ -469,7 +469,6 @@ class comment
     public function notify_subscribed()
     {
         global $DB;
-        global $lang;
 
         if($this->pending_revision && $this->status == 0)
         {

@@ -594,6 +594,7 @@ class property
 
                     if( empty($element) ||
                         ($element == 'item' && empty($template_properties[$p]->element)) ||
+                        ($element == 'product' && empty($template_properties[$p]->element)) ||
                         ($element == 'item' && $template_properties[$p]->element=="element") ||
                         $template_properties[$p]->element == $element
                     )
@@ -1157,6 +1158,7 @@ class property
             }
 
             // property->type "decimal"; we don't need to reconvert, it should already be in the right format
+            // (no thousands separator, dot as decimal separator)
 
             if($property->type=='webuser_groups' && !empty($value))
                 $value = 'g'.implode(',g', $value);
@@ -1228,106 +1230,19 @@ class property
        return true;
    	}
 
-    // modify a single property
-    // DEPRECATED, function will be removed soon
-    /*
-    public static function change($item_type, $item_id, $property_name, $property_value, $template="")
+    public static function remove_properties($element_type, $element_id, $website_id)
     {
         global $DB;
         global $website;
 
-        if(empty($template))
-        {
-            // discover the template associated with the element
-            $x = new $item_type();
-            $x->load($item_id);
-            $template = $x->template;
-        }
-
-        // retrieve the property object
-        $rs = $DB->query('SELECT * FROM nv_properties
-                            WHERE website = '.protect($website->id).'
-                              AND template = '.protect($template).'
-                              AND element = '.protect($item_type).'
-                              AND name = '.protect($property_name).'
-                            LIMIT 1');
-
-        $rs = $DB->result();
-
-        $property = new property();
-        $property->load_from_resultset($rs);
-
-        // delete previous assigned property
-        // remove the old element
-        $DB->execute('DELETE FROM nv_properties_items
-                       WHERE property_id = '.protect($property->id).'
-                         AND element = '.protect($item_type).'
-                         AND node_id = '.protect($item_id).'
-                         AND name = '.protect($property->name).'
-                         AND website = '.$website->id);
-
-        $value = $property_value;
-
-        // multilanguage property?
-        if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || $property->multilanguage=='true' || $property->multilanguage===true)
-        {
-            $values_dict = $value;
-            $value = '[dictionary]';
-            $dictionary = array();
-
-            foreach($website->languages_list as $lang)
-            {
-                $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$lang];
-            }
-
-            webdictionary::save_element_strings($item_type, $item_id, $dictionary);
-   		}
-
-        if($property->type=='coordinates')
-            $value = $value['latitude'].'#'.$value['longitude'];
-
-        if($property->type=='webuser_groups' && !empty($value))
-            $value = 'g'.implode(',g', $value);
-
-
-        // now we insert a new row
-        $DB->execute('
-			    INSERT INTO nv_properties_items
-				    (id, website, property_id, element, node_id, name, value)
-				VALUES
-				    (   0,
-						:website,
-						:property_id,
-						:type,
-						:item_id,
-						:name,
-						:value
-                    )',
-                array(
-                    ':website' => $property->website,
-                    ':property_id' => $property->id,
-                    ':type' => $item_type,
-                    ':item_id' => value_or_default($item_id, 0),
-                    ':name' => $property->name,
-                    ':value' => value_or_default($value, "")
-                )
-            );
-
-        return true;
-
-    }
-    */
-
-    public static function remove_properties($element_type, $element_id)
-    {
-        global $DB;
-        global $website;
+        if(empty($website_id))
+            $website_id = $website->id;
 
         webdictionary::save_element_strings('property-'.$element_type, $element_id, array());
 
         $DB->execute('
             DELETE FROM nv_properties_items
-                  WHERE website = '.$website->id.'
+                  WHERE website = '.$website_id.'
                     AND element = '.protect($element_type).'
                     AND node_id = '.intval($element_id).'
         ');

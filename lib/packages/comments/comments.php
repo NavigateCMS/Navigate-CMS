@@ -197,7 +197,8 @@ function run()
 						  LEFT JOIN nv_webusers u ON c.user = u.id
 						 WHERE
 						    c.website = '.$website->id.' AND
-						    c.item = '.$_REQUEST['node_id'].' AND
+						    c.object_type = '.protect($_REQUEST['object_type']).' AND
+						    c.object_id = '.protect($_REQUEST['object_id']).' AND
 						    c.date_created <= '.$_REQUEST['maxdate'].' AND
 						    c.id <> '.$_REQUEST['exclude'].' AND						     
 						    (   c.name LIKE ' . protect('%' . $_REQUEST['search'] . '%') . ' OR
@@ -324,7 +325,6 @@ function comments_form($item)
     global $website;
     global $layout;
     global $events;
-    global $theme;
 
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -453,7 +453,7 @@ function comments_form($item)
 						data: {	
                             "title": request.term,
                             "lang": "'.$website->languages[0].'",
-                            "object_type": $("#object_type").val(),
+                            "object_type": $("#comment-object_type").val(),
                             "nd": new Date().getTime()
                         },
 						success: function( data ) 
@@ -577,7 +577,8 @@ function comments_form($item)
                 {
                     return {
                         search: params.term,
-                        node_id: $("#comment-item").val(), 
+                        object_id: $("#comment-object_id").val(), 
+                        object_type: $("#comment-object_type").val(),
                         maxdate: '.($item->date_created + 0).',
                         exclude: '.($item->id + 0).',
                         nd: new Date().getTime(),
