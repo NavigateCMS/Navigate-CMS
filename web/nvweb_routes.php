@@ -541,11 +541,11 @@ function nvweb_route_parse($route="")
                                                  AND website = '.$website->id);
                         }
 
-                        if(strpos('<rss')!==false)
+                        if(strpos($out,'<rss')!==false)
                             header('Content-Type: application/rss+xml');
-                        else if(strpos('<atom')!==false)
+                        else if(strpos($out,'<atom')!==false)
                             header('Content-Type: application/atom+xml');
-                        else if(strpos('<xml')!==false)
+                        else if(strpos($out,'<xml')!==false)
                             header('Content-Type: application/xml');
 
                         echo $out;
