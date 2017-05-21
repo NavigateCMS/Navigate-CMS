@@ -2,6 +2,8 @@
 require_once(NAVIGATE_PATH.'/lib/webgets/list.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
 
+// DEPRECATED webget, ** please use nv list instead **
+
 function nvweb_search($vars=array())
 {
 	global $website;
@@ -16,6 +18,22 @@ function nvweb_search($vars=array())
 
 	$search_what = $_REQUEST[$vars['request']];
     $search_archive = array();
+
+    // COMPATIBILITY LAYER (to run nv object="search" on old themes)
+    if(empty($_REQUEST['archive']) && empty($vars['no_results_found']))
+    {
+        // redirect this query to nv list webget, as it does not use any nv object="search" special attributes
+        $options = array_merge(
+            $vars,
+            array(
+                'source' => 'item',
+                'search' => '$'.$vars['request'],
+                'request' => ''
+            )
+        );
+        $out = nvweb_list($options);
+        return $out;
+    }
 
     if(!empty($_REQUEST['archive']))
         $search_archive = explode("-", $_REQUEST['archive']);  // YEAR, MONTH, CATEGORIES (separated by commas)
@@ -207,6 +225,9 @@ function nvweb_search($vars=array())
             $order = 'latest';
 
         $orderby = nvweb_list_get_orderby($order);
+        // we can't use the title alias in search; in fact it does not make sense, as the search
+        // finds text in content, tags, titles, etc.
+        $orderby = str_replace(" title ", " wd.text ", $orderby);
 
         if(empty($vars['items']) || $vars['items']=='0')
         {
@@ -238,13 +259,12 @@ function nvweb_search($vars=array())
                 $vars['items'] = 500; // default maximum
         }
 
-        // TODO: try to optimize search to use less memory and increase the maximum number of items
-		$DB->query('
+        // this query is not reliable and will be removed in the future,
+        // please use nv list with the attribute search="$url_parameter_name"
+        $query = '
             SELECT SQL_CALC_FOUND_ROWS rs.id
             FROM (
-                SELECT  i.id as id, i.permission, i.date_published, i.date_unpublish,
-                        i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-                        i.position as position, wd.text as title
+                SELECT DISTINCT(i.id) AS id, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate
                   FROM nv_items i, nv_webdictionary d
                   LEFT JOIN nv_webdictionary wd
                     ON wd.node_id = d.node_id
@@ -266,10 +286,10 @@ function nvweb_search($vars=array())
                    ' . (empty($categories) ? '' : 'AND category IN(' . implode(",", $categories) . ')') . '
                  ' . $orderby . '
              ) rs
-             GROUP BY rs.id
 			 LIMIT '.$vars['items'].'
-			OFFSET '.$offset
-		);
+			OFFSET '.$offset;
+
+		$DB->query($query);
 
 		$rs = $DB->result();
 		$total = $DB->foundRows();

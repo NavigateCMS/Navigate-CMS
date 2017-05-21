@@ -112,6 +112,31 @@ function nvweb_list($vars=array())
         $categories = $children;
     }
 
+    // apply a filter on categories, if given
+    // example: request_categories="c" ... in the url &q=text&c=23,35
+    if(!empty($vars['request_categories']))
+    {
+        $categories_filter = explode(",", $_REQUEST[$vars['request_categories']]);
+        if(empty($categories))
+        {
+            // note: categories may be empty by the rules applies on categories + children;
+            // in this case we give preference to the request_categories filter
+            $categories = array_values($categories_filter);
+        }
+        else
+        {
+            for($cf=0; $cf < count($categories_filter); $cf++)
+            {
+                if(!in_array($categories_filter[$cf], $categories))
+                {
+                    unset($categories_filter[$cf]);
+                }
+                $categories_filter = array_filter($categories_filter);
+            }
+            $categories = $categories_filter;
+        }
+    }
+
 	if(empty($vars['items']) || $vars['items']=='0')
 	{
         $vars['items'] = 5000; //2147483647; // maximum integer
@@ -501,6 +526,9 @@ function nvweb_list($vars=array())
 					$templates = ' AND i.template IN ("'.implode('","', $templates).'")';
 		        }
 
+		        if(empty($categories))
+		            $categories = array(0);
+
                 // default source for retrieving items (embedded or not)
                 $DB->query('
                     SELECT SQL_CALC_FOUND_ROWS i.id
@@ -874,7 +902,7 @@ function nvweb_list($vars=array())
 
         // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
         unset($nested_condition_fragments);
-        list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html);
+        list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html, array('count'));
 
         // remove all tags except (selfclosing) nvlist_conditional_placeholder
         $item_html = strip_tags($item_html, '<nvlist_conditional_placeholder>');
@@ -1071,6 +1099,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                     if(!empty($tag['attributes']['border']))
 						$extra .= '&border='.$tag['attributes']['border'];
+
+                    if(!empty($tag['attributes']['opacity']))
+						$extra .= '&opacity='.$tag['attributes']['opacity'];
 
                     $avatar = $item->author_avatar();
 					if(!empty($avatar))
@@ -1406,7 +1437,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'thumbnail':
 				case 'thumbnail_url':
-                    $thumbnail_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'];
+                    $thumbnail_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
                     if($tag['attributes']['value']=='thumbnail_url' || @$tag['attributes']['return']=='url')
                         $out = $thumbnail_url;
                     else
@@ -1428,7 +1459,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 default:
                     $out = '<a href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline">
-                                <img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'"
+                                <img src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'].'"
 									 alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />
                             </a>';
                     break;
@@ -1533,7 +1564,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 						$out = NVWEB_OBJECT . '?type=transparent';
 					else
 					{
-						$out = NVWEB_OBJECT . '?wid='.$website->id.'&id='.$photo.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'];
+						$out = NVWEB_OBJECT . '?wid='.$website->id.'&id='.$photo.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
 					}
 					break;
 
@@ -1650,7 +1681,7 @@ function nvweb_list_get_orderby($order)
             break;
 
         case 'priority':
-            $orderby = ' ORDER BY IFNULL(i.position, 0) ASC, IFNULL(s.position,0) ASC ';
+            $orderby = ' ORDER BY IFNULL(i.position, 0) ASC, IFNULL(s.position, 0) ASC ';
             break;
 
         case 'rating':
@@ -1662,7 +1693,7 @@ function nvweb_list_get_orderby($order)
             break;
 
         case 'comments':
-            $orderby = ' ORDER BY comments_published DESC ';
+            $orderby = ' ORDER BY IFNULL(comments_published, 0) DESC ';
             break;
 
         case 'views':
@@ -1721,7 +1752,7 @@ function nvweb_list_isolate_lists($item_html)
     return array($item_html, $nested_lists_fragments);
 }
 
-function nvweb_list_isolate_conditionals($item_html)
+function nvweb_list_isolate_conditionals($item_html, $only_by=array())
 {
     $nested_conditionals_fragments = array();
     $conditional_tags = nvweb_tags_extract($item_html, 'nvlist_conditional', true, true, 'UTF-8');
@@ -1738,6 +1769,10 @@ function nvweb_list_isolate_conditionals($item_html)
             ($tag['offset'] + strlen($tag['full_tag'])), // start
             ($tag['length'] - strlen('</nvlist_conditional>') - strlen($tag['full_tag'])) // length
         );
+
+        // if this conditional is NOT of one of the allowed "conditional by" types, then all its content must be cleared
+        if(!empty($only_by) && !in_array($tag['by'], $only_by))
+            $conditional_template = '';
 
         // find inner conditionals before replacing the conditional found
         list($conditional_template, $nested_sub_conditionals_fragments) = nvweb_list_isolate_conditionals($conditional_template);
@@ -2243,7 +2278,7 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
                     if($has_website && (!isset($tag['attributes']['empty']) || $tag['attributes']['empty'] == 'false'))
                         $out = $item_html;
-                    else if(!$has_website && isset($tag['attributes']['empty']) && $tag['attributes']['empty'] == 'true')
+                    else if(!$has_website && @$tag['attributes']['empty'] == 'true')
                         $out = $item_html;
                     else
                         $out = "";
