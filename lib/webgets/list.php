@@ -617,7 +617,8 @@ function nvweb_list($vars=array())
         if($vars['source']=='website_comments')
             $vars['source'] = 'comments';
 
-		nvweb_webget_load($vars['source']);
+		@nvweb_webget_load($vars['source']);
+
 		if(function_exists($fname))
 			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order, $vars);
     }
@@ -747,16 +748,22 @@ function nvweb_list($vars=array())
     $nested_conditional_fragments_preprocessed = $nested_conditional_fragments;
     $conditional_placeholder_tags_preprocessed = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
 
+
     // now we have all elements that will be shown in the list
     // let's process the nvlist template for each one
 	for($i = 0; $i < count($rs); $i++)
 	{
-        // ignore empty objects
-		if(
-            ($vars['source']!='gallery' && empty($rs[$i]->id))  ||
-            ($vars['source']=='gallery' && empty($rs[$i]['file']))
-        )
-            continue;
+        // ignore empty objects, except in custom_source mode
+        if(!isset($vars['custom_source']) || $vars['custom_source']!='true')
+        {
+            if(
+                ($vars['source']!='gallery' && empty($rs[$i]->id))  ||
+                ($vars['source']=='gallery' && empty($rs[$i]['file']))
+            )
+            {
+                continue;
+            }
+        }
 
         // prepare a standard-object called  $item  with the current element
 		switch($vars['source'])
@@ -819,10 +826,19 @@ function nvweb_list($vars=array())
             case 'item':
             default:
                 $item = new item();
-                $item->load($rs[$i]->id);
-                // if the item comes from a custom source, save the original query result
-                // this allows getting a special field without extra work ;)
-                $item->_query = $rs[$i];
+                if(!empty($rs[$i]->id)) // custom_source mode may return empty IDs
+                {
+                    $item->load($rs[$i]->id);
+                    // if the item comes from a custom source, save the original query result
+                    // this allows getting a special field without extra work ;)
+                    $item->_query = $rs[$i];
+                }
+                else
+                {
+                    // for custom_source mode without element->id information,
+                    // just return the whole object returned (to be used with "query" source, for example)
+                    $item = $rs[$i];
+                }
                 break;
         }
 
@@ -954,7 +970,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	{
         // special condition, return direct query result values
 		case 'query':
-            $out = $item->_query->$tag['attributes']['value'];
+            $out = $item->_query->{$tag['attributes']['value']};
             break;
 
 		// special: return element position in list

@@ -386,7 +386,7 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
         $limit = 'LIMIT '.$max;
 
     $orderby = nvweb_list_get_orderby($order);
-	$orderby = str_replace(", IFNULL(s.position,0) ASC", "", $orderby); // remove s. order used exclusively at nvweb_list
+	$orderby = str_replace(", IFNULL(s.position, 0) ASC", "", $orderby); // remove s. order used exclusively at nvweb_list
 
     $DB->query('
         SELECT i.*, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate, d.text as title
