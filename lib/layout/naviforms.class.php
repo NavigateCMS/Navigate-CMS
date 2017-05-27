@@ -525,6 +525,8 @@ class naviforms
 		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" width: '.$width.'; height: '.$height.'px; ">'.$text.'</textarea>';
 
         $content_css = $ws->content_stylesheets('tinymce', 'content');
+
+        // note, a file in the "content_selectable" property must also be in the "content" property for TinyMCE to work as expected
         $content_css_selectable = $ws->content_stylesheets('tinymce', 'content_selectable');
 
 		$tinymce_language = $user->language;
@@ -548,7 +550,7 @@ class naviforms
 				    "advlist autolink nv_link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
-				    "codesample codemirror imagetools importcss paste magicline fontawesome nv_rollups" // add fullpage to edit full HTML code with head and body tags
+				    "codesample codemirror importcss imagetools paste magicline fontawesome nv_rollups" // add fullpage to edit full HTML code with head and body tags
 				],
 				
 				external_plugins: {
@@ -609,12 +611,12 @@ class naviforms
                 importcss_append: false,
                 importcss_file_filter: function(value) 
                 {
-                    var files = "'.$content_css_selectable.'";
+                    var files = "'.$content_css_selectable.'";    
                     
                     if(files.indexOf(",") > -1)
                     {
-                        files = files.split(",");
-	                    for(var i=0; i<files.length; i++)
+                        files = files.split(",");                                                                                                                                 
+	                    for(var i=0; i < files.length; i++)
 	                    {
 	                        if(value.indexOf(files[i]) !== -1)
 	                        {

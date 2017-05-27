@@ -52,7 +52,7 @@ class layout
                 $wtitle = $website->name.' | ';
 
             $out[] = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
-            $out[] = '<meta name="viewport" content="user-scalable=no">';
+            $out[] = '<meta name="viewport" content="width=device-width, user-scalable=no">';
             $out[] = '<meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />';
             $out[] = '<meta http-equiv="Pragma" content="no-cache" />';
 

@@ -144,8 +144,10 @@ class naviorderedtable
 
 		if(!empty($this->dblclick_callback))
 		{
-			$layout->add_script('$("#'.$this->id.'").find("tr").bind("dblclick", function()
+			$layout->add_script('$("#'.$this->id.'").find("tr").on("dblclick", function(e)
 			{
+			    e.stopPropagation();
+			    e.preventDefault();
 				'.$this->dblclick_callback.'(this);
 			});');		
 		}

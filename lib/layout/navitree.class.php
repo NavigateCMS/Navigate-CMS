@@ -242,10 +242,15 @@ class navitree
 		';
 
 		$html[] = '	
-			$("table#'.$this->id.' tbody tr").not(":first").on("dblclick", function()
+			$("table#'.$this->id.' tbody tr").not(":first").on("dblclick", function(e)
 			{
-				if(navitree_mode=="reorder") return true;
-				window.location.href = "'.$this->url.'" + $(this).find("td:first").html();
+			    e.stopPropagation();
+			    e.preventDefault();
+			    
+				if(navitree_mode=="reorder") 
+				    return true;				   
+				    
+				window.location.href = "'.$this->url.'" + $(this).data("node-id");
 			}); 
 		';
 
