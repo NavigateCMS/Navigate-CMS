@@ -70,8 +70,14 @@ class theme
             {
                 for ($s = 0; $s < count($this->templates[$t]->sections); $s++)
                 {
-                    if (!isset($this->templates[$t]->sections[$s]->id))
-                        $this->templates[$t]->sections[$s]->id = $this->templates[$t]->sections[$s]->code;
+                    if(!is_array($this->templates[$t]->sections))
+                        $this->templates[$t]->sections = (array) $this->templates[$t]->sections;
+
+                    if(!empty($this->templates[$t]->sections))
+                    {
+                        if (!isset($this->templates[$t]->sections[$s]->id))
+                            $this->templates[$t]->sections[$s]->id = $this->templates[$t]->sections[$s]->code;
+                    }
                 }
             }
 
