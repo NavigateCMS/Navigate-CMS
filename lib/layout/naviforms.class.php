@@ -546,7 +546,7 @@ class naviforms
                 skin: "navigatecms-cupertino",
                 			    
 			    plugins: [
-				    "compat3x noneditable help",
+				    "compat3x noneditable",
 				    "advlist autolink nv_link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
@@ -603,7 +603,7 @@ class naviforms
 			    paste_data_images: true,
 				images_upload_url: "navigate_upload.php?engine=tinymce&session_id='.session_id().'&debug",
 				
-				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px", 
+				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px 42px 48px 56px 64px", 
                 
                 content_css: "'.$content_css.'",
                 
@@ -654,8 +654,8 @@ class naviforms
                 setup: function(editor)
                 {
 	                editor.on("init", function() 
-	                { 
-				        $(editor.getWin()).bind("scroll blur focus", function(e)
+	                { 	                
+				        $(editor.getWin()).on("scroll blur focus", function(e)
 				        {
                             navigate_tinymce_event(e, "'.$name.'");
 				        });
@@ -671,7 +671,7 @@ class naviforms
                 
                 // just after rendering this tinymce 
                 init_instance_callback: function(editor)
-                {                           
+                {                      
 					// find missing images
 					$("#'.$name.'").parent().find("iframe").contents().find("img").each(function()
 					{
@@ -713,7 +713,7 @@ class naviforms
                         }
                     });
                     
-                    // deprecated, but the only way we found to set the button on on init
+                    // deprecated, but the only way we found to activate the button on init
 	                tinyMCE.get("'.$name.'").controlManager.setActive("magicline", true);
 	                	                
                     // user warning to avoid losing unsaved changes
@@ -721,6 +721,11 @@ class naviforms
                     {
                         navigate_beforeunload_register();
                     });
+                    
+                    // workaround for TinyMCE 4.6.2 fontsize selector bug
+                    var fontsize_button = $("#'.$name.'").prev().find(".mce-toolbar-grp button").eq(2);
+                    if( $(fontsize_button).find(".mce-txt").length == 0)
+                        $(fontsize_button).append("<span class=\"mce-txt\">12px</span>");
                 }
             });
         ');
