@@ -3314,6 +3314,51 @@
 				<target>New web user registration</target>
 			</trans-unit>
 
+			<trans-unit id="662" approved="yes">
+				<source>Brand</source>
+				<target>Brand</target>
+			</trans-unit>
+
+			<trans-unit id="663" approved="yes">
+				<source>Inventory</source>
+				<target>Inventory</target>
+			</trans-unit>
+
+			<trans-unit id="664" approved="yes">
+				<source>SKU</source>
+				<target>SKU</target>
+			</trans-unit>
+
+			<trans-unit id="665" approved="yes">
+				<source>Barcode</source>
+				<target>Barcode</target>
+			</trans-unit>
+
+			<trans-unit id="666" approved="yes">
+				<source>Track inventory</source>
+				<target>Track inventory</target>
+			</trans-unit>
+
+			<trans-unit id="667" approved="yes">
+				<source>Stock available</source>
+				<target>Stock available</target>
+			</trans-unit>
+
+			<trans-unit id="668" approved="yes">
+				<source>including all product variants</source>
+				<target>including all product variants</target>
+			</trans-unit>
+
+			<trans-unit id="669" approved="yes">
+				<source>Depth</source>
+				<target>Depth</target>
+			</trans-unit>
+
+			<trans-unit id="670" approved="yes">
+				<source>Weight</source>
+				<target>Weight</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

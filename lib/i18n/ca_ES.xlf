@@ -2134,7 +2134,7 @@
             
 			<trans-unit id="425" approved="yes">
                 <source>Order the elements of a category (unless the template forces other sorting)</source>
-                <target>Ordenar els elementos d'una categoría (excepte quan la plantilla força una altra ordenació)
+                <target>Ordenar els elements d'una categoria (excepte quan la plantilla força una altra ordenació)
                 </target>
             </trans-unit>
             
@@ -3324,6 +3324,51 @@
             <trans-unit id="661" approved="yes">
                 <source>New web user registration</source>
                 <target>Nou registre d'usuari web</target>
+            </trans-unit>
+
+            <trans-unit id="662" approved="yes">
+                <source>Brand</source>
+                <target>Marca</target>
+            </trans-unit>
+
+            <trans-unit id="663" approved="yes">
+                <source>Inventory</source>
+                <target>Inventari</target>
+            </trans-unit>
+
+            <trans-unit id="664" approved="yes">
+                <source>SKU</source>
+                <target>SKU</target>
+            </trans-unit>
+
+            <trans-unit id="665" approved="yes">
+                <source>Barcode</source>
+                <target>Codi de barres</target>
+            </trans-unit>
+
+            <trans-unit id="666" approved="yes">
+                <source>Track inventory</source>
+                <target>Fer seguiment d'inventari</target>
+            </trans-unit>
+
+            <trans-unit id="667" approved="yes">
+                <source>Stock available</source>
+                <target>Quantitat disponible</target>
+            </trans-unit>
+
+            <trans-unit id="668" approved="yes">
+                <source>including all product variants</source>
+                <target>incloent totes les variants del producte</target>
+            </trans-unit>
+
+            <trans-unit id="669" approved="yes">
+                <source>Depth</source>
+                <target>Profunditat</target>
+            </trans-unit>
+
+            <trans-unit id="670" approved="yes">
+                <source>Weight</source>
+                <target>Pes</target>
             </trans-unit>
 
         </body>
