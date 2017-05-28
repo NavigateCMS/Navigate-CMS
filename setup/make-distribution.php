@@ -1,5 +1,5 @@
 <?php
-/* Navigate MAKE DISTRIBUTION v2.1.2 */
+/* Navigate MAKE DISTRIBUTION v2.4 */
 /* 		created by: Naviwebs   http://www.naviwebs.com	*/
 /* creates a distribution package for Navigate */
 /* Requirements: installed and functional copy of Navigate */
@@ -65,7 +65,9 @@ $DB->query('SHOW TABLES', 'array');
 $tmp = array_keys($DB->first());
 $tmp = $tmp[0];
 $tables = array_values($DB->result($tmp));
-$ignore_tables = array('nv_products');
+
+// exclude some tables (e-shop development)
+$ignore_tables = array('nv_products', 'nv_brands');
 
 foreach($tables as $table)
 {
@@ -161,6 +163,11 @@ foreach($navigate_files as $file)
     if(substr($file, 0, strlen('private/'))=='private/') continue;
     if(substr($file, 0, strlen('themes/'))=='themes/') continue;
     if(substr($file, 0, strlen('cache/'))=='cache/') continue;
+
+    // exclude e-shop development files (until official release)
+    if(substr($file, 0, strlen('lib/packages/products'))=='lib/packages/products') continue;
+    if(substr($file, 0, strlen('lib/packages/brands'))=='lib/packages/brands') continue;
+
     // from 1.9.1, do not include ANY private file
 
     /* all files under plugins/ are safe to be added
