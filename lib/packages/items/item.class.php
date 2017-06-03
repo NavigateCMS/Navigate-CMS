@@ -243,7 +243,7 @@ class item
 			webuser_vote::remove_object_votes('item', $this->id);
 
             // remove all element properties
-            property::remove_properties('item', $this->id);
+            property::remove_properties('item', $this->id, $this->website);
 
             // finally remove the item
 			$DB->execute('

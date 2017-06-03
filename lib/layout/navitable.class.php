@@ -73,7 +73,7 @@ class navitable
         if(!empty($delete_url))
             $this->delete_url = $delete_url;
         else
-            $this->delete_url = '?fid='.$this->default_fid.'&act=1&oper=del';
+            $this->delete_url = '?fid='.$this->default_fid.'&act=json&oper=del';
     }
 	
 	public function enableSearch()
@@ -723,7 +723,7 @@ class navitable
 
 		if(empty($this->quicksearch_url))
 		{
-	        $this->quicksearch_url = '?fid='.$this->default_fid.'&act=1&_search=true&quicksearch=';
+	        $this->quicksearch_url = '?fid='.$this->default_fid.'&act=json&_search=true&quicksearch=';
 	        if(strpos($this->default_fid, 'ext_')===0)
 	            $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
 		}

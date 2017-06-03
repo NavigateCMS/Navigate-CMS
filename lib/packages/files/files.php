@@ -14,8 +14,8 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
-		case 1: // json retrieval & operations
         case "json":
+        case 1: // json retrieval & operations
 			if($_REQUEST['op']=='upload')
 			{
                 $tmp_name = $_REQUEST['tmp_name'];
@@ -34,7 +34,7 @@ function run()
 				}
 				else
 				{
-					echo json_encode(false);	
+					echo json_encode(false);
 				}
 			}
 
@@ -244,7 +244,7 @@ function run()
 			$DB->disconnect();
 			exit;
 			break;
-			
+
 			
 		case 2:	// show/edit item properties
         case "edit":

@@ -12,7 +12,8 @@ function run()
 			
 	switch($_REQUEST['act'])
 	{
-		case 1:	// json data retrieval & operations
+        case 'json':
+	    case 1:	// json data retrieval & operations
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows

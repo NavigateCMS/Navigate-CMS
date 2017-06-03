@@ -847,7 +847,7 @@ class website
         else
             $content_css[] = '/css/tools/tinymce.defaults.css';
 
-        // deprecated field (will be removed at some time)
+        // deprecated field (will be removed at some point)
         if(!empty($this->tinymce_css))
             $content_css[] = $this->tinymce_css.'?bogus='.time();
 
