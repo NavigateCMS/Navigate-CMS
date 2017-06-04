@@ -1136,37 +1136,37 @@ function nvweb_template_tweaks($html)
 	// images
     $replacements = array();
     $tags = nvweb_tags_extract($html, 'img', NULL, true, 'UTF-8');
+
 	foreach($tags as $tag)
 	{
 		if(isset($tag['attributes']['srcset']))
 		{
 			$srcset_old = explode(",", $tag['attributes']['srcset']);
 			$srcset_new = array();
+
 			foreach($srcset_old as $src)
 			{
 				$src = trim($src);
 				$src = explode(" ", $src);
 
-				if(substr($src[0], 0, 7)!='http://' &&
-		           substr($src[0], 0, 8)!='https://')
+				if( substr($src[0], 0, 7)!='http://' &&
+		            substr($src[0], 0, 8)!='https://' &&
+                    substr($src[0], 0, 2)!='//')
 				{
-		            if(substr($src[0], 0, 2)=='//')
-		                $src[0] = $website->protocol.substr($src[0], 2);
-		            else
-		                $src[0] = $website_absolute_path.'/'.$src[0];
+	                $src[0] = $website_absolute_path.'/'.$src[0];
 				}
 
-				$srcset_new[] = implode(" ", $src);
+                if(substr($src[0], 0, 2)=='//')
+                    $src[0] = $website->protocol.substr($src[0], 2);
+
+                $srcset_new[] = implode(" ", $src);
+
+                $tag['attributes']['srcset'] = implode(", ", $srcset_new);
 			}
 
 			$tag['new'] = '<img ';
 			foreach($tag['attributes'] as $name => $value)
-			{
-				if($name!='srcset')
-					$tag['new'] .= $name.'="'.$value.'" ';
-				else
-					$tag['new'] .= 'srcset="'.implode(", ", $srcset_new).'" ';
-			}
+				$tag['new'] .= $name.'="'.$value.'" ';
 			$tag['new'] .= '/>';
 
 			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
@@ -1201,7 +1201,6 @@ function nvweb_template_tweaks($html)
         array_values($replacements),
         $html
     );
-
 
     // replace any "navigate_download.php" request for "/object" request
     $html = nvweb_template_fix_download_paths($html);
