@@ -413,10 +413,12 @@ function run()
                 $ok = $DB->execute('
                         DELETE FROM nv_webdictionary_history 
                         WHERE id = :id AND
+                              node_type = :node_type,
                               website = :website
                         LIMIT 1',
                     array(
                         ':id'      => intval($_REQUEST['id']),
+                        ':node_type' => "item",
                         ':website' => $website->id
                     )
                 );
@@ -606,7 +608,7 @@ function run()
 			core_terminate();
 			break;
 			
-		case 96: // return category paths 
+		case "structure_entry_path": // return category paths
 			echo json_encode(path::loadElementPaths('structure', intval($_REQUEST['id'])));
 			core_terminate();
 			break;
@@ -712,7 +714,7 @@ function run()
             core_terminate();
             break;
 			
-		case 98: // change comment status
+		case "change_comment_status": // change comment status
 			if(empty($_REQUEST['id']))
 			{
 				echo "false"; 
@@ -1359,7 +1361,7 @@ function items_form($item)
         {
             $.ajax(
             {
-                url: NAVIGATE_APP + "?fid=" + navigate_query_parameter("fid") + "&act=96&id=" + id,
+                url: NAVIGATE_APP + "?fid=" + navigate_query_parameter("fid") + "&act=structure_entry_path&id=" + id,
                 dataType: "json",
                 data: {},
                 success: function(data, textStatus, xhr)
@@ -2133,23 +2135,23 @@ function items_form($item)
 				else								$comment_status = 'public';		
 			
 				$navibars->add_tab_content_row(array(
-					'<span class="items-comment-label">'.
+					'<span class="object-comment-label">'.
 						core_ts2date($comments[$c]->date_created, true).'<br />'.
 						'<strong>'.(empty($comments[$c]->username)? $comments[$c]->name : $comments[$c]->username).'</strong>'.
 						'<br />'.
 						$comments[$c]->ip.
 					'</span>',
-					'<div id="items-comment-'.$comments[$c]->id.'" class="items-comment-message items-comment-status-'.$comment_status.'">'.nl2br($comments[$c]->message).'</div>',
+					'<div id="object-comment-'.$comments[$c]->id.'" class="object-comment-message object-comment-status-'.$comment_status.'">'.nl2br($comments[$c]->message).'</div>',
 					(empty($comments[$c]->avatar)? '' : '<img style=" margin-left: 5px; " src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$comments[$c]->avatar.'&amp;disposition=inline&amp;width=46&amp;height=46" />')
 					)
 				);
 			}	
 
 			$navibars->add_tab_content('
-				<div id="items-comments-toolbar">
-					<img id="items-comments-toolbar-publish" src="'.NAVIGATE_URL.'/img/icons/silk/accept.png" title="'.t(258, 'Publish').'" />
-					<img id="items-comments-toolbar-unpublish" src="'.NAVIGATE_URL.'/img/icons/silk/delete.png" title="'.t(259, 'Unpublish').'" />
-					<img id="items-comments-toolbar-delete" src="'.NAVIGATE_URL.'/img/icons/silk/decline.png" title="'.t(35, 'Delete').'" />				
+				<div id="object-comments-toolbar">
+					<img id="object-comments-toolbar-publish" src="'.NAVIGATE_URL.'/img/icons/silk/accept.png" title="'.t(258, 'Publish').'" />
+					<img id="object-comments-toolbar-unpublish" src="'.NAVIGATE_URL.'/img/icons/silk/delete.png" title="'.t(259, 'Unpublish').'" />
+					<img id="object-comments-toolbar-delete" src="'.NAVIGATE_URL.'/img/icons/silk/decline.png" title="'.t(35, 'Delete').'" />				
 				</div>
 			');
 			
@@ -2332,6 +2334,7 @@ function items_form($item)
 	        type: "GET",
 	        dataType: "script",
 	        url: "lib/packages/items/items.js?r='.$current_version->revision.'",
+	        cache: true,
 	        complete: function()
 	        {
                 if(typeof navigate_items_onload == "function")

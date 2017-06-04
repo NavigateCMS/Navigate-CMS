@@ -2126,7 +2126,8 @@ label.ui-state-active #navigate_media_browser_folder_path
 	margin-left:73px;
 }
 
-.items-comment-label
+
+.object-comment-label
 {
 	text-align: right;
 	font-weight: normal;
@@ -2138,7 +2139,7 @@ label.ui-state-active #navigate_media_browser_folder_path
 	line-height: 16px;
 }
 
-.items-comment-message
+.object-comment-message
 {
 	width: 400px;
 	float: left;
@@ -2148,32 +2149,32 @@ label.ui-state-active #navigate_media_browser_folder_path
 	min-height:35px;
 }
 
-.items-comment-status-new
+.object-comment-status-new
 {
 	background: url("../../css/cupertino/images/ui-bg_highlight-soft_25_ffef8f_1x100.png") repeat-x scroll 50% top #FFEF8F;
 	color:#363636;
 	border: 1px solid #FFEF8F;	
 }
 
-.items-comment-status-public
+.object-comment-status-public
 {
 	background-color: transparent;
 	border: solid 1px #AED0EA;	
 }
 
-.items-comment-status-private
+.object-comment-status-private
 {
 	background-color: #fdd;
 	border: solid 1px #ccc;
 }
 
-.items-comment-status-hidden
+.object-comment-status-hidden
 {
 	color: #bbb;
 	border: solid 1px #bbb;
 }
 
-#items-comments-toolbar
+#object-comments-toolbar
 {
 	position: fixed;
 	text-align: right;
@@ -2183,10 +2184,11 @@ label.ui-state-active #navigate_media_browser_folder_path
 	display: none;
 }
 
-#items-comments-toolbar img
+#object-comments-toolbar img
 {
 	cursor: pointer;	
 }
+
 
 ul.connectedSortable
 {
