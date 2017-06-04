@@ -1120,7 +1120,7 @@ class naviforms
 		return implode("\n", $out);
 	}
 
-    public function dropdown_tree($id, $tree, $selected_value="", $onChange="eval")
+    public function dropdown_tree($id, $tree, $selected_value="", $on_change="")
     {
         global $layout;
 
@@ -1134,6 +1134,9 @@ class naviforms
         $out[] = '<input type="text" id="tree_path_'.$id.'" value="'.$path.'" readonly="true" />';
         $out[] = '<img src="img/icons/silk/erase.png" width="16" height="16" align="absmiddle"'.
 					 'style=" cursor: pointer; " onclick=" tree_wrapper_'.md5($id).'_reset(); " />';
+
+        if(!empty($on_change))
+            $on_change .= '(value);';
 
         if(empty($tree))
             $tree = '<ul><li value="0">&nbsp;</li></ul>';
@@ -1152,6 +1155,7 @@ class naviforms
 
                     $("#'.$id.'").val(value);
                     tree_wrapper_'.md5($id).'_path(value);
+                    '.$on_change.'
                 }
             });
             $("#tree_wrapper_'.$id.' ul:first").css(
