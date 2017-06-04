@@ -1,0 +1,153 @@
+<?php
+class brand
+{
+    public $id;
+    public $website;
+    public $name;
+    public $image;
+    public $notes;
+
+    public function load($id)
+    {
+        global $DB;
+        global $website;
+
+        if($DB->query('
+            SELECT * FROM nv_brands 
+            WHERE id = '.intval($id).' AND 
+                  website = '.$website->id)
+        )
+        {
+            $data = $DB->result();
+            $this->load_from_resultset($data);
+        }
+    }
+
+    public function load_from_resultset($rs)
+    {
+        $main = $rs[0];
+
+        $this->id			= $main->id;
+        $this->website		= $main->website;
+        $this->name 		= $main->name;
+        $this->image		= $main->image;
+        $this->notes		= $main->notes;
+    }
+
+    public function load_from_post()
+    {
+        $this->name  		= $_REQUEST['name'];
+        $this->image		= intval($_REQUEST['image']);
+        $this->notes 		= $_REQUEST['notes'];
+    }
+
+
+    public function save()
+    {
+        if(!empty($this->id))
+            return $this->update();
+        else
+            return $this->insert();
+    }
+
+    public function delete()
+    {
+        global $DB;
+        global $website;
+
+        if(!empty($this->id))
+        {
+            $DB->execute('
+				DELETE FROM nv_brands
+					  WHERE id = '.intval($this->id).' AND 
+					        website = '.$website->id
+            );
+        }
+
+        return $DB->get_affected_rows();
+    }
+
+    public function insert()
+    {
+        global $DB;
+        global $website;
+
+        $ok = $DB->execute(' 
+ 			INSERT INTO nv_brands
+				(id, website, name, image, notes)
+			VALUES 
+				( 0, :website, :name, :image, :notes)
+			',
+            array(
+                'website' => value_or_default($this->website, $website->id),
+                'name' => $this->name,
+                'image' => value_or_default($this->image, 0),
+                'notes' => value_or_default($this->notes, "")
+            )
+        );
+
+        $this->id = $DB->get_last_id();
+
+        return true;
+    }
+
+    public function update()
+    {
+        global $DB;
+
+        if(!is_array($this->categories))
+            $this->categories = array();
+
+        $ok = $DB->execute(' 
+ 			UPDATE nv_brands
+			  SET name = :name, image = :image, notes = :notes
+			WHERE id = :id	AND	website = :website',
+            array(
+                'id' => $this->id,
+                'website' => $this->website,
+                'name' => $this->name,
+                'image' => value_or_default($this->image, 0),
+                'notes' => value_or_default($this->entries, "")
+            )
+        );
+
+        if(!$ok) throw new Exception($DB->get_last_error());
+
+        return true;
+    }
+
+    public function quicksearch($text)
+    {
+        global $DB;
+        global $website;
+
+        $like = ' LIKE '.protect('%'.$text.'%');
+
+        $cols[] = 'name '.$like;
+
+        $where = ' AND ( ';
+        $where.= implode( ' OR ', $cols);
+        $where .= ')';
+
+        return $where;
+    }
+
+    public function backup($type='json')
+    {
+        global $DB;
+        global $website;
+
+        $out = array();
+
+        $DB->query('SELECT * FROM nv_brands WHERE website = '.protect($website->id), 'object');
+        $out = $DB->result();
+
+        if($type='json')
+            $out = json_encode($out);
+
+        return $out;
+    }
+
+}
+
+?>

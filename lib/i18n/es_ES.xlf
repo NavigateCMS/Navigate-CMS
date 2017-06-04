@@ -3325,8 +3325,8 @@
 			</trans-unit>
 
 			<trans-unit id="664" approved="yes">
-				<source>SKU</source>
-				<target>SKU</target>
+				<source>SKU (Stock-keeping unit)</source>
+				<target>SKU (Código referencia)</target>
 			</trans-unit>
 
 			<trans-unit id="665" approved="yes">
@@ -3359,6 +3359,56 @@
 				<target>Peso</target>
 			</trans-unit>
 
+			<trans-unit id="671" approved="yes">
+				<source>Pricing</source>
+				<target>Precios</target>
+			</trans-unit>
+
+			<trans-unit id="672" approved="yes">
+				<source>Variants</source>
+				<target>Variantes</target>
+			</trans-unit>
+
+			<trans-unit id="673" approved="yes">
+				<source>Related</source>
+				<target>Relacionados</target>
+				<note>as in "related products"</note>
+			</trans-unit>
+
+			<trans-unit id="674" approved="yes">
+				<source>Shippable</source>
+				<target>Enviable</target>
+			</trans-unit>
+
+			<trans-unit id="675" approved="yes">
+				<source>Downloadable</source>
+				<target>Descargable</target>
+			</trans-unit>
+
+			<trans-unit id="676" approved="yes">
+				<source>Base price</source>
+				<target>Precio base</target>
+			</trans-unit>
+
+			<trans-unit id="677" approved="yes">
+				<source>Tax</source>
+				<target>Impuesto</target>
+			</trans-unit>
+
+			<trans-unit id="678" approved="yes">
+				<source>Cost</source>
+				<target>Coste</target>
+			</trans-unit>
+
+			<trans-unit id="679" approved="yes">
+				<source>Included</source>
+				<target>Incluido</target>
+			</trans-unit>
+
+			<trans-unit id="680" approved="yes">
+				<source>Custom</source>
+				<target>Definido</target>
+			</trans-unit>
 		</body>
 
 	</file>

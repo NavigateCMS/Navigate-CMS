@@ -174,5 +174,37 @@
         "description": "Allow running the selected extensions (empty means all)",
         "type": "moption",
 		"options": "extensions"
+    },
+    {
+        "name": "products.create",
+        "scope": "functions",
+        "function": "products",
+        "description": "Allow creating new products",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "products.edit",
+        "scope": "functions",
+        "function": "products",
+        "description": "Allow editing products",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "products.delete",
+        "scope": "functions",
+        "function": "products",
+        "description": "Allow deleting products",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "products.publish",
+        "scope": "functions",
+        "function": "products",
+        "description": "Allow publishing products",
+        "type": "boolean",
+        "dvalue": "true"
     }
 ]

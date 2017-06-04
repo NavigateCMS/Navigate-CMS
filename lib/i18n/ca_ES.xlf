@@ -290,7 +290,7 @@
             
 			<trans-unit id="57" approved="yes">
                 <source>Do you really want to delete the item?</source>
-                <target>Realment vol esborrar l'element?</target>
+                <target>Realment vols esborrar l'element?</target>
             </trans-unit>
             
 			<trans-unit id="58" approved="yes">
@@ -305,7 +305,7 @@
             
 			<trans-unit id="60" approved="yes">
                 <source>Do you really want to delete the selected items?</source>
-                <target>Realmente vol esborrar els elements escollits?</target>
+                <target>Realment vols esborrar els elements escollits?</target>
             </trans-unit>
             
 			<trans-unit id="61" approved="yes">
@@ -2160,7 +2160,7 @@
             
 			<trans-unit id="430" approved="yes">
                 <source>Do you really want to remove all statistics of this website?</source>
-                <target>Realment vol esborrar totes les estadístiques d'aquest lloc web?</target>
+                <target>Realment vols esborrar totes les estadístiques d'aquest lloc web?</target>
             </trans-unit>
             
 			<trans-unit id="431" approved="yes">
@@ -2430,7 +2430,7 @@
             
 			<trans-unit id="483" approved="yes">
                 <source>Do you really want to import the default website for the selected theme?</source>
-                <target>Realment vol importar el lloc web per defecte del tema escollit?</target>
+                <target>Realment vols importar el lloc web per defecte del tema escollit?</target>
             </trans-unit>
             
 			<trans-unit id="484" approved="yes">
@@ -2500,7 +2500,7 @@
             
 			<trans-unit id="497" approved="yes">
                 <source>Do you really want to erase this data?</source>
-                <target>Realment vol eliminar les dades?</target>
+                <target>Realment vols eliminar les dades?</target>
             </trans-unit>
             
 			<trans-unit id="498" approved="yes">
@@ -2997,7 +2997,7 @@
             
 			<trans-unit id="596" approved="yes">
                 <source>Do you want to enter a fixed path for the homepage?</source>
-                <target>Vols introduir una ruta fixa per a la pàgina d'inici?</target>
+                <target>Vols introduïr una ruta fixa per a la pàgina d'inici?</target>
             </trans-unit>
             
 			<trans-unit id="597" approved="yes">
@@ -3337,8 +3337,8 @@
             </trans-unit>
 
             <trans-unit id="664" approved="yes">
-                <source>SKU</source>
-                <target>SKU</target>
+                <source>SKU (Stock-keeping unit)</source>
+                <target>SKU (Codi referència)</target>
             </trans-unit>
 
             <trans-unit id="665" approved="yes">
@@ -3369,6 +3369,57 @@
             <trans-unit id="670" approved="yes">
                 <source>Weight</source>
                 <target>Pes</target>
+            </trans-unit>
+
+            <trans-unit id="671" approved="yes">
+                <source>Pricing</source>
+                <target>Preus</target>
+            </trans-unit>
+
+            <trans-unit id="672" approved="yes">
+                <source>Variants</source>
+                <target>Variants</target>
+            </trans-unit>
+
+            <trans-unit id="673" approved="yes">
+                <source>Related</source>
+                <target>Relacionats</target>
+                <note>as in "related products"</note>
+            </trans-unit>
+
+            <trans-unit id="674" approved="yes">
+                <source>Shippable</source>
+                <target>Enviable</target>
+            </trans-unit>
+
+            <trans-unit id="675" approved="yes">
+                <source>Downloadable</source>
+                <target>Descarregable</target>
+            </trans-unit>
+
+            <trans-unit id="676" approved="yes">
+                <source>Base price</source>
+                <target>Preu base</target>
+            </trans-unit>
+
+            <trans-unit id="677" approved="yes">
+                <source>Tax</source>
+                <target>Impost</target>
+            </trans-unit>
+
+            <trans-unit id="678" approved="yes">
+                <source>Cost</source>
+                <target>Cost</target>
+            </trans-unit>
+
+            <trans-unit id="679" approved="yes">
+                <source>Included</source>
+                <target>Inclòs</target>
+            </trans-unit>
+
+            <trans-unit id="680" approved="yes">
+                <source>Custom</source>
+                <target>Definit</target>
             </trans-unit>
 
         </body>

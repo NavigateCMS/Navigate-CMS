@@ -268,6 +268,13 @@ function nvweb_route_parse($route="")
 		$route = 'node';		
 	}
 
+	// product route types
+	if(substr($route, 0, 8)=='product/')
+	{
+		$product  =  substr($route, 8);
+		$route = 'product';
+	}
+
 	switch($route)
 	{			
 		case 'object':
@@ -328,6 +335,32 @@ function nvweb_route_parse($route="")
 				}
 
 				$current['type'] = 'item';
+				$current['template'] = $current['object']->template;
+
+				if($current['navigate_session']==1 && !empty($_REQUEST['template']))
+					$current['template'] = $_REQUEST['template'];
+			}
+			break;
+
+        case 'product':
+			if($product > 0)
+			{
+				$current['id'] = $product;
+
+				$DB->query('SELECT * FROM nv_products 
+							 WHERE id = '.protect($current['id']).'
+							   AND website = '.$website->id);
+				$current['object'] = $DB->first();
+
+				// let's count a hit (except admin)
+				if($current['navigate_session']!=1 && !nvweb_is_bot())
+				{
+					$DB->execute(' UPDATE nv_products SET views = views + 1 
+								   WHERE id = '.$current['id'].' 
+									 AND website = '.$website->id);
+				}
+
+				$current['type'] = 'product';
 				$current['template'] = $current['object']->template;
 
 				if($current['navigate_session']==1 && !empty($_REQUEST['template']))
@@ -527,6 +560,22 @@ function nvweb_route_parse($route="")
                         if($current['navigate_session']!=1 && !nvweb_is_bot())
                         {
                             $DB->execute(' UPDATE nv_items SET views = views + 1 
+                                           WHERE id = '.$current['id'].' 
+                                             AND website = '.$website->id);
+                        }
+                        break;
+
+                    case 'product':
+                        $DB->query('SELECT * FROM nv_products 
+                                     WHERE id = '.protect($current['id']).'
+                                       AND website = '.$website->id);
+
+                        $current['object'] = $DB->first();
+
+                        // let's count a hit (except admin)
+                        if($current['navigate_session']!=1 && !nvweb_is_bot())
+                        {
+                            $DB->execute(' UPDATE nv_products SET views = views + 1 
                                            WHERE id = '.$current['id'].' 
                                              AND website = '.$website->id);
                         }

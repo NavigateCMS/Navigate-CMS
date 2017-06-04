@@ -58,7 +58,7 @@ function nvweb_tags($vars=array())
 	return $out;
 }
 
-function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $search='', $lang='')
+function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $search='', $lang='', $types=array("item", "product"))
 {
     // TODO: implement a tags cache system to improve website render time
 
@@ -77,6 +77,7 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
         $extra = ' AND
             (
                 ( node_type = "structure" AND node_id IN('.implode(',', $categories).') ) OR
+                ( node_type = "product" AND node_id IN('.implode(',', $categories).') ) OR
                 ( node_type = "item" AND node_id IN('.implode(',', $categories).') )
             )
         ';
@@ -88,7 +89,7 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
     $DB->query(
         'SELECT text FROM nv_webdictionary
           WHERE website = '.$website->id.'
-            AND node_type IN("item")
+            AND node_type IN("'.implode('","', $types).'")
             AND subtype = "tags"
             AND lang = '.protect($lang).'
             '.$extra.'

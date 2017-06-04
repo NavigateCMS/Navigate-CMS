@@ -3324,39 +3324,90 @@
 				<target>Inventar</target>
 			</trans-unit>
 
-			<trans-unit id="664" approved="yes">
-				<source>SKU</source>
-				<target>SKU</target>
+			<trans-unit id="664">
+				<source>SKU (Stock-keeping unit)</source>
+				<target>SKU (Referenzcode)</target>
 			</trans-unit>
 
-			<trans-unit id="665" approved="yes">
+			<trans-unit id="665">
 				<source>Barcode</source>
 				<target>Strichcode</target>
 			</trans-unit>
 
-			<trans-unit id="666" approved="yes">
+			<trans-unit id="666">
 				<source>Track inventory</source>
 				<target>Inventar verfolgen</target>
 			</trans-unit>
 
-			<trans-unit id="667" approved="yes">
+			<trans-unit id="667">
 				<source>Stock available</source>
 				<target>Lager verfügbar</target>
 			</trans-unit>
 
-			<trans-unit id="668" approved="yes">
+			<trans-unit id="668">
 				<source>including all product variants</source>
 				<target>Einschließlich aller Produktvarianten</target>
 			</trans-unit>
 
-			<trans-unit id="669" approved="yes">
+			<trans-unit id="669">
 				<source>Depth</source>
 				<target>Tiefe</target>
 			</trans-unit>
 
-			<trans-unit id="670" approved="yes">
+			<trans-unit id="670">
 				<source>Weight</source>
 				<target>Gewicht</target>
+			</trans-unit>
+
+			<trans-unit id="671">
+				<source>Pricing</source>
+				<target>Preisgestaltung</target>
+			</trans-unit>
+
+			<trans-unit id="672">
+				<source>Variants</source>
+				<target>Varianten</target>
+			</trans-unit>
+
+			<trans-unit id="673">
+				<source>Related</source>
+				<target>Ähnliche</target>
+				<note>as in "related products"</note>
+			</trans-unit>
+
+			<trans-unit id="674">
+				<source>Shippable</source>
+				<target>Lieferbar</target>
+			</trans-unit>
+
+			<trans-unit id="675">
+				<source>Downloadable</source>
+				<target>Herunterladbar</target>
+			</trans-unit>
+
+			<trans-unit id="676">
+				<source>Base price</source>
+				<target>Grundpreis</target>
+			</trans-unit>
+
+			<trans-unit id="677">
+				<source>Tax</source>
+				<target>Steuer</target>
+			</trans-unit>
+
+			<trans-unit id="678">
+				<source>Cost</source>
+				<target>Kosten</target>
+			</trans-unit>
+
+			<trans-unit id="679">
+				<source>Included</source>
+				<target>Inbegriffen</target>
+			</trans-unit>
+
+			<trans-unit id="680">
+				<source>Custom</source>
+				<target>Benutzerdefinierten</target>
 			</trans-unit>
 
 		</body>

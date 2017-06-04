@@ -3325,8 +3325,8 @@
 			</trans-unit>
 
 			<trans-unit id="664" approved="yes">
-				<source>SKU</source>
-				<target>SKU</target>
+				<source>SKU (Stock-keeping unit)</source>
+				<target>SKU (Stock-keeping unit)</target>
 			</trans-unit>
 
 			<trans-unit id="665" approved="yes">
@@ -3357,6 +3357,57 @@
 			<trans-unit id="670" approved="yes">
 				<source>Weight</source>
 				<target>Weight</target>
+			</trans-unit>
+
+			<trans-unit id="671" approved="yes">
+				<source>Pricing</source>
+				<target>Pricing</target>
+			</trans-unit>
+
+			<trans-unit id="672" approved="yes">
+				<source>Variants</source>
+				<target>Variants</target>
+			</trans-unit>
+
+			<trans-unit id="673" approved="yes">
+				<source>Related</source>
+				<target>Related</target>
+				<note>as in "related products"</note>
+			</trans-unit>
+
+			<trans-unit id="674" approved="yes">
+				<source>Shippable</source>
+				<target>Shippable</target>
+			</trans-unit>
+
+			<trans-unit id="675" approved="yes">
+				<source>Downloadable</source>
+				<target>Downloadable</target>
+			</trans-unit>
+
+			<trans-unit id="676" approved="yes">
+				<source>Base price</source>
+				<target>Base price</target>
+			</trans-unit>
+
+			<trans-unit id="677" approved="yes">
+				<source>Tax</source>
+				<target>Tax</target>
+			</trans-unit>
+
+			<trans-unit id="678" approved="yes">
+				<source>Cost</source>
+				<target>Cost</target>
+			</trans-unit>
+
+			<trans-unit id="679" approved="yes">
+				<source>Included</source>
+				<target>Included</target>
+			</trans-unit>
+
+			<trans-unit id="680" approved="yes">
+				<source>Custom</source>
+				<target>Custom</target>
 			</trans-unit>
 
 		</body>
