@@ -743,6 +743,7 @@ function files_browser($parent, $search="")
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
+	        cache: true,
 	        url: "lib/packages/files/files.js?r='.$current_version->revision.'",
 	        complete: function()
 	        {

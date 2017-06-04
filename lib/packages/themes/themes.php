@@ -444,6 +444,7 @@ function themes_grid($list)
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
+	        cache: true,
 	        url: "lib/packages/themes/themes.js?r='.$current_version->revision.'",
 	        complete: function()
 	        {

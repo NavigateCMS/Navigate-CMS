@@ -228,6 +228,7 @@ function dashboard_create()
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
+	        cache: true,
 	        url: "lib/packages/dashboard/dashboard.js?r='.$current_version->revision.'",
 	        complete: function()
 	        {

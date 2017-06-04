@@ -3049,6 +3049,7 @@ function block_group_form($item)
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
+	        cache: true,
 	        url: "lib/packages/blocks/blocks.js?r='.$current_version->revision.'",
 	        complete: function()
 	        {

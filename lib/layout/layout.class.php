@@ -388,7 +388,7 @@ class layout
             {
                 $out[] = '<script language="javascript" src="'.$javascript.'?r='.$current_version->revision.'&_='.filemtime($javascript).'" type="text/javascript"></script>';
                 // fallback when the compressed scripts version could not be loaded by the browser (incorrect .jgz client/server gzip encoding)
-                $out[] = '<script language="javascript" type="text/javascript">if(typeof(navigate_window_resize)=="undefined"){$.ajax({async: false, url: "'.NAVIGATE_URL.'/cache/scripts.js?r='.$current_version->revision.'&_='.filemtime('cache/scripts.js').'", dataType: "script"});}</script>';
+                $out[] = '<script language="javascript" type="text/javascript">if(typeof(navigate_window_resize)=="undefined"){$.ajax({async: false, url: "'.NAVIGATE_URL.'/cache/scripts.js?r='.$current_version->revision.'&_='.filemtime('cache/scripts.js').'", dataType: "script", cache: true});}</script>';
             }
             else
             {

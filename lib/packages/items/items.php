@@ -2333,6 +2333,7 @@ function items_form($item)
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
+	        cache: true,
 	        url: "lib/packages/items/items.js?r='.$current_version->revision.'",
 	        cache: true,
 	        complete: function()

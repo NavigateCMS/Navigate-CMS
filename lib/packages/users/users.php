@@ -503,6 +503,7 @@ function users_form($item)
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
+	        cache: true,
 	        url: "lib/packages/permissions/permissions.js?r='.$current_version->revision.'",
 	        complete: function()
 	        {
