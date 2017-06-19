@@ -452,7 +452,7 @@ class item
                 ":date_published"	=> value_or_default($this->date_published, 0),
                 ":date_unpublish"	=> value_or_default($this->date_unpublish, 0),
                 ":date_modified"    => $this->date_modified,
-                ":author"   	    => $this->author,
+                ":author"   	    => value_or_default($this->author, 0),
                 ":galleries"        => serialize($this->galleries),
                 ":comments_enabled_to"  => value_or_default($this->comments_enabled_to, 0),
                 ":comments_moderator"   => value_or_default($this->comments_moderator, 0),
@@ -667,7 +667,7 @@ class item
             $item->groups = array();
             $item->permission = 0; // 0 => public, 1 => private (only navigate cms users), 2 => hidden
             $item->views = 0;
-            $item->author = $article['creator'];
+            $item->author = value_or_default($article['creator'], 0);
             $item->votes = 0;
             $item->score = 0;
             $item->properties = array();
@@ -777,6 +777,6 @@ class item
 
 		return $tmp;
 	}
-	
 }
+
 ?>

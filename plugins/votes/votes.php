@@ -34,7 +34,7 @@ function nvweb_votes_event($event, $html)
 			{
 				echo json_encode(array('error' => 'no_webuser'));	
 			}
-			else
+            else if(!empty($_POST['object_id']))
 			{
 				$status = webuser_vote::update_object_votes(
 					$webuser->id,

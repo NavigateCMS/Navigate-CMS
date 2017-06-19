@@ -1053,7 +1053,24 @@ function debug_json_error($prepend='')
         debugger::console($prepend.$error);
 }
 
-
+/*
+  EXAMPLE
+    $body = navigate_compose_email(
+        array(
+            array(
+                'title'   => "Website",
+                'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+            ),
+            array(
+                'title'   => "Content",
+                'content' => $content
+            ),
+            array(
+                'footer' => '<a href="' . $unsubscribe_link . '">Unsubscribe text</a>'
+            )
+        )
+    );
+*/
 function navigate_compose_email($data, $style = array('background' => '#E5F1FF', 'title-color' => '#595959', 'content-color' => '#595959'))
 {
     global $DB;

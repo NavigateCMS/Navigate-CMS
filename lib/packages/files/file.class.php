@@ -1270,7 +1270,9 @@ class file
             $tmp_name = $uploaded_file_temp;
         }
 
-        if(strpos($tmp_name, '/') === 0)
+        // is the filename already absolute?
+        // or the file is already uploaded into files folder?
+        if(file_exists($tmp_name))
             $tmp_file_path = $tmp_name;
         else
             $tmp_file_path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name;

@@ -78,7 +78,7 @@ class webuser_vote
 			array(
 				'website' => value_or_default($this->website, $website->id),
 				'webuser' => value_or_default($this->webuser, 0),
-				'object' => $this->object,
+				'object' => value_or_default($this->object, "item"),
 				'object_id' => $this->object_id,
 				'value' => $this->value,
 				'date' => value_or_default($this->date, 0)
