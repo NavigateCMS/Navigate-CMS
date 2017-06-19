@@ -3410,6 +3410,16 @@
 				<target>Custom</target>
 			</trans-unit>
 
+			<trans-unit id="681" approved="yes">
+				<source>Brands</source>
+				<target>Brands</target>
+			</trans-unit>
+
+			<trans-unit id="682" approved="yes">
+				<source>Coupons</source>
+				<target>Coupons</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

@@ -3422,6 +3422,16 @@
                 <target>Definit</target>
             </trans-unit>
 
+            <trans-unit id="681" approved="yes">
+                <source>Brands</source>
+                <target>Marques</target>
+            </trans-unit>
+
+            <trans-unit id="682" approved="yes">
+                <source>Coupons</source>
+                <target>Cupons</target>
+            </trans-unit>
+
         </body>
 
     </file>

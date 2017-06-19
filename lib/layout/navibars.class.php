@@ -15,7 +15,7 @@ class navibars
 
 	function add_actions($actions)
 	{		
-		if(is_array($actions)) 
+		if(is_array($actions) && !empty($actions))
 		{
 			$search_form_pos = array_search('search_form', $actions);
 			

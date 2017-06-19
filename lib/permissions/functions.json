@@ -206,5 +206,29 @@
         "description": "Allow publishing products",
         "type": "boolean",
         "dvalue": "true"
+    },
+    {
+        "name": "brands.create",
+        "scope": "functions",
+        "function": "brands",
+        "description": "Allow creating new brands",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "brands.edit",
+        "scope": "functions",
+        "function": "brands",
+        "description": "Allow editing brands",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "brands.delete",
+        "scope": "functions",
+        "function": "brands",
+        "description": "Allow deleting brands",
+        "type": "boolean",
+        "dvalue": "true"
     }
 ]

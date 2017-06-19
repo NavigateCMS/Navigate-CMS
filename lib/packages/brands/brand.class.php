@@ -38,7 +38,7 @@ class brand
     {
         $this->name  		= $_REQUEST['name'];
         $this->image		= intval($_REQUEST['image']);
-        $this->notes 		= $_REQUEST['notes'];
+        //$this->notes 		= $_REQUEST['notes'];
     }
 
 
@@ -72,7 +72,7 @@ class brand
         global $DB;
         global $website;
 
-        $ok = $DB->execute(' 
+        $DB->execute(' 
  			INSERT INTO nv_brands
 				(id, website, name, image, notes)
 			VALUES 
@@ -95,9 +95,6 @@ class brand
     {
         global $DB;
 
-        if(!is_array($this->categories))
-            $this->categories = array();
-
         $ok = $DB->execute(' 
  			UPDATE nv_brands
 			  SET name = :name, image = :image, notes = :notes
@@ -107,7 +104,7 @@ class brand
                 'website' => $this->website,
                 'name' => $this->name,
                 'image' => value_or_default($this->image, 0),
-                'notes' => value_or_default($this->entries, "")
+                'notes' => value_or_default($this->notes, "")
             )
         );
 
@@ -118,9 +115,6 @@ class brand
 
     public function quicksearch($text)
     {
-        global $DB;
-        global $website;
-
         $like = ' LIKE '.protect('%'.$text.'%');
 
         $cols[] = 'name '.$like;
@@ -136,8 +130,6 @@ class brand
     {
         global $DB;
         global $website;
-
-        $out = array();
 
         $DB->query('SELECT * FROM nv_brands WHERE website = '.protect($website->id), 'object');
         $out = $DB->result();

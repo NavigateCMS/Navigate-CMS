@@ -3410,6 +3410,16 @@
 				<target>Benutzerdefinierten</target>
 			</trans-unit>
 
+			<trans-unit id="681">
+				<source>Brands</source>
+				<target>Marken</target>
+			</trans-unit>
+
+			<trans-unit id="682">
+				<source>Coupons</source>
+				<target>Gutscheine</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

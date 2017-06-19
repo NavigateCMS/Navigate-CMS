@@ -3409,6 +3409,16 @@
 				<source>Custom</source>
 				<target>Definido</target>
 			</trans-unit>
+
+			<trans-unit id="681" approved="yes">
+				<source>Brands</source>
+				<target>Marcas</target>
+			</trans-unit>
+
+			<trans-unit id="682" approved="yes">
+				<source>Coupons</source>
+				<target>Cupones</target>
+			</trans-unit>
 		</body>
 
 	</file>

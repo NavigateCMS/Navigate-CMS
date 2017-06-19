@@ -3410,6 +3410,16 @@
                 <target>Niestandardowa</target>
             </trans-unit>
 
+            <trans-unit id="681">
+                <source>Brands</source>
+                <target>Marki</target>
+            </trans-unit>
+
+            <trans-unit id="682">
+                <source>Coupons</source>
+                <target>Kupony</target>
+            </trans-unit>
+
         </body>
 
     </file>
