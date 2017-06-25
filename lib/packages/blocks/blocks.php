@@ -174,7 +174,7 @@ function run()
 		
 		case 'load':
         case 'edit':
-		case 2: // edit/new form		
+		case 2:
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -575,7 +575,8 @@ function run()
             core_terminate();
             break;
 
-		case 0: // list / search result
+        case 'list':
+		case 0:
 		default:			
 			$out = blocks_list();
 			break;
@@ -602,7 +603,7 @@ function blocks_list()
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
-            $group_blocks_links[] = '<a class="ui-menu-action-bigger" href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+            $group_blocks_links[] = '<a class="ui-menu-action-bigger" href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
 
         $events->add_actions(
             'blocks',
@@ -611,7 +612,7 @@ function blocks_list()
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list">
+            '<a class="content-actions-submenu-trigger" href="?fid=blocks&act=block_groups_list">
                 <img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;
             </a>'
         );
@@ -619,26 +620,26 @@ function blocks_list()
 
     $navibars->add_actions(
         array(
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'),
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+            (!empty($group_blocks_links)? '' : '<a href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'),
+            '<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
 
 	$navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+            '<a href="?fid=blocks&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid=blocks&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
         )
     );
 	
 	if(@$_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+		$navitable->setInitialURL("?fid=blocks&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
+	$navitable->setURL('?fid=blocks&act=json');
 	$navitable->sortBy('date_modified', 'desc');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
+	$navitable->setEditUrl('id', '?fid=blocks&act=edit&id=');
 	$navitable->enableSearch();
 	if($user->permission("blocks.delete") == 'true')
 		$navitable->enableDelete();
@@ -739,10 +740,10 @@ function blocks_form($item)
         ');
 
         if($user->permission("blocks.create") == 'true')
-            $extra_actions[] = '<a href="?fid=blocks&debug&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+            $extra_actions[] = '<a href="?fid=blocks&act=duplicate&id='.$item->id.'" onclick="$(this).attr(\'#\');"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
     }
 
-    array_unshift($extra_actions, '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>');
+    array_unshift($extra_actions, '<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>');
 
     $events->add_actions(
         'blocks',
@@ -759,7 +760,7 @@ function blocks_form($item)
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
-            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+            $group_blocks_links[] = '<a href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
 
         $events->add_actions(
             'blocks',
@@ -768,22 +769,22 @@ function blocks_form($item)
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
     else
     {
         $navibars->add_actions(
             array(
-                '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'
+                '<a href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>'
             )
         );
     }
 	
 	$navibars->add_actions(
 		array(
-			(!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			(!empty($item->id)? '<a href="?fid=blocks&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=blocks&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
 		)
 	);
@@ -791,7 +792,7 @@ function blocks_form($item)
     if(!empty($item->id))
         $layout->navigate_notes_dialog('block', $item->id);
 
-	$navibars->form();
+	$navibars->form(NULL, '?fid=blocks&act=edit');
 
     $navibars->add_content('
         <script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>
@@ -1384,7 +1385,7 @@ function blocks_form($item)
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(184, 'Webpage').'</label>',
-                        $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid='.$_REQUEST['fid'].'&act=path'),
+                        $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid=blocks&act=path'),
                         '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
                         '<div class="subcomment nv_block_nv_link_info" data-lang="'.$lang.'">
                             <img src="img/icons/silk/sitemap_color.png" class="hidden" data-type="structure" sprite="false" />
@@ -1936,7 +1937,7 @@ function blocks_types_list()
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
-            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+            $group_blocks_links[] = '<a href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
 
         $events->add_actions(
             'blocks',
@@ -1945,31 +1946,31 @@ function blocks_types_list()
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>')
+            '<a href="?fid=blocks&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            (!empty($group_blocks_links)? '' : '<a href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>')
         )
     );
 
 	$navibars->add_actions(
 		array(
 			($user->permission("items.create") == 'true'?
-				'<a href="?fid='.$_REQUEST['fid'].'&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>'
+				'<a href="?fid=blocks&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>'
 				: ''),
-			'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+			'<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
 		)
 	);
 
 
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=block_types_json');
+	$navitable->setURL('?fid=blocks&act=block_types_json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=block_type_edit&id=');
+	$navitable->setEditUrl('id', '?fid=blocks&act=block_type_edit&id=');
 	
 	$navitable->addCol("ID", 'id', "80", "true", "left");
     $navitable->addCol(t(491, 'Class'), 'type', "80", "true", "left");
@@ -2038,7 +2039,7 @@ function blocks_type_form($item)
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
-            $group_blocks_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+            $group_blocks_links[] = '<a href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
 
         $events->add_actions(
             'blocks',
@@ -2047,22 +2048,22 @@ function blocks_type_form($item)
                 'navibars' => &$navibars
             ),
             $group_blocks_links,
-            '<a class="content-actions-submenu-trigger" href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
+            '<a class="content-actions-submenu-trigger" href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').' &#9662;</a>'
         );
     }
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            (!empty($group_blocks_links)? '' : '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>')
+            '<a href="?fid=blocks&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            (!empty($group_blocks_links)? '' : '<a href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bricks.png"> '.t(506, 'Groups').'</a>')
         )
     );
 
 
 	$navibars->add_actions(
         array(
-            (!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-			'<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+            (!empty($item->id)? '<a href="?fid=blocks&act=block_type_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
         )
     );
 
@@ -2320,7 +2321,7 @@ function blocks_type_form($item)
 					   type: "GET",
 					   async: false,
 					   dateType: "json",
-					   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=block_property_load&block='.$item->id.'&id=" + $(el).attr("id"),
+					   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=blocks&act=block_property_load&block='.$item->id.'&id=" + $(el).attr("id"),
 					   success: function(data)
 					   {
 						   $("#property-id-span").html(data.id);
@@ -2378,7 +2379,7 @@ function blocks_type_form($item)
                                    type: "POST",
                                    async: false,
                                    dateType: "text",
-                                   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=block_property_remove",
+                                   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=blocks&act=block_property_remove",
                                    data: $("#block-properties-edit-dialog").serialize(),
                                    success: function(msg)
                                    {
@@ -2394,7 +2395,7 @@ function blocks_type_form($item)
                                    type: "POST",
                                    async: false,
                                    dateType: "text",
-                                   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=block_property_save",
+                                   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=blocks&act=block_property_save",
                                    data: $("#block-properties-edit-dialog").serialize(),
                                    success: function(data)
                                    {
@@ -2511,20 +2512,20 @@ function block_groups_list()
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+            '<a href="?fid=blocks&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            '<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
 
     $navibars->add_actions(	array(
-        '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-        '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+        '<a href="?fid=blocks&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+        '<a href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
     ));
 
-    $navitable->setURL('?fid='.$_REQUEST['fid'].'&act=block_groups_json');
+    $navitable->setURL('?fid=blocks&act=block_groups_json');
     $navitable->sortBy('id');
     $navitable->setDataIndex('id');
-    $navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=block_group_edit&id=');
+    $navitable->setEditUrl('id', '?fid=blocks&act=block_group_edit&id=');
     $navitable->setGridNotesObjectName("block_group");
 
     $navitable->addCol("ID", 'id', "80", "true", "left");
@@ -2582,8 +2583,8 @@ function block_group_form($item)
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
-            '<a href="?fid='.$_REQUEST['fid'].'&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
+            '<a href="?fid=blocks&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick.png"> '.t(23, 'Blocks').'</a>',
+            '<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>'
         )
     );
 
@@ -2599,8 +2600,8 @@ function block_group_form($item)
 
     $navibars->add_actions(
         array(
-        (!empty($item->id)? '<a href="?fid='.$_REQUEST['fid'].'&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-        '<a href="?fid='.$_REQUEST['fid'].'&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
+        (!empty($item->id)? '<a href="?fid=blocks&act=block_group_edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+        '<a href="?fid=blocks&act=block_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>'
     ));
 
     $navibars->form();
