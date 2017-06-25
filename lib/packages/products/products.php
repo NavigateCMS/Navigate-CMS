@@ -197,16 +197,16 @@ function run()
                                 $dataset[$i]['category_path'] = $category_path;
                         }
 
-                        $item_image = '-';
+                        $item_image = '<img src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" />';
                         $item_galleries = mb_unserialize($dataset[$i]['galleries']);
 						if(is_array($item_galleries))
                         {
                             $item_image = array_keys($item_galleries[0]);
                             $item_image = $item_image[0];
                             if(is_numeric($item_image))
-                                $item_image = '<img src="'.file::file_url($item_image, 'inline').'&width=64&height=48&border=true" />';
+                                $item_image = '<img class="products_list_image_lazyload" src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" data-src="'.file::file_url($item_image, 'inline').'&width=64&height=48&border=true" />';
                             else
-                                $item_image = '-';
+                                $item_image = '<img src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" />';
                         }
 
 						$item_views = $dataset[$i]['views'];
@@ -967,6 +967,16 @@ function products_list()
 
             $("#jqgh_products_list_category span.ui-button-text").css({"padding-top": "0", "padding-bottom": "0"});
         }
+        
+        // replace placeholder images by real thumbnails after document is ready                        
+        new LazyLoad({
+            threshold: 200,
+            container: document.getElementById("products_list"),
+            elements_selector: "img.products_list_image_lazyload",
+            throttle: 40,
+            data_src: "src",
+            show_while_loading: true
+        });
     ');
 
     // add categories filter
@@ -1155,7 +1165,7 @@ function products_form($item)
 	// languages
     $ws_languages = $website->languages();
 
-	$navibars->form('', 'debug&fid=products&act=edit&id='.$item->id);
+	$navibars->form('', 'fid=products&act=edit&id='.$item->id);
 
     $layout->add_script("
         $(document).on('keydown.ctrl_s', function (evt) { navigate_products_tabform_submit(1); return false; } );
