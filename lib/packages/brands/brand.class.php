@@ -57,6 +57,9 @@ class brand
 
         if(!empty($this->id))
         {
+            // remove grid notes
+            grid_notes::remove_all('brand', $this->id);
+
             $DB->execute('
 				DELETE FROM nv_brands
 					  WHERE id = '.intval($this->id).' AND 

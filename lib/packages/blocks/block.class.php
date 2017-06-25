@@ -337,6 +337,9 @@ class block
 		if(!empty($this->id))
 		{
 			webdictionary::save_element_strings('block', $this->id, array(), $this->website);
+
+            // remove grid notes
+            grid_notes::remove_all('block', $this->id);
 			
 			$DB->execute('
               DELETE FROM nv_blocks

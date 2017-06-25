@@ -192,7 +192,6 @@ class grid_notes
     {
         global $DB;
         global $website;
-        global $user;
 
         if(empty($id))
             return 'invalid_id';
@@ -201,6 +200,22 @@ class grid_notes
             DELETE FROM nv_notes
                 WHERE website = '.protect($website->id).'
                   AND id = '.protect($id).'
+                LIMIT 1'
+        );
+
+        return 'true';
+    }
+
+    public static function remove_all($object_type, $object_id)
+    {
+        global $DB;
+        global $website;
+
+        $DB->execute('
+            DELETE FROM nv_notes
+                WHERE website = '.protect($website->id).'
+                  AND item_type = '.protect($object_type).'
+                  AND item_id = '.protect($object_id).'
                 LIMIT 1'
         );
 

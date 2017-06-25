@@ -362,10 +362,13 @@ class website
                     ');
                 }
 
-                // finally, remove ALL files associated to the website
+                // remove ALL files associated to the website
                 // including: images, documents, thumbnails, backups, cache, custom templates...
                 core_remove_folder(NAVIGATE_PRIVATE.'/'.$this->id);
             }
+
+            // remove all associated website notes
+            grid_notes::remove_all('website', $this->id);
 
             // finally delete the website entry
 			$DB->execute('

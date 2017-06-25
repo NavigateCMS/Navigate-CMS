@@ -245,6 +245,9 @@ class item
             // remove all element properties
             property::remove_properties('item', $this->id, $this->website);
 
+            // remove grid notes
+            grid_notes::remove_all('item', $this->id);
+
             // finally remove the item
 			$DB->execute('
 			    DELETE FROM nv_items

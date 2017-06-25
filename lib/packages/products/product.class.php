@@ -319,6 +319,9 @@ class product
             // remove all element properties
             property::remove_properties('product', $this->id, $this->website);
 
+            // remove grid notes
+            grid_notes::remove_all('product', $this->id);
+
             // finally remove the product
 			$DB->execute('
 			    DELETE FROM nv_products

@@ -204,6 +204,9 @@ class webuser
             // remove properties
             property::remove_properties('webuser', $this->id);
 
+            // remove grid notes
+            grid_notes::remove_all('webuser', $this->id);
+
             // finally remove webuser account
             $DB->execute('
  				DELETE FROM nv_webusers
