@@ -3420,6 +3420,34 @@
 				<target>Gutscheine</target>
 			</trans-unit>
 
+			<trans-unit id="683" approved="yes">
+				<source>Countries</source>
+				<target>Länder</target>
+			</trans-unit>
+
+			<trans-unit id="684" approved="yes">
+				<source>Regions</source>
+				<target>Regionen</target>
+				<note>a generic word to refer to states, provinces and other similar zones in a country</note>
+			</trans-unit>
+
+			<trans-unit id="685">
+				<source>Subtotal</source>
+				<target>Zwischensumme</target>
+			</trans-unit>
+
+			<trans-unit id="686">
+				<source>min</source>
+				<target>min</target>
+				<note>minimum (abbreviation)</note>
+			</trans-unit>
+
+			<trans-unit id="687">
+				<source>max</source>
+				<target>max</target>
+				<note>maximum (abbreviation)</note>
+			</trans-unit>
+
 		</body>
 
 	</file>

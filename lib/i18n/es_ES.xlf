@@ -3419,6 +3419,35 @@
 				<source>Coupons</source>
 				<target>Cupones</target>
 			</trans-unit>
+
+			<trans-unit id="683" approved="yes">
+				<source>Countries</source>
+				<target>Países</target>
+			</trans-unit>
+
+			<trans-unit id="684" approved="yes">
+				<source>Regions</source>
+				<target>Regiones</target>
+				<note>a generic word to refer to states, provinces and other similar zones in a country</note>
+			</trans-unit>
+
+			<trans-unit id="685" approved="yes">
+				<source>Subtotal</source>
+				<target>Subtotal</target>
+			</trans-unit>
+
+			<trans-unit id="686" approved="yes">
+				<source>min</source>
+				<target>mín</target>
+				<note>minimum (abbreviation)</note>
+			</trans-unit>
+
+			<trans-unit id="687" approved="yes">
+				<source>max</source>
+				<target>màx</target>
+				<note>maximum (abbreviation)</note>
+			</trans-unit>
+
 		</body>
 
 	</file>
