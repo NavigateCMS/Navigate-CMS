@@ -112,10 +112,14 @@ class navibars
 		$this->elements['form'] = $tag;
 	}	
 
-	function add_tab($name, $href='')
+	function add_tab($name, $href='', $icon='')
 	{
-		$this->elements['tabs'][] = array(	'name' => $name, 
-											'href' => $href);
+		$this->elements['tabs'][] =
+            array(
+                'name' => $name,
+				'href' => $href,
+                'icon' => $icon
+            );
 		
 		return count($this->elements['tabs']) - 1;	
 	}
@@ -160,10 +164,14 @@ class navibars
 			
 			for($t=0; $t < count($tabs); $t++)
 			{
+			    $icon = "";
+			    if(!empty($tabs[$t]['icon']))
+			        $icon = '<i class="'.$tabs[$t]['icon'].'"></i> ';
+
 				if(empty($tabs[$t]['href']))
-					$buffer[] = '<li><a href="#navigate-content-tabs-'.($t+1).'">'.$tabs[$t]['name'].'</a></li>';
+					$buffer[] = '<li><a href="#navigate-content-tabs-'.($t+1).'">'.$icon.$tabs[$t]['name'].'</a></li>';
 				else
-					$buffer[] = '<li><a href="'.$tabs[$t]['href'].'">'.$tabs[$t]['name'].'</a></li>';
+					$buffer[] = '<li><a href="'.$tabs[$t]['href'].'">'.$icon.$tabs[$t]['name'].'</a></li>';
 			}
 			$buffer[] =  '</ul>';			
 			
