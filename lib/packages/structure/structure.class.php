@@ -102,8 +102,8 @@ class structure
 		// language strings and options
 		$this->dictionary = array();
 		$this->paths = array();
+
 		$fields = array('title', 'action-type', 'action-jump-item', 'action-jump-branch', 'action-new-window'); //, 'path', 'visible');
-		
 		foreach($_REQUEST as $key => $value)
 		{
 			if(empty($value)) continue;

@@ -121,7 +121,7 @@ function run()
 
                         $favicon = '';
                         if(!empty($dataset[$i]['favicon']))
-                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'&width=16&height=16" align="absmiddle" height="16" />';
+                            $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'&width=24&height=24" align="absmiddle" height="24" />';
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],

@@ -239,7 +239,7 @@ function brands_form($object)
 	$extra_actions = array();
     if(!empty($object->id))
     {
-        // we attach an event to "products" which will be fired by navibars to put an extra button
+        // we attach an event which will be fired by navibars to put an extra button
         $events->add_actions(
             'brand',
             array(
