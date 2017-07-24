@@ -913,13 +913,15 @@ function structure_form($item)
                             0 => 'url',
                             1 => 'jump-branch',
                             2 => 'jump-item',
-                            3 => 'do-nothing'
+                            3 => 'masked-redirect',
+                            4 => 'do-nothing'
                         ),
                     array(
                             0 => t(173, 'Open URL'),
                             1 => t(322, 'Jump to another branch'),
                             2 => t(323, 'Jump to an element'),
-                            3 => t(183, 'Do nothing')
+                            3 => t(688, 'Masked redirect'),
+                            4 => t(183, 'Do nothing')
                         ),
                     $item->dictionary[$lang_code]['action-type'],
                     "navigate_structure_action_change('".$lang_code."', this);"
@@ -938,19 +940,28 @@ function structure_form($item)
 			$jump_item_id = array($item->dictionary[$lang_code]['action-jump-item']);
 		}
         $navibars->add_tab_content_row(array(
-            '<label>'.t(180, 'Item').' ['.t(67, 'Title').']</label>',
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(180, 'Item').' ['.t(67, 'Title').']</label>',
 			$naviforms->selectfield('action-jump-item-'.$lang_code, $jump_item_id, $jump_item_title, $item->dictionary[$lang_code]['action-jump-item'], null, false, null, null, false),
             '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.
                 t(534, "You can only select elements which have their own path (no category embedded elements)").
             '</div>'
 		));
 
+        // show URL if action was "masked-redirect"
+        $navibars->add_tab_content_row(array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(75, 'Path').'</label>',
+            $naviforms->textfield('action-masked-redirect-'.$lang_code, $item->dictionary[$lang_code]['action-masked-redirect']),
+            '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.
+                t(689, "Load the content of an internal path without changing the browser URL.").
+            '</div>'
+        ));
+
 
 		$categories_list = structure::hierarchyList($hierarchy, $item->dictionary[$lang_code]['action-jump-branch'], $lang_code);
 
 		$navibars->add_tab_content_row(
             array(
-                '<label>'.t(325, 'Branch').'</label>',
+                '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(325, 'Branch').'</label>',
 				'<div class="category_tree" id="category_tree_jump_branch_'.$lang_code.'">
 				        <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
                         '<div class="category_tree_ul">'.$categories_list.'</div>'.
@@ -961,7 +972,7 @@ function structure_form($item)
 										
 		$navibars->add_tab_content_row(
             array(
-                '<label>'.t(324, 'New window').'</label>',
+                '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(324, 'New window').'</label>',
 				$naviforms->checkbox('action-new-window-'.$lang_code, $item->dictionary[$lang_code]['action-new-window'])
             )
         );
@@ -1068,6 +1079,7 @@ function structure_form($item)
 		{			
 			$("#action-new-window-" + language).parent().hide();
 			$("#action-jump-item-" + language).parent().hide();
+			$("#action-masked-redirect-" + language).parent().hide();
 			$("#action-jump-branch-" + language).parent().hide();			
 			
 			switch(jQuery(element).val())
@@ -1105,6 +1117,10 @@ function structure_form($item)
 				case "jump-item":
 					$("#action-new-window-" + language).parent().show();
 					$("#action-jump-item-" + language).parent().show();
+					break;		
+								
+				case "masked-redirect":
+					$("#action-masked-redirect-" + language).parent().show();
 					break;
 					
 				case "url":

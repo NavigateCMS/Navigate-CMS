@@ -3448,6 +3448,17 @@
 				<note>maximum (abbreviation)</note>
 			</trans-unit>
 
+			<trans-unit id="688">
+				<source>Masked redirect</source>
+				<target>Maskierte umleitung</target>
+				<note>load an internal website page using an alias route</note>
+			</trans-unit>
+
+			<trans-unit id="689">
+				<source>Load the content of an internal path without changing the browser URL.</source>
+				<target>Laden Sie den Inhalt eines internen Pfads, ohne die Browseradresse zu ändern.</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

@@ -3448,6 +3448,16 @@
 				<note>maximum (abbreviation)</note>
 			</trans-unit>
 
+			<trans-unit id="688" approved="yes">
+				<source>Masked redirect</source>
+				<target>Masked redirect</target>
+			</trans-unit>
+
+			<trans-unit id="689" approved="yes">
+				<source>Load the content of an internal path without changing the browser URL.</source>
+				<target>Load the content of an internal path without changing the browser URL.</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

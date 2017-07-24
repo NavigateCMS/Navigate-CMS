@@ -103,7 +103,7 @@ class structure
 		$this->dictionary = array();
 		$this->paths = array();
 
-		$fields = array('title', 'action-type', 'action-jump-item', 'action-jump-branch', 'action-new-window'); //, 'path', 'visible');
+		$fields = array('title', 'action-type', 'action-jump-item', 'action-jump-branch', 'action-new-window', 'action-masked-redirect'); //, 'path', 'visible');
 		foreach($_REQUEST as $key => $value)
 		{
 			if(empty($value)) continue;
@@ -288,7 +288,7 @@ class structure
 	}
 
     // retrieve all elements associated with this structure entry
-    public function elements($position)
+    public function elements($position=NULL)
     {
         global $DB;
 

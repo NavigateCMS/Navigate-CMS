@@ -414,7 +414,6 @@ function nvweb_route_parse($route="")
 
         // no special route (or already processed), look for the path on navigate routing table
 		default:
-
 			$DB->query('
                 SELECT * FROM nv_paths 
 				WHERE path = '.protect('/'.$route).' AND 
@@ -535,6 +534,36 @@ function nvweb_route_parse($route="")
                             $obj = new item();
                             $obj->load($current['id']);
                             header('location: '.NVWEB_ABSOLUTE.$obj->paths[$current['lang']]);
+                            nvweb_clean_exit();
+                        }
+                        else if($obj->dictionary[$current['lang']]['action-type']=='masked-redirect')
+                        {
+                            $masked_path = $obj->dictionary[$current['lang']]['action-masked-redirect'];
+                            if(strpos($masked_path, "/")===0)
+                                $masked_path = substr($masked_path, 1);
+
+                            // decompose masked_path in route / url parameters
+                            $masked_path_parsed = parse_url($masked_path);
+
+                            $request = $_REQUEST;
+                            $request['route'] = $masked_path_parsed['path'];
+                            $request['wid'] = $website->id;
+
+                            $masked_path_params = array();
+                            if(!empty($masked_path_parsed['query']))
+                            {
+                                parse_str($masked_path_parsed['query'], $masked_path_params);
+                                foreach($masked_path_params as $key => $val)
+                                {
+                                    if($key == 'route')
+                                        continue;
+                                    $request[$key] = $val;
+                                }
+                            }
+
+                            $_REQUEST = $request;
+
+                            nvweb_parse($request);
                             nvweb_clean_exit();
                         }
 

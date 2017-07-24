@@ -7,7 +7,6 @@ nvweb_webget_load("list");
 function nvweb_content($vars=array())
 {
 	global $website;
-	global $DB;
 	global $current;
 	global $template;
 	global $structure;
@@ -212,7 +211,7 @@ function nvweb_content($vars=array())
 					$texts = webdictionary::load_element_strings('item', $current['object']->id);
 
                 // have we found any content?
-                if(!empty($texts))
+                if(!empty($texts) && !empty($template->sections))
                 {
                     foreach($template->sections as $tsection)
                     {
