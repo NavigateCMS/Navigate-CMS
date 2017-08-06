@@ -401,6 +401,32 @@ function core_string2decimal($value)
 }
 
 /**
+ * Converts an internal decimal value to its string representation
+ *  the format depends on the current signed in user and his preferences (decimal_separator, thousands_separator)
+ *  NOTE: this only formats the number to be used in the Navigate CMS interface, not in the website!
+ *
+ * @param decimal $value
+ * @return string number formatted using user's defined preferences
+ */
+function core_decimal2string($value, $decimals = 2)
+{
+    global $user;
+    global $website;
+
+    // if the decimal part is 0, remove it for cleaner presentation
+    $value = sprintf("%G", $value);
+    if($value - intval($value) === 0)
+        $decimals = 0;
+
+    if(!empty($user) && isset($user->decimal_separator))
+        $value = number_format($value, $decimals, $user->decimal_separator, $user->thousands_separator);
+    else  // no user defined, use the website defaults
+        $value = number_format($value, $decimals, $website->decimal_separator, $website->thousands_separator);
+
+    return $value;
+}
+
+/**
  * Sends an e-mail using the account details entered in the website settings form
  * Note: if this function is called when the url has the parameter "debug", a log of the process is dumped
  *

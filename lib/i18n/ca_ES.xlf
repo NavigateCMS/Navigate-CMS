@@ -965,7 +965,7 @@
             
 			<trans-unit id="192" approved="yes">
                 <source>Double click on a row to edit it</source>
-                <target>Faci doble clic sobre una fila per a editar-la</target>
+                <target>Fes doble clic sobre una fila per a editar-la</target>
             </trans-unit>
             
 			<trans-unit id="193" approved="yes">
@@ -1435,7 +1435,7 @@
             
 			<trans-unit id="286" approved="yes">
                 <source>Drag to reorder. Double click to assign image captions.</source>
-                <target>Arrossegui per a reordenar. Faci doble clic per a assignar títols a la imatge.</target>
+                <target>Arrossegui per a reordenar. Fes doble clic per a assignar títols a la imatge.</target>
             </trans-unit>
             
 			<trans-unit id="287" approved="yes">
@@ -1510,7 +1510,7 @@
             
 			<trans-unit id="301" approved="yes">
                 <source>Double click on a place to set the coordinates</source>
-                <target>Faci doble clic en un indret per establir les coordenades</target>
+                <target>Fes doble clic en un indret per establir les coordenades</target>
             </trans-unit>
             
 			<trans-unit id="302" approved="yes">
@@ -2210,7 +2210,7 @@
             
 			<trans-unit id="440" approved="yes">
                 <source>Error saving the data, please do an external backup of your changes to prevent data loss</source>
-                <target>Error guardant les dades, si us plau faci una còpia externa dels canvis que ha realitzat per a evitar pèrdues de dades</target>
+                <target>Error guardant les dades, si us plau fes una còpia externa dels canvis que has realitzat per a evitar pèrdues de dades</target>
             </trans-unit>
             
 			<trans-unit id="441" approved="yes">
@@ -2261,7 +2261,7 @@
             
 			<trans-unit id="450" approved="yes">
                 <source>Click on the link below to change your password</source>
-                <target>Faci clic en l'enllaç inferior per a canviar la seva contrassenya</target>
+                <target>Fes clic en l'enllaç inferior per a canviar la seva contrassenya</target>
             </trans-unit>
             
 			<trans-unit id="451" approved="yes">
@@ -3052,7 +3052,7 @@
             
 			<trans-unit id="607" approved="yes">
                 <source>Click on the link below to confirm your account</source>
-                <target>Faci clic sobre l'enllaç inferior per a confirmar el seu compte</target>
+                <target>Fes clic sobre l'enllaç inferior per a confirmar el seu compte</target>
             </trans-unit>
             
 			<trans-unit id="608" approved="yes">
@@ -3062,12 +3062,12 @@
             
 			<trans-unit id="609" approved="yes">
                 <source>Click a day of the month selected to update the value</source>
-                <target>Faci clic en un dia del mes sel·leccionat per actualitzar el valor</target>
+                <target>Fes clic en un dia del mes sel·leccionat per actualitzar el valor</target>
             </trans-unit>
             
 			<trans-unit id="610" approved="yes">
                 <source>Sorry, you are not allowed to execute the requested function</source>
-                <target>Disculpi, no està autoritzat a executar la funció sol·licitada</target>
+                <target>Disculpa, no estàs autoritzat a executar la funció sol·licitada</target>
             </trans-unit>
             
 			<trans-unit id="611" approved="yes">
@@ -3469,6 +3469,31 @@
             <trans-unit id="689" approved="yes">
                 <source>Load the content of an internal path without changing the browser URL.</source>
                 <target>Carrega el contingut d'una ruta interna sense canviar l'adreça del navegador.</target>
+            </trans-unit>
+
+            <trans-unit id="689" approved="yes">
+                <source>Internationalization</source>
+                <target>Internacionalització</target>
+            </trans-unit>
+
+            <trans-unit id="690" approved="yes">
+                <source>Currency</source>
+                <target>Moneda</target>
+            </trans-unit>
+
+            <trans-unit id="691" approved="yes">
+                <source>Size unit</source>
+                <target>Unitat de mesura</target>
+            </trans-unit>
+
+            <trans-unit id="692" approved="yes">
+                <source>Weight unit</source>
+                <target>Unitat de pes</target>
+            </trans-unit>
+
+            <trans-unit id="693" approved="yes">
+                <source>Default values</source>
+                <target>Valors per defecte</target>
             </trans-unit>
 
         </body>

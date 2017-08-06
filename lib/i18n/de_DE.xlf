@@ -3459,6 +3459,31 @@
 				<target>Laden Sie den Inhalt eines internen Pfads, ohne die Browseradresse zu ändern.</target>
 			</trans-unit>
 
+			<trans-unit id="689" approved="yes">
+				<source>Internationalization</source>
+				<target>Internationalisierung</target>
+			</trans-unit>
+
+			<trans-unit id="690" approved="yes">
+				<source>Currency</source>
+				<target>Währung</target>
+			</trans-unit>
+
+			<trans-unit id="691" approved="yes">
+				<source>Size unit</source>
+				<target>Größe Einheit</target>
+			</trans-unit>
+
+			<trans-unit id="692">
+				<source>Weight unit</source>
+				<target>Gewichtseinheit</target>
+			</trans-unit>
+
+			<trans-unit id="693" approved="yes">
+				<source>Default values</source>
+				<target>Standardwerte</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

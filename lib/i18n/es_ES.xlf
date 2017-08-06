@@ -3459,6 +3459,31 @@
 				<target>Carga el contenido de una ruta interna sin cambiar la dirección del navegador.</target>
 			</trans-unit>
 
+			<trans-unit id="689" approved="yes">
+				<source>Internationalization</source>
+				<target>Internacionalización</target>
+			</trans-unit>
+
+			<trans-unit id="690" approved="yes">
+				<source>Currency</source>
+				<target>Moneda</target>
+			</trans-unit>
+
+			<trans-unit id="691" approved="yes">
+				<source>Size unit</source>
+				<target>Unidad de tamaño</target>
+			</trans-unit>
+
+			<trans-unit id="692" approved="yes">
+				<source>Weight unit</source>
+				<target>Unidad de peso</target>
+			</trans-unit>
+
+			<trans-unit id="693" approved="yes">
+				<source>Default values</source>
+				<target>Valores por defecto</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

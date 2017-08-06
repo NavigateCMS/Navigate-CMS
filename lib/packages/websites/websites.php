@@ -1,6 +1,7 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
+require_once(NAVIGATE_PATH.'/lib/packages/products/product.class.php');
 
 function run()
 {
@@ -958,7 +959,7 @@ function websites_form($item)
     );
 
 
-	$navibars->add_tab(t(63, "Languages"));
+	$navibars->add_tab(t(689, "Internationalization"));
 
     // system locales
     $locales = $item->unix_locales();
@@ -1142,6 +1143,123 @@ function websites_form($item)
     ');
 
 
+    // other i18n fields
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(693, "Default values").'</label>'
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(50, 'Date format').'</label>',
+            $naviforms->selectfield(
+                'date_format',
+                array(
+                    0 => 'd/m/Y',
+                    1 => 'd-m-Y',
+                    2 => 'm/d/Y',
+                    3 => 'm-d-Y',
+                    4 => 'Y-m-d',
+                    5 => 'Y/m/d'
+                ),
+                array(
+                    0 => date('d/m/Y'),
+                    1 => date('d-m-Y'),
+                    2 => date('m/d/Y'),
+                    3 => date('m-d-Y'),
+                    4 => date('Y-m-d'),
+                    5 => date('Y/m/d')
+                ),
+                $item->date_format
+            )
+        )
+    );
+
+    $timezones = property::timezones();
+
+    if(empty($item->default_timezone))
+        $item->default_timezone = date_default_timezone_get();
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(97, 'Timezone').'</label>',
+            $naviforms->selectfield("default_timezone", array_keys($timezones), array_values($timezones), $item->default_timezone)
+        )
+    );
+
+    // number | decimals separator
+    $data = array(
+        0	=> json_decode('{"code": ",", "name": ", ---> 1234,25"}'),
+        1	=> json_decode('{"code": ".", "name": ". ---> 1234.25"}'),
+        2	=> json_decode('{"code": "\'", "name": "\' ---> 1234\'25"}'),
+    );
+
+    $select = $naviforms->select_from_object_array('website-decimal_separator', $data, 'code', 'name', $item->decimal_separator);
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(49, 'Decimal separator').'</label>',
+            $select
+        )
+    );
+
+    // number format | thousands separator
+    $data = array(
+        0	=> json_decode('{"code": "", "name": "('.strtolower(t(581, "None")).') ---> 1234567"}'),
+        1	=> json_decode('{"code": ",", "name": ", ---> 1,234,567"}'),
+        2	=> json_decode('{"code": ".", "name": ". ---> 1.234.567"}'),
+    );
+
+    $select = $naviforms->select_from_object_array('website-thousands_separator', $data, 'code', 'name', $item->thousands_separator);
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(644, 'Thousands separator').'</label>',
+            $select
+        )
+    );
+
+    $layout->add_script('
+        $("#website-decimal_separator,#website-thousands_separator").on("change", function()
+        {
+            $("#website-decimal_separator").parent().find("label:first").removeClass("ui-state-error");
+            $("#website-thousands_separator").parent().find("label:first").removeClass("ui-state-error");
+        
+            if($("#website-decimal_separator").val()==$("#website-thousands_separator").val())
+            {
+                $("#website-decimal_separator").parent().find("label:first").addClass("ui-state-error");
+                $("#website-thousands_separator").parent().find("label:first").addClass("ui-state-error");
+            }
+        });
+        
+        $("#website-decimal_separator").trigger("change"); // force checking on load
+    ');
+
+    // default currency
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(690, 'Currency').'</label>',
+            $naviforms->selectfield("website-default_currency", array_keys(product::currencies()), array_values(product::currencies()), $item->currency)
+        )
+    );
+
+    // default size unit
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(691, 'Size unit').'</label>',
+            $naviforms->selectfield("website-default_size_unit", product::size_units(), product::size_units(), $item->size_unit)
+        )
+    );
+
+    // default weight unit
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(692, 'Weight unit').'</label>',
+            $naviforms->selectfield("website-default_weight_unit", product::weight_units(), product::weight_units(), $item->weight_unit)
+        )
+    );
+
+
     $navibars->add_tab(t(485, "Aliases"));
 
     $table = new naviorderedtable("website_aliases_table");
@@ -1227,44 +1345,6 @@ function websites_form($item)
                 $item->word_separator
             ),
             '<span class="navigate-form-row-info">'.t(636, 'Existing paths will not be modified').'</span>'
-        )
-    );
-
-	$navibars->add_tab_content_row(
-        array(
-            '<label>'.t(50, 'Date format').'</label>',
-			$naviforms->selectfield(
-                'date_format',
-                array(
-                    0 => 'd/m/Y',
-                    1 => 'd-m-Y',
-                    2 => 'm/d/Y',
-                    3 => 'm-d-Y',
-                    4 => 'Y-m-d',
-                    5 => 'Y/m/d'
-                ),
-                array(
-                    0 => date('d/m/Y'),
-                    1 => date('d-m-Y'),
-                    2 => date('m/d/Y'),
-                    3 => date('m-d-Y'),
-                    4 => date('Y-m-d'),
-                    5 => date('Y/m/d')
-                ),
-                $item->date_format
-            )
-        )
-    );
-
-	$timezones = property::timezones();
-
-	if(empty($item->default_timezone))
-		$item->default_timezone = date_default_timezone_get();
-
-	$navibars->add_tab_content_row(
-        array(
-            '<label>'.t(207, 'Default timezone').'</label>',
-			$naviforms->selectfield("default_timezone", array_keys($timezones), array_values($timezones), $item->default_timezone)
         )
     );
 

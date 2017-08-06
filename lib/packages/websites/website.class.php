@@ -43,7 +43,12 @@ class website
     public $mail_ignore_ssl_security;
 	public $contact_emails;
 	public $favicon;
-	
+	public $decimal_separator;
+	public $thousands_separator;
+	public $currency;
+	public $size_unit;
+	public $weight_unit;
+
 	public $theme;
 	public $theme_options;
 	
@@ -111,7 +116,13 @@ class website
 		$this->metatag_keywords 	= json_decode($main->metatag_keywords, true);
 		$this->metatags			    = json_decode($main->metatags, true);
 		$this->favicon			= $main->favicon;
-			
+
+		$this->decimal_separator    = $main->decimal_separator;
+		$this->thousands_separator	= $main->thousands_separator;
+		$this->currency             = $main->currency;
+		$this->size_unit            = $main->size_unit;
+		$this->weight_unit          = $main->weight_unit;
+
 		$this->mail_mailer		            = $main->mail_mailer;
 		$this->mail_server		            = $main->mail_server;
 		$this->mail_port		            = $main->mail_port;
@@ -200,6 +211,12 @@ class website
 		}
 		
 		$this->favicon	= intval($_REQUEST['website-favicon']);
+
+        $this->decimal_separator = $_REQUEST['website-decimal_separator'];
+        $this->thousands_separator = $_REQUEST['website-thousands_separator'];
+        $this->currency = $_REQUEST['website-default_currency'];
+        $this->size_unit = $_REQUEST['website-default_size_unit'];
+        $this->weight_unit = $_REQUEST['website-default_weight_unit'];
 
         // languages and locales
         $this->languages = array();
@@ -423,7 +440,8 @@ class website
                 tracking_scripts, additional_scripts, additional_styles, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
                 contact_emails, homepage, default_timezone, metatag_description, metatag_keywords, metatags,
-                favicon, theme, theme_options, block_types
+                favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit, 
+                theme, theme_options, block_types
             )
             VALUES
             ( 0,
@@ -465,6 +483,11 @@ class website
               :metatag_keywords,
               :metatags,
               :favicon,
+              :decimal_separator, 
+              :thousands_separator, 
+              :currency, 
+              :size_unit, 
+              :weight_unit,
               :theme,
               :theme_options,
               :block_types
@@ -508,6 +531,11 @@ class website
 				":metatag_keywords" => json_encode($this->metatag_keywords),
 				":metatags" => json_encode($this->metatags),
 				":favicon" => value_or_default($this->favicon, 0),
+                ":decimal_separator" => value_or_default($this->decimal_separator, '.'),
+                ":thousands_separator" => value_or_default($this->thousands_separator, ""),
+                ":currency" => value_or_default($this->currency, "dollar"),
+                ":size_unit" => value_or_default($this->size_unit, 'cm'),
+                ":weight_unit" => value_or_default($this->weight_unit, "g"),
 				":theme" => value_or_default($this->theme, ''),
 				":theme_options" => json_encode($this->theme_options),
                 ":block_types" => ""
@@ -604,6 +632,11 @@ class website
                     metatag_keywords = ?,
                     metatags = ?,
                     favicon = ?,
+                    decimal_separator = ?,
+                    thousands_separator = ?,
+                    currency = ?,
+                    size_unit = ?,
+                    weight_unit = ?,
                     theme = ?,
                     theme_options = ?
                 WHERE id = '.$this->id,
@@ -646,6 +679,11 @@ class website
                 json_encode($this->metatag_keywords),
                 json_encode($this->metatags),
                 value_or_default($this->favicon, 0),
+                value_or_default($this->decimal_separator, '.'),
+                value_or_default($this->thousands_separator, ""),
+                value_or_default($this->currency, "dollar"),
+                value_or_default($this->size_unit, 'cm'),
+                value_or_default($this->weight_unit, "g"),
                 value_or_default($this->theme, ""),
                 json_encode($this->theme_options)
             )

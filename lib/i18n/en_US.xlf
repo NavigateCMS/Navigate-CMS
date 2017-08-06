@@ -3458,6 +3458,31 @@
 				<target>Load the content of an internal path without changing the browser URL.</target>
 			</trans-unit>
 
+			<trans-unit id="689" approved="yes">
+				<source>Internationalization</source>
+				<target>Internacionalització</target>
+			</trans-unit>
+
+			<trans-unit id="690" approved="yes">
+				<source>Currency</source>
+				<target>Currency</target>
+			</trans-unit>
+
+			<trans-unit id="691" approved="yes">
+				<source>Size unit</source>
+				<target>Size unit</target>
+			</trans-unit>
+
+			<trans-unit id="692" approved="yes">
+				<source>Weight unit</source>
+				<target>Weight unit</target>
+			</trans-unit>
+
+			<trans-unit id="693" approved="yes">
+				<source>Default values</source>
+				<target>Default values</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

@@ -3459,6 +3459,31 @@
                 <target>Wczytaj treść wewnętrznej ścieżki bez zmiany adresu przeglądarki.</target>
             </trans-unit>
 
+            <trans-unit id="689" approved="yes">
+                <source>Internationalization</source>
+                <target>Umiędzynarodowienie</target>
+            </trans-unit>
+
+            <trans-unit id="690" approved="yes">
+                <source>Currency</source>
+                <target>Waluta</target>
+            </trans-unit>
+
+            <trans-unit id="691">
+                <source>Size unit</source>
+                <target>Jednostka wielkości</target>
+            </trans-unit>
+
+            <trans-unit id="692">
+                <source>Weight unit</source>
+                <target>Jednostka wagi</target>
+            </trans-unit>
+
+            <trans-unit id="693">
+                <source>Default values</source>
+                <target>Wartości domyślne</target>
+            </trans-unit>
+
         </body>
 
     </file>
