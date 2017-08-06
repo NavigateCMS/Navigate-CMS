@@ -1208,7 +1208,7 @@ class naviforms
         return implode("\n", $out);
     }
 
-    function multiselect($id, $values, $texts, $selected_values=array(), $onChange="", $titles=array(), $style=" height: 200px; width: 742px;")
+    function multiselect($id, $values, $texts, $selected_values=array(), $onChange="", $titles=array(), $style=" height: 216px; width: 742px;")
     {
         global $layout;
 

@@ -230,5 +230,29 @@
         "description": "Allow deleting brands",
         "type": "boolean",
         "dvalue": "true"
+    },
+    {
+        "name": "shipping_methods.create",
+        "scope": "functions",
+        "function": "shipping_methods",
+        "description": "Allow creating new shipping methods",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "shipping_methods.edit",
+        "scope": "functions",
+        "function": "shipping_methods",
+        "description": "Allow editing shipping methods",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "shipping_methods.delete",
+        "scope": "functions",
+        "function": "shipping_methods",
+        "description": "Allow deleting shipping methods",
+        "type": "boolean",
+        "dvalue": "true"
     }
 ]
