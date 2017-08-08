@@ -254,5 +254,29 @@
         "description": "Allow deleting shipping methods",
         "type": "boolean",
         "dvalue": "true"
+    },
+    {
+        "name": "coupons.create",
+        "scope": "functions",
+        "function": "coupons",
+        "description": "Allow creating new coupons",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "coupons.edit",
+        "scope": "functions",
+        "function": "coupons",
+        "description": "Allow editing coupons",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "coupons.delete",
+        "scope": "functions",
+        "function": "coupons",
+        "description": "Allow deleting coupons",
+        "type": "boolean",
+        "dvalue": "true"
     }
 ]

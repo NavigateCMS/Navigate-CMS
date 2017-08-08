@@ -143,14 +143,32 @@ class naviforms
 		return $out;	
 	}
 
-	public function decimalfield($name, $value="", $precision=2, $decimal_separator=".", $thousands_separator="", $prefix="", $suffix="", $width="400px", $action="", $extra="")
+	public function decimalfield($name, $value="", $precision=2, $decimal_separator=NULL, $thousands_separator=NULL, $prefix="", $suffix="", $width="400px", $action="", $extra="")
 	{
 	    global $layout;
+	    global $user;
 
         // may happen when converting a property type from (multilanguage) text to a (single) value
         if(is_array($value))
             $value = array_pop($value);
 		$value = htmlspecialchars($value);
+
+		if(!isset($decimal_separator))
+        {
+            if(!empty($user))
+                $decimal_separator = $user->decimal_separator;
+            else
+                $decimal_separator = ".";
+        }
+
+        if(!isset($thousands_separator))
+        {
+            if(!empty($user))
+                $thousands_separator = $user->thousands_separator;
+            else
+                $thousands_separator = "";
+        }
+
 
         if(!empty($width))
             $extra .= ' style=" width: '.$width.';"';

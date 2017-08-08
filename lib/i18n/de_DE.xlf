@@ -3484,6 +3484,56 @@
 				<target>Standardwerte</target>
 			</trans-unit>
 
+			<trans-unit id="694">
+				<source>Times allowed per customer</source>
+				<target>Mal pro Kunde erlaubt</target>
+			</trans-unit>
+
+			<trans-unit id="695">
+				<source>Times allowed globally</source>
+				<target>Zeiten erlaubt weltweit</target>
+			</trans-unit>
+
+			<trans-unit id="696" approved="yes">
+				<source>Minimum spend</source>
+				<target>Mindestausgaben</target>
+			</trans-unit>
+
+			<trans-unit id="697" approved="yes">
+				<source>Discount amount</source>
+				<target>Rabattbetrag</target>
+			</trans-unit>
+
+			<trans-unit id="698" approved="yes">
+				<source>Discount percentage</source>
+				<target>Rabatt Prozentsatz</target>
+			</trans-unit>
+
+			<trans-unit id="699" approved="yes">
+				<source>Free shipping</source>
+				<target>Kostenloser Versand</target>
+			</trans-unit>
+
+			<trans-unit id="700" approved="yes">
+				<source>Conditions</source>
+				<target>Bedingungen</target>
+			</trans-unit>
+
+			<trans-unit id="701" approved="yes">
+				<source>Discount</source>
+				<target>Rabatt</target>
+			</trans-unit>
+
+			<trans-unit id="702" approved="yes">
+				<source>Date begin</source>
+				<target>Datum beginnen</target>
+			</trans-unit>
+
+			<trans-unit id="703" approved="yes">
+				<source>Date end</source>
+				<target>Datum ende</target>
+			</trans-unit>
+
 		</body>
 
 	</file>
