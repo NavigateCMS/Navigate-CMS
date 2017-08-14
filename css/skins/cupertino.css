@@ -572,6 +572,12 @@ a.navigate-content-actions-selected
     cursor: help;
 }
 
+.navigate-form-row a,
+.navigate-form-row span:not(.ui-icon)
+{
+	line-height: 19px;
+}
+
 .navigate-form-row label
 {
 	width: 180px;
@@ -582,6 +588,12 @@ a.navigate-content-actions-selected
 	float: left;
     line-height: 19px;
 	min-height: 25px;
+}
+
+.navigate-form-row label.checkbox-text
+{
+	font-weight: normal;
+	cursor: pointer;
 }
 
 .navigate-form-row label.ui-state-error,
@@ -3261,3 +3273,61 @@ div.block_group_block .actions a:hover
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide,
 .ui-timepicker-div.ui-timepicker-oneLine .ui_tpicker_unit_hide:before{ display: none; }
 
+
+/* timeline vertical */
+/* by: Niels Voogt https://codepen.io/NielsVoogt/pen/MbMMxv */
+
+.timeline-vertical
+{
+	display: inline-block;
+}
+
+.timeline-vertical .timeline-item
+{
+	padding: 3em 2em 16px;
+	position: relative;
+	color: rgba(0, 0, 0, 0.7);
+	border-left: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+.timeline-vertical .timeline-item p
+{
+
+}
+
+.timeline-vertical .timeline-item::before
+{
+	content: attr(date-is);
+	position: absolute;
+	left: 16px;
+	top: 1em;
+	display: block;
+	font-size: 12px;
+}
+
+.timeline-vertical .timeline-item::after
+{
+	width: 10px;
+	height: 10px;
+	display: block;
+	top: 1em;
+	position: absolute;
+	left: -7px;
+	border-radius: 10px;
+	content: '';
+	border: 2px solid rgba(0, 0, 0, 0.3);
+	background: white;
+}
+
+.timeline-vertical .timeline-item:last-child
+{
+	-o-border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
+	border-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
+	border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
+}
+.timeline-vertical .timeline-item:first-child
+{
+	-o-border-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3) 60%) 1 100%;
+	border-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.3) 60%) 1 100%;
+	border-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3) 60%) 1 100%;
+}

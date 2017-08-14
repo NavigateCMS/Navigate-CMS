@@ -39,12 +39,12 @@ class naviorderedtable
 		$this->reorder_callback = $cback;
 	}
 	
-	public function addHeaderColumn($text, $width, $searchable=false)
+	public function addHeaderColumn($text, $width, $searchable=false, $align="left")
 	{
 		if($searchable)
-			$this->headerColumns[] ='<th width="'.$width.'"><span><img src="img/icons/silk/zoom.png" align="right" class="naviorderedtable-search" />'.$text.'</span></th>';
+			$this->headerColumns[] ='<th width="'.$width.'" style="text-align: '.$align.';"><span><img src="img/icons/silk/zoom.png" align="right" class="naviorderedtable-search" />'.$text.'</span></th>';
 		else
-			$this->headerColumns[] ='<th width="'.$width.'">'.$text.'</th>';
+			$this->headerColumns[] ='<th width="'.$width.'" style="text-align: '.$align.';">'.$text.'</th>';
 	}
 	
 	public function addRow($id, $columns)
