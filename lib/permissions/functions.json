@@ -278,5 +278,21 @@
         "description": "Allow deleting coupons",
         "type": "boolean",
         "dvalue": "true"
+    },
+    {
+        "name": "orders.edit",
+        "scope": "functions",
+        "function": "orders",
+        "description": "Allow editing orders",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "orders.delete",
+        "scope": "functions",
+        "function": "orders",
+        "description": "Allow deleting orders",
+        "type": "boolean",
+        "dvalue": "true"
     }
 ]
