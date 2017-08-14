@@ -959,7 +959,7 @@ function websites_form($item)
     );
 
 
-	$navibars->add_tab(t(689, "Internationalization"));
+	$navibars->add_tab(t(730, "Internationalization"));
 
     // system locales
     $locales = $item->unix_locales();

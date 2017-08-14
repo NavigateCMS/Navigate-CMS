@@ -3455,16 +3455,11 @@
             </trans-unit>
 
             <trans-unit id="689">
-                <source>Load the content of an internal path without changing the browser URL.</source>
-                <target>Wczytaj treść wewnętrznej ścieżki bez zmiany adresu przeglądarki.</target>
+                <source>Load the content of an internal path without changing the browser URL</source>
+                <target>Wczytaj treść wewnętrznej ścieżki bez zmiany adresu przeglądarki</target>
             </trans-unit>
 
-            <trans-unit id="689" approved="yes">
-                <source>Internationalization</source>
-                <target>Umiędzynarodowienie</target>
-            </trans-unit>
-
-            <trans-unit id="690" approved="yes">
+            <trans-unit id="690">
                 <source>Currency</source>
                 <target>Waluta</target>
             </trans-unit>
@@ -3532,6 +3527,142 @@
             <trans-unit id="703" approved="yes">
                 <source>Date end</source>
                 <target>Data zakończenia</target>
+            </trans-unit>
+
+            <trans-unit id="704" approved="yes">
+                <source>Customer</source>
+                <target>Klient</target>
+            </trans-unit>
+
+            <trans-unit id="705" approved="yes">
+                <source>Lines</source>
+                <target>Linie</target>
+                <note>Lines of an order</note>
+            </trans-unit>
+
+            <trans-unit id="706">
+                <source>Total</source>
+                <target>Całkowity</target>
+            </trans-unit>
+
+            <trans-unit id="707">
+                <source>Reference</source>
+                <target>Odniesienie</target>
+            </trans-unit>
+
+            <trans-unit id="708">
+                <source>Paid</source>
+                <target>Płatny</target>
+            </trans-unit>
+
+            <trans-unit id="709">
+                <source>Pending payment</source>
+                <target>Do czasu płatności</target>
+            </trans-unit>
+
+            <trans-unit id="710">
+                <source>Pending</source>
+                <target>W oczekiwaniu</target>
+            </trans-unit>
+
+            <trans-unit id="711">
+                <source>Processing</source>
+                <target>Przetwarzanie</target>
+            </trans-unit>
+
+            <trans-unit id="712">
+                <source>Sent</source>
+                <target>Wysłano</target>
+            </trans-unit>
+
+            <trans-unit id="713">
+                <source>Completed</source>
+                <target>Zakończony</target>
+            </trans-unit>
+
+            <trans-unit id="714">
+                <source>Cancelled</source>
+                <target>Odwołany</target>
+            </trans-unit>
+
+            <trans-unit id="715">
+                <source>Contact us</source>
+                <target>Skontaktuj się z nami</target>
+            </trans-unit>
+
+            <trans-unit id="716">
+                <source>Shipping address</source>
+                <target>Adres wysyłki</target>
+            </trans-unit>
+
+            <trans-unit id="717">
+                <source>Billing address</source>
+                <target>Adres rozliczeniowy</target>
+            </trans-unit>
+
+            <trans-unit id="718">
+                <source>Notify customer</source>
+                <target>Powiadom o tym klienta</target>
+            </trans-unit>
+
+            <trans-unit id="719">
+                <source>Guest</source>
+                <target>Gość</target>
+            </trans-unit>
+
+            <trans-unit id="720">
+                <source>Shipping method</source>
+                <target>Sposób wysyłki</target>
+            </trans-unit>
+
+            <trans-unit id="721">
+                <source>Shipment reference</source>
+                <target>Referencyjny numer przesyłki</target>
+            </trans-unit>
+
+            <trans-unit id="722">
+                <source>Tracking URL</source>
+                <target>Śledzenie adresu URL</target>
+            </trans-unit>
+
+            <trans-unit id="723">
+                <source>Refunded</source>
+                <target>Zwrot</target>
+            </trans-unit>
+
+            <trans-unit id="724">
+                <source>Quantity</source>
+                <target>Ilość</target>
+            </trans-unit>
+
+            <trans-unit id="725">
+                <source>Amount</source>
+                <target>Kwota</target>
+            </trans-unit>
+
+            <trans-unit id="726">
+                <source>Coupon</source>
+                <target>Kupon</target>
+            </trans-unit>
+
+            <trans-unit id="727">
+                <source>Payment method</source>
+                <target>Metoda płatności</target>
+            </trans-unit>
+
+            <trans-unit id="728">
+                <source>Payment information</source>
+                <target>Informacje o płatności</target>
+            </trans-unit>
+
+            <trans-unit id="729">
+                <source>Timeline</source>
+                <target>Linia czasu</target>
+            </trans-unit>
+
+            <trans-unit id="730">
+                <source>Internationalization</source>
+                <target>Umiędzynarodowienie</target>
             </trans-unit>
 
         </body>

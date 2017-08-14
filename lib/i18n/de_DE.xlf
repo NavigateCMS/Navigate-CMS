@@ -3455,13 +3455,8 @@
 			</trans-unit>
 
 			<trans-unit id="689">
-				<source>Load the content of an internal path without changing the browser URL.</source>
-				<target>Laden Sie den Inhalt eines internen Pfads, ohne die Browseradresse zu ändern.</target>
-			</trans-unit>
-
-			<trans-unit id="689" approved="yes">
-				<source>Internationalization</source>
-				<target>Internationalisierung</target>
+				<source>Load the content of an internal path without changing the browser URL</source>
+				<target>Laden Sie den Inhalt eines internen Pfads, ohne die Browseradresse zu ändern</target>
 			</trans-unit>
 
 			<trans-unit id="690" approved="yes">
@@ -3532,6 +3527,142 @@
 			<trans-unit id="703" approved="yes">
 				<source>Date end</source>
 				<target>Datum ende</target>
+			</trans-unit>
+
+			<trans-unit id="704" approved="yes">
+				<source>Customer</source>
+				<target>Kunde</target>
+			</trans-unit>
+
+			<trans-unit id="705">
+				<source>Lines</source>
+				<target>Zeilen</target>
+				<note>Lines of an order</note>
+			</trans-unit>
+
+			<trans-unit id="706">
+				<source>Total</source>
+				<target>Gesamt</target>
+			</trans-unit>
+
+			<trans-unit id="707">
+				<source>Reference</source>
+				<target>Referenz</target>
+			</trans-unit>
+
+			<trans-unit id="708">
+				<source>Paid</source>
+				<target>Bezahlt</target>
+			</trans-unit>
+
+			<trans-unit id="709">
+				<source>Pending payment</source>
+				<target>Ausstehende zahlung</target>
+			</trans-unit>
+
+			<trans-unit id="710">
+				<source>Pending</source>
+				<target>Steht aus</target>
+			</trans-unit>
+
+			<trans-unit id="711">
+				<source>Processing</source>
+				<target>Wird bearbeitet</target>
+			</trans-unit>
+
+			<trans-unit id="712">
+				<source>Sent</source>
+				<target>Gesendet</target>
+			</trans-unit>
+
+			<trans-unit id="713" approved="yes">
+				<source>Completed</source>
+				<target>Abgeschlossen</target>
+			</trans-unit>
+
+			<trans-unit id="714">
+				<source>Cancelled</source>
+				<target>Abgebrochen</target>
+			</trans-unit>
+
+			<trans-unit id="715">
+				<source>Contact us</source>
+				<target>Kontaktiere uns</target>
+			</trans-unit>
+
+			<trans-unit id="716">
+				<source>Shipping address</source>
+				<target>Lieferanschrift</target>
+			</trans-unit>
+
+			<trans-unit id="717">
+				<source>Billing address</source>
+				<target>Rechnungsadresse</target>
+			</trans-unit>
+
+			<trans-unit id="718">
+				<source>Notify customer</source>
+				<target>Kunden benachrichtigen</target>
+			</trans-unit>
+
+			<trans-unit id="719">
+				<source>Guest</source>
+				<target>Gast</target>
+			</trans-unit>
+
+			<trans-unit id="720">
+				<source>Shipping method</source>
+				<target>Versandart</target>
+			</trans-unit>
+
+			<trans-unit id="721">
+				<source>Shipment reference</source>
+				<target>Versandbezug</target>
+			</trans-unit>
+
+			<trans-unit id="722">
+				<source>Tracking URL</source>
+				<target>Tracking URL</target>
+			</trans-unit>
+
+			<trans-unit id="723">
+				<source>Refunded</source>
+				<target>Zurückerstattet</target>
+			</trans-unit>
+
+			<trans-unit id="724">
+				<source>Quantity</source>
+				<target>Quantität</target>
+			</trans-unit>
+
+			<trans-unit id="725">
+				<source>Amount</source>
+				<target>Menge</target>
+			</trans-unit>
+
+			<trans-unit id="726">
+				<source>Coupon</source>
+				<target>Coupon</target>
+			</trans-unit>
+
+			<trans-unit id="727">
+				<source>Payment method</source>
+				<target>Bezahlverfahren</target>
+			</trans-unit>
+
+			<trans-unit id="728">
+				<source>Payment information</source>
+				<target>Zahlungsinformationen</target>
+			</trans-unit>
+
+			<trans-unit id="729">
+				<source>Timeline</source>
+				<target>Zeitleiste</target>
+			</trans-unit>
+
+			<trans-unit id="730">
+				<source>Internationalization</source>
+				<target>Internationalisierung</target>
 			</trans-unit>
 
 		</body>

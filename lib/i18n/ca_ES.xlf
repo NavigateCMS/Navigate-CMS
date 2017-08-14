@@ -3467,13 +3467,8 @@
             </trans-unit>
 
             <trans-unit id="689" approved="yes">
-                <source>Load the content of an internal path without changing the browser URL.</source>
-                <target>Carrega el contingut d'una ruta interna sense canviar l'adreça del navegador.</target>
-            </trans-unit>
-
-            <trans-unit id="689" approved="yes">
-                <source>Internationalization</source>
-                <target>Internacionalització</target>
+                <source>Load the content of an internal path without changing the browser URL</source>
+                <target>Carrega el contingut d'una ruta interna sense canviar l'adreça del navegador</target>
             </trans-unit>
 
             <trans-unit id="690" approved="yes">
@@ -3544,6 +3539,142 @@
             <trans-unit id="703" approved="yes">
                 <source>Date end</source>
                 <target>Data de finalització</target>
+            </trans-unit>
+
+            <trans-unit id="704" approved="yes">
+                <source>Customer</source>
+                <target>Client</target>
+            </trans-unit>
+
+            <trans-unit id="705" approved="yes">
+                <source>Lines</source>
+                <target>Línies</target>
+                <note>Lines of an order</note>
+            </trans-unit>
+
+            <trans-unit id="706" approved="yes">
+                <source>Total</source>
+                <target>Total</target>
+            </trans-unit>
+
+            <trans-unit id="707" approved="yes">
+                <source>Reference</source>
+                <target>Referència</target>
+            </trans-unit>
+
+            <trans-unit id="708" approved="yes">
+                <source>Paid</source>
+                <target>Pagat</target>
+            </trans-unit>
+
+            <trans-unit id="709" approved="yes">
+                <source>Pending payment</source>
+                <target>Pendent de pagament</target>
+            </trans-unit>
+
+            <trans-unit id="710" approved="yes">
+                <source>Pending</source>
+                <target>Pendent</target>
+            </trans-unit>
+
+            <trans-unit id="711" approved="yes">
+                <source>Processing</source>
+                <target>En procés</target>
+            </trans-unit>
+
+            <trans-unit id="712" approved="yes">
+                <source>Sent</source>
+                <target>Enviat</target>
+            </trans-unit>
+
+            <trans-unit id="713" approved="yes">
+                <source>Completed</source>
+                <target>Completat</target>
+            </trans-unit>
+
+            <trans-unit id="714" approved="yes">
+                <source>Cancelled</source>
+                <target>Cancel·lat</target>
+            </trans-unit>
+
+            <trans-unit id="715" approved="yes">
+                <source>Contact us</source>
+                <target>Contacta'ns</target>
+            </trans-unit>
+
+            <trans-unit id="716" approved="yes">
+                <source>Shipping address</source>
+                <target>Adreça d'enviament</target>
+            </trans-unit>
+
+            <trans-unit id="717" approved="yes">
+                <source>Billing address</source>
+                <target>Adreça de facturació</target>
+            </trans-unit>
+
+            <trans-unit id="718" approved="yes">
+                <source>Notify customer</source>
+                <target>Notificar al client</target>
+            </trans-unit>
+
+            <trans-unit id="719" approved="yes">
+                <source>Guest</source>
+                <target>Convidat</target>
+            </trans-unit>
+
+            <trans-unit id="720" approved="yes">
+                <source>Shipping method</source>
+                <target>Forma d'enviament</target>
+            </trans-unit>
+
+            <trans-unit id="721" approved="yes">
+                <source>Shipment reference</source>
+                <target>Referència d'enviament</target>
+            </trans-unit>
+
+            <trans-unit id="722" approved="yes">
+                <source>Tracking URL</source>
+                <target>URL seguiment</target>
+            </trans-unit>
+
+            <trans-unit id="723" approved="yes">
+                <source>Refunded</source>
+                <target>Reembolsat</target>
+            </trans-unit>
+
+            <trans-unit id="724" approved="yes">
+                <source>Quantity</source>
+                <target>Quantitat</target>
+            </trans-unit>
+
+            <trans-unit id="725" approved="yes">
+                <source>Amount</source>
+                <target>Import</target>
+            </trans-unit>
+
+            <trans-unit id="726" approved="yes">
+                <source>Coupon</source>
+                <target>Cupó</target>
+            </trans-unit>
+
+            <trans-unit id="727" approved="yes">
+                <source>Payment method</source>
+                <target>Forma de pagament</target>
+            </trans-unit>
+
+            <trans-unit id="728" approved="yes">
+                <source>Payment information</source>
+                <target>Informació de pagament</target>
+            </trans-unit>
+
+            <trans-unit id="729" approved="yes">
+                <source>Timeline</source>
+                <target>Línia de temps</target>
+            </trans-unit>
+
+            <trans-unit id="730" approved="yes">
+                <source>Internationalization</source>
+                <target>Internacionalització</target>
             </trans-unit>
 
         </body>
