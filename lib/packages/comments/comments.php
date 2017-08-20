@@ -180,6 +180,7 @@ function run()
             $DB->query('SELECT id, username as text
 						  FROM nv_webusers
 						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
+						 AND website = '.$website->id.'
 				      ORDER BY username ASC
 					     LIMIT 30',
                 'array');

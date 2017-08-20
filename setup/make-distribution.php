@@ -66,8 +66,8 @@ $tmp = array_keys($DB->first());
 $tmp = $tmp[0];
 $tables = array_values($DB->result($tmp));
 
-// exclude some tables (e-shop development)
-$ignore_tables = array('nv_products', 'nv_brands');
+// exclude some tables
+$ignore_tables = array();
 
 foreach($tables as $table)
 {
@@ -87,12 +87,13 @@ foreach($tables as $table)
 
 //	3/ Dump main table rows
 $tables = array(
-    'nv_countries',
 	'nv_functions',
 	'nv_languages',
 	'nv_menus',
 	'nv_profiles',
-	'nv_updates'
+	'nv_updates',
+    'nv_countries',
+    'nv_countries_regions'
 );
 				
 foreach($tables as $table)
@@ -170,13 +171,14 @@ foreach($navigate_files as $file)
 
     // from 1.9.1, do not include ANY private file
 
-    /* all files under plugins/ are safe to be added
+    /* NOT all files under plugins/ are safe to be added */
     if(substr($file, 0, strlen('plugins/'))=='plugins/')
     {
-        if(substr($file, 0, strlen('plugins/votes/'))!='plugins/votes/')
+        if( substr($file, 0, strlen('plugins/votes/'))!='plugins/votes/' &&
+            substr($file, 0, strlen('plugins/twitter_timeline/'))!='plugins/twitter_timeline/'
+        )
             continue;
     }
-    */
 
     if(substr($file, 0, strlen('lib/external/tinymce/'))=='lib/external/tinymce/')
     {

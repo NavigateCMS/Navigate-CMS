@@ -409,7 +409,9 @@ function structure_tree($hierarchy)
 
     foreach($website->languages_list as $lang)
     {
-        $lang_selector[] = '<li><a href="#" language="'.$lang.'"><span class="ui-icon ui-icon-carat-1-e"></span> '.language::name_by_code($lang).'</a></li>';
+        $lang_selector[] = '<li><a href="#" language="'.$lang.'">
+                                <span class="ui-icon ui-icon-carat-1-e"></span> '.language::name_by_code($lang).'
+                            </a></li>';
     }
 
     $navitree->setLanguages($website->languages_list);
@@ -453,14 +455,14 @@ function structure_tree($hierarchy)
     ');
 
 	$columns = array();
-	$columns[] = array(	'name'	=>	'ID', 'property'	=> 'id', 		'type'	=> 'text', 		'width' => '5%', 	'align' => 'left' );
-	$columns[] = array(	'name'	=>	t(67, 'Title').' '.$lang_selector,		'property'	=> 'dictionary|title',		'type'	=> 'text', 		'width' => '53%', 	'align' => 'left'	);
-	$columns[] = array(	'name'	=>	t(73, 'Children'),	'property'	=> 'children', 	'type'	=> 'count', 	'width' => '5%', 	'align' => 'center'	);
-	$columns[] = array(	'name'	=>	t(79, 'Template'),	'property'	=> 'template_title', 	'type'	=> 'text', 	    'width' => '12%', 	'align' => 'left'	);
-	$columns[] = array(	'name'	=>	t(85, 'Date published'), 'property'	=> 'dates', 'type'	=> 'text', 		'width' => '10%', 	'align' => 'center'	);
-	$columns[] = array(	'name'	=>	'<span title="'.t(283, 'Show in menus').'">'.t(76, 'Visible').'</span>', 'property'	=> 'visible', 'type'	=> 'boolean',	'width' => '4%', 	'align' => 'center'	);
-	$columns[] = array(	'name'	=>	t(364, 'Access'), 'property'	=> 'access',	'type'	=> 'option', 	'width' => '4%', 	'align' => 'center', 	'options' => $access);
-	$columns[] = array(	'name'	=>	t(68, 'Status'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '7%', 	'align' => 'center', 	'options' => $permissions);
+	$columns[] = array(	'name' => 'ID', 'property' => 'id', 'type' => 'text', 'width' => '5%', 'align' => 'left' );
+	$columns[] = array(	'name' => t(67, 'Title').' '.$lang_selector, 'property'	=> 'dictionary|title', 'type' => 'text', 'width' => '53%', 	'align' => 'left'	);
+	$columns[] = array(	'name' => t(73, 'Children'),	'property'	=> 'children', 	'type'	=> 'count', 	'width' => '5%', 	'align' => 'center'	);
+	$columns[] = array(	'name' => t(79, 'Template'),	'property'	=> 'template_title', 	'type'	=> 'text', 	    'width' => '12%', 	'align' => 'left'	);
+	$columns[] = array(	'name' => t(85, 'Date published'), 'property'	=> 'dates', 'type'	=> 'text', 		'width' => '10%', 	'align' => 'center'	);
+	$columns[] = array(	'name' => '<span title="'.t(283, 'Show in menus').'">'.t(76, 'Visible').'</span>', 'property'	=> 'visible', 'type'	=> 'boolean',	'width' => '4%', 	'align' => 'center'	);
+	$columns[] = array(	'name' => t(364, 'Access'), 'property'	=> 'access',	'type'	=> 'option', 	'width' => '4%', 	'align' => 'center', 	'options' => $access);
+	$columns[] = array(	'name' => t(68, 'Status'), 'property'	=> 'permission',	'type'	=> 'option', 	'width' => '7%', 	'align' => 'center', 	'options' => $permissions);
 	
 	$navitree->setColumns($columns);
 
@@ -541,7 +543,6 @@ function structure_tree($hierarchy)
 
 function structure_form($item)
 {
-	global $user;
 	global $DB;
 	global $website;
 	global $layout;
@@ -952,7 +953,7 @@ function structure_form($item)
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(75, 'Path').'</label>',
             $naviforms->textfield('action-masked-redirect-'.$lang_code, $item->dictionary[$lang_code]['action-masked-redirect']),
             '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.
-                t(689, "Load the content of an internal path without changing the browser URL.").
+                '<span>'.t(689, "Load the content of an internal path without changing the browser URL").'</span>'.
             '</div>'
         ));
 
@@ -1343,14 +1344,17 @@ function structure_form($item)
 				});
 		');		
 		
-		$navibars->add_tab_content_panel('<img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(352, 'Votes').' ('.t(356, 'last 90 days').')', 
-										 array(	'<div id="navigate-panel-web-votes-graph" style=" height: 171px; width: 385px; "></div>' ), 
-										 'navigate-panel-web-votes', '385px', '200px');												 
+		$navibars->add_tab_content_panel(
+		    '<img src="img/icons/silk/chart_line.png" align="absmiddle" /> '.t(352, 'Votes').' ('.t(356, 'last 90 days').')',
+			array(	'<div id="navigate-panel-web-votes-graph" style=" height: 171px; width: 385px; "></div>' ),
+			'navigate-panel-web-votes',
+            '385px',
+            '200px'
+        );
 
 		$votes_by_date = webuser_vote::object_votes_by_date('structure', $item->id, 90);
 
-		$layout->add_script('
-								
+		$layout->add_script('								
 				var plot = $.plot(
 					$("#navigate-panel-web-votes-graph"), 
 					['.json_encode($votes_by_date).'], 
@@ -1402,11 +1406,8 @@ function structure_form($item)
 							interactive: true
 						}
 					});
-
-				});					
-		
+				});							
 		');
-		
 	}
 
     $elements = $item->elements();

@@ -625,9 +625,20 @@ function run()
 						
 			$rows = $DB->result();
             $total = $DB->foundRows();
-            echo json_encode(array('items' => $rows, 'total_count' => $total));
-							  
-			core_terminate();
+
+            if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
+            {
+                echo json_encode(array('items' => $rows, 'totalCount' => $total));
+            }
+            else if($_REQUEST['format'] == 'autocomplete')
+            {
+                $out = array();
+                foreach($rows as $row)
+                    $out[] = array("id" => $row->id, "label" => $row->text, "value" => $row->text);
+                echo json_encode($out);
+            }
+
+            core_terminate();
 			break;
 
         case 'json_find_item':
@@ -2333,7 +2344,6 @@ function items_form($item)
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
-	        cache: true,
 	        url: "lib/packages/items/items.js?r='.$current_version->revision.'",
 	        cache: true,
 	        complete: function()
