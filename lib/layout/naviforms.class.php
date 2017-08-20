@@ -169,7 +169,6 @@ class naviforms
                 $thousands_separator = "";
         }
 
-
         if(!empty($width))
             $extra .= ' style=" width: '.$width.';"';
 

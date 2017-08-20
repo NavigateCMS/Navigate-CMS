@@ -414,7 +414,7 @@ function core_decimal2string($value, $decimals = 2)
     global $website;
 
     // if the decimal part is 0, remove it for cleaner presentation
-    $value = sprintf("%G", $value);
+    $value = sprintf("%F", $value); // was %G
     if($value - intval($value) === 0)
         $decimals = 0;
 

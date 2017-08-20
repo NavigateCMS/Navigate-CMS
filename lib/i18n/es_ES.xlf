@@ -3665,6 +3665,21 @@
 				<target>Internacionalización</target>
 			</trans-unit>
 
+			<trans-unit id="731" approved="yes">
+				<source>Offer</source>
+				<target>Oferta</target>
+			</trans-unit>
+
+			<trans-unit id="732" approved="yes">
+				<source>Offer price</source>
+				<target>Precio en oferta</target>
+			</trans-unit>
+
+			<trans-unit id="733" approved="yes">
+				<source>Selling price</source>
+				<target>Precio de venta</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

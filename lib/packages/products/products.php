@@ -606,7 +606,7 @@ function run()
 			core_terminate();
 			break;
 
-		case 'json_find_user': // json find user by name request (for "moderator" autocomplete)
+		case 'json_find_user': // json find user by name request (for "moderator"/"author" autocomplete)
 			$DB->query('
 				SELECT id, username as text
 				  FROM nv_users
@@ -618,8 +618,19 @@ function run()
 						
 			$rows = $DB->result();
             $total = $DB->foundRows();
-            echo json_encode(array('items' => $rows, 'total_count' => $total));
-							  
+
+            if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
+            {
+                echo json_encode(array('items' => $rows, 'totalCount' => $total));
+            }
+            else if($_REQUEST['format'] == 'autocomplete')
+            {
+                $out = array();
+                foreach($rows as $row)
+                    $out[] = array("id" => $row->id, "label" => $row->text, "value" => $row->text);
+                echo json_encode($out);
+            }
+
 			core_terminate();
 			break;
 
@@ -1312,10 +1323,10 @@ function products_form($item)
 	if(empty($item->id))
         $item->author = $user->id;
 	$author_webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->author);	
-	$navibars->add_tab_content($naviforms->hidden('item-author', $item->author));
+	$navibars->add_tab_content($naviforms->hidden('product-author', $item->author));
 	$navibars->add_tab_content_row(array(
         '<label>'.t(266, 'Author').'</label>',
-		$naviforms->textfield('item-author-text', $author_webuser)
+		$naviforms->textfield('product-author-text', $author_webuser)
     ));
 
 	if($item->date_modified > 0)
@@ -2324,7 +2335,7 @@ function products_form($item)
     $navibars->add_tab_content_row(array(
         '<label>'.t(676, 'Base price').'</label>',
         $naviforms->decimalfield('product-base_price', $item->base_price, 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px'),
-        $naviforms->selectfield('product-base_price_currency', array_keys(product::currencies()), array_values(product::currencies()), $item->base_price_currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input")
+        $naviforms->selectfield('product-base_price_currency', array_keys(product::currencies()), array_values(product::currencies()), $item->base_price_currency, "navigate_products_currency_change();", false, array(), "width: 80px;", true, false, "select2-align-with-input")
     ));
 
     $navibars->add_tab_content_row(array(
@@ -2339,9 +2350,55 @@ function products_form($item)
         $naviforms->selectfield('product-cost_currency', array_keys(product::currencies()), array_values(product::currencies()), $item->cost_currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input")
     ));
 
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(731, 'Offer').'</label>',
+        $naviforms->checkbox('product-offer', ($item->offer_price > 0))
+    ));
 
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(732, 'Offer price').'</label>',
+            $naviforms->decimalfield('product-offer_price', $item->offer_price, 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px'),
+            '<span class="current_currency"></span>'
+        ),
+        'product_offer_price_wrapper',
+        'style="display: none;"'
+    );
 
-    $layout->add_script('	
+    $currencies = product::currencies();
+    $layout->add_script('
+        function navigate_products_currency_change()
+        {
+            var currencies = '.json_encode($currencies).';
+            $(".current_currency").html(currencies[$("#product-base_price_currency").val()]);
+        }
+    ');
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(702, 'Date begin').'</label>',
+            $naviforms->datefield('product-offer_begin_date', $item->offer_begin_date, true),
+        ),
+        'product_offer_begin_wrapper',
+        'style="display: none;"'
+    );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(703, 'Date end').'</label>',
+            $naviforms->datefield('product-offer_end_date', $item->offer_end_date, true),
+        ),
+        'product_offer_end_wrapper',
+        'style="display: none;"'
+    );
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(733, 'Selling price').'</label>',
+        $naviforms->decimalfield('product-selling_price', 0, 2, $user->decimal_separator, $user->thousands_separator, NULL, NULL, NULL, NULL, 'style="display: none;"'),
+        '<big><span id="product-selling_price-text"></span> <span class="current_currency"></span></big>'
+    ));
+
+    $layout->add_script('    	
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",

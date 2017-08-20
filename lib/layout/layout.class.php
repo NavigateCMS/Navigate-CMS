@@ -728,6 +728,7 @@ class layout
     public function navigate_additional_scripts()
     {
         global $website;
+        global $user;
 
         $this->add_script(' var NAVIGATE_DOWNLOAD = "'.NAVIGATE_DOWNLOAD.'"; ');
         $this->add_script(' var NAVIGATE_URL = "'.NAVIGATE_URL.'"; ');
@@ -806,6 +807,7 @@ class layout
         $this->add_script(' navigate["website_id"] = "'.$website->id.'";');
         $this->add_script(' navigate["session_id"] = "'.session_id().'";');
         $this->add_script(' navigate["word_separator"] = "'.$website->word_separator.'";');
+        $this->add_script(' navigate["decimal_separator"] = "'.value_or_default($user->decimal_separator, ".").'";');
     }
 	
 	public function navigate_notification($text, $isError=false, $sticky=false, $css_icon="")

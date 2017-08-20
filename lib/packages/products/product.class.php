@@ -53,10 +53,10 @@ class product
     public $tax_class;
     public $tax_value;
 
-    public $sale_begin_date;
-    public $sale_end_date;
-    public $sale_price;
-    public $sale_price_currency;
+    public $offer_begin_date;
+    public $offer_end_date;
+    public $offer_price;
+    public $offer_price_currency;
 
     // reserved for future use
     /*
@@ -152,14 +152,13 @@ class product
         $this->cost                 =  $main->cost;
         $this->cost_currency        =  $main->cost_currency;
 
+        $this->offer_price           =  $main->offer_price;
+        $this->offer_price_currency  =  $main->offer_price_currency;
+        $this->offer_begin_date      =  $main->offer_begin_date;
+        $this->offer_end_date        =  $main->offer_end_date;
+
         /*
-         * falten per afegir:
-
-        public $sale_begin_date;
-        public $sale_end_date;
-        public $sale_price;
-        public $sale_price_currency;
-
+         * future use
         public $options;
          */
     }
@@ -171,7 +170,7 @@ class product
 
 		$this->category			= intval($_REQUEST['category']);
 		$this->template			= $_REQUEST['template'];
-		$this->author			= intval($_REQUEST['item-author']);
+		$this->author			= intval($_REQUEST['product-author']);
 		$this->brand			= $_REQUEST['product-brand-id'];
 
 		if((!empty($this->brand) && !is_numeric($this->brand)) || $this->brand === 0)
@@ -284,6 +283,10 @@ class product
         $this->tax_value            =  core_string2decimal($_REQUEST['product-tax_value']);
         $this->cost                 =  core_string2decimal($_REQUEST['product-cost']);
         $this->cost_currency        =  $_REQUEST['product-cost_currency'];
+
+        $this->offer_price           =  core_string2decimal($_REQUEST['product-offer_price']);
+        $this->offer_begin_date      =  (empty($_REQUEST['product-offer_begin_date'])? '' : core_date2ts($_REQUEST['product-offer_begin_date']));
+        $this->offer_end_date        =  (empty($_REQUEST['product-offer_end_date'])? '' : core_date2ts($_REQUEST['product-offer_end_date']));
     }
 	
 	
@@ -392,7 +395,7 @@ class product
                 (id, website, category, type, template, author, brand,
                  date_to_display, date_published, date_unpublish, date_created, date_modified,
                  sku, barcode, base_price, base_price_currency, tax_class, tax_value, cost, cost_currency,
-                 sale_price, sale_price_currency, sale_begin_date, sale_end_date,
+                 offer_price, offer_begin_date, offer_end_date,
                  width, height, depth, size_unit, weight, weight_unit,
                  inventory, stock_available, 
                  options,
@@ -402,7 +405,7 @@ class product
                 (:id, :website, :category, :type, :template, :author, :brand,
                  :date_to_display, :date_published, :date_unpublish, :date_created, :date_modified,
                  :sku, :barcode, :base_price, :base_price_currency, :tax_class, :tax_value, :cost, :cost_currency,
-                 :sale_price, :sale_price_currency, :sale_begin_date, :sale_end_date,
+                 :offer_price, :offer_begin_date, :offer_end_date,
                  :width, :height, :depth, :size_unit, :weight, :weight_unit,
                  :inventory, :stock_available,
                  :options,
@@ -429,10 +432,9 @@ class product
                 ":tax_value" =>  value_or_default($this->tax_value, 0),
                 ":cost" =>  value_or_default($this->cost, 0),
                 ":cost_currency" =>  value_or_default($this->cost_currency, ""),
-                ":sale_price" => value_or_default($this->sale_price, 0),
-                ":sale_price_currency" =>  value_or_default($this->sale_price_currency, ""),
-                ":sale_begin_date" => intval($this->sale_begin_date),
-                ":sale_end_date" => intval($this->sale_end_date),
+                ":offer_price" => value_or_default($this->offer_price, 0),
+                ":offer_begin_date" => intval($this->offer_begin_date),
+                ":offer_end_date" => intval($this->offer_end_date),
                 ":width" => value_or_default($this->width, 0),
                 ":height" => value_or_default($this->height, 0),
                 ":depth" => value_or_default($this->depth, 0),
@@ -528,10 +530,9 @@ class product
                   tax_value = :tax_value,
                   cost = :cost,
                   cost_currency = :cost_currency,
-                  sale_price = :sale_price,
-                  sale_price_currency = :sale_price_currency,
-                  sale_begin_date = :sale_begin_date,
-                  sale_end_date = :sale_end_date,
+                  offer_price = :offer_price,
+                  offer_begin_date = :offer_begin_date,
+                  offer_end_date = :offer_end_date,
                   width = :width,
                   height = :height,
                   depth = :depth,
@@ -572,10 +573,9 @@ class product
                 ":tax_value" =>  value_or_default($this->tax_value, 0),
                 ":cost" =>  value_or_default($this->cost, 0),
                 ":cost_currency" =>  value_or_default($this->cost_currency, ""),
-                ":sale_price" => value_or_default($this->sale_price, 0),
-                ":sale_price_currency" => value_or_default($this->sale_price, ""),
-                ":sale_begin_date" => intval($this->sale_begin_date),
-                ":sale_end_date" => intval($this->sale_end_date),
+                ":offer_price" => value_or_default($this->offer_price, 0),
+                ":offer_begin_date" => intval($this->offer_begin_date),
+                ":offer_end_date" => intval($this->offer_end_date),
                 ":width" => value_or_default($this->width, 0),
                 ":height" => value_or_default($this->height, 0),
                 ":depth" => value_or_default($this->depth, 0),
@@ -801,14 +801,28 @@ class product
         return $weight_units;
     }
 
-    public static function currencies()
+    public static function currencies($value=NULL, $simple=true)
     {
+        $out = array();
+
         $currencies = array(
-            'euro' => '€',
-            'dollar' => '$'
+            'euro' => array('symbol' => '€', 'placement' => 'after'),
+            'dollar' => array('symbol' => '$', 'placement' => 'before')
         );
 
-        return $currencies;
+        $out = $currencies;
+
+        if($simple)
+        {
+            $out = array();
+            foreach($currencies as $key => $val)
+                $out[$key] = $val['symbol'];
+        }
+
+        if(!empty($value))
+            $out = $out[$value];
+
+        return $out;
     }
 
     public static function tax_classes()

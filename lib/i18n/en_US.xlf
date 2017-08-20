@@ -3664,6 +3664,21 @@
 				<target>Internacionalització</target>
 			</trans-unit>
 
+			<trans-unit id="731" approved="yes">
+				<source>Offer</source>
+				<target>Offer</target>
+			</trans-unit>
+
+			<trans-unit id="732" approved="yes">
+				<source>Offer price</source>
+				<target>Offer price</target>
+			</trans-unit>
+
+			<trans-unit id="733" approved="yes">
+				<source>Selling price</source>
+				<target>Selling price</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

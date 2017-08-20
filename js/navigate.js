@@ -2069,6 +2069,27 @@ function navigate_confirmation_dialog(ok_callback, content, title, ok_button, ca
     });
 }
 
+function navigate_string_to_decimal(value)
+{
+    // remove all characters except numbers, the negative symbol and the decimal character (defined by the current user)
+    var regex = new RegExp('[^0-9\-\\' + navigate["decimal_separator"] + ']', "g");
+    value = value.replace(regex, "");
+
+    // replace the user decimal character for the internal symbol: a dot .
+    var regex = new RegExp('\\' + navigate["decimal_separator"], "g");
+    value = value.replace(regex, ".");
+
+    value = parseFloat(value);
+
+    return value;
+}
+
+function navigate_decimal_to_string(value)
+{
+    value = value + "";
+    value = value.replace(/\./g, navigate["decimal_separator"]);
+    return value;
+}
 
 /**
  * https://gist.github.com/1255491
