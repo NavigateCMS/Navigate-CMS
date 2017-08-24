@@ -785,6 +785,29 @@ class product
         return $out;
     }
 
+    public function get_price($include_tax = true)
+    {
+        // TODO: calculate price based on price lists, current web user, etc.
+
+        // price is base_price + taxes
+        // except if the product is on sale, then is offer_price + taxes
+        $price = $this->base_price;
+        if(!empty($this->offer_price))
+        {
+            // check if the date is in the valid period of the offer
+            if(
+                (empty($this->offer_begin_date) || core_time() >= $this->offer_begin_date) &&
+                (empty($this->offer_end_date) || core_time() <= $this->offer_end_date)
+            )
+                $price = $this->offer_price;
+        }
+
+        if($include_tax && $this->tax_class == "custom")
+            $price += ($price / 100 * $this->tax_value);
+
+        return $price;
+    }
+
     public static function size_units()
     {
         $size_units = array(

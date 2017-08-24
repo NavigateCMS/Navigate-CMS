@@ -115,7 +115,6 @@ function nvweb_product($vars=array())
             else
                 $search_url = NVWEB_ABSOLUTE.'/nvtags?q=';
 
-            $ids = array();
             if(empty($vars['separator']))
                 $vars['separator'] = ' ';
 
@@ -208,20 +207,7 @@ function nvweb_product($vars=array())
             break;
 
         case 'price':
-            // price is base_price + taxes
-            // except if the product is on sale, then is offer_price + taxes
-            $price = $product->base_price;
-            if(!empty($product->offer_price))
-            {
-                // check if the date is in the valid period of the offer
-                if(
-                    (empty($product->offer_begin_date) || core_time() >= $product->offer_begin_date) &&
-                    (empty($product->offer_end_date) || core_time() <= $product->offer_end_date)
-                )
-                    $price = $product->offer_price;
-            }
-            if($product->tax_class == "custom")
-                $price += ($price / 100 * $product->tax_value);
+            $price = $product->get_price();
 
             switch(@$vars['return'])
             {
@@ -251,22 +237,12 @@ function nvweb_product($vars=array())
             // price is base_price + taxes
             // by default, return empty if old_price = current_price
             // current price may be different if the product is on sale
+
+            $current_price = $product->get_price();
+
             $old_price = $product->base_price;
-            $current_price = $old_price;
-            if(!empty($product->offer_price))
-            {
-                // check if the date is in the valid period of the offer
-                if(
-                    (empty($product->offer_begin_date) || core_time() >= $product->offer_begin_date) &&
-                    (empty($product->offer_end_date) || core_time() <= $product->offer_end_date)
-                )
-                    $current_price = $product->offer_price;
-            }
             if($product->tax_class == "custom")
-            {
                 $old_price += ($old_price / 100 * $product->tax_value);
-                $current_price += ($current_price / 100 * $product->tax_value);
-            }
 
             if($old_price == $current_price)
             {
@@ -297,6 +273,47 @@ function nvweb_product($vars=array())
                 }
             }
 
+            break;
+
+
+        case 'tax':
+            $product_price = $product->get_price(false);
+
+            switch($vars['return'])
+            {
+                case 'amount':
+                    if($product->tax_class == 'custom')
+                    {
+                        $tax_amount = $product_price * $product->tax_value / 100;
+                        $currency = product::currencies($product->base_price_currency, false);
+                        if ($currency['placement'] == 'after')
+                            $out = core_decimal2string($tax_amount) . ' ' . $currency['symbol'];
+                        else
+                            $out = $currency['symbol'] . ' ' . core_decimal2string($tax_amount);
+                    }
+                    else
+                        $out = '';
+                    break;
+
+                case 'value':
+                default:
+                    // percentage / free / included
+                    switch($product->tax_class)
+                    {
+                        case 'free':
+                            $out = @value_or_default($theme->t($vars['tax_free']), '0 %');
+                            break;
+
+                        case 'included':
+                            $out = @value_or_default($theme->t($vars['tax_included']), '');
+                            break;
+
+                        case 'custom':
+                        default:
+                            $out = core_decimal2string($product->tax_value) . ' %';
+                            break;
+                    }
+            }
             break;
 		
 		case 'section':

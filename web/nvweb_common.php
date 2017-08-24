@@ -11,6 +11,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary_history.cl
 require_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/products/product.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');

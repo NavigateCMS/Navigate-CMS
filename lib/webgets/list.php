@@ -5,6 +5,7 @@ require_once(NAVIGATE_PATH.'/lib/webgets/content.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/gallery.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/votes.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/blocks.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/product.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed_parser.class.php');
 
@@ -177,6 +178,8 @@ function nvweb_list($vars=array())
         {
             if($vars['source']=='structure' || $vars['source']=='category')
                 $exclude = 'AND s.id NOT IN('.implode(',', $exclude).')';
+            else if($vars['source']=='product')
+                $exclude = 'AND p.id NOT IN('.implode(',', $exclude).')';
             else // item
                 $exclude = 'AND i.id NOT IN('.implode(',', $exclude).')';
         }
@@ -317,7 +320,6 @@ function nvweb_list($vars=array())
 
     $rs = NULL;
 
-    // TODO: try to optimize nvlist generation to use less memory and increase the maximum number of items
     if(($vars['source']=='structure' || $vars['source']=='category') && !empty($categories))
 	{
         $orderby = str_replace('i.', 's.', $orderby);
@@ -496,6 +498,80 @@ function nvweb_list($vars=array())
         else    // block group block empty, just return without content
             return "";
     }
+    else if($vars['source']=='product')
+    {
+        $filters = '';
+        if(!empty($vars['filter']))
+            $filters = nvweb_list_parse_filters($vars['filter'], 'products');
+
+        // reuse structure.access permission
+        $access_extra_items = str_replace('s.', 'p.', $access_extra);
+
+        $embedded = ($vars['embedded']=='true'? '1' : '0');
+
+        $templates = "";
+        if(!empty($vars['templates']))
+        {
+            if(strpos($vars['templates'], '$')===0)
+                $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            else
+                $templates = explode(",", $vars['templates']);
+
+            $templates = array_filter($templates);
+            if($embedded=='1')
+                $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+            else
+                $templates = ' AND p.template IN ("'.implode('","', $templates).'")';
+        }
+
+        $columns_extra = '';
+        if($vars['order'] == 'comments')
+        {
+            // we need to retrieve the number of comments to apply the order by clause
+            $columns_extra = ', ( SELECT COUNT(p.id) 
+                                    FROM nv_comments c 
+                                    WHERE   c.object_type = "product" AND 
+                                            p.id = c.object_id AND 
+                                            c.website = p.website AND 
+                                            c.status = 0
+                                ) AS comments_published';
+        }
+
+        // default source for retrieving items
+        $query = '
+			SELECT SQL_CALC_FOUND_ROWS p.id, p.permission, p.date_published, p.date_unpublish,
+                    p.date_to_display, COALESCE(NULLIF(p.date_to_display, 0), p.date_created) as pdate,
+                    d.text as title, p.position as position, s.position '.$columns_extra.'
+			  FROM nv_products p, nv_structure s, nv_webdictionary d			          
+			 WHERE p.category IN('.implode(",", $categories).')
+			   AND p.website = '.$website->id.'
+			   AND p.permission <= '.$permission.'
+			   AND (p.date_published = 0 OR p.date_published < '.core_time().')
+			   AND (p.date_unpublish = 0 OR p.date_unpublish > '.core_time().')
+			   AND s.id = p.category
+			   AND (s.date_published = 0 OR s.date_published < '.core_time().')
+			   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+			   AND s.permission <= '.$permission.'
+			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
+			   AND (p.access = 0 OR p.access = '.$access.$access_extra_items.')
+               AND d.website = p.website
+			   AND d.node_type = "product"
+			   AND d.subtype = "title"
+			   AND d.node_id = p.id
+			   AND d.lang = '.protect($current['lang']).'
+             '.$filters.'
+             '.$search.'
+		     '.$templates.'
+			 '.$exclude.'
+			 '.$orderby.'
+			 LIMIT '.$vars['items'].'
+			OFFSET '.$offset;
+
+        $DB->query($query);
+
+        $rs = $DB->result();
+        $total = $DB->foundRows();
+    }
     else if($vars['source']=='gallery')
     {
         if(!isset($vars['nvlist_parent_type']))
@@ -634,9 +710,7 @@ function nvweb_list($vars=array())
     {
         /*
          * TO DO: design decision ... lists should show items from published categories which has unpublished parent?
-         *
          * Navigate CMS 1.6.7: NO
-         *
 
         // we have to check all website UNPUBLISHED categories to keep the list query efficient
         // there are some cases:
@@ -688,7 +762,13 @@ function nvweb_list($vars=array())
         if($vars['order'] == 'comments')
         {
             // we need to retrieve the number of comments to apply the order by clause
-            $columns_extra = ', (SELECT COUNT(c.id) FROM nv_comments c WHERE i.id = c.item AND c.website = i.website AND c.status = 0) AS comments_published';
+            $columns_extra = ', (   SELECT COUNT(c.id) 
+                                    FROM nv_comments c 
+                                    WHERE c.object_type = "item" AND 
+                                          i.id = c.object_id AND 
+                                          c.website = i.website AND 
+                                          c.status = 0
+                                 ) AS comments_published';
         }
 
 		// default source for retrieving items
@@ -820,6 +900,23 @@ function nvweb_list($vars=array())
 
             case 'gallery':
                 $item = $rs[$i];
+                break;
+
+            case 'product':
+                $item = new product();
+                if(!empty($rs[$i]->id)) // custom_source mode may return empty IDs
+                {
+                    $item->load($rs[$i]->id);
+                    // if the product comes from a custom source, save the original query result
+                    // this allows getting a special field without extra work ;)
+                    $item->_query = $rs[$i];
+                }
+                else
+                {
+                    // for custom_source mode without product->id information,
+                    // just return the whole object returned (to be used with "query" source, for example)
+                    $item = $rs[$i];
+                }
                 break;
 
             case 'element':
@@ -1479,6 +1576,197 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 									 alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />
                             </a>';
                     break;
+            }
+            break;
+
+        case 'product':
+
+            switch($tag['attributes']['value'])
+            {
+                case 'id':
+                    $out = $item->id;
+                    break;
+
+                case 'slug':
+                    $lang = $current['lang'];
+
+                    if(!empty($tag['attributes']['lang']))
+                        $lang = $tag['attributes']['lang'];
+
+                    $out = $item->dictionary[$lang]['title'];
+
+                    // remove spaces, special chars, etc.
+                    $out = core_string_clean($out);
+                    $out = slug($out);
+                    break;
+
+                case 'title':
+                    $lang = $current['lang'];
+
+                    if(!empty($tag['attributes']['lang']))
+                        $lang = $tag['attributes']['lang'];
+
+                    $out = $item->dictionary[$lang]['title'];
+
+                    if(!empty($tag['attributes']['length']))
+                        $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $tag['attributes']['length']);
+                    break;
+
+                case 'author':
+                    if(!empty($item->author))
+                    {
+                        $nu = new user();
+                        $nu->load($item->author);
+                        $out = $nu->username;
+                        unset($nu);
+                    }
+
+                    if(empty($out))
+                        $out = $website->name;
+                    break;
+
+                case 'date':
+                    if(!empty($tag['attributes']['format'])) // custom date format
+                        $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
+                    else
+                        $out = date($website->date_format, $item->date_to_display);
+                    break;
+
+                case 'date_created':
+                    if(!empty($tag['attributes']['format'])) // custom date format
+                        $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_created);
+                    else
+                        $out = date($website->date_format, $item->date_created);
+                    break;
+
+                case 'content':
+                case 'section':
+                    $section = $tag['attributes']['section'];
+                    if(empty($section)) $section = 'main';
+                    $out = $item->dictionary[$current['lang']]['section-'.$section];
+
+                    if(!empty($tag['attributes']['length']))
+                    {
+                        $allowed_tags = '';
+                        if(!empty($tag['attributes']['allowed_tags']))
+                            $allowed_tags = explode(',', $tag['attributes']['allowed_tags']);
+                        $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $allowed_tags);
+                    }
+                    break;
+
+                case 'comments':
+                    if(method_exists($item, 'comments_count'))
+                        $out = $item->comments_count();
+                    else
+                        $out = nvweb_content_comments_count($item->id, "product");
+                    break;
+
+                case 'gallery':
+                    $params = array('product' => $item->id);
+                    $params = array_merge($params, $tag['attributes']);
+                    $out = nvweb_gallery($params);
+                    break;
+
+                case 'image':
+                case 'photo':
+                    $photo = @array_shift(array_keys($item->galleries[0]));
+                    if(empty($photo))
+                        $out = NVWEB_OBJECT . '?type=transparent';
+                    else
+                    {
+                        $out = NVWEB_OBJECT . '?wid='.$website->id.'&id='.$photo.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
+                    }
+                    break;
+
+                case 'url':
+                case 'path':
+                    $path = $item->paths[$current['lang']];
+                    if(empty($path))
+                        $path = '/node/'.$item->id;
+                    $out = nvweb_prepare_link($path);
+                    break;
+
+                case 'tags':
+                    // pass all nvlist tag parameters to the content nvweb, but some attribute/values take preference
+                    $nvweb_parameters = array_replace(
+                        $tag['attributes'],
+                        array(
+                            'mode' => 'tags',
+                            'id' => $item->id,
+                            'object_type' => 'product'
+                        )
+                    );
+                    $out = nvweb_content($nvweb_parameters);
+                    break;
+
+                case 'score':
+                    $out = nvweb_votes_calc($item, $tag['attributes']['round'], $tag['attributes']['half'], $tag['attributes']['min'], $tag['attributes']['max']);
+                    break;
+
+                case 'votes':
+                    $out = intval($item->votes);
+                    break;
+
+                case 'views':
+                    $out = intval($item->views);
+                    break;
+
+                case 'property':
+                    // pass all nvlist tag parameters to properties nvweb, but some attribute/values take preference
+                    $nvweb_properties_parameters = array_replace(
+                        $tag['attributes'],
+                        array(
+                            'mode'		=>	"product",
+                            'id'		=>	$item->id,
+                            'template'	=>	$item->template,
+                            'property'	=> 	(!empty($tag['attributes']['property'])? $tag['attributes']['property'] : $tag['attributes']['name'])
+                        )
+                    );
+
+                    $out = nvweb_properties($nvweb_properties_parameters);
+                    break;
+
+                case 'function':
+                    $function = @$tag['attributes']['function'];
+                    if(!empty($function) && function_exists($function))
+                        $out = call_user_func($function, array('product' => $item, 'vars' => $tag['attributes']));
+                    break;
+
+                // specific "product" nvlist values
+                case 'sku':
+                    $out = $item->sku;
+                    break;
+
+                case 'barcode':
+                    $out = $item->barcode;
+                    break;
+
+                case 'size':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'size', 'pid' => $item->id)));
+                    break;
+
+                case 'weight':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'weight', 'pid' => $item->id)));
+                    break;
+
+                case 'stock':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'stock', 'pid' => $item->id)));
+                    break;
+
+                case 'price':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'price', 'pid' => $item->id)));
+                    break;
+
+                case 'old_price':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'old_price', 'pid' => $item->id)));
+                    break;
+
+                case 'tax':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'tax', 'pid' => $item->id)));
+                    break;
+
+                default:
+                    // maybe a special tag not related to a source? (unimplemented)
             }
             break;
 

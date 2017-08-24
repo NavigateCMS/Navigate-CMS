@@ -762,7 +762,7 @@ class property
             // the properties are set in the theme definition
             $e_properties = $theme->webusers['properties'];
         }
-        else // item, structure, block, comment
+        else // item, structure, block, comment, product
         {
 		    // load properties associated with the element type
 		    $e_properties = property::elements($template, $object_type);

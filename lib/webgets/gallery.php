@@ -39,10 +39,29 @@ function nvweb_gallery($vars=array())
             $item->load($vars['item']);
         }
 	}
+	else if(!empty($vars['product']))
+	{
+        if(is_object($vars['product']))
+        {
+            $item = $vars['product'];
+        }
+        else if(is_numeric($vars['product']))
+        {
+            $item = new product();
+            $item->load($vars['product']);
+        }
+	}
 	else if($current['type']=='item')
 	{
 		// check publishing is enabled
 		$enabled = nvweb_object_enabled($current['object']);				
+		if($enabled || (($_REQUEST['preview']=='true' && $current['navigate_session']==1)))
+			$item = $current['object'];
+	}
+	else if($current['type']=='product')
+	{
+		// check publishing is enabled
+		$enabled = nvweb_object_enabled($current['object']);
 		if($enabled || (($_REQUEST['preview']=='true' && $current['navigate_session']==1)))
 			$item = $current['object'];
 	}

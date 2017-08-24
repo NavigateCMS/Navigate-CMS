@@ -9,7 +9,6 @@ function nvweb_properties($vars=array())
 	global $current;
 	global $cache;
 	global $properties;
-    global $webuser;
 
 	$out = '';
 
@@ -28,6 +27,7 @@ function nvweb_properties($vars=array())
             if(!empty($wuproperty))
                 $out = nvweb_properties_render($wuproperty, $vars);
             break;
+
 
         case 'element':
 		case 'item': // deprecated, may be removed in a future version
@@ -238,6 +238,27 @@ function nvweb_properties($vars=array())
                 }
             }
             break;
+
+        case 'product':
+            if(!isset($properties['product-'.$vars['id']]))
+                $properties['product-'.$vars['id']] = property::load_properties("product", $vars['template'], 'product', $vars['id']);
+
+            $current_properties	= $properties['product-'.$vars['id']];
+
+            // now we find the property requested
+            if(!is_array($current_properties)) $current_properties = array();
+            foreach($current_properties as $property)
+            {
+                if($property->id == $vars['property'] || $property->name == $vars['property'])
+                {
+                    if($vars['return']=='object')
+                        $out = $property;
+                    else
+                        $out = nvweb_properties_render($property, $vars);
+                    break;
+                }
+            }
+            break;
 		
 		default:
             // find the property source by its name
@@ -253,6 +274,13 @@ function nvweb_properties($vars=array())
 					$properties['item-'.$current['object']->id] = property::load_properties("item", $current['object']->template, 'item', $current['object']->id);
 
                 $current_properties = array_merge($current_properties, $properties['item-'.$current['object']->id]);
+			}
+			else if($current['type']=='product')
+			{
+				if(!isset($properties['product-'.$current['object']->id]))
+					$properties['product-'.$current['object']->id] = property::load_properties("product", $current['object']->template, 'product', $current['object']->id);
+
+                $current_properties = array_merge($current_properties, $properties['product-'.$current['object']->id]);
 			}
 			else if($current['type']=='structure')
 			{
@@ -273,10 +301,6 @@ function nvweb_properties($vars=array())
 
                 if(!empty($properties['item-'.$structure_items[0]->id]))
                     $current_properties = array_merge($current_properties, $properties['item-'.$structure_items[0]->id]);
-			}
-			else if($current['type']=='article')
-			{
-				// TODO
 			}
             else
             {

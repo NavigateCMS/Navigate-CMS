@@ -415,8 +415,13 @@ function core_decimal2string($value, $decimals = 2)
 
     // if the decimal part is 0, remove it for cleaner presentation
     $value = sprintf("%F", $value); // was %G
-    if($value - intval($value) === 0)
+
+    if( $value - intval($value) === 0 ||
+        $value - intval($value) === 0.0
+    )
+    {
         $decimals = 0;
+    }
 
     if(!empty($user) && isset($user->decimal_separator))
         $value = number_format($value, $decimals, $user->decimal_separator, $user->thousands_separator);

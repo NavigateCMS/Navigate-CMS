@@ -45,14 +45,6 @@ function run()
 
                     $data = $DB->result();
 
-                    if(!empty($shipping_method_id))
-                    {
-                        foreach($shipping_method->rates as $rate)
-                        {
-                            // TODO: AUTOSELECT REGIONS FROM RETURNED DATA
-                        }
-                    }
-
                     echo json_encode($data);
                     break;
 					

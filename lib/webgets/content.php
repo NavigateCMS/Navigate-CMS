@@ -127,15 +127,19 @@ function nvweb_content($vars=array())
             if(!empty($vars['class']))
                 $class = $vars['class'];
 
-
             if(!empty($vars['id']))
             {
-                $itm = new item();
+                $object_type = value_or_default($vars['object_type'], "item");
+                if($object_type == "product")
+                    $itm = new product();
+                else
+                    $itm = new item();
+
                 $itm->load($vars['id']);
                 $enabled = nvweb_object_enabled($itm);
                 if($enabled)
                 {
-                    $texts = webdictionary::load_element_strings('item', $itm->id);
+                    $texts = webdictionary::load_element_strings($object_type, $itm->id);
                     $itags = explode(',', $texts[$current['lang']]['tags']);
                     if(!empty($itags))
                     {
@@ -155,6 +159,25 @@ function nvweb_content($vars=array())
                 if($enabled)
                 {
                     $texts = webdictionary::load_element_strings('item', $current['object']->id);
+                    $itags = explode(',', $texts[$current['lang']]['tags']);
+                    if(!empty($itags))
+                    {
+                        for($i=0; $i < count($itags); $i++)
+                        {
+                            if(empty($itags[$i])) continue;
+                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                        }
+                    }
+                }
+            }
+            else if($current['type']=='product')
+            {
+                // check publishing is enabled
+                $enabled = nvweb_object_enabled($current['object']);
+
+                if($enabled)
+                {
+                    $texts = webdictionary::load_element_strings('product', $current['object']->id);
                     $itags = explode(',', $texts[$current['lang']]['tags']);
                     if(!empty($itags))
                     {
@@ -279,23 +302,23 @@ function nvweb_content($vars=array())
 	return $out;
 }
 
-function nvweb_content_comments_count($object_id = NULL)
+function nvweb_content_comments_count($object_id = NULL, $object_type = "item")
 {
 	global $DB;
 	global $website;
 	global $current;
 
     $element = $current['object'];
-    if($current['type']=='structure')
+    if($current['type']=='structure' && $object_type == "item")
         $element = $element->elements(0); // item = structure->elements(first)
 
 	if(empty($object_id))
 		$object_id = $element->id;
-	
+
 	$DB->query('SELECT COUNT(*) as total
 				  FROM nv_comments
 				 WHERE website = '.protect($website->id).'
-				   AND object_type = "item"
+				   AND object_type = "'.$object_type.'"
 				   AND object_id = '.protect($object_id).'
 				   AND status = 0'
 				);
