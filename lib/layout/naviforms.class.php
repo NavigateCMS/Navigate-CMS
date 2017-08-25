@@ -729,7 +729,7 @@ class naviforms
                             $("#'.$name.'").parent().find("> .mce-tinymce").css("opacity", 1);
                         }
                     });
-                    
+                                        
                     // deprecated, but the only way we found to activate the button on init
 	                tinyMCE.get("'.$name.'").controlManager.setActive("magicline", true);
 	                	                

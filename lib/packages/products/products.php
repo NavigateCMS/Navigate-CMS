@@ -1880,6 +1880,12 @@ function products_form($item)
 				}, 500);
 								
 				navigate_products_sku_check($("#product-sku"));
+				
+                $("#date_published").trigger("blur"); // force check on load
+                $("#product-tax_class").trigger("change");
+                $("#product-offer").trigger("change");
+                navigate_products_currency_change();
+                $("#product-base_price").trigger("change");
 			};
 		');	
 		
