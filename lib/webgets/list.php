@@ -26,9 +26,9 @@ function nvweb_list($vars=array())
     $categories = array();
     $exclude = '';
 
-    if($current['type']=='item')
+    if(in_array($current['type'], array('item', 'product')))
 	    $categories = array($current['object']->category);
-    else
+    else if($current['type'] == 'structure')
         $categories = array($current['object']->id);
 
 	if(isset($vars['categories']))
@@ -229,22 +229,31 @@ function nvweb_list($vars=array())
         $search = array();
         $search[] = ' 1=1 ';
 
+        $object_alias = "i";
+        $object_type = "item";
+
+        if($vars['source'] == "product")
+        {
+            $object_alias = "p";
+            $object_type = "product";
+        }
+
         foreach ($search_what as $what)
         {
             if (substr($what, 0, 1) == '-')
             {
                 $search[] = '(
-                                i.id NOT IN (
+                                '.$object_alias.'.id NOT IN (
                                     SELECT search_nwdi.node_id
                                     FROM nv_webdictionary search_nwdi
-                                    WHERE search_nwdi.node_type IN ("item", "property-item") AND
+                                    WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
                                           search_nwdi.website = ' . protect($website->id) . ' AND
                                           search_nwdi.text LIKE ' . protect('%' . substr($what, 1) . '%') .
                             '    ) 
-                                 AND i.id NOT IN( 
+                                 AND '.$object_alias.'.id NOT IN( 
                                     SELECT search_npi.node_id
                                      FROM   nv_properties_items search_npi 
-                                     WHERE  search_npi.element = "item" AND 
+                                     WHERE  search_npi.element = "'.$object_type.'" AND 
                                             search_npi.website = ' . protect($website->id) . ' AND
                                             search_npi.value LIKE ' . protect('%' . substr($what, 1) . '%') . '
                                  )
@@ -253,17 +262,17 @@ function nvweb_list($vars=array())
             else
             {
                 $search[] = '(
-                                i.id IN (
+                                '.$object_alias.'.id IN (
                                     SELECT search_nwdi.node_id
                                     FROM nv_webdictionary search_nwdi
-                                    WHERE search_nwdi.node_type IN ("item", "property-item") AND
+                                    WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
                                           search_nwdi.website = ' . protect($website->id) . ' AND
                                           search_nwdi.text LIKE ' . protect('%' . $what . '%') .
                             '    )
-                                 OR i.id IN( 
+                                 OR '.$object_alias.'.id IN( 
                                     SELECT  search_npi.node_id
                                      FROM   nv_properties_items search_npi
-                                     WHERE  search_npi.element = "item" AND 
+                                     WHERE  search_npi.element = "'.$object_type.'" AND 
                                             search_npi.website = ' . protect($website->id) . ' AND
                                             search_npi.value LIKE ' . protect('%' . $what . '%') . '
                                 )
@@ -274,8 +283,7 @@ function nvweb_list($vars=array())
         $search = ' AND ( ' . implode(' AND ', $search) . ' ) ';
     }
 
-
-	// retrieve entries
+	// RETRIEVE OBJECTS
 
     // calculate the offset of the first element to retrieve
     // Warning: the paginator applies on all paginated lists on a page (so right now there can only be one in a page)
@@ -339,7 +347,6 @@ function nvweb_list($vars=array())
 	        $templates = array_filter($templates);
 			$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
         }
-
 
 		$DB->query('
 			SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
