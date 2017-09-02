@@ -323,6 +323,8 @@ function orders_form($object)
         )
     );
 
+    $object->send_customer_notification();
+
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;</label>',
@@ -777,4 +779,5 @@ function orders_form($object)
 
 	return $navibars->generate();
 }
+
 ?>

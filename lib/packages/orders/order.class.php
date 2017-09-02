@@ -157,7 +157,7 @@ class order
 
         $this->webuser = intval($_REQUEST['webuser']);
 
-        // TODO: save order lines new position
+        // TODO: save new position for order lines
         // TODO: allow order lines changes (modify, add, remove...)
 
         $this->subtotal_amount = core_string2decimal($_REQUEST['subtotal_amount']);
@@ -194,7 +194,6 @@ class order
         $this->billing_address->phone = trim($_REQUEST['billing_address-phone']);
         $this->billing_address->email = trim($_REQUEST['billing_address-email']);
     }
-
 
     public function save()
     {
@@ -346,20 +345,78 @@ class order
         if(!$ok)
             throw new Exception($DB->get_last_error());
 
+        if($this->notify_customer)
+            $this->send_customer_notification();
+
         return true;
     }
 
-    public static function status($state=NULL)
+    public function send_customer_notification()
     {
+        global $website;
+        global $lang;
+
+        $customer = new webuser();
+        $customer->load($this->webuser);
+
+        $email_lang = $website->languages_published[0];
+        if(in_array($customer->language, $website->languages_published))
+            $email_lang = $customer->language;
+
+        $email_lang = 'es';
+
+        $dictionary = new language();
+        if($lang->code == $email_lang)
+            $dictionary = $lang; // already loaded!
+        else
+            $dictionary->load($email_lang);
+
+        $message = navigate_compose_email(
+            array(
+                array(
+                    'title'   => $dictionary->t(177,"Website"),
+                    'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+                ),
+                array(
+                    'title'   => $dictionary->t(734, "Order"),
+                    'content' => $this->reference . '<br /><small>'.core_ts2date($this->date_created, true).'</small>'
+                ),
+                array(
+                    'title'   => $dictionary->t(68, "Status"),
+                    'content' => order::status($this->status, $dictionary) . '<br /><small>'.core_ts2date($this->date_updated).'</small>'
+                ),
+                array(
+                    'footer' => '<a href="' . $website->absolute_path() . $website->homepage() . '" style="text-decoration: none;">&#128712;</a> ' .
+                        $dictionary->t(735, "For any complaint or inquiry, please contact us.")
+                )
+            )
+        );
+
+        navigate_send_email(
+            $dictionary->t(734, "Order") . ' #' . $this->reference.' — ' . order::status($this->status, $dictionary),
+            $message,
+            $customer->email,
+            NULL,
+            false
+        );
+
+    }
+
+    public static function status($state=NULL, $dictionary=NULL)
+    {
+        global $lang;
+        if(empty($dictionary))
+            $dictionary = $lang;
+
         $status = array(
-            "payment_pending" => t(709, "Payment pending"),
-            "pending" => t(710, "Pending"),
-            "processing" => t(711, "Processing"),
-            "sent" => t(712, "Sent"),
-            "completed" => t(713, "Completed"),
-            "cancelled" => t(714, "Cancelled"),
-            "refunded" => t(723, "Refunded"),
-            "contact_us" => t(715, "Contact us")
+            "payment_pending" => $dictionary->t(709, "Payment pending"),
+            "pending" => $dictionary->t(710, "Pending"),
+            "processing" => $dictionary->t(711, "Processing"),
+            "sent" => $dictionary->t(712, "Sent"),
+            "completed" => $dictionary->t(713, "Completed"),
+            "cancelled" => $dictionary->t(714, "Cancelled"),
+            "refunded" => $dictionary->t(723, "Refunded"),
+            "contact_us" => $dictionary->t(715, "Contact us")
         );
 
         if(!empty($state))
