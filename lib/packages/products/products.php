@@ -36,6 +36,38 @@ function run()
 					echo json_encode(true);
 					break;
 
+                case 'products_by_tag':
+                    $tag = $_REQUEST['tag'];
+                    $lang = $_REQUEST['lang'];
+
+                    $DB->query('
+                        SELECT p.id, p.access, p.date_created AS date, d.text as title                               
+                               FROM nv_products p
+                          LEFT JOIN nv_webdictionary d
+                                     ON p.id = d.node_id
+                                    AND d.node_type = "product"
+                                    AND d.subtype = "title"
+                                    AND d.lang = '.protect($lang).'
+                                    AND d.website = '.$website->id.'
+                            WHERE p.id IN (
+                                SELECT node_id FROM nv_webdictionary
+                                 WHERE website = ' . $website->id . '
+                                   AND node_type = "product"
+                                   AND subtype = "tags"
+                                   AND lang = ' . protect($lang) . '
+                                   AND FIND_IN_SET('.protect($tag).', text) > 0
+                            )
+                        ORDER BY p.id DESC
+                    ');
+
+                    $rs = $DB->result();
+
+                    for($r=0; $r < count($rs); $r++)
+                        $rs[$r]->date = core_ts2date($rs[$r]->date);
+
+                    echo json_encode($rs);
+                    break;
+
 				default: // list or search
 					// translation of request search & order fields
 					switch($_REQUEST['searchField'])
@@ -897,6 +929,10 @@ function run()
 			core_terminate();
 			break;
 
+        case 'labels':
+            $out = products_labels_form();
+            break;
+
         case 'list':
 		default:			
 			$out = products_list();
@@ -915,6 +951,12 @@ function products_list()
 	$navitable = new navitable("products_list");
 	
 	$navibars->title(t(25, 'Products'));
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid=products&act=labels"><img height="16" align="absmiddle" width="16" src="img/icons/silk/tag_yellow.png"> '.t(265, 'Labels').'</a>',
+        )
+    );
 
 	$navibars->add_actions(
         array(
@@ -2503,6 +2545,112 @@ function products_order($category)
     $out[] = $layout->generate();
 
     return implode("\n", $out);
+}
+
+function products_labels_form()
+{
+    global $website;
+    global $layout;
+
+    $navibars = new navibars();
+
+    $navibars->title(t(25, 'Products').' / '.t(265, 'Labels'));
+
+    $navibars->add_actions(
+        array(
+            '<a href="?fid=products&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/tag_purple.png"> '.t(22, 'Products').'</a>'
+        )
+    );
+
+    $navibars->form();
+
+    foreach($website->languages() as $lang => $lang_name)
+    {
+        // retrieve ALL tags for the current language
+        $labels = nvweb_tags_retrieve(PHP_INT_MAX, array(), 'top', '', $lang, array("product"));
+        if(empty($labels))
+            continue;
+
+        $tags = array();
+        $max = NULL;
+        foreach($labels as $label => $count)
+        {
+            // we expect the tags to be ordered desc
+            if(is_null($max))
+                $max = $count;
+
+            // fontsize by count --> max: 200% min: 100%
+            $font_size = 200 * $count / $max;
+            if($font_size < 100 || $max == 1) $font_size = 100;
+
+            $tags[] = '<a class="uibutton" style="margin: 0 6px 8px 0; font-size: '.$font_size.'%;" data-tag="'.$label.'" data-lang="'.$lang.'">'.
+                $label.
+                '<span style="position: absolute; top: 0; right: 4px; font-size: 8px; opacity: .5;">'.$count.'</span></a>';
+        }
+
+        $navibars->add_tab($lang_name);
+
+        $navibars->add_tab_content('
+            <div id="products-labels-'.$lang.'">
+                <table style="width: 100%;">
+                    <tr>
+                        <td width="50%" valign="top">'.implode("", $tags).'</td>
+                        <td valign="top"><div id="products-labels-elements-'.$lang.'" style="display: none;">
+                            <div class="ui-widget-content ui-corner-all navigate-panel" style=" min-height: 162px; max-width: 100%; visibility: visible;">
+                                <div class="ui-state-default ui-corner-top navigate-panel-header ui-sortable-handle" style=" padding: 5px; "><img src="img/icons/silk/tag_yellow.png" align="absmiddle"> <span class="products-labels-elements-tag"></span></div>
+                                <div class="navigate-panel-body"></div>
+                            </div>
+                        </div></td>
+                    </tr>
+                </table>
+            </div>
+        ');
+    }
+
+    $layout->add_script('
+        $("div[id^=\'products-labels\']").find("a.uibutton").on("click", function(e)
+        {
+            var lang = $(this).data("lang");
+            var tag = $(this).data("tag");
+            var opacity = 1;
+            e.stopPropagation();
+            e.preventDefault();
+            
+            $("div[id^=\'products-labels\']").find("a.uibutton").removeClass("ui-state-highlight");
+            $(this).addClass("ui-state-highlight");
+            
+            $("#products-labels-elements-" + lang).hide();
+            $("#products-labels-elements-" + lang).css("margin-top", $(this).offset().top - $(this).offsetParent().offset().top + $(this).offsetParent().scrollTop() - 12);
+            $("#products-labels-elements-" + lang).find("span.products-labels-elements-tag").html(tag);
+            var panel = $("#products-labels-elements-" + lang).find(".navigate-panel-body");
+            $(panel).html("");
+            $(panel).off("mouseover").on("mouseover", ".navigate-panel-body-title", function()
+            {
+                $(this).addClass("ui-state-highlight");
+            });
+            $(panel).off("mouseout").on("mouseout", ".navigate-panel-body-title", function()
+            {
+                $(this).removeClass("ui-state-highlight");
+            });
+                        
+            $.getJSON(
+                "?fid=products&act=json&oper=products_by_tag&lang=" + lang + "&tag=" + tag,
+                function(data)
+                {                
+                    for(d in data)
+                    {
+                        if(data[d].access > 0) opacity = 0.5;
+                        $(panel).append(\'<div class="navigate-panel-body-title ui-corner-all" style="padding: 5px; opacity: \'+opacity+\';"></div>\');
+                        $(panel).find("div:last").html(\'<a href="?fid=products&act=edit&tab=2&tab_language=\'+lang+\'&id=\'+data[d].id+\'">\'+data[d].date+\' <strong>\'+data[d].title+\'</strong> #\'+data[d].id+\'</a>\');
+                    }
+                                        
+                    $("#products-labels-elements-" + lang).show();
+                }
+            );
+        });
+    ');
+
+    return $navibars->generate();
 }
 
 ?>
