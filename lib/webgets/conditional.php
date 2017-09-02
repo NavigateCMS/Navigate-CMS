@@ -5,6 +5,7 @@ require_once(NAVIGATE_PATH.'/lib/webgets/content.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/gallery.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/votes.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/list.php');
+require_once(NAVIGATE_PATH.'/lib/packages/products/product.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed_parser.class.php');
 
@@ -30,6 +31,12 @@ function nvweb_conditional($vars=array())
     {
         $item->load($current['object']->id);
         $item_type = 'element';
+    }
+    else if($current['type']=='product')
+    {
+        $item = new product();
+        $item->load($current['object']->id);
+        $item_type = 'product';
     }
     else
     {
@@ -144,7 +151,7 @@ function nvweb_conditional($vars=array())
             if(empty($vars['property_name']))
                 $property_name = $vars['property_id'];
 
-            if($vars['property_scope'] == "element")
+            if(in_array($vars['property_scope'], array("element", "product")))
             {
                 $property_value = $item->property($property_name);
             }
@@ -160,7 +167,7 @@ function nvweb_conditional($vars=array())
             }
             else
             {
-                // no scope defined, so we have to check ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
+                // no scope defined, so we have to check  PRODUCT / ELEMENT > STRUCTURE > WEBSITE (the first with a property with the given name)
                 // element
                 $property_value = $item->property($property_name);
 

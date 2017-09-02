@@ -14,26 +14,29 @@ function nvweb_product($vars=array())
 	global $structure;
 	
 	$out = '';
-	$product = $current['object']->id;
 
+	$product = new product();
+
+	$product_id = $current['object']->id;
 	if(!empty($vars['pid']))
-    {
-        $product = new product();
-        $product->load($vars['pid']);
-        if($product->website != $website->id)
-            return;
-    }
+        $product_id = $vars['pid'];
 
-	switch(@$vars['mode'])
+    $product->load($product_id);
+
+    if($product->website != $website->id)
+        return;
+
+    switch(@$vars['mode'])
 	{
         case 'id':
             $out = $product->id;
             break;
 
-		case 'title':
-            $texts = webdictionary::load_element_strings($current['type'], $product->id);
+        case 'title':
+            $texts = webdictionary::load_object_strings("product", $product->id);
             $out = $texts[$current['lang']]['title'];
-			if(!empty($vars['function']))	eval('$out = '.$vars['function'].'("'.$out.'");');
+			if(!empty($vars['function']))
+			    eval('$out = '.$vars['function'].'("'.$out.'");');
 			break;
 
         case 'date':

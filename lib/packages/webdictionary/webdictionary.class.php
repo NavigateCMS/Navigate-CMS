@@ -280,9 +280,14 @@ class webdictionary
 		
 		return $where;
 	}
-	
+
+    public static function load_element_strings($node_type, $node_id, $node_uid=null)
+    {
+        return webdictionary::load_object_strings($node_type, $node_id, $node_uid);
+    }
+
 	// only for strings NOT from theme dictionary 
-	public static function load_element_strings($node_type, $node_id, $node_uid=null)
+	public static function load_object_strings($node_type, $node_id, $node_uid=null)
 	{
 		global $DB;
 		
@@ -293,17 +298,15 @@ class webdictionary
 			   AND node_id = '.protect($node_id).
             (empty($node_uid)? '' : ' AND ( node_uid = '.protect($node_uid).' OR node_uid = "" OR node_uid IS NULL )')
 		);
-				
+
 		$data = $DB->result();
-		
+
 		if(!is_array($data)) $data = array();
 		$dictionary = array();
 		
 		foreach($data as $item)
-		{
 			$dictionary[$item->lang][$item->subtype] = $item->text;
-		}
-		
+
 		return $dictionary;	
 	}
 

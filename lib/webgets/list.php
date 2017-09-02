@@ -187,7 +187,7 @@ function nvweb_list($vars=array())
             $exclude = '';
     }
 
-    // search parameter (for now only ELEMENTS!)
+    // search parameter (for now only ELEMENTS and PRODUCTS!)
     $search = '';
     if(!empty($vars['search']))
     {

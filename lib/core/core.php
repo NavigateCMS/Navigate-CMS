@@ -485,8 +485,8 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         $mail->Username   = $website->mail_user;
         $mail->Password   = $website->mail_password;
 
-        if(APP_DEBUG)
-            $mail->SMTPDebug = 1;
+        //if(APP_DEBUG)
+        //    $mail->SMTPDebug = 1;
 
         if(empty($recipients))
         {

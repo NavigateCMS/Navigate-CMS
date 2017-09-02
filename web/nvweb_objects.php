@@ -106,7 +106,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
             $quality = @$_REQUEST['quality'];
             if(empty($quality))
                 $quality = 95;
-			
+
 			$resizable = true;
 			if($item->mime == 'image/gif')
 				$resizable = !(file::is_animated_gif($path));

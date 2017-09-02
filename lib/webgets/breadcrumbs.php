@@ -1,5 +1,5 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
+require_o(NAVIGATE_PATH.'/lib/webgets/menu.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 
 function nvweb_breadcrumbs($vars=array())
@@ -31,7 +31,7 @@ function nvweb_breadcrumbs($vars=array())
 	{
 		$breadcrumbs[] = $current['id'];
 	}
-	else if($current['type']=='item') // start from item main category
+	else if(in_array($current['type'], array('item', 'element', 'product'))) // start from item main category
 	{
 		$breadcrumbs[] = $current['object']->category;
 	}
@@ -81,4 +81,5 @@ function nvweb_breadcrumbs_parent($category_id)
 	$category->load($category_id);
 	return $category->parent;
 }
+
 ?>
