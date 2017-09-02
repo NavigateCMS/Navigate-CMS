@@ -3692,6 +3692,17 @@
                 <target>Preu de venda</target>
             </trans-unit>
 
+            <trans-unit id="734" approved="yes">
+                <source>Order</source>
+                <target>Comanda</target>
+                <note>a customer purchase</note>
+            </trans-unit>
+
+            <trans-unit id="735" approved="yes">
+                <source>For any complaint or inquiry, please contact us.</source>
+                <target>Per a qualsevol reclamació o consulta, posa't en contacte amb nosaltres.</target>
+            </trans-unit>
+
         </body>
 
     </file>

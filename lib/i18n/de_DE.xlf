@@ -3680,6 +3680,17 @@
 				<target>Verkaufspreis</target>
 			</trans-unit>
 
+			<trans-unit id="734">
+				<source>Order</source>
+				<target>Anfrage</target>
+				<note>a customer purchase</note>
+			</trans-unit>
+
+			<trans-unit id="735" approved="yes">
+				<source>For any complaint or inquiry, please contact us.</source>
+				<target>Für jede Beschwerde oder Anfrage, kontaktieren Sie uns bitte.</target>
+			</trans-unit>
+
 		</body>
 
 	</file>
