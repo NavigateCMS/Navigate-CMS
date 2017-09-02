@@ -1687,6 +1687,24 @@ function websites_form($item)
             $naviforms->buttonset('metatags_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
         ));
 
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(67, 'Title').'</label>',
+                $naviforms->selectfield(
+                    'metatag_title_order',
+                    array(
+                        0 => "website | category | section",
+                        1 => "section | category | website"
+                    ),
+                    array(
+                        0 => t(177, "Website") . " | " . t(78, "Category") . " | " . t(239, "Section"),
+                        1 =>  t(239, "Section"). " | " . t(78, "Category") . " | " . t(177, "Website")
+                    ),
+                    $item->metatag_title_order
+                ),
+            )
+        );
+
         foreach($item->languages_list as $lang)
         {
             $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';

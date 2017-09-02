@@ -30,6 +30,7 @@ class website
     public $aliases;
 	//public $server_time_offset;
     public $word_separator;
+    public $metatag_title_order;
 	public $metatag_description;  // multilanguage
 	public $metatag_keywords;  // multilanguage
     public $metatags; // multilanguage
@@ -112,6 +113,7 @@ class website
 		$this->block_types		= mb_unserialize($main->block_types);
 		$this->homepage			= $main->homepage;	
 		$this->default_timezone = $main->default_timezone;	
+		$this->metatag_title_order	= $main->metatag_title_order;
 		$this->metatag_description	= json_decode($main->metatag_description, true);
 		$this->metatag_keywords 	= json_decode($main->metatag_keywords, true);
 		$this->metatags			    = json_decode($main->metatags, true);
@@ -239,6 +241,7 @@ class website
         }
 
         // Website metatags
+        $this->metatag_title_order = $_REQUEST['metatag_title_order'];
         $this->metatag_description = array();
         $this->metatag_keywords = array();
         $this->metatags = array();
@@ -439,7 +442,8 @@ class website
                 comments_enabled_for, comments_default_moderator, share_files_media_browser,
                 tracking_scripts, additional_scripts, additional_styles, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
-                contact_emails, homepage, default_timezone, metatag_description, metatag_keywords, metatags,
+                contact_emails, homepage, default_timezone, 
+                metatag_title_order, metatag_description, metatag_keywords, metatags,
                 favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit, 
                 theme, theme_options, block_types
             )
@@ -479,6 +483,7 @@ class website
               :contact_emails,
               :homepage,
               :default_timezone,
+              :metatag_title_order,
               :metatag_description,
               :metatag_keywords,
               :metatags,
@@ -527,6 +532,7 @@ class website
 				":contact_emails" => serialize($this->contact_emails),
 				":homepage" => value_or_default($this->homepage, ''),
 				":default_timezone" => value_or_default($this->default_timezone, ''),
+				":metatag_title_order" => value_or_default($this->metatag_title_order, 'website | category | section'),
 				":metatag_description" => json_encode($this->metatag_description),
 				":metatag_keywords" => json_encode($this->metatag_keywords),
 				":metatags" => json_encode($this->metatags),
@@ -628,6 +634,7 @@ class website
                     contact_emails = ?,
                     homepage = ?,
                     default_timezone = ?,
+                    metatag_title_order = ?,
                     metatag_description = ?,
                     metatag_keywords = ?,
                     metatags = ?,
@@ -675,6 +682,7 @@ class website
                 serialize($this->contact_emails),
                 $this->homepage,
                 $this->default_timezone,
+                value_or_default($this->metatag_title_order, 'website | category | section'),
                 json_encode($this->metatag_description),
                 json_encode($this->metatag_keywords),
                 json_encode($this->metatags),

@@ -10,7 +10,8 @@ function nvweb_metatags($vars=array())
     global $structure;
     global $events;
 
-	// process page title and (to do: get specific metatags)
+	// process page title
+    $page_title_parts = array($website->name);
 	$section = '';
 
     $separator = ' | ';
@@ -29,7 +30,7 @@ function nvweb_metatags($vars=array())
 					website = '.$website->id.' AND
 					   lang = '.protect($current['lang'])
             );
-            $section = $separator.$section;
+            array_push($page_title_parts, $section);
             break;
 
 		case 'structure':
@@ -39,7 +40,8 @@ function nvweb_metatags($vars=array())
                     'links' => 'false'
                 )
             );
-            $section = $separator.$breadcrumbs;
+            $breadcrumbs = explode($separator, $breadcrumbs);
+            $page_title_parts = array_merge($page_title_parts, $breadcrumbs);
 			break;
 					
 		default:
@@ -119,7 +121,20 @@ function nvweb_metatags($vars=array())
                               '" href="'.$website->absolute_path().$feed->paths[$current['lang']].'" />';
 	}
 
-	$out = '<title>'.$website->name.$section.'</title>'."\n";
+	switch($website->metatag_title_order)
+    {
+        case "section | category | website":
+            $page_title_parts = array_reverse($page_title_parts);
+            $page_title = implode($separator, $page_title_parts);
+            break;
+
+        case "website | category | section":
+        default:
+            // already in the default order
+            $page_title = implode($separator, $page_title_parts);
+    }
+
+	$out = '<title>'.$page_title.'</title>'."\n";
 
     // current page metatags
 
@@ -165,11 +180,12 @@ function nvweb_metatags($vars=array())
         'render',
         array(
             'out' => &$out,
-            'default_title' => $website->name.$section,
+            'default_title' => $page_title,
             'section' => $section
         )
     );
 
 	return $out;
 }
+
 ?>
