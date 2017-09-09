@@ -108,7 +108,7 @@ function nvweb_dictionary_load()
 function nvweb_after_body($type="js", $code="")
 {
 	global $current;
-	
+
 	if(empty($code))
 	{
 		if(!empty($current[$type.'_after_body']))
@@ -1333,11 +1333,20 @@ function nvweb_template_convert_nv_paths($html)
 			}
 
 			if(!empty($url))
-				$html = str_replace(
-				    array('"'.$match.'"', "'".$match."'"),
-				    array('"'.$url.'"', "'".$url."'"),
-                    $html
-                );
+            {
+                if(strpos($html, 'nv://')===0)
+                {
+                    $html = $url;
+                }
+                else
+                {
+                    $html = str_replace(
+                        array('"' . $match . '"', "'" . $match . "'"),
+                        array('"' . $url . '"', "'" . $url . "'"),
+                        $html
+                    );
+                }
+            }
 		}
 	}
 

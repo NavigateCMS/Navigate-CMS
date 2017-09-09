@@ -8,17 +8,18 @@ function nvweb_parse($request)
 
     /* global variables */
     global $DB;
+    global $current;
+    global $session;
     global $webuser;
-    global $config;
     global $website;
     global $theme;
     global $template;
-    global $current;
     global $dictionary;
     global $plugins;
     global $events;
     global $webgets;
     global $idn;
+    global $html;
 
     $idn = new \Mso\IdnaConvert\IdnaConvert();
     $events = new events();

@@ -1,5 +1,5 @@
 <?php
-require_o(NAVIGATE_PATH.'/lib/webgets/menu.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/menu.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 
 function nvweb_breadcrumbs($vars=array())
