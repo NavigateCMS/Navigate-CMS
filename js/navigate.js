@@ -2,7 +2,8 @@ var navigatecms = {
     forms: {
         datepicker:		{ }
     },
-    beforeunload: false
+    beforeunload: false,
+    resize_callbacks: []
 };
 var navigate_menu_current_tab;
 var navigate_lang_dictionary = Array();
@@ -287,8 +288,10 @@ function navigate_window_resize()
             }
         });
 
-		$("#navigate-content-safe").css({ display: 'block', height: $('#navigate-content').height() - 30 });		
-		//$("table.ui-jqgrid-btable").setGridWidth($('#navigate-content').width());		
+		$("#navigate-content-safe").css({
+            display: 'block',
+            height: $('#navigate-content').height() - 30
+		});
 	}
 
     if($('.navibrowse,.navigrid').length > 0)
@@ -296,7 +299,15 @@ function navigate_window_resize()
         $('.navibrowse,.navigrid').height($('.navibrowse,.navigrid').parent().height() - 10);
 
         if( $('.navibrowse-items,.navigrid-items').height() < $('.navibrowse,.navigrid').height() )
-            $('.navibrowse-items,.navigrid-items').height( $('.navibrowse,.navigrid').height() - $('.navibrowse-path').height()  - 10 );
+        {
+            $('.navibrowse-items,.navigrid-items').height($('.navibrowse,.navigrid').height() - $('.navibrowse-path').height() - 10);
+        }
+    }
+
+    for(i in navigatecms.resize_callbacks)
+    {
+        if(typeof(navigatecms.resize_callbacks[i])=="function")
+            navigatecms.resize_callbacks[i]();
     }
 }
 
@@ -386,7 +397,7 @@ function navigate_t(id, text)
 		return text;
 }
 
-function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element)
+function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element, meta)
 {
     var editor = tinyMCE.get(editor_id);
 	var html = '';
@@ -436,8 +447,26 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                 embed_dialog = true;
             }
 
-            var image_width = $(element).attr("image-width");
-            var image_height = $(element).attr("image-height");
+            var image_width;
+            var image_height;
+            var title;
+            var alt;
+
+            if(meta)
+            {
+                image_width = meta.width;
+                image_height = meta.height;
+                title = meta.title;
+                alt = meta.alt;
+            }
+            else
+            {
+                image_width = $(element).attr("image-width");
+                image_height = $(element).attr("image-height");
+                title = $.base64.decode($(element).attr('image-title'));
+                alt = $.base64.decode($(element).attr('image-description'));
+            }
+
             var body_width = $(editor.contentAreaContainer).width() - 37;
 
             if(max_width==0 || max_width > image_width)
@@ -449,21 +478,22 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             var scaled_height = Math.ceil((max_width * image_height) / image_width);
             var scaled_width = Math.ceil((max_height * image_width) / image_height);
 
-            var title = $.base64.decode($(element).attr('image-title'));
-            var alt = $.base64.decode($(element).attr('image-description'));
-
             var active_editor_lang = editor_id;
             if(active_editor_lang.indexOf("-") > 0)
                 active_editor_lang = active_editor_lang.split("-").pop();
 
-            title = $.parseJSON(title);
-            if(title && title[active_editor_lang])
+            if(typeof(title)=='string')
+                title = $.parseJSON(title);
+            
+            if (title && title[active_editor_lang])
                 title = title[active_editor_lang];
             else
                 title = "";
 
-            alt = $.parseJSON(alt);
-            if(alt && alt[active_editor_lang])
+            if(typeof(alt)=='string')
+                alt = $.parseJSON(alt);
+
+            if (alt && alt[active_editor_lang])
                 alt = alt[active_editor_lang];
             else
                 alt = "";
@@ -488,6 +518,9 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                             '<i class="fa fa-fw fa-3x fa-expand"></i><br /><br />' + navigate_t(587, "Full available width") +
                         '</button>' +
                     '</div>';
+
+                // close any open dialog
+                $(".ui-dialog-content").dialog().dialog("close");
 
                 $(embed_dialog_html).dialog({
                     modal: true,
