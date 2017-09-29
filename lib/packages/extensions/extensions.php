@@ -439,6 +439,16 @@ function extensions_grid($list)
         }
     ');
 
+    if(isset($_REQUEST['edit_settings']))
+    {
+        $layout->add_script('
+            $(window).on("load", function()
+            {
+                $("div.buttonset[extension='.$_REQUEST['edit_settings'].']").find(".navigrid-extensions-settings").trigger("click");
+            });
+        ');
+    }
+
     return $out;
 }
 

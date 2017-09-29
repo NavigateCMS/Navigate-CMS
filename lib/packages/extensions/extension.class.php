@@ -47,6 +47,17 @@ class extension
             $this->enabled = $row->enabled;
             $this->settings = json_decode($row->settings, true);
         }
+        else
+        {
+            // get from definition the default values for settings, if any
+            foreach($this->definition->options as $option)
+            {
+                if(isset($option->dvalue))
+                {
+                    $this->settings[$option->id] = $option->dvalue;
+                }
+            }
+        }
 	}
 
     public function load_from_post()
