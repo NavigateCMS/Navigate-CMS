@@ -937,6 +937,18 @@ function core_file_curl($url, $file)
     curl_exec($ch);
     curl_close($ch);
     fclose($fp);
+
+    clearstatcache();
+    if(filesize($file) == 0)
+    {
+        // cURL method didn't work
+        // try with file_get_contents
+        $data = file_get_contents($url);
+        file_put_contents($file, $data);
+        unset($data);
+    }
+
+    clearstatcache();
 }
 
 /**
@@ -1164,7 +1176,6 @@ function navigate_compose_email($data, $style = array('background' => '#E5F1FF',
 
 function core_version()
 {
-	global $DB;
 	global $config;
 
 	if(!isset($config['version']))
