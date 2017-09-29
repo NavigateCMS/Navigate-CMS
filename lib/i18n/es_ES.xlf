@@ -3691,6 +3691,32 @@
 				<target>Para cualquier reclamación o consulta, ponte en contacto con nosotros.</target>
 			</trans-unit>
 
+			<trans-unit id="736" approved="yes">
+				<source>Cart</source>
+				<target>Cesta</target>
+				<note>list of products before the purchase</note>
+			</trans-unit>
+
+			<trans-unit id="737" approved="yes">
+				<source>Product list</source>
+				<target>Lista de productos</target>
+			</trans-unit>
+
+			<trans-unit id="738" approved="yes">
+				<source>Checkout</source>
+				<target>Pago</target>
+			</trans-unit>
+
+			<trans-unit id="739" approved="yes">
+				<source>Download</source>
+				<target>Descargar</target>
+			</trans-unit>
+
+			<trans-unit id="740" approved="yes">
+				<source>Error</source>
+				<target>Error</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

@@ -3686,9 +3686,35 @@
 				<note>a customer purchase</note>
 			</trans-unit>
 
-			<trans-unit id="735" approved="yes">
+			<trans-unit id="735">
 				<source>For any complaint or inquiry, please contact us.</source>
 				<target>Für jede Beschwerde oder Anfrage, kontaktieren Sie uns bitte.</target>
+			</trans-unit>
+
+			<trans-unit id="736">
+				<source>Cart</source>
+				<target>Einkaufswagen</target>
+				<note>list of products before the purchase</note>
+			</trans-unit>
+
+			<trans-unit id="737">
+				<source>Product list</source>
+				<target>Produktliste</target>
+			</trans-unit>
+
+			<trans-unit id="738">
+				<source>Checkout</source>
+				<target>Auschecken</target>
+			</trans-unit>
+
+			<trans-unit id="739">
+				<source>Download</source>
+				<target>Herunterladen</target>
+			</trans-unit>
+
+			<trans-unit id="740">
+				<source>Error</source>
+				<target>Error</target>
 			</trans-unit>
 
 		</body>

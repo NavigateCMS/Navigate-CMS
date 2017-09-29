@@ -3691,6 +3691,32 @@
                 <target>W przypadku jakichkolwiek skarg lub zapytań skontaktuj się z nami.</target>
             </trans-unit>
 
+            <trans-unit id="736">
+                <source>Cart</source>
+                <target>Koszyk</target>
+                <note>list of products before the purchase</note>
+            </trans-unit>
+
+            <trans-unit id="737">
+                <source>Product list</source>
+                <target>Lista produktów</target>
+            </trans-unit>
+
+            <trans-unit id="738">
+                <source>Checkout</source>
+                <target>Sprawdzić</target>
+            </trans-unit>
+
+            <trans-unit id="739">
+                <source>Download</source>
+                <target>Pobieranie</target>
+            </trans-unit>
+
+            <trans-unit id="740">
+                <source>Error</source>
+                <target>Usterka</target>
+            </trans-unit>
+
         </body>
 
     </file>

@@ -3703,6 +3703,32 @@
                 <target>Per a qualsevol reclamació o consulta, posa't en contacte amb nosaltres.</target>
             </trans-unit>
 
+            <trans-unit id="736" approved="yes">
+                <source>Cart</source>
+                <target>Cistella</target>
+                <note>list of products before the purchase</note>
+            </trans-unit>
+
+            <trans-unit id="737" approved="yes">
+                <source>Product list</source>
+                <target>Llista de productes</target>
+            </trans-unit>
+
+            <trans-unit id="738" approved="yes">
+                <source>Checkout</source>
+                <target>Pagament</target>
+            </trans-unit>
+
+            <trans-unit id="739" approved="yes">
+                <source>Download</source>
+                <target>Descarregar</target>
+            </trans-unit>
+
+            <trans-unit id="740" approved="yes">
+                <source>Error</source>
+                <target>Error</target>
+            </trans-unit>
+
         </body>
 
     </file>
