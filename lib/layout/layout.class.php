@@ -351,7 +351,6 @@ class layout
                     exec(JAVA_RUNTIME." -jar cache/yuicompressor.jar cache/scripts.js -o cache/scripts.min.js --charset utf-8");
 				}
 				*/
-
                 // does not work as expected
                 //$packer = new JavaScriptPacker($tmp, 'None', true, true);
                 //$tmp = $packer->pack();
@@ -361,10 +360,10 @@ class layout
                 if(file_exists('cache/scripts.min.js'))
                 {
                     $scripts_min = file_get_contents('cache/scripts.min.js');
-                    file_put_contents('cache/scripts.min.jgz', gzencode($scripts_min, 9));
+                    file_put_contents('cache/scripts.min.jgz', gzencode($scripts_min, 8)); // level 9 causes parsing errors !?
                 }
                 else
-                    file_put_contents('cache/scripts.min.jgz', gzencode($tmp, 9));
+                    file_put_contents('cache/scripts.min.jgz', gzencode($tmp, 8)); // level 9 causes parsing errors !?
 
 				if(file_exists('cache/scripts.min.jgz'))
 				{
@@ -743,6 +742,7 @@ class layout
                 40: "'.t(40, 'History').'",
                 41: "'.t(41, 'Search').'",
                 42: "'.t(42, 'Ready').'",
+                53: "'.t(53, 'Data successfully saved').'",                
                 56: "'.t(56, 'Unexpected error').'",
                 57: "'.t(57, 'Do you really want to delete this item?').'",
                 58: "'.t(58, 'Cancel').'",
@@ -799,7 +799,8 @@ class layout
                 601: "'.t(601, "Import").'",
                 620: "'.t(620, "Insert").'",
                 621: "'.t(621, "Append").'",
-                627: "'.t(627, "Remove").'"                                
+                627: "'.t(627, "Remove").'",                                
+                739: "'.t(739, "Download").'"                                
             };
         ');
 

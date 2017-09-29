@@ -90,7 +90,7 @@ class navigrid
 
         if($this->highlight_on_click)
         {
-            $html[] = '$(".navigrid-items").children().bind("click", function()
+            $html[] = '$(".navigrid-items").children().on("click", function()
                        {
                             $(".navigrid-items div").removeClass("ui-selectee ui-selected");
                             $(".navigrid-items img").removeClass("ui-selectee ui-selected");
@@ -100,7 +100,7 @@ class navigrid
 
         if(!empty($this->dblclick_callback))
         {
-            $html[] = '$(".navigrid-item").bind("dblclick", function()
+            $html[] = '$(".navigrid-item").on("dblclick", function()
                        {
                             '.$this->dblclick_callback.'(this);
                        });';
@@ -128,4 +128,5 @@ class navigrid
 		return implode("\n", $html);	
 	}
 }
+
 ?>
