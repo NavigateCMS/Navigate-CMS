@@ -2822,6 +2822,7 @@ div.jGrowl div.jGrowl-closer:hover
 {
 	padding-top: 4px;
 	padding-bottom: 4px;
+	list-style-image: none;
 }
 
 .ui-menu .ui-menu-item a
@@ -3325,6 +3326,7 @@ div.block_group_block .actions a:hover
 	border-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
 	border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
 }
+
 .timeline-vertical .timeline-item:first-child
 {
 	-o-border-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3) 60%) 1 100%;
