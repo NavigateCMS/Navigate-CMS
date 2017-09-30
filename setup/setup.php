@@ -13,7 +13,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.4');
+	define('APP_VERSION', '2.6');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -354,8 +354,8 @@ function navigate_install_requirements()
                     <input type="text" value="<?php echo $_SERVER['SERVER_SOFTWARE'];?>" class="<?php echo ($checks['server']? 'green' : 'red');?>" />
                 </div>                 
                 <div>
-                    <label>PHP &ge; 5.3</label>
-                    <input type="text" value="<?php echo ($checks['php5.3']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php5.3']? 'green' : 'red');?>" />
+                    <label>PHP &ge; 5.4</label>
+                    <input type="text" value="<?php echo ($checks['php5.4']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php5.4']? 'green' : 'red');?>" />
                 </div>                    
                 <div>
                     <label>&raquo; GD</label>
