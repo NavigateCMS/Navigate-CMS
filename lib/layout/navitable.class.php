@@ -361,25 +361,26 @@ class navitable
     // convert jqgrid search filters to SQL conditions
 	public static function jqgridsearch($filters)
 	{
-		$filters = json_decode($filters);
+	    if(is_string($filters))
+            $filters = json_decode($filters, true);
 
 		$groupOp = ' AND ';
-		if($filters->groupOp=='OR') $groupOp = ' OR ';
+		if($filters['groupOp'] == 'OR')
+		    $groupOp = ' OR ';
 		
 		$where = '';
 
-		foreach($filters->rules as $rule)
+		foreach($filters['rules'] as $rule)
 		{
 			if(empty($where)) $where =  ' AND ( ';
 			else			  $where .= $groupOp;
-						
-			$where.= navitable::jqgridcompare($rule->field, $rule->op, $rule->data);
+
+			$where .= navitable::jqgridcompare($rule['field'], $rule['op'], $rule['data']);
 		}
 		
 		$where .= ') ';
 
 		return $where;
-
 	}
 
     public static function jqgridCheck($row, $filters)

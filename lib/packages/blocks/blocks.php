@@ -38,21 +38,27 @@ function run()
 						case 'id':
 							$_REQUEST['searchField'] = 'b.id';
 							break;
+
 						case 'type':
 							$_REQUEST['searchField'] = 'b.type';
-							break;							
+							break;
+
 						case 'title':
 							$_REQUEST['searchField'] = 'd.text';
 							break;
+
 						case 'category':
 							$_REQUEST['searchField'] = 'b.category';						
 							break;
+
 						case 'dates':
 							$_REQUEST['searchField'] = 'b.date_published';
 							break;
+
 						case 'enabled':
 							$_REQUEST['searchField'] = 'b.enabled';
 							break;
+
 						case 'date_modified':
 						default:
 							$_REQUEST['searchField'] = 'b.date_modified';
@@ -587,8 +593,9 @@ function run()
 
 function blocks_list()
 {
+    global $layout;
     global $events;
-	global $user;
+    global $user;
 
 	$navibars = new navibars();
 	$navitable = new navitable("blocks_list");
@@ -652,6 +659,98 @@ function blocks_list()
 	$navitable->addCol(t(364, 'Access'), 'access', "40", "true", "center");	
 	$navitable->addCol(t(65, 'Enabled'), 'enabled', "40", "true", "center");
     $navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
+
+    $navitable->setLoadCallback('
+        if($("#jqgh_blocks_list_type button").length < 1)
+        {
+            $("#jqgh_blocks_list_type").prepend("<button><i class=\"fa fa-filter\"></i></button>");
+            $("#jqgh_blocks_list_type button")
+            	.button()
+            	.css(
+            	{
+                	"float": "right",
+                	"margin-top": "0px",
+                	"padding": "0px"
+            	})
+            	.on("click", function(e)
+            	{
+            	    e.stopPropagation();
+            	    e.preventDefault();
+            	    setTimeout(blocks_list_choose_types, 150);
+                });
+
+            $("#jqgh_blocks_list_type span.ui-button-text").css({"padding-top": "0", "padding-bottom": "0"});
+        }
+    ');
+
+    // add types filter
+    $block_types = block::types('title');
+    $hierarchy = array_map(
+        function($bt) { return '<li data-value="'.$bt['id'].'">'.$bt['title'].'</li>';  },
+        $block_types
+    );
+    //array_unshift($hierarchy, '<li data-value="">('.t(443, "All").')</li>');
+
+    $navibars->add_content('<div id="filter_types_window" style="display: none;"><ul>'.implode("\n", $hierarchy).'</ul></div>');
+    $layout->add_script('$("#filter_types_window ul").attr("data-name", "filter_types_field");');
+    $layout->add_script('
+        $("#filter_types_window ul").jAutochecklist({
+            popup: false,
+            absolutePosition: true,
+            width: 0,
+            listWidth: 300,
+            listMaxHeight: 400,
+            onItemClick: function(nval, li, selected_before, selected_after)
+            {            
+                selected_after = selected_after.join(",");
+                var filters = {
+                    "groupOp" : "AND",
+                    "rules": [
+                        {
+                            "field" : "type",
+                            "op" : "in",
+                            "data" : selected_after
+                        },
+                        {
+                            "field" : "title",
+                            "op" : "cn",
+                            "data" : $("#navigate-quicksearch").val()
+                        }
+                    ]
+                };
+
+                $("#blocks_list").jqGrid(
+                    "setGridParam",
+                    {
+                        search: true,
+                        postData: { "filters": filters }
+                    }
+                ).trigger("reloadGrid");
+            }
+        });');
+
+    $layout->add_script('
+        function blocks_list_choose_types()
+        {
+            $("#navigate-quicksearch").parent().on("submit", function()
+            {
+                $("#filter_types_window ul").jAutochecklist("deselectAll");
+            });
+
+            $("#filter_types_window ul").jAutochecklist("open");
+            $(".jAutochecklist_list").css({"position": "absolute"});
+            $(".jAutochecklist_list").css($("#jqgh_blocks_list_type button").offset());
+            $(".jAutochecklist_dropdown_wrapper").hide();
+            $(".jAutochecklist_list").css({
+                "border-radius": "8px",
+                "margin-left": "-150px",
+                "margin-top": "16px"
+            });
+            $(".jAutochecklist_list").addClass("navi-ui-widget-shadow ui-menu ui-widget ui-widget-content ui-corner-all");
+
+            return false;
+        }
+    ');
 	
 	$navibars->add_content($navitable->generate());	
 	

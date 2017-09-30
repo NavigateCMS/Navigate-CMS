@@ -2960,6 +2960,11 @@ div.jGrowl div.jGrowl-notification
 }
 
 /* jAutochecklist */
+.jAutochecklist_wrapper
+{
+	background: transparent;
+}
+
 .jAutochecklist_list
 {
     background: #F2F5F7;
