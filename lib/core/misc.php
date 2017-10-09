@@ -679,6 +679,42 @@ function number2alphabet($n)
 }
 
 /**
+ * Remove HTML tags AND its contents except certain ones (or the inverse)
+ *
+ * source: http://php.net/manual/es/function.strip-tags.php#86964
+ * Thanks to Mariusz Tarnaski
+ *
+ * @param string $text source html
+ * @param string $tags list of tags to allow or deny
+ * @param boolean $invert allow tags listed or remove them
+ * @return string
+ */
+function strip_tags_content($text, $tags = '', $invert = FALSE)
+{
+    preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags);
+    $tags = array_unique($tags[1]);
+
+    if(is_array($tags) AND count($tags) > 0)
+    {
+        if($invert == FALSE)
+        {
+            return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
+        }
+        else
+        {
+            return preg_replace('@<('. implode('|', $tags) .')\b.*?>.*?</\1>@si', '', $text);
+        }
+    }
+    else if($invert == FALSE)
+    {
+        return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
+    }
+
+    return $text;
+}
+
+
+/**
  * Find a tag by ID and append/replace content
  *
  * source: http://stackoverflow.com/a/17661043/1829145
