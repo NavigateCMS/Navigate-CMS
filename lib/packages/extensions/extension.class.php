@@ -50,11 +50,14 @@ class extension
         else
         {
             // get from definition the default values for settings, if any
-            foreach($this->definition->options as $option)
+            if(isset($this->definition->options))
             {
-                if(isset($option->dvalue))
+                foreach ($this->definition->options as $option)
                 {
-                    $this->settings[$option->id] = $option->dvalue;
+                    if (isset($option->dvalue))
+                    {
+                        $this->settings[$option->id] = $option->dvalue;
+                    }
                 }
             }
         }
