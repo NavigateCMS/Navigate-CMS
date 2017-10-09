@@ -726,6 +726,35 @@ function core_truncate_html($str, $len, $end = '&hellip;')
     return $truncated_html;
 }
 
+
+function core_price2string($price, $base_currency, $part=NULL)
+{
+    switch($part)
+    {
+        case 'value':
+            $out = core_decimal2string($price);
+            break;
+
+        case 'internal':
+            $out = $price;
+            break;
+
+        case 'currency':
+            $out = product::currencies($base_currency);
+            break;
+
+        default:
+            $currency = product::currencies($base_currency, false);
+            if($currency['placement'] == 'after')
+                $out = core_decimal2string($price).' '.$currency['symbol'];
+            else
+                $out = $currency['symbol'].' '.core_decimal2string($price);
+    }
+
+    return $out;
+}
+
+
 function core_strpos_array($haystack, $needles, $offset)
 {
     if ( is_array($needles) )
