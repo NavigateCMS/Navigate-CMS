@@ -19,6 +19,7 @@ function nvweb_list($vars=array())
 	global $webgets;
     global $theme;
     global $webuser;
+    global $session;
 
 	$out = array();
 
@@ -835,13 +836,12 @@ function nvweb_list($vars=array())
     $nested_conditional_fragments_preprocessed = $nested_conditional_fragments;
     $conditional_placeholder_tags_preprocessed = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
 
-
     // now we have all elements that will be shown in the list
     // let's process the nvlist template for each one
 	for($i = 0; $i < count($rs); $i++)
 	{
-        // ignore empty objects, except in custom_source mode
-        if(!isset($vars['custom_source']) || $vars['custom_source']!='true')
+        // ignore empty objects, except in custom_source or cart modes
+        if( (!isset($vars['custom_source']) || $vars['custom_source']!='true') )
         {
             if(
                 ($vars['source']!='gallery' && empty($rs[$i]->id))  ||
@@ -1013,7 +1013,6 @@ function nvweb_list($vars=array())
 
 	}
 
-
     if(count($rs)==0)
     {
         // special case, no results found
@@ -1025,7 +1024,7 @@ function nvweb_list($vars=array())
         list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html, array('count'));
 
         // remove all tags except (selfclosing) nvlist_conditional_placeholder
-        $item_html = strip_tags($item_html, '<nvlist_conditional_placeholder>');
+        $item_html = strip_tags_content($item_html, '<nvlist_conditional_placeholder>');
 
         $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing=true
 
@@ -2082,7 +2081,7 @@ function nvweb_list_isolate_conditionals($item_html, $only_by=array())
         );
 
         // if this conditional is NOT of one of the allowed "conditional by" types, then all its content must be cleared
-        if(!empty($only_by) && !in_array($tag['by'], $only_by))
+        if(!empty($only_by) && !in_array($tag['attributes']['by'], $only_by))
             $conditional_template = '';
 
         // find inner conditionals before replacing the conditional found
@@ -2399,19 +2398,33 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             if(empty($item)) return ''; // can't parse values of empty objects
 
             // $item may be a block object or a block group block type
-
+            $output_condition = true;
             if(isset($tag['attributes']['type']))
             {
-                if( $tag['attributes']['type'] == $item->type || $tag['attributes']['type'] == $item->id )
+                if( !(  $tag['attributes']['type'] == $item->type ||
+                        $tag['attributes']['type'] == $item->id
+                    )
+                )
                 {
-                    $out = $item_html;
-                }
-                else
-                {
-                    // no match, discard this conditional
-                    $out = '';
+                    $output_condition = false;
                 }
             }
+
+            // conditional by block trigger type
+            if(isset($tag['attributes']['trigger']))
+            {
+                // allow using "hidden" for internally set "(empty)" types
+                if( $tag['attributes']['trigger'] == 'hidden' )
+                    $tag['attributes']['trigger'] = "";
+
+                if( $item->trigger['trigger-type'][$current['lang']] != $tag['attributes']['trigger'] )
+                    $output_condition = false;
+            }
+
+            if($output_condition)
+                $out = $item_html;
+            else
+                $out = "";
 
             // does the block have a link defined?
             if(isset($tag['attributes']['linked']))
