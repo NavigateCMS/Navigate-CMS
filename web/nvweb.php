@@ -331,6 +331,8 @@ function nvweb_parse($request)
         }
         else
         {
+            $events->trigger('nvweb', 'before_output');
+
             // close any previous output buffer
             // some PHP configurations open ALWAYS a buffer
             if (function_exists('ob_start'))
