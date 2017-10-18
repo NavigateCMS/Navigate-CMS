@@ -505,8 +505,15 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				function property'.$property->id.'search()
 				{				
 					var address = $("#property-'.$property->id.'-search input").val();
-
-                    $.getJSON("http://services.gisgraphy.com/geocoding/geocode?format=json&callback=?&address="+address, function(data)
+                    var geocode_request_url = "http://services.gisgraphy.com/geocoding/geocode?format=json&callback=?&address=" + address;
+                    if( window.location.href.indexOf("https://")==0 )
+                    {
+                        // gisgraphy does not support HTTPS requests,
+                        // so we have to proxy the request through the server
+                        geocode_request_url = "?fid=utils&act=geocode&format=gisgraphy_json&address=" + address;
+                    }
+                    
+                    $.getJSON(geocode_request_url, function(data)
                     {                                    
                         if(!data.result || data.result.length < 1)
                             alert("Geocode was not successful for the following reason: " + status);

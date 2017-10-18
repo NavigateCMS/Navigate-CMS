@@ -100,7 +100,6 @@ function core_run()
             header('location: '.NAVIGATE_MAIN.'?fid='.$fid);
             core_terminate();
         }
-
     }
 
 	if(file_exists('lib/packages/'.$f->codename.'/'.$f->codename.'.php'))
@@ -144,6 +143,16 @@ function core_load_function($fid)
     // or we need to retrieve its information from the database
     switch($fid)
     {
+        case 'utils':
+            $func = new stdClass();
+            $func->id = 'utils';
+            $func->codename = 'utils';
+            $func->category = 'internal';
+            $func->icon = '';
+            $func->lid = '';
+            $func->enabled = 1;
+            break;
+
         case 'grid_notes':
             $func = new stdClass();
             $func->id = 'grid_notes';
