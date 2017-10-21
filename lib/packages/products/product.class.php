@@ -56,7 +56,6 @@ class product
     public $offer_begin_date;
     public $offer_end_date;
     public $offer_price;
-    public $offer_price_currency;
 
     // reserved for future use
     /*
@@ -153,7 +152,6 @@ class product
         $this->cost_currency        =  $main->cost_currency;
 
         $this->offer_price           =  $main->offer_price + 0;
-        $this->offer_price_currency  =  $main->offer_price_currency;
         $this->offer_begin_date      =  $main->offer_begin_date;
         $this->offer_end_date        =  $main->offer_end_date;
 
@@ -284,9 +282,19 @@ class product
         $this->cost                 =  core_string2decimal($_REQUEST['product-cost']);
         $this->cost_currency        =  $_REQUEST['product-cost_currency'];
 
-        $this->offer_price           =  core_string2decimal($_REQUEST['product-offer_price']);
-        $this->offer_begin_date      =  (empty($_REQUEST['product-offer_begin_date'])? '' : core_date2ts($_REQUEST['product-offer_begin_date']));
-        $this->offer_end_date        =  (empty($_REQUEST['product-offer_end_date'])? '' : core_date2ts($_REQUEST['product-offer_end_date']));
+        if($_REQUEST['product-offer']=='1')
+        {
+            $this->offer_price = core_string2decimal($_REQUEST['product-offer_price']);
+            $this->offer_begin_date = (empty($_REQUEST['product-offer_begin_date']) ? '' : core_date2ts($_REQUEST['product-offer_begin_date']));
+            $this->offer_end_date = (empty($_REQUEST['product-offer_end_date']) ? '' : core_date2ts($_REQUEST['product-offer_end_date']));
+        }
+        else
+        {
+            // reset any offer settings
+            $this->offer_price = NULL;
+            $this->offer_begin_date = NULL;
+            $this->offer_end_date = NULL;
+        }
     }
 	
 	

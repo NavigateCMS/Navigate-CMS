@@ -262,6 +262,8 @@ class naviforms
 
 		if(!empty($value))
 			$value = core_ts2date($value, $hour);
+        else
+		    $value = ""; // set empty also for value = 0
 
 		$out = '<input type="text" class="datepicker" name="'.$name.'" id="'.$name.'" value="'.$value.'" style="'.$style.'" />
 				<img src="img/icons/silk/calendar_delete.png" width="16" height="16" align="absmiddle" 

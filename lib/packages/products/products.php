@@ -2380,10 +2380,12 @@ function products_form($item)
     // PRICING TAB
     $navibars->add_tab('<i class="fa fa-tag"></i> '.t(671, "Pricing"));
 
+    $currencies = product::currencies();
+
     $navibars->add_tab_content_row(array(
         '<label>'.t(676, 'Base price').'</label>',
         $naviforms->decimalfield('product-base_price', $item->base_price, 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px'),
-        $naviforms->selectfield('product-base_price_currency', array_keys(product::currencies()), array_values(product::currencies()), $item->base_price_currency, "navigate_products_currency_change();", false, array(), "width: 80px;", true, false, "select2-align-with-input")
+        $naviforms->selectfield('product-base_price_currency', array_keys($currencies), array_values($currencies), $item->base_price_currency, "navigate_products_currency_change();", false, array(), "width: 80px;", true, false, "select2-align-with-input")
     ));
 
     $navibars->add_tab_content_row(array(
@@ -2395,7 +2397,7 @@ function products_form($item)
     $navibars->add_tab_content_row(array(
         '<label>'.t(678, 'Cost').'</label>',
         $naviforms->decimalfield('product-cost', $item->cost, 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px'),
-        $naviforms->selectfield('product-cost_currency', array_keys(product::currencies()), array_values(product::currencies()), $item->cost_currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input")
+        $naviforms->selectfield('product-cost_currency', array_keys($currencies), array_values($currencies), $item->cost_currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input")
     ));
 
     $navibars->add_tab_content_row(array(
@@ -2413,7 +2415,6 @@ function products_form($item)
         'style="display: none;"'
     );
 
-    $currencies = product::currencies();
     $layout->add_script('
         function navigate_products_currency_change()
         {

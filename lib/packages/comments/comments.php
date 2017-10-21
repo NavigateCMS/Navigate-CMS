@@ -418,6 +418,10 @@ function comments_form($item)
         {
             $("#comment-object_id").val(""); 
             $("#comment-object-text").val("");
+            
+            $("label[data-object_type=item]").hide();
+            $("label[data-object_type=product]").hide();
+            $("label[data-object_type="+$("#comment-object_type").val()+"]").show();
         }
 	');
 
@@ -436,12 +440,20 @@ function comments_form($item)
 
 	$navibars->add_tab_content_row(
 		array(
-			'<label>'.t(9, 'Content').'</label>',
+			'<label data-object_type="item">'.t(9, 'Content').'</label>'.
+            '<label data-object_type="product" style="display: none;">'.t(198, 'Product').'</label>',
 			$naviforms->textfield('comment-object-text', $title),
 		)
 	);
 																														
 	$layout->add_script('
+        if($("#comment-object_type").val()=="product")
+        {
+            $("label[data-object_type=item]")
+                .hide()
+                .next().show();
+        }
+	
 		$("#comment-object-text").autocomplete(
 		{
 			source: function(request, response)
