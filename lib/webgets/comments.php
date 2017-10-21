@@ -104,13 +104,20 @@ function nvweb_comments($vars=array())
     $out = '';
 
     // if the current page belongs to a structure entry
-    // we need to get the associated elements to retrieve and post its comments
-    // (because structure entry pages can't have associated comments)
-    // so, ONLY the FIRST element associated to a category can have comments in a structure entry page
+    // we need to get the associated objects to retrieve and post its comments
+    // (because structure pages can't have associated comments)
+    // so, ONLY the FIRST object associated to a category can have comments in a structure entry page
     // (of course if the element has its own page, it can have its own comments)
-    $element = $current['object'];
+    // NOTE: the following procedure does not work for a category of products
+    $object = $current['object'];
+    $object_type = $current['type'];
+    $object_id = $current['id'];
     if($current['type']=='structure')
-        $element = $element->elements(0); // item = structure->elements(first)
+    {
+        $object = $object->elements(0); // item = structure->elements(first)
+        $object_id = $object->id;
+        $object_type = 'item';
+    }
 
 
 	switch(@$vars['mode'])
@@ -208,8 +215,12 @@ function nvweb_comments($vars=array())
 				if(empty($vars['field-subscribe'])) $vars['field-subscribe'] = 'reply-subscribe';
 				if(empty($vars['field-reply_to']))  $vars['field-reply_to'] = 'reply-to-comment';
 
+                if(!empty($vars['object']))
+                    $object = $vars['object'];
+
+                // deprecated
                 if(!empty($vars['element']))
-                    $element = $vars['element'];
+                    $object = $vars['element'];
 
 				$comment_name = @$_REQUEST[$vars['field-name']];
 				$comment_email = @$_REQUEST[$vars['field-email']];
@@ -233,7 +244,7 @@ function nvweb_comments($vars=array())
 				}
 
 				$status = -1; // new comment, not approved
-				if(empty($element->comments_moderator))
+				if(empty($object->comments_moderator))
                     $status = 0; // all comments auto-approved
 
                 // remove any <nv /> or {{nv}} tag
@@ -244,9 +255,8 @@ function nvweb_comments($vars=array())
                 $comment = new comment();
                 $comment->id = 0;
                 $comment->website = $website->id;
-                // TODO: add support for PRODUCTS
-                $comment->object_type = "item";
-                $comment->object_id = $element->id;
+                $comment->object_type = $object_type;
+                $comment->object_id = $object_id;
                 $comment->user = (empty($webuser->id)? 0 : $webuser->id);
                 $comment->name = $comment_name;
                 $comment->email = filter_var($comment_email, FILTER_SANITIZE_EMAIL);
@@ -265,7 +275,7 @@ function nvweb_comments($vars=array())
                 if(isset($vars['field-properties-prefix']))
                 {
                     // check every possible property
-                    $e_properties = property::elements($element->template, 'comment');
+                    $e_properties = property::elements($object->template, 'comment');
                     for($ep=0; $ep < count($e_properties); $ep++)
                     {
                         if(isset($_POST[$vars['field-properties-prefix'] . $e_properties[$ep]->id]))
@@ -298,19 +308,20 @@ function nvweb_comments($vars=array())
 
                 $comment->insert();
                 if(!empty($properties))
-                    property::save_properties_from_array('comment', $comment->id, $element->template, $properties);
+                    property::save_properties_from_array('comment', $comment->id, $object->template, $properties);
 
-                // TODO: add support for PRODUCT type
-                // reload the element to retrieve the new comments
+                // reload the object to retrieve the new comments
                 if($comment->object_type == "product")
-                    $element = new product();
+                    $object = new product();
                 else
-                    $element = new item();
+                    $object = new item();
 
-                $element->load($comment->object_id);
+                $object->load($comment->object_id);
 
-                if($current['type']=='item' && !isset($vars['element']))
-                    $current['object'] = $element;
+                if( in_array($current['type'], array('item', 'product')) &&
+                    (!isset($vars['object']) && !isset($vars['element']))
+                )
+                    $current['object'] = $object;
 
                 // trigger the "new_comment" event through the extensions system
                 $events->trigger(
@@ -342,15 +353,14 @@ function nvweb_comments($vars=array())
                     }
                 }
 
-
                 $notify_addresses = $website->contact_emails;
 
-                if(!empty($element->comments_moderator))
-                    $notify_addresses[] = user::email_of($element->comments_moderator);
+                if(!empty($object->comments_moderator))
+                    $notify_addresses[] = user::email_of($object->comments_moderator);
 
                 $hash = sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails) );
 
-                $base_url = nvweb_source_url('element', $element->id);
+                $base_url = nvweb_source_url($current['type'], $current['id']);
 
                 // default colors
                 $background_color = '#E5F1FF';
@@ -365,10 +375,12 @@ function nvweb_comments($vars=array())
                 if(!empty($text_color_db))          $text_color = str_replace('"', '', $text_color_db);
                 if(!empty($title_color_db))         $title_color = str_replace('"', '', $title_color_db);
 
+                $fid = $object_type . "s"; // itemS, productS...
+
                 $message = navigate_compose_email(array(
                     array(
                         'title' => t(9, 'Content'),
-                        'content' => $element->dictionary[$current['lang']]['title']
+                        'content' => $object->dictionary[$current['lang']]['title']
                     ),
                     array(
                         'title' => $webgets[$webget]['translations']['name'],
@@ -388,7 +400,7 @@ function nvweb_comments($vars=array())
                     ),
                     array(
                         'footer' =>
-                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid=10&act=2&tab=5&id='.$element->id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
+                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid='.$fid.'&act=2&tab=5&id='.$object_id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
                             '<a style=" color: #008830" href="'.$base_url.'?nv_approve_comment&id='.$comment->id.'&hash='.$hash.'">'.t(258, "Publish").'</a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
@@ -411,7 +423,7 @@ function nvweb_comments($vars=array())
                         {
                             "@type": "ViewAction",
                             "name": "'.$webgets[$webget]['translations']['review_comments'].'",
-                            "url": "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid=10&act=2&tab=5&id='.$element->id.'"
+                            "url": "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid='.$fid.'&act=2&tab=5&id='.$object_id.'"
                         }
                     }
                     </script>
@@ -433,7 +445,7 @@ function nvweb_comments($vars=array())
 			break;
 
 		case 'reply':
-			if($element->comments_enabled_to==2 && empty($webuser->id))
+			if($object->comments_enabled_to==2 && empty($webuser->id))
 			{
 				// Post a comment form (unsigned users)
 				$out = '
@@ -480,7 +492,7 @@ function nvweb_comments($vars=array())
                 }
 
 			}
-			else if($element->comments_enabled_to > 0 && !empty($webuser->id))
+			else if($object->comments_enabled_to > 0 && !empty($webuser->id))
 			{
 				// Post a comment form (signed in users)
                 if(empty($vars['avatar_size']))
@@ -526,7 +538,7 @@ function nvweb_comments($vars=array())
                     );
                 }
 			}
-			else if($element->comments_enabled_to==1)
+			else if($object->comments_enabled_to==1)
 			{
 				$out = '<div class="comments-reply">
                             <div class="comments-reply-info">'.
@@ -596,16 +608,17 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
     else
         $orderby = "nvc.date_created ASC";
 
-    $element = $current['object'];
-    if($current['type']=='structure')
+    $object = $current['object'];
+    $object_id = $current['id'];
+    $object_type = $current['type'];
+
+    if($object_type == 'structure')
     {
-        $element = $element->elements(0); // item = structure->elements(first)
+        $object = $object->elements(0); // item = structure->elements(first)
+        $object_id = $object->id;
+        $object_type = "item";
     }
-    else if($current['type']=='item')
-    {
-        $element = new item();
-        $element->load($current['id']);
-    }
+
 
     if(strpos($order, 'hierarchy')!==false)
     {
@@ -618,7 +631,6 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
         // note 2: the only drawback is that offset/limit it's only taken into account for the root level comments, so the
         //         number of results is variable on each request; we found that an acceptable drawback
 
-        // TODO: add support for PRODUCT comments
         $DB->query('
             SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar,
                    (SELECT COUNT(nvcr.id) 
@@ -629,9 +641,9 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
               FROM nv_comments nvc
              LEFT OUTER JOIN nv_webusers nvwu
                           ON nvwu.id = nvc.user
-             WHERE nvc.website = ' . protect($website->id) . '
-               AND nvc.object_type = "item"
-               AND nvc.object_id = ' . protect($element->id) . '
+             WHERE nvc.website = '.protect($website->id).'
+               AND nvc.object_type = '.protect($object_type).'
+               AND nvc.object_id = '.protect($object_id).'
                AND nvc.status = 0
                AND nvc.reply_to = 0
             ORDER BY ' . $orderby . '
@@ -666,15 +678,14 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
     }
     else // plain list
     {
-        // TODO: add support for PRODUCT comments
         $DB->query('
             SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar
               FROM nv_comments nvc
              LEFT OUTER JOIN nv_webusers nvwu
                           ON nvwu.id = nvc.user
              WHERE nvc.website = ' . protect($website->id) . '
-               AND nvc.object_type = "item"
-               AND nvc.object_id = ' . protect($element->id) . '
+               AND nvc.object_type = '.protect($object_type).'
+               AND nvc.object_id = '.protect($object_id).'
                AND nvc.status = 0
             ORDER BY ' . $orderby . '
             LIMIT ' . $limit . '

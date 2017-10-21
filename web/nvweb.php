@@ -127,6 +127,7 @@ function nvweb_parse($request)
             'lang'               => $session['lang'],
             'route'              => $route,
             'object'             => '',
+            'type'               => '',
             'template'           => '',
             'category'           => '',
             'webuser'            => '',
