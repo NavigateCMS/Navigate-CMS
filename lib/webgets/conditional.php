@@ -472,6 +472,19 @@ function nvweb_conditional($vars=array())
             }
             break;
 
+        case 'product':
+            if(isset($vars['offer']))
+            {
+                $on_offer = $item->on_offer();
+                if(($vars['offer']=='true' || $vars['offer']=='1') && $on_offer)
+                    $out = $item_html;
+                else if(($vars['offer']=='false' || $vars['offer']=='0') && !$on_offer)
+                    $out = $item_html;
+                else
+                    $out = '';
+            }
+            break;
+
         default:
             // unknown nvlist_conditional, discard
             $out = '';

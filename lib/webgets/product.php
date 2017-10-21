@@ -211,29 +211,7 @@ function nvweb_product($vars=array())
 
         case 'price':
             $price = $product->get_price();
-
-            switch(@$vars['return'])
-            {
-                case 'value':
-                    $out = core_decimal2string($price);
-                    break;
-
-                case 'internal':
-                    $out = $price;
-                    break;
-
-                case 'currency':
-                    $out = product::currencies($product->base_price_currency);
-                    break;
-
-                default:
-                    $currency = product::currencies($product->base_price_currency, false);
-                    if($currency['placement'] == 'after')
-                        $out = core_decimal2string($price).' '.$currency['symbol'];
-                    else
-                        $out = $currency['symbol'].' '.core_decimal2string($price);
-            }
-
+            $out = core_price2string($price, $product->base_price_currency, @$vars['return']);
             break;
 
         case 'old_price':
@@ -248,33 +226,9 @@ function nvweb_product($vars=array())
                 $old_price += ($old_price / 100 * $product->tax_value);
 
             if($old_price == $current_price)
-            {
                 $out = "";
-            }
             else
-            {
-                switch (@$vars['return'])
-                {
-                    case 'value':
-                        $out = core_decimal2string($old_price);
-                        break;
-
-                    case 'internal':
-                        $out = $old_price;
-                        break;
-
-                    case 'currency':
-                        $out = product::currencies($product->base_price_currency);
-                        break;
-
-                    default:
-                        $currency = product::currencies($product->base_price_currency, false);
-                        if ($currency['placement'] == 'after')
-                            $out = core_decimal2string($old_price) . ' ' . $currency['symbol'];
-                        else
-                            $out = $currency['symbol'] . ' ' . core_decimal2string($old_price);
-                }
-            }
+                $out = core_price2string($old_price, $product->base_price_currency, @$vars['return']);
 
             break;
 
@@ -360,6 +314,9 @@ function nvweb_product($vars=array())
                 }
             }
 			break;
+
+        default:
+            break;
 	}
 
 	return $out;

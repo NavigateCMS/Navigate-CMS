@@ -133,26 +133,26 @@ class product
         $this->sku              =  $main->sku;  // must be unique!
         $this->barcode          =  $main->barcode;
 
-        $this->width            =  $main->width;
-        $this->height           =  $main->height;
-        $this->depth            =  $main->depth;
+        $this->width            =  $main->width + 0;
+        $this->height           =  $main->height + 0;
+        $this->depth            =  $main->depth + 0;
         $this->size_unit        =  $main->size_unit;
 
-        $this->weight           =  $main->weight;
+        $this->weight           =  $main->weight + 0;
         $this->weight_unit      =  $main->weight_unit;
 
         $this->type             =  $main->type;
         $this->inventory        =  $main->inventory;
-        $this->stock_available  =  $main->stock_available; // including all variants
+        $this->stock_available  =  $main->stock_available + 0; // including all variants
 
-        $this->base_price           =  $main->base_price;
+        $this->base_price           =  $main->base_price + 0;
         $this->base_price_currency  =  $main->base_price_currency;
         $this->tax_class            =  $main->tax_class;
-        $this->tax_value            =  $main->tax_value;
-        $this->cost                 =  $main->cost;
+        $this->tax_value            =  $main->tax_value + 0;
+        $this->cost                 =  $main->cost + 0;
         $this->cost_currency        =  $main->cost_currency;
 
-        $this->offer_price           =  $main->offer_price;
+        $this->offer_price           =  $main->offer_price + 0;
         $this->offer_price_currency  =  $main->offer_price_currency;
         $this->offer_begin_date      =  $main->offer_begin_date;
         $this->offer_end_date        =  $main->offer_end_date;
@@ -792,6 +792,20 @@ class product
         // price is base_price + taxes
         // except if the product is on sale, then is offer_price + taxes
         $price = $this->base_price;
+
+        if($this->on_offer())
+            $price = $this->offer_price;
+
+        if($include_tax && $this->tax_class == "custom")
+            $price += ($price / 100 * $this->tax_value);
+
+        return $price;
+    }
+
+    public function on_offer()
+    {
+        $on_offer = false;
+
         if(!empty($this->offer_price))
         {
             // check if the date is in the valid period of the offer
@@ -799,13 +813,10 @@ class product
                 (empty($this->offer_begin_date) || core_time() >= $this->offer_begin_date) &&
                 (empty($this->offer_end_date) || core_time() <= $this->offer_end_date)
             )
-                $price = $this->offer_price;
+                $on_offer = true;
         }
 
-        if($include_tax && $this->tax_class == "custom")
-            $price += ($price / 100 * $this->tax_value);
-
-        return $price;
+        return $on_offer;
     }
 
     public static function size_units()
