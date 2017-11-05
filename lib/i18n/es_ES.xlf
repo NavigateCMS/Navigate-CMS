@@ -3704,7 +3704,7 @@
 
 			<trans-unit id="738" approved="yes">
 				<source>Checkout</source>
-				<target>Pago</target>
+				<target>Confirmación</target>
 			</trans-unit>
 
 			<trans-unit id="739" approved="yes">
@@ -3715,6 +3715,41 @@
 			<trans-unit id="740" approved="yes">
 				<source>Error</source>
 				<target>Error</target>
+			</trans-unit>
+
+			<trans-unit id="741" approved="yes">
+				<source>Price</source>
+				<target>Precio</target>
+			</trans-unit>
+
+			<trans-unit id="742" approved="yes">
+				<source>Your shopping cart is empty</source>
+				<target>No hay ningún producto en la cesta</target>
+			</trans-unit>
+
+			<trans-unit id="743" approved="yes">
+				<source>The amount excludes shipping, which is applied at checkout.</source>
+				<target>El importe excluye el envío, que se aplica en el paso de confirmación.</target>
+			</trans-unit>
+
+			<trans-unit id="744" approved="yes">
+				<source>Apply</source>
+				<target>Aplicar</target>
+			</trans-unit>
+
+			<trans-unit id="745" approved="yes">
+				<source>Invalid or nonexistent coupon</source>
+				<target>Cupón inválido o inexistente</target>
+			</trans-unit>
+
+			<trans-unit id="746" approved="yes">
+				<source>Non-redeemable coupon</source>
+				<target>Cupón no canjeable</target>
+			</trans-unit>
+
+			<trans-unit id="747" approved="yes">
+				<source>Reply</source>
+				<target>Responder</target>
 			</trans-unit>
 
 		</body>

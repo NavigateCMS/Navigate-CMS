@@ -3718,6 +3718,41 @@
 				<target>Error</target>
 			</trans-unit>
 
+			<trans-unit id="741" approved="yes">
+				<source>Price</source>
+				<target>Price</target>
+			</trans-unit>
+
+			<trans-unit id="742" approved="yes">
+				<source>Your shopping cart is empty</source>
+				<target>Your shopping cart is empty</target>
+			</trans-unit>
+
+			<trans-unit id="743" approved="yes">
+				<source>The amount excludes shipping, which is applied at checkout.</source>
+				<target>The amount excludes shipping, which is applied at checkout.</target>
+			</trans-unit>
+
+			<trans-unit id="744" approved="yes">
+				<source>Apply</source>
+				<target>Apply</target>
+			</trans-unit>
+
+			<trans-unit id="745" approved="yes">
+				<source>Invalid or nonexistent coupon</source>
+				<target>Invalid or nonexistent coupon</target>
+			</trans-unit>
+
+			<trans-unit id="746" approved="yes">
+				<source>Non-redeemable coupon</source>
+				<target>Non-redeemable coupon</target>
+			</trans-unit>
+
+			<trans-unit id="747" approved="yes">
+				<source>Reply</source>
+				<target>Reply</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

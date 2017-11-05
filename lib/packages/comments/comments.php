@@ -221,6 +221,21 @@ function run()
             core_terminate();
             break;
 
+        case 'json_get_comment': // json get comment by ID
+            $DB->query('SELECT c.*
+						  FROM nv_comments c
+						  LEFT JOIN nv_webusers u ON c.user = u.id
+						 WHERE
+						    c.website = '.$website->id.' AND
+						    c.id = '.protect($_REQUEST['id']));
+
+            $comment = $DB->first();
+
+            echo json_encode($comment);
+
+            core_terminate();
+            break;
+
         case "find_object_titles":
             // json search title request (for "item" autocomplete)
 			$DB->query('SELECT DISTINCT node_id as id, text as label, text as value
@@ -345,6 +360,12 @@ function comments_form($item)
 	}
 	else
 	{
+        $navibars->add_actions(
+            array(
+                '<a href="?fid=comments&act=edit&reply_to='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/comments_add.png"> '.t(747, 'Reply').'</a>'
+            )
+        );
+
 		$navibars->add_actions(
 			array(
 				'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
@@ -387,6 +408,20 @@ function comments_form($item)
 			'search_form'
 		)
 	);
+
+	if(empty($item->id) && !empty($_REQUEST['reply_to']))
+    {
+        $c = new comment();
+        $c->load($_REQUEST['reply_to']);
+
+        if($c->website == $website->id)
+        {
+            // we are creating a new comment in reply to another comment
+            $item->object_type = $c->object_type;
+            $item->object_id = $c->object_id;
+            $item->reply_to = $c->id;
+        }
+    }
 
 	$navibars->form();
 
@@ -571,7 +606,8 @@ function comments_form($item)
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(649, 'In reply to').'</label>',
-        $naviforms->selectfield('comment-reply_to', $item->reply_to, array($reply_to_comment), $item->reply_to, null, false, null, null, false)
+        $naviforms->selectfield('comment-reply_to', $item->reply_to, array($reply_to_comment), $item->reply_to, null, false, null, null, false),
+        '<img style="cursor: pointer;" id="comment-reply_to-open_window" height="16" align="absmiddle" width="16" src="img/icons/silk/application_xp.png" />'
     ));
 
     if(empty($item->date_created))
@@ -618,6 +654,32 @@ function comments_form($item)
 			escapeMarkup: function (markup) { return markup; },
             triggerChange: true,
             allowClear: true
+        });
+        
+        $("#comment-reply_to-open_window").on("click", function()
+        {      
+            var in_reply_to = $("#comment-reply_to").val();
+            var title = $("#select2-comment-reply_to-container").html();
+            title = title.replace(/>×/, ">");
+             
+            if(in_reply_to && in_reply_to > 0)
+            {
+                $.getJSON(
+                    "?fid=comments&act=json_get_comment&id=" + in_reply_to,
+                    function(data)
+                    {
+                        $("<div>"+data.message+"</div>").dialog({
+                            title: title,
+                            width: 480,
+                            height: 320,
+                            classes: 
+                            {
+                                "ui-dialog": "navi-ui-widget-shadow"
+                            }
+                        });
+                    }
+                );
+            }            
         });
     ');
 									

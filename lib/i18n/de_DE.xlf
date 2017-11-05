@@ -3717,6 +3717,41 @@
 				<target>Error</target>
 			</trans-unit>
 
+			<trans-unit id="741" approved="yes">
+				<source>Price</source>
+				<target>Preis</target>
+			</trans-unit>
+
+			<trans-unit id="742">
+				<source>Your shopping cart is empty</source>
+				<target>Ihr Warenkorb ist leer</target>
+			</trans-unit>
+
+			<trans-unit id="743">
+				<source>The amount excludes shipping, which is applied at checkout.</source>
+				<target>Der Betrag ist ohne Versandkosten, die bei der Kasse.</target>
+			</trans-unit>
+
+			<trans-unit id="744">
+				<source>Apply</source>
+				<target>Anwenden</target>
+			</trans-unit>
+
+			<trans-unit id="745">
+				<source>Invalid or nonexistent coupon</source>
+				<target>Ungültiger oder nicht vorhandener Coupon</target>
+			</trans-unit>
+
+			<trans-unit id="746">
+				<source>Non-redeemable coupon</source>
+				<target>Unkündbarer gutschein</target>
+			</trans-unit>
+
+			<trans-unit id="747">
+				<source>Reply</source>
+				<target>Erwiderung</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

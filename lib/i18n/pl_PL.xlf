@@ -3717,6 +3717,41 @@
                 <target>Usterka</target>
             </trans-unit>
 
+            <trans-unit id="741">
+                <source>Price</source>
+                <target>Koszt</target>
+            </trans-unit>
+
+            <trans-unit id="742">
+                <source>Your shopping cart is empty</source>
+                <target>Twój koszyk zakupowy pusty</target>
+            </trans-unit>
+
+            <trans-unit id="743">
+                <source>The amount excludes shipping, which is applied at checkout.</source>
+                <target>Kwota ta nie obejmuje wysyłki, którą stosuje się przy kasie.</target>
+            </trans-unit>
+
+            <trans-unit id="744">
+                <source>Apply</source>
+                <target>Obowiązywać</target>
+            </trans-unit>
+
+            <trans-unit id="745">
+                <source>Invalid or nonexistent coupon</source>
+                <target>Kupon niesprawny lub nieistniejący</target>
+            </trans-unit>
+
+            <trans-unit id="746">
+                <source>Non-redeemable coupon</source>
+                <target>Kupon bezzwrotny</target>
+            </trans-unit>
+
+            <trans-unit id="747">
+                <source>Reply</source>
+                <target>Odzew</target>
+            </trans-unit>
+
         </body>
 
     </file>

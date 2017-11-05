@@ -3716,7 +3716,7 @@
 
             <trans-unit id="738" approved="yes">
                 <source>Checkout</source>
-                <target>Pagament</target>
+                <target>Confirmació</target>
             </trans-unit>
 
             <trans-unit id="739" approved="yes">
@@ -3727,6 +3727,42 @@
             <trans-unit id="740" approved="yes">
                 <source>Error</source>
                 <target>Error</target>
+            </trans-unit>
+
+            <trans-unit id="741" approved="yes">
+                <source>Price</source>
+                <target>Preu</target>
+            </trans-unit>
+
+            <trans-unit id="742" approved="yes">
+                <source>Your shopping cart is empty</source>
+                <target>No hi ha cap producte a la cistella</target>
+            </trans-unit>
+
+            <trans-unit id="743" approved="yes">
+                <source>The amount excludes shipping, which is applied at checkout.</source>
+                <target>L'import exclou l'enviament, que s'aplica en el pas de confirmació.</target>
+            </trans-unit>
+
+            <trans-unit id="744" approved="yes">
+                <source>Apply</source>
+                <target>Aplicar</target>
+            </trans-unit>
+
+            <trans-unit id="745" approved="yes">
+                <source>Invalid or nonexistent coupon</source>
+                <target>Cupó no vàlid o inexistent</target>
+            </trans-unit>
+
+            <trans-unit id="746" approved="yes">
+                <source>Non-redeemable coupon</source>
+                <target>Cupó no bescanviable</target>
+            </trans-unit>
+
+
+            <trans-unit id="747" approved="yes">
+                <source>Reply</source>
+                <target>Respondre</target>
             </trans-unit>
 
         </body>
