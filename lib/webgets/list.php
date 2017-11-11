@@ -1016,38 +1016,26 @@ function nvweb_list($vars=array())
     if(count($rs)==0)
     {
         // special case, no results found
-        // get the nv list template and parse only the conditional: <nvlist_conditional by="count" value="empty"> (or value=0)
+        // get the nv list template and parse only the following conditional: <nvlist_conditional by="count" value="empty"> (or value=0)
         $item_html = $vars['template'];
 
         // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
         unset($nested_condition_fragments);
         list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html, array('count'));
 
-        // remove all tags except (selfclosing) nvlist_conditional_placeholder
-        $item_html = strip_tags_content($item_html, '<nvlist_conditional_placeholder>');
+        // if we can't find a suitable conditional, let's assume the list content will be empty
+        $item_html = "";
 
-        $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing=true
-
-        while(!empty($conditional_placeholder_tags))
+        // check every nvlist_conditional found, looking for count = [0 or empty]
+        // we only process the first found!
+        foreach($nested_conditional_fragments as $ncf)
         {
-            $tag = $conditional_placeholder_tags[0];
-            $conditional = $nested_conditional_fragments[$tag["attributes"]["id"]];
-
-            $conditional_html_output = nvweb_list_parse_conditional(
-                $conditional,
-                NULL,
-                $conditional['nvlist_conditional_template'],
-                $i,
-                count($rs)
-            );
-
-            $item_html = str_replace(
-                $tag["full_tag"],
-                $conditional_html_output,
-                $item_html
-            );
-
-            $conditional_placeholder_tags = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
+            if( $ncf['attributes']['value'] == '0' ||
+                $ncf['attributes']['value'] == 'empty')
+            {
+                $item_html = $ncf['nvlist_conditional_template'];
+                break;
+            }
         }
 
         $out[] = $item_html;

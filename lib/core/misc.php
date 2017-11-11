@@ -683,6 +683,7 @@ function number2alphabet($n)
  *
  * source: http://php.net/manual/es/function.strip-tags.php#86964
  * Thanks to Mariusz Tarnaski
+ * note: fails removing closing tags in some cases; this function is deprecated and not used anymore in navigate
  *
  * @param string $text source html
  * @param string $tags list of tags to allow or deny
@@ -712,6 +713,7 @@ function strip_tags_content($text, $tags = '', $invert = FALSE)
 
     return $text;
 }
+
 
 
 /**
