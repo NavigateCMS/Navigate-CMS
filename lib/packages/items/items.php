@@ -1650,7 +1650,7 @@ function items_form($item)
                             $translate_menu,
                             '<button onclick="navigate_items_copy_from_dialog(\'section-'.$section['id'].'-'.$lang.'\'); return false;"><img src="img/icons/silk/page_white_copy.png" align="absmiddle"> '.t(189, 'Copy from').'...</button> ',
                             '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
-                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                            (!empty($theme->content_samples)? '<button onclick="navigate_properties_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>',
                             '<br />'
                         ),
@@ -1667,7 +1667,7 @@ function items_form($item)
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',
                             '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
-                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                            (!empty($theme->content_samples)? '<button onclick="navigate_properties_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>',
                             '<br />'
                         ),
@@ -1709,7 +1709,7 @@ function items_form($item)
                             '<label>&nbsp;</label>',
 	                        $translate_menu,
                             '<button onclick="navigate_items_copy_from_history_dialog(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/time_green.png" align="absmiddle"> '.t(40, 'History').'</button> ',
-                            (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                            (!empty($theme->content_samples)? '<button onclick="navigate_properties_copy_from_theme_samples(\'section-'.$section['id'].'-'.$lang.'\', \''.$section['id'].'\', \''.$lang.'\', \''.$section['editor'].'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                             '</div>'
                         ),
 						'',
@@ -1842,8 +1842,6 @@ function items_form($item)
 
 		$layout->add_script('
 			var template_sections = '.json_encode($template->sections).';
-		    var theme_content_samples = '.json_encode($theme->content_samples).';
-		    var website_theme = "'.$website->theme.'";
 		');
 
 		$category = new structure();		
@@ -1923,23 +1921,6 @@ function items_form($item)
 					</iframe>
 					<div id="navigate_items_copy_from_history_text_raw" style=" display: none; "></div>
 				</div>			
-			</div>
-
-			<div id="navigate_items_copy_from_theme_samples" style=" display: none; ">
-				<div class="navigate-form-row">
-					<label>'.t(79, 'Template').'</label>
-					<select id="navigate_items_copy_from_theme_samples_options"
-							name="navigate_items_copy_from_theme_samples_options"
-							onchange="navigate_items_copy_from_theme_samples_preview(this.value, $(this).attr(\'type\'), $(this).find(\'option:selected\').attr(\'source\'));">
-					</select>
-				</div>
-				<div class="navigate-form-row">
-					<div id="navigate_items_copy_from_theme_samples_text"
-						 name="navigate_items_copy_from_theme_samples_text"
-						 style="border: 1px solid #CCCCCC; float: left; height: auto; min-height: 20px; overflow: auto; width: 97%; padding: 3px; background: #f7f7f7;">
-					</div>
-					<div id="navigate_items_copy_from_theme_samples_text_raw" style=" display: none; "></div>
-				</div>
 			</div>
 		');
 		
@@ -2120,6 +2101,11 @@ function items_form($item)
 			$navibars->add_tab(t(77, "Properties")); // tab #4
 			$navibars->add_tab_content($properties_html);
 		}
+		else
+        {
+            // we need to load helper functions anyway
+            navigate_property_layout_scripts();
+        }
 
 		if($template->comments > 0 || $template->comments=='true' || $template->comments===true || is_object($template->comments))
 		{

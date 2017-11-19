@@ -1418,7 +1418,7 @@ function blocks_form($item)
                         '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                         '<label>&nbsp;</label>',
                         $translate_menu,
-                        (!empty($theme->content_samples)? '<button onclick="navigate_blocks_copy_from_theme_samples(\'trigger-content-'.$lang.'\', \'trigger\', \''.$lang.'\', \''."tinymce".'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
+                        (!empty($theme->content_samples)? '<button onclick="navigate_properties_copy_from_theme_samples(\'trigger-content-'.$lang.'\', \'trigger\', \''.$lang.'\', \''."tinymce".'\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : ''),
                         '</div>',
                         '<br />'
                     ),
@@ -1749,30 +1749,6 @@ function blocks_form($item)
 					});
             	');
             }
-
-            $layout->add_content('           
-                <div id="navigate_blocks_copy_from_theme_samples" style=" display: none; ">
-                    <div class="navigate-form-row">
-                        <label>'.t(79, 'Template').'</label>
-                        <select id="navigate_blocks_copy_from_theme_samples_options"
-                                name="navigate_blocks_copy_from_theme_samples_options"
-                                onchange="navigate_blocks_copy_from_theme_samples_preview(this.value, $(this).attr(\'type\'), $(this).find(\'option:selected\').attr(\'source\'));">
-                        </select>
-                    </div>
-                    <div class="navigate-form-row">
-                        <div id="navigate_blocks_copy_from_theme_samples_text"
-                             name="navigate_blocks_copy_from_theme_samples_text"
-                             style="border: 1px solid #CCCCCC; float: left; height: auto; min-height: 20px; overflow: auto; width: 97%; padding: 3px; background: #f7f7f7;">
-                        </div>
-                        <div id="navigate_blocks_copy_from_theme_samples_text_raw" style=" display: none; "></div>
-                    </div>
-                </div>
-            ');
-
-            $layout->add_script('
-                var theme_content_samples = '.json_encode($theme->content_samples).';
-                var website_theme = "'.$website->theme.'";
-            ');
 	        break;
   	}
 
@@ -1798,6 +1774,11 @@ function blocks_form($item)
         {
             $navibars->add_tab(t(77, "Properties"));
             $navibars->add_tab_content($properties_html);
+        }
+        else
+        {
+            // need to load auxiliary functions anyway
+            navigate_property_layout_scripts();
         }
     }
 

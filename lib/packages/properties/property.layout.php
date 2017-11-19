@@ -652,7 +652,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                 $field[] = '<label>&nbsp;</label>';
                 $field[] = $translate_menu;
                 $field[] = '<button class="navigate-form-row-property-action" data-field="property-'.$property->id.'-'.$lang.'" data-action="copy-from"><img src="img/icons/silk/page_white_copy.png" align="absmiddle">'.t(189, 'Copy from').'...</button> ';
-                $field[] = (!empty($theme->content_samples)? '<button onclick="navigate_items_copy_from_theme_samples(\'property-'.$property->id.'-'.$lang.'\', \''.$property->id.'\', \''.$lang.'\', \'tinymce\'); return false;"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : '');
+                $field[] = (!empty($theme->content_samples)? '<button class="navigate-form-row-property-action" data-action="theme-samples" data-property-id="'.$property->id.'" data-property-lang="'.$lang.'" data-property-field="tinymce"><img src="img/icons/silk/rainbow.png" align="absmiddle"> '.t(553, 'Fragments').' | '.$theme->title.'</button> ' : '');
                 $field[] = '</div>';
 
                 $field[] = '</div>'; // divformrow
@@ -1382,6 +1382,7 @@ function navigate_property_layout_scripts($website_id="")
 {
 	global $layout;
 	global $website;
+	global $theme;
     global $current_version;
 
 	$ws = $website;
@@ -1444,7 +1445,29 @@ function navigate_property_layout_scripts($website_id="")
 		</div>
 	');
 
+	$layout->add_content('
+	    <div id="navigate_properties_copy_from_theme_samples" style=" display: none; ">
+            <div class="navigate-form-row">
+                <label>'.t(79, 'Template').'</label>
+                <select id="navigate_properties_copy_from_theme_samples_options"
+                        name="navigate_properties_copy_from_theme_samples_options"
+                        onchange="navigate_properties_copy_from_theme_samples_preview(this.value, $(this).attr(\'type\'), $(this).find(\'option:selected\').attr(\'source\'));">
+                </select>
+            </div>
+            <div class="navigate-form-row">
+                <div id="navigate_properties_copy_from_theme_samples_text"
+                     name="navigate_properties_copy_from_theme_samples_text"
+                     style="border: 1px solid #CCCCCC; float: left; height: auto; min-height: 20px; overflow: auto; width: 97%; padding: 3px; background: #f7f7f7;">
+                </div>
+                <div id="navigate_properties_copy_from_theme_samples_text_raw" style=" display: none; "></div>
+            </div>
+        </div>
+	');
+
     $layout->add_script('
+        var theme_content_samples = '.json_encode($theme->content_samples).';
+        var website_theme = "'.$website->theme.'";
+        
 	    $.ajax({
 	        type: "GET",
 	        dataType: "script",
@@ -1452,17 +1475,39 @@ function navigate_property_layout_scripts($website_id="")
 	        url: "lib/packages/properties/properties.js?r='.$current_version->revision.'",
 	        complete: function()
 	        {
-                $(".navigate-form-row-property-action[data-action=copy_from]").on("click", function(e)
-                {
-                    var that = this;
-                
-                    e.stopPropagation();
-                    e.preventDefault();
-                    
-                    if(!$(this).parent().hasClass("navigate-form-row"))
-                        that = $(this).parent();
-                    
-                    navigate_properties_copy_from_dialog(that);
+                $(".navigate-content").on("click", "button.navigate-form-row-property-action", function(e)
+                {                                      
+                    switch($(this).data("action"))
+                    {
+                        case "copy-from":                                    
+                            e.stopPropagation();
+                            e.preventDefault();                        
+                            
+                            var that = this;
+                            if(!$(this).parent().hasClass("navigate-form-row"))
+                                that = $(this).parent();
+                            
+                            navigate_properties_copy_from_dialog(that);                                  
+                            return false;
+                            break;
+                            
+                        case "theme-samples":
+                            e.stopPropagation();
+                            e.preventDefault();                        
+                                                            
+                            navigate_properties_copy_from_theme_samples( 
+                                "property-" + $(this).data("property-id") + "-" + $(this).data("property-lang"), 
+                                $(this).data("property-id"), 
+                                $(this).data("property-lang"), 
+                                $(this).data("property-field") 
+                            );
+                            
+                            return false;
+                            break;
+                            
+                        default:
+                            break;             
+                    }
                 });
 	        }
 	    });
