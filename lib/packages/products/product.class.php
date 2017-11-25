@@ -255,7 +255,7 @@ class product
 				$gallery_items[0][$item][$lang] = $_REQUEST['products-gallery-item-'.$item.'-dictionary-'.$lang];
 			}
 		}
-		
+
 		$this->galleries = $gallery_items;
 		// galleries[0] = array( [id-file] => array(es => '', ca => '',.. ), [id-file-2] => array... )
 

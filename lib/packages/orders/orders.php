@@ -130,7 +130,7 @@ function run()
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
 			}
-		
+
 			$out = orders_form($object);
 			break;
 					
@@ -322,8 +322,6 @@ function orders_form($object)
             $naviforms->selectfield('status', array_keys(order::status()), array_values(order::status()), $object->status, "navigate_orders_status_change();")
         )
     );
-
-    $object->send_customer_notification();
 
     $navibars->add_tab_content_row(
         array(

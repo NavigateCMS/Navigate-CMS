@@ -1251,13 +1251,11 @@ class property
 	public static function countries($lang="", $alpha3=false)
 	{
 		global $DB;
-		
-		// static function can be called from navigate or from a webget (user then is not a navigate user)
-		if(empty($lang)) 
-		{
-			global $user;
+        global $user;
+
+        // static function can be called from navigate or from a webget (user then is not a navigate user)
+		if(empty($lang))
 			$lang = $user->language;
-		}
 
         $code = 'country_code';
         if($alpha3)
@@ -1289,6 +1287,31 @@ class property
 		}
 		
 		return $out;
+	}
+
+	public static function countries_regions($country_id="")
+	{
+		global $DB;
+
+		// note: regions have no translation to any language right now
+
+        $country_query = " 1=1 ";
+        if(!empty($country_id))
+            $country_query = ' AND r.country = '.protect($country_id);
+
+		$DB->query('
+            SELECT r.`numeric` AS region_id, c.country_code, r.name
+            FROM nv_countries c, nv_countries_regions r
+            WHERE c.lang = "en" AND
+                  c.`numeric` = r.country AND
+                  r.lang = "" AND
+                  '.$country_query.'
+            ORDER BY name ASC
+        ');
+
+		$rs = $DB->result();
+
+		return $rs;
 	}
 
     public static function languages()

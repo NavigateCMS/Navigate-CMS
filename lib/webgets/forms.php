@@ -76,7 +76,7 @@ function nvweb_forms($vars=array())
             break;
 
     }
-    
+
 	return $out;
 }
 
