@@ -252,7 +252,8 @@ class feed
 			$image->title = $feed->title;
 			$feed->image = $image;
 		}
-	
+
+		// TODO: include products in feed content
 		if(!empty($item->categories[0]))
 		{			
 			$limit = intval($item->entries);		 

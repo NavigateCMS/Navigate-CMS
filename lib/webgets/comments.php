@@ -119,7 +119,6 @@ function nvweb_comments($vars=array())
         $object_type = 'item';
     }
 
-
 	switch(@$vars['mode'])
 	{
 		case 'process':
@@ -207,7 +206,7 @@ function nvweb_comments($vars=array())
 
 			if($_REQUEST['form-type']=='comment-reply' || isset($_POST[$vars['field-message']]))
 			{
-				// add comment
+				// user wants to add a new comment
 				if(empty($vars['field-name']))      $vars['field-name'] = 'reply-name';
 				if(empty($vars['field-email']))     $vars['field-email'] = 'reply-email';
 				if(empty($vars['field-url']))       $vars['field-url'] = 'reply-url';
@@ -215,7 +214,8 @@ function nvweb_comments($vars=array())
 				if(empty($vars['field-subscribe'])) $vars['field-subscribe'] = 'reply-subscribe';
 				if(empty($vars['field-reply_to']))  $vars['field-reply_to'] = 'reply-to-comment';
 
-                if(!empty($vars['object']))
+				// the following is only used in direct PHP calls to nvweb_comments()
+                if(!empty($vars['object']) && $vars['object']!='nvweb')
                     $object = $vars['object'];
 
                 // deprecated
@@ -244,6 +244,7 @@ function nvweb_comments($vars=array())
 				}
 
 				$status = -1; // new comment, not approved
+
 				if(empty($object->comments_moderator))
                     $status = 0; // all comments auto-approved
 
