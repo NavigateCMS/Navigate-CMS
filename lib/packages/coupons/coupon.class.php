@@ -92,7 +92,6 @@ class coupon
         }
     }
 
-
     public function save()
     {
         if(!empty($this->id))
@@ -217,6 +216,95 @@ class coupon
 
         if($type='json')
             $out = json_encode($out);
+
+        return $out;
+    }
+
+    public function redeemable($cart, $webuser)
+    {
+        global $website;
+        global $DB;
+
+        // 1/ coupon matches the current website
+        $redeemable = true;
+
+        if($this->website != $website->id)
+            $redeemable = false;
+
+        // 2/ coupon currency matches the current cart currency
+        if($this->currency != $cart['currency'])
+            $redeemable = false;
+
+        // 3/ check dates
+        $now = core_time();
+
+        if( !empty($this->date_begin) && $now < $this->date_begin)
+            $redeemable = false;
+
+        if( !empty($this->date_end) && $now > $this->date_end)
+            $redeemable = false;
+
+        // 4/ minimum spend
+        // TODO: check currencies?
+        if( !empty($this->minimum_spend) && $cart['subtotal'] < $this->minimum_spend )
+            $redeemable = false;
+
+        // 5/ check webuser usage
+        if( !empty($this->times_allowed_customer) )
+        {
+            $times_used_by_customer = $DB->query_single(
+                'COUNT(*)',
+                'nv_orders',
+                ' 
+                    website = '.protect($website->id).' AND
+                    webuser = '.protect($webuser).' AND 
+                    coupon = '.protect($this->id)
+            );
+
+            if($times_used_by_customer > $this->times_allowed_customer)
+                $redeemable = false;
+        }
+
+        // 6/ check global orders usage
+        if( !empty($this->times_allowed_globally) )
+        {
+            $times_used_globally = $DB->query_single(
+                'COUNT(*)',
+                'nv_orders',
+                ' 
+                    website = '.protect($website->id).' AND
+                    coupon = '.protect($this->id)
+            );
+
+            if($times_used_globally > $this->times_allowed_globally)
+                $redeemable = false;
+        }
+
+        return $redeemable;
+    }
+
+    public static function find($code)
+    {
+        global $DB;
+        global $website;
+
+        $DB->query('
+            SELECT * 
+            FROM nv_coupons 
+            WHERE website = '.protect($website->id).' AND
+                  code = '.protect($code),
+            'object'
+        );
+
+        $rs = $DB->result();
+        $out = false;
+
+        if(!empty($rs))
+        {
+            $coupon = new coupon();
+            $coupon->load_from_resultset($rs);
+            $out = $coupon;
+        }
 
         return $out;
     }
