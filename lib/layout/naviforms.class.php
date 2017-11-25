@@ -587,6 +587,10 @@ class naviforms
 
 				toolbar_items_size: "small",
 				
+				mobile: {
+                    theme: "mobile"
+                },
+				
 				// forced fix to avoid tinymce adding <p> element on non block elements (span, i, etc)
 				// needed mainly for Codemirror plugin, but force_p_newlines is deprecated by the TinyMCE team
 				forced_root_block: "",
