@@ -81,8 +81,6 @@ class structure
 	
 	public function load_from_post()
 	{
-		global $DB;
-
 		if(intval($_REQUEST['parent'])!=$this->id)	// protection against selecting this same category as parent of itself
 			$this->parent 		= intval($_REQUEST['parent']);
 			
@@ -118,8 +116,7 @@ class structure
 				$this->paths[substr($key, strlen('path-'))] = $value;
 		}		
 	}
-	
-	
+
 	public function save()
 	{
 		if(!empty($this->id))
@@ -131,6 +128,9 @@ class structure
 	public function delete()
 	{
 		global $DB;
+		global $events;
+
+		$affected_rows = 0;
 
 		if(!empty($this->id))
 		{
@@ -153,15 +153,29 @@ class structure
 					  AND website = '.$this->website.'
 					LIMIT 1'
 			);
-		}
-		
-		return $DB->get_affected_rows();		
+
+            $affected_rows = $DB->get_affected_rows();
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'structure',
+                    'delete',
+                    array(
+                        'structure' => $this
+                    )
+                );
+            }
+
+        }
+		return $affected_rows;
 	}
 	
 	public function insert()
 	{
 		global $DB;
 		global $website;
+		global $events;
 
 		if(empty($this->website))
 			$this->website = $website->id;
@@ -230,6 +244,17 @@ class structure
 
 		webdictionary::save_element_strings('structure', $this->id, $this->dictionary, $this->website);
    		path::saveElementPaths('structure', $this->id, $this->paths, $this->website);
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'structure',
+                'save',
+                array(
+                    'structure' => $this
+                )
+            );
+        }
 		
 		return true;
 	}
@@ -237,7 +262,7 @@ class structure
 	public function update()
 	{
 		global $DB;
-		global $website;
+		global $events;
 
         $groups = '';
         if(is_array($this->groups))
@@ -280,10 +305,23 @@ class structure
 			)
 		);
 			      
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+		    throw new Exception($DB->get_last_error());
 		
 		webdictionary::save_element_strings('structure', $this->id, $this->dictionary, $this->website);
 		path::saveElementPaths('structure', $this->id, $this->paths, $this->website);
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'structure',
+                'save',
+                array(
+                    'structure' => $this
+                )
+            );
+        }
+
 		return true;
 	}
 
@@ -359,7 +397,6 @@ class structure
               (access = 0 OR access = '.$access.$access_extra.')
             ');
 
-
         return $out;
     }
 	
@@ -374,7 +411,7 @@ class structure
 		$ws = new website();
 		$ws->load($ws_id);
 
-        // TODO: try to implement a cache to avoid extra database queries
+        // TODO: consider implementing a cache to avoid extra database queries
 		$DB->query('
             SELECT *
               FROM nv_structure
@@ -689,8 +726,6 @@ class structure
 
     public function property_exists($property_name)
     {
-        global $DB;
-
         // load properties if not already done
         if(empty($this->properties))
             $this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);

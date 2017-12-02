@@ -147,7 +147,6 @@ class item
 
 		$template = $this->load_template();
 
-		//$fields = array('title', 'body');
 		$fields = array('title', 'tags');
 		
 		if(!is_array($template->sections))
@@ -213,8 +212,7 @@ class item
 		$this->galleries = $gallery_items;
 		// galleries[0] = array( [id-file] => array(es => '', ca => '',.. ), [id-file-2] => array... )
 	}
-	
-	
+
 	public function save()
 	{
 		if(!empty($this->id))
@@ -227,20 +225,23 @@ class item
 	{
 		global $DB;
 		global $user;
+		global $events;
+
+		$affected_rows = 0;
 
 		if($user->permission("items.delete") == 'false')
 			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
 
 		if(!empty($this->id) && !empty($this->website))
-		{
-			// remove dictionary elements
-			webdictionary::save_element_strings('item', $this->id, array(), $this->website);
-			
-			// remove path elements
-			path::saveElementPaths('item', $this->id, array(), $this->website);
-			
-			// remove all votes assigned to element
-			webuser_vote::remove_object_votes('item', $this->id);
+        {
+            // remove dictionary elements
+            webdictionary::save_element_strings('item', $this->id, array(), $this->website);
+
+            // remove path elements
+            path::saveElementPaths('item', $this->id, array(), $this->website);
+
+            // remove all votes assigned to element
+            webuser_vote::remove_object_votes('item', $this->id);
 
             // remove all element properties
             property::remove_properties('item', $this->id, $this->website);
@@ -249,14 +250,27 @@ class item
             grid_notes::remove_all('item', $this->id);
 
             // finally remove the item
-			$DB->execute('
+            $DB->execute('
 			    DELETE FROM nv_items
-				 WHERE id = '.intval($this->id).'
-				   AND website = '.$this->website
+				 WHERE id = ' . intval($this->id) . '
+				   AND website = ' . $this->website
             );
-		}
-		
-		return $DB->get_affected_rows();		
+
+            $affected_rows = $DB->get_affected_rows();
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'item',
+                    'delete',
+                    array(
+                        'item' => $this
+                    )
+                );
+            }
+        }
+
+		return $affected_rows;
 	}
 	
 	public function insert()
@@ -709,7 +723,8 @@ class item
 								   WHERE id = '.$items[$i].'
 						 		     AND website = '.$website->id);
 
-			if(!$ok) return array("error" => $DB->get_last_error());
+			if(!$ok)
+			    return array("error" => $DB->get_last_error());
 		}
 
 		return true;

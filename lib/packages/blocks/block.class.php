@@ -122,7 +122,6 @@ class block
 	
 	public function load_from_post()
 	{
-		global $DB;
 		global $website;
 
 		$this->type  			= $_REQUEST['type'];
@@ -301,11 +300,13 @@ class block
 
             $block_is_fixed = ($fixed[$item[$i]]=='1'? '1' : '0');
 
-			$ok =	$DB->execute('UPDATE nv_blocks
-									 SET position = '.($i+1).',
-									     fixed = '.$block_is_fixed.'
-								   WHERE id = '.$item[$i].'
-						 		     AND website = '.$website->id);
+			$ok = $DB->execute('
+                UPDATE nv_blocks
+				SET position = '.($i+1).',
+				    fixed = '.$block_is_fixed.'
+                WHERE id = '.$item[$i].'
+				  AND website = '.$website->id
+            );
 			
 			if(!$ok) return array("error" => $DB->get_last_error()); 
 		}
@@ -325,8 +326,10 @@ class block
 	public function delete()
 	{
 		global $DB;
-		global $website;
 		global $user;
+		global $events;
+
+        $affected_rows = 0;
 
 		if(!empty($user->id))
 		{
@@ -344,11 +347,25 @@ class block
 			$DB->execute('
               DELETE FROM nv_blocks
 			   WHERE id = '.intval($this->id).' AND
-                     website = '.$website->id
+                     website = '.$this->website
             );
-		}
-		
-		return $DB->get_affected_rows();		
+
+			$affected_rows = $DB->get_affected_rows();
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'block',
+                    'delete',
+                    array(
+                        'block' => $this
+                    )
+                );
+            }
+
+        }
+
+		return $affected_rows;
 	}
 	
 	public function insert()
@@ -356,6 +373,7 @@ class block
 		global $DB;
 		global $website;
 		global $user;
+		global $events;
 
 		if(!empty($user->id))
 		{
@@ -435,6 +453,17 @@ class block
 		$this->id = $DB->get_last_id();
 		
 		webdictionary::save_element_strings('block', $this->id, $this->dictionary, $this->website);
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'block',
+                'save',
+                array(
+                    'block' => $this
+                )
+            );
+        }
 		
 		return true;
 	}
@@ -443,6 +472,7 @@ class block
 	{
 		global $DB;
 		global $user;
+		global $events;
 
         if(!is_array($this->categories))
             $this->categories = array();
@@ -514,11 +544,22 @@ class block
             throw new Exception($DB->get_last_error());
 
 		webdictionary::save_element_strings('block', $this->id, $this->dictionary, $this->website);
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'block',
+                'save',
+                array(
+                    'block' => $this
+                )
+            );
+        }
 		
 		return true;
 	}
 
-    // TODO: add more block types (modes) in Navigate 2.0
+    // TODO: add more block types (modes)
     public static function modes()
     {
         $modes = array(
@@ -619,7 +660,8 @@ class block
         */
 		return $data;
 	}
-	
+
+    // DEPRECATED; may be removed in navigate cms 3.0
 	public static function types_update($array)
 	{
 		global $DB;
@@ -859,7 +901,6 @@ class block
 		$like = ' LIKE '.protect('%'.$text.'%');
 		
 		// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
-		
 		$DB->query('
             SELECT DISTINCT (nvw.node_id)
               FROM nv_webdictionary nvw
@@ -891,14 +932,13 @@ class block
         global $DB;
         global $website;
 
-        $out = array();
-
         $DB->query('
             SELECT *
             FROM nv_blocks
             WHERE website = '.protect($website->id),
             'object'
         );
+
         $out = $DB->result();
 
         if($type='json')

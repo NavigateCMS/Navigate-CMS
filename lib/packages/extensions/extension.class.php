@@ -127,6 +127,7 @@ class extension
 	public function save()
 	{
 		global $DB;
+		global $events;
 
         $ok = false;
 
@@ -160,6 +161,17 @@ class extension
             );
         }
 
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'extension',
+                'save',
+                array(
+                    'extension' => $this
+                )
+            );
+        }
+
         return $ok;
 	}
 	
@@ -167,6 +179,7 @@ class extension
 	{
 		global $DB;
         global $user;
+        global $events;
 
         $ok = false;
 
@@ -181,6 +194,17 @@ class extension
                 DELETE FROM nv_extensions
                  WHERE id = '.protect($this->id)
             );
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'extension',
+                    'delete',
+                    array(
+                        'extension' => $this
+                    )
+                );
+            }
         }
 
         return $ok;

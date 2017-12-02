@@ -117,7 +117,7 @@ class website
 		$this->metatag_description	= json_decode($main->metatag_description, true);
 		$this->metatag_keywords 	= json_decode($main->metatag_keywords, true);
 		$this->metatags			    = json_decode($main->metatags, true);
-		$this->favicon			= $main->favicon;
+		$this->favicon			    = $main->favicon;
 
 		$this->decimal_separator    = $main->decimal_separator;
 		$this->thousands_separator	= $main->thousands_separator;
@@ -151,7 +151,6 @@ class website
 	public function load_from_post()
 	{
         global $theme;
-        global $user;
 
 		$ws_theme = $theme;
 		if($this->theme != $theme->name)
@@ -271,7 +270,7 @@ class website
 
         $this->theme_options = array();
 
-        // Theme style (common property)
+        // theme style (common property)
         $this->theme_options['style'] = $_REQUEST['property-style'];
 
         if(!empty($ws_theme->options))
@@ -334,8 +333,6 @@ class website
 		
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 			return $this->update();
 		else
@@ -345,12 +342,15 @@ class website
 	public function delete($delete_related_content=true)
 	{
 		global $DB;
+		global $events;
 
-        set_time_limit(300);
+        $affected_rows = 0;
+
+        set_time_limit(0);
 
 		if(!empty($this->id))
-		{
-            if($delete_related_content)
+        {
+            if ($delete_related_content)
             {
                 // delete all content related to the website
                 // EXCEPTION: webusers, as they may be shared between websites
@@ -374,64 +374,78 @@ class website
                     'nv_files',                 // files & folders
                 );
 
-                foreach($tables as $table)
+                foreach ($tables as $table)
                 {
                     $DB->execute('
-                        DELETE FROM '.$table.'
-                         WHERE website = '.intval($this->id).'
+                        DELETE FROM ' . $table . '
+                         WHERE website = ' . intval($this->id) . '
                     ');
                 }
 
                 // remove ALL files associated to the website
                 // including: images, documents, thumbnails, backups, cache, custom templates...
-                core_remove_folder(NAVIGATE_PRIVATE.'/'.$this->id);
+                core_remove_folder(NAVIGATE_PRIVATE . '/' . $this->id);
             }
 
             // remove all associated website notes
             grid_notes::remove_all('website', $this->id);
 
             // finally delete the website entry
-			$DB->execute('
+            $DB->execute('
 			    DELETE FROM nv_websites
-				 WHERE id = '.intval($this->id).'
+				 WHERE id = ' . intval($this->id) . '
 				 LIMIT 1
             ');
-		}
+
+            $affected_rows = $DB->get_affected_rows();
+
+            // if allowed, send statistics to navigatecms.com
+            if (NAVIGATECMS_STATS)
+            {
+                global $user;
+                @core_curl_post(
+                    'http://statistics.navigatecms.com/website/remove',
+                    array(
+                        'name'            => $this->name,
+                        'ip'              => $_SERVER['SERVER_ADDR'],
+                        'website_id'      => $this->id,
+                        'url'             => $this->absolute_path(),
+                        'folder'          => $this->folder,
+                        'word_separator'  => $this->word_separator,
+                        'homepage'        => $this->homepage,
+                        'theme'           => $this->theme,
+                        'emails'          => serialize($this->contact_emails),
+                        'languages'       => serialize($this->languages_published),
+                        'permission'      => $this->permission,
+                        'author_name'     => $user->username,
+                        'author_email'    => $user->email,
+                        'author_language' => $user->language
+                    ),
+                    NULL,
+                    10,
+                    'post'
+                );
+            }
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'website',
+                    'delete',
+                    array(
+                        'website' => $this
+                    )
+                );
+            }
+        }
 		
-		// if allowed, send statistics to navigatecms.com
-		if(NAVIGATECMS_STATS)
-		{
-			global $user;
-			@core_curl_post(
-                'http://statistics.navigatecms.com/website/remove',
-                array(
-                    'name' => $this->name,
-                    'ip' => $_SERVER['SERVER_ADDR'],
-                    'website_id' => $this->id,
-                    'url' => $this->absolute_path(),
-                    'folder' => $this->folder,
-                    'word_separator' => $this->word_separator,
-                    'homepage' => $this->homepage,
-                    'theme' => $this->theme,
-                    'emails' => serialize($this->contact_emails),
-                    'languages' => serialize($this->languages_published),
-                    'permission' => $this->permission,
-                    'author_name' => $user->username,
-                    'author_email' => $user->email,
-                    'author_language' => $user->language
-                ),
-				NULL,
-				10,
-				'post'
-            );
-		}		
-		
-		return $DB->get_affected_rows();		
+		return $affected_rows;
 	}
 	
 	public function insert()
 	{
 		global $DB;
+        global $events;
 
 		$ok = $DB->execute('
 		    INSERT INTO nv_websites
@@ -562,6 +576,17 @@ class website
         @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
         @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
 
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'website',
+                'insert',
+                array(
+                    'website' => $this
+                )
+            );
+        }
+
 		// if allowed, send statistics to navigatecms.com
 		if(NAVIGATECMS_STATS)
 		{
@@ -596,6 +621,7 @@ class website
 	public function update()
 	{
 		global $DB;
+		global $events;
 
         $ok = $DB->execute('
             UPDATE nv_websites
@@ -697,7 +723,8 @@ class website
             )
         );
 
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+		    throw new Exception($DB->get_last_error());
 
 		if(!file_exists(NAVIGATE_PRIVATE.'/'.$this->id))
 		{
@@ -709,6 +736,17 @@ class website
             @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
             @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
 		}
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'website',
+                'save',
+                array(
+                    'website' => $this
+                )
+            );
+        }
 
 		// if allowed, send statistics to navigatecms.com
 		if(NAVIGATECMS_STATS)
@@ -856,7 +894,7 @@ class website
 		$utc_timezone = new DateTimeZone('UTC');
 		$utc_time = new DateTime('now', $utc_timezone);
 		$website_timezone = new DateTimeZone($this->default_timezone);
-		$website_time = new DateTime('now', $website_timezone);
+		//$website_time = new DateTime('now', $website_timezone);
 
 	    $offset = $website_timezone->getOffset($utc_time);
    		$ts = $utc + $offset;
@@ -995,7 +1033,6 @@ class website
 
         return $out;
     }
-
 
     public function windows_locales()
     {

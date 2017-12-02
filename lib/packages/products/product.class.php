@@ -296,8 +296,7 @@ class product
             $this->offer_end_date = NULL;
         }
     }
-	
-	
+
 	public function save()
 	{
 		if(!empty($this->id))
@@ -310,6 +309,9 @@ class product
 	{
 		global $DB;
 		global $user;
+		global $events;
+
+        $affected_rows = 0;
 
 		if($user->permission("products.delete") == 'false')
 			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
@@ -339,9 +341,22 @@ class product
 				 WHERE id = '.intval($this->id).'
 				   AND website = '.$this->website
             );
+
+			$affected_rows = $DB->get_affected_rows();
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'product',
+                    'delete',
+                    array(
+                        'product' => $this
+                    )
+                );
+            }
 		}
 		
-		return $DB->get_affected_rows();		
+		return $affected_rows;
 	}
 	
 	public function insert()
@@ -888,4 +903,5 @@ class product
 	}
 	
 }
+
 ?>

@@ -52,8 +52,6 @@ class feed
 	
 	public function load_from_post()
 	{
-		global $DB;
-		
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
 		$this->format  		= $_REQUEST['format'];
@@ -85,8 +83,7 @@ class feed
 		if($_REQUEST['categories']!='true')
 			$this->categories	= explode(',', $_REQUEST['categories']);				
 	}
-	
-	
+
 	public function save()
 	{
 		global $DB;
@@ -100,31 +97,47 @@ class feed
 	public function delete()
 	{
 		global $DB;
-		global $website;
+		global $events;
+
+		$affected_rows = 0;
 
 		// remove all old entries
 		if(!empty($this->id))
-		{
-			$DB->execute('
+        {
+            $DB->execute('
 				DELETE FROM nv_feeds
-					  WHERE id = '.intval($this->id).' AND 
-					        website = '.$website->id
-			);
+					  WHERE id = ' . intval($this->id) . ' AND 
+					        website = ' . $this->website
+            );
 
-			// remove dictionary elements
-			webdictionary::save_element_strings('feed', $this->id, array());
-						
-			// remove path elements
-			path::saveElementPaths('feed', $this->id, array());							
-		}
-		
-		return $DB->get_affected_rows();		
+            $affected_rows = $DB->get_affected_rows();
+
+            // remove dictionary elements
+            webdictionary::save_element_strings('feed', $this->id, array());
+
+            // remove path elements
+            path::saveElementPaths('feed', $this->id, array());
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'feed',
+                    'delete',
+                    array(
+                        'feed' => $this
+                    )
+                );
+            }
+        }
+
+		return $affected_rows;
 	}
 	
 	public function insert()
 	{
 		global $DB;
 		global $website;
+		global $events;
 		
 		$ok = $DB->execute(' 
  			INSERT INTO nv_feeds
@@ -145,10 +158,24 @@ class feed
 			)
 		);
 
+        if(!$ok)
+            throw new Exception($DB->get_last_error());
+
 		$this->id = $DB->get_last_id();
 			
 		webdictionary::save_element_strings('feed', $this->id, $this->dictionary);
 		path::saveElementPaths('feed', $this->id, $this->paths);
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'feed',
+                'save',
+                array(
+                    'feed' => $this
+                )
+            );
+        }
 		
 		return true;
 	}
@@ -156,7 +183,8 @@ class feed
 	public function update()
 	{
 		global $DB;
-		
+		global $events;
+
 		if(!is_array($this->categories))
 			$this->categories = array();
 			
@@ -179,14 +207,25 @@ class feed
 			)
 		);
 							  
-		if(!$ok) throw new Exception($DB->get_last_error());					  
+		if(!$ok)
+		    throw new Exception($DB->get_last_error());
 		
 		webdictionary::save_element_strings('feed', $this->id, $this->dictionary);
 		path::saveElementPaths('feed', $this->id, $this->paths);
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'feed',
+                'save',
+                array(
+                    'feed' => $this
+                )
+            );
+        }
 		
 		return true;
-	}		
-	
+	}
 	
 	public function quicksearch($text)
 	{

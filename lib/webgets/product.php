@@ -300,6 +300,14 @@ function nvweb_product($vars=array())
             }
             break;
 
+        case 'add_to_cart':
+            // TODO: 2 modes: AJAX callback or Redirect to cart (default)
+            // TODO: decide how to capture and include the parameters quantity and option
+            $link = nvweb_source_url('theme', 'cart');
+            $link = $link . '?action=add_product&product='.$product->id.'&quantity=1';
+            $out = $link;
+            break;
+
 		case 'section':
 		case 'body':
 			if(empty($vars['section'])) $vars['section'] = 'main';

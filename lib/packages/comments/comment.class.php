@@ -90,6 +90,9 @@ class comment
 	public function delete()
 	{
 		global $DB;
+		global $events;
+
+        $affected_rows = 0;
 
 		// remove all old entries
 		if(!empty($this->id))
@@ -102,15 +105,29 @@ class comment
 				 WHERE id = '.intval($this->id).'
                LIMIT 1 '
 			);
+
+            $affected_rows = $DB->get_affected_rows();
+
+            if(method_exists($events, 'trigger'))
+            {
+                $events->trigger(
+                    'comment',
+                    'delete',
+                    array(
+                        'comment' => $this
+                    )
+                );
+            }
 		}
 		
-		return $DB->get_affected_rows();		
+		return $affected_rows;
 	}
 	
 	public function insert()
 	{
 		global $DB;	
 		global $website;
+		global $events;
 
 		$message = htmlentities($this->message, ENT_COMPAT, 'UTF-8', true);
 
@@ -158,6 +175,17 @@ class comment
 		
 		$this->id = $DB->get_last_id();
 
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'comment',
+                'save',
+                array(
+                    'comment' => $this
+                )
+            );
+        }
+
         $this->notify_subscribed();
 
 		return true;
@@ -167,6 +195,7 @@ class comment
 	{
 		global $DB;
         global $user;
+        global $events;
 
 		$message = htmlentities($this->message, ENT_COMPAT, 'UTF-8', true);
 
@@ -208,6 +237,17 @@ class comment
 		
 		if(!$ok)
 		    throw new Exception($DB->get_last_error());
+
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'comment',
+                'save',
+                array(
+                    'comment' => $this
+                )
+            );
+        }
 
         $this->notify_subscribed();
 		
@@ -403,8 +443,6 @@ class comment
 
     public function property($property_name, $raw=false)
     {
-        global $DB;
-
         // load properties if not already done
         if(empty($this->properties))
         {
@@ -426,8 +464,6 @@ class comment
 
     public function property_definition($property_name)
     {
-        global $DB;
-
         // load properties if not already done
         if(empty($this->properties))
         {
@@ -449,8 +485,6 @@ class comment
 
     public function property_exists($property_name)
     {
-        global $DB;
-
         // load properties if not already done
         if(empty($this->properties))
         {
@@ -487,7 +521,7 @@ class comment
             $DB->query('
                 SELECT id, user, email 
                  FROM nv_comments
-                WHERE website = ' . $this->website . '.
+                WHERE website = ' . $this->website . '
                   AND object_type = ' . protect($this->object_type) . '
                   AND object_id = ' . protect($this->object_id) . '
                   AND subscribed = 1
@@ -672,4 +706,5 @@ class comment
 	}
 
 }
+
 ?>
