@@ -202,10 +202,15 @@ function nvweb_product($vars=array())
         case 'stock':
             $out = $product->stock_available;
 
-            if($out > 0 && isset($vars['in_stock']))
+            if($product->inventory)
+            {
+                if ($out > 0 && isset($vars['in_stock']))
+                    $out = $theme->t($vars['in_stock']);
+                else if ($out == 0 && isset($vars['out_of_stock']))
+                    $out = $theme->t($vars['out_of_stock']);
+            }
+            else
                 $out = $theme->t($vars['in_stock']);
-            else if($out == 0 && isset($vars['out_of_stock']))
-                $out = $theme->t($vars['out_of_stock']);
 
             break;
 
@@ -272,10 +277,31 @@ function nvweb_product($vars=array())
                     }
             }
             break;
-		
+
+        case 'brand':
+            $brand = new brand();
+            $brand->load($product->brand);
+
+            switch($vars['return'])
+            {
+                case 'id':
+                    $out = $brand->id;
+                    break;
+
+                case 'image':
+                    if(!empty($brand->image))
+                        $out = file::file_url($brand->image);
+                    break;
+
+                case 'name':
+                default:
+                    // brand name
+                    $out = $brand->name;
+            }
+            break;
+
 		case 'section':
 		case 'body':
-		default:
 			if(empty($vars['section'])) $vars['section'] = 'main';
 			$section = "section-".$vars['section'];
 
