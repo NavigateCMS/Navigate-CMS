@@ -3752,6 +3752,22 @@
 				<target>Erwiderung</target>
 			</trans-unit>
 
+			<trans-unit id="748">
+				<source>Time</source>
+				<target>Zeit</target>
+				<note>time spent doing something</note>
+			</trans-unit>
+
+			<trans-unit id="749">
+				<source>Queries</source>
+				<target>Anfragen</target>
+			</trans-unit>
+
+			<trans-unit id="750">
+				<source>Page cache</source>
+				<target>Cache-Seite</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

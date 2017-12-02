@@ -3752,6 +3752,22 @@
                 <target>Odzew</target>
             </trans-unit>
 
+            <trans-unit id="748">
+                <source>Time</source>
+                <target>Czas</target>
+                <note>time spent doing something</note>
+            </trans-unit>
+
+            <trans-unit id="749">
+                <source>Queries</source>
+                <target>Zapytania</target>
+            </trans-unit>
+
+            <trans-unit id="750">
+                <source>Page cache</source>
+                <target>Stronę pamięci podręcznej</target>
+            </trans-unit>
+
         </body>
 
     </file>

@@ -14,6 +14,7 @@ class database
 	private $lastResult;
 	private $db;
 	private $prepared_statement;
+	public $queries_count;
 	
 	/**
 	 * Prepare a database object and assign default settings
@@ -25,6 +26,7 @@ class database
 		$this->lastResult = "";
 		$this->fetchAs = PDO::FETCH_OBJ;
 		$this->db = NULL;
+		$this->queries_count = 0;
 	}
 
 	/**
@@ -113,6 +115,7 @@ class database
 		try
 		{
 			$statement = $this->db->query($sql);
+			$this->queries_count++;
 
 			// avoid firing a fatal error exception when the result is NULL
             // and the query is not malformed
@@ -151,6 +154,7 @@ class database
             $order = ' ORDER BY '.$order;
 
 		$stm = $this->db->query('SELECT '.$column.' FROM '.$table.' WHERE '.$where.$order.' LIMIT 1');
+        $this->queries_count++;
 
 		$stm->setFetchMode(PDO::FETCH_NUM);
 		$rs = $stm->fetchAll();
@@ -187,7 +191,8 @@ class database
 					  LIMIT '.$max.'
 					 OFFSET '.$offset;
 
-			$statement = $this->db->query($sql);	
+			$statement = $this->db->query($sql);
+            $this->queries_count++;
 			$statement->setFetchMode($fetch);
 			$this->lastResult = $statement->fetchAll();
 			$statement->closeCursor();
@@ -239,6 +244,7 @@ class database
 				{
 					// we have the parameters as an array, use it with the prepared statement
 					$stm = $this->db->prepare($sql);
+                    $this->queries_count++;
 
 					if($stm->execute($prepared))
 						$this->lastAffectedRows = $stm->rowCount();
@@ -255,6 +261,7 @@ class database
 				{
 					// we don't have a parameters array, so execute it as is
 					$stm = $this->db->prepare($sql);
+                    $this->queries_count++;
 					if($stm->execute()) 
 						$this->lastAffectedRows = $stm->rowCount();
                     $stm->closeCursor();

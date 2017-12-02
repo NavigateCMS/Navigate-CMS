@@ -1,11 +1,13 @@
 <?php
-
 class debugger
 {
     public static $timers;
+    public static $starting_microtime;
 
     static function init()
     {
+        self::$starting_microtime = microtime(true);
+
         /* prepare Tracy debugger
             note: if you don't want your users to see Tracy fatal errors, set "PRODUCTION" instead of "DEVELOPMENT")
         */
@@ -101,7 +103,7 @@ class firephp_nv
 {
     static function log($message, $title="")
     {
-        debugger::console("DEPECRATED call firephp_nv::log(), please use debugger::console()");
+        debugger::console("DEPECRATED firephp_nv::log(), please use debugger::console()");
         return debugger::console($message, $title);
     }
 }

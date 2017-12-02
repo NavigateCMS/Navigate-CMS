@@ -3764,6 +3764,22 @@
                 <target>Respondre</target>
             </trans-unit>
 
+            <trans-unit id="748" approved="yes">
+                <source>Time</source>
+                <target>Temps</target>
+                <note>time spent doing something</note>
+            </trans-unit>
+
+            <trans-unit id="749" approved="yes">
+                <source>Queries</source>
+                <target>Consultes</target>
+            </trans-unit>
+
+            <trans-unit id="750" approved="yes">
+                <source>Page cache</source>
+                <target>Memòria cau de pàgines</target>
+            </trans-unit>
+
         </body>
 
     </file>

@@ -3752,6 +3752,22 @@
 				<target>Responder</target>
 			</trans-unit>
 
+			<trans-unit id="748" approved="yes">
+				<source>Time</source>
+				<target>Tiempo</target>
+				<note>time spent doing something</note>
+			</trans-unit>
+
+			<trans-unit id="749" approved="yes">
+				<source>Queries</source>
+				<target>Consultas</target>
+			</trans-unit>
+
+			<trans-unit id="750" approved="yes">
+				<source>Page cache</source>
+				<target>Caché de págines</target>
+			</trans-unit>
+
 		</body>
 
 	</file>
