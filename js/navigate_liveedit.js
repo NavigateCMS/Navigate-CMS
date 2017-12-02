@@ -4,7 +4,7 @@ $(function()
     {
         // load a newer jquery
         $.getScript(
-            'https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js',
+            'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js',
             function() {
                 navigate_liveedit_init();
             }
@@ -28,10 +28,12 @@ function navigate_liveedit_init()
         if($('#navigate_liveedit_bar').height()==28)
         {
             $('#navigate_liveedit_bar_information').fadeIn();
+            $("#navigate_liveedit_bar_statistics").fadeIn();
             $('#navigate_liveedit_bar').animate({'height': '56'}, 500);
         }
         else
         {
+            $("#navigate_liveedit_bar_statistics").fadeOut();
             $('#navigate_liveedit_bar').animate({'height': '28'}, 500);
             $('#navigate_liveedit_bar_information').fadeOut();
         }

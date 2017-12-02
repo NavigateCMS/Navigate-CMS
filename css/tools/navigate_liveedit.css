@@ -158,3 +158,17 @@
 {
     display: block;
 }
+
+#navigate_liveedit_bar > div#navigate_liveedit_bar_statistics
+{
+    float: right;
+    display: none;
+}
+
+#navigate_liveedit_bar > div#navigate_liveedit_bar_statistics span
+{
+    display: inline-block;
+    margin-left: 10px;
+    font-family: Tahoma, sans-serif;
+    font-size: 10px;
+}
