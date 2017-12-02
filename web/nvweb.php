@@ -281,6 +281,8 @@ function nvweb_parse($request)
 
         $html = str_replace('</body>', $end, $html);
 
+        $events->trigger('theme', 'before_tweaks', array('html' => &$html));
+
         $html = nvweb_template_tweaks($html);
         $html = nvweb_template_restore_special($html);
 
