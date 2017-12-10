@@ -277,8 +277,12 @@ function about_layout()
 		)
 	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/yatt/jquery.base64/" target="_blank">jQuery.base64 v2013.03.26</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="https://github.com/yatt/jquery.base64/" target="_blank">jQuery.base64 v2013.03.26</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(
 		array(
@@ -287,8 +291,12 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://code.google.com/p/ezcookie/" target="_blank">jQuery ezCookie v0.7.01</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(
 		array(
@@ -297,22 +305,42 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://scripts.incutio.com/xmlrpc/" target="_blank">Incutio XML-RPC Library for PHP v1.7.4</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://scripts.incutio.com/xmlrpc/" target="_blank">Incutio XML-RPC Library for PHP v1.7.4</a><br />'
+		)
+	);
 
 	$navibars->add_tab(t(29, 'Images'));
 	
-	$navibars->add_tab_content_row(array(	'<label>'.t(29, 'Images').'</label>',
-											'<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">famfamfam Silk Icons 1.3 (Mark James)</a><br />'));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>'.t(29, 'Images').'</label>',
+			'<a href="http://www.famfamfam.com/lab/icons/silk/" target="_blank">famfamfam Silk Icons 1.3 (Mark James)</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://damieng.com/creative/icons/silk-companion-1-icons" target="_blank">Silk Companion I (Damien Guard)</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://damieng.com/creative/icons/silk-companion-1-icons" target="_blank">Silk Companion I (Damien Guard)</a><br />'
+		)
+	);
 	
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.cagintranet.com/archive/download-famfamfam-silk-companion-2-icon-pack/" target="_blank">Silk Companion II (Chris Cagle)</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.cagintranet.com/archive/download-famfamfam-silk-companion-2-icon-pack/" target="_blank">Silk Companion II (Chris Cagle)</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://fontawesome.io" target="_blank">Font Awesome by Dave Gandy - http://fontawesome.io</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://fontawesome.io" target="_blank">Font Awesome by Dave Gandy - http://fontawesome.io</a><br />'
+		)
+	);
 
     $navibars->add_tab(t(526, 'Translations'));
 
@@ -348,6 +376,12 @@ function about_layout()
 	    array(
 	    '<label>Polish</label>',
         '<a href="https://github.com/stpk007" target="_blank">Stanisław Krukowski (https://github.com/stpk007)</a><br />'
+	    )
+    );
+    $navibars->add_tab_content_row(
+	    array(
+	    '<label>Norwegian Bokmål</label>',
+        '<a href="https://hosted.weblate.org/user/kingu/" target="_blank">Allan Nordhøy</a><br />'
 	    )
     );
 
