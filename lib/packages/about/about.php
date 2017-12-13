@@ -1,9 +1,6 @@
 <?php
 function run()
 {
-	global $website;
-	global $layout;
-	
 	switch(@$_REQUEST['act'])
 	{
 		default:
@@ -15,13 +12,7 @@ function run()
 
 function about_layout()
 {
-	global $user;
-	global $DB;
-	global $website;
-	global $layout;
-	
 	$navibars = new navibars();
-	$naviforms = new naviforms();
 	$current_version = update::latest_installed();
 	
 	$navibars->title(t(215, 'About'));
@@ -216,8 +207,12 @@ function about_layout()
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://github.com/ROMB/jquery-dialogextend" target="_blank">jQuery Dialog Extend plugin v2.0.4</a><br />' ));
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',											
-											'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.24.2</a><br />'));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.32.0</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
 											'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v5.2.22</a><br />'));
