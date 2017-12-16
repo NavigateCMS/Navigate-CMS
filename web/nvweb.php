@@ -119,9 +119,6 @@ function nvweb_parse($request)
         else if (isset($request['lang']))
             $session['lang'] = $request['lang'];
 
-        // load dictionary, extensions and bind events (as soon as possible)
-        $dictionary = nvweb_dictionary_load();
-
         // global data across webgets
         $current = array(
             'lang'               => $session['lang'],
@@ -139,10 +136,47 @@ function nvweb_parse($request)
             'delayed_tags_code'  => array(),
             'navigate_session'   => !empty($_SESSION['APP_USER#' . APP_UNIQUE]),
             'html_after_body'    => array(),
-            'js_after_body'      => array()
+            'js_after_body'      => array(),
+            'pagecache_enabled'  => (
+                    empty($_SESSION['APP_USER#' . APP_UNIQUE]) &&
+                    empty($_POST) &&
+                    (count($_GET) <= 1) &&
+                    empty($webuser->id) &&
+                    ($website->page_cache == "1")
+            )
         );
 
         debugger::stop_timer('nvweb-page-init');
+        debugger::timer('nvweb-website-cron');
+
+        $website->cron();
+
+        debugger::stop_timer('nvweb-website-cron');
+        debugger::timer('nvweb-page-cache-check');
+
+        if($current['pagecache_enabled'])
+        {
+            $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
+
+            if(file_exists($page_cache) && filemtime($page_cache) > (core_time() - 3600))
+            {
+                $html = file_get_contents($page_cache);
+                $_SESSION['nvweb.' . $website->id] = $session;
+                session_write_close();
+                $DB->disconnect();
+                echo $html;
+                exit;
+            }
+            // else, generate the page and save it into the cache, if necessary
+        }
+
+        debugger::stop_timer('nvweb-page-cache-check');
+        debugger::timer('nvweb-load-dictionary');
+
+        // load dictionary, extensions and bind events (as soon as possible)
+        $dictionary = nvweb_dictionary_load();
+
+        debugger::stop_timer('nvweb-load-dictionary');
         debugger::timer('nvweb-load-plugins');
 
         nvweb_plugins_load();
@@ -299,7 +333,7 @@ function nvweb_parse($request)
         $_SESSION['nvweb.' . $website->id] = $session;
         session_write_close();
 
-        if ($current['navigate_session'] == true && APP_DEBUG)
+        if($current['navigate_session'] == true && APP_DEBUG)
         {
             echo $html;
 
@@ -338,7 +372,7 @@ function nvweb_parse($request)
 
             // close any previous output buffer
             // some PHP configurations open ALWAYS a buffer
-            if (function_exists('ob_start'))
+            if(function_exists('ob_start'))
             {
                 while (ob_get_level() > 0)
                     ob_end_flush();
@@ -350,6 +384,13 @@ function nvweb_parse($request)
             }
             else
                 echo $html;
+
+            // finally, save this page request into the website pages cache (only for anonymous users)
+            if($current['pagecache_enabled'])
+            {
+                $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
+                @file_put_contents($page_cache, $html);
+            }
         }
     }
     catch (Exception $e)

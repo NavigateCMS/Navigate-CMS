@@ -126,8 +126,6 @@ class template
 	
 	public function load_from_post()
 	{
-		global $DB;
-		
 		$this->title  		= $_REQUEST['title'];
 		$this->file			= $_REQUEST['file'];
 		$this->permission	= intval($_REQUEST['permission']);

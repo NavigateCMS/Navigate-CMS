@@ -49,7 +49,7 @@ function nvweb_plugins_event($event, $html)
 	global $plugins;
 
     if(!is_array($plugins))
-        return;
+        return $html;
 	
 	foreach($plugins as $plugin)
 	{

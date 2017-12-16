@@ -629,13 +629,16 @@ class product
 		webdictionary_history::save_element_strings('product', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('product', $this->id, $this->paths, $this->website);
 
-        $events->trigger(
-            'product',
-            'save',
-            array(
-                'product' => $this
-            )
-        );
+        if(method_exists($events, 'trigger'))
+        {
+            $events->trigger(
+                'product',
+                'save',
+                array(
+                    'product' => $this
+                )
+            );
+        }
 
 		return true;
 	}

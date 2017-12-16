@@ -527,39 +527,39 @@ function websites_form($item)
                 confirmation += "</div>";
 
                 $(confirmation).dialog({
-                        resizable: true,
-                        height: 250,
-                        width: 400,
-                        modal: true,
-                        title: "'.t(59, 'Confirmation').'",
-                        buttons: {
-                            "'.t(190, 'Ok').'": function()
-                            {
-                                $(this).dialog("close");
+                    resizable: true,
+                    height: 250,
+                    width: 400,
+                    modal: true,
+                    title: "'.t(59, 'Confirmation').'",
+                    buttons: {
+                        "'.t(190, 'Ok').'": function()
+                        {
+                            $(this).dialog("close");
 
-                                $.post(
-                                    "?fid=websites&act=remove_content",
+                            $.post(
+                                "?fid=websites&act=remove_content",
+                                {
+                                    website: $("#id").val(),
+                                    password: $("#navigate_remove_website_data_password").val()
+                                },
+                                function(data)
+                                {
+                                    if(data=="true")
                                     {
-                                        website: $("#id").val(),
-                                        password: $("#navigate_remove_website_data_password").val()
-                                    },
-                                    function(data)
-                                    {
-                                        if(data=="true")
-                                        {
-                                            navigate_notification("'.t(419, "Process complete").'");
-                                            $("a[action=\'navigate_remove_website_data\']").parent().fadeOut();
-                                        }
-                                        else
-                                            navigate_notification("'.t(56, "Unexpected error.").' " + data, true);
+                                        navigate_notification("'.t(419, "Process complete").'");
+                                        $("a[action=\'navigate_remove_website_data\']").parent().fadeOut();
                                     }
-                                );
-                            },
-                            "'.t(58, 'Cancel').'": function()
-                            {
-                                $(this).dialog("close");
-                            }
+                                    else
+                                        navigate_notification("'.t(56, "Unexpected error.").' " + data, true);
+                                }
+                            );
+                        },
+                        "'.t(58, 'Cancel').'": function()
+                        {
+                            $(this).dialog("close");
                         }
+                    }
                 });
             }
         ');
@@ -1495,6 +1495,22 @@ function websites_form($item)
             $("#comments_default_moderator").val(e.val);
         });
     ');
+
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(750, 'Page cache').'</label>',
+            $naviforms->selectfield('page_cache',
+                array(
+                    0 => 0,
+                    1 => 1
+                ),
+                array(
+                    0 => t(460, 'Disable'),
+                    1 => t(462, 'Enable')
+                ),
+                $item->page_cache
+            )
+        )
+    );
 
 
     /* TAB EMAIL */

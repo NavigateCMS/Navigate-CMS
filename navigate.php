@@ -2,8 +2,8 @@
 // +------------------------------------------------------------------------+
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Naviwebs 2010-2016. All rights reserved.                 |
-// | Last modified 27/07/2016                                               |
+// | Copyright (c) Naviwebs 2010-2018. All rights reserved.                 |
+// | Last modified 02/12/2017                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -142,7 +142,7 @@ $menu_layout = new menu_layout();
 $menu_layout->load();
 
 // load the working website
-$website = new Website();
+$website = new website();
 
 if((@$_GET['act']=='0' || @$_GET['quickedit']=='true') && !empty($_GET['wid']))
 {
@@ -158,7 +158,7 @@ else
 	$website = nvweb_load_website_by_url($url, false);
 	if(!$website)
 	{
-		$website = new Website();
+		$website = new website();
 		$website->load();
 	}
 }
@@ -193,6 +193,7 @@ $_SESSION['website_active'] = $website->id;
 
 $events = new events();
 $events->extension_backend_bindings(null, false);
+$website->bind_events();
 
 // no valid website found; show Create first website wizard
 if(empty($_SESSION['website_active']) && $_REQUEST['fid']!='websites')

@@ -20,6 +20,7 @@ class website
     public $comments_enabled_for;
     public $comments_default_moderator;
     public $share_files_media_browser;
+    public $page_cache;
 	public $tracking_scripts;
 	public $additional_scripts;
 	public $additional_styles;
@@ -58,8 +59,8 @@ class website
 	public function load($id="")
 	{
 		global $DB;
-        global $user;
-		
+		global $events;
+
 		if(empty($id)) // we suppose we only have one website or we just want the first
 		{
 			if($DB->query('SELECT * FROM nv_websites LIMIT 1'))
@@ -105,6 +106,7 @@ class website
         $this->comments_enabled_for         = $main->comments_enabled_for;
         $this->comments_default_moderator   = $main->comments_default_moderator;
 		$this->share_files_media_browser    = $main->share_files_media_browser;
+		$this->page_cache           = $main->page_cache;
 
 		$this->tracking_scripts             = $main->tracking_scripts;
 		$this->additional_scripts           = $main->additional_scripts;
@@ -179,6 +181,7 @@ class website
         $this->comments_enabled_for         =   intval($_REQUEST['comments_enabled_for']);
         $this->comments_default_moderator   =   $_REQUEST['comments_default_moderator'];
 		$this->share_files_media_browser    =   intval($_REQUEST['share_files_media_browser']);
+		$this->page_cache                   =   ($_REQUEST['page_cache']=='1'? 1 : 0);
 
 		$this->tracking_scripts             = $_REQUEST['tracking_scripts'];
 		$this->additional_scripts           = $_REQUEST['additional_scripts'];
@@ -453,7 +456,7 @@ class website
             	wrong_path_action, wrong_path_redirect, empty_path_action,
                 languages, languages_published, aliases,
                 word_separator, date_format, tinymce_css, resize_uploaded_images,
-                comments_enabled_for, comments_default_moderator, share_files_media_browser,
+                comments_enabled_for, comments_default_moderator, share_files_media_browser, page_cache,
                 tracking_scripts, additional_scripts, additional_styles, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
                 contact_emails, homepage, default_timezone, 
@@ -482,6 +485,7 @@ class website
               :comments_enabled_for,
               :comments_default_moderator,
               :share_files_media_browser,
+              :page_cache,
               :tracking_scripts,
               :additional_scripts,
               :additional_styles,
@@ -531,6 +535,7 @@ class website
 				":comments_enabled_for" => value_or_default($this->comments_enabled_for, 0),
 				":comments_default_moderator" => value_or_default($this->comments_default_moderator, ''),
 				":share_files_media_browser" => value_or_default($this->share_files_media_browser, 0),
+				":page_cache" => value_or_default($this->page_cache, 0),
 				":tracking_scripts" => value_or_default($this->tracking_scripts, ''),
 				":additional_scripts" => value_or_default($this->additional_scripts, ''),
 				":additional_styles" => value_or_default($this->additional_styles, ''),
@@ -645,6 +650,7 @@ class website
                     comments_enabled_for = ?,
 					comments_default_moderator = ?,
 					share_files_media_browser = ?,
+					page_cache = ?,
                     tracking_scripts = ?,
                     additional_scripts = ?,
                     additional_styles = ?,
@@ -693,6 +699,7 @@ class website
                 $this->comments_enabled_for,
                 $this->comments_default_moderator,
                 $this->share_files_media_browser,
+                value_or_default($this->page_cache, 0),
                 $this->tracking_scripts,
                 $this->additional_scripts,
                 $this->additional_styles,
@@ -1017,6 +1024,223 @@ class website
         }
 
         return $content_css;
+    }
+
+    public function purge_cache()
+    {
+        // thumbnails
+        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/thumbnails/*x*');
+        for($t=0; $t < count($files); $t++)
+            @unlink($files[$t]);
+
+        // page cache
+        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.page');
+        for($t=0; $t < count($files); $t++)
+            @unlink($files[$t]);
+
+        // feeds
+        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.feed');
+        for($t=0; $t < count($files); $t++)
+            @unlink($files[$t]);
+    }
+
+    public function bind_events()
+    {
+        global $events;
+
+        $events->bind('website', 'save', 'website', array($this, 'purge_cache'));
+        // note: on delete event is not necessary to purge cache, as the whole private folder is removed
+
+        $events->bind('item', 'save', 'website', array($this, 'purge_cache'));
+        $events->bind('item', 'delete', 'website', array($this, 'purge_cache'));
+
+        $events->bind('block', 'save', 'website', array($this, 'purge_cache'));
+        $events->bind('block', 'delete', 'website', array($this, 'purge_cache'));
+
+        $events->bind('structure', 'save', 'website', array($this, 'purge_cache'));
+        $events->bind('structure', 'delete', 'website', array($this, 'purge_cache'));
+
+        $events->bind('feed', 'save', 'website', array($this, 'purge_cache'));
+        $events->bind('feed', 'delete', 'website', array($this, 'purge_cache'));
+
+        $events->bind('comment', 'save', 'website', array($this, 'purge_cache'));
+        $events->bind('comment', 'delete', 'website', array($this, 'purge_cache'));
+
+        $events->bind('product', 'save', 'website', array($this, 'purge_cache'));
+        $events->bind('product', 'delete', 'website', array($this, 'purge_cache'));
+    }
+
+    // check if we need to execute any programmed event
+    public function cron()
+    {
+        global $current;
+        global $events;
+
+        $website_cron_path = NAVIGATE_PRIVATE . '/'.$this->id.'/cache/website.cron';
+
+        $last_cron = null;
+        if(file_exists($website_cron_path))
+            $last_cron = file_get_contents($website_cron_path);
+
+        // we only run the following checks once a minute (on the next visit)
+        // when was the last cron execution?
+        if(is_null($last_cron))
+        {
+            file_put_contents($website_cron_path, core_time());
+        }
+        else if(($last_cron + 60 < core_time()))
+        {
+            // if cache is enabled and there was a programmed publication (item, structure, block, product) since the last visit or cron execution
+            // then purge the cache
+            if($current['pagecache_enabled'])
+            {
+                $next_change = $this->find_next_publication_event_time($last_cron);
+                if (!empty($next_change))
+                {
+                    if ($next_change < core_time()) // the change had to happen since the last cron execution?
+                        $this->purge_cache();
+                    // else, the change will happen at a later time, the current cache is still valid
+                }
+            }
+
+            $events->trigger('website', 'cron', array());
+
+            file_put_contents($website_cron_path, core_time());
+        }
+    }
+
+    public function find_next_publication_event_time($from_time=null)
+    {
+        global $DB;
+
+        $next_change = PHP_INT_MAX; // set the largest integer, a very very far date in the future
+
+        // item: date_published
+
+        if(is_null($from_time))
+            $from_time = core_time();
+
+        $DB->query('
+            SELECT MIN(date_published) AS next_change 
+            FROM nv_items
+            WHERE website = '.$this->id.' AND (date_published > '.$from_time.')
+            ORDER BY date_published ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        $rsnc = intval($rsnc[0]);
+
+        if(!empty($rsnc))
+            $next_change = $rsnc;
+
+        // item: date_unpublish
+
+        $DB->query('
+            SELECT MIN(date_unpublish) AS next_change 
+            FROM nv_items
+            WHERE website = '.$this->id.' AND (date_unpublish > '.$from_time.')
+            ORDER BY date_unpublish ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+        // structure: date_published
+
+        $DB->query('
+            SELECT MIN(date_published) AS next_change 
+            FROM nv_structure
+            WHERE website = '.$this->id.' AND (date_published > '.$from_time.')
+            ORDER BY date_published ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+
+        // structure: date_unpublish
+
+        $DB->query('
+            SELECT MIN(date_unpublish) AS next_change 
+            FROM nv_structure
+            WHERE website = '.$this->id.' AND (date_unpublish > '.$from_time.')
+            ORDER BY date_unpublish ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+
+        // block: date_published
+
+        $DB->query('
+            SELECT MIN(date_published) AS next_change 
+            FROM nv_blocks
+            WHERE website = '.$this->id.' AND (date_published > '.$from_time.')
+            ORDER BY date_published ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+
+        // block: date_unpublish
+
+        $DB->query('
+            SELECT MIN(date_unpublish) AS next_change 
+            FROM nv_blocks
+            WHERE website = '.$this->id.' AND (date_unpublish > '.$from_time.')
+            ORDER BY date_unpublish ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+
+        // product: date_published
+
+        $DB->query('
+            SELECT MIN(date_published) AS next_change 
+            FROM nv_products
+            WHERE website = '.$this->id.' AND (date_published > '.$from_time.')
+            ORDER BY date_published ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+
+        // product: date_unpublish
+
+        $DB->query('
+            SELECT MIN(date_unpublish) AS next_change 
+            FROM nv_products
+            WHERE website = '.$this->id.' AND (date_unpublish > '.$from_time.')
+            ORDER BY date_unpublish ASC
+            LIMIT 1
+        ');
+
+        $rsnc = $DB->result('next_change');
+        if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+            $next_change = intval($rsnc[0]);
+
+        if(!$next_change || $next_change == PHP_INT_MAX)
+            $next_change = 0; // no publication event found!
+
+        return $next_change;
     }
 
     public function backup($type='json')
