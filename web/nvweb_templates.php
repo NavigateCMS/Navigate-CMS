@@ -101,7 +101,7 @@ function nvweb_dictionary_load()
 /**
  * Sets or prints a certain code that will be placed just before closing the </body> tag
  *
- * @param string $type "js" or "html", depending on the code type to return / append
+ * @param string $type "js", "css" or "html", depending on the code type to return / append
  * @param string $code actual source code that will be appended, if empty all source code saved will be returned
  * @return string the source code previously appended or empty
  */
@@ -118,6 +118,11 @@ function nvweb_after_body($type="js", $code="")
 				case 'js':
 					array_unshift($current[$type.'_after_body'], '<script language="javascript" type="text/javascript">');
 					$current[$type.'_after_body'][] = '</script>';
+					break;
+
+                case 'css':
+					array_unshift($current[$type.'_after_body'], '<style>');
+					$current[$type.'_after_body'][] = '</style>';
 					break;
 
 				case 'php':
@@ -621,7 +626,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 
 				$vars = array_merge($tag['attributes'], array('template' => $list));
 
-                if($tag['attributes']['delayed']=='true')
+				// save lists which need to be processed later (after other simpler nv tags)
+                // "cart" lists are always delayed
+                if($tag['attributes']['delayed']=='true' || $tag['attributes']['source']=='cart')
                 {
                     $list_uid = uniqid('nvlist-');
                     $current['delayed_nvlists'][$list_uid] = $vars;

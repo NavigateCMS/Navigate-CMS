@@ -137,6 +137,7 @@ function nvweb_parse($request)
             'navigate_session'   => !empty($_SESSION['APP_USER#' . APP_UNIQUE]),
             'html_after_body'    => array(),
             'js_after_body'      => array(),
+            'css_after_body'     => array(),
             'pagecache_enabled'  => (
                     empty($_SESSION['APP_USER#' . APP_UNIQUE]) &&
                     empty($_POST) &&
@@ -158,6 +159,7 @@ function nvweb_parse($request)
         {
             $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
 
+            // the cache for this page has been created in the last hour?
             if(file_exists($page_cache) && filemtime($page_cache) > (core_time() - 3600))
             {
                 $html = file_get_contents($page_cache);
@@ -165,6 +167,7 @@ function nvweb_parse($request)
                 session_write_close();
                 $DB->disconnect();
                 echo $html;
+                echo '<!-- cached page time: '.(date("c", filemtime($page_cache))).' -->';
                 exit;
             }
             // else, generate the page and save it into the cache, if necessary
@@ -310,6 +313,7 @@ function nvweb_parse($request)
         $end = nvweb_after_body('php');
         $end .= nvweb_after_body('html');
         $end .= nvweb_after_body('js');
+        $end .= nvweb_after_body('css');
         $end .= "\n\n";
         $end .= '</body>';
 
@@ -368,7 +372,7 @@ function nvweb_parse($request)
         }
         else
         {
-            $events->trigger('nvweb', 'before_output');
+            $events->trigger('nvweb', 'before_output', array());
 
             // close any previous output buffer
             // some PHP configurations open ALWAYS a buffer
