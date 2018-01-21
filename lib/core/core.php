@@ -120,7 +120,11 @@ function core_run()
 function core_terminate()
 {
 	global $DB;
-	
+	global $website;
+	global $session;
+
+    @$_SESSION['nvweb.' . $website->id] = $session;
+
 	flush();
 	session_write_close();	
 	if($DB)
