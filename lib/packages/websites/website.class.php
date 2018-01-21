@@ -733,16 +733,14 @@ class website
 		if(!$ok)
 		    throw new Exception($DB->get_last_error());
 
-		if(!file_exists(NAVIGATE_PRIVATE.'/'.$this->id))
-		{
-			@mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0755, true);
-			@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/files', 0755, true);
-			@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/templates', 0755, true);
-			@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/thumbnails', 0755, true);
-			@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/webgets', 0755, true);
-            @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
-            @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
-		}
+		// try to create any missing folder
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/files', 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/templates', 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/thumbnails', 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/webgets', 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
 
         if(method_exists($events, 'trigger'))
         {

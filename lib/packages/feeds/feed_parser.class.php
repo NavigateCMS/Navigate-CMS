@@ -21,6 +21,7 @@ class feed_parser
         $this->url = $url;
         $hash = md5($url);
 
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
         $feed_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.$hash.'.feed';
 
         if($this->cache > 0)
