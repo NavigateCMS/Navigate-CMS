@@ -62,12 +62,8 @@ function nvweb_forms($vars=array())
                     {
                         var that = this;
                         $("select[name='.$vars['field_name'].']").find("option:selected").removeAttr("selected");
-                        $("select[name='.$vars['field_name'].']").find("option").not(":first").each(function()
-                        {
-                            $(this).hide();
-                            if($(this).data("country") == $(that).find("option:selected").val())
-                                $(this).show();
-                        });
+                        $("select[name='.$vars['field_name'].']").find("option").not(":first").hide();
+                        $("select[name='.$vars['field_name'].']").find("option[data-country="+$(that).find("option:selected").val()+"]").show();
                     });
                 ');
             }
