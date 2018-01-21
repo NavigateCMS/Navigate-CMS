@@ -475,6 +475,26 @@ class webuser
 		return false;		
 	}
 
+	public function authenticate_by_email($website, $email, $password)
+    {
+        global $DB;
+
+        // find the webuser username assigned to an email address
+        // because it may exist more than one account with the same email,
+        // only the first _created_ will be used
+
+        $username = $DB->query_single(
+            'username',
+            'nv_webusers',
+            'website = '.intval($website).' AND email = '.protect($email)
+        );
+
+        if(empty($username))
+            return false;
+
+        return $this->authenticate($website, $username, $password);
+    }
+
 	public function check_password($password)
     {
         $match = ($this->password ==  md5(mb_strtolower($this->username).':'.APP_REALM.':'.$password));
