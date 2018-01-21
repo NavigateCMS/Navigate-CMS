@@ -606,7 +606,7 @@ function comments_form($item)
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(649, 'In reply to').'</label>',
-        $naviforms->selectfield('comment-reply_to', $item->reply_to, array($reply_to_comment), $item->reply_to, null, false, null, null, false),
+        $naviforms->selectfield('comment-reply_to', array($item->reply_to), array($reply_to_comment), $item->reply_to, null, false, null, null, false),
         '<img style="cursor: pointer;" id="comment-reply_to-open_window" height="16" align="absmiddle" width="16" src="img/icons/silk/application_xp.png" />'
     ));
 
@@ -645,7 +645,7 @@ function comments_form($item)
                 }
             },
             templateSelection: function(row)
-			{
+			{			
 				if(row.id)
 					return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
 				else
