@@ -372,14 +372,15 @@ function nvweb_parse($request)
         }
         else
         {
-            $events->trigger('nvweb', 'before_output', array());
+            $events->trigger('nvweb', 'before_output');
 
             // close any previous output buffer
-            // some PHP configurations open ALWAYS a buffer
-            if(function_exists('ob_start'))
+            // some PHP configurations ALWAYS open a buffer
+            $zlib_oc_enabled = ini_get('zlib.output_compression');
+            if(function_exists('ob_start') && !$zlib_oc_enabled)
             {
-                while (ob_get_level() > 0)
-                    ob_end_flush();
+                if(ob_get_level() > 0)
+                    while(@ob_end_flush());
 
                 // open gzip buffer
                 ob_start("ob_gzhandler");
