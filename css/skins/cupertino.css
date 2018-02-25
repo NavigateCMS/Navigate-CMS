@@ -698,6 +698,14 @@ a.navigate-content-actions-selected
 	margin-left:5px;	
 }
 
+a.naviforms-pathfield-trigger
+{
+	margin-left: 4px;
+	cursor: pointer;
+	margin-top: -1px;
+}
+
+
 .error
 {
 	color: #900;
