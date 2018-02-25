@@ -22,8 +22,17 @@ $(window).on('load', function()
     {
         // force buttonset to update the state on click
         // jquery doesn't count a click if the cursor moves a little
-        $(this).parents('.buttonset').find('input[checked]').removeAttr('checked');
-        $(this).prev().attr('checked', 'checked');
+        if($(this).prev().attr("type")=="radio")
+        {
+            $(this).parents('.buttonset').find('input[checked]').removeAttr('checked');
+            $(this).prev().attr('checked', 'checked');
+        }
+        else  // checkbox
+        {
+            // jquery ui buttonset already works as expected
+            // no need to to anything else
+        }
+
         $(this).parents('.buttonset').buttonset('refresh');
     });
     jQuery.longclick.duration = 1000; // default longlick duration

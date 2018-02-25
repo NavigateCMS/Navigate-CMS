@@ -67,14 +67,21 @@ class naviforms
 		return implode("\n", $out);	
 	}
 	
-	public function buttonset($name, $options, $default, $onclick="", $jqueryui_icons=array())
+	public function buttonset($name, $options, $default, $onclick="", $jqueryui_icons=array(), $multiple=false)
 	{
 		$buttonset = array();
 		$buttonset[] = '<div class="buttonset">';
 
 		foreach($options as $key => $val)
 		{
-			$buttonset[] = '<input type="radio" id="'.$name.'_'.$key.'" name="'.$name.'[]" value="'.$key.'" '.((!is_null($default) && ($default==$key))? ' checked="checked" ' : '').' />';
+		    if($multiple)
+            {
+                $buttonset[] = '<input type="checkbox" id="' . $name . '_' . $key . '" name="' . $name . '[]" value="' . $key . '" ' . ((is_array($default) && (in_array($key, $default))) ? ' checked="checked" ' : '') . ' />';
+            }
+            else
+            {
+                $buttonset[] = '<input type="radio" id="' . $name . '_' . $key . '" name="' . $name . '[]" value="' . $key . '" ' . ((!is_null($default) && ($default == $key)) ? ' checked="checked" ' : '') . ' />';
+            }
             //    $buttonset[] = '<label for="'.$name.'_'.$key.'"  onclick="'.$onclick.'"><span class="ui-button-icon-primary ui-icon '.$icon.'" style=" float: left; "></span> '.$val.'</label>';
 			$buttonset[] = '<label class="unselectable" for="'.$name.'_'.$key.'"  onclick="'.$onclick.'">'.$val.'</label>';
 		}
