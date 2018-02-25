@@ -829,6 +829,40 @@ class webuser
         }
     }
 
+    public static function remove_old_unconfirmed_accounts()
+    {
+        global $DB;
+        global $website;
+
+        $ok = false;
+
+        $DB->query('
+            SELECT ex.id 
+            FROM (  
+                    SELECT id, activation_key, SUBSTRING_INDEX(activation_key, "-", -1) AS expiration_time
+                    FROM nv_webusers
+                    WHERE website = ' . protect($website->id) . '
+                      AND access = 1
+                      AND activation_key != ""
+                  ) ex
+            WHERE ex.activation_key <> ex.expiration_time
+              AND '.time().' > ex.expiration_time
+        ');
+
+        $rs = $DB->result('id');
+        if(!empty($rs))
+        {
+            $ok = $DB->execute('
+                DELETE FROM nv_webusers wu 
+                WHERE wu.id IN ('.implode(",", $rs).')        
+            ');
+        }
+
+        if($ok)
+            return count($rs);
+        else
+            return 0;
+    }
 
     public static function export($type='csv')
     {

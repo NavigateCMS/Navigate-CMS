@@ -262,6 +262,15 @@ function run()
                 $out = $layout->navigate_message("error", t(24, 'Web users').' / '.t(506, 'Groups'), t(56, 'Unexpected error.'));
             }
             break;
+
+        case "remove_old_unconfirmed":
+            $number = webuser::remove_old_unconfirmed_accounts();
+            if($number > 0)
+                $layout->navigate_notification(t(524, 'Items removed successfully').' ('.$number.')', false);
+            else
+                $layout->navigate_notification(t(645, 'No results found'), false);
+            $out = webusers_list();
+            break;
 					
 		case 0: // list / search result
         case 'list':
@@ -285,8 +294,20 @@ function webusers_list()
 	$navibars->title(t(24, 'Web users'));
 
     $extra_actions = array(
-        '<a href="?fid='.$_REQUEST['fid'].'&act=export"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_save.png"> '.t(475, 'Export').'</a>'
+        '<a href="?fid='.$_REQUEST['fid'].'&act=export"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_save.png"> '.t(475, 'Export').'</a>',
+        '<a href="#" onclick="navigate_webusers_remove_old_unconfirmed();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bin.png"> '.t(776, 'Remove old unconfirmed accounts').'</a>'
     );
+
+    $layout->add_script('
+            function navigate_webusers_remove_old_unconfirmed()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid=webusers&act=remove_old_unconfirmed"; }, 
+                    "'.t(497, "Do you really want to erase this data?").'", 
+                    null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 
     $events->add_actions(
         'webusers',
