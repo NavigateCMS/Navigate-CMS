@@ -3769,8 +3769,137 @@
 				<target>Page cache</target>
 			</trans-unit>
 
+			<trans-unit id="751" approved="yes">
+				<source>Same as shipping address</source>
+				<target>Same as shipping address</target>
+			</trans-unit>
+
+			<trans-unit id="752" approved="yes">
+				<source>Full name</source>
+				<target>Full name</target>
+			</trans-unit>
+
+			<trans-unit id="753" approved="yes">
+				<source>Place order</source>
+				<target>Place order</target>
+			</trans-unit>
+
+			<trans-unit id="754" approved="yes">
+				<source>Modify</source>
+				<target>Modify</target>
+			</trans-unit>
+
+			<trans-unit id="755" approved="yes">
+				<source>Continue</source>
+				<target>Continue</target>
+			</trans-unit>
+
+			<trans-unit id="756" approved="yes">
+				<source>Identification</source>
+				<target>Identification</target>
+			</trans-unit>
+
+			<trans-unit id="757" approved="yes">
+				<source>Payment</source>
+				<target>Payment</target>
+			</trans-unit>
+
+			<trans-unit id="758" approved="yes">
+				<source>Sign in</source>
+				<target>Sign in</target>
+			</trans-unit>
+
+			<trans-unit id="759" approved="yes">
+				<source>Sign up</source>
+				<target>Sign up</target>
+			</trans-unit>
+
+			<trans-unit id="760" approved="yes">
+				<source>E-mail or username</source>
+				<target>E-mail or username</target>
+			</trans-unit>
+
+			<trans-unit id="761" approved="yes">
+				<source>Purchase without account</source>
+				<target>Purchase without account</target>
+			</trans-unit>
+
+			<trans-unit id="762" approved="yes">
+				<source>If you don't want to keep your own user account on our website, you can place your order as a guest.</source>
+				<target>If you don't want to keep your own user account on our website, you can place your order as a guest.</target>
+			</trans-unit>
+
+			<trans-unit id="763" approved="yes">
+				<source>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></source>
+				<target>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></target>
+			</trans-unit>
+
+			<trans-unit id="764" approved="yes">
+				<source>optional</source>
+				<target>optional</target>
+			</trans-unit>
+
+			<trans-unit id="765" approved="yes">
+				<source>There was an error with your Login/Password combination. Please try again.</source>
+				<target>There was an error with your Login/Password combination. Please try again.</target>
+			</trans-unit>
+
+			<trans-unit id="766" approved="yes">
+				<source>Please enter your e-mail address in the username field and try again.</source>
+				<target>Please enter your e-mail address in the username field and try again.</target>
+			</trans-unit>
+
+			<trans-unit id="767" approved="yes">
+				<source>An e-mail with a confirmation has been sent to your address.</source>
+				<target>An e-mail with a confirmation has been sent to your address.</target>
+			</trans-unit>
+
+			<trans-unit id="768" approved="yes">
+				<source>Invalid e-mail address</source>
+				<target>Invalid e-mail address</target>
+			</trans-unit>
+
+			<trans-unit id="769" approved="yes">
+				<source>Password too weak</source>
+				<target>Password too weak</target>
+			</trans-unit>
+
+			<trans-unit id="770" approved="yes">
+				<source>You must accept the terms</source>
+				<target>You must accept the terms</target>
+			</trans-unit>
+
+			<trans-unit id="771" approved="yes">
+				<source>The specified username (or email address) is already being used on our website</source>
+				<target>The specified username (or email address) is already being used on our website</target>
+			</trans-unit>
+
+			<trans-unit id="772" approved="yes">
+				<source>Invalid username</source>
+				<target>Invalid username</target>
+			</trans-unit>
+
+			<trans-unit id="773" approved="yes">
+				<source>Purchase conditions</source>
+				<target>Purchase conditions</target>
+			</trans-unit>
+
+
+			<trans-unit id="774" approved="yes">
+				<source>Confirm your account</source>
+				<target>Confirm your account</target>
+			</trans-unit>
+
+			<trans-unit id="775" approved="yes">
+				<source>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</source>
+				<target>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</target>
+			</trans-unit>
+
+			<trans-unit id="776" approved="yes">
+				<source>Remove old unconfirmed accounts</source>
+				<target>Remove old unconfirmed accounts</target>
+			</trans-unit>
+
 		</body>
-
 	</file>
-
 </xliff>

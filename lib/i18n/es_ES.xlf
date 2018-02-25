@@ -3765,11 +3765,129 @@
 
 			<trans-unit id="750" approved="yes">
 				<source>Page cache</source>
-				<target>Caché de págines</target>
+				<target>Caché de páginas</target>
+			</trans-unit>
+
+			<trans-unit id="751" approved="yes">
+				<source>Same as shipping address</source>
+				<target>Igual que la dirección de envío</target>
+			</trans-unit>
+
+			<trans-unit id="752" approved="yes">
+				<source>Full name</source>
+				<target>Nombre completo</target>
+			</trans-unit>
+
+			<trans-unit id="753" approved="yes">
+				<source>Place order</source>
+				<target>Confirmar pedido</target>
+			</trans-unit>
+
+			<trans-unit id="754" approved="yes">
+				<source>Modify</source>
+				<target>Modificar</target>
+			</trans-unit>
+
+			<trans-unit id="755" approved="yes">
+				<source>Continue</source>
+				<target>Continuar</target>
+			</trans-unit>
+
+			<trans-unit id="756" approved="yes">
+				<source>Identification</source>
+				<target>Identificación</target>
+			</trans-unit>
+
+			<trans-unit id="757" approved="yes">
+				<source>Payment</source>
+				<target>Pago</target>
+			</trans-unit>
+
+			<trans-unit id="758" approved="yes">
+				<source>Sign in</source>
+				<target>Acceso</target>
+			</trans-unit>
+
+			<trans-unit id="759" approved="yes">
+				<source>Sign up</source>
+				<target>Registro</target>
+			</trans-unit>
+
+			<trans-unit id="760" approved="yes">
+				<source>E-mail or username</source>
+				<target>E-mail o usuario</target>
+			</trans-unit>
+
+			<trans-unit id="761" approved="yes">
+				<source>Purchase without account</source>
+				<target>Compra sin registro</target>
+			</trans-unit>
+
+			<trans-unit id="762" approved="yes">
+				<source>If you don't want to keep your own user account on our website, you can place your order as a guest.</source>
+				<target>Si no deseas tener tu propia cuenta de usuario en nuestra web, puedes realizar tu pedido como invitado.</target>
+			</trans-unit>
+
+			<trans-unit id="763" approved="yes">
+				<source>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></source>
+				<target>He leído y acepto las <![CDATA[<a href="{link}" target="_blank">condiciones de compra</a>]]></target>
+			</trans-unit>
+
+			<trans-unit id="764" approved="yes">
+				<source>optional</source>
+				<target>opcional</target>
+			</trans-unit>
+
+			<trans-unit id="765" approved="yes">
+				<source>There was an error with your Login/Password combination. Please try again.</source>
+				<target>Ha ocurrido un error con la combinación de Usuario/Contraseña. Por favor vuelve a intentarlo.</target>
+			</trans-unit>
+
+			<trans-unit id="766" approved="yes">
+				<source>Please enter your e-mail address in the username field and try again.</source>
+				<target>Por favor introduce tu dirección de correo en el campo de usuario y vuelve a intentarlo.</target>
+			</trans-unit>
+
+			<trans-unit id="767" approved="yes">
+				<source>An e-mail with a confirmation has been sent to your address.</source>
+				<target>Se ha enviado a tu dirección de correo un e-mail con una confirmación.</target>
+			</trans-unit>
+
+			<trans-unit id="768" approved="yes">
+				<source>Invalid e-mail address</source>
+				<target>Dirección de correo no válida</target>
+			</trans-unit>
+
+			<trans-unit id="769" approved="yes">
+				<source>Password too weak</source>
+				<target>Contraseña demasiado débil</target>
+			</trans-unit>
+
+			<trans-unit id="770" approved="yes">
+				<source>You must accept the terms</source>
+				<target>Debes aceptar los términos</target>
+			</trans-unit>
+
+			<trans-unit id="771" approved="yes">
+				<source>The specified username (or email address) is already being used on our website</source>
+				<target>El nombre de usuario especificado (o la dirección de correo) ya se están usando en nuestra web</target>
+			</trans-unit>
+
+			<trans-unit id="772" approved="yes">
+				<source>Invalid username</source>
+				<target>Nombre de usuario no válido</target>
+			</trans-unit>
+
+			<trans-unit id="773" approved="yes">
+				<source>Purchase conditions</source>
+				<target>Condiciones de compra</target>
+			</trans-unit>
+
+			<trans-unit id="776" approved="yes">
+				<source>Remove old unconfirmed accounts</source>
+				<target>Eliminar cuentas antiguas no confirmadas</target>
 			</trans-unit>
 
 		</body>
-
 	</file>
-
 </xliff>

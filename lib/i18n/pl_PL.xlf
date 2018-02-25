@@ -3768,8 +3768,126 @@
                 <target>Stronę pamięci podręcznej</target>
             </trans-unit>
 
+            <trans-unit id="751">
+                <source>Same as shipping address</source>
+                <target>Taki sam jak adres wysyłki</target>
+            </trans-unit>
+
+            <trans-unit id="752">
+                <source>Full name</source>
+                <target>Pełne imię i nazwisko</target>
+            </trans-unit>
+
+            <trans-unit id="753">
+                <source>Place order</source>
+                <target>Złożyć zamówienie</target>
+            </trans-unit>
+
+            <trans-unit id="754">
+                <source>Modify</source>
+                <target>Modyfikować</target>
+            </trans-unit>
+
+            <trans-unit id="755">
+                <source>Continue</source>
+                <target>Dalej</target>
+            </trans-unit>
+
+            <trans-unit id="756">
+                <source>Identification</source>
+                <target>Identyfikacja</target>
+            </trans-unit>
+
+            <trans-unit id="757">
+                <source>Payment</source>
+                <target>Zapłata</target>
+            </trans-unit>
+
+            <trans-unit id="758">
+                <source>Sign in</source>
+                <target>Zaloguj</target>
+            </trans-unit>
+
+            <trans-unit id="759">
+                <source>Sign up</source>
+                <target>Zapisz się</target>
+            </trans-unit>
+
+            <trans-unit id="760">
+                <source>E-mail or username</source>
+                <target>Email lub nazwa użytkownika</target>
+            </trans-unit>
+
+            <trans-unit id="761">
+                <source>Purchase without account</source>
+                <target>Zakup bez konta</target>
+            </trans-unit>
+
+            <trans-unit id="762">
+                <source>If you don't want to keep your own user account on our website, you can place your order as a guest.</source>
+                <target>Jeśli nie chcesz utrzymywać własnego konta użytkownika na naszej stronie internetowej, możesz złożyć zamówienie jako gość.</target>
+            </trans-unit>
+
+            <trans-unit id="763">
+                <source>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></source>
+                <target>Przyjmuję do wiadomości i akceptuję <![CDATA[<a href="{link}" target="_blank">warunki zakupu</a>]]></target>
+            </trans-unit>
+
+            <trans-unit id="764">
+                <source>optional</source>
+                <target>opcjonalny</target>
+            </trans-unit>
+
+            <trans-unit id="765">
+                <source>There was an error with your Login/Password combination. Please try again.</source>
+                <target>Wystąpił błąd w połączeniu Login/Hasło. Proszę spróbuj ponownie.</target>
+            </trans-unit>
+
+            <trans-unit id="766">
+                <source>Please enter your e-mail address in the username field and try again.</source>
+                <target>Wprowadź swój adres e-mail w polu nazwy użytkownika i spróbuj ponownie.</target>
+            </trans-unit>
+
+            <trans-unit id="767">
+                <source>An e-mail with a confirmation has been sent to your address.</source>
+                <target>Na Twój adres został wysłany e-mail z potwierdzeniem.</target>
+            </trans-unit>
+
+            <trans-unit id="768">
+                <source>Invalid e-mail address</source>
+                <target>Niepoprawny adres email</target>
+            </trans-unit>
+
+            <trans-unit id="769">
+                <source>Password too weak</source>
+                <target>Hasło zbyt słabe</target>
+            </trans-unit>
+
+            <trans-unit id="770">
+                <source>You must accept the terms</source>
+                <target>Musisz zaakceptować warunki</target>
+            </trans-unit>
+
+            <trans-unit id="771">
+                <source>The specified username (or email address) is already being used on our website</source>
+                <target>Podana nazwa użytkownika (lub adres e-mail) jest już używana na naszej stronie internetowej</target>
+            </trans-unit>
+
+            <trans-unit id="772">
+                <source>Invalid username</source>
+                <target>Zła nazwa użytkownika</target>
+            </trans-unit>
+
+            <trans-unit id="773">
+                <source>Purchase conditions</source>
+                <target>Warunki zakupu</target>
+            </trans-unit>
+
+            <trans-unit id="776">
+                <source>Remove old unconfirmed accounts</source>
+                <target>Usuń stare niepotwierdzone konta</target>
+            </trans-unit>
+
         </body>
-
     </file>
-
 </xliff>

@@ -3017,6 +3017,128 @@
         <source>Page cache</source>
         <target>Sidehurtiglager</target>
       </trans-unit>
+
+      <trans-unit id="751">
+        <source>Same as shipping address</source>
+        <target>Samme som leveringsadressen</target>
+      </trans-unit>
+
+      <trans-unit id="752">
+        <source>Full name</source>
+        <target>Fullt navn</target>
+      </trans-unit>
+
+      <trans-unit id="753">
+        <source>Place order</source>
+        <target>Bestellung aufgeben</target>
+      </trans-unit>
+
+      <trans-unit id="754">
+        <source>Modify</source>
+        <target>Endre</target>
+      </trans-unit>
+
+      <trans-unit id="755">
+        <source>Continue</source>
+        <target>Fortsette</target>
+      </trans-unit>
+
+      <trans-unit id="756">
+        <source>Identification</source>
+        <target>Identyfikacja</target>
+      </trans-unit>
+
+      <trans-unit id="757">
+        <source>Payment</source>
+        <target>Innbetaling</target>
+      </trans-unit>
+
+      <trans-unit id="758">
+        <source>Sign in</source>
+        <target>Logg inn</target>
+      </trans-unit>
+
+      <trans-unit id="759">
+        <source>Sign up</source>
+        <target>Melde deg på</target>
+      </trans-unit>
+
+      <trans-unit id="760">
+        <source>E-mail or username</source>
+        <target>E-mail eller brukernavn</target>
+      </trans-unit>
+
+      <trans-unit id="761">
+        <source>Purchase without account</source>
+        <target>Kjøp uten konto</target>
+      </trans-unit>
+
+      <trans-unit id="762">
+        <source>If you don't want to keep your own user account on our website, you can place your order as a guest.</source>
+        <target>Hvis du ikke vil beholde din egen brukerkonto på vår nettside, kan du bestille din bestilling som gjest.</target>
+      </trans-unit>
+
+      <trans-unit id="763">
+        <source>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></source>
+        <target>Jeg anerkjenner og aksepterer <![CDATA[<a href="{link}" target="_blank">kjøpsbetingelser</a>]]></target>
+      </trans-unit>
+
+      <trans-unit id="764">
+        <source>optional</source>
+        <target>valgfri</target>
+      </trans-unit>
+
+
+      <trans-unit id="765">
+        <source>There was an error with your Login/Password combination. Please try again.</source>
+        <target>Det oppsto en feil med innlogging/passord-kombinasjonen. Vær så snill, prøv på nytt.</target>
+      </trans-unit>
+
+      <trans-unit id="766">
+        <source>Please enter your e-mail address in the username field and try again.</source>
+        <target>Vennligst skriv inn din e-postadresse i brukernavnet og prøv igjen.</target>
+      </trans-unit>
+
+      <trans-unit id="767">
+        <source>An e-mail with a confirmation has been sent to your address.</source>
+        <target>En e-post med bekreftelse er sendt til adressen din.</target>
+      </trans-unit>
+
+      <trans-unit id="768">
+        <source>Invalid e-mail address</source>
+        <target>Ugyldig epostadresse</target>
+      </trans-unit>
+
+      <trans-unit id="769">
+        <source>Password too weak</source>
+        <target>Passordet er for svakt</target>
+      </trans-unit>
+
+      <trans-unit id="770">
+        <source>You must accept the terms</source>
+        <target>Du må godta vilkårene</target>
+      </trans-unit>
+
+      <trans-unit id="771">
+        <source>The specified username (or email address) is already being used on our website</source>
+        <target>Det angitte brukernavnet (eller e-postadressen) brukes allerede på vår nettside</target>
+      </trans-unit>
+
+      <trans-unit id="772">
+        <source>Invalid username</source>
+        <target>Ugyldig brukernavn</target>
+      </trans-unit>
+
+      <trans-unit id="773">
+        <source>Purchase conditions</source>
+        <target>Kjøpsbetingelser</target>
+      </trans-unit>
+
+      <trans-unit id="776">
+        <source>Remove old unconfirmed accounts</source>
+        <target>Fjern gamle ubekreftede kontoer</target>
+      </trans-unit>
+
     </body>
   </file>
 </xliff>
