@@ -260,7 +260,69 @@ class naviforms
         }
 
 		return $out;	
-	}	
+	}
+
+    public function pathfield($name, $value="", $width="400px", $action="", $extra="", $language="")
+    {
+        global $website;
+        global $layout;
+        $lang = value_or_default($language, $website->languages_published[0]);
+
+        // may happen when converting a property type from (multilanguage) text to a (single) value
+        if(is_array($value))
+            $value = array_pop($value);
+        $value = htmlspecialchars($value);
+
+        if(!empty($width))
+            $extra .= ' style=" width: '.$width.';"';
+
+        if(!empty($action))
+            $extra .= ' onkeyup="'.$action.'"';
+
+        $selected_path_title = "";
+        if(!empty($value))
+        {
+            $path = explode('/', $value);
+            if(count($path) > 0 && $path[0]=='nv:')
+            {
+                if($path[2]=='structure')
+                {
+                    $tmp = new structure();
+                    $tmp->load($path[3]);
+                    $selected_path_title = $tmp->dictionary[$lang]['title'];
+                    $layout->add_script('
+                        $("#'.$name.'")
+                            .parent()
+                            .find(".naviforms-pathfield-link-info[data-lang='.$lang.']")
+                            .find("img[data-type=structure]")
+                            .removeClass("hidden");
+                    ');
+                }
+                else if($path[2]=='element')
+                {
+                    $tmp = new item();
+                    $tmp->load($path[3]);
+                    $selected_path_title = $tmp->dictionary[$lang]['title'];
+                    $layout->add_script('
+                        $("#'.$name.'")
+                            .parent()
+                            .find(".naviforms-pathfield-link-info[data-lang='.$lang.']")
+                            .find("img[data-type=element]")
+                            .removeClass("hidden");
+                    ');
+                }
+            }
+        }
+
+        $out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
+        $out.= '<a class="uibutton naviforms-pathfield-trigger"><i class="fa fa-sitemap"></i></a>';
+        $out.= '<div class="subcomment naviforms-pathfield-link-info" data-lang="'.$lang.'">
+                    <img src="img/icons/silk/sitemap_color.png" class="hidden" data-type="structure" sprite="false" />
+                    <img src="img/icons/silk/page.png" class="hidden" data-type="element" sprite="false" /> '.
+                    '<span>'.$selected_path_title.'</span>'.
+                '</div>';
+        return $out;
+    }
 	
 	public function datefield($name, $value="", $hour=false, $style="")
 	{

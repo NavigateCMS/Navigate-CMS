@@ -198,6 +198,68 @@ $(window).on('load', function()
         navigate_window_resize();
     });
 
+    $('.naviforms-pathfield-trigger').on("click", function()
+    {
+        var trigger = this;
+
+        // always hide "replace title" option
+        $('#nv_link_dialog_replace_text').parent().addClass('hidden');
+
+        $('#nv_link_dialog').removeClass("hidden");
+        $('#nv_link_dialog').dialog({
+            title: $('#nv_link_dialog').attr("title"),
+            modal: true,
+            width: 620,
+            height: 400,
+            buttons: [
+                {
+                    text: navigate_t(190, "Ok"),
+                    click: function(event, ui)
+                    {
+                        // check if there is any path selected
+                        if(!$("#nv_link_dialog_dynamic_path").hasClass("hidden"))
+                        {
+                            var input_path = $(trigger).parent().find('input:first');
+                            input_path.val($("#nv_link_dialog_dynamic_path").text());
+                            if($("#nv_link_dialog_replace_text").is(":visible:checked"))
+                            {
+                                // replace title for the current row in links table
+                                input_path.parents("tr").find('input[data-role="title"]').val(
+                                    $("#nv_link_dialog_title").val()
+                                );
+                            }
+
+                            var div_info = $(trigger).parent().find('.naviforms-pathfield-link-info');
+                            $(div_info).find('span').text($("#nv_link_dialog_title").val());
+                            $(div_info).find('img').addClass("hidden");
+
+                            if($("#nv_link_dialog_source_element").is(":checked"))
+                                $(div_info).find('img[data-type=element]').removeClass("hidden");
+                            else
+                                $(div_info).find('img[data-type=structure]').removeClass("hidden");
+
+                            $('#nv_link_dialog').dialog("close");
+                        }
+                    }
+                },
+                {
+                    text: navigate_t(58, "Cancel"),
+                    click: function(event, ui)
+                    {
+                        $('#nv_link_dialog').dialog("close");
+                    }
+                }
+            ],
+            close: function()
+            {
+
+            }
+        });
+    });
+
+
+
+
     $(document.body).on('mousedown', navigate_hide_context_menus);
 
 	$(window).on('resize focus', navigate_window_resize);
