@@ -9,6 +9,7 @@ define('APP_OWNER', "{APP_OWNER}");
 define('APP_REALM', "{APP_REALM}"); // used for password encryption, do not change!
 define('APP_UNIQUE', "{APP_UNIQUE}"); // unique id for this installation
 define('APP_DEBUG', false || isset($_REQUEST['debug']));
+define('APP_FAILSAFE', false);
 
 /* App installation paths */
 define('NAVIGATE_PARENT', '{NAVIGATE_PARENT}');	// absolute URL to folder which contains the navigate folder (protocol agnostic and without final slash) [example: '//www.domain.com']
