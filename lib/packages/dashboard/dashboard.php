@@ -548,7 +548,7 @@ function dashboard_panel_recent_changes($params)
             $r++;
             if(!@$users_log[$r]) break;
 
-            // row is repeated? (same action than the last action with only changing the timestamp?)
+            // row is repeated? (same action as the last only changing the timestamp?)
             if( $r > 0 && (
                 $users_log[$r]['username'] == $users_log[$r-1]['username'] &&
                 $users_log[$r]['action'] == $users_log[$r-1]['action'] &&
@@ -578,7 +578,7 @@ function dashboard_panel_recent_changes($params)
             {
                 $users_log_html .= '
                     <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
-                    '<a href="?fid='.$users_log[$r]['function_id'].'&act=2&id='.$users_log[$r]['item_id'].'" title="'.core_ts2date($users_log[$r]['date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
+                    '<a href="?fid='.$users_log[$r]['function_id'].'&act=2&id='.$users_log[$r]['item_id'].'" title="'.core_ts2date($users_log[$r]['action_date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
                     '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_green.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . $users_log[$r]['title'].
                     '</a>'.
                     '</div>';
@@ -587,7 +587,7 @@ function dashboard_panel_recent_changes($params)
             {
                 $users_log_html .= '
                     <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
-                    '<a href="?fid='.$users_log[$r]['function_id'].'" title="'.core_ts2date($users_log[$r]['date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
+                    '<a href="?fid='.$users_log[$r]['function_id'].'" title="'.core_ts2date($users_log[$r]['action_date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
                     '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_red.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . $users_log[$r]['title'].
                     '</a>'.
                     '</div>';

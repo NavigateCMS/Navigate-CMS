@@ -131,8 +131,6 @@ class shipping_method
             )
         );
 
-        debugger::bar_dump($DB->get_last_error());
-
         $this->id = $DB->get_last_id();
 
         webdictionary::save_element_strings('shipping_method', $this->id, $this->dictionary, $this->website);
