@@ -1512,6 +1512,14 @@ function websites_form($item)
         )
     );
 
+    // (FUTURE) TAB Shop
+
+    $navibars->add_tab_content_row(array(
+            '<label>'.t(773, 'Purchase conditions').'</label>',
+            $naviforms->pathfield('website-purchase_conditions_path', $item->purchase_conditions_path, null, null, null)
+        )
+    );
+
 
     /* TAB EMAIL */
 

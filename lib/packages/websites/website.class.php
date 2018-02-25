@@ -1,5 +1,4 @@
 <?php
-
 class website
 {
 	public $id; 
@@ -50,6 +49,7 @@ class website
 	public $currency;
 	public $size_unit;
 	public $weight_unit;
+    public $purchase_conditions_path;
 
 	public $theme;
 	public $theme_options;
@@ -126,6 +126,8 @@ class website
 		$this->currency             = $main->currency;
 		$this->size_unit            = $main->size_unit;
 		$this->weight_unit          = $main->weight_unit;
+
+		$this->purchase_conditions_path     = $main->purchase_conditions_path;
 
 		$this->mail_mailer		            = $main->mail_mailer;
 		$this->mail_server		            = $main->mail_server;
@@ -221,6 +223,7 @@ class website
         $this->currency = $_REQUEST['website-default_currency'];
         $this->size_unit = $_REQUEST['website-default_size_unit'];
         $this->weight_unit = $_REQUEST['website-default_weight_unit'];
+        $this->purchase_conditions_path = $_REQUEST['website-purchase_conditions_path'];
 
         // languages and locales
         $this->languages = array();
@@ -461,7 +464,8 @@ class website
                 mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
                 contact_emails, homepage, default_timezone, 
                 metatag_title_order, metatag_description, metatag_keywords, metatags,
-                favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit, 
+                favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit,
+                purchase_conditions_path, 
                 theme, theme_options, block_types
             )
             VALUES
@@ -511,6 +515,7 @@ class website
               :currency, 
               :size_unit, 
               :weight_unit,
+              :purchase_conditions_path,
               :theme,
               :theme_options,
               :block_types
@@ -561,6 +566,7 @@ class website
                 ":currency" => value_or_default($this->currency, "dollar"),
                 ":size_unit" => value_or_default($this->size_unit, 'cm'),
                 ":weight_unit" => value_or_default($this->weight_unit, "g"),
+				":purchase_conditions_path" => value_or_default($this->purchase_conditions_path, ""),
 				":theme" => value_or_default($this->theme, ''),
 				":theme_options" => json_encode($this->theme_options),
                 ":block_types" => ""
@@ -676,6 +682,7 @@ class website
                     currency = ?,
                     size_unit = ?,
                     weight_unit = ?,
+                    purchase_conditions_path = ?,
                     theme = ?,
                     theme_options = ?
                 WHERE id = '.$this->id,
@@ -725,6 +732,7 @@ class website
                 value_or_default($this->currency, "dollar"),
                 value_or_default($this->size_unit, 'cm'),
                 value_or_default($this->weight_unit, "g"),
+                value_or_default($this->purchase_conditions_path, ""),
                 value_or_default($this->theme, ""),
                 json_encode($this->theme_options)
             )
@@ -1742,7 +1750,6 @@ class website
 
         return $where;
     }
-
 }
 
 ?>
