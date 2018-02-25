@@ -227,7 +227,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 	return $website;
 }
 
-function nvweb_prepare_link($path)
+function nvweb_prepare_link($path="")
 {
 	$path = trim($path);
 
@@ -241,11 +241,11 @@ function nvweb_prepare_link($path)
     }
     else if(substr(strtolower($path), 0, 4)=='www.')
     {
-        $url = 'http://'.$path;
+        $url = 'http://' . $path;
     }
     else
     {
-        $url = NVWEB_ABSOLUTE.$path;
+        $url = NVWEB_ABSOLUTE . $path;
     }
 
     return $url;
@@ -302,6 +302,31 @@ function nvweb_route_parse($route="")
 					$session['nv.webuser/verify:email_confirmed'] = time();
 			}
 			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage());
+			break;
+
+        case 'nv.webuser/confirm':
+			$hash = $_REQUEST['hash'];
+			$email = filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL);
+			$redirect = NVWEB_ABSOLUTE.$website->homepage();
+			if(!empty($hash) && !empty($email))
+			{
+				$wu = webuser::account_verification($email, $hash);
+				if(!empty($wu))
+                {
+                    $webuser = new webuser();
+                    $webuser->load($wu);
+
+                    $session['nv.webuser/verify:email_confirmed'] = time();
+
+                    // autologin after callback
+                    $webuser->set_cookie();
+
+                    if(!empty($_REQUEST['callback']))
+                        $redirect = base64_decode($_REQUEST['callback']);
+                }
+			}
+
+			nvweb_clean_exit($redirect);
 			break;
 
         case 'nv.comments/unsubscribe':

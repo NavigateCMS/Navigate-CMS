@@ -592,6 +592,53 @@ class webuser
 		return $status;
 	}
 
+	public static function account_verification($email, $hash)
+	{
+		global $DB;
+
+		$status = false;
+
+        if(strpos($hash, "-") > 0)
+        {
+            list($foo, $expiry) = explode("-", $hash);
+            if(time() > $expiry)
+            {
+                // expired unconfirmed account!
+                return $status;
+            }
+        }
+
+		$DB->query('
+			SELECT id, activation_key
+			  FROM nv_webusers
+			 WHERE email = '.protect($email).'
+			   AND activation_key = '.protect($hash).'
+		');
+		$rs = $DB->first();
+
+		if(!empty($rs->id))
+		{
+			$wu = new webuser();
+			$wu->load($rs->id);
+
+			// access is only enabled for blocked users (access==1) which already HAVE a password assigned
+			if($wu->access==1 && !empty($wu->password))
+			{
+				// account is confirmed!
+                if(empty($wu->email_verification_date)) // maybe the email was already verified by a previous newsletter subscription ;)
+				    $wu->email_verification_date = time();
+				$wu->access = 0;
+				$wu->activation_key = "";
+				$status = $wu->save();
+			}
+		}
+
+		if(!$status)
+		    return $status;
+		else
+		    return $wu->id;
+	}
+
 	public function quicksearch($text)
 	{
 		$like = ' LIKE '.protect('%'.$text.'%');
