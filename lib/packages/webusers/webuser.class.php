@@ -151,7 +151,7 @@ class webuser
 		$this->username		= trim($_REQUEST['webuser-username']);
 		if(!empty($_REQUEST['webuser-password']))
 			$this->set_password($_REQUEST['webuser-password']);			
-   		$this->email	    = $_REQUEST['webuser-email'];
+   		$this->email	    = trim($_REQUEST['webuser-email']);
    		$this->groups	    = $_REQUEST['webuser-groups'];
 		$this->fullname		= $_REQUEST['webuser-fullname'];
 		$this->gender		= $_REQUEST['webuser-gender'][0];		
@@ -263,7 +263,7 @@ class webuser
                 ":website" => $website->id,
                 ":username" => is_null($this->username)? '' : $this->username,
                 ":password" => is_null($this->password)? '' : $this->password,
-                ":email" => is_null($this->email)? '' : $this->email,
+                ":email" => is_null($this->email)? '' : strtolower($this->email),
                 ":groups" => $groups,
                 ":fullname" => is_null($this->fullname)? '' : $this->fullname,
                 ":gender" => is_null($this->gender)? '' : $this->gender,
@@ -509,22 +509,33 @@ class webuser
 	public function set_cookie()
 	{
 		global $session;
+		global $website;
 
 		$session['webuser'] = $this->id;
 		$this->cookie_hash = sha1(rand(1, 9999999));
 		$this->update();
-		setcookie('webuser', $this->cookie_hash, time()+60*60*24*365, '/', substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."))); // 365 days
+
+        $cookie_domain = $website->domain;
+        if(!empty($website->subdomain))
+            $cookie_domain = $website->subdomain.'.'.$cookie_domain;
+
+		setcookie('webuser', $this->cookie_hash, time()+60*60*24*365, '/', $cookie_domain); // 365 days
 	}
 	
 	public static function unset_cookie()
 	{
 		global $session;
+		global $website;
         global $events;
 
         $webuser_sign_out_id = $session['webuser'];
         $session['webuser'] = '';
-        setcookie('webuser', NULL, -1, '/', substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], ".")));
 
+        $cookie_domain = $website->domain;
+        if(!empty($website->subdomain))
+            $cookie_domain = $website->subdomain.'.'.$cookie_domain;
+
+        setcookie('webuser', NULL, -1, '/', $cookie_domain);
 
         if(method_exists($events, 'trigger'))
         {
@@ -543,6 +554,16 @@ class webuser
 		global $DB;
 
 		$status = false;
+
+		if(strpos($hash, "-") > 0)
+        {
+            list($foo, $expiry) = explode("-", $hash);
+            if(time() > $expiry)
+            {
+                // expired unconfirmed account!
+                return $status;
+            }
+        }
 
 		$DB->query('
 			SELECT id, activation_key
