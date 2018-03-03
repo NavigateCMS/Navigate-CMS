@@ -300,14 +300,16 @@ function nvweb_route_parse($route="")
 				$ok = webuser::email_verification($email, $hash);
 				if($ok)
 					$session['nv.webuser/verify:email_confirmed'] = time();
+                else
+                    $session['nv.webuser/verify:invalid_confirmation'] = time();
 			}
-			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage());
+			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage().'?_s='.time());
 			break;
 
         case 'nv.webuser/confirm':
 			$hash = $_REQUEST['hash'];
 			$email = filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL);
-			$redirect = NVWEB_ABSOLUTE.$website->homepage();
+			$redirect = NVWEB_ABSOLUTE.$website->homepage().'?_s='.time();
 			if(!empty($hash) && !empty($email))
 			{
 				$wu = webuser::account_verification($email, $hash);
@@ -324,6 +326,8 @@ function nvweb_route_parse($route="")
                     if(!empty($_REQUEST['callback']))
                         $redirect = base64_decode($_REQUEST['callback']);
                 }
+                else
+                    $session['nv.webuser/verify:invalid_confirmation'] = time();
 			}
 
 			nvweb_clean_exit($redirect);
