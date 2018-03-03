@@ -5,7 +5,8 @@
 
             <trans-unit id="0" approved="yes">
                 <source>Navigate</source>
-                <target>Nawiguj</target>
+                <target>Navigate</target>
+                <note>application name, no need to be translated</note>
             </trans-unit>
 
             <trans-unit id="1" approved="yes">
@@ -3284,138 +3285,139 @@
                 <target>Zapisz się do komentarzy na temat tego wpisu</target>
             </trans-unit>
 
-            <trans-unit id="656">
+            <trans-unit id="656" approved="yes">
                 <source>Additional styles</source>
                 <target>Dodatkowe style</target>
             </trans-unit>
 
-            <trans-unit id="657">
+            <trans-unit id="657" approved="yes">
                 <source>Tracking scripts</source>
-                <target>śledzenie skryptów</target>
+                <target>Śledzenie skryptów</target>
             </trans-unit>
 
-            <trans-unit id="658">
+            <trans-unit id="658" approved="yes">
                 <source>disabled for Navigate CMS users</source>
                 <target>wyłączone dla użytkowników Navigate CMS</target>
             </trans-unit>
 
-            <trans-unit id="659">
+            <trans-unit id="659" approved="yes">
                 <source>Replace file</source>
                 <target>Zamień plik</target>
             </trans-unit>
 
-            <trans-unit id="660">
+            <trans-unit id="660" approved="yes">
                 <source>Clear cache</source>
                 <target>Wyczyść pamięć podręczną</target>
             </trans-unit>
 
-            <trans-unit id="661">
+            <trans-unit id="661" approved="yes">
                 <source>New web user registration</source>
-                <target>Nowa internetowa rejestracja użytkownika</target>
+                <target>Nowa rejestracja użytkownika WWW</target>
             </trans-unit>
 
-            <trans-unit id="662">
+            <trans-unit id="662" approved="yes">
                 <source>Brand</source>
                 <target>Marka</target>
             </trans-unit>
 
-            <trans-unit id="663">
+            <trans-unit id="663" approved="yes">
                 <source>Inventory</source>
                 <target>Inwentarz</target>
             </trans-unit>
 
-            <trans-unit id="664">
+            <trans-unit id="664" approved="yes">
                 <source>SKU (Stock-keeping unit)</source>
-                <target>SKU (Kod referencyjny)</target>
+                <target>SKU (Jednostka magazynowa)</target>
             </trans-unit>
 
-            <trans-unit id="665">
+            <trans-unit id="665" approved="yes">
                 <source>Barcode</source>
                 <target>Kod kreskowy</target>
             </trans-unit>
 
-            <trans-unit id="666">
+            <trans-unit id="666" approved="yes">
                 <source>Track inventory</source>
-                <target>Śledź spis</target>
+                <target>Śledź inwentarz</target>
             </trans-unit>
 
-            <trans-unit id="667">
+            <trans-unit id="667" approved="yes">
                 <source>Stock available</source>
-                <target>Dostępny czas</target>
+                <target>Towar dostępny</target>
             </trans-unit>
 
-            <trans-unit id="668">
+            <trans-unit id="668" approved="yes">
                 <source>including all product variants</source>
                 <target>W tym wszystkie warianty produktu</target>
             </trans-unit>
 
-            <trans-unit id="669">
+            <trans-unit id="669" approved="yes">
                 <source>Depth</source>
                 <target>Głębokość</target>
             </trans-unit>
 
-            <trans-unit id="670">
+            <trans-unit id="670" approved="yes">
                 <source>Weight</source>
                 <target>Waga</target>
             </trans-unit>
 
-            <trans-unit id="671">
+            <trans-unit id="671" approved="yes">
                 <source>Pricing</source>
                 <target>Cennik</target>
             </trans-unit>
 
-            <trans-unit id="672">
+            <trans-unit id="672" approved="yes">
                 <source>Variants</source>
                 <target>Warianty</target>
             </trans-unit>
 
-            <trans-unit id="673">
+            <trans-unit id="673" approved="yes">
                 <source>Related</source>
                 <target>Powiązane</target>
                 <note>as in "related products"</note>
             </trans-unit>
 
-            <trans-unit id="674">
+            <trans-unit id="674" approved="yes">
                 <source>Shippable</source>
-                <target>Przenośny</target>
+                <target>Z dostawą</target>
             </trans-unit>
 
-            <trans-unit id="675">
+            <trans-unit id="675" approved="yes">
                 <source>Downloadable</source>
                 <target>Do pobrania</target>
             </trans-unit>
 
-            <trans-unit id="676">
+            <trans-unit id="676" approved="yes">
                 <source>Base price</source>
                 <target>Cena podstawowa</target>
             </trans-unit>
 
-            <trans-unit id="677">
+            <trans-unit id="677" approved="yes">
                 <source>Tax</source>
                 <target>Podatek</target>
             </trans-unit>
 
-            <trans-unit id="678">
+            <trans-unit id="678" approved="yes">
                 <source>Cost</source>
                 <target>Koszt</target>
             </trans-unit>
 
-            <trans-unit id="679">
+            <trans-unit id="679" approved="yes">
                 <source>Included</source>
-                <target>w zestawie</target>
+                <target>w załączeniu</target>
             </trans-unit>
 
             <trans-unit id="680">
                 <source>Custom</source>
-                <target>Niestandardowa</target>
+                <target>Zwyczaj</target>
+                <note>used to enter a specific value instead of a predefined one</note>
             </trans-unit>
 
-            <trans-unit id="681">
+            <trans-unit id="681" approved="yes">
                 <source>Brands</source>
                 <target>Marki</target>
             </trans-unit>
 
-            <trans-unit id="682">
+            <trans-unit id="682" approved="yes">
                 <source>Coupons</source>
                 <target>Kupony</target>
             </trans-unit>
@@ -3427,66 +3429,66 @@
 
             <trans-unit id="684" approved="yes">
                 <source>Regions</source>
-                <target>Regionów</target>
+                <target>Regiony</target>
                 <note>a generic word to refer to states, provinces and other similar zones in a country</note>
             </trans-unit>
 
-            <trans-unit id="685">
+            <trans-unit id="685" approved="yes">
                 <source>Subtotal</source>
                 <target>Suma częściowa</target>
             </trans-unit>
 
-            <trans-unit id="686">
+            <trans-unit id="686" approved="yes">
                 <source>min</source>
                 <target>min</target>
                 <note>minimum (abbreviation)</note>
             </trans-unit>
 
-            <trans-unit id="687">
+            <trans-unit id="687" approved="yes">
                 <source>max</source>
                 <target>maks</target>
                 <note>maximum (abbreviation)</note>
             </trans-unit>
 
-            <trans-unit id="688">
+            <trans-unit id="688" approved="yes">
                 <source>Masked redirect</source>
-                <target>Masked przekierowanie</target>
+                <target>Przekierowanie maskowane</target>
                 <note>load an internal website page using an alias route</note>
             </trans-unit>
 
-            <trans-unit id="689">
+            <trans-unit id="689" approved="yes">
                 <source>Load the content of an internal path without changing the browser URL</source>
                 <target>Wczytaj treść wewnętrznej ścieżki bez zmiany adresu przeglądarki</target>
             </trans-unit>
 
-            <trans-unit id="690">
+            <trans-unit id="690" approved="yes">
                 <source>Currency</source>
                 <target>Waluta</target>
             </trans-unit>
 
-            <trans-unit id="691">
+            <trans-unit id="691" approved="yes">
                 <source>Size unit</source>
                 <target>Jednostka wielkości</target>
             </trans-unit>
 
-            <trans-unit id="692">
+            <trans-unit id="692" approved="yes">
                 <source>Weight unit</source>
                 <target>Jednostka wagi</target>
             </trans-unit>
 
-            <trans-unit id="693">
+            <trans-unit id="693" approved="yes">
                 <source>Default values</source>
                 <target>Wartości domyślne</target>
             </trans-unit>
 
-            <trans-unit id="694">
+            <trans-unit id="694" approved="yes">
                 <source>Times allowed per customer</source>
                 <target>Czasy dozwolone na klienta</target>
             </trans-unit>
 
-            <trans-unit id="695">
+            <trans-unit id="695" approved="yes">
                 <source>Times allowed globally</source>
-                <target>Czasami wolno globalnie</target>
+                <target>Czasy dozwolone globalnie</target>
             </trans-unit>
 
             <trans-unit id="696" approved="yes">
@@ -3540,232 +3542,233 @@
                 <note>Lines of an order</note>
             </trans-unit>
 
-            <trans-unit id="706">
+            <trans-unit id="706" approved="yes">
                 <source>Total</source>
                 <target>Całkowity</target>
             </trans-unit>
 
-            <trans-unit id="707">
+            <trans-unit id="707" approved="yes">
                 <source>Reference</source>
                 <target>Odniesienie</target>
             </trans-unit>
 
-            <trans-unit id="708">
+            <trans-unit id="708" approved="yes">
                 <source>Paid</source>
                 <target>Płatny</target>
             </trans-unit>
 
-            <trans-unit id="709">
+            <trans-unit id="709" approved="yes">
                 <source>Pending payment</source>
-                <target>Do czasu płatności</target>
+                <target>Płatność oczekująca</target>
             </trans-unit>
 
-            <trans-unit id="710">
+            <trans-unit id="710" approved="yes">
                 <source>Pending</source>
-                <target>W oczekiwaniu</target>
+                <target>Oczekiwanie</target>
             </trans-unit>
 
-            <trans-unit id="711">
+            <trans-unit id="711" approved="yes">
                 <source>Processing</source>
                 <target>Przetwarzanie</target>
             </trans-unit>
 
-            <trans-unit id="712">
+            <trans-unit id="712" approved="yes">
                 <source>Sent</source>
                 <target>Wysłano</target>
             </trans-unit>
 
-            <trans-unit id="713">
+            <trans-unit id="713" approved="yes">
                 <source>Completed</source>
                 <target>Zakończony</target>
             </trans-unit>
 
-            <trans-unit id="714">
+            <trans-unit id="714" approved="yes">
                 <source>Cancelled</source>
                 <target>Odwołany</target>
             </trans-unit>
 
-            <trans-unit id="715">
+            <trans-unit id="715" approved="yes">
                 <source>Contact us</source>
                 <target>Skontaktuj się z nami</target>
             </trans-unit>
 
-            <trans-unit id="716">
+            <trans-unit id="716" approved="yes">
                 <source>Shipping address</source>
                 <target>Adres wysyłki</target>
             </trans-unit>
 
-            <trans-unit id="717">
+            <trans-unit id="717" approved="yes">
                 <source>Billing address</source>
                 <target>Adres rozliczeniowy</target>
             </trans-unit>
 
-            <trans-unit id="718">
+            <trans-unit id="718" approved="yes">
                 <source>Notify customer</source>
-                <target>Powiadom o tym klienta</target>
+                <target>Powiadom klienta</target>
             </trans-unit>
 
-            <trans-unit id="719">
+            <trans-unit id="719" approved="yes">
                 <source>Guest</source>
                 <target>Gość</target>
             </trans-unit>
 
-            <trans-unit id="720">
+            <trans-unit id="720" approved="yes">
                 <source>Shipping method</source>
-                <target>Sposób wysyłki</target>
+                <target>Metoda wysyłki</target>
             </trans-unit>
 
-            <trans-unit id="721">
+            <trans-unit id="721" approved="yes">
                 <source>Shipment reference</source>
                 <target>Referencyjny numer przesyłki</target>
             </trans-unit>
 
-            <trans-unit id="722">
+            <trans-unit id="722" approved="yes">
                 <source>Tracking URL</source>
-                <target>Śledzenie adresu URL</target>
+                <target>Śledzenie URL</target>
             </trans-unit>
 
-            <trans-unit id="723">
+            <trans-unit id="723" approved="yes">
                 <source>Refunded</source>
-                <target>Zwrot</target>
+                <target>Refundowane</target>
             </trans-unit>
 
-            <trans-unit id="724">
+            <trans-unit id="724" approved="yes">
                 <source>Quantity</source>
                 <target>Ilość</target>
             </trans-unit>
 
-            <trans-unit id="725">
+            <trans-unit id="725" approved="yes">
                 <source>Amount</source>
                 <target>Kwota</target>
             </trans-unit>
 
-            <trans-unit id="726">
+            <trans-unit id="726" approved="yes">
                 <source>Coupon</source>
                 <target>Kupon</target>
             </trans-unit>
 
-            <trans-unit id="727">
+            <trans-unit id="727" approved="yes">
                 <source>Payment method</source>
                 <target>Metoda płatności</target>
             </trans-unit>
 
-            <trans-unit id="728">
+            <trans-unit id="728" approved="yes">
                 <source>Payment information</source>
                 <target>Informacje o płatności</target>
             </trans-unit>
 
-            <trans-unit id="729">
+            <trans-unit id="729" approved="yes">
                 <source>Timeline</source>
                 <target>Linia czasu</target>
             </trans-unit>
 
-            <trans-unit id="730">
+            <trans-unit id="730" approved="yes">
                 <source>Internationalization</source>
                 <target>Umiędzynarodowienie</target>
             </trans-unit>
 
-            <trans-unit id="731">
+            <trans-unit id="731" approved="yes">
                 <source>Offer</source>
                 <target>Oferta</target>
             </trans-unit>
 
-            <trans-unit id="732">
+            <trans-unit id="732" approved="yes">
                 <source>Offer price</source>
                 <target>Zaproponuj cenę</target>
             </trans-unit>
 
-            <trans-unit id="733">
+            <trans-unit id="733" approved="yes">
                 <source>Selling price</source>
                 <target>Cena sprzedaży</target>
             </trans-unit>
 
-            <trans-unit id="734">
+            <trans-unit id="734" approved="yes">
                 <source>Order</source>
-                <target>Żądanie</target>
+                <target>Zamówienie</target>
                 <note>a customer purchase</note>
             </trans-unit>
 
-            <trans-unit id="735">
+            <trans-unit id="735" approved="yes">
                 <source>For any complaint or inquiry, please contact us.</source>
-                <target>W przypadku jakichkolwiek skarg lub zapytań skontaktuj się z nami.</target>
+                <target>Skontaktuj się z nami w przypadku jakichkolwiek skarg lub zapytań.</target>
             </trans-unit>
 
-            <trans-unit id="736">
+            <trans-unit id="736" approved="yes">
                 <source>Cart</source>
                 <target>Koszyk</target>
                 <note>list of products before the purchase</note>
             </trans-unit>
 
-            <trans-unit id="737">
+            <trans-unit id="737" approved="yes">
                 <source>Product list</source>
                 <target>Lista produktów</target>
             </trans-unit>
 
-            <trans-unit id="738">
+            <trans-unit id="738" approved="yes">
                 <source>Checkout</source>
-                <target>Sprawdzić</target>
+                <target>Sprawdź</target>
             </trans-unit>
 
-            <trans-unit id="739">
+            <trans-unit id="739" approved="yes">
                 <source>Download</source>
                 <target>Pobieranie</target>
             </trans-unit>
 
-            <trans-unit id="740">
+            <trans-unit id="740" approved="yes">
                 <source>Error</source>
-                <target>Usterka</target>
+                <target>Błąd</target>
             </trans-unit>
 
-            <trans-unit id="741">
+            <trans-unit id="741" approved="yes">
                 <source>Price</source>
-                <target>Koszt</target>
+                <target>Cena</target>
             </trans-unit>
 
-            <trans-unit id="742">
+            <trans-unit id="742" approved="yes">
                 <source>Your shopping cart is empty</source>
-                <target>Twój koszyk zakupowy pusty</target>
+                <target>Twój koszyk zakupowy jest pusty</target>
             </trans-unit>
 
-            <trans-unit id="743">
+            <trans-unit id="743" approved="yes">
                 <source>The amount excludes shipping, which is applied at checkout.</source>
-                <target>Kwota ta nie obejmuje wysyłki, którą stosuje się przy kasie.</target>
+                <target>Ta kwota nie obejmuje wysyłki, której koszt naliczany jest przy kasie.</target>
             </trans-unit>
 
-            <trans-unit id="744">
+            <trans-unit id="744" approved="yes">
                 <source>Apply</source>
-                <target>Obowiązywać</target>
+                <target>Zastosuj</target>
             </trans-unit>
 
-            <trans-unit id="745">
+            <trans-unit id="745" approved="yes">
                 <source>Invalid or nonexistent coupon</source>
-                <target>Kupon niesprawny lub nieistniejący</target>
+                <target>Kupon nieważny lub nieistniejący</target>
             </trans-unit>
 
-            <trans-unit id="746">
+            <trans-unit id="746" approved="yes">
                 <source>Non-redeemable coupon</source>
                 <target>Kupon bezzwrotny</target>
             </trans-unit>
 
-            <trans-unit id="747">
+            <trans-unit id="747" approved="yes">
                 <source>Reply</source>
-                <target>Odzew</target>
+                <target>Odpowiedz</target>
             </trans-unit>
 
-            <trans-unit id="748">
+            <trans-unit id="748" approved="yes">
                 <source>Time</source>
                 <target>Czas</target>
                 <note>time spent doing something</note>
             </trans-unit>
 
-            <trans-unit id="749">
+            <trans-unit id="749" approved="yes">
                 <source>Queries</source>
                 <target>Zapytania</target>
+                <note>referred to internal SQL queries</note>
             </trans-unit>
 
-            <trans-unit id="750">
+            <trans-unit id="750" approved="yes">
                 <source>Page cache</source>
-                <target>Stronę pamięci podręcznej</target>
+                <target>Pamięć podręczna strony</target>
             </trans-unit>
 
             <trans-unit id="751">
@@ -3883,9 +3886,24 @@
                 <target>Warunki zakupu</target>
             </trans-unit>
 
+            <trans-unit id="774">
+                <source>Confirm your account</source>
+                <target>Potwierdzić swoje konto</target>
+            </trans-unit>
+
+            <trans-unit id="775">
+                <source>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</source>
+                <target>Jest to zautomatyzowana wiadomość e-mail wysłana w wyniku żądania utworzenia konta. Jeśli otrzymałeś ten e-mail przez pomyłkę, zignoruj go.</target>
+            </trans-unit>
+
             <trans-unit id="776">
                 <source>Remove old unconfirmed accounts</source>
                 <target>Usuń stare niepotwierdzone konta</target>
+            </trans-unit>
+
+            <trans-unit id="777">
+                <source>Sorry, confirmation link is invalid or has expired.</source>
+                <target>Niestety, link potwierdzający jest nieprawidłowy lub wygasł.</target>
             </trans-unit>
 
         </body>

@@ -6,6 +6,7 @@
 			<trans-unit id="0" approved="yes">
 				<source>Navigate</source>
 				<target>Navigate</target>
+				<note>application name, no need to be translated</note>
 			</trans-unit>
 
 			<trans-unit id="1" approved="yes">
@@ -3410,6 +3411,7 @@
 			<trans-unit id="680" approved="yes">
 				<source>Custom</source>
 				<target>Custom</target>
+				<note>used to enter a specific value instead of a predefined one</note>
 			</trans-unit>
 
 			<trans-unit id="681" approved="yes">
@@ -3762,6 +3764,7 @@
 			<trans-unit id="749" approved="yes">
 				<source>Queries</source>
 				<target>Queries</target>
+				<note>referred to internal SQL queries</note>
 			</trans-unit>
 
 			<trans-unit id="750" approved="yes">
@@ -3884,7 +3887,6 @@
 				<target>Purchase conditions</target>
 			</trans-unit>
 
-
 			<trans-unit id="774" approved="yes">
 				<source>Confirm your account</source>
 				<target>Confirm your account</target>
@@ -3898,6 +3900,11 @@
 			<trans-unit id="776" approved="yes">
 				<source>Remove old unconfirmed accounts</source>
 				<target>Remove old unconfirmed accounts</target>
+			</trans-unit>
+
+			<trans-unit id="777" approved="yes">
+				<source>Sorry, confirmation link is invalid or has expired.</source>
+				<target>Sorry, confirmation link is invalid or has expired.</target>
 			</trans-unit>
 
 		</body>

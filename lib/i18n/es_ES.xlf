@@ -6,6 +6,7 @@
 			<trans-unit id="0" approved="yes">
 				<source>Navigate</source>
 				<target>Navigate</target>
+				<note>application name, no need to be translated</note>
 			</trans-unit>
 
 			<trans-unit id="1" approved="yes">
@@ -3408,6 +3409,7 @@
 			<trans-unit id="680" approved="yes">
 				<source>Custom</source>
 				<target>Definido</target>
+				<note>used to enter a specific value instead of a predefined one</note>
 			</trans-unit>
 
 			<trans-unit id="681" approved="yes">
@@ -3761,6 +3763,7 @@
 			<trans-unit id="749" approved="yes">
 				<source>Queries</source>
 				<target>Consultas</target>
+				<note>referred to internal SQL queries</note>
 			</trans-unit>
 
 			<trans-unit id="750" approved="yes">
@@ -3883,9 +3886,24 @@
 				<target>Condiciones de compra</target>
 			</trans-unit>
 
+			<trans-unit id="774" approved="yes">
+				<source>Confirm your account</source>
+				<target>Confirma tu cuenta</target>
+			</trans-unit>
+
+			<trans-unit id="775" approved="yes">
+				<source>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</source>
+				<target>Este es un correo electrónico automático enviado como resultado de una petición de creación de nueva cuenta. Si has recibido este e-mail por error, puedes ignorarlo.</target>
+			</trans-unit>
+
 			<trans-unit id="776" approved="yes">
 				<source>Remove old unconfirmed accounts</source>
 				<target>Eliminar cuentas antiguas no confirmadas</target>
+			</trans-unit>
+
+			<trans-unit id="777" approved="yes">
+				<source>Sorry, confirmation link is invalid or has expired.</source>
+				<target>Error, el enlace de confirmación no es válido o ha caducado.</target>
 			</trans-unit>
 
 		</body>

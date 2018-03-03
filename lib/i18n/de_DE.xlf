@@ -6,6 +6,7 @@
 			<trans-unit id="0" approved="yes">
 				<source>Navigate</source>
 				<target>Navigate</target>
+				<note>application name, no need to be translated</note>
 			</trans-unit>
 
 			<trans-unit id="1" approved="yes">
@@ -3408,6 +3409,7 @@
 			<trans-unit id="680">
 				<source>Custom</source>
 				<target>Benutzerdefinierten</target>
+				<note>used to enter a specific value instead of a predefined one</note>
 			</trans-unit>
 
 			<trans-unit id="681">
@@ -3761,6 +3763,7 @@
 			<trans-unit id="749">
 				<source>Queries</source>
 				<target>Anfragen</target>
+				<note>referred to internal SQL queries</note>
 			</trans-unit>
 
 			<trans-unit id="750">
@@ -3883,9 +3886,24 @@
 				<target>Einkaufsbedingungen</target>
 			</trans-unit>
 
+			<trans-unit id="774">
+				<source>Confirm your account</source>
+				<target>Bestätigen Sie ihr Konto</target>
+			</trans-unit>
+
+			<trans-unit id="775">
+				<source>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</source>
+				<target>Dies ist eine automatisierte E-Mail, die als Ergebnis einer Anfrage zur Kontoerstellung gesendet wurde. Wenn Sie diese E-Mail versehentlich erhalten haben, ignorieren Sie sie einfach.</target>
+			</trans-unit>
+
 			<trans-unit id="776">
 				<source>Remove old unconfirmed accounts</source>
 				<target>Entfernen Sie alte unbestätigte Konten</target>
+			</trans-unit>
+
+			<trans-unit id="777">
+				<source>Sorry, confirmation link is invalid or has expired.</source>
+				<target>Der Bestätigungslink ist ungültig oder abgelaufen.</target>
 			</trans-unit>
 
 		</body>
