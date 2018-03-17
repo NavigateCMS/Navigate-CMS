@@ -116,7 +116,7 @@ function about_layout()
     $navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-            '<a href="https://select2.github.io" target="_blank">Select2 v4.0.3</a><br />'
+            '<a href="https://select2.github.io" target="_blank">Select2 4.0.6-rc.1</a><br />'
 		)
 	);
 
