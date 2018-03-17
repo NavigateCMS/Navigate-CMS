@@ -1356,6 +1356,79 @@ class naviforms
 
         return implode("\n", $out);
     }
+
+    function countryfield($name, $value="")
+    {
+        $countries = property::countries();
+        $country_names = array_values($countries);
+        $country_codes = array_keys($countries);
+        // include "country not defined" item
+        array_unshift($country_codes, '');
+        array_unshift($country_names, '('.t(307, "Unspecified").')');
+
+        $field = $this->selectfield($name, $country_codes, $country_names, strtoupper($value));
+        return $field;
+    }
+
+    function countryregionfield($name, $value="", $country_field="")
+    {
+        global $layout;
+
+        $regions = property::countries_regions();
+
+        $out[] = '<select name="'.$name.'" id="'.$name.'" data-country-field="'.$country_field.'">';
+        $out[] = '<option data-country="" value="">('.t(307, "Unspecified").')</option>';
+        for($r = 0; $r < count($regions); $r++)
+        {
+            if($regions[$r]->region_id == $value)
+                $out[] = '<option data-country="'.$regions[$r]->country_code.'" value="'.$regions[$r]->region_id.'" selected>'.$regions[$r]->name.'</option>';
+            else
+                $out[] = '<option data-country="'.$regions[$r]->country_code.'" value="'.$regions[$r]->region_id.'">'.$regions[$r]->name.'</option>';
+        }
+        $out[] = '</select>';
+
+        if(!empty($country_field))
+        {
+            $layout->add_content('
+                <style>
+                    #select2-'.$name.'-results .select2-results__option[aria-disabled=true]   {   display: none;  }
+                </style>
+            ');
+
+            $layout->add_script('
+                $("select[name='.$country_field.']").on("change", function()
+                {
+                    var that = this;
+                    if($("select[name='.$name.']").hasClass("select2-hidden-accessible"))
+                        $("select[name='.$name.']").select2("destroy");
+                    
+                    // if the country has changed, remove any selected region
+                    if($("select[name='.$name.']").find("option:selected").data("country")!=$(that).val())    
+                        $("select[name='.$name.']").find("option:selected").removeAttr("selected");
+                    
+                    $("select[name='.$name.']").find("option").not(":first")
+                        .hide()
+                        .attr("disabled", "disabled");
+                        
+                    if($(that).find("option:selected").val()!="")
+                    {
+                        $("select[name='.$name.']")
+                            .find("option[data-country="+$(that).find("option:selected").val()+"]")
+                                .show()
+                                .removeAttr("disabled");
+                    }
+                    
+                    if(!$("select[name='.$name.']").hasClass("select2-hidden-accessible"))
+                        $("select[name='.$name.']").select2();
+                });
+                                
+                $("#'.$country_field.'").trigger("change");
+            ');
+        }
+
+        $out = implode("\n", $out);
+        return $out;
+    }
 }
 
 ?>
