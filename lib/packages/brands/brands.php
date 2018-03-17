@@ -42,7 +42,7 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 				
-					$DB->queryLimit('id,name,image,notes',
+					$DB->queryLimit('id,name,image',
 									'nv_brands',
 									$where, 
 									$orderby, 
@@ -171,6 +171,7 @@ function brands_form($object)
 	$navibars = new navibars();
 	$naviforms = new naviforms();
     $layout->navigate_media_browser();
+    $layout->navigate_editorfield_link_dialog();
 	
 	if(empty($object->id))
 		$navibars->title(t(681, 'Brands').' / '.t(38, 'Create'));
@@ -289,6 +290,13 @@ function brands_form($object)
         )
     );
 
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(197, 'Link').'</label>',
+            $naviforms->pathfield('url', $object->url)
+        )
+    );
+
     $layout->add_script("
         $(document).on('keydown.ctrl_s', function (evt) { navigate_tabform_submit(1); return false; } );
         $(document).on('keydown.ctrl_m', function (evt) { navigate_media_browser(); return false; } );
@@ -296,4 +304,5 @@ function brands_form($object)
 
 	return $navibars->generate();
 }
+
 ?>

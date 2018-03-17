@@ -5,7 +5,7 @@ class brand
     public $website;
     public $name;
     public $image;
-    public $notes;
+    public $url;
 
     public function load($id)
     {
@@ -31,14 +31,14 @@ class brand
         $this->website		= $main->website;
         $this->name 		= $main->name;
         $this->image		= $main->image;
-        $this->notes		= $main->notes;
+        $this->url          = $main->url;
     }
 
     public function load_from_post()
     {
         $this->name  		= $_REQUEST['name'];
         $this->image		= intval($_REQUEST['image']);
-        //$this->notes 		= $_REQUEST['notes'];
+        $this->url		    = $_REQUEST['url'];
     }
 
 
@@ -77,15 +77,15 @@ class brand
 
         $DB->execute(' 
  			INSERT INTO nv_brands
-				(id, website, name, image, notes)
+				(id, website, name, image, url)
 			VALUES 
-				( 0, :website, :name, :image, :notes)
+				( 0, :website, :name, :image, :url)
 			',
             array(
                 'website' => value_or_default($this->website, $website->id),
                 'name' => $this->name,
                 'image' => value_or_default($this->image, 0),
-                'notes' => value_or_default($this->notes, "")
+                'url' => value_or_default($this->url, "")
             )
         );
 
@@ -100,14 +100,14 @@ class brand
 
         $ok = $DB->execute(' 
  			UPDATE nv_brands
-			  SET name = :name, image = :image, notes = :notes
+			  SET name = :name, image = :image, url = :url
 			WHERE id = :id	AND	website = :website',
             array(
                 'id' => $this->id,
                 'website' => $this->website,
                 'name' => $this->name,
                 'image' => value_or_default($this->image, 0),
-                'notes' => value_or_default($this->notes, "")
+                'url' => value_or_default($this->url, "")
             )
         );
 
