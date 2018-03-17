@@ -326,7 +326,7 @@ function orders_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;</label>',
-            $naviforms->checkbox('notify_customer', true),
+            $naviforms->checkbox('notify_customer', false),
             '<label for="notify_customer" class="checkbox-text">'.t(718, "Notify customer").'</label>'
         ),
         "notify_customer_wrapper", 'data-previous-value="'.$object->status.'" style="display: none;"'
@@ -337,7 +337,9 @@ function orders_form($object)
         {
             $("#notify_customer_wrapper").hide();
             if($("#status").val() != $("#notify_customer_wrapper").data("previous-value"))
+            {
                 $("#notify_customer_wrapper").show();
+            }
         }    
     ');
 
@@ -645,14 +647,14 @@ function orders_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(224, 'Country').'</label>',
-            $naviforms->textfield('shipping_address-country', $object->shipping_address->country)
+            $naviforms->countryfield('shipping_address-country', $object->shipping_address->country)
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(473, 'Region').'</label>',
-            $naviforms->textfield('shipping_address-region', $object->shipping_address->region)
+            $naviforms->countryregionfield('shipping_address-region', $object->shipping_address->region, 'shipping_address-country')
         )
     );
 
@@ -727,14 +729,14 @@ function orders_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(224, 'Country').'</label>',
-            $naviforms->textfield('billing_address-country', $object->billing_address->country)
+            $naviforms->countryfield('billing_address-country', $object->billing_address->country)
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(473, 'Region').'</label>',
-            $naviforms->textfield('billing_address-region', $object->billing_address->region)
+            $naviforms->countryregionfield('billing_address-region', $object->billing_address->region, 'billing_address-country')
         )
     );
 
