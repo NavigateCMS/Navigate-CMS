@@ -26,7 +26,7 @@ class order
             // carrier, reference, tracking_url
 
     public $shipping_address;
-            // name, company, address, location, zipcode, region, country, phone
+            // name, company, address, location, zipcode, region, country, phone, email
     public $billing_address;
             // name, company, address, location, zipcode, region, country, phone, email
 
@@ -349,6 +349,59 @@ class order
             $this->send_customer_notification();
 
         return true;
+    }
+
+    public static function get_addresses($webuser)
+    {
+        global $website;
+        global $DB;
+
+        $addresses = array();
+        $hashes = array();
+
+        $from_time = time() - (4 * 365 * 24 * 3600); // ignore addresses used 4 years ago
+
+        $DB->query('
+            SELECT shipping_address, billing_address 
+              FROM nv_orders
+             WHERE website = '.$website->id.' 
+               AND webuser = '.intval($webuser).'
+               AND date_created > '.$from_time.'
+          ORDER BY id DESC
+        ');
+
+        $rs = $DB->result();
+
+        // remove duplicated and clean empty addresses
+        foreach($rs as $order)
+        {
+            $shipping_a = json_decode($order->shipping_address, true);
+            $billing_a = json_decode($order->billing_address);
+
+            $prehash = implode("", (array)$shipping_a);
+            if(!empty($prehash))
+            {
+                $hash = md5($prehash);
+                if(!in_array(md5($prehash), $hashes))
+                {
+                    $addresses[] = $shipping_a;
+                    $hashes[] = $hash;
+                }
+            }
+
+            $prehash = implode("", (array)$billing_a);
+            if(!empty($prehash))
+            {
+                $hash = md5($prehash);
+                if(!in_array(md5($prehash), $hashes))
+                {
+                    $addresses[] = $billing_a;
+                    $hashes = $hash;
+                }
+            }
+        }
+
+        return $addresses;
     }
 
     public function send_customer_notification()
