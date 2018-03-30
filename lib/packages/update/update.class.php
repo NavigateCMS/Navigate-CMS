@@ -428,7 +428,7 @@ class update
 
 	public static function cache_clean()
     {
-        // do some cleaning: css&js navigate cache, thumbnails cache and tinymce cache
+        // do some cleaning: css&js navigate cache, thumbnails cache, tinymce cache and pages cache
         $navigatecms_cache = glob(NAVIGATE_PATH . '/cache/*.min.*');
         for($t=0; $t < count($navigatecms_cache); $t++)
             @unlink($navigatecms_cache[$t]);
@@ -444,6 +444,10 @@ class update
         $thumbnails = glob(NAVIGATE_PRIVATE . '/*/thumbnails/*x*');
         for($t=0; $t < count($thumbnails); $t++)
             @unlink($thumbnails[$t]);
+
+        $pages = glob(NAVIGATE_PRIVATE.'/*/cache/*.page');
+        for($t=0; $t < count($pages); $t++)
+            @unlink($pages[$t]);
     }
 }
 

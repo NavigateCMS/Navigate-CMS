@@ -1039,13 +1039,17 @@ class website
         for($t=0; $t < count($files); $t++)
             @unlink($files[$t]);
 
-        // page cache
-        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.page');
+        // feeds
+        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.feed');
         for($t=0; $t < count($files); $t++)
             @unlink($files[$t]);
 
-        // feeds
-        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.feed');
+        $this->purge_pages_cache();
+    }
+
+    public function purge_pages_cache()
+    {
+        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.page');
         for($t=0; $t < count($files); $t++)
             @unlink($files[$t]);
     }

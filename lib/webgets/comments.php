@@ -164,6 +164,8 @@ function nvweb_comments($vars=array())
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         nvweb_after_body("js", $callback_error.'("'.$response.'");');
                 }
+
+                $website->purge_pages_cache();
             }
 
             if(isset($_GET['nv_remove_comment']))
@@ -202,6 +204,8 @@ function nvweb_comments($vars=array())
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         nvweb_after_body("js", $callback_error.'("'.$response.'");');
                 }
+
+                $website->purge_pages_cache();
             }
 
 			if($_REQUEST['form-type']=='comment-reply' || isset($_POST[$vars['field-message']]))
@@ -442,6 +446,8 @@ function nvweb_comments($vars=array())
                         true
                     );
                 }
+
+                $website->purge_pages_cache();
 			}
 			break;
 

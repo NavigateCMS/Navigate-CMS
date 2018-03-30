@@ -435,7 +435,6 @@ class item
         if($groups == 'g')
             $groups = '';
 
-
         $ok = $DB->execute(' 
             UPDATE nv_items
             SET 
@@ -491,6 +490,7 @@ class item
 		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
    		path::saveElementPaths('item', $this->id, $this->paths, $this->website);
+        // note: page cache is cleaned in a website.class bound event
 
         $events->trigger(
             'item',
