@@ -3907,6 +3907,12 @@
 				<target>Sorry, confirmation link is invalid or has expired.</target>
 			</trans-unit>
 
+			<trans-unit id="778" approved="yes">
+				<source>National identification number</source>
+				<target>National identification number</target>
+				<note>https://en.wikipedia.org/wiki/National_identification_number</note>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

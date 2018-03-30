@@ -3906,6 +3906,12 @@
 				<target>Error, el enlace de confirmación no es válido o ha caducado.</target>
 			</trans-unit>
 
+			<trans-unit id="778" approved="yes">
+				<source>National identification number</source>
+				<target>Número de identificación nacional</target>
+				<note>https://en.wikipedia.org/wiki/National_identification_number</note>
+			</trans-unit>
+			
 		</body>
 	</file>
 </xliff>

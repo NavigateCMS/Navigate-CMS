@@ -454,6 +454,13 @@ function orders_form($object)
         });
     ');
 
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(168, 'Notes').'</label>',
+            $naviforms->textarea('customer-notes', $object->customer_notes)
+        )
+    );
+
     if($object->date_modified > 0)
     {
         $navibars->add_tab_content_row(
@@ -618,6 +625,13 @@ function orders_form($object)
 
     $navibars->add_tab_content_row(
         array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(778, 'National identification number').'</label>',
+            $naviforms->textfield('shipping_address-nin', $object->shipping_address->nin)
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(592, 'Company').'</label>',
             $naviforms->textfield('shipping_address-company', $object->shipping_address->company)
         )
@@ -707,6 +721,13 @@ function orders_form($object)
 
     $navibars->add_tab_content_row(
         array(
+            '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(778, 'National identification number').'</label>',
+            $naviforms->textfield('billing_address-nin', $object->billing_address->nin)
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(233, 'Address').'</label>',
             $naviforms->textfield('billing_address-address', $object->billing_address->address)
         )
@@ -779,5 +800,6 @@ function orders_form($object)
 
 	return $navibars->generate();
 }
+
 
 ?>

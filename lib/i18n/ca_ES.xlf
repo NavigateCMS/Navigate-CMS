@@ -3918,6 +3918,12 @@
                 <target>Error, l'enllaç de confirmació no és vàlid o ha caducat.</target>
             </trans-unit>
 
+            <trans-unit id="778" approved="yes">
+                <source>National identification number</source>
+                <target>Número d'identificació nacional</target>
+                <note>https://en.wikipedia.org/wiki/National_identification_number</note>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

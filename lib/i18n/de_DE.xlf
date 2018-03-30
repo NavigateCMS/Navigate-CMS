@@ -3906,6 +3906,12 @@
 				<target>Der Bestätigungslink ist ungültig oder abgelaufen.</target>
 			</trans-unit>
 
+			<trans-unit id="778">
+				<source>National identification number</source>
+				<target>Nationale Identifikationsnummer</target>
+				<note>https://en.wikipedia.org/wiki/National_identification_number</note>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

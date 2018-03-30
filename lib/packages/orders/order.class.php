@@ -8,6 +8,7 @@ class order
 
     public $customer_data;
             // ip, guest, name, email, phone, country, region, zipcode, location, address
+    public $customer_notes;
 
     public $status; // payment_pending, pending, processing, sent, completed, cancelled, contact us
     public $date_created;
@@ -26,9 +27,9 @@ class order
             // carrier, reference, tracking_url
 
     public $shipping_address;
-            // name, company, address, location, zipcode, region, country, phone, email
+            // name, nin, company, address, location, zipcode, region, country, phone, email
     public $billing_address;
-            // name, company, address, location, zipcode, region, country, phone, email
+            // name, nin, company, address, location, zipcode, region, country, phone, email
 
     public $coupon;
     public $coupon_code;
@@ -75,6 +76,7 @@ class order
         $this->webuser	            = $main->webuser;
 
         $this->customer_data	    = json_decode($main->customer_data);
+        $this->customer_notes       = $main->customer_notes;
 
         $this->status	            = $main->status;
         $this->date_created	        = $main->date_created;
@@ -155,6 +157,8 @@ class order
         $this->customer_data->phone = $_REQUEST['customer-phone'];
         $this->customer_data->guest = $_REQUEST['customer-guest']=='1'? 1 : 0;
 
+        $this->customer_notes = $_REQUEST['customer-notes'];
+
         $this->webuser = intval($_REQUEST['webuser']);
 
         // TODO: save new position for order lines
@@ -176,6 +180,7 @@ class order
         $this->shipping_data->tracking_url = trim($_REQUEST['shipping_data-tracking_url']);
 
         $this->shipping_address->name = trim($_REQUEST['shipping_address-name']);
+        $this->shipping_address->nin = trim($_REQUEST['shipping_address-nin']);
         $this->shipping_address->company = trim($_REQUEST['shipping_address-company']);
         $this->shipping_address->address = trim($_REQUEST['shipping_address-address']);
         $this->shipping_address->location = trim($_REQUEST['shipping_address-location']);
@@ -183,8 +188,10 @@ class order
         $this->shipping_address->country = trim($_REQUEST['shipping_address-country']);
         $this->shipping_address->region = trim($_REQUEST['shipping_address-region']);
         $this->shipping_address->phone = trim($_REQUEST['shipping_address-phone']);
+        //$this->shipping_address->email = trim($_REQUEST['shipping_address-email']);
 
         $this->billing_address->name = trim($_REQUEST['billing_address-name']);
+        $this->billing_address->nin = trim($_REQUEST['billing_address-nin']);
         $this->billing_address->company = trim($_REQUEST['billing_address-company']);
         $this->billing_address->address = trim($_REQUEST['billing_address-address']);
         $this->billing_address->location = trim($_REQUEST['billing_address-location']);
@@ -243,7 +250,7 @@ class order
 
         $DB->execute(' 
  			INSERT INTO nv_orders
-				(id, website, reference, webuser, customer_data, date_created, date_updated, currency,
+				(id, website, reference, webuser, customer_data, customer_notes, date_created, date_updated, currency,
                  subtotal_amount, subtotal_taxes_cost, subtotal_invoiced,
                  shipping_method, shipping_amount, shipping_tax, shipping_invoiced, shipping_data,
                  shipping_address, billing_address,
@@ -251,7 +258,7 @@ class order
                  total, payment_done, payment_method, payment_data,
                  status, history)
 			VALUES 
-				( 0, :website, :reference, :webuser, :customer_data, :date_created, :date_updated, :currency,
+				( 0, :website, :reference, :webuser, :customer_data, :customer_notes, :date_created, :date_updated, :currency,
                  :subtotal_amount, :subtotal_taxes_cost, :subtotal_invoiced,
                  :shipping_method, :shipping_amount, :shipping_tax, :shipping_invoiced, :shipping_data,
                  :shipping_address, :billing_address,
@@ -264,6 +271,7 @@ class order
                 'reference' => value_or_default($this->reference, ""),
                 'webuser' => value_or_default($this->webuser, 0),
                 'customer_data' => json_encode($this->customer_data),
+                'customer_notes' => $this->customer_notes,
                 'date_created' => core_time(),
                 'date_updated' => 0,
                 'currency' => value_or_default($this->currency, ""),
@@ -302,7 +310,8 @@ class order
 
         $ok = $DB->execute(' 
  			UPDATE nv_orders
-			  SET reference = :reference, webuser = :webuser, customer_data = :customer_data, date_updated = :date_updated, currency = :currency,
+			  SET reference = :reference, webuser = :webuser, customer_data = :customer_data, customer_notes = :customer_notes, 
+			      date_updated = :date_updated, currency = :currency,
                   subtotal_amount = :subtotal_amount, subtotal_taxes_cost = :subtotal_taxes_cost, subtotal_invoiced = :subtotal_invoiced,
                   shipping_method = :shipping_method, shipping_amount = :shipping_amount, shipping_tax = :shipping_tax, shipping_invoiced = :shipping_invoiced, 
                   shipping_data = :shipping_data, shipping_address = :shipping_address, billing_address = :billing_address,
@@ -316,6 +325,7 @@ class order
                 'reference' => $this->reference,
                 'webuser' => $this->webuser,
                 'customer_data' => json_encode($this->customer_data),
+                'customer_notes' => $this->customer_notes,
                 'date_updated' => core_time(),
                 'currency' => $this->currency,
                 'subtotal_amount' => value_or_default($this->subtotal_amount, 0),

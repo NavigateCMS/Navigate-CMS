@@ -3906,6 +3906,12 @@
                 <target>Niestety, link potwierdzający jest nieprawidłowy lub wygasł.</target>
             </trans-unit>
 
+            <trans-unit id="778">
+                <source>National identification number</source>
+                <target>Narodowy numer identyfikacyjny</target>
+                <note>https://en.wikipedia.org/wiki/National_identification_number</note>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
