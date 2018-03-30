@@ -13,7 +13,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.7.5');
+	define('APP_VERSION', '2.8');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -1323,9 +1323,9 @@ function process()
 			{
 				try
 				{
-                    $dsn = "mysql:host=".$_REQUEST['PDO_HOSTNAME'].";port=".$_REQUEST['PDO_PORT'].';charset=utf8';
+                    $dsn = "mysql:host=".$_REQUEST['PDO_HOSTNAME'].";port=".$_REQUEST['PDO_PORT'].';charset=utf8mb4';
                     if($_REQUEST['PDO_DRIVER']=="mysql-socket")
-                        $dsn = "mysql:unix_socket=".$_REQUEST['PDO_SOCKET'].";charset=utf8";
+                        $dsn = "mysql:unix_socket=".$_REQUEST['PDO_SOCKET'].";charset=utf8mb4";
 
 					$db_test = @new PDO($dsn, $_REQUEST['PDO_USERNAME'], $_REQUEST['PDO_PASSWORD']);
 					
@@ -1402,12 +1402,12 @@ function process()
 					if(PDO_DATABASE!='')
 					{
                         if(PDO_HOSTNAME!="")
-                            $dsn = "mysql:host=".PDO_HOSTNAME.";port=".PDO_PORT.";charset=utf8";
+                            $dsn = "mysql:host=".PDO_HOSTNAME.";port=".PDO_PORT.";charset=utf8mb4";
                         else
-                            $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8";
+                            $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8mb4";
 
 						$db_test = new PDO($dsn, PDO_USERNAME, PDO_PASSWORD);
-						$db_test->exec('CREATE DATABASE IF NOT EXISTS `'.PDO_DATABASE.'` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;');
+						$db_test->exec('CREATE DATABASE IF NOT EXISTS `'.PDO_DATABASE.'` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
 						$db_test = NULL;
 					}
 				

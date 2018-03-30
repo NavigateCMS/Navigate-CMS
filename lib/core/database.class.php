@@ -43,11 +43,11 @@ class database
 				try 
 				{
                     if(PDO_HOSTNAME!="")
-                        $dsn = "mysql:host=".PDO_HOSTNAME.";port=".PDO_PORT.";charset=utf8;dbname=".PDO_DATABASE;
+                        $dsn = "mysql:host=".PDO_HOSTNAME.";port=".PDO_PORT.";charset=utf8mb4;dbname=".PDO_DATABASE;
                     else
-                        $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8;dbname=".PDO_DATABASE;
+                        $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8mb4;dbname=".PDO_DATABASE;
 					$this->db = new PDO($dsn, PDO_USERNAME, PDO_PASSWORD);
-					$this->db->exec('SET NAMES "UTF8"');
+					$this->db->exec('SET NAMES utf8mb4');
 					$this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 				}
 				catch(PDOException $e)
