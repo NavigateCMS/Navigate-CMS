@@ -3911,7 +3911,17 @@
 				<target>Número de identificación nacional</target>
 				<note>https://en.wikipedia.org/wiki/National_identification_number</note>
 			</trans-unit>
-			
+
+			<trans-unit id="779" approved="yes">
+				<source>Read more</source>
+				<target>Leer más</target>
+			</trans-unit>
+
+			<trans-unit id="780" approved="yes">
+				<source>Your comment has been published</source>
+				<target>Tu comentario ha sido publicado</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

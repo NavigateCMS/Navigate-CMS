@@ -3912,6 +3912,16 @@
                 <note>https://en.wikipedia.org/wiki/National_identification_number</note>
             </trans-unit>
 
+            <trans-unit id="779">
+                <source>Read more</source>
+                <target>Czytaj więcej</target>
+            </trans-unit>
+
+            <trans-unit id="780">
+                <source>Your comment has been published</source>
+                <target>Your comment has been published</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

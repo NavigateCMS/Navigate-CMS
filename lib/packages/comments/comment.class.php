@@ -539,6 +539,7 @@ class comment
                 {
                     if (!empty($subscriber->user) && !in_array($subscriber->user, $users_emailed_to))
                     {
+                        // the subscriber is a web user
                         $users_emailed_to[] = $subscriber->user;
                         $swu = new webuser();
                         $swu->load($subscriber->user);
@@ -560,7 +561,11 @@ class comment
                             $content_title = $item->dictionary[$lang]['title'];
 
                         $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $content_title . ']';
+                        if($this->email == $swu->email)
+                            $subject = $website->name . ' | ' . $ulang->t(780, 'You comment has been published') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
+
                         $content = '<a href="' . nvweb_source_url('item', $item->id, $swu->language) . '" target="_blank">' . $content_title . '</a>';
+                        $comment_link = '<a href="' . nvweb_source_url('item', $item->id, $swu->language) . '#comment-'.$this->id.'" target="_blank">' . $ulang->t(779, "Read more") . '</a>';
                         $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $this->object_type . $this->object_id);
 
                         $body = navigate_compose_email(
@@ -574,10 +579,16 @@ class comment
                                     'content' => $content
                                 ),
                                 array(
+                                    'title'   => $ulang->t(266, "Author").', '.$ulang->t(86, "Date"),
+                                    'content' => $this->author_name() .
+                                                 '<br />' .
+                                                 core_ts2date($this->date_created, true)
+                                ),
+                                array(
                                     'title'   => $ulang->t(387, "New comment"),
-                                    'content' => $this->author_name() . ', ' . core_ts2date($this->date_created, true) .
-                                        '<br /><br />' .
-                                        core_string_cut($this->message, 100)
+                                    'content' => core_string_cut($this->message, 100).'
+                                                 <br /><br />
+                                                 ('.$comment_link.')'
                                 ),
                                 array(
                                     'footer' => '<a href="' . $unsubscribe_link . '">' .
@@ -591,6 +602,7 @@ class comment
                     }
                     else if (!empty($subscriber->email) && !in_array($subscriber->email, $emailed_to))
                     {
+                        // the subscriber is not a web user (a public comment)
                         $emailed_to[] = $subscriber->email;
 
                         $ulang = new language();
@@ -598,7 +610,11 @@ class comment
 
                         // send email
                         $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
+                        if($this->email == $subscriber->email)
+                            $subject = $website->name . ' | ' . $ulang->t(780, 'You comment has been published') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
+
                         $content = '<a href="' . nvweb_source_url('item', $item->id, $ulang->code) . '" target="_blank">' . $item->dictionary[$ulang->code]['title'] . '</a>';
+                        $comment_link = '<a href="' . nvweb_source_url('item', $item->id, $website->languages_published[0]) . '#comment-'.$this->id.'" target="_blank">' . $ulang->t(779, "Read more") . '</a>';
                         $unsubscribe_link = $website->absolute_path() . '/nv.comments/unsubscribe?cid='.$subscriber->id.'&hash=' . md5(APP_UNIQUE . $subscriber->id . '#' . $this->object_type . $this->object_id);
 
                         $body = navigate_compose_email(
@@ -612,10 +628,16 @@ class comment
                                     'content' => $content
                                 ),
                                 array(
+                                    'title'   => $ulang->t(266, "Author").', '.$ulang->t(86, "Date"),
+                                    'content' => $this->author_name() .
+                                                 '<br />' .
+                                                 core_ts2date($this->date_created, true)
+                                ),
+                                array(
                                     'title'   => $ulang->t(387, "New comment"),
-                                    'content' => $this->author_name() . ', ' . core_ts2date($this->date_created, true) .
-                                        '<br /><br />' .
-                                        core_string_cut($this->message, 100)
+                                    'content' => core_string_cut($this->message, 100).'
+                                                 <br /><br />
+                                                 ('.$comment_link.')'
                                 ),
                                 array(
                                     'footer' => '<a href="' . $unsubscribe_link . '">' .

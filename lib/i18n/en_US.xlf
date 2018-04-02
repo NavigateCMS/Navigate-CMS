@@ -3913,6 +3913,16 @@
 				<note>https://en.wikipedia.org/wiki/National_identification_number</note>
 			</trans-unit>
 
+			<trans-unit id="779" approved="yes">
+				<source>Read more</source>
+				<target>Read more</target>
+			</trans-unit>
+
+			<trans-unit id="780" approved="yes">
+				<source>Your comment has been published</source>
+				<target>Your comment has been published</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>
