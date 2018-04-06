@@ -2,8 +2,8 @@
 /**
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2017 Naviwebs. All rights reserved.
- * @author Naviwebs (http://www.naviwebs.com/) 
+ * @copyright Copyright (C) 2010-2018 Naviwebs. All rights reserved.
+ * @author Naviwebs (http://www.naviwebs.com)
  * @license GPLv2
  */
 
@@ -47,8 +47,8 @@ class database
                     else
                         $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8mb4;dbname=".PDO_DATABASE;
 					$this->db = new PDO($dsn, PDO_USERNAME, PDO_PASSWORD);
-					$this->db->exec('SET NAMES utf8mb4');
-					$this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+                    $this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+                    $this->db->exec('SET NAMES utf8mb4');
 				}
 				catch(PDOException $e)
 				{
@@ -71,7 +71,7 @@ class database
 	 */		
 	public function disconnect()
 	{
-		$this->db = NULL;
+		unset($this->db);
 	}
 
 	/**
@@ -150,16 +150,24 @@ class database
 	 */		
 	public function query_single($column, $table, $where = '1=1', $order = '')
 	{
+	    $rs = null;
         if(!empty($order))
             $order = ' ORDER BY '.$order;
 
-		$stm = $this->db->query('SELECT '.$column.' FROM '.$table.' WHERE '.$where.$order.' LIMIT 1');
-        $this->queries_count++;
+        try
+        {
+            $stm = $this->db->query('SELECT ' . $column . ' FROM ' . $table . ' WHERE ' . $where . $order . ' LIMIT 1');
+            $this->queries_count++;
+            $stm->setFetchMode(PDO::FETCH_NUM);
+            $rs = $stm->fetchAll();
+            $stm->closeCursor();
+            unset($stm);
+        }
+        catch(Exception $e)
+        {
+            return NULL;
+        }
 
-		$stm->setFetchMode(PDO::FETCH_NUM);
-		$rs = $stm->fetchAll();
-		$stm->closeCursor();
-		unset($stm);
 		if(empty($rs)) 	return NULL;
 		else			return $rs[0][0];
 	}
@@ -247,15 +255,17 @@ class database
                     $this->queries_count++;
 
 					if($stm->execute($prepared))
-						$this->lastAffectedRows = $stm->rowCount();
+                    {
+                        $this->lastAffectedRows = $stm->rowCount();
+                        @$stm->closeCursor();
+                        unset($stm);
+                    }
                     else
                     {
                         $error = $stm->errorInfo();
+                        unset($stm);
                         throw new Exception('SQL '.$error[0].'/'.$error[1].': '.$error[2].' / '.$sql);
                     }
-
-                    $stm->closeCursor();
-					$stm = NULL;					
 				}
 				else // boolean true, prepared statement mode 2
 				{
@@ -264,8 +274,8 @@ class database
                     $this->queries_count++;
 					if($stm->execute()) 
 						$this->lastAffectedRows = $stm->rowCount();
-                    $stm->closeCursor();
-                    $stm = NULL;
+                    @$stm->closeCursor();
+                    unset($stm);
 				}
 			}						
 		}
@@ -371,6 +381,7 @@ class database
 		$stm = $this->db->query('SELECT FOUND_ROWS();');
 		$stm->setFetchMode(PDO::FETCH_NUM);
 		$rs = $stm->fetchAll();
+		unset($stm);
 		return intval($rs[0][0]);		
 	}
 	

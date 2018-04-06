@@ -93,7 +93,6 @@ class update
 	public function update()
 	{
 		global $DB;
-		global $website;
 					
 		if(empty($this->id))
 			return false;
