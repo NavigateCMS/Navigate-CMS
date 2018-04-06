@@ -1156,9 +1156,11 @@ function debug_json_error($prepend='')
         )
     );
 */
-function navigate_compose_email($data, $style = array('background' => '#E5F1FF', 'title-color' => '#595959', 'content-color' => '#595959'))
+
+function navigate_compose_email($data, $style=array())
 {
     global $DB;
+    global $website;
 
     $body = array();
 
@@ -1169,13 +1171,18 @@ function navigate_compose_email($data, $style = array('background' => '#E5F1FF',
         $title_color = '#595959';
         $text_color = '#595959';
 
-        $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.background_color") . ' AND website = ' . protect($this->website), 'id DESC');
-        $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.text_color") . ' AND website = ' . protect($this->website), 'id DESC');
-        $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.titles_color") . ' AND website = ' . protect($this->website), 'id DESC');
+        $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.background_color") . ' AND website = ' . protect($website->id), 'id DESC');
+        $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.text_color") . ' AND website = ' . protect($website->id), 'id DESC');
+        $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.titles_color") . ' AND website = ' . protect($website->id), 'id DESC');
 
-        if (!empty($background_color_db)) $background_color = str_replace('"', '', $background_color_db);
-        if (!empty($text_color_db)) $text_color = str_replace('"', '', $text_color_db);
-        if (!empty($title_color_db)) $title_color = str_replace('"', '', $title_color_db);
+        if (!empty($background_color_db))
+            $background_color = str_replace('"', '', $background_color_db);
+
+        if (!empty($text_color_db))
+            $text_color = str_replace('"', '', $text_color_db);
+
+        if (!empty($title_color_db))
+            $title_color = str_replace('"', '', $title_color_db);
 
         $style = array(
             'background' => $background_color,
