@@ -342,7 +342,8 @@ class template
 		{
 			case '#main#':
             case 'main':
-                $out = $theme->t("main");
+                if(isset($theme))
+                    $out = $theme->t("main");
                 if(empty($out) || $out == 'main')
 				    $out = t(238, 'Main content');
 				break;
