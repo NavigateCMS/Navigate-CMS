@@ -228,24 +228,30 @@ class website
         // languages and locales
         $this->languages = array();
         $this->languages_published = array();
-        for($li=0; $li < count($_REQUEST['language-id']); $li++)
+
+        $language_ids = array_values($_REQUEST['language-id']);
+        $language_variants = array_values($_REQUEST['language-variant-code']);
+        $language_locales = array_values($_REQUEST['language-locale']);
+        $language_published = array_values($_REQUEST['language-published']);
+
+        for($li=0; $li < count($language_ids); $li++)
         {
-            $variant = trim($_REQUEST['language-variant-code'][$li]);
-            $code = $_REQUEST['language-id'][$li];
+            $variant = trim($language_variants[$li]);
+            $code = $language_ids[$li];
             if(!empty($variant))
                 $code .= '_'.$variant;
 
             $this->languages[$code] = array(
-                'language' => $_REQUEST['language-id'][$li],
+                'language' => $language_ids[$li],
                 'variant' => $variant,
                 'code' => $code,
-                'system_locale' => $_REQUEST['language-locale'][$li]
+                'system_locale' => $language_locales[$li]
             );
 
-            $this->languages_published[] = ($_REQUEST['language-published'][$li]=='1'? $code : '');
+            $this->languages_published[] = ($language_published[$li]=='1'? $code : '');
         }
 
-        // Website metatags
+        // website metatags
         $this->metatag_title_order = $_REQUEST['metatag_title_order'];
         $this->metatag_description = array();
         $this->metatag_keywords = array();

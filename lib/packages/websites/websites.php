@@ -1026,12 +1026,12 @@ function websites_form($item)
         $published = (array_search($lcode, $item->languages_published)!==false);
         $variant = !empty($ldef['variant']);
 
-        $select_language = $naviforms->select_from_object_array('language-id[]', $languages_rs, 'code', 'name', $ldef['language'], ' width: 150px; ');
+        $select_language = $naviforms->select_from_object_array('language-id['.$p.']', $languages_rs, 'code', 'name', $ldef['language'], ' width: 150px; ');
 
         if(empty($locales))
-            $select_locale   = $naviforms->textfield('language-locale[]', $ldef['system_locale'], '300px');
+            $select_locale   = $naviforms->textfield('language-locale['.$p.']', $ldef['system_locale'], '300px');
         else
-            $select_locale   = $naviforms->selectfield('language-locale[]', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
+            $select_locale   = $naviforms->selectfield('language-locale['.$p.']', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
 
 	    $uid = uniqid();
         $table->addRow($p, array(
