@@ -116,8 +116,10 @@ function core_run()
 /**
  * Finish Navigate CMS execution sending a flush, writing the session and disconnecting the database
  *
+ * @param string $redirect_to send a HTTP header redirecting the browser to another URL after terminating the execution
+ *
  */
-function core_terminate()
+function core_terminate($redirect_to="")
 {
 	global $DB;
 	global $website;
@@ -125,11 +127,15 @@ function core_terminate()
 
     @$_SESSION['nvweb.' . $website->id] = $session;
 
-	flush();
 	session_write_close();	
 	if($DB)
 		$DB->disconnect();
-	exit;
+
+    if(!empty($redirect_to))
+        header('Location: '.$redirect_to);
+
+    flush();
+    exit;
 }
 
 /**
