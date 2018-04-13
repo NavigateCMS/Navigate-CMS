@@ -167,7 +167,7 @@ class layout
         $this->add_script_tag('lib/external/tinymce4/themes/modern/theme.min.js');
 
 		// tinymce plugins compression (speeds up loading editor)
-        //$this->add_script_tag('lib/external/tinymce4/plugins/compat3x/plugin.min.js'); // optimization disabled because produces a js error
+        $this->add_script_tag('lib/external/tinymce4/plugins/compat3x/plugin.min.js'); // optimization disabled because produces a js error
         $this->add_script_tag('lib/external/tinymce4/plugins/noneditable/plugin.min.js');
         $this->add_script_tag('lib/external/tinymce4/plugins/advlist/plugin.min.js');
 		$this->add_script_tag('lib/external/tinymce4/plugins/autolink/plugin.min.js');

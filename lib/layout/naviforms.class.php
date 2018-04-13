@@ -634,11 +634,11 @@ class naviforms
                 skin: "navigatecms-cupertino",
                 			    
 			    plugins: [
-				    "compat3x noneditable",
+				    "compat3x noneditable importcss",
 				    "advlist autolink nv_link image lists charmap print preview hr anchor pagebreak",
 				    "searchreplace wordcount visualblocks visualchars fullscreen media nonbreaking",
 				    "table directionality template textcolor paste textcolor colorpicker textpattern",
-				    "codesample codemirror importcss imagetools paste magicline fontawesome nv_rollups" // add fullpage to edit full HTML code with head and body tags
+				    "codesample codemirror imagetools paste magicline fontawesome nv_rollups" // add fullpage to edit full HTML code with head and body tags
 				],
 				
 				external_plugins: {
@@ -698,16 +698,15 @@ class naviforms
 				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px 42px 48px 56px 64px", 
                 
                 content_css: "'.$content_css.'",
-                
+                              
 				style_formats_merge: true,
                 importcss_append: false,
                 importcss_file_filter: function(value) 
                 {
-                    var files = "'.$content_css_selectable.'";    
-                    
+                    var files = "'.$content_css_selectable.'";
                     if(files.indexOf(",") > -1)
                     {
-                        files = files.split(",");                                                                                                                                 
+                        files = files.split(",");             
 	                    for(var i=0; i < files.length; i++)
 	                    {
 	                        if(value.indexOf(files[i]) !== -1)
@@ -721,7 +720,7 @@ class naviforms
                     {
                         return (value==files);
                     }
-                },               
+                },              
                                 
                 //  https://www.tinymce.com/docs/configure/url-handling
                 convert_urls: false,
