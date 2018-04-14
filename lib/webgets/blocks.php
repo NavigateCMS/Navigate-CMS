@@ -607,7 +607,6 @@ function nvweb_blocks_render_poll($object)
             $out .= '</div>';
         }
 
-
         $out .= '<div class="block-poll-actions">';
         $out .= '   <input type="submit" id="'.$object->type.'-'.$object->id.'-submit" value="'.$webgets[$webget]['translations']["vote"].'" />';
         $out .= '   <input type="button" value="'.$webgets[$webget]['translations']["results"].'" />';

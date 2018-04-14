@@ -37,7 +37,7 @@ class events
      * @param string $event Codename of the event to fire
      * @param mixed $parameter One and only parameter to send to the event
      */
-    public function trigger($module, $event, $parameter)
+    public function trigger($module, $event, $parameter=NULL)
     {
         $messages = array();
 

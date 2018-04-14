@@ -45,6 +45,12 @@ class naviforms
 		else
 			$out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" onchange="'.$onChange.'" style="'.$style.'">';
 
+		if(!is_array($values))
+		    $values = array();
+
+        if(!is_array($titles))
+            $titles = array();
+
 		for($i=0; $i < count($values); $i++)
 		{
             if(!isset($titles[$i]))

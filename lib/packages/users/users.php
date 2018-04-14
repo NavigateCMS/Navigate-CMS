@@ -347,12 +347,12 @@ function users_form($item)
 
 	// Date format
 	$data = array(
-		0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date(Y).'-12-31 23:59"}'),
-		1	=> json_decode('{"code": "d-m-Y H:i", "name": "31-12-'.date(Y).' 23:59"}'),
-		2	=> json_decode('{"code": "m-d-Y H:i", "name": "12-31-'.date(Y).' 23:59"}'),
-		3	=> json_decode('{"code": "Y/m/d H:i", "name": "'.date(Y).'/12/31 23:59"}'),
-		4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date(Y).' 23:59"}'),
-		5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date(Y).' 23:59"}')
+		0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date("Y").'-12-31 23:59"}'),
+		1	=> json_decode('{"code": "d-m-Y H:i", "name": "31-12-'.date("Y").' 23:59"}'),
+		2	=> json_decode('{"code": "m-d-Y H:i", "name": "12-31-'.date("Y").' 23:59"}'),
+		3	=> json_decode('{"code": "Y/m/d H:i", "name": "'.date("Y").'/12/31 23:59"}'),
+		4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date("Y").' 23:59"}'),
+		5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date("Y").' 23:59"}')
 	);
 
     $layout->add_script('

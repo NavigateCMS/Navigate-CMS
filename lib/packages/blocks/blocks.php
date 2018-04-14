@@ -891,7 +891,7 @@ function blocks_form($item)
     if(!empty($item->id))
         $layout->navigate_notes_dialog('block', $item->id);
 
-	$navibars->form(NULL, '?fid=blocks&act=edit');
+	$navibars->form(NULL, '?fid=blocks&act=edit&id='.$item->id);
 
     $navibars->add_content('
         <script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>
@@ -900,7 +900,7 @@ function blocks_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
 	
 	$navibars->add_tab_content_row(
         array(

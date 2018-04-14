@@ -84,40 +84,57 @@ function settings_form()
 	$DB->query('SELECT code, name FROM nv_languages WHERE nv_dictionary != ""');		
 	$data = $DB->result();	
 	$select = $naviforms->select_from_object_array('user-language', $data, 'code', 'name', $user->language);
-	$navibars->add_tab_content_row(array(	'<label>'.t(46, 'Language').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(46, 'Language').'</label>',
+			$select
+        )
+    );
 
 	$timezones = property::timezones();
 	
 	if(empty($user->timezone))
 		$user->timezone = date_default_timezone_get();
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(97, 'Timezone').'</label>',
-											$naviforms->selectfield("user-timezone", array_keys($timezones), array_values($timezones), $user->timezone)
-										));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(97, 'Timezone').'</label>',
+			$naviforms->selectfield("user-timezone", array_keys($timezones), array_values($timezones), $user->timezone)
+        )
+    );
 											
 	// Decimal separator		
-	$data = array(	0	=> json_decode('{"code": ",", "name": ", ---> 1234,25"}'),
-					1	=> json_decode('{"code": ".", "name": ". ---> 1234.25"}'),
-					2	=> json_decode('{"code": "\'", "name": "\' ---> 1234\'25"}'),
-				);
+	$data = array(
+	    0	=> json_decode('{"code": ",", "name": ", ---> 1234,25"}'),
+		1	=> json_decode('{"code": ".", "name": ". ---> 1234.25"}'),
+		2	=> json_decode('{"code": "\'", "name": "\' ---> 1234\'25"}'),
+    );
 				
 	$select = $naviforms->select_from_object_array('user-decimal_separator', $data, 'code', 'name', $user->decimal_separator);
-	$navibars->add_tab_content_row(array(	'<label>'.t(49, 'Decimal separator').'</label>',
-											$select ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(49, 'Decimal separator').'</label>',
+			$select
+        )
+    );
 											
 	// Date format
-	$data = array(	0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date(Y).'-12-31 23:59"}'),
-					1	=> json_decode('{"code": "d-m-Y H:i", "name": "31-12-'.date(Y).' 23:59"}'),
-					2	=> json_decode('{"code": "m-d-Y H:i", "name": "12-31-'.date(Y).' 23:59"}'),
-					3	=> json_decode('{"code": "Y/m/d H:i", "name": "'.date(Y).'/12/31 23:59"}'),
-					4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date(Y).' 23:59"}'),
-					5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date(Y).' 23:59"}')
-				);	
+	$data = array(
+	    0	=> json_decode('{"code": "Y-m-d H:i", "name": "'.date("Y").'-12-31 23:59"}'),
+        1	=> json_decode('{"code": "d-m-Y H:i", "name": "31-12-'.date("Y").' 23:59"}'),
+        2	=> json_decode('{"code": "m-d-Y H:i", "name": "12-31-'.date("Y").' 23:59"}'),
+        3	=> json_decode('{"code": "Y/m/d H:i", "name": "'.date("Y").'/12/31 23:59"}'),
+        4	=> json_decode('{"code": "d/m/Y H:i", "name": "31/12/'.date("Y").' 23:59"}'),
+        5	=> json_decode('{"code": "m/d/Y H:i", "name": "12/31/'.date("Y").' 23:59"}')
+    );
 
 	$select = $naviforms->select_from_object_array('user-date_format', $data, 'code', 'name', $user->date_format);
-	$navibars->add_tab_content_row(array(	'<label>'.t(50, 'Date format').'</label>',
-											$select ));																						
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(50, 'Date format').'</label>',
+			$select
+        )
+    );
 	
 	
 	return $navibars->generate();

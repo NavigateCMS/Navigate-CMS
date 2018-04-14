@@ -126,7 +126,7 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 	global $structure;
 	global $current;
 
-	$out = '';
+	$out = "";
 
 	if($level >= $levels && $levels > 0)
         return '';
@@ -245,6 +245,7 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 			default:
 			case 'ul':
                 $ul_items = 0;
+                $out = array();
 				$out[] = '<ul class="menu_level_'.$level.' '.$class.'">';
 
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
@@ -268,17 +269,19 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 					$out[] = '<li'.$aclass.'>';
 					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$structure['dictionary'][$mid].'</a>';
 					if($option==$m)
-						return array_pop($out);					
+						return array_pop($out);
 					$out[] = nvweb_menu_generate($mode, $levels, $mid, $level+1);
 					$out[] = '</li>';
                     $ul_items++;
 				}
                 $out[] = '</ul>';
+
                 if($ul_items==0) // no option found, remove the last two lines (<ul> and </ul>)
                 {
                     array_pop($out);
                     array_pop($out);
                 }
+
 				$out = implode("\n", $out);			
 				break;
 		}
@@ -447,24 +450,25 @@ function nvweb_menu_load_actions()
 	if(empty($structure['actions']))
 	{
 		$structure['actions'] = array();
-		
 
-		$DB->query('SELECT node_id, subtype, text
-					  FROM nv_webdictionary 
-					 WHERE node_type = "structure"
-					   AND lang = '.protect($current['lang']).'
-					   AND subtype IN("action-type", "action-jump-item", "action-jump-branch", "action-new-window")
-					   AND website = '.$website->id);		
+		$DB->query('
+            SELECT node_id, subtype, text
+			  FROM nv_webdictionary 
+			 WHERE node_type = "structure"
+			   AND lang = '.protect($current['lang']).'
+			   AND subtype IN("action-type", "action-jump-item", "action-jump-branch", "action-new-window")
+			   AND website = '.$website->id
+        );
 					
 		$data = $DB->result();
 		
-		if(!is_array($data)) $data = array();
-		$dictionary = array();
-		
+		if(!is_array($data))
+		    $data = array();
+
 		foreach($data as $row)
 		{
 			$structure['actions'][$row->node_id][$row->subtype] = $row->text;
-		}			
+		}
 	}
 }
 

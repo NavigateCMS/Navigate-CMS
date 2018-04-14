@@ -26,7 +26,8 @@ function run()
 					echo json_encode(true);
 					break;
 					
-				default: // list or search	
+				default: // list or search
+                    $out = array();
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
@@ -55,8 +56,15 @@ function run()
 							$origin = '<i class="fa fa-fw fa-puzzle-piece ui-text-light" title="'.t(617, "Extension").'"></i> '.$dataset[$i]['extension'];
 
 						if(empty($dataset[$i])) continue;
+
+						$string_id = $dataset[$i]['id'];
+						if(!empty($dataset[$i]['theme']))
+						    $string_id = $dataset[$i]['theme'].'.'.$string_id;
+						if(!empty($dataset[$i]['extension']))
+						    $string_id = $dataset[$i]['extension'].'.'.$string_id;
+
 						$out[$i] = array(
-							0	=> $dataset[$i]['theme'].$dataset[$i]['extension'].'.'.$dataset[$i]['id'],	// this 4th column won't appear, it works as ghost column for setting a unique ID to the row
+							0	=> $string_id,	// this 4th column won't appear, it works as ghost column for setting a unique ID to the row
 							1	=> $dataset[$i]['node_id'], // id of the word (Ex. word "3" in English -> test, word "3" in Spanish -> prueba)
 							2	=> $origin,
 							3 	=> language::name_by_code($dataset[$i]['lang']),
