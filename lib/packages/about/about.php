@@ -76,7 +76,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="https://github.com/josh18/TinyMCE-FontAwesome-Plugin" target="_blank">TinyMCE Font Awesome plugin v2.0.9_nv</a><br />'
+			'<a href="https://github.com/josh18/TinyMCE-FontAwesome-Plugin" target="_blank">TinyMCE Font Awesome plugin v2.0.10_nv</a><br />'
 		)
 	);
 
@@ -333,7 +333,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="http://fontawesome.io" target="_blank">Font Awesome by Dave Gandy - http://fontawesome.io</a><br />'
+			'<a href="http://fontawesome.io" target="_blank">Font Awesome 4 by Dave Gandy - http://fontawesome.io</a><br />'
 		)
 	);
 
