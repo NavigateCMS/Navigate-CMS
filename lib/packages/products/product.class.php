@@ -861,13 +861,18 @@ class product
         return $weight_units;
     }
 
+    // get list of enabled currencies or "all"
     public static function currencies($value=NULL, $simple=true)
     {
+        global $website;
+
         $out = array();
 
+        // future todo: currencies should be in database with their (daily?) updated exchange rates
+        // use ISO 4217 codes: https://en.wikipedia.org/wiki/ISO_4217
         $currencies = array(
-            'euro' => array('symbol' => '€', 'placement' => 'after'),
-            'dollar' => array('symbol' => '$', 'placement' => 'before')
+            'eur' => array('symbol' => '€', 'placement' => 'after', 'decimals' => 2),
+            'usd' => array('symbol' => '$', 'placement' => 'before', 'decimals' => 2)
         );
 
         $out = $currencies;
@@ -879,8 +884,19 @@ class product
                 $out[$key] = $val['symbol'];
         }
 
-        if(!empty($value))
+        if(!empty($value) && $value != 'all')
+        {
             $out = $out[$value];
+        }
+        else if(empty($value))
+        {
+            // just return the website default currency
+            $out = array($website->currency => $out[$website->currency]);
+        }
+        else
+        {
+            // return all currencies
+        }
 
         return $out;
     }

@@ -1239,7 +1239,7 @@ function websites_form($item)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(690, 'Currency').'</label>',
-            $naviforms->selectfield("website-default_currency", array_keys(product::currencies()), array_values(product::currencies()), $item->currency)
+            $naviforms->selectfield("website-default_currency", array_keys(product::currencies('all')), array_values(product::currencies('all')), $item->currency)
         )
     );
 

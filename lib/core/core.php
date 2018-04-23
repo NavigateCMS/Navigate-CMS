@@ -765,9 +765,9 @@ function core_price2string($price, $base_currency, $part=NULL)
         default:
             $currency = product::currencies($base_currency, false);
             if($currency['placement'] == 'after')
-                $out = core_decimal2string($price).' '.$currency['symbol'];
+                $out = core_decimal2string($price, $currency['decimals']).' '.$currency['symbol'];
             else
-                $out = $currency['symbol'].' '.core_decimal2string($price);
+                $out = $currency['symbol'].' '.core_decimal2string($price, $currency['decimals']);
     }
 
     return $out;
@@ -816,6 +816,7 @@ function core_bytes($bytes)
     }
     return number_format($bytes, ($c ? 2 : 0),",",".")." ".$unim[$c];
 }
+
 
 /**
  * Executes a simple GET HTTP request using CURL if available, file_get_contents otherwise

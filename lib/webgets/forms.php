@@ -8,6 +8,7 @@ function nvweb_forms($vars=array())
 	switch(@$vars['mode'])
 	{	
         case 'country_field':
+            $out = array();
             $options = property::countries($session['lang']);
 
             $country_codes = array_keys($options);
@@ -35,6 +36,7 @@ function nvweb_forms($vars=array())
             break;
 
         case 'country_region_field':
+            $out = array();
             $regions = property::countries_regions();
 
             $out[] = '<select name="'.$vars['field_name'].'" id="'.$vars['field_id'].'" class="'.$vars['class'].'" data-country-field="'.$vars['country_field'].'">';

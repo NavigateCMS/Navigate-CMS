@@ -293,6 +293,11 @@ function nvweb_product($vars=array())
                         $out = file::file_url($brand->image);
                     break;
 
+                case 'url':
+                    if(!empty($brand->url))
+                        $out = nvweb_prepare_link($brand->url);
+                    break;
+
                 case 'name':
                 default:
                     // brand name
