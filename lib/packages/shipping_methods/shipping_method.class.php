@@ -69,15 +69,6 @@ class shipping_method
             {
                 $rate_detail = base64_decode($rate_detail);
                 $rate_detail = json_decode($rate_detail);
-
-                // convert values to internal format
-                $rate_detail->weight->min = core_string2decimal($rate_detail->weight->min);
-                $rate_detail->weight->max = core_string2decimal($rate_detail->weight->max);
-                $rate_detail->subtotal->min = core_string2decimal($rate_detail->subtotal->min);
-                $rate_detail->subtotal->max = core_string2decimal($rate_detail->subtotal->max);
-                $rate_detail->cost->value = core_string2decimal($rate_detail->cost->value);
-                $rate_detail->tax->value = core_string2decimal($rate_detail->tax->value);
-
                 $this->rates[] = $rate_detail;
             }
         }
@@ -164,10 +155,40 @@ class shipping_method
         return true;
     }
 
+    public static function get_available($ws=NULL)
+    {
+        global $website;
+        global $DB;
+
+        if(empty($ws))
+            $ws = $website->id;
+
+        $DB->query('
+            SELECT *
+              FROM nv_shipping_methods
+             WHERE website = '.$ws.' 
+        ');
+
+        $rs = $DB->result();
+
+        $shipping_methods = array();
+        foreach($rs as $row)
+        {
+            $sm = new shipping_method();
+            $sm->load_from_resultset(array($row));
+            if(nvweb_object_enabled($sm))
+            {
+                $shipping_methods[] = $sm;
+            }
+        }
+
+        return $shipping_methods;
+    }
+
     public function calculate($country=NULL, $region=NULL, $weight=NULL, $subtotal=NULL)
     {
         $cost = 0;
-        $currency = 'dollar';
+        $currency = 'usd';
 
         // TODO
 

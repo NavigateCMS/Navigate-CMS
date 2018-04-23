@@ -208,7 +208,9 @@ class naviforms
                     radixPoint: "'.$decimal_separator.'",
                     groupSeparator: "'.$thousands_separator.'",                    
                     suffix: "'.$suffix.'",
-                    prefix: "'.$prefix.'"
+                    prefix: "'.$prefix.'",
+                    unmaskAsNumber: true,
+                    autoUnmask: false
                 }
             );
         ');
@@ -819,10 +821,6 @@ class naviforms
                         navigate_beforeunload_register();
                     });
                     
-                    // workaround for TinyMCE 4.6.2 fontsize selector bug
-                    var fontsize_button = $("#'.$name.'").prev().find(".mce-toolbar-grp button").eq(2);
-                    if( $(fontsize_button).find(".mce-txt").length == 0)
-                        $(fontsize_button).append("<span class=\"mce-txt\">12px</span>");
                 }
             });
         ');

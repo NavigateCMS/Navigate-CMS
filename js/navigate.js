@@ -2177,6 +2177,9 @@ function navigate_string_to_decimal(value)
 {
     // remove all characters except numbers, the negative symbol and the decimal character (defined by the current user)
     var regex = new RegExp('[^0-9\-\\' + navigate["decimal_separator"] + ']', "g");
+
+    if(typeof(value)!="string")
+        value = value.toString();
     value = value.replace(regex, "");
 
     // replace the user decimal character for the internal symbol: a dot .
