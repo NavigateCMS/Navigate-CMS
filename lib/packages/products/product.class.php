@@ -737,6 +737,28 @@ class product
         return $this->_comments_count;
     }
 
+    public function weight_in_grams()
+    {
+        $out = 0;
+
+        switch($this->weight_unit)
+        {
+            case 'kg':
+                $out = $this->weight * 1000;    // 1 kg = 1000 grams
+                break;
+
+            case 'lb':
+                $out = $this->weight * 453.59237; // 1 lb = 453.59237 grams
+                break;
+
+            case 'g':
+                $out = $this->weight;
+                break;
+        }
+
+        return $out;
+    }
+
     public static function reorder($order)
     {
         global $DB;
