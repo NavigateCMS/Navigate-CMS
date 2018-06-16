@@ -256,6 +256,30 @@
         "dvalue": "true"
     },
     {
+        "name": "payment_methods.create",
+        "scope": "functions",
+        "function": "payment_methods",
+        "description": "Allow creating new payment methods",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "payment_methods.edit",
+        "scope": "functions",
+        "function": "payment_methods",
+        "description": "Allow editing payment methods",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
+        "name": "payment_methods.delete",
+        "scope": "functions",
+        "function": "payment_methods",
+        "description": "Allow deleting payment methods",
+        "type": "boolean",
+        "dvalue": "true"
+    },
+    {
         "name": "coupons.create",
         "scope": "functions",
         "function": "coupons",
