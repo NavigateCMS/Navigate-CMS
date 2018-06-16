@@ -1248,6 +1248,22 @@ class property
         ');
     }
 
+    public static function country_name_by_code($code, $language="")
+    {
+        global $DB;
+
+        $lang = core_get_language($language);
+
+        $DB->query('SELECT name
+					FROM nv_countries
+		 			WHERE lang = '.protect($lang).'
+					  AND country_code = '.protect($code));
+
+        $row = $DB->first();
+
+        return $row->name;
+    }
+
 	public static function countries($lang="", $alpha3=false)
 	{
 		global $DB;
@@ -1313,6 +1329,22 @@ class property
 
 		return $rs;
 	}
+
+    public static function country_region_name_by_code($code, $language="")
+    {
+        global $DB;
+
+        // TODO: region names have no translation in database at this time
+        // $lang = core_get_language($language);
+
+        $DB->query('SELECT name
+					FROM nv_countries_regions
+		 			WHERE `numeric` = '.protect($code));
+
+        $row = $DB->first();
+
+        return $row->name;
+    }
 
     public static function languages()
 	{
