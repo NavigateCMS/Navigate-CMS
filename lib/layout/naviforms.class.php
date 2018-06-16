@@ -19,11 +19,14 @@ class naviforms
 		
 		foreach($data as $row)
         {
-			if(in_array($row->{$value_field}, $remove_keys)) continue;
-			if($row->{$value_field}==$selected_value)
-				$out[] = '<option value="'.$row->{$value_field}.'" selected="selected">'.$row->{$title_field}.'</option>';
-			else
-				$out[] = '<option value="'.$row->{$value_field}.'">'.$row->{$title_field}.'</option>';
+            if(is_array($row))
+                $row = json_decode(json_encode($row));
+
+            if (in_array($row->{$value_field}, $remove_keys)) continue;
+            if ($row->{$value_field} == $selected_value)
+                $out[] = '<option value="' . $row->{$value_field} . '" selected="selected">' . $row->{$title_field} . '</option>';
+            else
+                $out[] = '<option value="' . $row->{$value_field} . '">' . $row->{$title_field} . '</option>';
 		}
 		
 		$out[] = '</select>';		
