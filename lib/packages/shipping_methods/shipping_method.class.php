@@ -56,9 +56,6 @@ class shipping_method
                 if(substr($key, 0, strlen($field.'-'))==$field.'-')
                     $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
             }
-
-            if(substr($key, 0, strlen('path-'))=='path-')
-                $this->paths[substr($key, strlen('path-'))] = $value;
         }
 
         $this->rates = array();
@@ -91,6 +88,9 @@ class shipping_method
         {
             // remove grid notes
             grid_notes::remove_all('shipping_method', $this->id);
+
+            // remove dictionary strings
+            webdictionary::save_element_strings('shipping_method', $this->id, array(), $this->website);
 
             $DB->execute('
 				DELETE FROM nv_shipping_methods
@@ -187,12 +187,45 @@ class shipping_method
 
     public function calculate($country=NULL, $region=NULL, $weight=NULL, $subtotal=NULL)
     {
-        $cost = 0;
-        $currency = 'usd';
+        $rate = array();
 
-        // TODO
+        // check available rates for the current conditions and choose the first (rates are ordered by priority)
+        for($i=0; $i < count($this->rates); $i++)
+        {
+            // rate disabled
+            if(!$this->rates[$i]->enabled)
+                continue;
 
-        return array($cost, $currency);
+            // specific country, not matching the current one
+            if(!empty($this->rates[$i]->country) && $this->rates[$i]->country != $country)
+                continue;
+
+            // specific group of regions, not matching the current one
+            if(!empty($this->rates[$i]->regions) && !in_array($region, $this->rates[$i]->regions))
+                continue;
+
+            // weight conditions not matching the order values
+            // TODO: check weight units, now using "grams" everywhere!!
+            if(!empty($this->rates[$i]->weight->min) && $this->rates[$i]->weight->min > $weight)
+                continue;
+
+            if(!empty($this->rates[$i]->weight->max) && $this->rates[$i]->weight->max < $weight)
+                continue;
+
+            // subtotal conditions not matching the order values
+            // TODO: check subtotal currency, now using the cart value
+            if(!empty($this->rates[$i]->subtotal->min) && $this->rates[$i]->subtotal->min > $subtotal)
+                continue;
+
+            if(!empty($this->rates[$i]->subtotal->max) && $this->rates[$i]->subtotal->max < $subtotal)
+                continue;
+
+            // the rate is applicable
+            $rate = $this->rates[$i];
+            break;
+        }
+
+        return $rate;
     }
 
     public function quicksearch($text)
