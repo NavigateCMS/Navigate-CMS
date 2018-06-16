@@ -3923,6 +3923,21 @@
 				<target>Your comment has been published</target>
 			</trans-unit>
 
+			<trans-unit id="781" approved="yes">
+				<source>Continue shopping</source>
+				<target>Continue shopping</target>
+			</trans-unit>
+
+			<trans-unit id="782" approved="yes">
+				<source>Proceed to checkout</source>
+				<target>Proceed to checkout</target>
+			</trans-unit>
+
+			<trans-unit id="783" approved="yes">
+				<source>Payment methods</source>
+				<target>Payment methods</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

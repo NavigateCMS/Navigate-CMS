@@ -3922,6 +3922,21 @@
 				<target>Tu comentario ha sido publicado</target>
 			</trans-unit>
 
+			<trans-unit id="781" approved="yes">
+				<source>Continue shopping</source>
+				<target>Seguir de compras</target>
+			</trans-unit>
+
+			<trans-unit id="782" approved="yes">
+				<source>Proceed to checkout</source>
+				<target>Pago y Envío</target>
+			</trans-unit>
+
+			<trans-unit id="783" approved="yes">
+				<source>Payment methods</source>
+				<target>Formas de pago</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

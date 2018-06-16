@@ -3923,6 +3923,21 @@
                 <target>Din kommentar har blitt publisert</target>
             </trans-unit>
 
+            <trans-unit id="781">
+                <source>Continue shopping</source>
+                <target>Fortsette å handle</target>
+            </trans-unit>
+
+            <trans-unit id="782">
+                <source>Proceed to checkout</source>
+                <target>Fortsett til utsjekking</target>
+            </trans-unit>
+
+            <trans-unit id="783">
+                <source>Payment methods</source>
+                <target>Betalingsmetoder</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

@@ -3922,6 +3922,21 @@
 				<target>Dein Kommentar wurde veröffentlicht</target>
 			</trans-unit>
 
+			<trans-unit id="781">
+				<source>Continue shopping</source>
+				<target>Weiter einkaufen</target>
+			</trans-unit>
+
+			<trans-unit id="782">
+				<source>Proceed to checkout</source>
+				<target>Zur Kasse</target>
+			</trans-unit>
+
+			<trans-unit id="783">
+				<source>Payment methods</source>
+				<target>Zahlungsarten</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>
