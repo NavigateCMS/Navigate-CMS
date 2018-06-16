@@ -14,7 +14,7 @@ class navibars
 	}
 
 	function add_actions($actions)
-	{		
+	{
 		if(is_array($actions) && !empty($actions))
 		{
 			$search_form_pos = array_search('search_form', $actions);
@@ -66,14 +66,17 @@ class navibars
 
                     $actions_html .= '</ul>'."\n";
                 }
-                else
+                else if(!empty($action))
+                {
                     $actions_html .= $action . "\n";
+                }
             }
 
             $actions = $actions_html;
 		}
-		
-		$this->elements['actions'][] = '<div class="ui-corner-all">'.$actions.'</div>';
+
+		if(!empty($actions))
+		    $this->elements['actions'][] = '<div class="ui-corner-all">'.$actions.'</div>';
 	}
 
 	function search_form_suggest($search_url, $edit_url)
