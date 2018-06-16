@@ -614,7 +614,8 @@ function core_string_clean($text="")
 }
 
 /**
- * Cleans a string of any nv tags: <nv /> or {{nv}}
+ * Cleans a string of any short nv tags: <nv /> or {{nv}}
+ * TODO: add option to also remove nvlist, nvconditional and other similar tags
  *
  * @param string $text
  * @return string
@@ -1228,6 +1229,28 @@ function navigate_compose_email($data, $style=array())
     $body = implode("\n", $body);
 
     return $body;
+}
+
+// get current active language code or the default one
+function core_get_language($default=null)
+{
+    global $user;
+    global $webuser;
+
+    $lang = $default;
+
+    // static function can be called from navigate or from a webget (user then is not a navigate user)
+    if(empty($lang) && !empty($webuser->id))
+        $lang = $webuser->language;
+
+    if(empty($lang) && !empty($user->id))
+        $lang = $user->language;
+
+    // default to english
+    if(empty($lang))
+        $lang = 'en';
+
+    return $lang;
 }
 
 function core_version()
