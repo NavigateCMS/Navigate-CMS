@@ -44,7 +44,7 @@ class file
             $mime = $this->getMime($this->absolute_path());
             $this->mime = $mime[0];
             $this->type = $mime[1];
-			$dimensions = $this->image_dimensions($this->absolute_path());
+			$dimensions = $this->image_dimensions($this->absolute_path(), $this->mime);
 			$this->width = $dimensions['width'];
 			$this->height = $dimensions['height'];
 			$this->focalpoint = '50#50';
@@ -751,7 +751,7 @@ class file
 
         if($this->type == 'image')
         {
-            $dims = $this->image_dimensions($filepath);
+            $dims = $this->image_dimensions($filepath, $this->mime);
             $this->width = $dims['width'];
             $this->height = $dims['height'];
         }
@@ -774,7 +774,7 @@ class file
 		if($this->type != 'image')
 			return;
 
-		if(file::is_animated_gif($this->absolute_path()))
+		if(file::is_animated_gif($this->absolute_path()) || $this->mime == 'image/svg+xml')
 			return;
 
 		if($website->resize_uploaded_images > 0)
@@ -812,13 +812,49 @@ class file
 	}
 
 	
-	public static function image_dimensions($path)
+	public static function image_dimensions($path, $mime=null)
 	{
-		$handle = new upload($path);
-		$dimensions = array(
-            'width' => $handle->image_src_x,
-            'height' => $handle->image_src_y
-        );
+	    if($mime=='image/svg+xml')
+        {
+            $svg = simplexml_load_file($path);
+
+            // SVG with fixed dimensions?
+            $width = @$svg['width'];
+            $height = @$svg['height'];
+
+            // maybe SVG with proportional dimensions?
+            if(empty($width) || empty($height))
+            {
+                list($x_start, $y_start, $x_end, $y_end) = explode(' ', $svg['viewBox']);
+                $width = abs($x_end - $x_start);
+                $height = abs($y_end - $y_start);
+            }
+
+            // remove unit (px, %, etc.)
+            $width = preg_replace("/[^0-9,.]/", "", $width);
+            $height = preg_replace("/[^0-9,.]/", "", $height);
+
+            // no dimensions?
+            if(empty($width) || empty($height))
+            {
+                // use default dimensions
+                $width = 300;
+                $height = 150;
+            }
+
+            $dimensions = array(
+                'width'  => $width,
+                'height' => $height
+            );
+        }
+        else
+        {
+            $handle = new upload($path);
+            $dimensions = array(
+                'width'  => $handle->image_src_x,
+                'height' => $handle->image_src_y
+            );
+        }
 		return $dimensions;
 	}
 
@@ -1304,7 +1340,7 @@ class file
 
             if($file->type == 'image')
             {
-                $dimensions = file::image_dimensions($tmp_file_path);
+                $dimensions = file::image_dimensions($tmp_file_path, $file->mime);
                 $file->width = $dimensions['width'];
                 $file->height = $dimensions['height'];
             }

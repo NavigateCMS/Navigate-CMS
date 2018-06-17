@@ -108,24 +108,40 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                 $quality = 95;
 
 			$resizable = true;
+
 			if($item->mime == 'image/gif')
 				$resizable = !(file::is_animated_gif($path));
 
-			if(isset($_GET['force']) || ((!empty($width) || !empty($height)) && ($resizable || @$_REQUEST['force_resize']=='true')))
+			if($item->mime == 'image/svg+xml')
+			    $resizable = false;
+
+			if( isset($_GET['force']) ||
+                (   (!empty($width) || !empty($height)) &&
+                    ($resizable || @$_REQUEST['force_resize']=='true')
+                )
+            )
 			{
-				$border = (@$_REQUEST['border']=='false'? false : true);
-				$opacity = value_or_default(@$_REQUEST['opacity'], NULL);
+			    if($item->mime == 'image/svg+xml')
+                {
+                    // TODO: in the future, try to apply border and opacity modifiers in the XML
+                    //       right now just return the original svg
+                }
+                else
+                {
+                    $border = (@$_REQUEST['border'] == 'false' ? false : true);
+                    $opacity = value_or_default(@$_REQUEST['opacity'], NULL);
 
-                $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, NULL, $opacity);
-                if(empty($path))
-                    die();
+                    $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, NULL, $opacity);
+                    if (empty($path))
+                        die();
 
-				$etag_add  = '-'.$width.'-'.$height.'-'.$border.'-'.$quality;
-				$item->name = $width.'x'.$height.'-'.$item->name;
-				$item->size = filesize($path);
-                $item->mime = 'image/png';
-                if(strpos(basename($path), '.jpg')!==false)
-				    $item->mime = 'image/jpeg';
+                    $etag_add = '-' . $width . '-' . $height . '-' . $border . '-' . $quality;
+                    $item->name = $width . 'x' . $height . '-' . $item->name;
+                    $item->size = filesize($path);
+                    $item->mime = 'image/png';
+                    if (strpos(basename($path), '.jpg') !== false)
+                        $item->mime = 'image/jpeg';
+                }
 			}
 
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add);
