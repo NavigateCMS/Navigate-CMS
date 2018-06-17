@@ -7,6 +7,7 @@ class payment_method
     public $extension;
     public $image;
     public $permission;
+    public $position;
     
     public $dictionary;
 
@@ -36,6 +37,7 @@ class payment_method
         $this->extension    = $main->extension;
         $this->image		= $main->image;
         $this->permission	= $main->permission;
+        $this->position 	= $main->position;
         $this->dictionary	= webdictionary::load_element_strings('payment_method', $this->id);
     }
 
@@ -98,16 +100,17 @@ class payment_method
 
         $DB->execute(' 
  			INSERT INTO nv_payment_methods
-				(id, website, codename, extension, image, permission)
+				(id, website, codename, extension, image, permission, position)
 			VALUES 
-				( 0, :website, :codename, :extension, :image, :permission)
+				( 0, :website, :codename, :extension, :image, :permission, :position)
 			',
             array(
                 'website' => value_or_default($this->website, $website->id),
                 'codename' => value_or_default($this->codename, ""),
                 'extension' => value_or_default($this->extension, ""),
                 'image' => value_or_default($this->image, 0),
-                'permission' => value_or_default($this->permission, 0)
+                'permission' => value_or_default($this->permission, 0),
+                'position' => value_or_default($this->position, 0)
             )
         );
 
@@ -124,7 +127,7 @@ class payment_method
 
         $ok = $DB->execute(' 
  			UPDATE nv_payment_methods
-			  SET codename = :codename, extension = :extension, image = :image, permission = :permission
+			  SET codename = :codename, extension = :extension, image = :image, permission = :permission, position = :position
 			WHERE id = :id	AND	website = :website',
             array(
                 'id' => $this->id,
@@ -132,7 +135,8 @@ class payment_method
                 'codename' => value_or_default($this->codename, ""),
                 'extension' => value_or_default($this->extension, ""),
                 'image' => value_or_default($this->image, 0),
-                'permission' => value_or_default($this->permission, 0)
+                'permission' => value_or_default($this->permission, 0),
+                'position' => value_or_default($this->position, 0)
             )
         );
 
@@ -140,6 +144,31 @@ class payment_method
             throw new Exception($DB->get_last_error());
 
         webdictionary::save_element_strings('payment_method', $this->id, $this->dictionary, $this->website);
+
+        return true;
+    }
+
+    public static function reorder($order)
+    {
+        global $DB;
+        global $website;
+
+        $item = explode("#", $order);
+
+        for($i=0; $i < count($item); $i++)
+        {
+            if(empty($item[$i])) continue;
+
+            $ok = $DB->execute('
+                UPDATE nv_payment_methods
+				SET position = '.($i+1).'
+                WHERE id = '.$item[$i].'
+				  AND website = '.$website->id
+            );
+
+            if(!$ok)
+                return array("error" => $DB->get_last_error());
+        }
 
         return true;
     }
@@ -155,7 +184,8 @@ class payment_method
         $DB->query('
             SELECT *
               FROM nv_payment_methods
-             WHERE website = '.$ws.' 
+             WHERE website = '.$ws.'
+          ORDER BY position 
         ');
 
         $rs = $DB->result();

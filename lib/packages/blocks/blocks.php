@@ -1946,7 +1946,7 @@ function blocks_form($item)
 							
 	if(!empty($item->type))
 	{				
-		$navibars->add_tab(t(171, 'Order'));	// order blocs of the same type
+		$navibars->add_tab(t(171, 'Order'));	// order blocks of the same type
 		
 		$DB->query('SELECT b.id as id, d.text as title, b.fixed as fixed
 					  FROM nv_blocks b, nv_webdictionary d

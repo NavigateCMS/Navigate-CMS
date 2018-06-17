@@ -77,7 +77,7 @@ function run()
 					{
 					    $payment_method_image = $dataset[$i]['image'];
                         if(!empty($payment_method_image))
-                            $payment_method_image = '<img src="'.file::file_url($payment_method_image, 'inline').'&width=64&height=48&border=true" />';
+                            $payment_method_image = '<img src="'.file::file_url($payment_method_image, 'inline').'&height=24&border=true" style="height: 24px; width: auto;" />';
                         else
                             $payment_method_image = '-';
 
@@ -119,6 +119,11 @@ function run()
 				try
 				{
 					$object->save();
+
+                    // set block order
+                    if(!empty($_REQUEST['payment_methods-order']))
+                        payment_method::reorder($_REQUEST['payment_methods-order']);
+
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
@@ -158,6 +163,8 @@ function run()
 
 function payment_methods_list()
 {
+    global $layout;
+
 	$navibars = new navibars();
 	$navitable = new navitable("payment_methods_list");
 	
@@ -195,6 +202,7 @@ function payment_methods_list()
 
 function payment_methods_form($object)
 {
+    global $DB;
     global $layout;
     global $events;
     global $user;
@@ -397,6 +405,49 @@ function payment_methods_form($object)
     $onload_language = $_REQUEST['tab_language'];
     if(empty($onload_language))
         $onload_language = $website->languages_list[0];
+
+
+    $navibars->add_tab('<i class="fa fa-sort"></i> '.t(171, 'Order'));
+
+    $DB->query('
+      SELECT pm.id as id, d.text as title
+	  FROM nv_payment_methods pm, nv_webdictionary d
+         WHERE d.node_type = "payment_method"
+           AND d.subtype = "title"
+           AND d.lang = "'.$website->languages_list[0].'"
+           AND d.node_id = pm.id
+           AND d.website = '.$website->id.'
+           AND pm.website = '.$website->id.'
+        ORDER BY pm.position ASC
+    ');
+
+    $payment_methods_ids = $DB->result('id');
+    $payment_methods = $DB->result();
+
+    $navibars->add_tab_content($naviforms->hidden('payment_methods-order', implode('#', $payment_methods_ids)));
+
+    $table = new naviorderedtable("payment_methods_order_table");
+    $table->setWidth("408px");
+    $table->setHiddenInput("payment_methods-order");
+
+    $table->addHeaderColumn('ID', 50);
+    $table->addHeaderColumn(t(67, 'Title'), 350);
+
+    foreach($payment_methods as $pm)
+    {
+        $table->addRow($pm->id, array(
+            array('content' => $pm->id, 'align' => 'left'),
+            array('content' => $pm->title, 'align' => 'left')
+        ));
+    }
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(783, 'Payment methods').'</label>',
+            '<div>'.$table->generate().'</div>',
+            '<div class="subcomment"><img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'</div>'
+        )
+    );
 
     $layout->add_script('        
         $(document).on("keydown.ctrl_s", function (evt) { navigate_tabform_submit(1); return false; } );
