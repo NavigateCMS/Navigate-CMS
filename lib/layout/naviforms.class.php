@@ -696,7 +696,7 @@ class naviforms
                 
                 magicline_color: "#0070a3",
                 magicline_targetedItems: ["DIV", "IMG", "IFRAME", "PRE", "TABLE", "ARTICLE", "UL", "OL", "BLOCKQUOTE", "TR"],
-                magicline_triggerMargin: 24,
+                magicline_triggerMargin: 16,
 			    
 			    codemirror: {
 					path:  "'.NAVIGATE_URL.'/lib/external/codemirror",
