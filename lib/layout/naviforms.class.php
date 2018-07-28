@@ -196,8 +196,18 @@ class naviforms
 
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
 
-		if(!empty($prefix)) $prefix.= " ";
-		if(!empty($suffix)) $suffix = " " . $suffix;
+		if(!empty($prefix))
+		    $prefix.= " ";
+		else
+		    $prefix = html_entity_decode("&zwnj;");
+
+		if(!empty($suffix))
+		    $suffix = " " . $suffix;
+		else
+		    $suffix = html_entity_decode("&zwnj;");
+
+		// we need to add a "ZERO WIDTH NON-JOINER" character instead of empty prefixes/suffixes
+        // to workaround a weird inputmask bug with negative values
 
         $layout->add_script('
             $("#'.$name.'").inputmask(
@@ -209,9 +219,9 @@ class naviforms
                     allowMinus: true,
                     digits: '.$precision.',
                     radixPoint: "'.$decimal_separator.'",
-                    groupSeparator: "'.$thousands_separator.'",                    
-                    suffix: "'.$suffix.'",
+                    groupSeparator: "'.$thousands_separator.'",                   
                     prefix: "'.$prefix.'",
+                    suffix: "'.$suffix.'",
                     unmaskAsNumber: true,
                     autoUnmask: false
                 }

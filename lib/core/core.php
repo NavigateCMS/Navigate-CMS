@@ -411,7 +411,7 @@ function core_string2decimal($value)
     }
 
     // remove all characters except numbers, the negative symbol and the decimal character (defined by the current user)
-    $value = preg_replace('/[^0-9\/-\/'.$user->decimal_separator.']/', '', $value);
+    $value = preg_replace('/[^0-9\-\\'.$user->decimal_separator.']/', '', $value);
 
     // replace the user decimal character for the internal PHP symbol: a dot .
     $value = str_replace($user->decimal_separator, ".", $value);
