@@ -318,8 +318,8 @@ function nvweb_list($vars=array())
         }
     }
 
-    // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
-    $order      = @$_REQUEST['order'];
+    // get order type: REQUEST PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
+    $order = @$_REQUEST['order'];
     if(empty($order))
         $order  = @$vars['order'];
     if(empty($order))   // default order: latest
@@ -331,7 +331,7 @@ function nvweb_list($vars=array())
 
     if(($vars['source']=='structure' || $vars['source']=='category') && !empty($categories))
 	{
-        $orderby = str_replace('i.', 's.', $orderby);
+        $orderby = str_replace(array('i.', 'p.'), 's.', $orderby);
 
         $visible = '';
         if($vars['filter']=='menu')
@@ -510,7 +510,7 @@ function nvweb_list($vars=array())
     {
         $filters = '';
         if(!empty($vars['filter']))
-            $filters = nvweb_list_parse_filters($vars['filter'], 'products');
+            $filters = nvweb_list_parse_filters($vars['filter'], 'product');
 
         // reuse structure.access permission
         $access_extra_items = str_replace('s.', 'p.', $access_extra);
@@ -543,6 +543,29 @@ function nvweb_list($vars=array())
                                             c.website = p.website AND 
                                             c.status = 0
                                 ) AS comments_published';
+        }
+
+        if($vars['order'] == 'sales')
+        {
+            // retrieve the number of sales to apply the order requested
+            $columns_extra = ', (
+                    SELECT COUNT(*) FROM nv_orders_lines WHERE website = p.website AND product = p.id
+                ) AS sales';
+        }
+
+        if($vars['order'] == 'price_asc' || $vars['order'] == 'price_desc')
+        {
+            // we need to calculate the offer price and get the lowest price for the product
+            $columns_extra = ', ( 
+                    IF( 
+                        (   p.offer_price > 0 
+                            AND (p.offer_begin_date = 0 OR '.core_time().' >= p.offer_begin_date)
+                            AND (p.offer_end_date = 0 OR '.core_time().' <= p.offer_end_date)
+                        ), 
+                        p.offer_price, 
+                        p.base_price
+                    ) 
+                ) AS sale_price';
         }
 
         // default source for retrieving items
@@ -816,7 +839,6 @@ function nvweb_list($vars=array())
 
 		$total = $DB->foundRows();
 	}
-
 
 	// preprocess list html template, conditionals and nested lists
 
@@ -2000,8 +2022,22 @@ function nvweb_list_get_orderby($order)
 
         case 'newest':
         case 'latest':
-            $orderby = 'ORDER BY pdate DESC';
+            $orderby = ' ORDER BY pdate DESC';
             break;
+
+        // product special order types
+        case 'sales':
+            $orderby = ' ORDER BY sales DESC';
+            break;
+
+        case 'price_asc':
+            $orderby = ' ORDER BY sale_price ASC';
+            break;
+
+        case 'price_desc':
+            $orderby = ' ORDER BY sale_price DESC';
+            break;
+
 
         default:
 
@@ -2281,6 +2317,41 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             {
                 // remove this conditional html code on this round
                 $out = '';
+            }
+            break;
+
+        case 'product':
+            if(isset($tag['attributes']['offer']))
+            {
+                $on_offer = $item->on_offer();
+                if(($tag['attributes']['offer']=='true' || $tag['attributes']['offer']=='1') && $on_offer)
+                    $out = $item_html;
+                else if(($tag['attributes']['offer']=='false' || $tag['attributes']['offer']=='0') && !$on_offer)
+                    $out = $item_html;
+                else
+                    $out = '';
+            }
+
+            if(isset($tag['attributes']['top']))
+            {
+                $is_top = $item->is_top(@$tag['attributes']['top_limit']);
+                if(($tag['attributes']['top']=='true' || $tag['attributes']['top']=='1') && $is_top)
+                    $out = $item_html;
+                else if(($tag['attributes']['top']=='false' || $tag['attributes']['top']=='0') && !$is_top)
+                    $out = $item_html;
+                else
+                    $out = '';
+            }
+
+            if(isset($tag['attributes']['new']))
+            {
+                $is_new = $item->is_new(@$tag['attributes']['since']);
+                if(($tag['attributes']['new']=='true' || $tag['attributes']['new']=='1') && $is_new)
+                    $out = $item_html;
+                else if(($tag['attributes']['new']=='false' || $tag['attributes']['new']=='0') && !$is_new)
+                    $out = $item_html;
+                else
+                    $out = '';
             }
             break;
 
@@ -2646,6 +2717,10 @@ function nvweb_list_parse_filters($raw, $object='item')
     global $website;
     global $current;
 
+    $alias = 'i';
+    if($object=='product')
+        $alias = 'p';
+
     $filters = array();
 
     if(!is_array($raw))
@@ -2705,12 +2780,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                     );
                 }
 
-                $filters[] = ' AND i.id IN ( 
+                $filters[] = ' AND '.$alias.'.id IN ( 
                                  SELECT node_id 
                                    FROM nv_properties_items
                                   WHERE website = '.$website->id.' AND
                                         property_id = '.protect($key).' AND
-                                        element = "item" AND
+                                        element = "'.$object.'" AND
                                         value = '.protect($value).'
                                )';
             }
@@ -2740,12 +2815,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                     if(isset($comparators[$comp_type]))
                     {
                         $filters[] = ' 
-                            AND i.id IN ( 
+                            AND '.$alias.'.id IN ( 
                                  SELECT node_id 
                                    FROM nv_properties_items
                                   WHERE website = '.$website->id.' AND
                                         property_id = '.protect($key).' AND
-                                        element = "item" AND
+                                        element = "'.$object.'" AND
                                         value '.$comparators[$comp_type].' '.protect($comp_value, null, true).'
                             )';
                     }
@@ -2755,12 +2830,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                         {
                             // multivalue, query with REGEXP: http://dev.mysql.com/doc/refman/5.7/en/string-functions.html#function_regexp
                             $filters[] = ' 
-                                AND i.id IN ( 
+                                AND '.$alias.'.id IN ( 
                                      SELECT node_id 
                                        FROM nv_properties_items
                                       WHERE website = '.$website->id.' AND
                                             property_id = '.protect($key).' AND
-                                            element = "item" AND
+                                            element = "'.$object.'" AND
                                             value '.($comp_type=='like'? 'REGEXP' : 'NOT REGEXP').' "'.implode('|', $comp_value).'"
                                 )';
                         }
@@ -2768,12 +2843,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                         {
                             // single value, standard LIKE
                             $filters[] = ' 
-                                AND i.id IN ( 
+                                AND '.$alias.'.id IN ( 
                                      SELECT node_id 
                                        FROM nv_properties_items
                                       WHERE website = '.$website->id.' AND
                                             property_id = '.protect($key).' AND
-                                            element = "item" AND
+                                            element = "'.$object.'" AND
                                             value '.($comp_type=='like'? 'LIKE' : 'NOT LIKE').' '.protect('%'.$comp_value.'%', null, true).'
                                 )';
                         }
@@ -2792,12 +2867,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                             $comp_value = array(0); // avoid SQL query exception
 
                         $filters[] = ' 
-                            AND i.id IN ( 
+                            AND '.$alias.'.id IN ( 
                                 SELECT node_id 
                                   FROM nv_properties_items
                                  WHERE website = '.$website->id.' AND
                                         property_id = '.protect($key).' AND
-                                        element = "item" AND
+                                        element = "'.$object.'" AND
                                         value '.$comp_type.'('.
                                             implode(
                                                 ",",
@@ -2827,12 +2902,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                         foreach($comp_value as $comp_value_part)
                         {
                             $filters[] = ' 
-                                AND i.id IN ( 
+                                AND '.$alias.'.id IN ( 
                                     SELECT node_id 
                                       FROM nv_properties_items
                                      WHERE website = ' . $website->id . ' AND
                                             property_id = ' . protect($key) . ' AND
-                                            element = "item" AND
+                                            element = "'.$object.'" AND
                                             ' . $comp_type . '(' . protect($comp_value_part) .', value)                               
                                 )';
                         }
@@ -2842,32 +2917,56 @@ function nvweb_list_parse_filters($raw, $object='item')
         }
         else
         {
+            $direct_filter = false;
+
             // object value
             switch($key)
             {
+                // item & product common values
                 case 'id':
-                    $field = 'i.id';
+                    $field = $alias.'.id';
                     $direct_filter = true;
                     break;
 
                 case 'author':
-                    $field = 'i.author';
+                    $field = $alias.'.author';
                     $direct_filter = true;
                     break;
 
                 case 'date_to_display':
-                    $field = 'i.date_to_display';
+                    $field = $alias.'.date_to_display';
                     $direct_filter = true;
                     break;
 
                 case 'score':
-                    $field = 'i.score';
+                    $field = $alias.'.score';
                     $direct_filter = true;
                     break;
 
                 case 'votes':
-                    $field = 'i.votes';
+                    $field = $alias.'.votes';
                     $direct_filter = true;
+                    break;
+
+                // product specific values or filters
+                case 'offer':
+                    if($value == 'true' || $value===true)
+                    {
+                        $filters[] = ' AND (
+                            ' . $alias . '.offer_price > 0 
+                            AND ( ' . $alias . '.offer_begin_date = 0 OR '.core_time().' >= '.$alias.'.offer_begin_date)
+                            AND ( ' . $alias . '.offer_end_date = 0 OR '.core_time().' <= '.$alias.'.offer_end_date)
+                        )';
+                    }
+                    else
+                    {
+                        $filters[] = ' AND (
+                            ' . $alias . '.offer_price = 0 
+                            OR ( ' . $alias . '.offer_begin_date > 0 AND '.core_time().' < '.$alias.'.offer_begin_date)
+                            OR ( ' . $alias . '.offer_end_date > 0 AND '.core_time().' > '.$alias.'.offer_end_date)
+                        )';
+                    }
+                    $direct_filter = false;
                     break;
 
                 default:
@@ -2982,12 +3081,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                             foreach($comp_value as $comp_value_part)
                             {
                                 $filters[] = ' 
-                                    AND i.id IN ( 
+                                    AND '.$alias.'.id IN ( 
                                         SELECT node_id 
                                           FROM nv_properties_items
                                          WHERE website = ' . $website->id . ' AND
                                                 property_id = ' . protect($key) . ' AND
-                                                element = "item" AND
+                                                element = "'.$object.'" AND
                                                 ' . $comp_type . '(' . protect($comp_value_part) .', '.$field.')                               
                                     )';
                             }
