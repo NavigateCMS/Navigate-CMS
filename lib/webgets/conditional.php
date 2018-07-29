@@ -335,6 +335,9 @@ function nvweb_conditional($vars=array())
                     if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
                     {
                         $access = 0; // everybody
+                        // only for a certain user?
+                        if(isset($vars['user']) && $vars['user'] != $_SESSION['APP_USER#'.APP_UNIQUE])
+                            $access = -1;
                     }
                     else
                     {
@@ -479,6 +482,28 @@ function nvweb_conditional($vars=array())
                 if(($vars['offer']=='true' || $vars['offer']=='1') && $on_offer)
                     $out = $item_html;
                 else if(($vars['offer']=='false' || $vars['offer']=='0') && !$on_offer)
+                    $out = $item_html;
+                else
+                    $out = '';
+            }
+
+            if(isset($vars['top']))
+            {
+                $is_top = $item->is_top(@$vars['top_limit']);
+                if(($vars['top']=='true' || $vars['top']=='1') && $is_top)
+                    $out = $item_html;
+                else if(($vars['top']=='false' || $vars['top']=='0') && !$is_top)
+                    $out = $item_html;
+                else
+                    $out = '';
+            }
+
+            if(isset($vars['new']))
+            {
+                $is_new = $item->is_new(@$vars['since']);
+                if(($vars['new']=='true' || $vars['new']=='1') && $is_new)
+                    $out = $item_html;
+                else if(($vars['new']=='false' || $vars['new']=='0') && !$is_new)
                     $out = $item_html;
                 else
                     $out = '';
