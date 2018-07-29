@@ -27,6 +27,10 @@ function nvweb_liveedit_render($vars)
 
     switch($current['type'])
     {
+        case 'product':
+            $url = NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=products&act=edit&id='.$current['object']->id.'&tab=2&tab_language='.$current['lang'].'&quickedit=true&wid='.$website->id;
+            break;
+
         case 'item':
             $url = NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=edit&id='.$current['object']->id.'&tab=2&tab_language='.$current['lang'].'&quickedit=true&wid='.$website->id;
             break;
