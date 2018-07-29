@@ -881,6 +881,10 @@ class block
 
         $block = null;
 
+        // the block origin is not found, maybe was part of a missing extension
+        if(empty($extension_blocks))
+            return false;
+
         for($eb=0; $eb < count($extension_blocks); $eb++)
         {
             if($extension_blocks[$eb]->id == $block_type)
