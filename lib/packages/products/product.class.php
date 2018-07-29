@@ -73,6 +73,8 @@ class product
 	public $properties;
 
     private $_comments_count;
+
+    static $top_products;
 		
 	public function load($id)
 	{
@@ -865,6 +867,79 @@ class product
         }
 
         return $on_offer;
+    }
+
+    public function is_top($limit="10")
+    {
+        if(empty($limit))
+        {
+            $limit = 10;
+        }
+
+        $rs = product::top_products($limit);
+
+        if(empty($rs))
+            return false;
+
+        foreach($rs as $top_product)
+        {
+            if($top_product->product == $this->id)
+                return true;
+        }
+        return false;
+    }
+
+    public static function top_products($limit=10)
+    {
+        global $DB;
+        global $website;
+
+        // if possible, use the internal cache instead of querying the database
+        if(isset(product::$top_products) && count(product::$top_products) >= $limit)
+        {
+            return product::$top_products;
+        }
+
+        $DB->query('
+            SELECT product, COUNT(*) AS orders 
+              FROM nv_orders_lines 
+             WHERE website = '.$website->id.'
+          GROUP BY product 
+          ORDER BY orders DESC
+          LIMIT '.$limit
+        );
+
+        product::$top_products = $DB->result();
+
+        return product::$top_products;
+    }
+
+    public function is_new($since="30") // days
+    {
+        $is_new = false;
+
+        if(empty($since))
+        {
+            $since = 30;
+        }
+
+        if(!empty($this->date_to_display))
+        {
+            if( floor((time() - $this->date_to_display) / 86400) < $since )
+                $is_new = true;
+        }
+        else if(!empty($this->date_published))
+        {
+            if( floor((time() - $this->date_published) / 86400) < $since )
+                $is_new = true;
+        }
+        else
+        {
+            if( floor((time() - $this->date_created) / 86400) < $since )
+                $is_new = true;
+        }
+
+        return $is_new;
     }
 
     public static function size_units()
