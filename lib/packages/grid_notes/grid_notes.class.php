@@ -169,6 +169,8 @@ class grid_notes
         if(empty($comment))
             return 'comment_empty';
 
+        $comment = htmlspecialchars($comment);
+
         $DB->execute('
             INSERT INTO nv_notes
                 (id, website, user, item_type, item_id, background, note, date_created)
