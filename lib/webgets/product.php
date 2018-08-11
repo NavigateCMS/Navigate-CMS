@@ -216,7 +216,7 @@ function nvweb_product($vars=array())
 
         case 'price':
             $price = $product->get_price();
-            $out = core_price2string($price, $product->base_price_currency, @$vars['return']);
+            $out = core_price2string($price['current'], $product->base_price_currency, @$vars['return']);
             break;
 
         case 'old_price':
@@ -224,29 +224,25 @@ function nvweb_product($vars=array())
             // by default, return empty if old_price = current_price
             // current price may be different if the product is on sale
 
-            $current_price = $product->get_price();
+            $price = $product->get_price();
 
-            $old_price = $product->base_price;
-            if($product->tax_class == "custom")
-                $old_price += ($old_price / 100 * $product->tax_value);
-
-            if($old_price == $current_price)
+            if(empty($price['old']) || $price['current'] == $price['old'])
                 $out = "";
             else
-                $out = core_price2string($old_price, $product->base_price_currency, @$vars['return']);
+                $out = core_price2string($price['old'], $product->base_price_currency, @$vars['return']);
 
             break;
 
 
         case 'tax':
-            $product_price = $product->get_price(false);
+            $price = $product->get_price();
 
             switch($vars['return'])
             {
                 case 'amount':
                     if($product->tax_class == 'custom')
                     {
-                        $tax_amount = $product_price * $product->tax_value / 100;
+                        $tax_amount = $price['tax_amount'];
                         $currency = product::currencies($product->base_price_currency, false);
                         if ($currency['placement'] == 'after')
                             $out = core_decimal2string($tax_amount) . ' ' . $currency['symbol'];

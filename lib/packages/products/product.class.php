@@ -835,21 +835,48 @@ class product
         return $out;
     }
 
-    public function get_price($include_tax = true)
+    public function get_price()
     {
         // TODO: calculate price based on price lists, current web user, etc.
 
         // price is base_price + taxes
         // except if the product is on sale, then is offer_price + taxes
-        $price = $this->base_price;
+        $current = $this->base_price;
+        $base_price = $this->base_price;
+        $old_price = null;
+        $old_price_without_taxes = null;
 
         if($this->on_offer())
-            $price = $this->offer_price;
+        {
+            $base_price = $this->offer_price; // no taxes added
+            $current = $this->offer_price; // taxes added later
+            $old_price = $this->base_price; // taxes added later
+            $old_price_without_taxes = $this->offer_price;
+        }
 
-        if($include_tax && $this->tax_class == "custom")
-            $price += ($price / 100 * $this->tax_value);
+        // add taxes to $current and $old_price, if needed
+        $tax_value = 0;
+        $tax_amount = 0;
 
-        return $price;
+        if($this->tax_class == "custom")
+        {
+            $tax_value = $this->tax_value;
+            $tax_amount = ($current / 100 * $this->tax_value);
+
+            $current = $current + $tax_amount;
+
+            if(!empty($old_price))
+                $old_price = $old_price + ($old_price / 100 * $tax_value);
+        }
+
+        return array(
+            'current' => round($current, 2), // product price for this customer (with taxes, if custom)
+            'old' => $old_price, // old product price (with taxes, if custom)
+            'base_price' => $base_price, // current product price without taxes
+            'old_without_taxes' => $old_price_without_taxes, // old product price (only if offer is active) without taxes
+            'tax_value' => $tax_value, // for the current price
+            'tax_amount' => $tax_amount // for the current price
+        );
     }
 
     public function on_offer()
