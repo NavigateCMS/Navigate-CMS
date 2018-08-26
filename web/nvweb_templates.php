@@ -111,25 +111,29 @@ function nvweb_after_body($type="js", $code="")
 
 	if(empty($code))
 	{
+	    $out = array();
 		if(!empty($current[$type.'_after_body']))
 		{
+            $out = $current[$type.'_after_body'];
+
 			switch($type)
 			{
 				case 'js':
-					array_unshift($current[$type.'_after_body'], '<script language="javascript" type="text/javascript">');
-					$current[$type.'_after_body'][] = '</script>';
+                    array_unshift($out, '<script language="javascript" type="text/javascript">');
+                    $out[] = '</script>';
 					break;
 
                 case 'css':
-					array_unshift($current[$type.'_after_body'], '<style>');
-					$current[$type.'_after_body'][] = '</style>';
+                    array_unshift($out, '<style>');
+                    $out[] = '</style>';
 					break;
 
 				case 'php':
-					foreach($current[$type.'_after_body'] as $code)
-						call_user_func($code);
-
-					$current[$type.'_after_body'] = array();
+                    foreach($current[$type . '_after_body'] as $code)
+                    {
+                        call_user_func($code);
+                    }
+                    $out = array();
 					break;
 
 				case 'html':
@@ -137,7 +141,7 @@ function nvweb_after_body($type="js", $code="")
 					break;
 			}
 
-			return implode("\n", $current[$type.'_after_body']);
+			return implode("\n", $out);
 		}
 	}
 	else
@@ -1312,7 +1316,10 @@ function nvweb_template_tweaks($html)
 */
 function nvweb_template_convert_nv_paths($html)
 {
-	preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9]+)+/", $html, $matches);
+    // find all urls
+	// attempt to retrieve urls including ?parameters
+    // preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9]+)([?]*)(.*)[\/\"\/']+/i", $html, $matches);
+	preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9]+)+/i", $html, $matches);
 
 	if(!empty($matches) && !empty($matches[0]))
 	{
