@@ -508,7 +508,6 @@ function orders_form($object)
 
     $object->load_lines();
     $taxes_breakout = array();
-debugger::bar_dump($object);
 
     foreach($object->lines as $line)
     {

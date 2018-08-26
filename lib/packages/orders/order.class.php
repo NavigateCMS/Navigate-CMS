@@ -22,6 +22,7 @@ class order
     public $shipping_method;
     public $shipping_amount;
     public $shipping_tax;
+    public $shipping_tax_amount;
     public $shipping_invoiced;
     public $shipping_data;
             // carrier, reference, tracking_url
@@ -33,9 +34,8 @@ class order
 
     public $coupon;
     public $coupon_code;
-    public $discount_amount;
-    public $discount_percentage;
-    public $discount_invoiced;
+    public $coupon_data;
+    public $coupon_amount;
 
     public $total;
     public $payment_done;
@@ -45,7 +45,12 @@ class order
     public $history;
 
     public $lines;  // from table nv_orders_lines
-            // id, website, order, customer, product, sku, name, option, quantity, currency, original_price, base_price, tax_value, tax_amount, total
+            // id, website, order, customer, product, sku, name, option, quantity, currency,
+            // original_price, coupon_unit, base_price, base_price_tax_amount, tax_value, coupon_amount, tax_amount, total
+
+    public $weight;
+    public $weight_unit;
+    public $size_unit;
 
     public $notify_customer;    // boolean, not saved in database
 
@@ -90,6 +95,7 @@ class order
         $this->shipping_method      = $main->shipping_method;
         $this->shipping_amount      = $main->shipping_amount;
         $this->shipping_tax         = $main->shipping_tax;
+        $this->shipping_tax_amount  = $main->shipping_tax_amount;
         $this->shipping_invoiced    = $main->shipping_invoiced;
         $this->shipping_data        = json_decode($main->shipping_data);
 
@@ -98,14 +104,17 @@ class order
 
         $this->coupon               = $main->coupon;
         $this->coupon_code          = $main->coupon_code;
-        $this->discount_amount      = $main->discount_amount;
-        $this->discount_percentage  = $main->discount_percentage;
-        $this->discount_invoiced    = $main->discount_invoiced;
+        $this->coupon_data          = $main->coupon_data;
+        $this->coupon_amount        = $main->coupon_amount;
 
         $this->total                = $main->total;
         $this->payment_done         = $main->payment_done;
         $this->payment_method       = $main->payment_method;
         $this->payment_data         = $main->payment_data;
+
+        $this->weight               = $main->weight;
+        $this->weight_unit          = $main->weight_unit;
+        $this->size_unit            = $main->size_unit;
 
         $this->history              = json_decode($main->history);
 
@@ -168,10 +177,16 @@ class order
         $this->subtotal_taxes_cost = core_string2decimal($_REQUEST['subtotal_taxes_cost']);
         $this->subtotal_invoiced = core_string2decimal($_REQUEST['subtotal_invoiced']);
 
-        // TODO: allow modifying coupon discount amount
+        // not editable after creating
+        // $this->weight = $_REQUEST['weight'];
+        // $this->weight_unit = $_REQUEST['weight_unit'];
+        // $this->size_unit = $_REQUEST['size_unit'];
+
+        // TODO: allow modifying coupon amount
 
         $this->shipping_amount = core_string2decimal($_REQUEST['shipping_amount']);
         $this->shipping_tax = core_string2decimal($_REQUEST['shipping_tax']);
+        $this->shipping_tax_amount = core_string2decimal($_REQUEST['shipping_tax_amount']);
         $this->shipping_invoiced = core_string2decimal($_REQUEST['shipping_invoiced']);
 
         $this->total = core_string2decimal($_REQUEST['total']);
@@ -200,6 +215,7 @@ class order
         $this->billing_address->region = trim($_REQUEST['billing_address-region']);
         $this->billing_address->phone = trim($_REQUEST['billing_address-phone']);
         $this->billing_address->email = trim($_REQUEST['billing_address-email']);
+
     }
 
     public function save()
@@ -248,21 +264,23 @@ class order
         global $DB;
         global $website;
 
-        $DB->execute(' 
+        $ok = $DB->execute(' 
  			INSERT INTO nv_orders
 				(id, website, reference, webuser, customer_data, customer_notes, date_created, date_updated, currency,
                  subtotal_amount, subtotal_taxes_cost, subtotal_invoiced,
-                 shipping_method, shipping_amount, shipping_tax, shipping_invoiced, shipping_data,
+                 weight, weight_unit, size_unit,
+                 shipping_method, shipping_amount, shipping_tax, shipping_tax_amount, shipping_invoiced, shipping_data,
                  shipping_address, billing_address,
-                 coupon, coupon_code, discount_amount, discount_percentage, discount_invoiced,
+                 coupon, coupon_code, coupon_amount, coupon_data,
                  total, payment_done, payment_method, payment_data,
                  status, history)
 			VALUES 
 				( 0, :website, :reference, :webuser, :customer_data, :customer_notes, :date_created, :date_updated, :currency,
                  :subtotal_amount, :subtotal_taxes_cost, :subtotal_invoiced,
-                 :shipping_method, :shipping_amount, :shipping_tax, :shipping_invoiced, :shipping_data,
+                 :weight, :weight_unit, :size_unit,
+                 :shipping_method, :shipping_amount, :shipping_tax, :shipping_tax_amount, :shipping_invoiced, :shipping_data,
                  :shipping_address, :billing_address,
-                 :coupon, :coupon_code, :discount_amount, :discount_percentage, :discount_invoiced,
+                 :coupon, :coupon_code, :coupon_amount, :coupon_data,
                  :total, :payment_done, :payment_method, :payment_data,
                  :status, :history)
 			',
@@ -278,18 +296,21 @@ class order
                 'subtotal_amount' => value_or_default($this->subtotal_amount, 0),
                 'subtotal_taxes_cost' => value_or_default($this->subtotal_taxes_cost, 0),
                 'subtotal_invoiced' => value_or_default($this->subtotal_invoiced, 0),
+                'weight' => value_or_default($this->weight, 0),
+                'weight_unit' => value_or_default($this->weight_unit, ''),
+                'size_unit' => value_or_default($this->size_unit, ''),
                 'shipping_method' => value_or_default($this->shipping_method, ""),
                 'shipping_amount' => value_or_default($this->shipping_amount, 0),
                 'shipping_tax' => value_or_default($this->shipping_tax, 0),
+                'shipping_tax_amount' => value_or_default($this->shipping_tax_amount, 0),
                 'shipping_invoiced' => value_or_default($this->shipping_invoiced, 0),
                 'shipping_data' => json_encode($this->shipping_data),
                 'shipping_address' => json_encode($this->shipping_address),
                 'billing_address' => json_encode($this->billing_address),
-                'coupon' => value_or_default($this->coupon, ""),
+                'coupon' => value_or_default($this->coupon, 0),
                 'coupon_code' => value_or_default($this->coupon_code, ""),
-                'discount_amount' => value_or_default($this->discount_amount, 0),
-                'discount_percentage' => value_or_default($this->discount_percentage, 0),
-                'discount_invoiced' => value_or_default($this->discount_invoiced, 0),
+                'coupon_amount' => value_or_default($this->coupon_amount, 0),
+                'coupon_data' => value_or_default($this->coupon_data, ""),
                 'total' => value_or_default($this->total, 0),
                 'payment_done' => value_or_default($this->payment_done, 0),
                 'payment_method' => value_or_default($this->payment_method, ""),
@@ -300,6 +321,50 @@ class order
         );
 
         $this->id = $DB->get_last_id();
+
+        if(!$ok)
+            throw new Exception($DB->get_last_error());
+
+        // now we insert each order line
+        for($l=0; $l < count($this->lines); $l++)
+        {
+            $ok = $DB->execute('
+                INSERT INTO nv_orders_lines
+                  (id, website, `order`, position, customer, 
+                   product, sku, name, `option`, quantity, currency, 
+                   original_price, coupon_unit, base_price, base_price_tax_amount, 
+                   coupon_amount, tax_value, tax_amount, total)
+                VALUES
+                  ( 0, :website, :order, :position, :customer, 
+                    :product, :sku, :name, :option, :quantity, :currency, 
+                    :original_price, :coupon_unit, :base_price, :base_price_tax_amount, 
+                    :coupon_amount, :tax_value, :tax_amount, :total
+                )
+            ', array(
+                'website' => value_or_default($this->website, $website->id),
+                'customer' => value_or_default($this->webuser, ""),
+                'order' => value_or_default($this->id, 0),
+                'position' => ($l+1),
+                'product' => $this->lines[$l]['product'],
+                'sku' => $this->lines[$l]['sku'],
+                'name' => $this->lines[$l]['name'],
+                'option' => $this->lines[$l]['option'],
+                'quantity' => value_or_default($this->lines[$l]['quantity'], 0),
+                'currency' => $this->lines[$l]['currency'],
+                'original_price' => value_or_default($this->lines[$l]['original_price'], 0),
+                'coupon_unit' => value_or_default($this->lines[$l]['coupon_unit'], 0),
+                'base_price' => value_or_default($this->lines[$l]['base_price'], 0),
+                'base_price_tax_amount' => value_or_default($this->lines[$l]['base_price_tax_amount'], 0),
+                'coupon_amount' => value_or_default($this->lines[$l]['coupon_amount'], 0),
+                'tax_value' => value_or_default($this->lines[$l]['tax_value'], 0),
+                'tax_amount' => value_or_default($this->lines[$l]['tax_amount'], 0),
+                'total' => value_or_default($this->lines[$l]['total'], 0)
+            ));
+
+
+            if(!$ok)
+                throw new Exception($DB->get_last_error());
+        }
 
         return true;
     }
@@ -313,9 +378,10 @@ class order
 			  SET reference = :reference, webuser = :webuser, customer_data = :customer_data, customer_notes = :customer_notes, 
 			      date_updated = :date_updated, currency = :currency,
                   subtotal_amount = :subtotal_amount, subtotal_taxes_cost = :subtotal_taxes_cost, subtotal_invoiced = :subtotal_invoiced,
-                  shipping_method = :shipping_method, shipping_amount = :shipping_amount, shipping_tax = :shipping_tax, shipping_invoiced = :shipping_invoiced, 
+                  weight = :weight, weight_unit = :weight_unit, size_unit = :size_unit,
+                  shipping_method = :shipping_method, shipping_amount = :shipping_amount, shipping_tax = :shipping_tax, shipping_tax_amount = :shipping_tax_amount, shipping_invoiced = :shipping_invoiced, 
                   shipping_data = :shipping_data, shipping_address = :shipping_address, billing_address = :billing_address,
-                  coupon = :coupon, coupon_code = :coupon_code, discount_amount = :discount_amount, discount_percentage = :discount_percentage, discount_invoiced = :discount_invoiced,
+                  coupon = :coupon, coupon_code = :coupon_code, coupon_amount = :coupon_amount, coupon_data = :coupon_data,
                   total = :total, payment_done = :payment_done, payment_method = :payment_method, payment_data = :payment_data,
                   status = :status, history = :history
 			WHERE id = :id	AND	website = :website',
@@ -331,18 +397,21 @@ class order
                 'subtotal_amount' => value_or_default($this->subtotal_amount, 0),
                 'subtotal_taxes_cost' => value_or_default($this->subtotal_taxes_cost, 0),
                 'subtotal_invoiced' => value_or_default($this->subtotal_invoiced, 0),
+                'weight' => value_or_default($this->weight, 0),
+                'weight_unit' => value_or_default($this->weight_unit, ''),
+                'size_unit' => value_or_default($this->size_unit, ''),
                 'shipping_method' => $this->shipping_method,
                 'shipping_amount' => value_or_default($this->shipping_amount, 0),
                 'shipping_tax' => value_or_default($this->shipping_tax, 0),
+                'shipping_tax_amount' => value_or_default($this->shipping_tax_amount, 0),
                 'shipping_invoiced' => value_or_default($this->shipping_invoiced, 0),
                 'shipping_data' => json_encode($this->shipping_data),
                 'shipping_address' => json_encode($this->shipping_address),
                 'billing_address' => json_encode($this->billing_address),
-                'coupon' => $this->coupon,
-                'coupon_code' => $this->coupon_code,
-                'discount_amount' => value_or_default($this->discount_amount, 0),
-                'discount_percentage' => value_or_default($this->discount_percentage, 0),
-                'discount_invoiced' => value_or_default($this->discount_invoiced, 0),
+                'coupon' => value_or_default($this->coupon, 0),
+                'coupon_code' => value_or_default($this->coupon_code, ""),
+                'coupon_amount' => value_or_default($this->coupon_amount, 0),
+                'coupon_data' => value_or_default($this->coupon_data, ""),
                 'total' => value_or_default($this->total, 0),
                 'payment_done' => value_or_default($this->payment_done, 0),
                 'payment_method' => $this->payment_method,
@@ -355,10 +424,112 @@ class order
         if(!$ok)
             throw new Exception($DB->get_last_error());
 
+        // TODO: do we need to also update the order lines?
+
         if($this->notify_customer)
             $this->send_customer_notification();
 
         return true;
+    }
+
+    public static function create_from_cart($cart)
+    {
+        global $website;
+        global $webuser;
+
+        $order = new Order();
+
+        $order->id = 0;
+        $order->website = $website->id;
+        $order->webuser = $cart['customer'];
+        $order->reference = "";
+
+        $order->customer_data = array(
+            'ip' => core_ip(),
+            'guest' => ($cart['customer'] == 'guest'),
+            'name' => @$webuser->fullname,
+            'email' => @$webuser->email,
+            'phone' => @$webuser->phone,
+            'country' => @$webuser->country,
+            'region' => @$webuser->region,
+            'zipcode' => @$webuser->zipcode,
+            'location' => @$webuser->location,
+            'address' => @$webuser->address
+        );
+
+        $order->customer_notes = $cart['customer_notes'];
+
+        $order->status = 'payment_pending'; // [payment_pending, pending, processing, sent, completed, cancelled, contact us]
+        $order->date_created = time();
+        $order->date_updated = time();
+        $order->currency = $cart['currency'];
+
+        $order->subtotal_amount = $cart['subtotal_without_taxes']; // after discounts, WITHOUT TAXES
+        $order->subtotal_taxes_cost = $cart['subtotal_taxes_amount']; // after discounts, before shipping
+        $order->subtotal_invoiced = $cart['subtotal']; // after discounts, WITH taxes, before shipping
+
+        $order->shipping_method = $cart['shipping_method'].'/'.$cart['shipping_rate'];
+        $order->shipping_amount = $cart['shipping_price_without_taxes'];
+        $order->shipping_tax = $cart['shipping_tax_value'];
+        $order->shipping_tax_amount = $cart['shipping_tax_amount'];
+        $order->shipping_invoiced = $cart['shipping_price'];
+        $order->shipping_data = array(
+            'carrier' => $cart['shipping_carrier'],
+            'reference' => '',
+            'tracking_url' => ''
+        );
+
+        $order->shipping_address = $cart['address_shipping'];
+        // name, nin, company, address, location, zipcode, region, country, phone, email
+        $order->billing_address = $cart['address_billing'];
+        // name, nin, company, address, location, zipcode, region, country, phone, email
+
+        $order->coupon = $cart['coupon'];
+        $order->coupon_code = $cart['coupon_code'];
+        $order->coupon_data = $cart['coupon_data'];
+        $order->coupon_amount = value_or_default($cart['coupon_amount'], 0);
+
+        $order->total = $cart['total'];
+
+        $order->payment_done = 0;
+        $order->payment_method = $cart['payment_method'];
+        $order->payment_data = '';
+
+        $order->history = array();
+        $order->history[] = array(time(), 'order_created_from_cart', $cart);
+
+        $order->lines = array();
+        foreach($cart['lines'] as $line)
+        {
+            $order->lines[] = array(
+                'id' => 0,
+                'website' => $website->id,
+                'order' => 0,
+                'customer' => $cart['customer'],
+                'product' => $line['id'],
+                'sku' => $line['sku'],
+                'name' => $line['name'],
+                'option' => $line['option'],
+                'quantity' => $line['quantity'],
+                'currency' => $line['currency'],
+                'original_price' => $line['price'],
+                'coupon_unit' => $line['coupon_unit'],
+                'base_price' => $line['base_price'],
+                'base_price_tax_amount' => $line['base_price_tax_amount'],
+                'tax_value' => $line['tax_value'],
+                'coupon_amount' => $line['coupon_amount'],
+                'tax_amount' => $line['subtotal_tax_amount'],
+                'total' => $line['subtotal']
+            );
+        }
+
+        $order->weight = $cart['weight'];
+        $order->weight_unit = $cart['weight_unit'];
+        $order->size_unit = $cart['size_unit'];
+
+        $order->notify_customer = false;    // boolean, not saved in database
+
+        return $order;
     }
 
     public static function get_addresses($webuser)
@@ -486,6 +657,15 @@ class order
             return $status[$state];
         else
             return $status;
+    }
+
+    public static function tax_amount_in_a_price($price, $tax_value)
+    {
+        $divisor = 1 + $tax_value/100;
+        $original_price = round($price / $divisor, 2);
+        $tax_amount = $price - $original_price;
+
+        return $tax_amount;
     }
 
     public function quicksearch($text)
