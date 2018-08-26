@@ -150,6 +150,24 @@ function run()
 				}
 			}
 			break;
+
+        case 'order_timeline_detail':
+            $object->load(intval($_REQUEST['id']));
+            foreach($object->history as $event)
+            {
+                if($event[0] == $_REQUEST['time'])
+                {
+                    $out = @r($event[2]);
+                }
+            }
+
+            echo $out;
+            echo '
+                <style>
+                    .ref [data-backtrace] { display: none; }
+                </style>';
+            core_terminate();
+            break;
 					
 		case 'list':
 		default:			
@@ -456,7 +474,7 @@ function orders_form($object)
 
     $navibars->add_tab_content_row(
         array(
-            '<label>'.t(168, 'Notes').'</label>',
+            '<label>'.t(789, 'Customer notes').'</label>',
             $naviforms->textarea('customer-notes', $object->customer_notes)
         )
     );
@@ -481,12 +499,16 @@ function orders_form($object)
     $table->addHeaderColumn('ID', 48);
     $table->addHeaderColumn('SKU', 160);
     $table->addHeaderColumn(t(159, 'Name'), 300);
-    $table->addHeaderColumn(t(724, 'Quantity'), 64, false, "right");
-    $table->addHeaderColumn(t(676, 'Base price'), 120, false, "right");
+    $table->addHeaderColumn(t(741, 'Price').'<br />('.t(786, "including taxes").')', 120, false, "right");
+    $table->addHeaderColumn(t(701, 'Discount'), 96, false, "right");
+    $table->addHeaderColumn(t(676, 'Base price').'<br />('.t(785, "excluding taxes").')', 120, false, "right");
     $table->addHeaderColumn(t(677, 'Tax'), 96, false, "right");
-    $table->addHeaderColumn(t(685, 'Subtotal'), 120, false, "right");
+    $table->addHeaderColumn(t(724, 'Quantity'), 64, false, "right");
+    $table->addHeaderColumn(t(685, 'Subtotal').'<br />('.t(786, "including taxes").')', 120, false, "right");
 
     $object->load_lines();
+    $taxes_breakout = array();
+debugger::bar_dump($object);
 
     foreach($object->lines as $line)
     {
@@ -500,12 +522,18 @@ function orders_form($object)
                 array('content' => $line->id.'<input type="hidden" name="line['.$line->id.']" value="'.$line->product.'" />', 'align' => 'left'),
                 array('content' => $line->sku, 'align' => 'left'),
                 array('content' => $line->name.$line_option_name, 'align' => 'left'),
-                array('content' => core_decimal2string($line->quantity), 'align' => 'right'),
+                array('content' => core_decimal2string($line->original_price).' '.$currencies[$line->currency], 'align' => 'right'),
+                array('content' => (($line->coupon_unit > 0)? core_decimal2string($line->coupon_unit).' '.$currencies[$line->currency] : "-"), 'align' => 'right'),
                 array('content' => core_decimal2string($line->base_price).' '.$currencies[$line->currency], 'align' => 'right'),
-                array('content' => core_decimal2string($line->tax_amount).' '.$currencies[$line->currency].' <br/><small><em>'.core_decimal2string($line->tax_value).' %</em></small>', 'align' => 'right'),
+                array('content' => core_decimal2string($line->tax_value).' % <br/><small><em>'.core_decimal2string($line->base_price_tax_amount).' '.$currencies[$line->currency].'</em></small>', 'align' => 'right'),
+                array('content' => core_decimal2string($line->quantity), 'align' => 'right'),
                 array('content' => core_decimal2string($line->total).' '.$currencies[$line->currency], 'align' => 'right')
             )
         );
+
+        // add line tax information to taxes breakout array
+        @$taxes_breakout[$line->tax_value]['base_amount'] = $taxes_breakout[$line->tax_value]['base_amount'] + ($line->total - $line->tax_amount);
+        @$taxes_breakout[$line->tax_value]['tax_amount'] = $taxes_breakout[$line->tax_value]['tax_amount'] + $line->tax_amount;
     }
 
     $navibars->add_tab_content_row(
@@ -522,25 +550,7 @@ function orders_form($object)
         }
     ');
 
-    $navibars->add_tab_content_row(array(
-        '<label>'.t(685, 'Subtotal').'</label>'
-    ));
-
-    $navibars->add_tab_content_row(array(
-        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(725, 'Amount').'</label>',
-        $naviforms->decimalfield('subtotal_amount', $object->subtotal_amount, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
-    ));
-
-    $navibars->add_tab_content_row(array(
-        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(677, 'Tax').'</label>',
-        $naviforms->decimalfield('subtotal_taxes_cost', $object->subtotal_taxes_cost, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
-    ));
-
-    $navibars->add_tab_content_row(array(
-        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(706, 'Total').' <small>('.t(705, 'Lines').')</small></label>',
-        $naviforms->decimalfield('subtotal_invoiced', $object->subtotal_invoiced, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
-    ));
-
+    // TODO: allow applying a coupon when editing an order
     if(!empty($object->coupon))
     {
         $navibars->add_tab_content_row(array(
@@ -549,19 +559,39 @@ function orders_form($object)
         ));
 
         $navibars->add_tab_content_row(array(
-            '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> ' . t(725, 'Discount') . '</label>',
-            (!empty($object->discount_percentage)? '<span>'.$object->discount_percentage.' % <br/>-'.$object->discount_invoiced.' '.$currency_symbol.'</span>' : '<span>-'.$object->discount_amount.' '.$currency_symbol.'</span>' )
+            '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> ' . t(788, 'Discounts applied') . '</label>',
+            '<span>-'.$object->coupon_amount.' '.$currency_symbol.'</span>'
         ));
-
     }
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(685, 'Subtotal').'</label>'
+    ));
+
+    // lines sum with taxes without coupon
+    $navibars->add_tab_content_row(array(
+        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(725, 'Amount').'</label>',
+        $naviforms->decimalfield('subtotal_amount', $object->subtotal_amount, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
+    ));
+
+    $navibars->add_tab_content_row(array(
+        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(784, 'Taxes').'</label>',
+        $naviforms->decimalfield('subtotal_taxes_cost', $object->subtotal_taxes_cost, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
+    ));
+
+    $navibars->add_tab_content_row(array(
+        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(706, 'Total').' <small>('.t(705, 'Lines').')</small></label>',
+        $naviforms->decimalfield('subtotal_invoiced', $object->subtotal_invoiced, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
+    ));
 
 
     $shipping_method = new shipping_method();
-    $shipping_method->load($object->shipping_method);
+    list($shipping_method_id, $shipping_method_rate) = explode("/", $object->shipping_method);
+    $shipping_method->load($shipping_method_id);
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(720, 'Shipping method').'</label>',
-        '<a href="?fid=shipping_methods&act=edit&id='.$object->shipping_method.'">'.$shipping_method->dictionary[$website->languages_list[0]]["title"].'</a>'
+        '<a href="?fid=shipping_methods&act=edit&id='.$shipping_method_id.'">'.$shipping_method->dictionary[$website->languages_list[0]]["title"].'</a>'
     ));
 
     $navibars->add_tab_content_row(array(
@@ -579,11 +609,49 @@ function orders_form($object)
         $naviforms->decimalfield('shipping_invoiced', $object->shipping_invoiced, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol)
     ));
 
+    // add shipping tax information to taxes breakout array
+    @$taxes_breakout[$object->shipping_tax]['base_amount'] = $taxes_breakout[$object->shipping_tax]['base_amount'] + $object->shipping_amount;
+    @$taxes_breakout[$object->shipping_tax]['tax_amount'] = $taxes_breakout[$object->shipping_tax]['tax_amount'] + $object->shipping_tax_amount;
+
 
     $navibars->add_tab_content_row(array(
         '<label><big>'.t(706, 'Total').'</big></label>',
         $naviforms->decimalfield('total', $object->total, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol, NULL, NULL, 'style="font-weight: bold;"')
     ));
+
+
+    $table = new naviorderedtable("order_taxes_breakout");
+
+    $table->addHeaderColumn(t(677, "Tax"), 64, false, "center");
+    $table->addHeaderColumn(t(676, "Base price"), 64, false, "right");
+    $table->addHeaderColumn(t(725, "Amount"), 64, false, "right");
+
+    foreach($taxes_breakout as $tax_value => $tax_data)
+    {
+        $table->addRow(
+            $line->tax_value,
+            array(
+                array('content' => core_decimal2string($tax_value) . "%", 'align' => 'center'),
+                array('content' => core_decimal2string($tax_data['base_amount']) . ' ' . $currencies[$object->currency], 'align' => 'right'),
+                array('content' => core_decimal2string($tax_data['tax_amount']) . ' ' . $currencies[$object->currency], 'align' => 'right'),
+            )
+        );
+    }
+
+    $table->addRow(
+        "999",
+        array(
+            array('content' => "<strong>".t(706, "Total")."</strong>", 'align' => 'center'),
+            array('content' => core_decimal2string($object->shipping_amount + $object->subtotal_amount) . ' ' . $currencies[$object->currency], 'align' => 'right'),
+            array('content' => core_decimal2string($object->total - $object->shipping_amount - $object->subtotal_amount) . ' ' . $currencies[$object->currency], 'align' => 'right'),
+        )
+    );
+
+    $navibars->add_tab_content_row(array(
+        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(790, "Desglose de impuestos").'</label>',
+        '<div id="order_taxes_breakout" style="display: block;">'.$table->generate().'</div>'
+    ));
+
 
 
     $navibars->add_tab(t(716, "Shipping address"), "", "fa fa-truck");
@@ -594,6 +662,16 @@ function orders_form($object)
             '<span>'.$shipping_method->dictionary[$website->languages_list[0]]["title"].'</span>'
         )
     );
+
+    if($object->weight > 0)
+    {
+        $navibars->add_tab_content_row(
+            array(
+                '<label>' . t(670, 'Weight') . '</label>',
+                '<div>' . $object->weight . ' ' . $object->weight_unit . '</div>'
+            )
+        );
+    }
 
     $navibars->add_tab_content_row(
         array(
@@ -782,10 +860,12 @@ function orders_form($object)
         $timeline_html = [];
         foreach ($object->history as $event)
         {
+            $time = $event[0];
+            $title = $event[1];
+
             $timeline_html[] = '
-                <div class="timeline-item" date-is="' . core_ts2date($event->time, true) . '">
-                    <strong>' . $event->title . '</strong>
-                    <p>' . $event->description . '</p>
+                <div class="timeline-item" date-is="' . core_ts2date($time, true) . '" data-timestamp="'.$time.'">
+                    <a href="#" style="text-decoration: none;"><strong>' . $title . '</strong> <i class="fa fa-lg fa-plus-square-o"></i></a>
                 </div>
             ';
         }
@@ -793,9 +873,42 @@ function orders_form($object)
         $navibars->add_tab_content_row(
             array(
                 '<label>' . t(729, "Timeline") . '</label>',
-                '<div class="timeline-vertical">' . implode("", $timeline_html) . '</div>'
+                '<div class="timeline-vertical">' .
+                    implode("", $timeline_html) .
+                '</div>'
             )
         );
+
+        $layout->add_script('
+            $(".timeline-item").on("click", function(e)
+            {                       
+                e.stopPropagation();
+                e.preventDefault();
+                
+                var that = this;
+                
+                var timeline_info_dialog = $("<iframe src=\'?fid=orders&act=order_timeline_detail&id='.$object->id.'&time=" + $(that).data("timestamp") + "\'></iframe>").dialog(
+                {
+                    modal: true,
+                    height: 600,
+                    width: "90%",
+                    title: $(that).attr("date-is") + ", " + $(that).find("strong").text(),
+                    resize: function(event, ui)
+                    {
+                        $(timeline_info_dialog).css("width", "98.5%");                        
+                    }
+                }).dialogExtend(
+                {
+                    maximizable: true,
+                    "maximize" : function(evt, dlg){ $(timeline_info_dialog).css("width", "98.5%"); },
+                    "restore" : function(evt, dlg){ $(timeline_info_dialog).css("width", "98.5%"); }
+                }); 
+                
+                $(timeline_info_dialog).css("width", "98.5%");                
+                                
+                return false;
+            });          
+        ');
     }
 
 	return $navibars->generate();
