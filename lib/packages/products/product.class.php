@@ -861,16 +861,16 @@ class product
         if($this->tax_class == "custom")
         {
             $tax_value = $this->tax_value;
-            $tax_amount = ($current / 100 * $this->tax_value);
+            $tax_amount = round(($current / 100 * $this->tax_value), 2);
 
-            $current = $current + $tax_amount;
+            $current = round($current + $tax_amount, 2);
 
             if(!empty($old_price))
-                $old_price = $old_price + ($old_price / 100 * $tax_value);
+                $old_price = round($old_price + ($old_price / 100 * $tax_value), 2);
         }
 
         return array(
-            'current' => round($current, 2), // product price for this customer (with taxes, if custom)
+            'current' => $current, // product price for this customer (with taxes, if custom)
             'old' => $old_price, // old product price (with taxes, if custom)
             'base_price' => $base_price, // current product price without taxes
             'old_without_taxes' => $old_price_without_taxes, // old product price (only if offer is active) without taxes

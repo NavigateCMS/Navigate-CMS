@@ -213,7 +213,7 @@ class shipping_method
                 continue;
 
             // subtotal conditions not matching the order values
-            // TODO: check subtotal currency, now using the cart value
+            // TODO: check subtotal currency, now using the global cart value
             if(!empty($this->rates[$i]->subtotal->min) && $this->rates[$i]->subtotal->min > $subtotal)
                 continue;
 
