@@ -3938,6 +3938,41 @@
 				<target>Payment methods</target>
 			</trans-unit>
 
+			<trans-unit id="784" approved="yes">
+				<source>Taxes</source>
+				<target>Taxes</target>
+			</trans-unit>
+
+			<trans-unit id="785" approved="yes">
+				<source>excluding taxes</source>
+				<target>excluding taxes</target>
+			</trans-unit>
+
+			<trans-unit id="786" approved="yes">
+				<source>including taxes</source>
+				<target>including taxes</target>
+			</trans-unit>
+
+			<trans-unit id="787" approved="yes">
+				<source>Discounts</source>
+				<target>Discounts</target>
+			</trans-unit>
+
+			<trans-unit id="788" approved="yes">
+				<source>Discounts applied</source>
+				<target>Discounts applied</target>
+			</trans-unit>
+
+			<trans-unit id="789" approved="yes">
+				<source>Customer notes</source>
+				<target>Customer notes</target>
+			</trans-unit>
+
+			<trans-unit id="790" approved="yes">
+				<source>Taxes breakout</source>
+				<target>Taxes breakout</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

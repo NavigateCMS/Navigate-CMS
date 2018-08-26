@@ -3937,6 +3937,41 @@
 				<target>Zahlungsarten</target>
 			</trans-unit>
 
+			<trans-unit id="784">
+				<source>Taxes</source>
+				<target>Steuern</target>
+			</trans-unit>
+
+			<trans-unit id="785">
+				<source>excluding taxes</source>
+				<target>ohne Steuer</target>
+			</trans-unit>
+
+			<trans-unit id="786">
+				<source>including taxes</source>
+				<target>einschließlich Steuern</target>
+			</trans-unit>
+
+			<trans-unit id="787">
+				<source>Discounts</source>
+				<target>Rabatte</target>
+			</trans-unit>
+
+			<trans-unit id="788">
+				<source>Discounts applied</source>
+				<target>Rabatte angewendet</target>
+			</trans-unit>
+
+			<trans-unit id="789">
+				<source>Customer notes</source>
+				<target>Kundenhinweise</target>
+			</trans-unit>
+
+			<trans-unit id="790">
+				<source>Taxes breakout</source>
+				<target>Steueraufschlüsselung</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

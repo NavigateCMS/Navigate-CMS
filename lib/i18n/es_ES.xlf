@@ -3937,6 +3937,41 @@
 				<target>Formas de pago</target>
 			</trans-unit>
 
+			<trans-unit id="784" approved="yes">
+				<source>Taxes</source>
+				<target>Impuestos</target>
+			</trans-unit>
+
+			<trans-unit id="785" approved="yes">
+				<source>excluding taxes</source>
+				<target>sin impuestos</target>
+			</trans-unit>
+
+			<trans-unit id="786" approved="yes">
+				<source>including taxes</source>
+				<target>con impuestos</target>
+			</trans-unit>
+
+			<trans-unit id="787" approved="yes">
+				<source>Discounts</source>
+				<target>Descuentos</target>
+			</trans-unit>
+
+			<trans-unit id="788" approved="yes">
+				<source>Discounts applied</source>
+				<target>Descuentos aplicados</target>
+			</trans-unit>
+
+			<trans-unit id="789" approved="yes">
+				<source>Customer notes</source>
+				<target>Notes del comprador</target>
+			</trans-unit>
+
+			<trans-unit id="790" approved="yes">
+				<source>Taxes breakout</source>
+				<target>Desglose de impuestos</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>
