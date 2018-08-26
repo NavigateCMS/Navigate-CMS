@@ -44,6 +44,8 @@ require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
 require_once(NAVIGATE_PATH.'/lib/external/tracy/src/tracy.php');
 
+require_once(NAVIGATE_PATH.'/lib/external/ref/ref.php');
+
 
 /* prepare PHP to run Navigate CMS */
 

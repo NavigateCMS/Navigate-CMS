@@ -175,8 +175,12 @@ function about_layout()
         )
     );
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://plugins.jquery.com/project/query-object" target="_blank">jQuery.query v2.1.8 (22-Jun-2010)</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="http://plugins.jquery.com/project/query-object" target="_blank">jQuery.query v2.1.8 (22-Jun-2010)</a><br />'
+		)
+	);
 
     $navibars->add_tab_content_row(
     	array(
@@ -297,6 +301,13 @@ function about_layout()
 		array(
 			'<label>&nbsp;</label>',
 			'<a href="http://verlok.github.io/lazyload" target="_blank">LazyLoad v5.1.1</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/digitalnature/php-ref" target="_blank">PHP REF v1.2dev</a><br />'
 		)
 	);
 
