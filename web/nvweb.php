@@ -214,10 +214,16 @@ function nvweb_parse($request)
         }
 
         // check if the webuser wants to sign out
-        if (isset($request['webuser_signout']))
+        if(isset($request['webuser_signout']))
         {
             $webuser->unset_cookie();
             unset($webuser);
+
+            // restart purchasing process, if any
+            if(isset($session['cart']['checkout_step']))
+                $session['cart']['checkout_step'] = 'cart';
+
+            // set webuser blank
             $webuser = new webuser();
         }
 
@@ -227,13 +233,20 @@ function nvweb_parse($request)
         date_default_timezone_set($webuser->timezone ? $webuser->timezone : $website->default_timezone);
 
         // help developers to find problems
-        if ($current['navigate_session'] == 1 && APP_DEBUG)
+        if($current['navigate_session'] == 1 && APP_DEBUG)
         {
             error_reporting(E_ALL ^ E_NOTICE);
             ini_set('display_errors', true);
         }
 
         debugger::stop_timer('nvweb-load-webuser');
+
+        if(isset($_GET['_nvka']))
+        {
+            // nvweb keep alive
+            nvweb_clean_exit();
+        }
+
         debugger::timer('nvweb-parse-route');
 
         // parse route
@@ -419,4 +432,5 @@ function nvweb_parse($request)
 }
 
 nvweb_parse($_REQUEST);
+
 ?>

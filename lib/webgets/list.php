@@ -603,6 +603,12 @@ function nvweb_list($vars=array())
         $rs = $DB->result();
         $total = $DB->foundRows();
     }
+    else if($vars['source']=='cart')
+    {
+        $cart = json_decode(json_encode($session['cart']));
+        $rs = $cart->lines;
+        $total = count($cart->lines);
+    }
     else if($vars['source']=='gallery')
     {
         if(!isset($vars['nvlist_parent_type']))
@@ -946,6 +952,12 @@ function nvweb_list($vars=array())
                     // just return the whole object returned (to be used with "query" source, for example)
                     $item = $rs[$i];
                 }
+                break;
+
+            case 'cart':
+                $item = new product();
+                $item->load($rs[$i]->id);
+                $item->_cart = $rs[$i];
                 break;
 
             case 'element':
@@ -1781,8 +1793,80 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'tax', 'pid' => $item->id)));
                     break;
 
+                case 'add_to_cart':
+                    $out = nvweb_product(array_merge($tag['attributes'], array('mode' => 'add_to_cart', 'pid' => $item->id)));
+                    break;
+
                 default:
                     // maybe a special tag not related to a source? (unimplemented)
+            }
+            break;
+
+        case 'cart':
+            switch($tag['attributes']['value'])
+            {
+                case 'quantity':
+                    $out = core_decimal2string($item->_cart->quantity);
+                    break;
+
+                case 'price':
+                    $out = core_price2string($item->_cart->price, $item->base_price_currency, @$tag['attributes']['return']);
+                    break;
+
+                case 'coupon_amount':
+                    if(!empty($item->_cart->coupon_amount))
+                    {
+                        $out = core_price2string($item->_cart->coupon_amount, $item->base_price_currency, @$tag['attributes']['return']);
+                    }
+                    break;
+
+                case 'coupon_unit':
+                    if(!empty($item->_cart->coupon_unit))
+                    {
+                        $out = core_price2string($item->_cart->coupon_unit, $item->base_price_currency, @$tag['attributes']['return']);
+                    }
+                    break;
+
+                case 'subtotal':
+                    $out = core_price2string($item->_cart->subtotal, $item->base_price_currency, @$tag['attributes']['return']);
+                    break;
+
+                case 'subtotal_with_taxes_without_coupon':
+                    $out = core_price2string($item->_cart->subtotal_with_taxes_without_coupon, $item->base_price_currency, @$tag['attributes']['return']);
+                    break;
+
+                case 'remove':
+                    $cart_link = nvweb_source_url('theme', 'cart');
+                    $out = $cart_link . '?action=remove_product&product='.$item->id.'&ta='.$item->_cart->timestamp_added;
+                    break;
+
+                case 'add_one':
+                    $cart_link = nvweb_source_url('theme', 'cart');
+                    $out = $cart_link . '?action=add_one&product='.$item->id.'&ta='.$item->_cart->timestamp_added;
+                    break;
+
+                case 'remove_one':
+                    $cart_link = nvweb_source_url('theme', 'cart');
+                    $out = $cart_link . '?action=remove_one&product='.$item->id.'&ta='.$item->_cart->timestamp_added;
+                    break;
+
+                case 'update_quantity':
+                    $cart_link = nvweb_source_url('theme', 'cart');
+                    $out = $cart_link . '?action=update_qty&product='.$item->id.'&ta='.$item->_cart->timestamp_added.'&qty=';
+                    break;
+
+                default:
+                    // run as if it is a source='product' nvlist tag
+                    $tag['attributes']['source'] = 'product';
+                    $out = nvweb_list_parse_tag(
+                        $tag,
+                        $item,
+                        'product',
+                        $item_relative_position,
+                        $item_absolute_position,
+                        $total
+                    );
+                    break;
             }
             break;
 

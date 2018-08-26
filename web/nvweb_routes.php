@@ -953,6 +953,7 @@ function nvweb_clean_exit($url='')
     if(!empty($url))
         header('Location: '.$url);
 
+    flush();
 	exit;
 }
 

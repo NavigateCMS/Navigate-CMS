@@ -1,0 +1,492 @@
+/* order pages layout */
+
+.nv_cart-flex-sb
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+.nv_cart-flex-sb > div:first-child
+{
+    width: 49%;
+}
+
+.nv_cart-flex-sb > div:last-child
+{
+    width: 48%;
+}
+
+@media screen and (max-width: 639px)
+{
+    .nv_cart-flex-sb:not(.nv_cart-flex-sb-nested)
+    {
+        display: block;
+    }
+
+    .nv_cart-flex-sb:not(.nv_cart-flex-sb-nested) > div:first-child,
+    .nv_cart-flex-sb:not(.nv_cart-flex-sb-nested) > div:last-child
+    {
+        width: 100%;
+    }
+
+}
+
+.nv_cart_summary_form .nv_cart-flex-sb-nested > div:last-child
+{
+    text-align: right;
+}
+
+.nv_cart_shipping_method_information
+{
+    font-weight: normal;
+}
+
+
+/* cart view, responsive */
+
+.nv_cart_coupon_info
+{
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: normal;
+}
+
+.nv_cart_line_quantity
+{
+    text-align: center;
+}
+
+.nv_cart_line_price
+{
+    text-align: right;
+}
+
+.nv_cart_line_discount
+{
+    text-align: right;
+}
+
+.nv_cart_line_discount em
+{
+    display: block;
+    clear: both;
+    font-size: 85%;
+}
+
+.nv_cart_line_price_remove,
+.nv_cart_line_title_info_price,
+.nv_cart_line_quantity_label,
+.nv_cart_line_quantity_remove
+{
+    display: none;
+}
+
+.nv_cart_line_title_info_remove i.fa-trash
+{
+    font-size: 14px;
+}
+
+.nv_cart_line_price_coupon_amount_per_unit
+{
+    font-size: 11px;
+    display: block;
+    clear: both;
+}
+
+.nv_cart_line_price_coupon_amount_per_unit:empty
+{
+    display: none;
+}
+
+@media screen and (max-width: 479px)
+{
+    .nv_cart_line_title_info_remove
+    {
+        display: none;
+    }
+
+    .nv_cart_line_price > span
+    {
+        display: none;
+    }
+
+    .nv_cart_line_title_info_price
+    {
+        display: inline-block;
+        margin-top: 4px;
+    }
+
+    .nv_cart_line_price_remove
+    {
+        font-size: 12px;
+    }
+
+    .nv_cart_line_quantity
+    {
+        font-size: 16px;
+    }
+
+    .nv_cart_line_discount
+    {
+        display: none;
+    }
+
+    /* Force table to not be like tables anymore */
+    .nv_cart table,
+    .nv_cart thead,
+    .nv_cart tbody,
+    .nv_cart tfoot,
+    .nv_cart th,
+    .nv_cart td,
+    .nv_cart tr
+    {
+        display: block;
+    }
+
+    .nv_cart_line_price_remove
+    {
+        display: block;
+    }
+
+    /* Hide table headers (but not display: none;, for accessibility) */
+    .nv_cart thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .nv_cart tr
+    {
+        border: 1px solid #ccc;
+        clear: both;
+        overflow: auto;
+    }
+
+    .nv_cart td
+    {
+        width: 100%;
+        border: none;
+        /*border-bottom: 1px solid #eee;*/
+        position: relative;
+    }
+
+    /* product photo */
+    .nv_cart td:nth-of-type(1)
+    {
+        width:  40%;
+        float: left;
+    }
+
+    /* product name */
+    .nv_cart td:nth-of-type(2)
+    {
+        width: 100%;
+        clear: right;
+    }
+
+    .nv_cart td:nth-of-type(3)
+    {
+        clear: left;
+        width: 33%;
+        float: left;
+        text-align: center;
+    }
+
+    .nv_cart td:nth-of-type(4)
+    {
+        width: 42%;
+        float: left;
+        text-align: center;
+    }
+
+    .nv_cart td:nth-of-type(5)
+    {
+        width: 25%;
+        float: left;
+        text-align: right;
+    }
+
+
+    /* cart summary | product name */
+    .nv_cart.nv_cart_view_summary tbody td:nth-of-type(1)
+    {
+        width: 100%;
+        clear: none;
+        float: none;
+    }
+    /* cart summary | quantity */
+    .nv_cart.nv_cart_view_summary tbody td:nth-of-type(2)
+    {
+        width: 50%;
+        clear: left;
+        float: left;
+        text-align: left;
+
+    }
+    /* cart summary | subtotal */
+    .nv_cart.nv_cart_view_summary tbody td:nth-of-type(3)
+    {
+        width: 50%;
+        clear: right;
+        float: right;
+        text-align: right;
+    }
+
+    .nv_cart.nv_cart_view_summary .nv_cart_line_quantity_label
+    {
+        display: inline;
+        margin-right: 4px;
+        font-size: 12px;
+    }
+
+    .nv_cart.nv_cart_view_summary tfoot td
+    {
+        width: 100%;
+        text-align: right;
+    }
+}
+
+
+/* signed in as */
+
+.nv_cart_signed_in_as
+{
+    text-align: right;
+    display: block;
+}
+
+
+/* cart footer */
+
+.nv_cart_footer_actions
+{
+    overflow: auto;
+    clear: both;
+}
+
+.nv_cart_footer_actions .nv_cart_footer_coupons
+{
+    float: left;
+}
+
+.nv_cart_footer_actions .nv_cart_footer_checkout
+{
+    float: right;
+}
+
+
+.nv_cart-sign_in_error_message,
+.nv_cart-sign_up_error_message
+{
+    clear: both;
+    display: none;
+    margin-bottom: 16px;
+    border: solid 1px #ccc;
+    padding: 8px;
+    background: #ffc9c9;
+}
+
+.nv_cart-sign_in_info_message,
+.nv_cart-sign_up_info_message
+{
+    clear: both;
+    display: none;
+    margin-bottom: 16px;
+    border: solid 1px #ccc;
+    padding: 8px;
+    background: #c9ffc9;
+}
+
+.nv_cart-sign_in_info_message,
+.nv_cart-sign_in_error_message
+{
+    margin-top: 42px;
+}
+
+.nv_cart-sign_in_error_message p,
+.nv_cart-sign_in_info_message p,
+.nv_cart-sign_up_error_message p,
+.nv_cart-sign_up_info_message p
+{
+    display: none;
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+/* error messages */
+.nv_cart_errors
+{
+    border: solid 1px #ffc9c9;
+    padding: 12px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.nv_cart_errors_title
+{
+    display: none;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.nv_cart_errors span
+{
+    font-size: 13px;
+}
+
+.nv_cart_button_continue
+{
+    float: right;
+    clear: right;
+}
+
+input.nv_cart_line_quantity_field
+{
+    border: none;
+    border-bottom: solid 2px rgba(200, 200, 224, 0.15);
+    box-shadow: none;
+    padding: 0 6px 2px 2px;
+    margin: 0;
+    height: auto;
+    text-align: center;
+}
+
+
+.nv_cart_shipping_method_option
+{
+    border: solid 1px #ccc;
+    padding: 20px;
+    margin-bottom: 8px;
+    clear: both;
+    overflow: auto;
+}
+
+.nv_cart_shipping_method_option.selected
+{
+    background-color: rgba(200, 200, 224, 0.15);
+}
+
+.nv_cart_shipping_method_option_title
+{
+    margin-bottom: 8px;
+}
+
+.nv_cart_shipping_method_option p,
+.nv_cart_shipping_method_option input
+{
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+.nv_cart_shipping_method_option_left
+{
+    float: left;
+}
+
+.nv_cart_shipping_method_option_right
+{
+    float: right;
+}
+
+.nv_cart_shipping_method_option:hover
+{
+    cursor: pointer;
+    background-color: rgba(200, 200, 224, 0.15);
+}
+
+/* payment */
+
+input[name='payment_method[]']
+{
+    margin-right: 8px;
+}
+
+
+/* order steps widget styling */
+
+.nv_order_steps
+{
+    display: table;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+
+}
+
+.nv_order_steps_pre
+{
+    font-size: 13px;
+    padding: 4px;
+    background: #bbb;
+    border-radius: 24px 24px 24px 24px;
+    color: #333;
+    text-align: center;
+    width: 12%;
+    display: none;
+}
+
+.nv_order_step
+{
+    font-size: 12px;
+    padding: 4px 4px 4px 8px;
+    text-align: center;
+    border-top: solid 1px #ccc;
+    border-bottom: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+    border-radius: 0 24px 24px 0;
+    margin-left: -16px;
+    background: transparent;
+    display: inline-block;
+    width: 14%;
+
+}
+
+.nv_order_step:first-of-type
+{
+    border-left: solid 1px #ccc;
+    border-radius: 24px 24px 24px 24px;
+}
+
+.nv_order_step.current
+{
+    background: #008CBA;
+    color: #fff;
+    padding: 4px 4px 4px 4px;
+    border-radius: 24px 24px 24px 24px;
+    margin-left: -24px;
+}
+
+.nv_order_steps_mobile
+{
+    display: none;
+    border: solid 1px #ccc;
+    color: #333;
+    font-size: 14px;
+    vertical-align: middle;
+    margin-bottom: 12px;
+}
+
+.nv_order_steps_mobile span
+{
+    background: #008CBA;
+    color: #fff;
+    display: inline-block;
+    padding: 4px;
+    font-size: 11px;
+    margin-right: 8px;
+}
+
+@media screen and (max-width: 639px)
+{
+    .nv_order_steps
+    {
+        display: none;
+    }
+
+    .nv_order_steps_mobile
+    {
+        display: block;
+    }
+}
