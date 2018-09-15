@@ -1,5 +1,5 @@
 <?php
-
+/* navigate standard table listing using jqGrid-free */
 class navitable
 {
 	public $cols;
@@ -470,7 +470,8 @@ class navitable
 		$html[] = 'forceFit: true,';
 
         $html[] = 'onSelectRow: function(rowid, status, e) {
-                navitable_'.$this->id.'_selected_rows = $("#'.$this->id.'").jqGrid("getGridParam", "selarrrow");
+                navitable_'.$this->id.'_selected_rows = $("#'.$this->id.'").jqGrid("getGridParam", "selarrrow");                
+                navitable_update_selected_rows_info(navitable_'.$this->id.'_selected_rows.length);                                                                  
                 '.$this->after_select_callback.'
         },';
 
@@ -482,6 +483,8 @@ class navitable
 
             // restore cells background color
             $("#'.$this->id.'").find("tr").trigger("mouseenter").trigger("mouseleave");
+            
+            navitable_update_selected_rows_info(navitable_'.$this->id.'_selected_rows.length);
 
             '.$this->after_select_callback.'
         },';
@@ -504,6 +507,7 @@ class navitable
 			    $("#" + el).trigger("mouseenter").trigger("mouseleave");
             });
             $("#'.$this->id.'").jqGrid("setGridWidth", $("#navigate-content").width());
+            navitable_update_selected_rows_info(navitable_'.$this->id.'_selected_rows.length);
 			'.$this->load_callback.'
 		},';
 
@@ -727,6 +731,13 @@ class navitable
 	        if(strpos($this->default_fid, 'ext_')===0)
 	            $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
 		}
+
+		$html[] = 'function navitable_update_selected_rows_info(number)';
+		$html[] = '{';
+        $html[] = '     $("span.ui-nv-selection-info").remove();';
+        $html[] = '     $("td#'.$this->id.'-pager_right").prepend(\'<span class="ui-nv-selection-info"></span>\');';
+        $html[] = '     if(number > 0) { $("span.ui-nv-selection-info").html("'.t(510, "Selected items").' <strong>"+number+"</strong>"); }';
+        $html[] = '}';
 
 		$html[] = 'function navitable_quicksearch(text)';
 		$html[] = '{';

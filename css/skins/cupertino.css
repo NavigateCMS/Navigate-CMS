@@ -2122,6 +2122,12 @@ label.ui-state-active #navigate_media_browser_folder_path
     padding: 2px;
 }
 
+.ui-nv-selection-info
+{
+	margin-right: 16px;
+}
+
+
 
 /* IMAGE GALLERIES */
 .items-gallery
