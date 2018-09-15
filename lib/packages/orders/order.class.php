@@ -442,7 +442,6 @@ class order
         $order->id = 0;
         $order->website = $website->id;
         $order->webuser = $cart['customer'];
-        $order->reference = "";
 
         $order->customer_data = array(
             'ip' => core_ip(),
@@ -495,6 +494,13 @@ class order
         $order->payment_method = $cart['payment_method'];
         $order->payment_data = '';
 
+        if($order->total == 0)
+        {
+            $order->payment_done = 1;
+            $order->payment_method = 0;
+            $order->payment_data = '';
+        }
+
         $order->history = array();
         $order->history[] = array(time(), 'order_created_from_cart', $cart);
 
@@ -529,7 +535,19 @@ class order
 
         $order->notify_customer = false;    // boolean, not saved in database
 
+        $order->reference = order::create_reference($order);
+
         return $order;
+    }
+
+    public static function create_reference($order)
+    {
+        // TODO: generate a reference using rules provided
+
+        // timestamp method
+        $reference = strftime("%Y%m%d%H%M%S").$order->webuser;
+
+        return $reference;
     }
 
     public static function get_addresses($webuser)
@@ -634,6 +652,23 @@ class order
             false
         );
 
+    }
+
+    public static function find_by_reference($reference, $website_id=null)
+    {
+        global $DB;
+        global $website;
+
+        if(empty($website_id))
+            $website_id = $website->id;
+
+        $order_id = $DB->query_single(
+            'id',
+            'nv_orders',
+            'reference = '.protect($reference).' AND website = "'.$website_id.'"'
+        );
+
+        return $order_id;
     }
 
     public static function status($state=NULL, $dictionary=NULL)
