@@ -357,8 +357,6 @@ class property
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
 			return $this->update();
 		else
@@ -468,8 +466,10 @@ class property
 		
 		return true;
 	}	
-		
-	public static function elements($template, $element="", $website_id=null)
+
+	/* code: usually name or ID of a template
+	*/
+	public static function elements($code, $element="", $website_id=null)
 	{
 		global $DB;
 		global $website;
@@ -480,7 +480,7 @@ class property
         if(empty($website_id))
             $website_id = $website->id;
 
-        if(is_numeric($template))
+        if(is_numeric($code))
         {
             // properties attached to a custom template (not a theme template)
             if(!empty($element))
@@ -491,7 +491,7 @@ class property
             if($DB->query('
                    SELECT *
                    FROM nv_properties
-                   WHERE template = '.protect($template).'
+                   WHERE template = '.protect($code).'
                    '.$element.'
                      AND website = '.$website_id.'
                    ORDER BY position ASC, id ASC'
@@ -503,103 +503,112 @@ class property
         }
         else
         {
-            if($element == 'webuser')
+            switch($element)
             {
-                // webuser properties (set in theme definition)
-                $data = $theme->webusers['properties'];
-            }
-            else if($element == 'block')
-            {
-                // block type properties
-                for($b=0; $b < count($theme->blocks); $b++)
-                {
-                    if($theme->blocks[$b]->id == $template)
+                case 'webuser':
+                    // webuser properties (set in theme definition)
+                    $data = $theme->webusers['properties'];
+                    break;
+
+                case 'block':
+                    // block type properties
+                    for($b=0; $b < count($theme->blocks); $b++)
                     {
-                        $data = $theme->blocks[$b]->properties;
-                        break;
-                    }
-                }
-            }
-            else if($element == 'block_group_block')
-            {
-                // block group blocks properties
-                for($b=0; $b < count($theme->block_groups); $b++)
-                {
-                    if($theme->block_groups[$b]->id == $template)
-                    {
-                        $data = array();
-                        foreach($theme->block_groups[$b]->blocks as $bgb)
+                        if($theme->blocks[$b]->id == $code)
                         {
-                            // note: properties in block group blocks can't have the same name
-                            if(isset($bgb->properties))
-                                $data = array_merge($data, $bgb->properties);
+                            $data = $theme->blocks[$b]->properties;
+                            break;
                         }
-                        break;
                     }
-                }
-            }
-            else if($element == 'comment')
-            {
-                // properties of the comments of a certain template type
-                $theme_template = new template();
-                if(!empty($website_id))
-                {
-                    // force loading website information
-                    $ws = new website();
-                    $ws->load($website_id);
-                    $ws_theme = $ws->theme;
-                }
+                    break;
 
-                $theme_template->load_from_theme($template, $ws_theme);
+                case 'block_group_block':
+                    // block group blocks properties
+                    for($b=0; $b < count($theme->block_groups); $b++)
+                    {
+                        if($theme->block_groups[$b]->id == $code)
+                        {
+                            $data = array();
+                            foreach($theme->block_groups[$b]->blocks as $bgb)
+                            {
+                                // note: properties in block group blocks can't have the same name
+                                if(isset($bgb->properties))
+                                    $data = array_merge($data, $bgb->properties);
+                            }
+                            break;
+                        }
+                    }
+                    break;
 
-                $comments_properties = $theme_template->comments->properties;
+                case 'comment':
+                    // properties of the comments of a certain template type
+                    $theme_template = new template();
+                    if(!empty($website_id))
+                    {
+                        // force loading website information
+                        $ws = new website();
+                        $ws->load($website_id);
+                        $ws_theme = $ws->theme;
+                    }
 
-                if(empty($comments_properties))
-                    $comments_properties = array();
+                    $theme_template->load_from_theme($code, $ws_theme);
 
-                $data = array();
+                    $comments_properties = $theme_template->comments->properties;
 
-                for($p=0; $p < count($comments_properties); $p++)
-                {
-                    $data[] = $comments_properties[$p];
-                }
-            }
-            else
-            {
-                // properties of a theme template
-                $theme_template = new template();
-                if(!empty($website_id))
-                {
-                    // force loading website information
-                    $ws = new website();
-                    $ws->load($website_id);
-                    $ws_theme = $ws->theme;
-                }
+                    if(empty($comments_properties))
+                        $comments_properties = array();
 
-                $theme_template->load_from_theme($template, $ws_theme);
+                    $data = array();
 
-                $template_properties = $theme_template->properties;
+                    for($p=0; $p < count($comments_properties); $p++)
+                    {
+                        $data[] = $comments_properties[$p];
+                    }
+                    break;
 
-                if(empty($template_properties))
-                    $template_properties = array();
+                case 'extension':
+                    $extension = new extension();
+                    $extension->load($code);
+                    $data = $extension->definition->options;
+                    break;
 
-                $data = array();
+                default:
+                    // items, products, etc. (using the properties of a particular template)
+                    // properties of a theme template
+                    $theme_template = new template();
+                    if(!empty($website_id))
+                    {
+                        // force loading website information
+                        $ws = new website();
+                        $ws->load($website_id);
+                        $ws_theme = $ws->theme;
+                    }
 
-                for($p=0; $p < count($template_properties); $p++)
-                {
-                    // if we want all properties, no matter the element assigned or
-                    // if the property is not assigned to an element, we assume "item", or
-                    // if the property is assigned to an element, we check it
-                    // note: in this case, "element" is an alias of "item"
+                    $theme_template->load_from_theme($code, $ws_theme);
 
-                    if( empty($element) ||
-                        ($element == 'item' && empty($template_properties[$p]->element)) ||
-                        ($element == 'product' && empty($template_properties[$p]->element)) ||
-                        ($element == 'item' && $template_properties[$p]->element=="element") ||
-                        $template_properties[$p]->element == $element
-                    )
-                        $data[] = $template_properties[$p];
-                }
+                    $template_properties = $theme_template->properties;
+
+                    if(empty($template_properties))
+                        $template_properties = array();
+
+                    $data = array();
+
+                    for($p=0; $p < count($template_properties); $p++)
+                    {
+                        // if we want all properties, no matter the element assigned or
+                        // if the property is not assigned to an element, we assume "item", or
+                        // if the property is assigned to an element, we check it
+                        // note: in this case, "element" is an alias of "item"
+
+                        if( empty($element) ||
+                            ($element == 'item' && empty($template_properties[$p]->element)) ||
+                            ($element == 'product' && empty($template_properties[$p]->element)) ||
+                            ($element == 'item' && $template_properties[$p]->element=="element") ||
+                            $template_properties[$p]->element == $element
+                        )
+                            $data[] = $template_properties[$p];
+                    }
+                    break;
             }
         }
 
@@ -695,23 +704,46 @@ class property
 
 		return $associative_properties;
 	}	
-	
-	public static function load_properties($element, $template, $object_type, $object_id, $item_uid=null)
+
+    /*
+     * element: type of the object where we need to read its properties definition (f.e., "template")
+     * code: subtype of object (f.e., the template "blog_post")
+     * object_type: type of the object where the properties values are saved (f.e. "item")
+     * object_id: ID of the object where the properties values are saved (f.e. "25")
+     * item_uid: used to differentiate between blocks in a block group (f.e. "64cc8f20-741d-11e6-9606-45d284f45e04")
+     *
+     * note: it is very common that element=object
+     */
+
+	public static function load_properties($element, $code, $object_type, $object_id, $item_uid=null)
 	{
 		global $DB;
 		global $website;
         global $theme;
 
-        if($object_type == 'block_group_block')
+        if($element != $object_type)
         {
-            $block = block::block_group_block($template, $object_id);
+            if($element == 'extension')
+            {
+                $extension = new extension();
+                $extension->load($code);
+                $e_properties = $extension->definition->options;
+            }
+        }
+        else if($object_type == 'block_group_block')
+        {
+            $block = block::block_group_block($code, $object_id);
             $e_properties = $block->properties;
 
             // we must find the block group ID to search the assigned property values
             // $object_id MUST BE the numeric ID of the block group
-            if(!empty($template))
+            if(!empty($code))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$website->id);
+                $block_group_id = $DB->query_single(
+                    'MAX(id)',
+                    'nv_block_groups',
+                    ' code = '.protect($code).' AND website = '.$website->id
+                );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -721,16 +753,17 @@ class property
         {
             // in this case, the parameters must match the following:
             //      $element => (not used)
-            //      $template => type of the block in the extension definition
+            //      $code => type of the block in the extension definition
             //      $object_type => "extension_block"
-            //      $object_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition); if null, we have to find the right value
+            //      $object_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition);
+            //                    if null, we have to find the right value
             //      $item_uid => the unique id assigned to the block in the block_group
 
             // find the extension block definition, to get the list of properties
             $extensions_blocks = extension::blocks();
             for($eb=0; $eb < count($extensions_blocks); $eb++)
             {
-                if($extensions_blocks[$eb]->id == $template)
+                if($extensions_blocks[$eb]->id == $code)
                 {
                     $e_properties = $extensions_blocks[$eb]->properties;
                     break;
@@ -747,7 +780,7 @@ class property
             }
             // we must find the REAL numeric block group ID (based on its code) to get the assigned property values
             // at the end, $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
-            else if(!empty($template))
+            else if(!empty($code))
             {
                 $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($object_id).' AND website = '.$website->id);
                 $object_id = $block_group_id;
@@ -765,13 +798,13 @@ class property
         else // item, structure, block, comment, product
         {
 		    // load properties associated with the element type
-		    $e_properties = property::elements($template, $object_type);
+		    $e_properties = property::elements($code, $object_type);
         }
 
 		// load the values for multilanguage strings
 		$dictionary = webdictionary::load_element_strings('property-'.$object_type, $object_id, $item_uid);
 
-		// load the assigned (simple) properties values
+    	// load the assigned (simple) properties values
         // check node_uid empty or NULL to mantain compatibility with Navigate CMS < 2.2
 		$DB->query('
 		    SELECT * FROM nv_properties_items
@@ -833,7 +866,7 @@ class property
 	}
 
     // called when using navigate cms
-	public static function save_properties_from_post($object_type, $object_id, $template=null, $element=null, $object_uid=null)
+	public static function save_properties_from_post($object_type, $object_id, $code=null, $element=null, $object_uid=null)
 	{
 		global $DB;
 		global $website;
@@ -844,12 +877,12 @@ class property
 		// load properties associated with the element type
         if($object_type=='block_group_block')
         {
-            $block = block::block_group_block($template, $element);
+            $block = block::block_group_block($code, $element);
             $properties = $block->properties;
 
             if(!is_numeric($object_id))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$website->id);
+                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($code).' AND website = '.$website->id);
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -859,7 +892,7 @@ class property
         {
             // in this case, the parameters must match the following:
             //      $element => (not used)
-            //      $template => type of the block in the extension definition
+            //      $code => type of the block in the extension definition
             //      $object_type => "extension_block"
             //      $object_id => type of the block_group (f.e. "sidebar" or the one defined in the theme definition)
             //      $object_uid => the unique id assigned to the block in the block_group
@@ -868,7 +901,7 @@ class property
             $extensions_blocks = extension::blocks();
             for($eb=0; $eb < count($extensions_blocks); $eb++)
             {
-                if($extensions_blocks[$eb]->id == $template)
+                if($extensions_blocks[$eb]->id == $code)
                 {
                     $properties = $extensions_blocks[$eb]->properties;
                     break;
@@ -877,7 +910,7 @@ class property
 
             // we must find the REAL numeric block group ID (based on its code) to get the assigned property values
             // $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
-            if(!empty($template))
+            if(!empty($code))
             {
                 $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($object_id).' AND website = '.$website->id);
                 $object_id = $block_group_id;
@@ -894,9 +927,9 @@ class property
         }
         else
         {
-            if(empty($template)) $template = $_REQUEST['property-template'];
+            if(empty($code)) $code = $_REQUEST['property-template'];
             if(empty($element)) $element = $_REQUEST['property-element'];
-            $properties = property::elements($template, $element);
+            $properties = property::elements($code, $element);
         }
 
         if(!is_array($properties))
@@ -1025,7 +1058,7 @@ class property
     // dates => timestamps
     // coordinates (ID => array("latitude" => ..., "longitude" => ...)
     // change only the given properties, not the other existing ones
-    public static function save_properties_from_array($object_type, $object_id, $template, $properties_assoc=array(), $ws=null, $node_uid="")
+    public static function save_properties_from_array($object_type, $object_id, $code, $properties_assoc=array(), $ws=null, $node_uid="")
    	{
    		global $DB;
    		global $website;
@@ -1045,7 +1078,7 @@ class property
             if(!is_numeric($object_id))
             {
                 // assume there can only be one block group of the same type
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($template).' AND website = '.$ws->id);
+                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($code).' AND website = '.$ws->id);
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -1092,7 +1125,7 @@ class property
                         {
                             // a block group block
                             $property_object_type = 'block_group_block';
-                            $block = block::block_group_block($template, $block_id);
+                            $block = block::block_group_block($code, $block_id);
                         }
                         // note: standard blocks don't "embed" their properties in a block group,
                         // they have their own separate values
@@ -1114,7 +1147,7 @@ class property
         }
         else
         {
-            $properties = property::elements($template, $object_type);
+            $properties = property::elements($code, $object_type);
         }
 
         if(!is_array($properties))

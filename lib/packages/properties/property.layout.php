@@ -1,16 +1,23 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 
-function navigate_property_layout_form($element, $template, $object, $object_id)
+function navigate_property_layout_form($element, $code, $object, $object_id)
 {
     global $website;
-    global $layout;
 
 	$out = array();
     $property_rows = array();
 	
 	// load the property values of the object
-	$properties = property::load_properties($element, $template, $object, $object_id);
+	$properties = property::load_properties($element, $code, $object, $object_id);
+
+	// translate extension strings
+	$obj = null;
+    if($element == 'extension')
+    {
+        $obj = new extension();
+        $obj->load($code);
+    }
 
 	// generate the form
 	for($p = 0; $p < count($properties); $p++)
@@ -21,14 +28,14 @@ function navigate_property_layout_form($element, $template, $object, $object_id)
             $properties[$p]->enabled === false)
 		    continue;
 
-		$property_rows[] = navigate_property_layout_field($properties[$p]);
+		$property_rows[] = navigate_property_layout_field($properties[$p], $obj);
 	}
 
     if(!empty($property_rows) && !empty($property_rows[0]))  // no properties => no form
     {
         $out[] = '<div id="navigate-properties-form">';
         $out[] = '<input type="hidden" name="property-element" value="'.$element.'" />';
-        $out[] = '<input type="hidden" name="property-template" value="'.$template.'" />';
+        $out[] = '<input type="hidden" name="property-template" value="'.$code.'" />';
 
         $property_rows = implode("\n", $property_rows);
 
