@@ -44,6 +44,12 @@
 
 /* cart view, responsive */
 
+td.nv_cart_empty
+{
+    text-align: center !important;
+    width: 100% !important;
+}
+
 .nv_cart_coupon_info
 {
     display: block;
@@ -56,6 +62,7 @@
 .nv_cart_line_quantity
 {
     text-align: center;
+    white-space: nowrap;
 }
 
 .nv_cart_line_price
@@ -64,6 +71,11 @@
 }
 
 .nv_cart_line_discount
+{
+    text-align: right;
+}
+
+.nv_cart_line_total
 {
     text-align: right;
 }
@@ -96,6 +108,17 @@
 }
 
 .nv_cart_line_price_coupon_amount_per_unit:empty
+{
+    display: none;
+}
+
+.line_product_price_before
+{
+    text-decoration: line-through;
+    margin-right: 8px;
+}
+
+.nv_cart td.nv_cart_subtotal_information span
 {
     display: none;
 }
@@ -186,6 +209,7 @@
         clear: right;
     }
 
+    /* remove product link */
     .nv_cart td:nth-of-type(3)
     {
         clear: left;
@@ -194,18 +218,51 @@
         text-align: center;
     }
 
-    .nv_cart td:nth-of-type(4)
+    /* product discount (not visible on small screen) */
+    .nv_cart td.nv_cart_line_discount/*:nth-of-type(4)*/
+    {
+        width: 0;
+        position: absolute;
+        height: 0;
+        visibility: hidden;
+        overflow: hidden;
+    }
+
+    /* product quantity */
+    .nv_cart td.nv_cart_line_quantity/*:nth-of-type(5)*/
     {
         width: 42%;
         float: left;
         text-align: center;
+        white-space: nowrap;
     }
 
-    .nv_cart td:nth-of-type(5)
+    /* line total */
+    .nv_cart td.nv_cart_line_total/*:nth-of-type(6)*/
     {
         width: 25%;
         float: left;
         text-align: right;
+        white-space: nowrap;
+    }
+
+    .nv_cart td.nv_cart_coupon_information
+    {
+        width: 67%;
+    }
+
+    .nv_cart td.nv_cart_subtotal_information
+    {
+        width: 67%;
+    }
+
+    .nv_cart td.nv_cart_subtotal_information span
+    {
+        font-weight: normal;
+        font-size: 11px;
+        text-transform: lowercase;
+        margin-left: 8px;
+        display: inline-block;
     }
 
 
@@ -243,7 +300,7 @@
 
     .nv_cart.nv_cart_view_summary tfoot td
     {
-        width: 100%;
+        width: auto;
         text-align: right;
     }
 }
@@ -269,6 +326,21 @@
 .nv_cart_footer_actions .nv_cart_footer_coupons
 {
     float: left;
+}
+
+.nv_cart_footer_actions .nv_cart_footer_coupons input
+{
+    display: inline-block;
+    width: 180px;
+}
+
+.nv_cart_footer_actions .nv_cart_footer_coupons button
+{
+    display: inline-block;
+    padding: 10px;
+    font-size: 13px;
+    margin-left: -2px;
+    top: -1px;
 }
 
 .nv_cart_footer_actions .nv_cart_footer_checkout
@@ -388,12 +460,24 @@ input.nv_cart_line_quantity_field
 .nv_cart_shipping_method_option_right
 {
     float: right;
+    text-align: right;
+}
+
+.nv_cart_shipping_method_option_right input
+{
+    visibility: hidden;
+    position: absolute;
 }
 
 .nv_cart_shipping_method_option:hover
 {
     cursor: pointer;
     background-color: rgba(200, 200, 224, 0.15);
+}
+
+.nv_cart_subtotal_amount
+{
+    white-space: nowrap;
 }
 
 /* payment */

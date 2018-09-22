@@ -3972,6 +3972,91 @@
 				<target>Desglose de impuestos</target>
 			</trans-unit>
 
+			<trans-unit id="791" approved="yes">
+				<source>Without shipping</source>
+				<target>Sin envío</target>
+			</trans-unit>
+
+			<trans-unit id="792" approved="yes">
+				<source>Order created</source>
+				<target>Pedido creado</target>
+			</trans-unit>
+
+			<trans-unit id="793" approved="yes">
+				<source>Thank you! Your order has been received.</source>
+				<target>¡Gracias! Tu pedido ha sido recibido.</target>
+			</trans-unit>
+
+			<trans-unit id="794" approved="yes">
+				<source>Order reference</source>
+				<target>Referencia del pedido</target>
+			</trans-unit>
+
+			<trans-unit id="795" approved="yes">
+				<source>Order date</source>
+				<target>Fecha del pedido</target>
+			</trans-unit>
+
+			<trans-unit id="796" approved="yes">
+				<source>Order total</source>
+				<target>Importe del pedido</target>
+			</trans-unit>
+
+			<trans-unit id="797" approved="yes">
+				<source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
+				<target>Como el pedido es GRATIS, empezaremos a prepararlo para la entrega tan pronto como sea posible.</target>
+			</trans-unit>
+
+			<trans-unit id="798" approved="yes">
+				<source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
+				<target>Recuerda que siempre puedes comprobar el estado del pedido en tu cuenta de usuario o, ahora mismo, haciendo clic en el botón inferior.</target>
+			</trans-unit>
+
+			<trans-unit id="799" approved="yes">
+				<source>View order</source>
+				<target>Ver pedido</target>
+			</trans-unit>
+
+			<trans-unit id="800" approved="yes">
+				<source>Above</source>
+				<target>Encima</target>
+			</trans-unit>
+
+			<trans-unit id="801" approved="yes">
+				<source>Below</source>
+				<target>Debajo</target>
+			</trans-unit>
+
+			<trans-unit id="802" approved="yes">
+			   <source>Order paid</source>
+			   <target>Pedido pagado</target>
+		   </trans-unit>
+
+		   <trans-unit id="803" approved="yes">
+			   <source>Thank you! Your payment has been successfully received.</source>
+			   <target>¡Gracias! Tu pago ha sido recibido correctamente.</target>
+		   </trans-unit>
+
+			<trans-unit id="804" approved="yes">
+				<source>We will begin preparing your order for delivery as soon as possible.</source>
+				<target>Empezaremos a preparar el pedido en breve.</target>
+			</trans-unit>
+
+			<trans-unit id="805" approved="yes">
+			   	<source>Order payment failed</source>
+				<target>Error en el pago</target>
+		   	</trans-unit>
+
+		   <trans-unit id="806" approved="yes">
+			   	<source>The payment process could not be completed.</source>
+			   	<target>El proceso de pago no se ha podido completar.</target>
+		   </trans-unit>
+
+		   <trans-unit id="807" approved="yes">
+			   	<source>Please try again or choose an alternative payment method.</source>
+			   	<target>Por favor, vuélvelo a intentar o escoge otra forma de pago.</target>
+		   </trans-unit>
+
 		</body>
 	</file>
 </xliff>

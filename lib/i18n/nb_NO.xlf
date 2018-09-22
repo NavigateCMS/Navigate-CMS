@@ -3973,6 +3973,92 @@
                 <target>Skattefordeling</target>
             </trans-unit>
 
+            <trans-unit id="791">
+                <source>Without shipping</source>
+                <target>Uten frakt</target>
+            </trans-unit>
+
+
+            <trans-unit id="792">
+				<source>Order created</source>
+				<target>Ordre opprettet</target>
+			</trans-unit>
+
+			<trans-unit id="793">
+				<source>Thank you! Your order has been received.</source>
+				<target>Takk skal du ha! Din ordre er mottatt.</target>
+			</trans-unit>
+
+			<trans-unit id="794">
+				<source>Order reference</source>
+				<target>Ordrereferanse</target>
+			</trans-unit>
+
+			<trans-unit id="795">
+				<source>Order date</source>
+				<target>Bestillingsdato</target>
+			</trans-unit>
+
+			<trans-unit id="796">
+				<source>Order total</source>
+				<target>Bestillings totalt</target>
+			</trans-unit>
+
+			<trans-unit id="797">
+				<source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
+				<target>Da bestillingen er GRATIS, vil vi begynne å forberede den til levering så snart som mulig.</target>
+			</trans-unit>
+
+			<trans-unit id="798">
+				<source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
+				<target>Husk at du alltid kan sjekke statusen for bestillingen din i brukerkontoen din, eller akkurat nå klikke på knappen nedenfor.</target>
+			</trans-unit>
+
+			<trans-unit id="799">
+				<source>View order</source>
+				<target>Se bestilling</target>
+			</trans-unit>
+
+            <trans-unit id="800">
+                <source>Above</source>
+                <target>Ovenfor</target>
+            </trans-unit>
+
+            <trans-unit id="801">
+                <source>Below</source>
+                <target>Under</target>
+            </trans-unit>
+
+            <trans-unit id="802">
+                <source>Order paid</source>
+                <target>Bestilling betalt</target>
+            </trans-unit>
+
+            <trans-unit id="803">
+                <source>Thank you! Your payment has been successfully received.</source>
+                <target>Takk skal du ha! Betalingen din har blitt mottatt.</target>
+            </trans-unit>
+
+            <trans-unit id="804">
+                <source>We will begin preparing your order for delivery as soon as possible.</source>
+                <target>Vi vil begynne å forberede bestillingen din for levering så snart som mulig.</target>
+            </trans-unit>
+
+            <trans-unit id="805">
+                <source>Order payment failed</source>
+                <target>Ordrebetaling mislyktes</target>
+            </trans-unit>
+
+            <trans-unit id="806">
+                <source>The payment process could not be completed.</source>
+                <target>Betalingsprosessen kunne ikke fullføres.</target>
+            </trans-unit>
+
+            <trans-unit id="807">
+                <source>Please try again or choose an alternative payment method.</source>
+                <target>Vennligst prøv igjen eller velg en alternativ betalingsmåte.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

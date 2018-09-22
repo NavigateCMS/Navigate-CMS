@@ -3973,6 +3973,91 @@
 				<target>Taxes breakout</target>
 			</trans-unit>
 
+			<trans-unit id="791" approved="yes">
+				<source>Without shipping</source>
+				<target>Without shipping</target>
+			</trans-unit>
+
+			<trans-unit id="792" approved="yes">
+				<source>Order created</source>
+				<target>Order created</target>
+			</trans-unit>
+
+			<trans-unit id="793" approved="yes">
+				<source>Thank you! Your order has been received.</source>
+				<target>Thank you! Your order has been received.</target>
+			</trans-unit>
+
+			<trans-unit id="794" approved="yes">
+				<source>Order reference</source>
+				<target>Order reference</target>
+			</trans-unit>
+
+			<trans-unit id="795" approved="yes">
+				<source>Order date</source>
+				<target>Order date</target>
+			</trans-unit>
+
+			<trans-unit id="796" approved="yes">
+				<source>Order total</source>
+				<target>Order total</target>
+			</trans-unit>
+
+			<trans-unit id="797" approved="yes">
+				<source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
+				<target>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</target>
+			</trans-unit>
+
+			<trans-unit id="798" approved="yes">
+				<source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
+				<target>Remember you can always check the status of your order in your user account, or right now clicking the button below.</target>
+			</trans-unit>
+
+			<trans-unit id="799" approved="yes">
+				<source>View order</source>
+				<target>View order</target>
+			</trans-unit>
+
+			<trans-unit id="800" approved="yes">
+				<source>Above</source>
+				<target>Above</target>
+			</trans-unit>
+
+			<trans-unit id="801" approved="yes">
+				<source>Below</source>
+				<target>Below</target>
+			</trans-unit>
+
+			<trans-unit id="802" approved="yes">
+				<source>Order paid</source>
+				<target>Order paid</target>
+			</trans-unit>
+
+			<trans-unit id="803" approved="yes">
+				<source>Thank you! Your payment has been successfully received.</source>
+				<target>Thank you! Your payment has been successfully received.</target>
+			</trans-unit>
+
+			<trans-unit id="804" approved="yes">
+				<source>We will begin preparing your order for delivery as soon as possible.</source>
+				<target>We will begin preparing your order for delivery as soon as possible.</target>
+			</trans-unit>
+
+			<trans-unit id="805" approved="yes">
+				<source>Order payment failed</source>
+				<target>Order payment failed</target>
+			</trans-unit>
+
+			<trans-unit id="806" approved="yes">
+				<source>The payment process could not be completed.</source>
+				<target>The payment process could not be completed.</target>
+			</trans-unit>
+
+			<trans-unit id="807" approved="yes">
+				<source>Please try again or choose an alternative payment method.</source>
+				<target>Please try again or choose an alternative payment method.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

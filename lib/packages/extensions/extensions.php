@@ -279,6 +279,11 @@ function extensions_grid($list)
 
         for($i=0; $i < count($list); $i++)
         {
+            $extension_has_options = empty($list[$i]['options']);
+            // ignore options for extensions of type payment_method
+            if($list[$i]['type']=='payment_method')
+                $extension_has_options = false;
+
             $extensions[] = array(
                 'id'	=>  $list[$i]['code'],
                 'name'	=>	'<div class="navigrid-item-title">'.$list[$i]['title'].'<br />v'.$list[$i]['version'].'</div>',
@@ -291,7 +296,7 @@ function extensions_grid($list)
                          run="'.$list[$i]['run'].'" enabled="'.$list[$i]['enabled'].'"  favorite="'.$list[$i]['favorite'].'">
                         <button class="navigrid-extensions-info" title="'.t(457, 'Information').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></button>'.
                         //(empty($list[$i]['run'])?       '' : '<button class="navigrid-extensions-favorite" title="'.t(464, 'Favorite').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/heart_'.($list[$i]['favorite']=='1'? 'delete' : 'add').'.png"></button>').
-                        (empty($list[$i]['options'])?   '' : '<button class="navigrid-extensions-settings" title="'.t(459, 'Settings').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cog.png"></button>').
+                        (!$extension_has_options?   '' : '<button class="navigrid-extensions-settings" title="'.t(459, 'Settings').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cog.png"></button>').
                         (empty($list[$i]['update']) || ($user->permission("extensions.update")=="false")?    '' : '<button class="navigrid-extensions-update" title="'.t(463, 'Update available').': '.$list[$i]['update'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/asterisk_orange.png"></button>').
                         '<button '.(($list[$i]['enabled']==='0')? 'style="display: none;"' : '').' class="navigrid-extensions-disable" title="'.t(460, 'Disable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/delete.png"></button>'.
                         '<button '.(($list[$i]['enabled']==='1')? 'style="display: none;"' : '').' class="navigrid-extensions-enable" title="'.t(462, 'Enable').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"></button>'.

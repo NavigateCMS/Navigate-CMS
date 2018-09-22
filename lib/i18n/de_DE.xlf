@@ -3972,6 +3972,92 @@
 				<target>Steueraufschlüsselung</target>
 			</trans-unit>
 
+			<trans-unit id="791">
+				<source>Without shipping</source>
+				<target>Ohne Versand</target>
+			</trans-unit>
+
+
+			<trans-unit id="792">
+				<source>Order created</source>
+				<target>Bestellung erstellt</target>
+			</trans-unit>
+
+			<trans-unit id="793">
+				<source>Thank you! Your order has been received.</source>
+				<target>Vielen Dank! Ihre Bestellung ist eingegangen.</target>
+			</trans-unit>
+
+			<trans-unit id="794">
+				<source>Order reference</source>
+				<target>Bestellnummer</target>
+			</trans-unit>
+
+			<trans-unit id="795">
+				<source>Order date</source>
+				<target>Auftragsdatum</target>
+			</trans-unit>
+
+			<trans-unit id="796">
+				<source>Order total</source>
+				<target>Bestellsumme</target>
+			</trans-unit>
+
+			<trans-unit id="797">
+				<source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
+				<target>Da die Bestellung KOSTENLOS ist, werden wir so bald wie möglich mit der Lieferung beginnen.</target>
+			</trans-unit>
+
+			<trans-unit id="798">
+				<source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
+				<target>Denken Sie daran, dass Sie jederzeit den Status Ihrer Bestellung in Ihrem Benutzerkonto überprüfen können, oder klicken Sie auf die Schaltfläche unten.</target>
+			</trans-unit>
+
+			<trans-unit id="799">
+				<source>View order</source>
+				<target>Reihenfolge anzeigen</target>
+			</trans-unit>
+
+			<trans-unit id="800">
+				<source>Above</source>
+				<target>Über</target>
+			</trans-unit>
+
+			<trans-unit id="801">
+				<source>Below</source>
+				<target>Unten</target>
+			</trans-unit>
+
+			<trans-unit id="802">
+				<source>Order paid</source>
+				<target>Bestellung bezahlt</target>
+			</trans-unit>
+
+			<trans-unit id="803">
+				<source>Thank you! Your payment has been successfully received.</source>
+				<target>Vielen Dank! Ihre Zahlung wurde erfolgreich empfangen.</target>
+			</trans-unit>
+
+			<trans-unit id="804">
+				<source>We will begin preparing your order for delivery as soon as possible.</source>
+				<target>Wir werden Ihre Bestellung so schnell wie möglich vorbereiten.</target>
+			</trans-unit>
+
+			<trans-unit id="805">
+				<source>Order payment failed</source>
+				<target>Bestellungszahlung fehlgeschlagen</target>
+			</trans-unit>
+
+			<trans-unit id="806">
+				<source>The payment process could not be completed.</source>
+				<target>Der Zahlungsprozess konnte nicht abgeschlossen werden.</target>
+			</trans-unit>
+
+			<trans-unit id="807">
+				<source>Please try again or choose an alternative payment method.</source>
+				<target>Bitte versuchen Sie es erneut oder wählen Sie eine alternative Zahlungsmethode.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

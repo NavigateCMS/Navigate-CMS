@@ -3985,6 +3985,91 @@
                 <target>Desglossament d'impostos</target>
             </trans-unit>
 
+            <trans-unit id="791" approved="yes">
+                <source>Without shipping</source>
+                <target>Sense enviament</target>
+            </trans-unit>
+
+            <trans-unit id="792" approved="yes">
+                <source>Order created</source>
+                <target>Comanda creada</target>
+            </trans-unit>
+
+            <trans-unit id="793" approved="yes">
+                <source>Thank you! Your order has been received.</source>
+                <target>Gràcies! La teva comanda ha estat rebuda.</target>
+            </trans-unit>
+
+            <trans-unit id="794" approved="yes">
+                <source>Order reference</source>
+                <target>Referència de la comanda</target>
+            </trans-unit>
+
+            <trans-unit id="795" approved="yes">
+                <source>Order date</source>
+                <target>Data de la comanda</target>
+            </trans-unit>
+
+            <trans-unit id="796" approved="yes">
+                <source>Order total</source>
+                <target>Import de la comanda</target>
+            </trans-unit>
+
+            <trans-unit id="797" approved="yes">
+                <source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
+                <target>Com la comanda és GRATUÏTA, començarem a preparar-la per al lliurement el més aviat possible.</target>
+            </trans-unit>
+
+            <trans-unit id="798" approved="yes">
+                <source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
+                <target>Recorda que sempre pots comprovar l'estat de la comanda al teu compte d'usuari, o bé ara mateix fent clic al botó inferior.</target>
+            </trans-unit>
+
+            <trans-unit id="799" approved="yes">
+                <source>View order</source>
+                <target>Veure la comanda</target>
+            </trans-unit>
+
+            <trans-unit id="800" approved="yes">
+                <source>Above</source>
+                <target>A sobre</target>
+            </trans-unit>
+
+            <trans-unit id="801" approved="yes">
+                <source>Below</source>
+                <target>A sota</target>
+            </trans-unit>
+
+            <trans-unit id="802" approved="yes">
+                <source>Order paid</source>
+                <target>Comanda pagada</target>
+            </trans-unit>
+
+            <trans-unit id="803" approved="yes">
+                <source>Thank you! Your payment has been successfully received.</source>
+                <target>Moltes gràcies! Hem rebut correctament el teu pagament.</target>
+            </trans-unit>
+
+            <trans-unit id="804" approved="yes">
+                <source>We will begin preparing your order for delivery as soon as possible.</source>
+                <target>Començarem a preparar la teva comanda en breu.</target>
+            </trans-unit>
+
+            <trans-unit id="805" approved="yes">
+                <source>Order payment failed</source>
+                <target>Error en el pagament</target>
+            </trans-unit>
+
+            <trans-unit id="806" approved="yes">
+                <source>The payment process could not be completed.</source>
+                <target>El procés de pagament no s'ha pogut completar.</target>
+            </trans-unit>
+
+            <trans-unit id="807" approved="yes">
+                <source>Please try again or choose an alternative payment method.</source>
+                <target>Si us plau, torna-ho a intentar o escull una altra forma de pagament.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

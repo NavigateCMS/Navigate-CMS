@@ -10,6 +10,7 @@ class payment_method
     public $position;
     
     public $dictionary;
+    public $properties;
 
     public function load($id)
     {
@@ -49,7 +50,7 @@ class payment_method
         $this->image		= intval($_REQUEST['image']);
 
         $this->dictionary   = array();
-        $fields = array('title', 'description');
+        $fields = array('title', 'description', 'payment-above', 'payment-below');
         foreach($_REQUEST as $key => $value)
         {
             if(empty($value)) continue;
@@ -146,6 +147,74 @@ class payment_method
         webdictionary::save_element_strings('payment_method', $this->id, $this->dictionary, $this->website);
 
         return true;
+    }
+
+    public function checkout($order)
+    {
+        global $current;
+
+        $out = array();
+
+        $out[] = $this->dictionary[$current['lang']]['payment-above'];
+
+        if(!empty($this->extension))
+        {
+            if(file_exists(NAVIGATE_PATH.'/plugins/'.$this->extension.'/'.$this->extension.'.php'))
+                @include_once(NAVIGATE_PATH.'/plugins/'.$this->extension.'/'.$this->extension.'.php');
+
+            if(function_exists('nvweb_'.$this->extension.'_checkout'))
+            {
+                $out[] = call_user_func('nvweb_'.$this->extension.'_checkout', $order, $this);
+            }
+        }
+
+        $out[] = $this->dictionary[$current['lang']]['payment-below'];
+
+        return implode("\n", $out);
+    }
+
+    public function property($property_name, $raw=false)
+    {
+        // load properties if not already done
+        if(empty($this->properties))
+        {
+            $this->properties = property::load_properties('extension', $this->extension, 'payment_method', $this->id);
+        }
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                if($raw)
+                    $out = $this->properties[$p]->value;
+                else
+                    $out = $this->properties[$p]->value;
+
+                break;
+            }
+        }
+
+        return $out;
+    }
+
+    public function property_definition($property_name)
+    {
+        // load properties if not already done
+        if(empty($this->properties))
+        {
+            $this->properties = property::load_properties('payment_method', 'website', 'payment_method', $this->id);
+        }
+
+        for($p=0; $p < count($this->properties); $p++)
+        {
+            if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
+                $out = $this->properties[$p];
+                break;
+            }
+        }
+
+        return $out;
     }
 
     public static function reorder($order)
@@ -251,7 +320,6 @@ class payment_method
 
         return $out;
     }
-
 }
 
 ?>

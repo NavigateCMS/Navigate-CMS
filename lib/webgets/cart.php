@@ -64,7 +64,8 @@ function nvweb_cart($vars=array())
             'shipping_method'   => null,
             'shipping_rate'     => null,
             'customer_notes'    => "",
-            'total'             => 0
+            'total'             => 0,
+            'order_id'          => 0    // order ID, after has been inserted in database
         );
     }
     else
@@ -310,10 +311,21 @@ function nvweb_cart($vars=array())
                     break;
 
                 case 'payment':
-                    // in this step the order is taken as confirmed
-                    // only remaining to be paid
-                    $order = order::create_from_cart($cart);
-                    $order->save();
+                    $order = new order();
+                    if(empty($cart['order_id']))
+                    {
+                        // in this step the order is set as confirmed
+                        // only remaining to be paid
+                        $order = order::create_from_cart($cart);
+                        $order->save();
+                        $cart['order_id'] = @$order->id;
+                        $session['cart'] = $cart;
+                    }
+                    else
+                    {
+                        $order->load($cart['order_id']);
+                    }
+
                     if(empty($order->id))
                     {
                         // error
@@ -321,16 +333,24 @@ function nvweb_cart($vars=array())
                     }
                     else
                     {
-                        // remove cart, order is already placed
-                        unset($cart);
                         // display payment form or information
                         $out = nvweb_cart_payment_page($order);
                     }
                     break;
 
-                case 'notification':
+                case 'payment_failed':
                     $order = new order();
-                    $out = nvweb_cart_notification($order);
+                    $order->load($cart['order_id']);
+                    $out = nvweb_cart_payment_failed($order);
+                    break;
+
+                case 'payment_done':
+                    $order = new order();
+                    $order->load($cart['order_id']);
+                    $out = nvweb_cart_payment_done($order);
+
+                    // remove cart, order creation is finished
+                    unset($cart);
                     break;
             }
             break;
@@ -375,6 +395,7 @@ function nvweb_cart_update($old_cart)
     $cart['customer_notes'] = $old_cart['customer_notes'];
     $cart['shipping_method'] = $old_cart['shipping_method'];
     $cart['shipping_rate'] = $old_cart['shipping_rate'];
+    $cart['order_id'] = $old_cart['order_id'];
     $cart['taxes_breakdown'] = array();
 
     $quantity = 0;
@@ -672,7 +693,7 @@ function nvweb_cart_view($cart, $mode='view')
     if(empty($cart['lines']))
     {
         $out[] = '            <tr>';
-        $out[] = '                <td colspan="4" style="text-align: center;" class="nv_cart_empty">'.t(742, "Your shopping cart is empty").'</td>';
+        $out[] = '                <td colspan="6" class="nv_cart_empty">'.t(742, "Your shopping cart is empty").'</td>';
         $out[] = '            </tr>';
     }
     else
@@ -689,17 +710,15 @@ function nvweb_cart_view($cart, $mode='view')
         $out[] = '                <td valign="top" class="nv_cart_line_title">
                                     <div><a href="{{nvlist source=\'cart\' value=\'url\'}}">{{nvlist source="cart" value="title"}}</a></div>
                                     <div class="nv_cart_line_title_info">
-                                        <span class="nv_cart_line_title_info_price">{{nvlist source="cart" value="price"}}</span>
+                                        <span class="nv_cart_line_title_info_price">{{nvlist source="cart" value="price" original="true"}}</span>
                                         <small class="nv_cart_line_title_info_remove"><a style="padding-top: 8px; display: inline-block; " href="{{nvlist source=\'cart\' value=\'remove\'}}">' . $remove_symbol . t(35, 'Delete') . '</a></small>
                                     </div>
                                   </td>';
-
 
         if(!$lines_coupon)
         {
             $out[] = '            <td valign="top" colspan="2" class="nv_cart_line_price">
                                         <span>{{nvlist source="cart" value="price"}}</span>
-                                        <!--<span class="nv_cart_line_price_coupon_amount_per_unit">{{nvlist source="cart" value="coupon_unit"}}</span>-->
                                         <a class="nv_cart_line_price_remove" href="{{nvlist source=\'cart\' value=\'remove\'}}">' . $remove_symbol . t(35, 'Delete') . '</a>
                                   </td>';
         }
@@ -729,14 +748,17 @@ function nvweb_cart_view($cart, $mode='view')
 
         $out[] = '                <td valign="top" class="nv_cart_line_quantity">';
         if($mode=='view')
+        {
             $out[] = '                      <big class="nv_cart_line_quantity_minus"><a href="{{nvlist source=\'cart\' value=\'remove_one\'}}">' . $minus_symbol . '</a></big>';
+        }
         $out[] = '                      <strong class="nv_cart_line_quantity_value" data-update_qty-href="{{nvlist source=\'cart\' value=\'update_quantity\'}}">{{nvlist source="cart" value="quantity"}}</strong>';
         if($mode=='view')
+        {
             $out[] = '                      <big class="nv_cart_line_quantity_plus"><a href="{{nvlist source=\'cart\' value=\'add_one\'}}">' . $plus_symbol . '</a></big>';
-        if($mode=='view')
             $out[] = '                      <big class="nv_cart_line_quantity_remove"><a href="{{nvlist source=\'cart\' value=\'remove\'}}">' . $remove_symbol . '</a></big>';
+        }
         $out[] = '                </td>';
-        $out[] = '                <td valign="top" class="nv_cart_line_price">{{nvlist source="cart" value="subtotal"}}</td>';
+        $out[] = '                <td valign="top" class="nv_cart_line_total">{{nvlist source="cart" value="subtotal"}}</td>';
         $out[] = '            </tr>';
         $out[] = '          </nv>';
     }
@@ -781,7 +803,7 @@ function nvweb_cart_view($cart, $mode='view')
     }
 
     $out[] = '                <tr class="nv_cart_subtotal">';
-    $out[] = '                    <td colspan="5" style="text-align: right;" title="'.t(743, "The amount excludes shipping, which is applied at checkout.").'">'.$shipping_symbol.'</td>';
+    $out[] = '                    <td colspan="5" style="text-align: right;" class="nv_cart_subtotal_information" title="'.t(743, "The amount excludes shipping, which is applied at checkout.").'">'.$shipping_symbol.'<span>'.t(791, "Without shipping").'</span></td>';
     $out[] = '                    <td colspan="1" style="text-align: right;" class="nv_cart_subtotal_amount">
                                     <big>'.core_price2string($cart['subtotal'], $website->currency).'</big>                              
                                   </td>';
@@ -939,7 +961,7 @@ function nvweb_cart_steps()
     $out[] = '    <span class="nv_order_step '.($step=='address'? 'current' : '').'" data-order-step="3">'.t(233, "Address").'</span>';
     $out[] = '    <span class="nv_order_step '.($step=='shipping'? 'current' : '').'" data-order-step="4">'.t(28, "Shipping").'</span>';
     $out[] = '    <span class="nv_order_step '.($step=='summary'? 'current' : '').'" data-order-step="5">'.t(337, "Summary").'</span>';
-    $out[] = '    <span class="nv_order_step '.($step=='payment'? 'current' : '').'" data-order-step="6">'.t(757, "Payment").'</span>';
+    $out[] = '    <span class="nv_order_step '.(in_array($step, array('payment', 'payment_done', 'payment_failed'))? 'current' : '').'" data-order-step="6">'.t(757, "Payment").'</span>';
     $out[] = '</div>';
 
     $out[] = '<div class="nv_order_steps_mobile">';
@@ -1777,12 +1799,158 @@ function nvweb_cart_summary_page($cart)
 
 function nvweb_cart_payment_page($order)
 {
-    return 'TODO: CONFIRMATION & PAYMENT';
+    global $html;
+    global $current;
+
+    $out = array();
+
+    $fontawesome_available = ( strpos($html,'font-awesome.') || strpos($html,'<i class="fa ') );
+
+    if($fontawesome_available)
+    {
+        $order_created_symbol = '<i class="fa fa-fw fa-check-square-o"></i> ';
+        $payment_symbol = '<i class="fa fa-fw fa-id-card"></i> ';
+    }
+
+    $out[] = '<div class="nv_cart_order_created_title"><h3>'.$order_created_symbol.t(792, "Order created").'</h3></div>';
+    $out[] = '<p class="nv_cart_order_created_thanks">'.t(793, "Thank you! Your order has been received.").'</p>';
+
+    $out[] = '<blockquote class="nv_cart_order_created_summary">';
+    $out[] = t(794, "Order reference").': '.$order->reference.'<br />';
+    $out[] = t(795, "Order date").': '.core_ts2date($order->date_created, true).'<br />';
+    $out[] = t(796, "Order total").': '.core_price2string($order->total, $order->currency);
+    $out[] = '</blockquote>';
+
+    if($order->total == 0)
+    {
+        $out[] = '<p class="nv_cart_order_created_free">'.t(797, "As the order is FREE, we will begin to prepare it for delivery as soon as possible.").'</p>';
+        $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';
+        // TODO: fix link button
+        $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="?order='.$order->id.'">'.t(799, "View order").'</a></p>';
+    }
+    else
+    {
+        $payment_method = new payment_method();
+        $payment_method->load($order->payment_method);
+
+        $out[] = '<div class="nv_cart_order_created_payment_title"><h3>'.$payment_symbol.t(757, "Payment").'</h3></div>';
+        $out[] = '<p class="nv_cart_order_created_payment_method_info">'.t(727, "Payment method").': '.$payment_method->dictionary[$current['lang']]['title'].'</p>';
+        $out[] = '<div class="nv_cart_order_created_payment_method_content">'.$payment_method->checkout($order).'</div>';
+    }
+
+    nvweb_after_body(
+        'html',
+        '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_cart.css" />'.
+        '<script src="'.NAVIGATE_URL.'/js/tools/nv_cart.js"></script>'
+    );
+
+    return implode("\n", $out);
 }
 
-function nvweb_cart_notification($order)
+function nvweb_cart_payment_failed($order)
 {
-    return 'TODO: PAYMENT CONFIRMATION & ORDER COMPLETED MESSAGE';
+    global $html;
+    global $current;
+
+    $out = array();
+
+    $fontawesome_available = ( strpos($html,'font-awesome.') || strpos($html,'<i class="fa ') );
+
+    if($fontawesome_available)
+    {
+        $order_payment_failed_symbol = '<i class="fa fa-fw fa-exclamation-triangle"></i> ';
+    }
+
+    $out[] = '<div class="nv_cart_order_payment_failed_title"><h3>'.$order_payment_failed_symbol.t(805, "Order payment failed").'</h3></div>';
+    $out[] = '<p class="nv_cart_order_payment_failed_message">'.t(806, "The payment process could not be completed.").'</p>';
+    $out[] = '<p class="nv_cart_order_payment_try_again">'.t(807, "Please try again or choose an alternative payment method.").'</p>';
+
+    $out[] = '<blockquote class="nv_cart_order_created_summary">';
+    $out[] = t(794, "Order reference").': '.$order->reference.'<br />';
+    $out[] = t(795, "Order date").': '.core_ts2date($order->date_created, true).'<br />';
+    $out[] = t(796, "Order total").': '.core_price2string($order->total, $order->currency).'<br />';
+    $out[] = '</blockquote>';
+
+    $payment_methods = payment_method::get_available();
+
+/*
+
+    $out[] = '    <form action="?" class="payment_failed_choose_method" method="post">';
+    $out[] = '        <h5>'.t(727, "Payment method").'</h5>';
+    $out[] = '        <p>';
+    foreach($payment_methods as $pm)
+    {
+        if(empty($pm->image))
+        {
+            $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
+                $pm->dictionary[$current['lang']]['title'] .
+                '</label>';
+        }
+        else
+        {
+            $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
+                '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$pm->dictionary[$current['lang']]['title'].'" style="height:24px; width: auto;" />' .
+                '</label>';
+        }
+    }
+    $out[] = '        </p>';
+    $out[] = '        <button type="submit">'.t(152, "Continue").'</button>';
+    $out[] = '    </form>';
+
+*/
+    nvweb_after_body(
+        'html',
+        '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_cart.css" />'.
+        '<script src="'.NAVIGATE_URL.'/js/tools/nv_cart.js"></script>'
+    );
+
+    nvweb_after_body(
+        'js',
+        '$()'
+    );
+
+    return implode("\n", $out);
+}
+
+function nvweb_cart_payment_done($order)
+{
+    global $html;
+    global $current;
+
+    $out = array();
+
+    $fontawesome_available = ( strpos($html,'font-awesome.') || strpos($html,'<i class="fa ') );
+
+    if($fontawesome_available)
+    {
+        $order_created_symbol = '<i class="fa fa-fw fa-check-square-o"></i> ';
+    }
+
+    $payment_method = new payment_method();
+    $payment_method->load($order->payment_method);
+
+    $out[] = '<div class="nv_cart_order_paid_title"><h3>'.$order_created_symbol.t(802, "Order paid").'</h3></div>';
+    $out[] = '<p class="nv_cart_order_paid_thanks">'.t(803, "Thank you! Your payment has been received.").'</p>';
+    $out[] = '<p class="nv_cart_order_begin_processing">'.t(804, "We will begin preparing your order for delivery as soon as possible.").'</p>';
+
+    $out[] = '<blockquote class="nv_cart_order_created_summary">';
+    $out[] = t(794, "Order reference").': '.$order->reference.'<br />';
+    $out[] = t(795, "Order date").': '.core_ts2date($order->date_created, true).'<br />';
+    $out[] = t(796, "Order total").': '.core_price2string($order->total, $order->currency).'<br />';
+    $out[] = t(727, "Payment method").': '.$payment_method->dictionary[$current['lang']]['title'].'<br />';
+    $out[] = '</blockquote>';
+
+    $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';
+    // TODO: fix link button
+    $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="?order='.$order->id.'">'.t(799, "View order").'</a></p>';
+
+    nvweb_after_body(
+        'html',
+        '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_cart.css" />'.
+        '<script src="'.NAVIGATE_URL.'/js/tools/nv_cart.js"></script>'
+    );
+
+    return implode("\n", $out);
 }
 
 ?>

@@ -1,5 +1,7 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/payment_methods/payment_method.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 require_once(NAVIGATE_PATH.'/lib/packages/products/product.class.php');
 
 function run()
@@ -92,9 +94,9 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
                             1	=> $dataset[$i]['codename'],
-                            2	=> $extension_name,
-                            3	=> $payment_method_image,
-                            4   => $dataset[$i]['title'],
+                            2	=> $payment_method_image,
+                            3   => $dataset[$i]['title'],
+                            4	=> $extension_name,
                             5   => $permissions[$dataset[$i]['permission']],
                             6 	=> $dataset[$i]['_grid_notes_html']
 						);
@@ -119,6 +121,7 @@ function run()
 				try
 				{
 					$object->save();
+                    property::save_properties_from_post('payment_method', $object->id);
 
                     // set block order
                     if(!empty($_REQUEST['payment_methods-order']))
@@ -189,9 +192,9 @@ function payment_methods_list()
 
     $navitable->addCol("ID", 'id', "40", "true", "left");
     $navitable->addCol(t(237, 'Code'), 'codename', "64", "true", "left");
-    $navitable->addCol(t(617, 'Extension'), 'extension', "64", "true", "left");
     $navitable->addCol(t(157, 'Image'), 'image', "64", "false", "center");
-    $navitable->addCol(t(67, 'Title'), 'title', "320", "true", "left");
+    $navitable->addCol(t(67, 'Title'), 'title', "200", "true", "left");
+    $navitable->addCol(t(617, 'Extension'), 'extension', "180", "true", "left");
     $navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
     $navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
 
@@ -368,18 +371,18 @@ function payment_methods_form($object)
     $default_language = array_keys($ws_languages);
     $default_language = $default_language[0];
 
-    $navibars->add_tab('<i class="fa fa-pencil"></i> '.t(9, "Content"));
+    $navibars->add_tab('<i class="fa fa-pencil"></i> '.t(334, "Description"));
 
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(63, 'Languages').'</label>',
-            $naviforms->buttonset('language_selector', $ws_languages, $website->languages_list[0], "navigate_payment_methods_select_language(this);")
+            $naviforms->buttonset('description_language_selector', $ws_languages, $website->languages_list[0], "navigate_payment_methods_select_language(this);")
         )
     );
 
     foreach($website->languages_list as $lang)
     {
-        $navibars->add_tab_content('<div class="language_fields" id="language_fields_'.$lang.'" style=" display: none; ">');
+        $navibars->add_tab_content('<div class="language_fields" id="description_fields_'.$lang.'" style=" display: none; ">');
 
         $navibars->add_tab_content_row(
             array(
@@ -406,6 +409,53 @@ function payment_methods_form($object)
     if(empty($onload_language))
         $onload_language = $website->languages_list[0];
 
+
+    $navibars->add_tab('<i class="fa fa-shopping-cart"></i> '.t(757, 'Payment'));
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(63, 'Languages').'</label>',
+            $naviforms->buttonset('payment_language_selector', $ws_languages, $website->languages_list[0], "navigate_payment_methods_select_language(this);")
+        )
+    );
+
+    foreach($website->languages_list as $lang)
+    {
+        $navibars->add_tab_content('<div class="language_fields" id="payment_fields_'.$lang.'" style=" display: none; ">');
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(457, "Information").' | '.t(800, "Above").'</label>',
+                $naviforms->editorfield('payment-above-'.$lang, @$object->dictionary[$lang]['payment-above'], NULL, $lang),
+                '<br />'
+            ),
+            '',
+            'lang="'.$lang.'"'
+        );
+
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(457, "Information").' | '.t(801, "Below").'</label>',
+                $naviforms->editorfield('payment-below-'.$lang, @$object->dictionary[$lang]['payment-below'], NULL, $lang),
+                '<br />'
+            ),
+            '',
+            'lang="'.$lang.'"'
+        );
+
+        $navibars->add_tab_content('</div>');
+    }
+
+    if(!empty($object->extension))
+    {
+        $properties_html = navigate_property_layout_form('extension', $object->extension, 'payment_method', $object->id);
+
+        if(!empty($properties_html))
+        {
+            $navibars->add_tab('<i class="fa fa-pencil-square-o"></i> '.t(77, "Properties"));
+            $navibars->add_tab_content($properties_html);
+        }
+    }
 
     $navibars->add_tab('<i class="fa fa-sort"></i> '.t(171, 'Order'));
 
@@ -470,4 +520,5 @@ function payment_methods_form($object)
 
 	return $navibars->generate();
 }
+
 ?>

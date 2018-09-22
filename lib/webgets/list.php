@@ -1810,7 +1810,17 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
                 case 'price':
-                    $out = core_price2string($item->_cart->price, $item->base_price_currency, @$tag['attributes']['return']);
+                    $base_price_wtax = $item->_cart->base_price + $item->_cart->base_price_tax_amount;
+                    if($item->_cart->price != $base_price_wtax && ($tag['attributes']['original']=='true'))
+                    {
+                        $out = '<span class="line_product_price_before">'.core_price2string($item->_cart->price, $item->base_price_currency, @$tag['attributes']['return']).'</span>';
+                        $out.= ' ';
+                        $out.= '<span class="line_product_price_after">'.core_price2string($base_price_wtax, $item->base_price_currency, @$tag['attributes']['return']).'</span>';
+                    }
+                    else
+                    {
+                        $out = core_price2string($item->_cart->price, $item->base_price_currency, @$tag['attributes']['return']);
+                    }
                     break;
 
                 case 'coupon_amount':

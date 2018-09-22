@@ -3972,6 +3972,92 @@
                 <target>Podział podatkowy</target>
             </trans-unit>
 
+            <trans-unit id="791">
+                <source>Without shipping</source>
+                <target>Bez wysyłki</target>
+            </trans-unit>
+
+
+            <trans-unit id="792">
+                <source>Order created</source>
+                <target>Zamówienie utworzone</target>
+            </trans-unit>
+
+            <trans-unit id="793">
+                <source>Thank you! Your order has been received.</source>
+                <target>Dziękuję Ci! Twoje zamówienie zostało odebrane.</target>
+            </trans-unit>
+
+            <trans-unit id="794">
+                <source>Order reference</source>
+                <target>Zamów referencję</target>
+            </trans-unit>
+
+            <trans-unit id="795">
+                <source>Order date</source>
+                <target>Data zamówienia</target>
+            </trans-unit>
+
+            <trans-unit id="796">
+                <source>Order total</source>
+                <target>Suma zamówienia</target>
+            </trans-unit>
+
+            <trans-unit id="797">
+                <source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
+                <target>Ponieważ zamówienie jest BEZPŁATNE, zaczniemy przygotowywać go do dostawy tak szybko, jak to możliwe.</target>
+            </trans-unit>
+
+            <trans-unit id="798">
+                <source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
+                <target>Pamiętaj, że zawsze możesz sprawdzić stan swojego zamówienia na swoim koncie użytkownika lub klikając przycisk poniżej.</target>
+            </trans-unit>
+
+            <trans-unit id="799">
+                <source>View order</source>
+                <target>Wyświetl zamówienie</target>
+            </trans-unit>
+
+            <trans-unit id="800">
+                <source>Above</source>
+                <target>Powyżej</target>
+            </trans-unit>
+
+            <trans-unit id="801">
+                <source>Below</source>
+                <target>Poniżej</target>
+            </trans-unit>
+
+            <trans-unit id="802">
+                <source>Order paid</source>
+                <target>Zamówienie zapłacone</target>
+            </trans-unit>
+
+            <trans-unit id="803">
+                <source>Thank you! Your payment has been successfully received.</source>
+                <target>Dziękuję Ci! Twoja płatność została pomyślnie odebrana.</target>
+            </trans-unit>
+
+            <trans-unit id="804">
+                <source>We will begin preparing your order for delivery as soon as possible.</source>
+                <target>Zaczniemy przygotowywać twoje zamówienie na dostawę tak szybko, jak to możliwe.</target>
+            </trans-unit>
+
+            <trans-unit id="805">
+                <source>Order payment failed</source>
+                <target>Zamówienie płatności nie powiodło się</target>
+            </trans-unit>
+
+            <trans-unit id="806">
+                <source>The payment process could not be completed.</source>
+                <target>Proces płatności nie mógł zostać zakończony.</target>
+            </trans-unit>
+
+            <trans-unit id="807">
+                <source>Please try again or choose an alternative payment method.</source>
+                <target>Spróbuj ponownie lub wybierz alternatywną metodę płatności.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
