@@ -287,6 +287,12 @@ function nvweb_template_parse($template)
 
                 if(is_array($content))
                     $content = implode(',', $content);
+
+                if(!isset($tag['attributes']['raw']) || $tag['attributes']['raw']!='true')
+                {
+                    // prepare string to be included in a webpage
+                    $content = htmlentities($content);
+                }
 				break;				
 				
 			case 'constant':
