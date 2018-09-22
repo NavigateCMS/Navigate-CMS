@@ -323,7 +323,6 @@ function run()
 			<head></head>
 			<body>
 			<script language="javascript" type="text/javascript">
-				//window.parent.eval("$(\'#thumbnail-cache\').attr(\'src\', $(\'#thumbnail-cache\').attr(\'src\') + \'&refresh=\' + new Date().getTime());");
 				window.parent.eval(\'$("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());\');
 				window.parent.eval("pixlr.overlay.hide();");
 			</script>

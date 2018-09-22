@@ -2050,7 +2050,7 @@ function products_form($item)
 
 		if(!empty($properties_html))
 		{
-			$navibars->add_tab('<i class="fa fa-table"></i> '.t(77, "Properties")); // tab #4
+			$navibars->add_tab('<i class="fa fa-pencil-square-o"></i> '.t(77, "Properties")); // tab #4
 			$navibars->add_tab_content($properties_html);
 		}
         else
