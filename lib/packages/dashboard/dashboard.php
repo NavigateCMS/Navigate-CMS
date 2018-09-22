@@ -463,7 +463,7 @@ function dashboard_panel_recent_comments($params)
                     '<div class="subcomment">'.core_string_cut($comments[$c]->content_title, 56).'</div>'.
                 '</a>'.
                 '</div>',
-                '<div id="items-comment-'.$comments[$c]->id.'" class="navigate-panel-recent-comments-element">'.$comments[$c]->message.'</div>');
+                '<div id="items-comment-'.$comments[$c]->id.'" class="navigate-panel-recent-comments-element">'.htmlentities($comments[$c]->message).'</div>');
 
             $comments_html .= implode("\n", $tmp);
         }
@@ -748,7 +748,7 @@ function dashboard_panel_latest_searches($params)
             if(!@$data[$e]) break;
             $data_html .= '
                 <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
-                '<div>'.core_ts2date($data[$e]['date']).' <img align="absmiddle" src="img/icons/silk/bullet_star.png" align="absmiddle"> '.$data[$e]['text'].'</div>'.
+                '<div>'.core_ts2date($data[$e]['date']).' <img align="absmiddle" src="img/icons/silk/bullet_star.png" align="absmiddle"> '.htmlentities($data[$e]['text']).'</div>'.
                 '</div>';
         }
 
