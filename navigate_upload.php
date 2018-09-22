@@ -83,10 +83,8 @@ header("Pragma: no-cache");
 $targetDir = NAVIGATE_PRIVATE.'/'.$website->id.'/files';
 $maxFileAge = 24 * 60 * 60; // Temp file age in seconds (1 day)
 
-// no maximum uploading / execution time
+// no maximum uploading/execution time
 @set_time_limit(0);
-
-//file_put_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/files/out.txt', print_r($_FILES, true));
 
 // filedrop drag'n'drop engine	
 if($_REQUEST['engine']=='dropzone')
@@ -135,27 +133,6 @@ if($_REQUEST['engine']=='dropzone')
 			core_terminate();
 		}
 	}
-}
-else if($_REQUEST['engine']=='picnik')
-{
-	// PHP script to receive image data from Picnik via HTTP POST
-	// retrieve the image's attributes from the $_FILES array
-	$image_tmp_filename = $_FILES['file']['tmp_name'];
-	$image_filename = $_FILES['file']['name'];
-	
-	// Save the image to disk.  It'll go into the same directory as
-	// this script.  You'd probably want to put it somewhere else in the
-	// file system like a "/images" directory, or maybe even into a database.
-	// Make sure your web server has write access to the destination dir,
-	// or the call to file_put_contents isn't going to work.
-	$image_data = file_get_contents( $image_tmp_filename );
-	
-	if(!empty($_REQUEST['id']) && file_exists($targetDir.'/'.$_REQUEST['id']))
-	{	
-		file_put_contents( $targetDir.'/'.$_REQUEST['id'], $image_data );
-	}
-	
-	core_terminate();
 }
 else if($_REQUEST['engine']=='pixlr')
 {	
