@@ -883,6 +883,29 @@ function stylesheet_parse($css)
     return $result;
 }
 
+/**
+* Returns a string with backslashes before characters that need to be escaped.
+* As required by MySQL and suitable for multi-byte character sets
+* Characters encoded are NUL (ASCII 0), \n, \r, \, ', ", and ctrl-Z.
+*
+* @param string $string String to add slashes to
+* @return $string with `\` prepended to reserved characters
+*
+* @author Trevor Herselman
+*/
+if (function_exists('mb_ereg_replace'))
+{
+    function mb_escape($string)
+    {
+        return mb_ereg_replace('[\x00\x0A\x0D\x1A\x22\x27\x5C]', '\\\0', $string);
+    }
+} else {
+    function mb_escape($string)
+    {
+        return preg_replace('~[\x00\x0A\x0D\x1A\x22\x27\x5C]~u', '\\\$0', $string);
+    }
+}
+
 // Generates a strong password of N length containing at least one lower case letter,
 // one uppercase letter, one digit, and one special character. The remaining characters
 // in the password are chosen at random from those four sets.

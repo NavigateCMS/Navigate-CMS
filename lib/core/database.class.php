@@ -395,6 +395,9 @@ class database
 	 */		
 	public function protect($str, $wrapped_by="") 
 	{
+	    // remove some characters to prevent SQL attacks
+        $str = mb_escape($str);
+
 		if(is_integer($str))
 		{
 			// do nothing
