@@ -772,6 +772,7 @@ function blocks_form($item)
 	$navibars = new navibars();
 	$naviforms = new naviforms();	
 	$layout->navigate_media_browser();	// we can use media browser in this function
+    $layout->navigate_editorfield_link_dialog();
 		
 	if(empty($item->id))
 		$navibars->title(t(23, 'Blocks').' / '.t(38, 'Create'));	
@@ -1231,7 +1232,6 @@ function blocks_form($item)
                     )
                 );
 
-
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(182, 'Rollover').' (off / on)</label>',
@@ -1313,7 +1313,7 @@ function blocks_form($item)
                                 ),
                                 array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" data-role="link" style="width: 260px;" />'.
-                                                   '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
+                                                   '<a class="uibutton naviforms-pathfield-trigger"><i class="fa fa-sitemap"></i></a>',
                                       'align' => 'left',
                                       'style' => 'white-space: nowrap;'
                                 ),
@@ -1340,7 +1340,7 @@ function blocks_form($item)
                         ),
                         array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="" data-role="title" style="width: 250px;" />', 'align' => 'left'),
                         array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="" data-role="link" style="width: 260px;" />'.
-											 '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
+											 '<a class="uibutton naviforms-pathfield-trigger"><i class="fa fa-sitemap"></i></a>',
                               'align' => 'left'
 						),
                         array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']"  data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" />
@@ -1484,13 +1484,7 @@ function blocks_form($item)
                 $navibars->add_tab_content_row(
                     array(
                         '<label>'.t(184, 'Webpage').'</label>',
-                        $naviforms->autocomplete('action-web-'.$lang, @$item->action['action-web'][$lang], '?fid=blocks&act=path'),
-                        '<a class="uibutton nv_block_nv_link_trigger"><i class="fa fa-sitemap"></i></a>',
-                        '<div class="subcomment nv_block_nv_link_info" data-lang="'.$lang.'">
-                            <img src="img/icons/silk/sitemap_color.png" class="hidden" data-type="structure" sprite="false" />
-                            <img src="img/icons/silk/page.png" class="hidden" data-type="element" sprite="false" /> '.
-                            '<span>'.$selected_link_title.'</span>'.
-                        '</div>'
+                        $naviforms->pathfield('action-web-'.$lang, @$item->action['action-web'][$lang])
                     )
                 );
 
