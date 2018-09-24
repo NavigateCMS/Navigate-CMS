@@ -1266,7 +1266,7 @@ class website
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_websites WHERE id = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_websites WHERE id = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

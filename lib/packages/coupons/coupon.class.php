@@ -211,7 +211,7 @@ class coupon
         global $DB;
         global $website;
 
-        $DB->query('SELECT * FROM nv_coupons WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_coupons WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
         if($type='json')
@@ -256,9 +256,9 @@ class coupon
                 'COUNT(*)',
                 'nv_orders',
                 ' 
-                    website = '.protect($website->id).' AND
-                    webuser = '.protect($webuser).' AND 
-                    coupon = '.protect($this->id)
+                    website = '.intval($website->id).' AND
+                    webuser = '.intval($webuser).' AND 
+                    coupon = '.intval($this->id)
             );
 
             if($times_used_by_customer > $this->times_allowed_customer)
@@ -272,8 +272,8 @@ class coupon
                 'COUNT(*)',
                 'nv_orders',
                 ' 
-                    website = '.protect($website->id).' AND
-                    coupon = '.protect($this->id)
+                    website = '.intval($website->id).' AND
+                    coupon = '.intval($this->id)
             );
 
             if($times_used_globally > $this->times_allowed_globally)
@@ -291,9 +291,13 @@ class coupon
         $DB->query('
             SELECT * 
             FROM nv_coupons 
-            WHERE website = '.protect($website->id).' AND
-                  code = '.protect($code),
-            'object'
+            WHERE website = :wid AND
+                  code = :code',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':code' => $code
+            )
         );
 
         $rs = $DB->result();

@@ -83,19 +83,29 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
         ';
     }
 
+    $query_params = array(
+        ':wid' => $website->id,
+        ':lang' => $lang,
+        ':types' => implode(',', $types)
+    );
+
     if(!empty($search))
-        $extra.= ' AND text LIKE '.protect('%'.$search.'%'); // note: we will need to pass another filter after exploding the tags
+    {
+        $extra .= ' AND text LIKE :search'; // note: we will need to pass another filter after exploding the tags
+        $query_params[':search'] = '%' . $search . '%';
+    }
 
     $DB->query(
         'SELECT text FROM nv_webdictionary
-          WHERE website = '.$website->id.'
-            AND node_type IN("'.implode('","', $types).'")
+          WHERE website = :wid
+            AND node_type IN(:types)
             AND subtype = "tags"
-            AND lang = '.protect($lang).'
+            AND lang = :lang 
             '.$extra.'
           ORDER BY RAND()
         ',
-        'array'
+        'array',
+        $query_params
     );
 
     $rows = $DB->result();

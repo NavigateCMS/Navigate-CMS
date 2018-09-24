@@ -25,7 +25,13 @@ $website = new website(); // only needed for the users log
 
 if(!empty($_COOKIE['navigate-user']))
 {
-    $nuid = $DB->query_single('id', 'nv_users', 'cookie_hash = '.protect($_COOKIE['navigate-user']));
+    $nuid = $DB->query_single(
+        'id',
+        'nv_users',
+        'cookie_hash = :cookie_hash',
+        NULL,
+        array(':cookie_hash' => $_COOKIE['navigate-user'])
+    );
 
     if(!empty($nuid))
     {
@@ -120,7 +126,7 @@ else if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 $lang = new language();
 $lang->load($language_default);
 
-// is a recover password request?
+// is it a recover password request?
 if($_REQUEST['action']=='forgot-password')
 {
     $value = mb_strtolower(trim($_REQUEST['value']));
@@ -128,8 +134,9 @@ if($_REQUEST['action']=='forgot-password')
     $found_id = $DB->query_single(
         'id',
         'nv_users',
-        ' username = '.protect($value).' OR
-                 email = '.protect($value)
+        ' username = :value OR email = :value',
+        NULL,
+        array(':value' => $value)
     );
 
     if(!$found_id)
@@ -318,7 +325,9 @@ $(document).ready(function()
         $found_id = $DB->query_single(
             'id',
             'nv_users',
-            'activation_key = '.protect($value)
+            'activation_key = :activation_key',
+            NULL,
+            array(':activation_key' => $value)
         );
 
         if(!empty($found_id))

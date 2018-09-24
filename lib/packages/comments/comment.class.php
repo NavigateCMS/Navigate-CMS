@@ -279,7 +279,7 @@ class comment
 
         $DB->query('
 			SELECT * FROM nv_comments
-			 WHERE website = '.protect($website->id),
+			 WHERE website = '.intval($website->id),
 	        'object'
         );
         $out = $DB->result();
@@ -298,7 +298,7 @@ class comment
         $pending_comments = $DB->query_single(
             'COUNT(*)',
             'nv_comments',
-            ' website = '.protect($website->id).' AND
+            ' website = '.intval($website->id).' AND
               status = -1'
         );
 
@@ -313,12 +313,12 @@ class comment
         $count = $DB->query_single(
 	        'count(*) as total',
 	        'nv_comments',
-	        'website = '.protect($website->id).' AND status = 3'
+	        'website = '.intval($website->id).' AND status = 3'
         );
 
         $ok = $DB->execute('
 			DELETE FROM nv_comments
-             WHERE website = '.protect($website->id).'
+             WHERE website = '.intval($website->id).'
                AND status = 3
         ');
 
@@ -521,11 +521,16 @@ class comment
             $DB->query('
                 SELECT id, user, email 
                  FROM nv_comments
-                WHERE website = ' . $this->website . '
-                  AND object_type = ' . protect($this->object_type) . '
-                  AND object_id = ' . protect($this->object_id) . '
-                  AND subscribed = 1
-            ');
+                WHERE website = :wid
+                  AND object_type = :otype
+                  AND object_id = :oid
+                  AND subscribed = 1',
+                'object',
+                array(
+                    ':wid' => $this->website,
+                    ':otype' => $this->object_type,
+                    ':oid' => $this->object_id
+                ));
 
             $subscribers = $DB->result();
 
@@ -706,8 +711,8 @@ class comment
         $DB->query('  
             SELECT COUNT(*) AS total 
             FROM nv_comments 
-            WHERE website = '.protect($website->id).' 
-            AND user = '.protect($webuser_id).'
+            WHERE website = '.intval($website->id).' 
+            AND user = '.intval($webuser_id).'
             AND status = 0'
         );
 

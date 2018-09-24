@@ -631,14 +631,20 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
               FROM nv_comments nvc
              LEFT OUTER JOIN nv_webusers nvwu
                           ON nvwu.id = nvc.user
-             WHERE nvc.website = '.protect($website->id).'
-               AND nvc.object_type = '.protect($object_type).'
-               AND nvc.object_id = '.protect($object_id).'
+             WHERE nvc.website = :wid 
+               AND nvc.object_type = :object_type
+               AND nvc.object_id = :object_id 
                AND nvc.status = 0
                AND nvc.reply_to = 0
             ORDER BY ' . $orderby . '
             LIMIT ' . $limit . '
-           OFFSET ' . $offset
+           OFFSET ' . $offset,
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':object_type' => $object_type,
+                ':object_id' => $object_id
+            )
         );
 
         $rs = $DB->result();
@@ -673,13 +679,19 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
               FROM nv_comments nvc
              LEFT OUTER JOIN nv_webusers nvwu
                           ON nvwu.id = nvc.user
-             WHERE nvc.website = ' . protect($website->id) . '
-               AND nvc.object_type = '.protect($object_type).'
-               AND nvc.object_id = '.protect($object_id).'
+             WHERE nvc.website = :wid
+               AND nvc.object_type = :object_type
+               AND nvc.object_id = :object_id 
                AND nvc.status = 0
             ORDER BY ' . $orderby . '
             LIMIT ' . $limit . '
-           OFFSET ' . $offset
+           OFFSET ' . $offset,
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':object_type' => $object_type,
+                ':object_id' => $object_id
+            )
         );
 
         $rs = $DB->result();
@@ -709,12 +721,17 @@ function nvweb_website_comments_list($offset=0, $limit=2147483647, $permission=N
                                  nvwd.website = nvc.website AND
                                  nvwd.node_type = nvc.object_type AND
                                  nvwd.subtype = "title" AND
-                                 nvwd.lang = '.protect($current['lang']).'
-				 WHERE nvc.website = '.protect($website->id).'
+                                 nvwd.lang = :lang
+				 WHERE nvc.website = :wid
 				   AND status = 0
 				ORDER BY '.$orderby.'
 				LIMIT '.$limit.'
-			   OFFSET '.$offset);
+			   OFFSET '.$offset,
+        array(
+            ':wid' => $website->id,
+            ':lang' => $current['lang']
+        )
+    );
 
     $rs = $DB->result();
     $total = $DB->foundRows();

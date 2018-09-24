@@ -416,7 +416,7 @@ class template
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_templates WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_templates WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

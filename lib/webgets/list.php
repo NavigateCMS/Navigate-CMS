@@ -248,14 +248,14 @@ function nvweb_list($vars=array())
                                     SELECT search_nwdi.node_id
                                     FROM nv_webdictionary search_nwdi
                                     WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
-                                          search_nwdi.website = ' . protect($website->id) . ' AND
+                                          search_nwdi.website = ' . intval($website->id) . ' AND
                                           search_nwdi.text LIKE ' . protect('%' . substr($what, 1) . '%') .
                             '    ) 
                                  AND '.$object_alias.'.id NOT IN( 
                                     SELECT search_npi.node_id
                                      FROM   nv_properties_items search_npi 
                                      WHERE  search_npi.element = "'.$object_type.'" AND 
-                                            search_npi.website = ' . protect($website->id) . ' AND
+                                            search_npi.website = ' . intval($website->id) . ' AND
                                             search_npi.value LIKE ' . protect('%' . substr($what, 1) . '%') . '
                                  )
                             )';
@@ -267,14 +267,14 @@ function nvweb_list($vars=array())
                                     SELECT search_nwdi.node_id
                                     FROM nv_webdictionary search_nwdi
                                     WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
-                                          search_nwdi.website = ' . protect($website->id) . ' AND
+                                          search_nwdi.website = ' . intval($website->id) . ' AND
                                           search_nwdi.text LIKE ' . protect('%' . $what . '%') .
                             '    )
                                  OR '.$object_alias.'.id IN( 
                                     SELECT  search_npi.node_id
                                      FROM   nv_properties_items search_npi
                                      WHERE  search_npi.element = "'.$object_type.'" AND 
-                                            search_npi.website = ' . protect($website->id) . ' AND
+                                            search_npi.website = ' . intval($website->id) . ' AND
                                             search_npi.value LIKE ' . protect('%' . $what . '%') . '
                                 )
                             )';
@@ -354,23 +354,30 @@ function nvweb_list($vars=array())
 			            s.date_published, s.date_unpublish, s.date_published as pdate,
 			            d.text as title, s.position as position
 			  FROM nv_structure s, nv_webdictionary d
-			 WHERE s.id IN('.implode(",", $categories).')
-			   AND s.website = '.$website->id.'
+			 WHERE s.id IN(:categories)
+			   AND s.website = :wid
 			   AND s.permission <= '.$permission.'
-			   AND (s.date_published = 0 OR s.date_published < '.core_time().')
-			   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+			   AND (s.date_published = 0 OR s.date_published < :time)
+			   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
 			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
 			   AND d.website = s.website
 			   AND d.node_type = "structure"
 			   AND d.subtype = "title"
 			   AND d.node_id = s.id
-			   AND d.lang = '.protect($current['lang']).'
+			   AND d.lang = :lang
 		     '.$templates.'
 			 '.$visible.'
 			 '.$exclude.'
 			 '.$orderby.'
 			 LIMIT '.$vars['items'].'
-			OFFSET '.$offset
+			OFFSET '.$offset,
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':lang' => $current['lang'],
+                ':time' => core_time(),
+                ':categories' => implode(",", $categories)
+            )
 		);
 
 		$rs = $DB->result();
@@ -574,14 +581,14 @@ function nvweb_list($vars=array())
                     p.date_to_display, COALESCE(NULLIF(p.date_to_display, 0), p.date_created) as pdate,
                     d.text as title, p.position as position, s.position '.$columns_extra.'
 			  FROM nv_products p, nv_structure s, nv_webdictionary d			          
-			 WHERE p.category IN('.implode(",", $categories).')
-			   AND p.website = '.$website->id.'
+			 WHERE p.category IN(:categories)
+			   AND p.website = :wid
 			   AND p.permission <= '.$permission.'
 			   AND (p.date_published = 0 OR p.date_published < '.core_time().')
 			   AND (p.date_unpublish = 0 OR p.date_unpublish > '.core_time().')
 			   AND s.id = p.category
-			   AND (s.date_published = 0 OR s.date_published < '.core_time().')
-			   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+			   AND (s.date_published = 0 OR s.date_published < :time)
+			   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
 			   AND s.permission <= '.$permission.'
 			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
 			   AND (p.access = 0 OR p.access = '.$access.$access_extra_items.')
@@ -589,7 +596,7 @@ function nvweb_list($vars=array())
 			   AND d.node_type = "product"
 			   AND d.subtype = "title"
 			   AND d.node_id = p.id
-			   AND d.lang = '.protect($current['lang']).'
+			   AND d.lang = :lang
              '.$filters.'
              '.$search.'
 		     '.$templates.'
@@ -598,7 +605,16 @@ function nvweb_list($vars=array())
 			 LIMIT '.$vars['items'].'
 			OFFSET '.$offset;
 
-        $DB->query($query);
+        $DB->query(
+            $query,
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':lang' => $current['lang'],
+                ':time' => core_time(),
+                ':categories' => implode(",", $categories)
+            )
+        );
 
         $rs = $DB->result();
         $total = $DB->foundRows();
@@ -646,14 +662,14 @@ function nvweb_list($vars=array())
                 $DB->query('
                     SELECT SQL_CALC_FOUND_ROWS i.id
                       FROM nv_items i, nv_structure s, nv_webdictionary d
-                     WHERE i.category IN('.implode(",", $categories).')
-                       AND i.website = '.$website->id.'
+                     WHERE i.category IN(:categories)
+                       AND i.website = :wid
                        AND i.permission <= '.$permission.'
-                       AND (i.date_published = 0 OR i.date_published < '.core_time().')
-                       AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
+                       AND (i.date_published = 0 OR i.date_published < :time)
+                       AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
                        AND s.id = i.category
-                       AND (s.date_published = 0 OR s.date_published < '.core_time().')
-                       AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+                       AND (s.date_published = 0 OR s.date_published < :time)
+                       AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
                        AND s.permission <= '.$permission.'
                        AND (s.access = 0 OR s.access = '.$access.$access_extra.')
                        AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
@@ -661,12 +677,18 @@ function nvweb_list($vars=array())
                        AND d.node_type = "item"
                        AND d.subtype = "title"
                        AND d.node_id = i.id
-                       AND d.lang = '.protect($current['lang']).'                       
+                       AND d.lang = :lang                       
                      '.$templates.'
                      '.$exclude.'
                      ORDER BY i.position ASC
-                     LIMIT 1
-                ');
+                     LIMIT 1',
+                    'object',
+                    array(
+                        ':wid' => $website->id,
+                        ':lang' => $current['lang'],
+                        ':time' => core_time(),
+                        ':categories' => implode(",", $categories)
+                    ));
 
                 $rs = $DB->result();
                 $tmp = new item();
@@ -758,7 +780,7 @@ function nvweb_list($vars=array())
         $DB->query('
             SELECT id
               FROM nv_structure
-             WHERE website = '.protect($website->id).'
+             WHERE website = '.intval($website->id).'
                AND (    permission > '.$permission.'
                      OR (date_published > 0 AND '.$website->current_time().' > date_published)
                      OR (date_unpublish > 0 AND '.$website->current_time().' > date_unpublish)
@@ -814,15 +836,15 @@ function nvweb_list($vars=array())
                     i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
                     d.text as title, i.position as position, s.position '.$columns_extra.'
 			  FROM nv_items i, nv_structure s, nv_webdictionary d			          
-			 WHERE i.category IN('.implode(",", $categories).')
-			   AND i.website = '.$website->id.'
+			 WHERE i.category IN(:categories)
+			   AND i.website = :wid
 			   AND i.permission <= '.$permission.'
 			   AND i.embedding = '.$embedded.'
-			   AND (i.date_published = 0 OR i.date_published < '.core_time().')
-			   AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
+			   AND (i.date_published = 0 OR i.date_published < :time)
+			   AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
 			   AND s.id = i.category
-			   AND (s.date_published = 0 OR s.date_published < '.core_time().')
-			   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+			   AND (s.date_published = 0 OR s.date_published < :time)
+			   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
 			   AND s.permission <= '.$permission.'
 			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
 			   AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
@@ -830,7 +852,7 @@ function nvweb_list($vars=array())
 			   AND d.node_type = "item"
 			   AND d.subtype = "title"
 			   AND d.node_id = i.id
-			   AND d.lang = '.protect($current['lang']).'
+			   AND d.lang = :lang
              '.$filters.'
              '.$search.'
 		     '.$templates.'
@@ -839,7 +861,16 @@ function nvweb_list($vars=array())
 			 LIMIT '.$vars['items'].'
 			OFFSET '.$offset;
 
-		$DB->query($query);
+		$DB->query(
+		    $query,
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':lang' => $current['lang'],
+                ':time' => core_time(),
+                ':categories' => implode(",", $categories)
+            )
+        );
 
 		$rs = $DB->result();
 
@@ -864,8 +895,13 @@ function nvweb_list($vars=array())
     $nested_conditional_fragments_preprocessed = $nested_conditional_fragments;
     $conditional_placeholder_tags_preprocessed = nvweb_tags_extract($item_html, 'nvlist_conditional_placeholder', true, true, 'UTF-8'); // selfclosing = true
 
-    // now we have all elements that will be shown in the list
+    // now we have all elements that will be shown in the list (if any)
     // let's process the nvlist template for each one
+    if(empty($rs))
+    {
+        $rs = array();
+    }
+
 	for($i = 0; $i < count($rs); $i++)
 	{
         // ignore empty objects, except in custom_source or cart modes
@@ -1209,13 +1245,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $out = $DB->query_single(
                         'COUNT(id)',
                         'nv_items',
-                        ' category = '.protect($item->id).' AND
-                          website = '.protect($item->website).' AND
+                        ' category = '.intval($item->id).' AND
+                          website = '.intval($item->website).' AND
                           permission <= '.$permission.' AND 
                           (date_published = 0 OR date_published < '.core_time().') AND 
                           (date_unpublish = 0 OR date_unpublish > '.core_time().') AND 
                           (access = 0 OR access = '.$access.$access_extra.')
-                        ');
+                    ');
                     break;
 
 				default:
@@ -1278,9 +1314,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	                    }
 	                    else if(!empty($item->user))
 	                    {
-		                    $email = $DB->query_single('email', 'nv_webusers', 'id = '.protect($item->user));
+		                    $email = $DB->query_single('email', 'nv_webusers', 'id = '.intval($item->user));
 		                    if(!empty($email))
-			                    $gravatar_hash = md5( strtolower( trim( $item->email ) ) );
+                            {
+                                $gravatar_hash = md5( strtolower( trim( $item->email ) ) );
+                            }
 	                    }
 
 	                    if(!empty($gravatar_hash) && $gravatar_default != 'none')

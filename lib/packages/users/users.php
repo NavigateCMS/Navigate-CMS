@@ -332,7 +332,7 @@ function users_form($item)
 
 	// Thousands separator
 	$data = array(
-        0	=> json_decode('{"code": "", "name": "('.strtolower(t(581, "None")).') ---> 1234567"}'),
+        0	=> json_decode('{"code": "", "name": "('.mb_strtolower(t(581, "None")).') ---> 1234567"}'),
         1	=> json_decode('{"code": ",", "name": ", ---> 1,234,567"}'),
         2	=> json_decode('{"code": ".", "name": ". ---> 1.234.567"}'),
 	);

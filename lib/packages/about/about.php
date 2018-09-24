@@ -54,7 +54,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>'.t(218, 'Third party libraries').'</label>',
-			'<a href="http://www.tinymce.com" target="_blank">TinyMCE 4.8.0c</a><br />'
+			'<a href="http://www.tinymce.com" target="_blank">TinyMCE 4.8.3</a><br />'
 		)
 	);
 

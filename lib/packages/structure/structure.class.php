@@ -186,8 +186,8 @@ class structure
             $DB->query('
 				SELECT MAX(position) as max_position
                   FROM nv_structure
-                 WHERE parent = '.protect($this->parent).'
-                   AND website = '.protect($this->website)
+                 WHERE parent = '.intval($this->parent).'
+                   AND website = '.intval($this->website)
             );
 
             $max = $DB->result('max_position');
@@ -389,8 +389,8 @@ class structure
         $out = $DB->query_single(
             'COUNT(id)',
             'nv_items',
-            ' category = '.protect($this->id).' AND
-              website = '.protect($this->website).' AND
+            ' category = '.intval($this->id).' AND
+              website = '.intval($this->website).' AND
               permission <= '.$permission.' AND 
               (date_published = 0 OR date_published < '.core_time().') AND 
               (date_unpublish = 0 OR date_unpublish > '.core_time().') AND 
@@ -745,7 +745,7 @@ class structure
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_structure WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_structure WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

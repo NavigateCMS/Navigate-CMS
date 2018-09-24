@@ -103,14 +103,14 @@ function nvweb_conditional($vars=array())
                        i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
                        d.text as title, i.position as position
                   FROM nv_items i, nv_structure s, nv_webdictionary d
-                 WHERE i.category IN('.implode(",", $categories).')
-                   AND i.website = '.$website->id.'
+                 WHERE i.category IN(:categories)
+                   AND i.website = :wid
                    AND i.permission <= '.$permission.'
-                   AND (i.date_published = 0 OR i.date_published < '.core_time().')
-                   AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')
+                   AND (i.date_published = 0 OR i.date_published < :time)
+                   AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
                    AND s.id = i.category
-                   AND (s.date_published = 0 OR s.date_published < '.core_time().')
-                   AND (s.date_unpublish = 0 OR s.date_unpublish > '.core_time().')
+                   AND (s.date_published = 0 OR s.date_published < :time)
+                   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
                    AND s.permission <= '.$permission.'
                    AND (s.access = 0 OR s.access = '.$access.$access_extra.')
                    AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
@@ -118,10 +118,17 @@ function nvweb_conditional($vars=array())
                    AND d.node_type = "item"
                    AND d.subtype = "title"
                    AND d.node_id = i.id
-                   AND d.lang = '.protect($current['lang']).'
+                   AND d.lang = :lang
                  '.$orderby.'
                  LIMIT 1
-                 OFFSET 0'
+                 OFFSET 0',
+            'object',
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $current['lang'],
+                    ':categories' => implode(",", $categories),
+                    ':time' => core_time()
+                )
             );
 
             $rs = $DB->result();
@@ -440,11 +447,16 @@ function nvweb_conditional($vars=array())
             $DB->query('
                 SELECT COUNT(*) as total
 				  FROM nv_comments
-				 WHERE website = '.protect($website->id).'
-				   AND object_id = '.protect($item->id).'
+				 WHERE website = :wid
+				   AND object_id = :item_id
 				   AND object_type = "item"
-				   AND status = 0
-            ');
+				   AND status = 0',
+                'object',
+                array(
+                    ':wid' => $website->id,
+                    ':item_id' => $item->id
+                )
+            );
             $rs = $DB->result();
             $comments_count = intval($rs[0]->total) + 0;
 

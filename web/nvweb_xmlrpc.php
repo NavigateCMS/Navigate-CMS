@@ -135,7 +135,7 @@ function nvweb_xmlrpc()
 			$DB->query('
 				SELECT id
 				  FROM nv_structure
-				 WHERE website = '.protect($website_id).'
+				 WHERE website = '.intval($website_id).'
 				   AND permission < 2
 				ORDER BY parent ASC, position  ASC
 			');
@@ -203,9 +203,11 @@ function nvweb_xmlrpc()
 					         WHERE w.website = '.intval($website_id).'
 					           AND w.node_type = "structure"
 					           AND w.subtype = "title"
-					           AND w.text LIKE '.protect($category_name).'
-					   )
-				');
+					           AND w.text LIKE :category_name
+					   )',
+                    'object',
+                    array(':category_name' => $category_name)
+                );
 
 				$category = $DB->result('id');
 				$category = $category[0];

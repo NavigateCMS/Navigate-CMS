@@ -935,7 +935,7 @@ function templates_section_widths()
 	
 	$DB->query('SELECT sections
 				  FROM nv_templates
-				 WHERE website = '.protect($website->id),
+				 WHERE website = '.intval($website->id),
 				'array');
 				
 	$result = $DB->result();

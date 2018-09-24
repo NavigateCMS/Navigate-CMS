@@ -63,7 +63,7 @@ function nvweb_menu($vars=array())
         // get category parents until root (to know how many levels count from)
         while($last > 0)
         {
-            $last = $DB->query_single('parent', 'nv_structure', ' id = '.protect($last));
+            $last = $DB->query_single('parent', 'nv_structure', ' id = '.intval($last));
             $inverse_hierarchy[] = $last;
         }
         $current['hierarchy'] = array_reverse($inverse_hierarchy);
@@ -392,12 +392,19 @@ function nvweb_menu_load_dictionary()
 	{
 		$structure['dictionary'] = array();
 
-		$DB->query('SELECT node_id, text
-					  FROM nv_webdictionary 
-					 WHERE node_type = "structure"
-					   AND subtype = "title" 
-					   AND lang = '.protect($current['lang']).'
-					   AND website = '.$website->id);		
+		$DB->query(
+		    'SELECT node_id, text
+                  FROM nv_webdictionary 
+                 WHERE node_type = "structure"
+                   AND subtype = "title" 
+                   AND lang = :lang
+                   AND website = :wid',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':lang' => $current['lang']
+            )
+        );
 					
 		$data = $DB->result();
 		
@@ -422,11 +429,18 @@ function nvweb_menu_load_routes()
 	{
 		$structure['routes'] = array();
 
-		$DB->query('SELECT object_id, path
-					  FROM nv_paths 
-					 WHERE type = "structure"
-					   AND lang = '.protect($current['lang']).'
-					   AND website = '.$website->id);		
+		$DB->query(
+		    'SELECT object_id, path
+                  FROM nv_paths 
+                 WHERE type = "structure"
+                   AND lang = :lang
+                   AND website = :wid',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':lang' => $current['lang']
+            )
+        );
 					
 		$data = $DB->result();
 		
@@ -455,9 +469,14 @@ function nvweb_menu_load_actions()
             SELECT node_id, subtype, text
 			  FROM nv_webdictionary 
 			 WHERE node_type = "structure"
-			   AND lang = '.protect($current['lang']).'
+			   AND lang = :lang
 			   AND subtype IN("action-type", "action-jump-item", "action-jump-branch", "action-new-window")
-			   AND website = '.$website->id
+			   AND website = :wid',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':lang' => $current['lang']
+            )
         );
 					
 		$data = $DB->result();
@@ -482,11 +501,13 @@ function nvweb_menu_load_structure($parent=0)
 	{
 		$structure['cat-'.$parent] = array();
 		
-		$DB->query('SELECT * 
-					  FROM nv_structure
-					 WHERE parent = '.protect($parent).' 
-					   AND website = '.$website->id.' 
-					  ORDER BY position ASC');
+		$DB->query(
+		    'SELECT * 
+                  FROM nv_structure
+                 WHERE parent = '.intval($parent).' 
+                   AND website = '.intval($website->id).' 
+                  ORDER BY position ASC'
+        );
 				  
 		$structure['cat-'.$parent] = $DB->result();
 

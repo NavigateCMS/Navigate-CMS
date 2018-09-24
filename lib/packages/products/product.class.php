@@ -726,9 +726,9 @@ class product
             $DB->query('
                 SELECT COUNT(*) as total
                       FROM nv_comments
-                     WHERE website = ' . protect($this->website) . '
+                     WHERE website = ' . intval($this->website) . '
                        AND object_type = "product"
-                       AND object_id = ' . protect($this->id) . '
+                       AND object_id = ' . intval($this->id) . '
                        AND status = 0'
             );
 
@@ -797,19 +797,23 @@ class product
 		sort($search);
 		foreach($search as $text)
 		{
-			$like = ' LIKE '.protect('%'.$text.'%');
-
 			// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
-			$DB->query('SELECT DISTINCT (nvw.node_id)
-						 FROM nv_webdictionary nvw
-						 WHERE nvw.node_type = "product"
-						   AND nvw.website = '.$website->id.'
-						   AND nvw.text '.$like, 'array');
+			$DB->query(
+			    'SELECT DISTINCT (nvw.node_id)
+                     FROM nv_webdictionary nvw
+                     WHERE nvw.node_type = "product"
+                       AND nvw.website = '.$website->id.'
+                       AND nvw.text LIKE :text',
+                'array',
+                array(
+                    ':text' => '%'.$text.'%'
+                )
+            );
 
 			$dict_ids = $DB->result("node_id");
 
 			// all columns to look for
-			$cols[] = 'p.id' . $like;
+			$cols[] = 'p.id LIKE ' .  protect('%'.$text.'%').' ';
 			if(!empty($dict_ids))
 				$cols[] = 'p.id IN ('.implode(',', $dict_ids).')';
 
@@ -827,7 +831,7 @@ class product
         global $website;
 
         $out = array();
-        $DB->query('SELECT * FROM nv_products WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_products WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

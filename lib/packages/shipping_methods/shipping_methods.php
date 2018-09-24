@@ -34,7 +34,15 @@ function run()
                     if(!empty($shipping_method_id))
                         $shipping_method->load($shipping_method_id);
 
-                    $country_id = $DB->query_single('`numeric`', 'nv_countries', 'country_code = '.protect($country_code));
+                    $country_id = $DB->query_single(
+                        '`numeric`',
+                        'nv_countries',
+                        'country_code = :ccode',
+                        null,
+                        array(
+                            ':ccode' => $country_code
+                        )
+                    );
 
                     $DB->query('
                         SELECT `numeric`, name 
@@ -435,7 +443,13 @@ function shipping_methods_form($object)
         if(!empty($rate->regions))
         {
             foreach ($rate->regions as $rr)
-                $rate_regions[] = $DB->query_single('name', 'nv_countries_regions', '`numeric` = ' . protect($rr));
+            {
+                $rate_regions[] = $DB->query_single(
+                    'name',
+                    'nv_countries_regions',
+                    '`numeric` = ' . intval($rr)
+                );
+            }
         }
 
         $rate_weight =  ($rate->weight->min==0? '&infin;' : core_decimal2string($rate->weight->min)).

@@ -85,22 +85,33 @@ function nvweb_blocks($vars=array())
 	switch($order_mode)
 	{
         case 'single':
+            $query_params = array(
+                ':wid' => $website->id,
+                ':time' => core_time(),
+                ':id' => $vars['id']
+            );
+
             $query_type = '';
             if(!empty($vars['type']))
-                $query_type = ' AND type = '.protect($vars['type']);
+            {
+                $query_type = ' AND type = :type';
+                $query_params[':type'] = $vars['type'];
+            }
 
             $DB->query('
                 SELECT id, type
                   FROM nv_blocks
                  WHERE enabled = 1
                    '.$query_type.'
-                   AND website = '.$website->id.'
-                   AND (date_published = 0 OR date_published < '.core_time().')
-                   AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
+                   AND website = :wid
+                   AND (date_published = 0 OR date_published < :time)
+                   AND (date_unpublish = 0 OR date_unpublish > :time)
                    AND access IN('.implode(',', $access).')
                    '.$categories_query.'
                    '.$exclusions_query.'
-                   AND id = '.protect($vars['id'])
+                   AND id = :id',
+                'object',
+                $query_params
             );
             $row = $DB->first();
 
@@ -113,19 +124,27 @@ function nvweb_blocks($vars=array())
 
         case 'priority':
 		case 'ordered':
+            $query_params = array(
+                ':wid' => $website->id,
+                ':time' => core_time(),
+                ':type' => $vars['type']
+            );
+
             $DB->query('
                 SELECT *
                   FROM nv_blocks
-                 WHERE type = '.protect($vars['type']).'
+                 WHERE type = :type
                    AND enabled = 1
-                   AND website = '.$website->id.'
-                   AND (date_published = 0 OR date_published < '.core_time().')
-                   AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
+                   AND website = :wid
+                   AND (date_published = 0 OR date_published < :time)
+                   AND (date_unpublish = 0 OR date_unpublish > :time)
                    AND access IN('.implode(',', $access).')
                    '.$categories_query.'
                    '.$exclusions_query.'
-                ORDER BY position ASC
-            ');
+                ORDER BY position ASC',
+                'object',
+                $query_params
+            );
 			$rows = $DB->result();
 
 			foreach($rows as $row)
@@ -141,42 +160,55 @@ function nvweb_blocks($vars=array())
             // "random" gets priority blocks first
             // retrieve fixed blocks
 
+            $query_params = array(
+                ':wid' => $website->id,
+                ':time' => core_time(),
+                ':type' => $vars['type']
+            );
+
             $DB->query('
                 SELECT *
                   FROM nv_blocks
-                 WHERE type = '.protect($vars['type']).'
+                 WHERE type = :type
                    AND enabled = 1
-                   AND website = '.$website->id.'
-                   AND (date_published = 0 OR date_published < '.core_time().')
-                   AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
+                   AND website = :wid
+                   AND (date_published = 0 OR date_published < :time)
+                   AND (date_unpublish = 0 OR date_unpublish > :time)
                    AND access IN('.implode(',', $access).')
                    AND fixed = 1
                    '.$categories_query.'
                    '.$exclusions_query.'
-              ORDER BY position ASC
-            ');
+              ORDER BY position ASC',
+                'object',
+                $query_params
+            );
 
 			$fixed_rows = $DB->result();
 			$fixed_rows_ids = $DB->result('id');
 
         	if(empty($fixed_rows_ids))
-        		$fixed_rows_ids = array(0);
+            {
+                $fixed_rows_ids = array(0);
+            }
+
+        	$query_params[':fr_ids'] = implode(",", $fixed_rows_ids);
 
             // now retrieve the other blocks in random order
 			$DB->query('
 			    SELECT *
                   FROM nv_blocks
-                 WHERE type = '.protect($vars['type']).'
+                 WHERE type = :type
                    AND enabled = 1
-                   AND website = '.$website->id.'
-                   AND (date_published = 0 OR date_published < '.core_time().')
-                   AND (date_unpublish = 0 OR date_unpublish > '.core_time().')
+                   AND website = :wid
+                   AND (date_published = 0 OR date_published < :time)
+                   AND (date_unpublish = 0 OR date_unpublish > :time)
                    AND access IN('.implode(',', $access).')
-                   AND id NOT IN('.implode(",", $fixed_rows_ids).')
+                   AND id NOT IN(:fr_ids)
                    '.$categories_query.'
                    '.$exclusions_query.'
-                 ORDER BY RAND()
-            ');
+                 ORDER BY RAND()',
+                $query_params
+            );
 		
 			$random_rows = $DB->result();
 

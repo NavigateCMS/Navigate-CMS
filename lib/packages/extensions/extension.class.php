@@ -34,9 +34,14 @@ class extension
 
         // now retrieve extension configuration for the active website
         $DB->query('
-          SELECT * FROM nv_extensions
-          WHERE website = '.protect($this->website).'
-            AND extension = '.protect($this->code)
+            SELECT * FROM nv_extensions
+            WHERE website = :wid
+              AND extension = :code',
+            'object',
+            array(
+                ':wid' => $this->website,
+                ':code' => $this->code
+            )
         );
 
         $row = $DB->first();
@@ -192,7 +197,7 @@ class extension
 
             $ok = $DB->execute('
                 DELETE FROM nv_extensions
-                 WHERE id = '.protect($this->id)
+                 WHERE id = '.intval($this->id)
             );
 
             if(method_exists($events, 'trigger'))
@@ -265,8 +270,13 @@ class extension
                     FROM nv_webdictionary
                    WHERE website = '.$website->id.'
                      AND node_type = "extension"
-                     AND lang = '.protect($current_language).'
-                     AND extension = '.protect($this->code)
+                     AND lang = :lang
+                     AND extension = :code',
+                    'object',
+                    array(
+                        ':lang' => $current_language,
+                        ':code' => $this->code
+                    )
                 );
                 $rs = $DB->result();
 
@@ -344,7 +354,7 @@ class extension
         $DB->query('
             SELECT extension, enabled
               FROM nv_extensions
-             WHERE website = '.protect($website->id),
+             WHERE website = '.intval($website->id),
             'array'
         );
 

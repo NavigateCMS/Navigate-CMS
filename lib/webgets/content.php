@@ -317,9 +317,9 @@ function nvweb_content_comments_count($object_id = NULL, $object_type = "item")
 
 	$DB->query('SELECT COUNT(*) as total
 				  FROM nv_comments
-				 WHERE website = '.protect($website->id).'
+				 WHERE website = '.intval($website->id).'
 				   AND object_type = "'.$object_type.'"
-				   AND object_id = '.protect($object_id).'
+				   AND object_id = '.intval($object_id).'
 				   AND status = 0'
 				);
 													
@@ -418,10 +418,14 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
 			   AND d.node_type = "item"
 			   AND d.subtype = "title"
 			   AND d.node_id = i.id
-			   AND d.lang = '.protect($current['lang']).'
+			   AND d.lang = :lang
         WHERE '.$where.'
         '.$orderby.'
-        '.$limit
+        '.$limit,
+        'object',
+        array(
+            ':lang' => $current['lang']
+        )
     );
 
     $rs = $DB->result();

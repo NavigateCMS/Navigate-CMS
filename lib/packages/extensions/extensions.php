@@ -279,7 +279,7 @@ function extensions_grid($list)
 
         for($i=0; $i < count($list); $i++)
         {
-            $extension_has_options = empty($list[$i]['options']);
+            $extension_has_options = !empty($list[$i]['options']);
             // ignore options for extensions of type payment_method
             if($list[$i]['type']=='payment_method')
                 $extension_has_options = false;
@@ -481,9 +481,17 @@ function extensions_options($extension, $saved=null)
 
     $layout->navigate_media_browser();	// we can use media browser in this function
 
-    $navibars->add_actions(		array(	'<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'	));
+    $navibars->add_actions(
+        array(
+            '<a href="#" onclick="javascript: navigate_media_browser();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'</a>'
+        )
+    );
 
-    $navibars->add_actions(	array(	'<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)    );
+    $navibars->add_actions(
+        array(
+            '<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+        )
+    );
 
     $navibars->form();
 

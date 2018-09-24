@@ -177,13 +177,19 @@ function run()
             break;
 
         case 'json_find_webuser': // json find webuser by name (for "user" autocomplete)
-            $DB->query('SELECT id, username as text
-						  FROM nv_webusers
-						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
-						 AND website = '.$website->id.'
-				      ORDER BY username ASC
-					     LIMIT 30',
-                'array');
+            $DB->query(
+                'SELECT id, username as text
+                      FROM nv_webusers
+                     WHERE username LIKE :username
+                     AND website = :wid
+                  ORDER BY username ASC
+                     LIMIT 30',
+                'array',
+                array(
+                    ':wid' => $website->id,
+                    ':username' => '%' . $_REQUEST['username'] . '%'
+                )
+            );
 
             $rows = $DB->result();
             $total = $DB->foundRows();
@@ -193,22 +199,32 @@ function run()
             break;
 
         case 'json_find_comment': // json find comment by text search (for "in reply to" autocomplete)
-            $DB->query('SELECT c.id, c.date_created, c.name, u.username, c.message
-						  FROM nv_comments c
-						  LEFT JOIN nv_webusers u ON c.user = u.id
-						 WHERE
-						    c.website = '.$website->id.' AND
-						    c.object_type = '.protect($_REQUEST['object_type']).' AND
-						    c.object_id = '.protect($_REQUEST['object_id']).' AND
-						    c.date_created <= '.$_REQUEST['maxdate'].' AND
-						    c.id <> '.$_REQUEST['exclude'].' AND						     
-						    (   c.name LIKE ' . protect('%' . $_REQUEST['search'] . '%') . ' OR
-						        c.message LIKE ' . protect('%' . $_REQUEST['search'] . '%') . ' OR
-						        u.username LIKE ' . protect('%' . $_REQUEST['search'] . '%') . '
-                            )                          
-				      ORDER BY c.date_created DESC
-					     LIMIT 30',
-                'array');
+            $DB->query(
+                'SELECT c.id, c.date_created, c.name, u.username, c.message
+                      FROM nv_comments c
+                      LEFT JOIN nv_webusers u ON c.user = u.id
+                     WHERE
+                        c.website = :wid AND
+                        c.object_type = :object_type AND
+                        c.object_id = :object_id AND
+                        c.date_created <= :maxdate AND
+                        c.id <> :exclude AND						     
+                        (   c.name LIKE :text OR
+                            c.message LIKE :text OR
+                            u.username LIKE :text
+                        )                          
+                  ORDER BY c.date_created DESC
+                     LIMIT 30',
+                'array',
+                array(
+                    ':wid' => $website->id,
+                    ':object_type' => $_REQUEST['object_type'],
+                    ':object_id' => $_REQUEST['object_id'],
+                    ':date_created' => $_REQUEST['maxdate'],
+                    ':exclude' => $_REQUEST['exclude'],
+                    ':text' => '%' . $_REQUEST['search'] . '%'
+                )
+            );
 
             $rows = $DB->result();
             $total = $DB->foundRows();
@@ -222,12 +238,14 @@ function run()
             break;
 
         case 'json_get_comment': // json get comment by ID
-            $DB->query('SELECT c.*
-						  FROM nv_comments c
-						  LEFT JOIN nv_webusers u ON c.user = u.id
-						 WHERE
-						    c.website = '.$website->id.' AND
-						    c.id = '.protect($_REQUEST['id']));
+            $DB->query(
+                'SELECT c.*
+                      FROM nv_comments c
+                      LEFT JOIN nv_webusers u ON c.user = u.id
+                     WHERE
+                        c.website = '.$website->id.' AND
+                        c.id = '.intval($_REQUEST['id'])
+            );
 
             $comment = $DB->first();
 
@@ -238,15 +256,21 @@ function run()
 
         case "find_object_titles":
             // json search title request (for "item" autocomplete)
-			$DB->query('SELECT DISTINCT node_id as id, text as label, text as value
-						  FROM nv_webdictionary
-						 WHERE node_type = '.protect($_REQUEST['object_type']).'
-						   AND subtype = "title"
-						   AND website = '.$website->id.' 
-						   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
-				      ORDER BY text ASC
-					     LIMIT 30',
-						'array'
+			$DB->query(
+			    'SELECT DISTINCT node_id as id, text as label, text as value
+                      FROM nv_webdictionary
+                      WHERE node_type = :object_type
+                       AND subtype = "title"
+                       AND website = :wid 
+                       AND text LIKE :text
+                      ORDER BY text ASC
+                      LIMIT 30',
+                    'array',
+                    array(
+                        ':object_type' => $_REQUEST['object_type'],
+                        ':wid' => $website->id,
+                        ':text' => '%'.$_REQUEST['title'].'%'
+                    )
                     // AND lang = '.protect($_REQUEST['lang']).'
             );
 						

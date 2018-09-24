@@ -520,7 +520,7 @@ class item
 			$category_template = $DB->query_single(
                 'template',
                 'nv_structure',
-                ' id = '.protect($this->category).' AND website = '.$website->id
+                ' id = '.intval($this->category).' AND website = '.intval($website->id)
             );
 			$template->load($category_template);
 		}
@@ -642,9 +642,9 @@ class item
             $DB->query('
                 SELECT COUNT(*) as total
                       FROM nv_comments
-                     WHERE website = ' . protect($this->website) . '
+                     WHERE website = ' . intval($this->website) . '
                        AND object_type = "item"
-                       AND object_id = ' . protect($this->id) . '
+                       AND object_id = ' . intval($this->id) . '
                        AND status = 0'
             );
 
@@ -779,7 +779,7 @@ class item
         global $website;
 
         $out = array();
-        $DB->query('SELECT * FROM nv_items WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_items WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

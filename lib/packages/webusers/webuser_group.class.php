@@ -113,7 +113,7 @@ class webuser_group
 
         $DB->query('SELECT *
                     FROM nv_webuser_groups
-                    WHERE website = '.protect($website->id));
+                    WHERE website = '.intval($website->id));
 
         return $DB->result();
     }
@@ -126,7 +126,7 @@ class webuser_group
 
         $DB->query('SELECT *
                     FROM nv_webuser_groups
-                    WHERE website = '.protect($website->id));
+                    WHERE website = '.intval($website->id));
 
         $rs = $DB->result();
 
@@ -145,7 +145,7 @@ class webuser_group
 
         $DB->query('SELECT *
                     FROM nv_webuser_groups
-                    WHERE website = '.protect($website->id),
+                    WHERE website = '.intval($website->id),
                     'object');
 
         $out = $DB->result();

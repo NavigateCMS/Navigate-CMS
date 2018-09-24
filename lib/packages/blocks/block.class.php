@@ -610,8 +610,12 @@ class block
                 $theme_blocks[$b]['count'] = $DB->query_single(
                     'COUNT(*) AS total',
                     'nv_blocks',
-                    ' website = '.$website->id.' AND 
-                      type = '.protect($theme_blocks[$b]['id'])
+                    ' website = :wid AND type = :type',
+                    NULL,
+                     array(
+                        ':wid' => $website->id,
+                        ':type' => $theme_blocks[$b]['id']
+                     )
                 );
             }
         }
@@ -671,11 +675,15 @@ class block
         sort($array);
 
 		$array = serialize($array);
-				
+
 		$ok = $DB->execute('
 		    UPDATE nv_websites
-               SET block_types = '.protect($array).'
-			 WHERE id = '.$website->id
+               SET block_types = :block_types
+			 WHERE id = :wid',
+            array(
+                ':wid' => $website->id,
+                ':block_types' => $array
+            )
         );
 					
 		if(!$ok)
@@ -939,7 +947,7 @@ class block
         $DB->query('
             SELECT *
             FROM nv_blocks
-            WHERE website = '.protect($website->id),
+            WHERE website = '.intval($website->id),
             'object'
         );
 

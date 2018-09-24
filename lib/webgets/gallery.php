@@ -70,8 +70,8 @@ function nvweb_gallery($vars=array())
 		$DB->query('
 		    SELECT id, permission, date_published, date_unpublish
               FROM nv_items
-             WHERE category = '.protect($current['object']->id).'
-               AND website = '.$website->id.'
+             WHERE category = '.intval($current['object']->id).'
+               AND website = '.intval($website->id).'
         ');
 		$rs = $DB->first();
 		$enabled = nvweb_object_enabled($rs);

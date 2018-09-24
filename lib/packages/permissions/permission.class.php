@@ -24,14 +24,20 @@ class permission
 
         $ws_query = '';
         if(!empty($website))
-            $ws_query = ' AND website = '.protect($website);
+            $ws_query = ' AND website = '.intval($website);
 
         $status = $DB->query('
             SELECT * FROM nv_permissions
-             WHERE name = '.protect($name).'
-               AND profile = '.intval($profile_id).'
-               AND user = '.intval($user_id).
-            $ws_query
+             WHERE name = :name 
+               AND profile = :profile_id 
+               AND user = :user_id',
+            $ws_query,
+            'object',
+            array(
+                ':name' => $name,
+                ':profile_id' => intval($profile_id),
+                ':user_id' => intval($user_id)
+            )
         );
 
         if($status)
@@ -276,16 +282,26 @@ class permission
             $DB->query('
                 SELECT *
                 FROM nv_permissions
-                WHERE profile = '.protect($object->profile).'
-                  AND (website = 0 OR website = '.protect($ws).')'
+                WHERE profile = :profile
+                  AND (website = 0 OR website = :wid)',
+                'object',
+                array(
+                    ':profile' => $object->profile,
+                    ':wid' => $ws
+                )
             );
             $permissions_profile = $DB->result();
 
             $DB->query('
                 SELECT *
                   FROM nv_permissions
-                 WHERE user = '.protect($object->id).'
-                   AND (website = 0 OR website = '.protect($ws).')'
+                 WHERE user = :object_id
+                   AND (website = 0 OR website = :wid)',
+            'object',
+                array(
+                    ':wid' => $ws,
+                    ':object_id' => $object->id
+                )
             );
             $permissions_user = $DB->result();
         }
@@ -293,8 +309,13 @@ class permission
         {
             $DB->query('
                 SELECT * FROM nv_permissions
-                 WHERE profile = '.protect($object->id).'
-                 AND (website = 0 OR website = '.protect($ws).')'
+                 WHERE profile = :object_id
+                 AND (website = 0 OR website = :wid)',
+                'object',
+                array(
+                    ':wid' => $ws,
+                    ':object_id' => $object->id
+                )
             );
 
             $permissions_profile = $DB->result();

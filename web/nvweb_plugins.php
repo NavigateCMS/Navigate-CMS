@@ -15,7 +15,7 @@ function nvweb_plugins_load()
         // read the database to find the disabled plugins
         $DB->query('SELECT extension, enabled
                       FROM nv_extensions
-                     WHERE website = '.protect($website->id).'
+                     WHERE website = '.intval($website->id).'
                        AND enabled = 0');
 
         $plugins_disabled = $DB->result('extension');

@@ -24,11 +24,18 @@ function nvweb_metatags($vars=array())
             $section = 	$DB->query_single(
                 'text',
                 'nv_webdictionary',
-                ' node_type = '.protect($current['type']).' AND
-				    node_id = '.protect($current['object']->id).' AND
-					subtype = '.protect('title').' AND
-					website = '.$website->id.' AND
-					   lang = '.protect($current['lang'])
+                ' node_type = :type AND
+				    node_id = :object_id AND
+					subtype = "title" AND
+					website = :wid AND
+					   lang = :lang',
+                null,
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $current['lang'],
+                    ':object_id' => $current['object']->id,
+                    ':type' => $current['type']
+                )
             );
             array_push($page_title_parts, $section);
             break;

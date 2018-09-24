@@ -263,6 +263,7 @@ class naviforms
                 $("a[data-action=create_custom_value][data-uid='.$uid.']").on("click", function()
                 {
                     var text = prompt(navigate_t(159, "Name"));
+                    if(!text) return;
                     text = text.trim();
                     if(text != "")
                     {

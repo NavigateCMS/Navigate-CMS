@@ -37,9 +37,6 @@ function run()
 					break;
 
                 case 'elements_by_tag':
-                    $tag = $_REQUEST['tag'];
-                    $lang = $_REQUEST['lang'];
-
                     $DB->query('
                         SELECT i.id, i.access, i.date_created AS date, d.text as title                               
                                FROM nv_items i
@@ -47,18 +44,24 @@ function run()
                                      ON i.id = d.node_id
                                     AND d.node_type = "item"
                                     AND d.subtype = "title"
-                                    AND d.lang = '.protect($lang).'
-                                    AND d.website = '.$website->id.'
+                                    AND d.lang = :lang
+                                    AND d.website = :wid
                             WHERE i.id IN (
                                 SELECT node_id FROM nv_webdictionary
-                                 WHERE website = ' . $website->id . '
+                                 WHERE website = :wid
                                    AND node_type = "item"
                                    AND subtype = "tags"
-                                   AND lang = ' . protect($lang) . '
-                                   AND FIND_IN_SET('.protect($tag).', text) > 0
+                                   AND lang = :lang
+                                   AND FIND_IN_SET(:tag, text) > 0
                             )
-                        ORDER BY i.id DESC
-                    ');
+                        ORDER BY i.id DESC',
+                        'object',
+                        array(
+                            ':lang' => $_REQUEST['lang'],
+                            ':wid' => $website->id,
+                            ':tag' => $_REQUEST['tag']
+                        )
+                    );
 
                     $rs = $DB->result();
 
@@ -225,7 +228,7 @@ function run()
 
                         $category_text = '';
                         if($dataset[$i]['association']=='free')
-                            $category_text = '[ '.strtolower(t(100, 'Free')).' ]';
+                            $category_text = '[ '.mb_strtolower(t(100, 'Free')).' ]';
                         else
                             $category_text = $dataset[$i]['category_path'];
 
@@ -465,15 +468,23 @@ function run()
 			break;
 			
 		case 90:
-			$DB->query('SELECT id, date_created, autosave
-						  FROM nv_webdictionary_history
-						 WHERE node_type = "item"
-						   AND subtype = '.protect('section-'.$_REQUEST['section']).'
-						   AND lang = '.protect($_GET['lang']).'
-						   AND node_id = '.protect($_REQUEST['id']).'
-						   AND website = '.$website->id.' 
-				      ORDER BY date_created DESC',
-						'array');		
+			$DB->query(
+			    'SELECT id, date_created, autosave
+                      FROM nv_webdictionary_history
+                     WHERE node_type = "item"
+                       AND subtype = :subtype
+                       AND lang = :lang 
+                       AND node_id = :node_id
+                       AND website = :wid 
+                  ORDER BY date_created DESC',
+                    'array',
+                array(
+                    ':wid' => $website->id,
+                    ':node_id' => $_REQUEST['id'],
+                    ':lang' => $_REQUEST['lang'],
+                    ':subtype' => 'section-'.$_REQUEST['section']
+                )
+            );
 			
 			$result = $DB->result();
 			
@@ -497,12 +508,17 @@ function run()
 				  FROM nv_webdictionary
 				 WHERE node_type = "item"
 				   AND subtype = "title"
-				   AND lang = '.protect($_REQUEST['lang']).'
-				   AND website = '.$website->id.'
-				   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+				   AND lang = :lang
+				   AND website = :wid
+				   AND text LIKE :text
 		      ORDER BY text ASC
 			     LIMIT 20',
-				'array'
+				'array',
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $_REQUEST['lang'],
+                    ':text' => '%'.$_REQUEST['title'].'%'
+                )
 			);
 
 			echo json_encode($DB->result());
@@ -520,8 +536,8 @@ function run()
 				$DB->query('SELECT text
 							  FROM nv_webdictionary_history
 							 WHERE node_type = "item"
-							   AND website = '.$website->id.' 
-							   AND id = '.protect($_REQUEST['id']),							   
+							   AND website = '.intval($website->id).' 
+							   AND id = '.intval($_REQUEST['id']),
 							'array');	
 							
 				$data = $DB->first();				
@@ -529,29 +545,45 @@ function run()
 			}
 			else if($_REQUEST['zone'] == 'section')
 			{		
-				$DB->query('SELECT text
-							  FROM nv_webdictionary
-							 WHERE node_type = "item"
-							   AND subtype = '.protect('section-'.$_REQUEST['section']).'
-							   AND lang = '.protect($_REQUEST['lang']).'
-							   AND website = '.$website->id.' 
-							   AND node_id = '.protect($_REQUEST['node_id']),
-							'array');
+				$DB->query(
+				    'SELECT text
+                          FROM nv_webdictionary
+                         WHERE node_type = "item"
+                           AND subtype = :subtype
+                           AND lang = :lang
+                           AND website = :wid 
+                           AND node_id = :node_id',
+                    'array',
+                    array(
+                        ':wid' => $website->id,
+                        ':lang' => $_REQUEST['lang'],
+                        ':node_id' => $_REQUEST['node_id'],
+                        ':subtype' => 'section-'.$_REQUEST['section']
+                    )
+                );
 
 				$data = $DB->first();				
 				echo $data['text'];
 			}
 			else if($_REQUEST['zone'] == 'property')
 			{
-				$DB->query('SELECT text
-							  FROM nv_webdictionary
-							 WHERE node_type = "property-item"
-							   AND subtype = '.protect('property-'.$_REQUEST['section'].'-'.$_REQUEST['lang']).'
-							   AND lang = '.protect($_REQUEST['lang']).'
-							   AND website = '.$website->id.'
-							   AND node_id = '.protect($_REQUEST['node_id']),
-							'array');
-
+				$DB->query(
+				    'SELECT text
+                          FROM nv_webdictionary
+                         WHERE node_type = "property-item"
+                           AND subtype = :subtype
+                           AND lang = :lang
+                           AND website = :wid 
+                           AND node_id = :node_id',
+                        'array',
+                        array(
+                            ':wid' => $website->id,
+                            ':lang' => $_REQUEST['lang'],
+                            ':node_id' => $_REQUEST['node_id'],
+                            ':subtype' => 'property-'.$_REQUEST['section'].'-'.$_REQUEST['lang']
+                        )
+                    );
+                
 				$data = $DB->first();
 				echo $data['text'];
 			}
@@ -561,12 +593,14 @@ function run()
 
 		// return raw template content
 		case 93:
-			$DB->query('SELECT file
-						  FROM nv_templates
-						 WHERE enabled = 1
-						   AND id = '.protect($_REQUEST['id']).'
-						   AND website = '.$website->id,
-						'array');
+			$DB->query(
+			    'SELECT file
+                    FROM nv_templates
+                   WHERE enabled = 1
+                     AND id = '.intval($_REQUEST['id']).'
+                     AND website = '.intval($website->id),
+                'array'
+            );
 						
 			$data = $DB->first();
 			
@@ -626,12 +660,18 @@ function run()
 		case 95: // free path checking
 			
 			$path = $_REQUEST['path'];
-			$id = $_REQUEST['id'];
-			
-			$DB->query('SELECT type, object_id, lang
-	 					  FROM nv_paths
-						 WHERE path = '.protect($path).'
-						   AND website = '.$website->id);
+
+			$DB->query(
+			    'SELECT type, object_id, lang
+	 				  FROM nv_paths
+					 WHERE path = :path
+					   AND website = :wid',
+                    'object',
+                    array(
+                        ':path' => $path,
+                        ':wid' => $website->id
+                    )
+                );
 			
 			$rs = $DB->result();
 			
@@ -649,11 +689,14 @@ function run()
 			$DB->query('
 				SELECT id, username as text
 				  FROM nv_users
-				 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
+				 WHERE username LIKE :username
 		      ORDER BY username ASC
 			     LIMIT 30',
-				'array
-			');
+				'array',
+				array(
+				    ':username' => '%' . $_REQUEST['username'] . '%'
+                )
+			);
 						
 			$rows = $DB->result();
             $total = $DB->foundRows();
@@ -677,25 +720,40 @@ function run()
             // find items by its title
             // any language
 
-            $template_filter = '';
-
-	        if(!empty($_REQUEST['template']))
-                $template_filter = ' AND nvi.template = '.protect($_REQUEST['template']).' ';
-
-	        if(!empty($_REQUEST['association']))
-                $template_filter = ' AND nvi.association = '.protect($_REQUEST['association']).' ';
-
-	        if(isset($_REQUEST['embedding']))
-                $template_filter = ' AND nvi.embedding = '.protect($_REQUEST['embedding']).' ';
-
             $text = $_REQUEST['title'];
             if(!empty($_REQUEST['term'])) // tagit request
                 $text = $_REQUEST['term'];
 
+            $query_params = array(
+                ':wid' => $website->id,
+                ':lang' => $website->languages_published[0],
+                ':text' => '%' . $text . '%'
+            );
+
+            $template_filter = '';
+
+	        if(!empty($_REQUEST['template']))
+            {
+                $template_filter = ' AND nvi.template = :template ';
+                $query_params[':template'] = $_REQUEST['template'];
+            }
+
+	        if(!empty($_REQUEST['association']))
+            {
+                $template_filter = ' AND nvi.association = :association ';
+                $query_params[':association'] = $_REQUEST['association'];
+            }
+
+	        if(isset($_REQUEST['embedding']))
+            {
+                $template_filter = ' AND nvi.embedding = :embedding ';
+                $query_params[':embedding'] = $_REQUEST['embedding'];
+            }
+
             $limit = intval($_REQUEST['page_limit']);
             if(empty($limit)) $limit = null;
             $limit = value_or_default($limit, 1000);
-            
+
             $sql = '
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
 				  FROM nv_webdictionary nvw, nv_items nvi
@@ -703,21 +761,17 @@ function run()
 				   AND nvw.node_id = nvi.id
 				   '.$template_filter.'
 				   AND nvw.subtype = "title"
-				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = :wid
 				   AND nvw.website = nvi.website
-				   AND ( nvw.text LIKE ' . protect('%' . $text . '%') . ' 
-				        OR
-				        ( nvi.id LIKE  ' . protect('%' . $text . '%') . ' 
-				          AND
-				          nvw.lang = '.protect($website->languages_published[0]).'
-				        )
-				       )
+				   AND ( nvw.text LIKE :text 
+				         OR ( nvi.id LIKE :text AND nvw.lang = :lang )
+				   )
 		        GROUP BY nvw.node_id, nvw.text
 		        ORDER BY nvw.text ASC
 			     LIMIT '.$limit.'
 			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
 
-            $DB->query($sql, 'array');
+            $DB->query($sql, 'array', $query_params);
             $rows = $DB->result();
 			$total = $DB->foundRows();
 
@@ -728,7 +782,7 @@ function run()
 					$rows[$i]['path'] = $DB->query_single(
 						'path',
 						'nv_paths',
-						'	website = '.protect($website->id).' AND 
+						'	website = '.intval($website->id).' AND 
 							type="item" AND 
 							object_id="'.$rows[$i]['id'].'" AND 
 							lang="'.$website->languages_list[0].'"
@@ -2092,7 +2146,7 @@ function items_form($item)
 		else if($item->association == 'category' && ($item->category > 0))
 		{
 			// we have to get the template set in the category of the item
-			$template_id = $DB->query_single('template', 'nv_structure', ' id = '.protect($item->category).' AND website = '.$website->id);
+			$template_id = $DB->query_single('template', 'nv_structure', ' id = '.intval($item->category).' AND website = '.intval($website->id));
 			$properties_html = navigate_property_layout_form('item', $template_id, 'item', $item->id);
 		}
 
@@ -2153,15 +2207,17 @@ function items_form($item)
 			// comments list
 			// removed filter: AND nvwu.website = nvc.website ... reason: the webuser could be from another website if sharing webusers is enabled
 			// TODO: retrieve comments by AJAX call to avoid memory issues. right now we just retrieve the first 500 comments
-			$DB->query('SELECT nvc.*, nvwu.username, nvwu.avatar
-						  FROM nv_comments nvc
-						 LEFT OUTER JOIN nv_webusers nvwu 
-						 			  ON nvwu.id = nvc.user
-						 WHERE nvc.website = '.protect($website->id).'
-						   AND nvc.object_type = "item"
-						   AND nvc.object_id = '.protect($item->id).'
-						ORDER BY nvc.date_created ASC
-						LIMIT 500');
+			$DB->query(
+			    'SELECT nvc.*, nvwu.username, nvwu.avatar
+                      FROM nv_comments nvc
+                     LEFT OUTER JOIN nv_webusers nvwu 
+                                  ON nvwu.id = nvc.user
+                     WHERE nvc.website = '.intval($website->id).'
+                       AND nvc.object_type = "item"
+                       AND nvc.object_id = '.intval($item->id).'
+                    ORDER BY nvc.date_created ASC
+                    LIMIT 500'
+            );
 												
 			$comments = $DB->result();
 			$comments_total = count($comments);

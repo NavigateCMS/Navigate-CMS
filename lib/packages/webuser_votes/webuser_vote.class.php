@@ -129,12 +129,19 @@ class webuser_vote
 		$DB->query('
 			SELECT value, COUNT(*) as votes
 			  FROM nv_webuser_votes
-             WHERE website = '.protect($website->id).'
-			   AND object  = '.protect($object).'
-               AND object_id = '.protect($object_id).'
+             WHERE website = :wid
+			   AND object  = :object
+               AND object_id = :object_id
 			 GROUP BY value
 			 ORDER BY value ASC
-		 ');
+		 ',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':object' => $object,
+                ':object_id' => $object_id
+            )
+        );
 					 
 		$data = $DB->result();
 		
@@ -146,15 +153,23 @@ class webuser_vote
 		global $DB;
 		global $website;
 		
-		$DB->queryLimit('wuv.id AS id, wuv.date AS date, wuv.webuser AS webuser, wu.username AS username', 
-						'nv_webuser_votes wuv, nv_webusers wu', 
-						'	 wuv.website = '.protect($website->id).'
-					   	 AND wuv.object  = '.protect($object).'
- 					   	 AND wuv.object_id = '.protect($object_id).'
-					   	 AND wu.id = wuv.webuser',
-						$orderby, 
-						$offset, 
-						$limit);
+		$DB->queryLimit(
+		    'wuv.id AS id, wuv.date AS date, wuv.webuser AS webuser, wu.username AS username',
+			'nv_webuser_votes wuv, nv_webusers wu',
+			'	 
+			    wuv.website = :wid 
+			    AND wuv.object  = :object 
+ 				AND wuv.object_id = :object_id
+				AND wu.id = wuv.webuser',
+            $orderby,
+            $offset,
+            $limit,
+            array(
+                ':wid' => $website->id,
+                ':object' => $object,
+                ':object_id' => $object_id
+            )
+        );
 					 				 
 		return array($DB->result(), $DB->foundRows());
 	}	
@@ -164,19 +179,26 @@ class webuser_vote
 		global $DB;
 		global $website;
 		
-		$fromDate = 0;
+		$from_date = 0;
 		if($since > 0)	// last x days
-			$fromDate = time() - $since*24*60*60;
+			$from_date = time() - $since * 24*60*60;
 		
 		$DB->query('
 			SELECT date, value 
 			  FROM nv_webuser_votes
-             WHERE website = '.protect($website->id).'
-			   AND object  = '.protect($object).'
-               AND object_id = '.protect($object_id).' 
-			   AND date > '.$fromDate.'
-			 ORDER BY date ASC
-        ');
+             WHERE website = :wid
+			   AND object  = :object
+               AND object_id = :object_id 
+			   AND date > :from_date
+			 ORDER BY date ASC',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':object' => $object,
+                ':object_id' => $object_id,
+                ':from_date' => $from_date
+            )
+        );
 					 
 		$data = $DB->result();
 		
@@ -204,9 +226,15 @@ class webuser_vote
 		if($DB->query('
 				SELECT *
 				  FROM nv_webuser_votes
-				 WHERE webuser = '.intval($webuser).'
-				   AND object  = '.protect($object).'
-				   AND object_id = '.protect($object_id)
+				 WHERE webuser = :webuser 
+				   AND object  = :object
+				   AND object_id = :object_id',
+        'object',
+                array(
+                    ':webuser' => $webuser,
+                    ':object' => $object,
+                    ':object_id' => $object_id
+                )
 			)
 		)
 		{
@@ -220,9 +248,14 @@ class webuser_vote
 		{
 			$ok = $DB->execute('
  				UPDATE nv_webuser_votes
-				   SET `value`	=  '.protect($value).',
-						date 	=  '.protect(core_time()).'
-				 WHERE id = '.$webuser_vote_id
+				   SET `value`	=  :value,
+						date 	=  :time
+				 WHERE id = :wu_vote_id',
+                array(
+                    ':wu_vote_id' => $webuser_vote_id,
+                    ':time' => core_time(),
+                    ':value' => $value
+                )
 			);
 			
 			if(!$ok)
@@ -284,9 +317,14 @@ class webuser_vote
 		
 		$DB->execute('
 			UPDATE '.$table[$object].' 
-			   SET votes = '.protect($votes).',
-			   	   score = '.protect($score).'
-			 WHERE id = '.protect($object_id)
+			   SET  votes = :votes, 
+			        score = :score
+			 WHERE id = :object_id',
+            array(
+                ':votes' => $votes,
+                ':score' => $score,
+                ':object_id' => $object_id
+            )
 		);
 		
 		return true;		
@@ -297,11 +335,18 @@ class webuser_vote
 		global $DB;
 		global $website;
 				
-		$DB->query('SELECT COUNT(*) as votes, SUM(value) as score
-					  FROM nv_webuser_votes
-					 WHERE object_id = '.protect($object_id).'
-					   AND object = '.protect($object).'
-					   AND website = '.$website->id);	
+		$DB->query(
+		    'SELECT COUNT(*) as votes, SUM(value) as score
+                  FROM nv_webuser_votes
+                 WHERE object_id = :object_id
+                   AND object = :object
+                   AND website = :wid',
+            'object',
+            array(
+                ':wid' => $website->id,
+                ':object' => $object,
+                ':object_id' => $object_id
+            ));
 					   
 		$data = $DB->first();
 		
@@ -355,7 +400,7 @@ class webuser_vote
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_webuser_votes WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_webuser_votes WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

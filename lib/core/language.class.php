@@ -18,7 +18,11 @@ class language
 	{
 		global $DB;
 
-		$DB->query('SELECT * FROM nv_languages WHERE code = '.protect($code));
+		$DB->query(
+		    'SELECT * FROM nv_languages WHERE code = :code',
+            'object',
+            array(':code' => $code)
+        );
 		$data = $DB->first();
 
 		if(empty($data->id))

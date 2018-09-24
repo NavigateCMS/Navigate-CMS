@@ -146,7 +146,7 @@ class order
         $DB->query('
             SELECT * 
             FROM nv_orders_lines 
-            WHERE `order` = '.protect($this->id).' 
+            WHERE `order` = '.intval($this->id).' 
             ORDER BY position ASC'
         );
         $this->lines = $DB->result();
@@ -665,7 +665,12 @@ class order
         $order_id = $DB->query_single(
             'id',
             'nv_orders',
-            'reference = '.protect($reference).' AND website = "'.$website_id.'"'
+            'reference = :reference AND website = :wid',
+            NULL,
+            array(
+                ':wid' => $website_id,
+                ':reference' => $reference
+            )
         );
 
         return $order_id;
@@ -721,7 +726,7 @@ class order
         global $DB;
         global $website;
 
-        $DB->query('SELECT * FROM nv_orders WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_orders WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
         if($type='json')

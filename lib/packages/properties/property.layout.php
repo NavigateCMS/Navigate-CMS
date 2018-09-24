@@ -1076,11 +1076,18 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                         $content_title = $DB->query_single(
                             'text',
                             'nv_webdictionary',
-                            '    node_type = "structure" AND
-                                        website = "' . $ws->id . '" AND
-                                        node_id = ' . protect($cid) . ' AND
-                                        subtype = "title" AND
-                                        lang = "' . $ws->languages_published[0] . '"'
+                            '    
+                                node_type = "structure" AND
+                                website = :wid AND
+                                node_id = :node_id AND
+                                subtype = "title" AND
+                                lang = :lang',
+                            NULL,
+                            array(
+                                ':wid' => $ws->id,
+                                ':lang' => $ws->languages_published[0],
+                                ':node_id' => $cid
+                            )
                         );
 
                         $layout->add_script('
@@ -1330,11 +1337,18 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                     $content_title = $DB->query_single(
                         'text',
                         'nv_webdictionary',
-                        '   node_type = "item" AND
-                        website = "'.$ws->id.'" AND
-                        node_id = '.protect($cid).' AND
-                        subtype = "title" AND
-                        lang = "'.$ws->languages_published[0].'"'
+                        '   
+                            node_type = "item" AND
+                            website = :wid AND
+                            node_id = :node_id AND
+                            subtype = "title" AND
+                            lang = :lang',
+                        NULL,
+                        array(
+                            ':wid' => $ws->id,
+                            ':node_id' => $cid,
+                            ':lang' => $ws->languages_published[0]
+                        )
                     );
 
                     $layout->add_script('

@@ -49,9 +49,18 @@ class webuser
 		global $session;
         global $events;
 
-        $ok = $DB->query('SELECT * FROM nv_webusers WHERE cookie_hash = '.protect($hash));
+        $ok = $DB->query(
+            'SELECT * FROM nv_webusers WHERE cookie_hash = :hash',
+            'object',
+            array(
+                ':hash' => $hash
+            )
+        );
+
         if($ok)
+        {
             $data = $DB->result();
+        }
 
         if(!empty($data))
 		{
@@ -99,12 +108,18 @@ class webuser
         $swuser = $DB->query_single(
             'webuser',
             'nv_webuser_profiles',
-            ' network = '.protect($network).' AND '.
-            ' network_user_id = '.protect($network_user_id)
+            ' network = :network AND network_user_id = :network_uid',
+            null,
+            array(
+                ':network' => $network,
+                ':network_uid' => $network_user_id
+            )
         );
 
         if(!empty($swuser))
+        {
             $this->load($swuser);
+        }
     }
 
     public function load_from_resultset($rs)
@@ -432,19 +447,26 @@ class webuser
 
         $website_check = '';
 		if($website > 0)
-			$website_check = 'AND website  = '.protect($website);
+			$website_check = 'AND website  = '.intval($website);
 
-		if($DB->query('SELECT * 
-						 FROM nv_webusers 
-						WHERE ( access = 0 OR
-						 		(access = 2 AND 
-						 			(access_begin = 0 OR access_begin < '.time().') AND 
-						 			(access_end = 0 OR access_end > '.time().') 
-					            )
-					           )
-						  '.$website_check.'
-						  AND LOWER(username) = '.protect($username))
-		)
+		$ok = $DB->query(
+		    'SELECT * 
+                     FROM nv_webusers 
+                    WHERE ( access = 0 OR
+                            (access = 2 AND 
+                                (access_begin = 0 OR access_begin < '.time().') AND 
+                                (access_end = 0 OR access_end > '.time().') 
+                            )
+                           )
+                      '.$website_check.'
+                      AND LOWER(username) = :username',
+        'object',
+            array(
+                ':username' => $username
+            )
+        );
+
+		if($ok)
 		{		
 			$data = $DB->result();
 
@@ -486,7 +508,12 @@ class webuser
         $username = $DB->query_single(
             'username',
             'nv_webusers',
-            'website = '.intval($website).' AND email = '.protect($email)
+            'website = :wid AND email = :email',
+            null,
+            array(
+                ':wid' => $website,
+                ':email' => $email
+            )
         );
 
         if(empty($username))
@@ -568,9 +595,14 @@ class webuser
 		$DB->query('
 			SELECT id, activation_key
 			  FROM nv_webusers
-			 WHERE email = '.protect($email).'
-			   AND activation_key = '.protect($hash).'
-		');
+			 WHERE email = :email
+			   AND activation_key = :hash',
+            'object',
+            array(
+                ':email' => $email,
+                ':hash' => $hash
+            )
+        );
 		$rs = $DB->first();
 
 		if(!empty($rs->id))
@@ -611,9 +643,14 @@ class webuser
 		$DB->query('
 			SELECT id, activation_key
 			  FROM nv_webusers
-			 WHERE email = '.protect($email).'
-			   AND activation_key = '.protect($hash).'
-		');
+			 WHERE email = :email
+			   AND activation_key = :hash',
+            'object',
+            array(
+                ':email' => $email,
+                ':hash' => $hash
+            )
+        );
 		$rs = $DB->first();
 
 		if(!empty($rs->id))
@@ -670,8 +707,13 @@ class webuser
         $swuser = $DB->query_single(
             'webuser',
             'nv_webuser_profiles',
-            ' network = '.protect($network).' AND '.
-            ' network_user_id = '.protect($network_user_id)
+            ' network = :network AND '.
+            ' network_user_id = :network_uid',
+            null,
+            array(
+                ':network' => $network,
+                ':network_uid' => $network_user_id
+            )
         );
 
         // the webuser already exists or is logged in?
@@ -757,10 +799,17 @@ class webuser
 		$username = mb_strtolower($username);
 	
 		$data = NULL;
-		if($DB->query('SELECT COUNT(*) as total
-					   FROM nv_webusers 
-					   WHERE LOWER(username) = '.protect($username).'
-					   	 AND website = '.$website_id))
+		if($DB->query(
+		    'SELECT COUNT(*) as total
+                   FROM nv_webusers 
+                   WHERE LOWER(username) = :username
+                     AND website = :wid',
+                array(
+                    ':wid' => $website_id,
+                    ':username' => $username
+                )
+            )
+        )
 		{
 			$data = $DB->first();
 		}
@@ -888,7 +937,7 @@ class webuser
             FROM (  
                     SELECT id, activation_key, SUBSTRING_INDEX(activation_key, "-", -1) AS expiration_time
                     FROM nv_webusers
-                    WHERE website = ' . protect($website->id) . '
+                    WHERE website = ' . intval($website->id) . '
                       AND access = 1
                       AND activation_key != ""
                   ) ex
@@ -926,7 +975,7 @@ class webuser
                 joindate, lastseen, newsletter, private_comment, 
                 access, access_begin, access_end
             FROM nv_webusers
-            WHERE website = '.protect($website->id), 'array');
+            WHERE website = '.intval($website->id), 'array');
 
         $fields = array(
             "id",
@@ -989,14 +1038,14 @@ class webuser
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_webusers WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_webusers WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out['nv_webusers'] = json_encode($DB->result());
 
         $DB->query('SELECT nwp.* FROM nv_webuser_profiles nwp, nv_webusers nw
                     WHERE nwp.webuser = nw.id
-                      AND nw.website = '.protect($website->id),
+                      AND nw.website = '.intval($website->id),
             'object');
 
         if($type='json')

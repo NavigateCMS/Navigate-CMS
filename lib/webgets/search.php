@@ -78,7 +78,7 @@ function nvweb_search($vars=array())
                                             SELECT p.node_id
                                              FROM   nv_properties_items p 
                                              WHERE  p.element = "item" AND 
-                                                    p.website = '.protect($website->id).' AND
+                                                    p.website = '.intval($website->id).' AND
                                                     p.value LIKE '.protect('%'.substr($what, 1).'%').'
                                         )';
             }
@@ -89,7 +89,7 @@ function nvweb_search($vars=array())
 			                        SELECT  p.node_id
 			                         FROM   nv_properties_items p 
 			                         WHERE  p.element = "item" AND 
-			                                p.website = '.protect($website->id).' AND
+			                                p.website = '.intval($website->id).' AND
 			                                p.value LIKE '.protect('%'.$what.'%').'
                                 )';
             }
@@ -270,13 +270,13 @@ function nvweb_search($vars=array())
                     ON wd.node_id = d.node_id
                    AND wd.lang =  ' . protect($current['lang']) . '
                    AND wd.node_type = "item"
-                   AND wd.website = ' . protect($website->id) . '			  
+                   AND wd.website = ' . intval($website->id) . '			  
                  WHERE i.website = ' . $website->id . '
                    AND i.permission <= ' . $permission . '
                    AND (i.date_published = 0 OR i.date_published < ' . core_time() . ')
                    AND (i.date_unpublish = 0 OR i.date_unpublish > ' . core_time() . ')
                    AND (i.access = 0 OR i.access = ' . $access . ')
-                   AND d.website = ' . protect($website->id) . '
+                   AND d.website = ' . intval($website->id) . '
                    AND d.node_id = i.id
                    AND d.lang =  ' . protect($current['lang']) . '
                    AND (d.node_type = "item" OR d.node_type = "tags")

@@ -26,8 +26,9 @@ class webdictionary
 		{
 			if($DB->query('SELECT * FROM nv_webdictionary
 							WHERE node_id = '.intval($id).'
-							  AND node_type = '.protect('global').'
-							  AND website = '.$website->id))
+							  AND node_type = "global"
+							  AND website = '.intval($website->id))
+            )
 			{
 				$data = $DB->result();
 				$this->load_from_resultset($data); // there will be as many entries as languages enabled
@@ -67,16 +68,27 @@ class webdictionary
 					SELECT lang, text
 					  FROM nv_webdictionary 
 					 WHERE node_type = "extension"
-					   AND extension = '.protect($this->extension).'
-					   AND subtype = '.protect($this->subtype).'
-					   AND website = '.$website->id
+					   AND extension = :extension
+					   AND subtype = :subtype
+					   AND website = :wid',
+                    'object',
+                    array(
+                        ':wid' => $website->id,
+                        ':subtype' => $this->subtype,
+                        ':extension' => $this->extension
+                    )
 				);
 
 				$data = $DB->result();
 
-				if(!is_array($data)) $data = array();
+				if(!is_array($data))
+				{
+				    $data = array();
+                }
 				foreach($data as $item)
-					$this->text[$item->lang] = $item->text;
+                {
+                    $this->text[$item->lang] = $item->text;
+                }
 			}
 			else    // theme translation (only for the current active theme)
 			{
@@ -105,9 +117,15 @@ class webdictionary
 					SELECT lang, text
 					  FROM nv_webdictionary 
 					 WHERE node_type = "theme"
-					   AND theme = '.protect($theme->name).'
-					   AND subtype = '.protect($this->subtype).'
-					   AND website = '.$website->id
+					   AND theme = :theme 
+					   AND subtype = :subtype 
+					   AND website = :wid',
+                    'object',
+                    array(
+                        ':wid' => $website->id,
+                        ':subtype' => $this->subtype,
+                        ':theme' => $theme->name
+                    )
 				);
 
 				$data = $DB->result();
@@ -163,20 +181,35 @@ class webdictionary
 
 		if(!empty($this->node_id))
 		{
+		    $query_params = array(
+                ':wid' => $this->website,
+                ':subtype' => $this->subtype,
+                ':theme' => $this->theme,
+                ':extension' => $this->extension,
+                ':node_type' => $this->node_type
+            );
+
 			if(is_numeric($this->node_id))
-				$node_id_filter .= ' AND node_id = '.intval($this->node_id);
+            {
+				$node_id_filter .= ' AND node_id = :node_id ';
+				$query_params[':node_id'] = $this->node_id;
+            }
 
 			if(is_numeric($this->node_uid))
-				$node_id_filter .= ' AND node_uid = '.intval($this->node_uid);
+            {
+				$node_id_filter .= ' AND node_uid = :node_uid ';
+                $query_params[':node_uid'] = $this->node_uid;
+            }
 
 			$DB->execute('
 				DELETE FROM nv_webdictionary 
-					WHERE website = '.protect($this->website).'
-					  AND subtype = '.protect($this->subtype).'
-					  AND theme = '.protect($this->theme).' 
-					  AND extension = '.protect($this->extension).' 
-					  AND node_type = '.protect($this->node_type).
-					  $node_id_filter
+					WHERE website = :wid 
+					  AND subtype = :subtype
+					  AND theme = :theme  
+					  AND extension = :extension  
+					  AND node_type = :node_type
+					  '.$node_id_filter,
+                $query_params
 			);
 		}
 		
@@ -188,25 +221,40 @@ class webdictionary
 	{
 		global $DB;
 
-        $node_id_filter = "";
+        $node_filter = "";
 
 		// remove all old entries
 		if(!empty($this->node_id))
 		{
+		    $query_params = array(
+                ':wid' => $this->website,
+                ':extension' => $this->extension,
+                ':theme' => $this->theme,
+                ':node_type' => $this->node_type,
+                ':subtype' => $this->subtype
+            );
+
             if(is_numeric($this->node_id))
-                $node_id_filter .= ' AND node_id = '.intval($this->node_id);
+            {
+                $node_filter .= ' AND node_id = :node_id ';
+                $query_params[':node_id'] = $this->node_id;
+            }
 
             if(is_numeric($this->node_uid))
-                $node_id_filter .= ' AND node_uid = '.intval($this->node_uid);
+            {
+                $node_filter .= ' AND node_uid = :node_uid ';
+                $query_params[':node_uid'] = $this->node_uid;
+            }
 			
 			$DB->execute('
  				DELETE FROM nv_webdictionary
-				WHERE subtype = '.protect($this->subtype).'
-				  AND node_type = '.protect($this->node_type).'
-				  AND theme = '.protect($this->theme).'
-				  AND extension = '.protect($this->extension).'
-				  AND website = '.protect($this->website).
-				  $node_id_filter
+				WHERE subtype = :subtype
+				  AND node_type = :node_type
+				  AND theme = :theme 
+				  AND extension = :extension 
+				  AND website = :wid
+				  '.$node_filter,
+                $query_params
 			);
 		}
 		
@@ -227,9 +275,15 @@ class webdictionary
 			$tmp = $DB->query_single(
 				'MAX(node_id)',
 				'nv_webdictionary',
-				' subtype = '.protect($this->subtype).'
-				       AND node_type = '.protect($this->node_type).'
-					   AND website = '.$this->website
+				' subtype = :subtype 
+				       AND node_type = :node_type 
+					   AND website = :wid',
+                null,
+                array(
+                    ':wid' => $this->website,
+                    ':subtype' => $this->subtype,
+                    ':node_type' => $this->node_type
+                )
 			);
 
 			$this->node_id = intval($tmp) + 1;
@@ -290,13 +344,28 @@ class webdictionary
 	public static function load_object_strings($node_type, $node_id, $node_uid=null)
 	{
 		global $DB;
+
+		$query_params = array(
+            ':node_type' => $node_type,
+            ':node_id' => $node_id
+        );
+
+		$uid_filter = '';
+		if(!empty($node_uid))
+        {
+            $uid_filter = ' AND ( node_uid = :node_uid OR node_uid = "" OR node_uid IS NULL )';
+            $query_params[':node_uid'] = $node_uid;
+        }
+
 		
 		$DB->query('
 			SELECT subtype, lang, text
 			  FROM nv_webdictionary
-			 WHERE node_type = '.protect($node_type).'
-			   AND node_id = '.protect($node_id).
-            (empty($node_uid)? '' : ' AND ( node_uid = '.protect($node_uid).' OR node_uid = "" OR node_uid IS NULL )')
+			 WHERE node_type = :node_type
+			   AND node_id = :node_id 
+            '.$uid_filter,
+            'object',
+            $query_params
 		);
 
 		$data = $DB->result();
@@ -333,11 +402,18 @@ class webdictionary
 
                 $DB->execute('
                     DELETE FROM nv_webdictionary
-                     WHERE node_type = '.protect($node_type).'
-                       AND node_id = '.protect($node_id).'
-                       AND website = '.$website_id.'
-                       AND lang = '.protect($lang).'
-                       AND subtype IN ('.implode(",", array_map(function($k){ return protect($k);}, $subtypes)).')'
+                     WHERE node_type = :node_type
+                       AND node_id = :node_id 
+                       AND website = :wid 
+                       AND lang = :lang
+                       AND subtype IN (:subtype)',
+                    array(
+                        ':wid' => $website_id,
+                        ':lang' => $lang,
+                        ':node_id' => $node_id,
+                        ':node_type' => $node_type,
+                        ':subtype' => implode(",", array_map(function($k){ return protect($k);}, $subtypes))
+                    )
                 );
             }
         }
@@ -348,14 +424,22 @@ class webdictionary
             {
                 $subtypes = array_keys($texts);
 
-                $DB->execute('
-                    DELETE FROM nv_webdictionary
-                     WHERE node_type = '.protect($node_type).'
-                       AND node_id = '.protect($node_id).'
-                       AND website = '.$website_id.'
-                       AND lang = '.protect($lang).'
-                       AND subtype IN ('.implode(",", array_map(function($k){ return protect($k);}, $subtypes)).')
-                       AND node_uid = '.protect($node_uid)
+                $DB->execute(
+                    'DELETE FROM nv_webdictionary
+                         WHERE node_type = :node_type
+                           AND node_id = :node_id 
+                           AND website = :wid 
+                           AND lang = :lang
+                           AND subtype IN (:subtype)
+                           AND node_uid = :node_uid',
+                    array(
+                        ':wid' => $website_id,
+                        ':lang' => $lang,
+                        ':node_id' => $node_id,
+                        ':node_type' => $node_type,
+                        ':subtype' => implode(",", array_map(function($k){ return protect($k);}, $subtypes)),
+                        ':node_uid' => $node_uid
+                    )
                 );
             }
         }
@@ -364,9 +448,14 @@ class webdictionary
             // first, delete old entries (deletes too much rows when updating block group block properties)
             $DB->execute('
                 DELETE FROM nv_webdictionary
-                 WHERE node_type = '.protect($node_type).'
-                   AND node_id = '.protect($node_id).'
-                   AND website = '.$website_id
+                 WHERE node_type = :node_type 
+                   AND node_id = :node_id 
+                   AND website = :wid',
+                array(
+                    ':wid' => $website_id,
+                    ':node_type' => $node_type,
+                    ':node_id' => $node_id
+                )
             );
             // and then insert the new values
         }
@@ -422,40 +511,57 @@ class webdictionary
 			{
 				case "global":
 					// remove old entry, if exists
-					$DB->execute('
-		                DELETE FROM nv_webdictionary
-						WHERE node_id = '.protect($id).'
-						  AND node_type = '.protect('global').'
-						  AND lang = '.protect($language).'
-						  AND website = '.$website->id.'
-						LIMIT 1
-					');
+					$DB->execute(
+                    'DELETE FROM nv_webdictionary
+						WHERE node_id = :id 
+						  AND node_type = "global"
+						  AND lang = :lang 
+						  AND website = :wid
+						LIMIT 1',
+                        array(
+                            ':wid' => $website->id,
+                            ':lang' => $language,
+                            ':id' => $id
+                        )
+                    );
 					break;
 
 				case "theme":
 					// remove old entry, if exists
 					$DB->execute('
 		                DELETE FROM nv_webdictionary
-						WHERE subtype = '.protect($id).'
-						  AND node_type = '.protect("theme").'
-						  AND theme = '.protect($object).'
-						  AND lang = '.protect($language).'
-						  AND website = '.$website->id.'
-						LIMIT 1
-					');
+						WHERE subtype = :id 
+						  AND node_type = "theme"
+						  AND theme = :object
+						  AND lang = :lang 
+						  AND website = :wid
+						LIMIT 1',
+                        array(
+                            ':wid' => $website->id,
+                            ':lang' => $language,
+                            ':object' => $object,
+                            ':id' => $id
+                        )
+                    );
 					break;
 
 				case "extension":
 					// remove old entry, if exists
-					$DB->execute('
-		                DELETE FROM nv_webdictionary
-						WHERE subtype = '.protect($id).'
-						  AND node_type = '.protect("extension").'
-						  AND extension = '.protect($object).'
-						  AND lang = '.protect($language).'
-						  AND website = '.$website->id.'
-						LIMIT 1
-					');
+					$DB->execute(
+                    'DELETE FROM nv_webdictionary
+						WHERE subtype = :id
+						  AND node_type = "extension"
+						  AND extension = :object 
+						  AND lang = :lang
+						  AND website = :wid
+						LIMIT 1',
+                        array(
+                            ':id' => $id,
+                            ':object' => $object,
+                            ':lang' => $language,
+                            ':wid' => $website->id
+                        )
+                    );
 					break;
 			}
 
@@ -495,7 +601,7 @@ class webdictionary
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_webdictionary WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_webdictionary WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out = json_encode($DB->result());

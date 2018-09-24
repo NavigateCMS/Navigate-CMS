@@ -135,11 +135,11 @@ class users_log
 							nvf.lid as function_title, nvf.icon as function_icon, nvul.date
 			FROM nv_users_log nvul, 
 				 nv_functions nvf
-			WHERE nvul.user = '.protect($user->id).'
+			WHERE nvul.user = '.intval($user->id).'
 			  AND nvul.function = nvf.id
 			  AND nvul.item > 0
 			  AND nvul.action = "load"
-			  AND nvul.website = '.protect($website->id).'
+			  AND nvul.website = '.intval($website->id).'
 			  AND nvul.item_title <> ""
 			  AND nvul.date > '.( core_time() - 30 * 86400).'
 			  AND nvul.date = (	SELECT MAX(nvulm.date) 
@@ -147,8 +147,8 @@ class users_log
 			  					 WHERE nvulm.function = nvul.function 
 			  					   AND nvulm.item = nvul.item
 			  					   AND nvulm.item_title = nvul.item_title
-			  					   AND nvulm.website = '.protect($website->id).'
-			  					   AND nvulm.user = '.protect($user->id).'
+			  					   AND nvulm.website = '.intval($website->id).'
+			  					   AND nvulm.user = '.intval($user->id).'
 							   )
 			ORDER BY nvul.date DESC
 			LIMIT '.$limit
@@ -169,22 +169,29 @@ class users_log
 		$DB->query('
 			SELECT DISTINCT nvul.website, nvul.function, nvul.item, nvul.date
 			FROM nv_users_log nvul
-			WHERE nvul.user = '.protect($user->id).'
-			  AND nvul.function = '.protect($function).'
+			WHERE nvul.user = :user_id
+			  AND nvul.function = :function
 			  AND nvul.item > 0
-			  AND nvul.action = '.protect($action).'
-			  AND nvul.website = '.protect($website->id).'
+			  AND nvul.action = :action
+			  AND nvul.website = :wid
 			  AND nvul.date > '.( core_time() - 30 * 86400).'
 			  AND nvul.date = (	SELECT MAX(nvulm.date) 
 			  					  FROM nv_users_log nvulm 
 			  					 WHERE nvulm.function = nvul.function 
 			  					   AND nvulm.item = nvul.item
 			  					   AND nvulm.item_title = nvul.item_title
-			  					   AND nvulm.website = '.protect($website->id).'
-			  					   AND nvulm.user = '.protect($user->id).'
+			  					   AND nvulm.website = :wid
+			  					   AND nvulm.user = :user_id
 							   )
 			ORDER BY nvul.date DESC
-			LIMIT '.$limit
+			LIMIT '.$limit,
+        'object',
+            array(
+                ':wid' => $website->id,
+                ':action' => $action,
+                ':function' => $function,
+                ':user_id' => $user->id
+            )
 		);
 
 		$rows = $DB->result();

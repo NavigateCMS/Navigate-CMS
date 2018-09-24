@@ -573,10 +573,17 @@ class file
 		if(empty($wid))
 			$wid = $website->id;
 
-		$DB->query('  SELECT * FROM nv_files
-					   WHERE name LIKE '.protect('%'.$text.'%').'
-					     AND website = '.$wid.'
-					ORDER BY '.$orderby);
+		$DB->query(
+		    'SELECT * FROM nv_files
+			  	   WHERE name LIKE :text
+				     AND website = :wid
+				ORDER BY '.$orderby,
+            'object',
+            array(
+                ':wid' => $wid,
+                ':text' => '%' . $text . '%'
+            )
+        );
 					
 		return $DB->result();		
 	}
@@ -587,22 +594,39 @@ class file
 		global $website;
 		
 		if(empty($wid))
-			$wid = $website->id;		
+        {
+			$wid = $website->id;
+        }
 
 		if($limit < 1)
+        {
 			$limit = 2147483647;
+        }
 
+        $query_params = array(
+            ':wid' => $wid,
+            ':type' => $media,
+        );
+
+		$text_search = "";
         if(!empty($text))
-            $text = ' AND name LIKE '.protect('%'.$text.'%');
+        {
+            $text_search = ' AND name LIKE :text';
+            $query_params[':text'] = '%' . $text . '%';
+        }
 		
-		$DB->query('  SELECT SQL_CALC_FOUND_ROWS * FROM nv_files
-					   WHERE type = '.protect($media).'
-					     AND enabled = 1
-						 AND website = '.$wid.'
-						 '.$text.'
-					ORDER BY '.$orderby.'
-					   LIMIT '.$limit.' 
-					  OFFSET '.$offset);
+		$DB->query(
+		    'SELECT SQL_CALC_FOUND_ROWS * FROM nv_files
+			  WHERE type = :type
+                 AND enabled = 1
+                 AND website = :wid 
+                 '.$text_search.'
+            ORDER BY '.$orderby.'
+               LIMIT '.$limit.' 
+              OFFSET '.$offset,
+            'object',
+            $query_params
+        );
 
         $total = $DB->foundRows();
         $rows = $DB->result();
@@ -2426,7 +2450,7 @@ class file
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_files WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_files WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
         if($type='json')

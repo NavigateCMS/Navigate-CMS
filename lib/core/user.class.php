@@ -51,10 +51,13 @@ class user
 		$user = mb_strtolower($user);
 		
 		$A1 = md5($user.':'.APP_REALM.':'.$pass);	
-		
-		if($DB->query('SELECT * 
-						 FROM nv_users 
-						WHERE LOWER(username) = '.protect($user)))
+        $found = $DB->query(
+            'SELECT * FROM nv_users WHERE LOWER(username) = :username',
+            'object',
+            array(':username' => $user)
+        );
+
+		if(!empty($found))
 		{		
 			$data = $DB->result();	
 							
@@ -336,9 +339,15 @@ class user
             'SELECT * 
              FROM nv_settings 
              WHERE  type = "user" AND 
-                    user = '.protect($this->id).' AND
-                    website = '.protect($website->id).' AND 
-                    name = '.protect($name)
+                    user = :user AND
+                    website = :website AND 
+                    name = :name',
+            'object',
+            array(
+                ':user' => $this->id,
+                ':website' => $website->id,
+                ':name' => $name
+            )
         );
 
         $setting = $DB->first();

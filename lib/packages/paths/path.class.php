@@ -137,9 +137,15 @@ class path
 		$ok = $DB->query('
 			SELECT *
 			  FROM nv_paths
-			 WHERE type = '.protect($type).'
-			   AND object_id = '.protect($object_id).'
-			   AND website = '.$website_id
+			 WHERE type = :type
+			   AND object_id = :object_id
+			   AND website = :wid',
+            'object',
+            array(
+                ':wid' => $website_id,
+                ':object_id' => $object_id,
+                ':type' => $type
+            )
 		);
 
 	    if(!$ok)
@@ -164,25 +170,40 @@ class path
 		global $website;
 
 		if(empty($website_id))
-			$website_id = $website->id;
+		{
+            $website_id = $website->id;
+        }
 		
-	    if(empty($object_id)) throw new Exception('ERROR path: No ID!');
+	    if(empty($object_id))
+        {
+            throw new Exception('ERROR path: No ID!');
+        }
 
 		// delete old entries
 		$DB->execute('
 			DELETE FROM nv_paths
-			WHERE type = '.protect($type).'
-			  AND object_id = '.protect($object_id).'
-			  AND website = '.$website_id
+			WHERE type = :type
+			  AND object_id = :object_id
+			  AND website = :wid',
+            array(
+                ':wid' => $website_id,
+                ':object_id' => $object_id,
+                ':type' => $type
+            )
 		);
 
         if(!is_array($paths))
+        {
             return;
+        }
 
 		// and now insert the new values
 		foreach($paths as $lang => $path)
 		{
-    	  	if(empty($path)) continue;
+    	  	if(empty($path))
+            {
+                continue;
+            }
     
 			$ok = $DB->execute('
  				INSERT INTO nv_paths
@@ -200,7 +221,10 @@ class path
 				)
 			);
   			
-  			if(!$ok) throw new Exception($DB->get_last_error());
+  			if(!$ok)
+            {
+                throw new Exception($DB->get_last_error());
+            }
 		}
 		
 	}
@@ -214,7 +238,7 @@ class path
 
         $DB->query('
 			SELECT * FROM nv_paths
-			WHERE website = '.protect($website->id),
+			WHERE website = '.intval($website->id),
 	        'object'
         );
         $out = $DB->result();

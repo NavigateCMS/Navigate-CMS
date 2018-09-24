@@ -92,10 +92,11 @@ class database
 	 * in the current active language.
 	 *
 	 * @param string $sql The complete SQL query
-	 * @param string $fetch_mode How to retrieve the data: "object" or "array" 
+	 * @param string $fetch_mode How to retrieve the data: "object" or "array"
+     * @param array $parameters SQL query parameters associative array
 	 * @return boolean True if the query was executed without errors
 	 */	
-	public function query($sql, $fetch_mode='object')
+	public function query($sql, $fetch_mode='object', $parameters=array())
 	{
 		$this->lastError = '';
 		$this->lastResult = '';
@@ -114,7 +115,15 @@ class database
 
 		try
 		{
-			$statement = $this->db->query($sql);
+		    if(empty($parameters))
+            {
+			    $statement = $this->db->query($sql);
+            }
+            else
+            {
+                $statement = $this->db->prepare($sql);
+                $statement->execute($parameters);
+            }
 			$this->queries_count++;
 
 			// avoid firing a fatal error exception when the result is NULL
@@ -146,17 +155,28 @@ class database
 	 * @param string $table Table name to get the data from
 	 * @param string $where SQL conditions in the WHERE clause
 	 * @param string $order SQL order conditions in the ORDER BY clause
+     * @param array $parameters SQL query parameters associative array
 	 * @return string|integer Value of the first column of the first row of the resultset
 	 */		
-	public function query_single($column, $table, $where = '1=1', $order = '')
+	public function query_single($column, $table, $where = '1=1', $order = '', $parameters=array())
 	{
 	    $rs = null;
         if(!empty($order))
             $order = ' ORDER BY '.$order;
 
+        $sql = 'SELECT ' . $column . ' FROM ' . $table . ' WHERE ' . $where . $order . ' LIMIT 1';
+
         try
         {
-            $stm = $this->db->query('SELECT ' . $column . ' FROM ' . $table . ' WHERE ' . $where . $order . ' LIMIT 1');
+            if(empty($parameters))
+            {
+                $stm = $this->db->query($sql);
+            }
+            else
+            {
+                $stm = $this->db->prepare($sql);
+                $stm->execute($parameters);
+            }
             $this->queries_count++;
             $stm->setFetchMode(PDO::FETCH_NUM);
             $rs = $stm->fetchAll();
@@ -168,8 +188,14 @@ class database
             return NULL;
         }
 
-		if(empty($rs)) 	return NULL;
-		else			return $rs[0][0];
+		if(empty($rs))
+		{
+            return NULL;
+        }
+		else
+        {
+            return $rs[0][0];
+        }
 	}
 
 
@@ -184,7 +210,7 @@ class database
 	 * @param integer $max How many rows will be returned of the resultset (after applying offset)
 	 * @return boolean True if the query could be executed without errors
 	 */	
-	public function	queryLimit($cols, $table, $where="1=1", $order="", $offset=0, $max=100)
+	public function	queryLimit($cols, $table, $where="1=1", $order="", $offset=0, $max=100, $parameters=array())
 	{		
 		$this->lastError = '';
 		$this->lastResult = '';	
@@ -199,7 +225,16 @@ class database
 					  LIMIT '.$max.'
 					 OFFSET '.$offset;
 
-			$statement = $this->db->query($sql);
+			if(empty($parameters))
+            {
+                $statement = $this->db->query($sql);
+            }
+            else
+            {
+                $statement = $this->db->prepare($sql);
+                $statement->execute($parameters);
+            }
+
             $this->queries_count++;
 			$statement->setFetchMode($fetch);
 			$this->lastResult = $statement->fetchAll();

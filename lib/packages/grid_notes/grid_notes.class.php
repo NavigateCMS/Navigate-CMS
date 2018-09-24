@@ -36,9 +36,14 @@ class grid_notes
             'background',
             'nv_notes',
             'website = '.$website->id.'
-             AND item_type = '.protect($item_type).'
-             AND item_id = '.protect($item_id).'
-             ORDER BY date_created DESC'
+             AND item_type = :item_type
+             AND item_id = :item_id
+             ORDER BY date_created DESC',
+            NULL,
+            array(
+                ':item_type' => $item_type,
+                ':item_id' => $item_id
+            )
         );
 
 
@@ -51,10 +56,14 @@ class grid_notes
             $DB->execute('
                 DELETE FROM nv_notes
                 WHERE website = '.$website->id.'
-                  AND item_type = '.protect($item_type).' 
-                  AND item_id = '.protect($item_id).'
-                  AND note = ""
-            ');
+                  AND item_type = :item_type 
+                  AND item_id = :item_id
+                  AND note = ""',
+                array(
+                    ':item_type' => $item_type,
+                    ':item_id' => $item_id
+                )
+            );
         }
 
     }
@@ -77,11 +86,17 @@ class grid_notes
             $DB->query(
                 'SELECT gn.id, gn.item_id, gn.background, gn.note, gn.date_created, u.username as creator
                    FROM nv_notes gn, nv_users u
-                  WHERE gn.website = '.protect($website->id).'
-                    AND gn.item_type = '.protect($type).'
-                    AND gn.item_id IN ('.implode(",", $ids).')
+                  WHERE gn.website = :wid
+                    AND gn.item_type = :item_type
+                    AND gn.item_id IN (:item_ids)
                     AND u.id = gn.user
-                  ORDER BY gn.item_id ASC, gn.date_created DESC'
+                  ORDER BY gn.item_id ASC, gn.date_created DESC',
+                'object',
+                array(
+                    ':wid' => $website->id,
+                    ':item_type' => $type,
+                    ':item_ids' => implode(",", $ids)
+                )
             );
 
             $grid_notes = $DB->result();
@@ -134,12 +149,17 @@ class grid_notes
         $DB->query("    
             SELECT gn.*, u.username as username
             FROM nv_notes gn, nv_users u
-            WHERE gn.website = ".protect($website->id)."
-              AND gn.item_type = ".protect($item_type)."
-              AND gn.item_id = ".protect($id)."
-              AND gn.user = u.id ".
-              $extra."
-            ORDER BY gn.date_created DESC"
+            WHERE gn.website = ".intval($website->id)."
+              AND gn.item_type = :item_type
+              AND gn.item_id = :item_id
+              AND gn.user = u.id 
+              ".$extra."
+            ORDER BY gn.date_created DESC",
+            'object',
+            array(
+                ':item_type' => $item_type,
+                ':item_id' => $id
+            )
         );
 
         $result = $DB->result();
@@ -200,8 +220,8 @@ class grid_notes
 
         $DB->execute('
             DELETE FROM nv_notes
-                WHERE website = '.protect($website->id).'
-                  AND id = '.protect($id).'
+                WHERE website = '.intval($website->id).'
+                  AND id = '.intval($id).'
                 LIMIT 1'
         );
 
@@ -215,10 +235,15 @@ class grid_notes
 
         $DB->execute('
             DELETE FROM nv_notes
-                WHERE website = '.protect($website->id).'
-                  AND item_type = '.protect($object_type).'
-                  AND item_id = '.protect($object_id).'
-                LIMIT 1'
+                WHERE website = :wid
+                  AND item_type = :object_type
+                  AND item_id = :object_id
+                LIMIT 1',
+            array(
+                ':wid' => $website->id,
+                ':object_type' => $object_type,
+                ':object_id' => $object_id
+            )
         );
 
         return 'true';
@@ -233,7 +258,7 @@ class grid_notes
 
         $DB->query('
             SELECT * FROM nv_notes 
-            WHERE website = '.protect($website->id),
+            WHERE website = '.intval($website->id),
             'object'
         );
         $out = $DB->result();

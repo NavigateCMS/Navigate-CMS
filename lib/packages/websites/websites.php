@@ -31,20 +31,26 @@ function run()
 					$DB->query('
 						SELECT p.path, d.text
 						  FROM nv_paths p, nv_webdictionary d
-						 WHERE p.website = '.protect($website->id).' AND
-						       p.lang = '.protect($lang).' AND
+						 WHERE p.website = :website_id AND
+						       p.lang = :lang AND
 						       d.website = p.website AND
 						       d.node_type = p.type AND
 						       d.node_id = p.object_id AND
 						       d.lang = p.lang AND
 						       d.subtype = "title" AND 
 						       (    
-						            p.path LIKE '.protect('%'.$text.'%').'  OR  
-									d.text LIKE '.protect('%'.$text.'%').' 
+						            p.path LIKE :text  OR  
+									d.text LIKE :text 
 						       )
 						 ORDER BY d.id DESC
-						 LIMIT 10
-					');
+						 LIMIT 10',
+                        'object',
+                        array(
+					        ':website_id' => $website->id,
+                            ':lang' => $lang,
+                            ':text' => '%' . $text . '%'
+                        )
+                    );
 
 					$result = $DB->result();
 
@@ -210,13 +216,18 @@ function run()
 			break;
 
 		case 5:	// search an existing path
-			$DB->query('SELECT path as id, path as label, path as value
+			$DB->query(
+			    'SELECT path as id, path as label, path as value
 						  FROM nv_paths
-						 WHERE path LIKE '.protect('%'.$_REQUEST['term'].'%').'
-						   AND website = '.protect($_REQUEST['wid']).'
+						 WHERE path LIKE :term
+						   AND website = :website_id
 				      ORDER BY path ASC
 					     LIMIT 30',
-						'array');
+                'array',
+                array(
+                    ':website_id' => $_REQUEST['wid'],
+                    ':term' => '%'.$_REQUEST['term'].'%'
+                ));
 
 			echo json_encode($DB->result());
 
@@ -453,7 +464,7 @@ function websites_form($item)
 				  FROM nv_webdictionary
 				  WHERE node_type = "item"
 				    AND website = '.$item->id.'
-				    AND text LIKE '.protect("%navigate_download.php%").'
+				    AND text LIKE "%navigate_download.php%"
 			    LIMIT 1
 		    ');
 		    $rs = $DB->result('text');
@@ -1206,7 +1217,7 @@ function websites_form($item)
 
     // number format | thousands separator
     $data = array(
-        0	=> json_decode('{"code": "", "name": "('.strtolower(t(581, "None")).') ---> 1234567"}'),
+        0	=> json_decode('{"code": "", "name": "('.mb_strtolower(t(581, "None")).') ---> 1234567"}'),
         1	=> json_decode('{"code": ",", "name": ", ---> 1,234,567"}'),
         2	=> json_decode('{"code": ".", "name": ". ---> 1.234.567"}'),
     );

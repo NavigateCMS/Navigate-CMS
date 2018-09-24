@@ -317,10 +317,15 @@ class feed
                            AND d.node_type = "item"
                            AND d.subtype = "title"
                            AND d.node_id = i.id
-                           AND d.lang = '.protect($current['lang']).'
+                           AND d.lang = :lang
                          ORDER BY pdate DESC
                          LIMIT '.$limit.'
-                        OFFSET 0');
+                        OFFSET 0',
+                'object',
+                array(
+                    ':lang' => $current['lang']
+                )
+            );
 								
 			$rs = $DB->result();
 			
@@ -451,7 +456,7 @@ class feed
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_feeds WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_feeds WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
         if($type='json')

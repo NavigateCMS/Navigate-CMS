@@ -274,13 +274,17 @@ function run()
 
         case 'path':
 		case 5:	// search an existing path
-			$DB->query('SELECT path as id, path as label, path as value
+			$DB->query(
+			    'SELECT path as id, path as label, path as value
 						  FROM nv_paths
-						 WHERE path LIKE '.protect('%'.$_REQUEST['term'].'%').' 
+						 WHERE path LIKE :path 
 						   AND website = '.$website->id.'
 				      ORDER BY path ASC
 					     LIMIT 10',
-						'array');
+                'array',
+                array(
+                    ':path' => '%' . $_REQUEST['term'] . '%'
+                ));
 						
 			echo json_encode($DB->result());
 							  

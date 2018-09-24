@@ -49,7 +49,7 @@ function nvweb_properties($vars=array())
 			{
 				// load item template
 				if(empty($vars['template']))
-					$vars['template'] = $DB->query_single('template', 'nv_items', ' id = '.protect($vars['id']));
+					$vars['template'] = $DB->query_single('template', 'nv_items', ' id = '.intval($vars['id']));
 
                 // if template is not defined (embedded element), take its category template
                 if(empty($vars['template']))
@@ -109,7 +109,7 @@ function nvweb_properties($vars=array())
 				// load item type
 				if(empty($vars['type']))
                 {
-                    $vars['type'] = $DB->query_single('type', 'nv_blocks', ' id = '.protect($vars['id']));
+                    $vars['type'] = $DB->query_single('type', 'nv_blocks', ' id = '.intval($vars['id']));
 
                     if(empty($cache['block_types']))
                         $cache['block_types'] = block::types();
@@ -191,7 +191,7 @@ function nvweb_properties($vars=array())
 			if(!isset($properties['structure-'.$vars['id']]))	
 			{
 				// load category template
-				$category_template = $DB->query_single('template', 'nv_structure', ' id = '.protect($vars['id']));
+				$category_template = $DB->query_single('template', 'nv_structure', ' id = '.intval($vars['id']));
 				if(!empty($category_template))
 				{
 					$properties['structure-'.$vars['id']] = property::load_properties("structure", $category_template, 'structure', $vars['id']);
@@ -578,7 +578,7 @@ function nvweb_properties_render($property, $vars)
 		case 'file':
             if(!empty($property->value))
             {
-			    $file = $DB->query_single('name', 'nv_files', ' id = '.protect($property->value).' AND website = '.$website->id);
+			    $file = $DB->query_single('name', 'nv_files', ' id = '.intval($property->value).' AND website = '.intval($website->id));
 
                 if($vars['return']=='url' || $vars['return']=='url-download')
                     $out = NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment';

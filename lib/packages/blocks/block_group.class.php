@@ -27,9 +27,17 @@ class block_group
 		global $DB;
 		global $website;
 
-		if($DB->query('SELECT * FROM nv_block_groups
-						WHERE code = '.protect($code).'
-						  AND website = '.$website->id))
+        $found = $DB->query(
+            'SELECT * FROM nv_block_groups
+                  WHERE code = :code
+                    AND website = '.$website->id,
+            'object',
+            array(
+                ':code' => $code
+            )
+        );
+
+		if($found)
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data);
@@ -198,7 +206,7 @@ class block_group
         $DB->queryLimit(
             '*',
             'nv_block_groups',
-            'website = '.protect($website->id),
+            'website = '.intval($website->id),
             $order_by_field.' '.$order_by_ascdesc,
             $offset,
             $limit
@@ -235,7 +243,7 @@ class block_group
         $DB->query('
             SELECT *
               FROM nv_block_groups
-             WHERE website = '.protect($website->id),
+             WHERE website = '.intval($website->id),
             'object'
         );
         $out = $DB->result();

@@ -37,9 +37,6 @@ function run()
 					break;
 
                 case 'products_by_tag':
-                    $tag = $_REQUEST['tag'];
-                    $lang = $_REQUEST['lang'];
-
                     $DB->query('
                         SELECT p.id, p.access, p.date_created AS date, d.text as title                               
                                FROM nv_products p
@@ -47,18 +44,24 @@ function run()
                                      ON p.id = d.node_id
                                     AND d.node_type = "product"
                                     AND d.subtype = "title"
-                                    AND d.lang = '.protect($lang).'
-                                    AND d.website = '.$website->id.'
+                                    AND d.lang = :lang
+                                    AND d.website = :wid
                             WHERE p.id IN (
                                 SELECT node_id FROM nv_webdictionary
-                                 WHERE website = ' . $website->id . '
+                                 WHERE website = :wid
                                    AND node_type = "product"
                                    AND subtype = "tags"
-                                   AND lang = ' . protect($lang) . '
-                                   AND FIND_IN_SET('.protect($tag).', text) > 0
+                                   AND lang = :lang
+                                   AND FIND_IN_SET(:tag, text) > 0
                             )
-                        ORDER BY p.id DESC
-                    ');
+                        ORDER BY p.id DESC',
+                        'object',
+                        array(
+                            ':wid' => $website->id,
+                            ':lang' => $_REQUEST['lang'],
+                            ':tag' => $_REQUEST['tag']
+                        )
+                    );
 
                     $rs = $DB->result();
 
@@ -106,7 +109,7 @@ function run()
 					$max	    =   intval($_REQUEST['rows']);
 					$offset     =   ($page - 1) * $max;
 					$orderby    =   $_REQUEST['sidx'].' '.$_REQUEST['sord'];
-					$where      =   ' p.website = '.$website->id;
+					$where      =   ' p.website = :wid';
 
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
@@ -153,31 +156,42 @@ function run()
 							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
 					}
 
-					$sql = ' SELECT SQL_CALC_FOUND_ROWS
-					                p.*, d.text as title, d.lang as language,
-                                    u.username as author_username,
-                                    (   SELECT COUNT(*)
-                                        FROM nv_comments cm
-                                        WHERE cm.object_type = "product"
-                                          AND cm.object_id = p.id
-                                          AND cm.website = '.$website->id.'
-                                    ) as comments
-							   FROM nv_products p
-						  LEFT JOIN nv_webdictionary d
-						  		 	 ON p.id = d.node_id
-								 	AND d.node_type = "product"
-									AND d.subtype = "title"
-									AND d.lang = '.protect($website->languages_list[0]).'
-									AND d.website = '.$website->id.'
-						  LEFT JOIN nv_users u
-						  			 ON u.id = p.author
-							  WHERE '.$where.'							   
-						   ORDER BY '.$orderby.' 
-							  LIMIT '.$max.'
-							 OFFSET '.$offset;
+                    $query_params = array(
+                        ':wid' => $website->id,
+                        ':lang' => $website->languages_list[0]
+                    );
 
-					if(!$DB->query($sql, 'array'))
-						throw new Exception($DB->get_last_error());
+					$ok = $DB->query(
+					    'SELECT SQL_CALC_FOUND_ROWS
+                                p.*, d.text as title, d.lang as language,
+                                u.username as author_username,
+                                (   SELECT COUNT(*)
+                                    FROM nv_comments cm
+                                    WHERE cm.object_type = "product"
+                                      AND cm.object_id = p.id
+                                      AND cm.website = :wid
+                                ) as comments
+                           FROM nv_products p
+                      LEFT JOIN nv_webdictionary d
+                                 ON p.id = d.node_id
+                                AND d.node_type = "product"
+                                AND d.subtype = "title"
+                                AND d.lang = :lang
+                                AND d.website = :wid
+                      LEFT JOIN nv_users u
+                                 ON u.id = p.author
+                          WHERE '.$where.'							   
+                       ORDER BY '.$orderby.' 
+                          LIMIT '.$max.'
+                         OFFSET '.$offset,
+                        'array',
+                        $query_params
+                    );
+
+					if(!$ok)
+					{
+                        throw new Exception($DB->get_last_error());
+                    }
 
 					$dataset = $DB->result();	
 					$total = $DB->foundRows();
@@ -458,15 +472,23 @@ function run()
 			break;
 
 		case "load_content_history":
-			$DB->query('SELECT id, date_created, autosave
-						  FROM nv_webdictionary_history
-						 WHERE node_type = "product"
-						   AND subtype = '.protect('section-'.$_REQUEST['section']).'
-						   AND lang = '.protect($_GET['lang']).'
-						   AND node_id = '.protect($_REQUEST['id']).'
-						   AND website = '.$website->id.' 
-				      ORDER BY date_created DESC',
-						'array');		
+			$DB->query(
+			    'SELECT id, date_created, autosave
+                      FROM nv_webdictionary_history
+                     WHERE node_type = "product"
+                       AND subtype = :subtype
+                       AND lang = :lang
+                       AND node_id = :node_id
+                       AND website = :wid 
+                  ORDER BY date_created DESC',
+                'array',
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $_REQUEST['lang'],
+                    ':node_id' => $_REQUEST['id'],
+                    ':subtype' => 'section-'.$_REQUEST['section']
+                )
+            );
 			
 			$result = $DB->result();
 			
@@ -490,12 +512,17 @@ function run()
 				  FROM nv_webdictionary
 				 WHERE node_type = "product"
 				   AND subtype = "title"
-				   AND lang = '.protect($_REQUEST['lang']).'
-				   AND website = '.$website->id.'
-				   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+				   AND lang = :lang
+				   AND website = :wid
+				   AND text LIKE :text
 		      ORDER BY text ASC
 			     LIMIT 20',
-				'array'
+				'array',
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $_REQUEST['lang'],
+                    ':text' => '%' . $_REQUEST['title'] . '%'
+                )
 			);
 
 			echo json_encode($DB->result());
@@ -510,40 +537,58 @@ function run()
 		
 			if($_REQUEST['history']=='true')
 			{
-				$DB->query('SELECT text
-							  FROM nv_webdictionary_history
-							 WHERE node_type = "product"
-							   AND website = '.$website->id.' 
-							   AND id = '.protect($_REQUEST['id']),							   
-							'array');	
+				$DB->query(
+				    'SELECT text
+                          FROM nv_webdictionary_history
+                         WHERE node_type = "product"
+                           AND website = '.intval($website->id).' 
+                           AND id = '.intval($_REQUEST['id']),
+                    'array'
+                );
 							
 				$data = $DB->first();				
 				echo $data['text'];		
 			}
 			else if($_REQUEST['zone'] == 'section')
 			{		
-				$DB->query('SELECT text
-							  FROM nv_webdictionary
-							 WHERE node_type = "product"
-							   AND subtype = '.protect('section-'.$_REQUEST['section']).'
-							   AND lang = '.protect($_REQUEST['lang']).'
-							   AND website = '.$website->id.' 
-							   AND node_id = '.protect($_REQUEST['node_id']),
-							'array');
+				$DB->query(
+				    'SELECT text
+                          FROM nv_webdictionary
+                         WHERE node_type = "product"
+                           AND subtype = :subtype
+                           AND lang = :lang
+                           AND website = :wid 
+                           AND node_id = :node_id',
+                    'array',
+                    array(
+                        ':wid' => $website->id,
+                        ':lang' => $_REQUEST['lang'],
+                        ':subtype' => 'section-'.$_REQUEST['section'],
+                        ':node_id' => $_REQUEST['node_id']
+                    )
+                );
 
 				$data = $DB->first();				
 				echo $data['text'];
 			}
 			else if($_REQUEST['zone'] == 'property')
 			{
-				$DB->query('SELECT text
-							  FROM nv_webdictionary
-							 WHERE node_type = "property-product"
-							   AND subtype = '.protect('property-'.$_REQUEST['section'].'-'.$_REQUEST['lang']).'
-							   AND lang = '.protect($_REQUEST['lang']).'
-							   AND website = '.$website->id.'
-							   AND node_id = '.protect($_REQUEST['node_id']),
-							'array');
+				$DB->query(
+				    'SELECT text
+                          FROM nv_webdictionary
+                         WHERE node_type = "property-product"
+                           AND subtype = :subtype
+                           AND lang = :lang
+                           AND website = :wid
+                           AND node_id = :node_id',
+                    'array',
+                    array(
+                        ':subtype' => 'property-'.$_REQUEST['section'].'-'.$_REQUEST['lang'],
+                        ':lang' => $_REQUEST['lang'],
+                        ':wid' => $website->id,
+                        ':node_id' => $_REQUEST['node_id']
+                    )
+                );
 
 				$data = $DB->first();
 				echo $data['text'];
@@ -602,13 +647,16 @@ function run()
 			break;
 
         case 'path_free_check':
-			$path = $_REQUEST['path'];
-
 			$DB->query('
                 SELECT type, object_id, lang
                   FROM nv_paths
-                 WHERE path = '.protect($path).'
-                   AND website = '.$website->id
+                 WHERE path = :path
+                   AND website = :wid',
+            'object',
+                array(
+                    ':wid' => $website->id,
+                    ':path' => $_REQUEST['path']
+                )
             );
 			
 			$rs = $DB->result();
@@ -623,8 +671,13 @@ function run()
 			$DB->query('
                 SELECT id
                   FROM nv_products
-                 WHERE sku = '.protect($sku).'
-                   AND website = '.$website->id
+                 WHERE sku = :sku
+                   AND website = :wid',
+            'object',
+                array(
+                    ':sku' => $sku,
+                    ':wid' => $website->id
+                )
             );
 
 			$rs = $DB->result();
@@ -642,11 +695,14 @@ function run()
 			$DB->query('
 				SELECT id, username as text
 				  FROM nv_users
-				 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
+				 WHERE username LIKE :username
 		      ORDER BY username ASC
 			     LIMIT 30',
-				'array
-			');
+				'array',
+                array(
+                    ':username' => '%'.$_REQUEST['username'].'%'
+                )
+            );
 						
 			$rows = $DB->result();
             $total = $DB->foundRows();
@@ -670,19 +726,29 @@ function run()
             // find items by its title
             // any language
 
-            $template_filter = '';
-
-	        if(!empty($_REQUEST['template']))
-                $template_filter = ' AND nvp.template = '.protect($_REQUEST['template']).' ';
-
             $text = $_REQUEST['title'];
             if(!empty($_REQUEST['term'])) // tagit request
+            {
                 $text = $_REQUEST['term'];
+            }
+
+            $query_params = array(
+                ':wid' => $website->id,
+                ':lang' => $website->languages_published[0],
+                ':text' => '%' . $text . '%'
+            );
+
+            $template_filter = '';
+            if(!empty($_REQUEST['template']))
+            {
+                $template_filter = ' AND nvp.template = :template ';
+                $query_params[':template'] = $_REQUEST['template'];
+            }
 
             $limit = intval($_REQUEST['page_limit']);
             if(empty($limit)) $limit = null;
             $limit = value_or_default($limit, 1000);
-            
+
             $sql = '
 				SELECT SQL_CALC_FOUND_ROWS DISTINCT nvw.node_id as id, nvw.text as text
 				  FROM nv_webdictionary nvw, nv_products nvp
@@ -690,21 +756,17 @@ function run()
 				   AND nvw.node_id = nvp.id
 				   '.$template_filter.'
 				   AND nvw.subtype = "title"
-				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = :wid
 				   AND nvw.website = nvp.website
-				   AND ( nvw.text LIKE ' . protect('%' . $text . '%') . ' 
-				        OR
-				        ( nvp.id LIKE  ' . protect('%' . $text . '%') . ' 
-				          AND
-				          nvw.lang = '.protect($website->languages_published[0]).'
-				        )
+				   AND ( nvw.text LIKE :text 
+				        OR ( nvp.id LIKE :text AND nvw.lang = :lang )
 				       )
 		        GROUP BY nvw.node_id, nvw.text
 		        ORDER BY nvw.text ASC
 			     LIMIT '.$limit.'
 			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
 
-            $DB->query($sql, 'array');
+            $DB->query($sql, 'array', $query_params);
             $rows = $DB->result();
 			$total = $DB->foundRows();
 
@@ -737,14 +799,20 @@ function run()
 				SELECT SQL_CALC_FOUND_ROWS nvb.*
 				  FROM nv_brands nvb
 				 WHERE nvb.website = '.$website->id.' AND ( 
-				         nvb.name LIKE ' . protect('%' . $text . '%') . '    OR
-				         nvb.id LIKE   ' . protect('%' . $text . '%') . '
+				         nvb.name LIKE :text OR
+				         nvb.id LIKE :text
                        )
 		        ORDER BY nvb.name ASC
 			     LIMIT '.$limit.'
 			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
 
-            $DB->query($sql, 'array');
+            $DB->query(
+                $sql,
+                'array',
+                array(
+                    ':text' => '%' . $text . '%'
+                )
+            );
             $rows = $DB->result();
 			$total = $DB->foundRows();
 
@@ -1464,7 +1532,9 @@ function products_form($item)
 
 	$brand_name = "";
 	if(!empty($item->brand))
+    {
         $brand_name = $DB->query_single('name', 'nv_brands', 'id = '.intval($item->brand));
+    }
 
     $navibars->add_tab_content_row(
         array(
@@ -2110,9 +2180,9 @@ function products_form($item)
                   FROM nv_comments nvc
                  LEFT OUTER JOIN nv_webusers nvwu 
                               ON nvwu.id = nvc.user
-                 WHERE nvc.website = '.protect($website->id).'
+                 WHERE nvc.website = '.intval($website->id).'
                    AND nvc.object_type = "product"
-                   AND nvc.object_id = '.protect($item->id).'
+                   AND nvc.object_id = '.intval($item->id).'
                 ORDER BY nvc.date_created ASC
                 LIMIT 500
             ');

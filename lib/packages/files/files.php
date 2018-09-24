@@ -420,7 +420,7 @@ function files_browser($parent, $search="")
     $navibrowse_hierarchy = $navibrowse->generate();
 	$navibars->add_content($navibrowse_hierarchy);
     
-    $layout->add_script('
+    $layout->add_script('    
         navigate_file_drop(
             ".navibrowse",
             "'.$parent.'",

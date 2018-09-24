@@ -101,12 +101,17 @@ function run()
 		case 95: // free path checking
 			
 			$path = $_REQUEST['path'];
-			$id = $_REQUEST['id'];
 			
-			$DB->query('SELECT type, object_id, lang
-	 					  FROM nv_paths
-						 WHERE path = '.protect($path).'
-						   AND website = '.$website->id);
+			$DB->query(
+			    'SELECT type, object_id, lang
+	 			 	   FROM nv_paths
+					  WHERE path = :path 
+					    AND website = :wid',
+                'object',
+                array(
+                    ':wid' => $website->id,
+                    ':path' => $path
+                ));
 						 
 			$rs = $DB->result();
 			
@@ -127,9 +132,17 @@ function run()
             if(!empty($_REQUEST['term'])) // tagit request
                 $text = $_REQUEST['term'];
 
+            $query_params = array(
+                ':wid' => $website->id,
+                ':text' => '%' . $text . '%'
+            );
+
             $language_filter = "";
             if(!empty($_REQUEST['lang']))
-                $language_filter = ' AND nvw.lang = '.protect($_REQUEST['lang']);
+            {
+                $language_filter = ' AND nvw.lang = :lang ';
+                $query_params[':lang'] = $_REQUEST['lang'];
+            }
 
 			$DB->query('
 				SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as text
@@ -138,16 +151,17 @@ function run()
 				   AND nvw.node_id = nvi.id
 				   AND nvw.subtype = "title"
 				   AND (	nvi.association = "free" OR
-				            (nvi.association = "category" AND nvi.embedding=0)
+				            (nvi.association = "category" AND nvi.embedding = 0)
 				   )
 				   '.$language_filter.'
-				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = :wid
 				   AND nvw.website = nvi.website
-				   AND nvw.text LIKE '.protect('%'.$text.'%').'
+				   AND nvw.text LIKE :text
 		      ORDER BY nvw.text ASC
 			     LIMIT '.intval($_REQUEST['page_limit']).'
 			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
-				'array'
+				'array',
+                $query_params
 			);
 
             $rows = $DB->result();
@@ -179,9 +193,17 @@ function run()
             if(!empty($_REQUEST['term'])) // tagit request
                 $text = $_REQUEST['term'];
 
+            $query_params = array(
+                ':wid' => $website->id,
+                ':text' => '%'.$text.'%'
+            );
+
             $language_filter = "";
             if(!empty($_REQUEST['lang']))
-                $language_filter = ' AND nvw.lang = '.protect($_REQUEST['lang']);
+            {
+                $language_filter = ' AND nvw.lang = :lang ';
+                $query_params[':lang'] = $_REQUEST['lang'];
+            }
 
 			$DB->query('
 				SELECT SQL_CALC_FOUND_ROWS nvw.node_id as id, nvw.text as text
@@ -190,9 +212,9 @@ function run()
 				   AND nvw.node_id = nvs.id
 				   AND nvw.subtype = "title"
 				   '.$language_filter.'
-				   AND nvw.website = '.$website->id.'
+				   AND nvw.website = :wid
 				   AND nvw.website = nvs.website
-				   AND nvw.text LIKE '.protect('%'.$text.'%').'
+				   AND nvw.text LIKE :text
 		      ORDER BY nvw.text ASC
 			     LIMIT '.intval($_REQUEST['page_limit']).'
 			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
@@ -225,12 +247,17 @@ function run()
 					  FROM nv_webdictionary
 					 WHERE node_type = "structure"
 					   AND subtype = "title"
-					   AND lang = '.protect($_REQUEST['lang']).'
-					   AND website = '.$website->id.'
-					   AND text LIKE '.protect('%'.$_REQUEST['title'].'%').'
+					   AND lang = :lang 
+					   AND website = :wid
+					   AND text LIKE :text
 			      ORDER BY text ASC
 				     LIMIT 30',
-					'array'
+					'array',
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $_REQUEST['lang'],
+                    ':text' => '%'.$_REQUEST['title'].'%'
+                )
 			);
 
 			echo json_encode($DB->result());
@@ -277,14 +304,21 @@ function run()
 
 			if($_REQUEST['zone'] == 'property')
 			{
-				$DB->query('SELECT text
-							  FROM nv_webdictionary
-							 WHERE node_type = "property-structure"
-							   AND subtype = '.protect('property-'.$_REQUEST['section'].'-'.$_REQUEST['lang']).'
-							   AND lang = '.protect($_REQUEST['lang']).'
-							   AND website = '.$website->id.'
-							   AND node_id = '.protect($_REQUEST['node_id']),
-							'array');
+				$DB->query(
+				    'SELECT text
+                      FROM nv_webdictionary
+                     WHERE node_type = "property-structure"
+                       AND subtype = :subtype
+                       AND lang = :lang							   
+                       AND website = :wid
+                       AND node_id = :node_id',
+                    'array',
+                    array(
+                        ':wid' => $website->id,
+                        ':lang' => $_REQUEST['lang'],
+                        ':subtype' => 'property-'.$_REQUEST['section'].'-'.$_REQUEST['lang'],
+                        ':node_id' => $_REQUEST['node_id']
+                    ));
 
 				$data = $DB->first();
 				echo $data['text'];
@@ -648,20 +682,20 @@ function structure_form($item)
 
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$parent->id.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_first.png"> 
-                                        <small>('.strtolower(t(84, 'Parent')).')</small> '.$parent->dictionary[$website->languages_list[0]]["title"].
+                                        <small>('.mb_strtolower(t(84, 'Parent')).')</small> '.$parent->dictionary[$website->languages_list[0]]["title"].
                                     '</a>';
         }
 
         if(!empty($previous_brother))
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$previous_brother.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_previous.png"> 
-                                        <small>('.strtolower(t(501, 'Previous')).')</small> '.$previous_brother_title.
+                                        <small>('.mb_strtolower(t(501, 'Previous')).')</small> '.$previous_brother_title.
                                     '</a>';
 
         if(!empty($next_brother))
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$next_brother.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_next.png"> 
-                                        <small>('.strtolower(t(502, 'Next')).')</small> '.$next_brother_title.
+                                        <small>('.mb_strtolower(t(502, 'Next')).')</small> '.$next_brother_title.
                                     '</a>';
     }
 

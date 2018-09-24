@@ -134,7 +134,7 @@ class brand
         global $DB;
         global $website;
 
-        $DB->query('SELECT * FROM nv_brands WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_brands WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
         if($type='json')

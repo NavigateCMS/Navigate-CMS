@@ -184,15 +184,22 @@ function core_load_function($fid)
             break;
 
         default:
+            $query_params = NULL;
             if(is_numeric($fid))
+            {
                 $where = 'id = '.intval($fid);
+            }
             else
-                $where = 'codename = '.protect($fid);
+            {
+                $where = 'codename = :codename';
+                $query_params = array(':codename' => $fid);
+            }
 
-            $DB->query('SELECT *
-                          FROM nv_functions
-                         WHERE '.$where.'
-                           AND enabled = 1');
+            $DB->query(
+                'SELECT * FROM nv_functions WHERE '.$where.' AND enabled = 1',
+                'object',
+                $query_params
+            );
 
             $func = $DB->first();
 
@@ -1179,9 +1186,9 @@ function navigate_compose_email($data, $style=array())
         $title_color = '#595959';
         $text_color = '#595959';
 
-        $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.background_color") . ' AND website = ' . protect($website->id), 'id DESC');
-        $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.text_color") . ' AND website = ' . protect($website->id), 'id DESC');
-        $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = ' . protect("nvweb.comments.titles_color") . ' AND website = ' . protect($website->id), 'id DESC');
+        $background_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.background_color" AND website = ' . intval($website->id), 'id DESC');
+        $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.text_color" AND website = ' . intval($website->id), 'id DESC');
+        $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.titles_color" AND website = ' . intval($website->id), 'id DESC');
 
         if (!empty($background_color_db))
             $background_color = str_replace('"', '', $background_color_db);

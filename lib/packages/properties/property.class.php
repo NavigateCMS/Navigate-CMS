@@ -482,21 +482,33 @@ class property
 
         if(is_numeric($code))
         {
+            $query_params = array(
+                ':template' => $code,
+                ':wid' => $website_id
+            );
+
             // properties attached to a custom template (not a theme template)
             if(!empty($element))
-                $element = ' AND element = '.protect($element);
+            {
+                $element = ' AND element = :element ';
+                $query_params[':element'] = $element;
+            }
             else
+            {
                 $element = ' AND element != "block"';
+            }
 
-            if($DB->query('
-                   SELECT *
-                   FROM nv_properties
-                   WHERE template = '.protect($code).'
-                   '.$element.'
-                     AND website = '.$website_id.'
-                   ORDER BY position ASC, id ASC'
-                )
-            )
+            $ok = $DB->query(
+            'SELECT * FROM nv_properties
+                 WHERE template = :template
+                  '.$element.'
+                  AND website = :wid
+                ORDER BY position ASC, id ASC',
+                'object',
+                $query_params
+            );
+
+            if($ok)
             {
                 $data = $DB->result();
             }
@@ -742,7 +754,12 @@ class property
                 $block_group_id = $DB->query_single(
                     'MAX(id)',
                     'nv_block_groups',
-                    ' code = '.protect($code).' AND website = '.$website->id
+                    ' code = :code AND website = :wid',
+                    NULL,
+                    array(
+                        ':wid' => $website->id,
+                        ':code' => $code
+                    )
                 );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
@@ -773,7 +790,16 @@ class property
             if(empty($object_id))
             {
                 // we need to find the block_group ID by checking the block uid
-                $block_group_id = $DB->query_single('id', 'nv_block_groups', ' blocks LIKE '.protect('%'.$item_uid.'%').' AND website = '.$website->id);
+                $block_group_id = $DB->query_single(
+                    'id',
+                    'nv_block_groups',
+                    ' blocks LIKE :uid AND website = :wid',
+                    NULL,
+                    array(
+                        ':wid' => $website->id,
+                        ':uid' => '%'.$item_uid.'%'
+                    )
+                );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -782,7 +808,16 @@ class property
             // at the end, $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
             else if(!empty($code))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($object_id).' AND website = '.$website->id);
+                $block_group_id = $DB->query_single(
+                    'MAX(id)',
+                    'nv_block_groups',
+                    ' code = :object_id AND website = :wid',
+                    null,
+                    array(
+                        ':wid' => $website->id,
+                        ':object_id' => $object_id
+                    )
+                );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -806,13 +841,27 @@ class property
 
     	// load the assigned (simple) properties values
         // check node_uid empty or NULL to mantain compatibility with Navigate CMS < 2.2
+        $query_params = array(
+            ':wid' => $website->id,
+            ':object_type' => $object_type,
+            ':object_id' => $object_id
+        );
+
+        $uid_filter = '';
+        if(!empty($item_uid))
+        {
+            $uid_filter = ' AND ( node_uid = :node_uid OR node_uid = "" OR node_uid IS NULL )';
+            $query_params[':node_uid'] = $item_uid;
+        }
+
 		$DB->query('
 		    SELECT * FROM nv_properties_items
- 			 WHERE element = '.protect($object_type).'
-			   AND node_id = '.protect($object_id).
-			   (empty($item_uid)? '' : ' AND ( node_uid = '.protect($item_uid).' OR node_uid = "" OR node_uid IS NULL )').'
-			   AND website = '.$website->id,
-            'array'
+ 			 WHERE element = :object_type
+			   AND node_id = :object_id
+			   '.$uid_filter.'			   
+			   AND website = :wid',
+            'array',
+            $query_params
         );
 
 		$values = $DB->result();
@@ -882,7 +931,16 @@ class property
 
             if(!is_numeric($object_id))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($code).' AND website = '.$website->id);
+                $block_group_id = $DB->query_single(
+                    'MAX(id)',
+                    'nv_block_groups',
+                    ' code = :code AND website = :wid',
+                    null,
+                    array(
+                        ':wid' => $website->id,
+                        ':code' => $code
+                    )
+                );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -912,7 +970,16 @@ class property
             // $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
             if(!empty($code))
             {
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($object_id).' AND website = '.$website->id);
+                $block_group_id = $DB->query_single(
+                    'MAX(id)',
+                    'nv_block_groups',
+                    ' code = :object_id AND website = :wid',
+                    null,
+                    array(
+                        ':wid' => $website->id,
+                        ':object_id' => $object_id
+                    )
+                );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -971,15 +1038,30 @@ class property
             if(($property->type=='element' || $property->type=='item') && !isset($_REQUEST['property-'.$property->id]))
                 $property_value = "";
 
+            $query_params = array(
+                ':wid' => $website->id,
+                ':property_id' => $property->id,
+                ':object_type' => $object_type,
+                ':object_id' => $object_id
+            );
+
+            $uid_filter = '';
+            if(!empty($object_uid))
+            {
+                $uid_filter = ' AND node_uid = :object_uid ';
+                $query_params[':object_uid'] = $object_uid;
+            }
+
             // remove the old property row
             $DB->execute('
                 DELETE
                      FROM nv_properties_items
-                    WHERE property_id = '.protect($property->id).'
-                      AND element = '.protect($object_type).'
-                      AND node_id = '.protect($object_id).
-                      (empty($object_uid)? '' : ' AND node_uid = '.protect($object_uid)).'
-                      AND website = '.$website->id
+                    WHERE property_id = :property_id
+                      AND element = :object_type
+                      AND node_id = :object_id
+                      '.$uid_filter.'
+                      AND website = :wid',
+                $query_params
             );
 
             // now insert the new row
@@ -1078,7 +1160,16 @@ class property
             if(!is_numeric($object_id))
             {
                 // assume there can only be one block group of the same type
-                $block_group_id = $DB->query_single('MAX(id)', 'nv_block_groups', ' code = '.protect($code).' AND website = '.$ws->id);
+                $block_group_id = $DB->query_single(
+                    'MAX(id)',
+                    'nv_block_groups',
+                    ' code = :code AND website = :wid',
+                    null,
+                    array(
+                        ':code' => $code,
+                        ':wid' => $ws->id
+                    )
+                );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
                     $object_id = 0;
@@ -1204,13 +1295,29 @@ class property
                 $value = ""; // should not be needed because of value_or_default, but doing this here fixes some warnings
 
             // remove the old property value row
+
+            $query_params = array(
+                ':wid' => $ws->id,
+                ':object_id' => $object_id,
+                ':pr_object_type' => $property_object_type,
+                ':pr_id' => $property->id
+            );
+
+            $uid_filter = '';
+            if(!empty($node_uid))
+            {
+                $uid_filter = ' AND node_uid = :node_uid ';
+                $query_params[':node_uid'] = $node_uid;
+            }
+
             $DB->execute('
 				DELETE FROM nv_properties_items
-                	  WHERE property_id = '.protect($property->id).'
-                        AND element = '.protect($property_object_type).'
-                        AND node_id = '.protect($object_id).
-                        (empty($node_uid)? '' : ' AND node_uid = '.protect($node_uid)).'
-                        AND website = '.$ws->id
+                	  WHERE property_id = :pr_id
+                        AND element = :pr_object_type
+                        AND node_id = :object_id                        
+                        AND website = :wid
+                        '.$uid_filter,
+                $query_params
             );
 
             // now we insert a new row
@@ -1275,10 +1382,15 @@ class property
 
         $DB->execute('
             DELETE FROM nv_properties_items
-                  WHERE website = '.$website_id.'
-                    AND element = '.protect($element_type).'
-                    AND node_id = '.intval($element_id).'
-        ');
+                  WHERE website = :wid
+                    AND element = :e_type
+                    AND node_id = :e_id ',
+            array(
+                ':wid' => $website_id,
+                ':e_type' => $element_type,
+                ':e_id' => $element_id
+            )
+        );
     }
 
     public static function country_name_by_code($code, $language="")
@@ -1287,10 +1399,17 @@ class property
 
         $lang = core_get_language($language);
 
-        $DB->query('SELECT name
-					FROM nv_countries
-		 			WHERE lang = '.protect($lang).'
-					  AND country_code = '.protect($code));
+        $DB->query(
+            'SELECT name
+			 	  FROM nv_countries
+		 		  WHERE lang = :lang
+				    AND country_code = :ccode',
+            'object',
+            array(
+                ':ccode' => $code,
+                ':lang' => $lang
+            )
+        );
 
         $row = $DB->first();
 
@@ -1310,10 +1429,16 @@ class property
         if($alpha3)
             $code = 'alpha3';
 
-		$DB->query('SELECT '.$code.' AS country_code, name
-					FROM nv_countries
-		 			WHERE lang = '.protect($lang).'
-					ORDER BY name ASC');
+		$DB->query(
+		    'SELECT '.$code.' AS country_code, name
+			  	  FROM nv_countries
+		 		  WHERE lang = :lang
+				  ORDER BY name ASC',
+            'object',
+            array(
+                ':lang' => $lang
+            )
+        );
 					
 		$rs = $DB->result();
 		
@@ -1346,7 +1471,7 @@ class property
 
         $country_query = " 1=1 ";
         if(!empty($country_id))
-            $country_query = ' AND r.country = '.protect($country_id);
+            $country_query = ' AND r.country = '.intval($country_id);
 
 		$DB->query('
             SELECT r.`numeric` AS region_id, c.country_code, r.name
@@ -1370,9 +1495,11 @@ class property
         // TODO: region names have no translation in database at this time
         // $lang = core_get_language($language);
 
-        $DB->query('SELECT name
-					FROM nv_countries_regions
-		 			WHERE `numeric` = '.protect($code));
+        $DB->query(
+            'SELECT name
+			  	  FROM nv_countries_regions
+		 		  WHERE `numeric` = '.intval($code)
+        );
 
         $row = $DB->first();
 
@@ -1487,10 +1614,15 @@ class property
 
         $DB->query('
             SELECT * FROM nv_properties_items
-            WHERE website = '.protect($website->id).'
-              AND property_id = '.protect($property).'
-              AND value = '.protect($value),
-            'object');
+            WHERE website = '.intval($website->id).'
+              AND property_id = :property_id 
+              AND value = :value',
+            'object',
+            array(
+                ':proeprty_id' => $property,
+                ':value' => $value
+            )
+        );
 
         return $DB->result();
     }
@@ -1502,12 +1634,12 @@ class property
 
         $out = array();
 
-        $DB->query('SELECT * FROM nv_properties WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_properties WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out['nv_properties'] = json_encode($DB->result());
 
-        $DB->query('SELECT * FROM nv_properties_items WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_properties_items WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
             $out['nv_properties_items'] = json_encode($DB->result());

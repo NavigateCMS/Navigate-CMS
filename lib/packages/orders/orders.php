@@ -30,11 +30,16 @@ function run()
                 case 'find_webuser': // json find webuser by name (for "webuser" autocomplete)
                     $DB->query('SELECT id, username as text
 						  FROM nv_webusers
-						 WHERE username LIKE '.protect('%'.$_REQUEST['username'].'%').'
-						   AND website = '.$website->id.'
+						 WHERE username LIKE :username
+						   AND website = :wid
 				      ORDER BY username ASC
 					     LIMIT 30',
-                        'array');
+                        'array',
+                        array(
+                            ':wid' => $website->id,
+                            ':username' => '%' . $_REQUEST['username'] . '%'
+                        )
+                    );
 
                     $rows = $DB->result();
                     $total = $DB->foundRows();

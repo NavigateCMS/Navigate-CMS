@@ -186,15 +186,23 @@ class theme
                 $DB->query('
                   SELECT subtype, lang, text
                     FROM nv_webdictionary
-                   WHERE website = '.$website->id.'
+                   WHERE website = :wid
                      AND node_type = "theme"
-                     AND lang = '.protect($current_language).'
-                     AND theme = '.protect($this->name)
+                     AND lang = :lang
+                     AND theme = :theme',
+                    'object',
+                    array(
+                        ':wid' => $website->id,
+                        ':lang' => $current_language,
+                        ':theme' => $this->name
+                    )
                 );
                 $rs = $DB->result();
 
                 for($r=0; $r < count($rs); $r++)
+                {
                     $this->dictionary[$rs[$r]->subtype] = $rs[$r]->text;
+                }
             }
 		}
 
@@ -1077,7 +1085,16 @@ class theme
 	        if($tmp->association != "free" && $tmp->embedding == 1)
 	        {
 		        // we have to get the template set in the category of the item
-				$template_id = $DB->query_single('template', 'nv_structure', ' id = '.protect($tmp->category).' AND website = '.$website->id);
+				$template_id = $DB->query_single(
+				    'template',
+                    'nv_structure',
+                    ' id = :category AND website = :wid',
+                    null,
+                    array(
+                        ':wid' => $website->id,
+                        ':category' => $tmp->category
+                    )
+                );
 	        }
 
 	        $properties['item'][$tmp->id] = property::load_properties('item', $template_id, 'item', $tmp->id);
@@ -1519,8 +1536,8 @@ class theme
                     $template = $DB->query_single(
                         'template',
                         'nv_structure',
-                        ' id = '.protect($real[$el_id]->category).' AND 
-								  website = '.$ws->id
+                        ' id = '.intval($real[$el_id]->category).' AND 
+								  website = '.intval($ws->id)
                     );
                 }
             }

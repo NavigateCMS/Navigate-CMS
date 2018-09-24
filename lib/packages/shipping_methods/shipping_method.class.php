@@ -266,7 +266,7 @@ class shipping_method
         global $DB;
         global $website;
 
-        $DB->query('SELECT * FROM nv_shipping_methods WHERE website = '.protect($website->id), 'object');
+        $DB->query('SELECT * FROM nv_shipping_methods WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
         if($type='json')

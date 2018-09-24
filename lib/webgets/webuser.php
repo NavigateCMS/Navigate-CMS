@@ -194,8 +194,13 @@ function nvweb_webuser($vars=array())
                     $wu_id = $DB->query_single(
                         'id',
                         'nv_webusers',
-                        ' email = '.protect($email).'
-                          AND website = '.$website->id
+                        ' email = :email
+                          AND website = :wid',
+                        null,
+                        array(
+                            ':wid' => $website->id,
+                            ':email' => $email
+                        )
                     );
 
                     $wu = new webuser();
@@ -330,11 +335,17 @@ function nvweb_webuser($vars=array())
                 $DB->query('
                   SELECT COUNT(*) AS total 
                   FROM nv_webusers WHERE
-                  website = '.protect($website->id).'
+                  website = :wid
                     AND (
-                        email = '.protect($email).' OR
-                        username = '.protect(mb_strtolower($username)).'
-                    )'
+                        email = :email OR
+                        username = :username
+                    )',
+                    'object',
+                    array(
+                        ':wid' => $website->id,
+                        ':email' => $email,
+                        ':username' => mb_strtolower($username)
+                    )
                 );
                 $rs = $DB->result('total');
                 if($rs[0] > 0)
@@ -458,8 +469,13 @@ function nvweb_webuser($vars=array())
                     $wu_id = $DB->query_single(
                         'id',
                         'nv_webusers',
-                        ' email = '.protect($email).'
-                          AND website = '.$website->id
+                        ' email = :email
+                          AND website = :wid',
+                        null,
+                        array(
+                            ':wid' => $website->id,
+                            ':email' => $email
+                        )
                     );
 
                     $wu = new webuser();
@@ -655,8 +671,12 @@ function nvweb_webuser_generate_username($email)
         $wu_id = $DB->query_single(
             'id',
             'nv_webusers',
-            ' LOWER(username) = '.protect($username).'
-                              AND website = '.$website->id
+            ' LOWER(username) = :username AND website = :wid',
+            null,
+            array(
+                ':wid' => $website->id,
+                ':username' => $username
+            )
         );
     }
 
@@ -675,8 +695,12 @@ function nvweb_webuser_generate_username($email)
         $wu_id = $DB->query_single(
             'id',
             'nv_webusers',
-            ' LOWER(username) = ' . protect($email) . '
-                                    AND website = ' . $website->id
+            ' LOWER(username) = :email AND website = :wid',
+            null,
+            array(
+                ':wid' => $website->id,
+                ':email' => $email
+            )
         );
 
         if(empty($wu_id))

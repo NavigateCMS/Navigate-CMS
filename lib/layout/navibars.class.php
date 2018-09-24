@@ -33,7 +33,7 @@ class navibars
 				{
                     // we are displaying a list
 					$actions[$search_form_pos][] = '<img onclick="$(this).next().triggerHandler(\'submit\');" height="16" align="absmiddle" width="16" src="img/icons/silk/zoom.png"></a>';
-					$actions[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" navitable_quicksearch($(\'#navigate-quicksearch\').val()); return false;">';
+					$actions[$search_form_pos][] = '<form method="GET" action="#" onsubmit=" if(typeof(navitable_quicksearch)==\'function\') { navitable_quicksearch($(\'#navigate-quicksearch\').val()); return false; } else return true;">';
 				}
 				else // other screen than a list
 				{

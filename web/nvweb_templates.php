@@ -75,16 +75,21 @@ function nvweb_dictionary_load()
 	$DB->query('SELECT node_id, text
 				  FROM nv_webdictionary 
 				 WHERE node_type = "global"
-				   AND lang = '.protect($session['lang']).'
+				   AND lang = :lang
 				   AND website = '.$website->id.'
 				 UNION
 				 SELECT subtype AS node_id, text
 				 FROM nv_webdictionary
 				 WHERE node_type = "theme"
-				   AND theme = '.protect($website->theme).' 
-				   AND lang = '.protect($session['lang']).'
-				   AND website = '.$website->id
-			   );		
+				   AND theme = :ws_theme 
+				   AND lang = :lang
+				   AND website = '.$website->id,
+        'object',
+        array(
+            ':lang' => $session['lang'],
+            ':ws_theme' => $website->theme,
+        )
+    );
 						
 	$data = $DB->result();
 	
@@ -320,8 +325,12 @@ function nvweb_template_parse($template)
 									   node_type = "structure"
 								   AND subtype = "title"
 								   AND node_id = '.$tmp.'
-								   AND lang = '.protect($current['lang']).'
-								   AND website = '.$website->id
+								   AND lang = :lang
+								   AND website = '.$website->id,
+                                NULL,
+                                array(
+                                    ':lang' => $current['lang']
+                                )
 							);
 						}
 						break;

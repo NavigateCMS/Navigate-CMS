@@ -23,10 +23,17 @@ function nvweb_votes($vars=array())
 				$score = $DB->query_single(
                     'value',
                     'nv_webuser_votes',
-                    ' website = '.protect($website->id).'
-					  AND webuser = '.protect($webuser->id).'
-					  AND object = '.protect($current['type']).'
-					  AND object_id = '.protect($current['id'])
+                    ' website = :wid
+					  AND webuser = :webuser_id
+					  AND object = :type
+					  AND object_id = :object_id',
+                    null,
+                    array(
+                        ':wid' => $website->id,
+                        ':webuser_id' => $webuser->id,
+                        ':type' => $current['type'],
+                        ':object_id' => $current['id']
+                    )
                 );
             }
 			$out = (empty($score)? '0' : $score);

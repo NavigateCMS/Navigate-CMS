@@ -563,7 +563,13 @@ class layout
 		if(empty($fid))
 			$fid = 'dashboard';
 
-		$user_profile_name = $DB->query_single('name', 'nv_profiles', 'id='.protect($user->profile));
+		$user_profile_name = $DB->query_single(
+		    'name',
+            'nv_profiles',
+            'id = :user_profile',
+            'NULL',
+            array(':user_profile' => $user->profile)
+        );
 
 		$this->add_content(
 			'<div class="navigate-help">'.
@@ -753,6 +759,7 @@ class layout
                 92: "'.t(92, 'Close').'",
                 141: "'.t(141, 'Folder').'",
                 152: "'.t(152, 'Continue').'",
+                159: "'.t(159, 'Name').'",
                 170: "'.t(170, 'Edit').'",
                 171: "'.t(171, 'Order').'",
                 185: "'.t(185, 'Searching elements').'",

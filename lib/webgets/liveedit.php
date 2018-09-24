@@ -39,9 +39,9 @@ function nvweb_liveedit_render($vars)
             // load the first item
             $DB->query('	SELECT id 
 								  FROM nv_items
-								 WHERE category = '.protect($current['category']).'
+								 WHERE category = '.intval($current['category']).'
 								   AND permission < 2
-								   AND website = '.$website->id.'
+								   AND website = '.intval($website->id).'
 						   ');
 
             $rs = $DB->first();

@@ -258,7 +258,7 @@ function dashboard_panel_web_summary($params)
     $stats = &$params['statistics'];
     $navibars = &$params['navibars'];
 
-//	$stats['pages_available'] = $DB->query_single('COUNT(DISTINCT object_id)', 'nv_paths', 'website = '.protect($website->id).' GROUP BY object_id');
+//	$stats['pages_available'] = $DB->query_single('COUNT(DISTINCT object_id)', 'nv_paths', 'website = '.intval($website->id).' GROUP BY object_id');
 
     // count number of paths, ignoring extra languages (so if the item has 3 languages and 3 different paths, only one is counted)
     $DB->query('
@@ -267,7 +267,7 @@ function dashboard_panel_web_summary($params)
 	      (
                 SELECT DISTINCT p.object_id
                   FROM nv_paths p
-                 WHERE p.website = '.protect($website->id).'
+                 WHERE p.website = '.intval($website->id).'
               GROUP BY p.object_id
           ) c
     ');
@@ -278,7 +278,7 @@ function dashboard_panel_web_summary($params)
     $DB->query('
         SELECT COUNT(i.id) as total
           FROM nv_items i
-         WHERE i.website = '.protect($website->id).'
+         WHERE i.website = '.intval($website->id).'
            AND i.embedding = 0
            AND (
                 SELECT count(p.id)
@@ -289,16 +289,16 @@ function dashboard_panel_web_summary($params)
     $count = $DB->first();
     $stats['pages_available'] += $count->total;
 
-//	$stats['pages_viewed'] = $DB->query_single('SUM(i.views)', 'nv_items i', 'website = '.protect($website->id));
-    $stats['comments_count'] = $DB->query_single('COUNT(*)', 'nv_comments', 'website = '.protect($website->id));
-    $stats['comments_torevise'] = $DB->query_single('COUNT(*)', 'nv_comments', 'website = '.protect($website->id).' AND status = -1');
+//	$stats['pages_viewed'] = $DB->query_single('SUM(i.views)', 'nv_items i', 'website = '.intval($website->id));
+    $stats['comments_count'] = $DB->query_single('COUNT(*)', 'nv_comments', 'website = '.intval($website->id));
+    $stats['comments_torevise'] = $DB->query_single('COUNT(*)', 'nv_comments', 'website = '.intval($website->id).' AND status = -1');
 
     $DB->query('
 		SELECT SUM(x.page_views) as pages_viewed FROM
 		(	
 			SELECT i.views as page_views, i.id as id_item 
 			  FROM nv_items i
-			 WHERE i.website = '.protect($website->id).'
+			 WHERE i.website = '.intval($website->id).'
 			   AND i.template > 0
 			   AND i.embedding = 0
 
@@ -306,7 +306,7 @@ function dashboard_panel_web_summary($params)
 
 			SELECT s.views as page_views, s.id as id_category
 			  FROM nv_structure s
-			 WHERE s.website = '.protect($website->id).'
+			 WHERE s.website = '.intval($website->id).'
 		) x
 	');
 
@@ -351,10 +351,10 @@ function dashboard_panel_top_pages($params)
     $sql = '
 	    SELECT i.views as page_views, i.id as id_item, i.category as id_category, p.views as path_views, p.path as path
           FROM nv_items i, nv_paths p
-         WHERE i.website = '.protect($website->id).'
+         WHERE i.website = '.intval($website->id).'
            AND i.template > 0
            AND i.embedding = 0
-           AND p.website = '.protect($website->id).'
+           AND p.website = '.intval($website->id).'
            AND p.type = "item"
            AND p.object_id = i.id
 
@@ -362,8 +362,8 @@ function dashboard_panel_top_pages($params)
 
         SELECT s.views as page_views, NULL as id_item, s.id as id_category, p.views as path_views, p.path as path
           FROM nv_structure s, nv_paths p
-         WHERE s.website = '.protect($website->id).'
-           AND p.website = '.protect($website->id).'
+         WHERE s.website = '.intval($website->id).'
+           AND p.website = '.intval($website->id).'
            AND p.type = "structure"
            AND p.object_id = s.id
 
@@ -425,14 +425,19 @@ function dashboard_panel_recent_comments($params)
                  nvwd.website = nvc.website AND
                  nvwd.node_type = nvc.object_type AND
                  nvwd.subtype = "title" AND
-                 nvwd.lang = '.protect($website->languages_published[0]).'
-      WHERE nvc.website = '.$website->id.'
-	  ORDER BY nvc.date_created DESC LIMIT '.$comments_limit
+                 nvwd.lang = :lang
+      WHERE nvc.website = :wid
+	  ORDER BY nvc.date_created DESC LIMIT '.intval($comments_limit),
+        'object',
+        array(
+            ':wid' => $website->id,
+            ':lang' => $website->languages_published[0]
+        )
     );
     // removed
     /*
         .. AND nvwu.website = nvc.website
-        .. WHERE nvc.website = '.protect($website->id).'
+        .. WHERE nvc.website = '.intval($website->id).'
 
         to allow cross-website members
     */
@@ -773,11 +778,12 @@ function dashboard_panel_public_wall($params)
 
     $layout->navigate_notes_dialog('website', $website->id);
     $public_wall_notes = grid_notes::comments('website', $website->id);
+
     $elements_html = '
         <div class="navigate-panel-model-row hidden">
             <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public hide">
-                <span data-field="date"></span> 
-                <span data-field="username"><strong>'.$public_wall_notes[$e]['username'].'</strong></span>
+                <span data-field="date">date</span> 
+                <span data-field="username"><strong>username</strong></span>
             </div>
             <div data-field="note" class="navigate-panel-recent-comments-element"></div>
         </div>

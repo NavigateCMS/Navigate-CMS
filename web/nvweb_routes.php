@@ -158,10 +158,16 @@ function nvweb_load_website_by_url($url, $exit=true)
     $DB->query('
 		SELECT id, folder
 		  FROM nv_websites
-		 WHERE subdomain = '.protect($subdomain).'
-		   AND ( domain = '.protect($domain).' OR domain = '.protect($idn->encode($domain)).' ) 
+		 WHERE subdomain = :subdomain
+		   AND ( domain = :domain OR domain = :idn_domain ) 
 		 ORDER BY folder DESC
-	 ');
+	 ',
+        'object',
+        array(
+            ':subdomain' => $subdomain,
+            ':domain' => $domain,
+            ':idn_domain' => $idn->encode($domain)
+        ));
 	$websites = $DB->result();
 
 	if(empty($websites))
@@ -351,7 +357,7 @@ function nvweb_route_parse($route="")
 				$current['id'] = $node;
 				
 				$DB->query('SELECT * FROM nv_items 
-							 WHERE id = '.protect($current['id']).'
+							 WHERE id = '.intval($current['id']).'
 							   AND website = '.$website->id);
 				$current['object'] = $DB->first();
 				
@@ -359,7 +365,7 @@ function nvweb_route_parse($route="")
 				if($current['navigate_session']!=1 && !nvweb_is_bot())
 				{
 					$DB->execute(' UPDATE nv_items SET views = views + 1 
-								   WHERE id = '.$current['id'].' 
+								   WHERE id = '.intval($current['id']).' 
 									 AND website = '.$website->id);
 				}
 
@@ -377,7 +383,7 @@ function nvweb_route_parse($route="")
 				$current['id'] = $product;
 
 				$DB->query('SELECT * FROM nv_products 
-							 WHERE id = '.protect($current['id']).'
+							 WHERE id = '.intval($current['id']).'
 							   AND website = '.$website->id);
 				$current['object'] = $DB->first();
 
@@ -385,7 +391,7 @@ function nvweb_route_parse($route="")
 				if($current['navigate_session']!=1 && !nvweb_is_bot())
 				{
 					$DB->execute(' UPDATE nv_products SET views = views + 1 
-								   WHERE id = '.$current['id'].' 
+								   WHERE id = '.intval($current['id']).' 
 									 AND website = '.$website->id);
 				}
 
@@ -445,9 +451,11 @@ function nvweb_route_parse($route="")
 		default:
 			$DB->query('
                 SELECT * FROM nv_paths 
-				WHERE path = '.protect('/'.$route).' AND 
+				WHERE path = :route AND 
 				      website = '.$website->id.'
-				ORDER BY id DESC'
+				ORDER BY id DESC',
+                'object',
+                array(':route' => '/' . $route)
             );
 			$rs = $DB->result();
 
@@ -602,14 +610,14 @@ function nvweb_route_parse($route="")
                         if($current['navigate_session']!=1 && !nvweb_is_bot())
                         {
                             $DB->execute(' UPDATE nv_structure SET views = views + 1 
-                                            WHERE id = '.protect($current['id']).' 
+                                            WHERE id = '.intval($current['id']).' 
                                               AND website = '.$website->id);
                         }
                         break;
 
                     case 'item':
                         $DB->query('SELECT * FROM nv_items 
-                                     WHERE id = '.protect($current['id']).'
+                                     WHERE id = '.intval($current['id']).'
                                        AND website = '.$website->id);
 
                         $current['object'] = $DB->first();
@@ -618,14 +626,14 @@ function nvweb_route_parse($route="")
                         if($current['navigate_session']!=1 && !nvweb_is_bot())
                         {
                             $DB->execute(' UPDATE nv_items SET views = views + 1 
-                                           WHERE id = '.$current['id'].' 
+                                           WHERE id = '.intval($current['id']).' 
                                              AND website = '.$website->id);
                         }
                         break;
 
                     case 'product':
                         $DB->query('SELECT * FROM nv_products 
-                                     WHERE id = '.protect($current['id']).'
+                                     WHERE id = '.intval($current['id']).'
                                        AND website = '.$website->id);
 
                         $current['object'] = $DB->first();
@@ -634,7 +642,7 @@ function nvweb_route_parse($route="")
                         if($current['navigate_session']!=1 && !nvweb_is_bot())
                         {
                             $DB->execute(' UPDATE nv_products SET views = views + 1 
-                                           WHERE id = '.$current['id'].' 
+                                           WHERE id = '.intval($current['id']).' 
                                              AND website = '.$website->id);
                         }
                         break;
@@ -837,12 +845,17 @@ function nvweb_source_url($type, $id, $lang='')
             $id = $DB->query_single(
                 'id',
                 'nv_items',
-                'website = '.protect($website->id).'
-                 AND template = '.protect($template_type).'
+                'website = :website_id
+                 AND template = :template_type
                  AND permission = 0
                  AND access = 0
                  AND (date_published = 0 OR date_published < '.core_time().')
-                 AND (date_unpublish = 0 OR date_unpublish > '.core_time().')'
+                 AND (date_unpublish = 0 OR date_unpublish > '.core_time().')',
+                NULL,
+                array(
+                    ':website_id' => $website->id,
+                    ':template_type' => $template_type
+                )
             );
             if(!empty($id))
                 $type = 'item';
@@ -854,12 +867,17 @@ function nvweb_source_url($type, $id, $lang='')
             $id = $DB->query_single(
                 'id',
                 'nv_structure',
-                'website = '.protect($website->id).'
-                 AND template = '.protect($template_type).'
+                'website = :website_id
+                 AND template = :template_type
                  AND permission = 0
                  AND access = 0
                  AND (date_published = 0 OR date_published < '.core_time().')
-                 AND (date_unpublish = 0 OR date_unpublish > '.core_time().')'
+                 AND (date_unpublish = 0 OR date_unpublish > '.core_time().')',
+                NULL,
+                array(
+                   ':website_id' => $website->id,
+                   ':template_type' => $template_type
+                )
             );
             if(!empty($id))
                 $type = 'structure';
@@ -875,10 +893,16 @@ function nvweb_source_url($type, $id, $lang='')
     $url = $DB->query_single(
 		'path',
 		'nv_paths',
-		' type = '.protect($type).'
-		   AND object_id = '.protect($id).'
-		   AND lang = '.protect($lang).'
-		   AND website = '.$website->id
+		' type = :type
+		   AND object_id = :object_id
+		   AND lang = :lang
+		   AND website = '.$website->id,
+        NULL,
+        array(
+            ':type' => $type,
+            ':object_id' => $id,
+            ':lang' => $lang
+        )
 	);
 
 	if(empty($url))

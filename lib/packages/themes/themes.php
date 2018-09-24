@@ -21,7 +21,15 @@ function run()
 
         case 'remove':
             // check the theme is not actually used in any website
-            $usages = $DB->query_single('COUNT(*)', 'nv_websites', ' theme = '.protect($_REQUEST['theme']));
+            $usages = $DB->query_single(
+                'COUNT(*)',
+                'nv_websites',
+                ' theme = :theme',
+                null,
+                array(
+                    ':theme' => $_REQUEST['theme']
+                )
+            );
             if($usages == 0)
             {
                 try

@@ -143,13 +143,17 @@ function run()
 			break;
 			
 		case "path_check": // check if a requested path is not used
-			$path = $_REQUEST['path'];
-			$id = $_REQUEST['id'];
-			
-			$DB->query('SELECT type, object_id, lang
-	 					  FROM nv_paths
-						 WHERE path = '.protect($path).'
-						   AND website = '.$website->id);
+			$DB->query(
+			    'SELECT type, object_id, lang
+                      FROM nv_paths
+                     WHERE path = :path
+                       AND website = :wid',
+                'object',
+                array(
+                    ':wid' => $this->website,
+                    'path' => $_REQUEST['path']
+                )
+            );
 						 
 			$rs = $DB->result();
 			
