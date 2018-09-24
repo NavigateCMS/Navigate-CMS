@@ -162,7 +162,7 @@ function dashboard_create()
                                                                                                                                     
                         var row = $("#navigate-panel-public-wall div.navigate-panel-public-wall-note:last");
                         $(row).find("span[data-field=date]").html(this.date);
-                        $(row).find("span[data-field=username] strong").html(this.date);
+                        $(row).find("span[data-field=username] strong").html(this.username);
                         $(row).find("div[data-field=note]").html(this.note);
                     });
                 }
