@@ -482,26 +482,28 @@ class property
 
         if(is_numeric($code))
         {
+            // so the properties are attached to a custom template (not a theme template)
+
             $query_params = array(
                 ':template' => $code,
                 ':wid' => $website_id
             );
 
-            // properties attached to a custom template (not a theme template)
+            $element_filter = "";
             if(!empty($element))
             {
-                $element = ' AND element = :element ';
+                $element_filter = ' AND element = :element ';
                 $query_params[':element'] = $element;
             }
             else
             {
-                $element = ' AND element != "block"';
+                $element_filter = ' AND element != "block"';
             }
 
             $ok = $DB->query(
             'SELECT * FROM nv_properties
                  WHERE template = :template
-                  '.$element.'
+                  '.$element_filter.'
                   AND website = :wid
                 ORDER BY position ASC, id ASC',
                 'object',
