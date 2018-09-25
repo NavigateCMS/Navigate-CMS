@@ -795,7 +795,7 @@ function nvweb_list($vars=array())
         */
         $filters = '';
         if(!empty($vars['filter']))
-            $filters = nvweb_list_parse_filters($vars['filter'], 'items');
+            $filters = nvweb_list_parse_filters($vars['filter'], 'item');
 
         // reuse structure.access permission
         $access_extra_items = str_replace('s.', 'i.', $access_extra);
