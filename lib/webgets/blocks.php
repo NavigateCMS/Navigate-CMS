@@ -191,7 +191,7 @@ function nvweb_blocks($vars=array())
                 $fixed_rows_ids = array(0);
             }
 
-        	$query_params[':fr_ids'] = implode(",", $fixed_rows_ids);
+        	//$query_params[':fr_ids'] = implode(",", $fixed_rows_ids);
 
             // now retrieve the other blocks in random order
 			$DB->query('
@@ -203,10 +203,11 @@ function nvweb_blocks($vars=array())
                    AND (date_published = 0 OR date_published < :time)
                    AND (date_unpublish = 0 OR date_unpublish > :time)
                    AND access IN('.implode(',', $access).')
-                   AND id NOT IN(:fr_ids)
+                   AND id NOT IN('.implode(",", $fixed_rows_ids).')
                    '.$categories_query.'
                    '.$exclusions_query.'
                  ORDER BY RAND()',
+                'object',
                 $query_params
             );
 		

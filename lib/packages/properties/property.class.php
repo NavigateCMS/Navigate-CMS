@@ -735,14 +735,11 @@ class property
 		global $website;
         global $theme;
 
-        if($element != $object_type)
+        if($element == 'extension' && $element != $object_type)
         {
-            if($element == 'extension')
-            {
-                $extension = new extension();
-                $extension->load($code);
-                $e_properties = $extension->definition->options;
-            }
+            $extension = new extension();
+            $extension->load($code);
+            $e_properties = $extension->definition->options;
         }
         else if($object_type == 'block_group_block')
         {

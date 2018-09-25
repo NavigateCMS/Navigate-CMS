@@ -103,7 +103,7 @@ function nvweb_conditional($vars=array())
                        i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
                        d.text as title, i.position as position
                   FROM nv_items i, nv_structure s, nv_webdictionary d
-                 WHERE i.category IN(:categories)
+                 WHERE i.category IN('.implode(",", $categories).')
                    AND i.website = :wid
                    AND i.permission <= '.$permission.'
                    AND (i.date_published = 0 OR i.date_published < :time)
@@ -126,7 +126,7 @@ function nvweb_conditional($vars=array())
                 array(
                     ':wid' => $website->id,
                     ':lang' => $current['lang'],
-                    ':categories' => implode(",", $categories),
+                    //':categories' => implode(",", $categories),
                     ':time' => core_time()
                 )
             );

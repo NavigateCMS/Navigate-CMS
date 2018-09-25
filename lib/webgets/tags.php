@@ -86,7 +86,7 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
     $query_params = array(
         ':wid' => $website->id,
         ':lang' => $lang,
-        ':types' => implode(',', $types)
+        //':types' => implode(',', $types)
     );
 
     if(!empty($search))
@@ -98,7 +98,7 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
     $DB->query(
         'SELECT text FROM nv_webdictionary
           WHERE website = :wid
-            AND node_type IN(:types)
+            AND node_type IN("'.implode('","', $types).'")
             AND subtype = "tags"
             AND lang = :lang 
             '.$extra.'

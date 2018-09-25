@@ -354,7 +354,7 @@ function nvweb_list($vars=array())
 			            s.date_published, s.date_unpublish, s.date_published as pdate,
 			            d.text as title, s.position as position
 			  FROM nv_structure s, nv_webdictionary d
-			 WHERE s.id IN(:categories)
+			 WHERE s.id IN('.implode(",", $categories).')
 			   AND s.website = :wid
 			   AND s.permission <= '.$permission.'
 			   AND (s.date_published = 0 OR s.date_published < :time)
@@ -376,7 +376,7 @@ function nvweb_list($vars=array())
                 ':wid' => $website->id,
                 ':lang' => $current['lang'],
                 ':time' => core_time(),
-                ':categories' => implode(",", $categories)
+                //':categories' => implode(",", $categories)
             )
 		);
 
@@ -581,7 +581,7 @@ function nvweb_list($vars=array())
                     p.date_to_display, COALESCE(NULLIF(p.date_to_display, 0), p.date_created) as pdate,
                     d.text as title, p.position as position, s.position '.$columns_extra.'
 			  FROM nv_products p, nv_structure s, nv_webdictionary d			          
-			 WHERE p.category IN(:categories)
+			 WHERE p.category IN('.implode(",", $categories).')
 			   AND p.website = :wid
 			   AND p.permission <= '.$permission.'
 			   AND (p.date_published = 0 OR p.date_published < '.core_time().')
@@ -612,7 +612,7 @@ function nvweb_list($vars=array())
                 ':wid' => $website->id,
                 ':lang' => $current['lang'],
                 ':time' => core_time(),
-                ':categories' => implode(",", $categories)
+                //':categories' => implode(",", $categories)
             )
         );
 
@@ -662,7 +662,7 @@ function nvweb_list($vars=array())
                 $DB->query('
                     SELECT SQL_CALC_FOUND_ROWS i.id
                       FROM nv_items i, nv_structure s, nv_webdictionary d
-                     WHERE i.category IN(:categories)
+                     WHERE i.category IN('.implode(",", $categories).')
                        AND i.website = :wid
                        AND i.permission <= '.$permission.'
                        AND (i.date_published = 0 OR i.date_published < :time)
@@ -687,7 +687,7 @@ function nvweb_list($vars=array())
                         ':wid' => $website->id,
                         ':lang' => $current['lang'],
                         ':time' => core_time(),
-                        ':categories' => implode(",", $categories)
+                        //':categories' => implode(",", $categories)
                     ));
 
                 $rs = $DB->result();
@@ -836,7 +836,7 @@ function nvweb_list($vars=array())
                     i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
                     d.text as title, i.position as position, s.position '.$columns_extra.'
 			  FROM nv_items i, nv_structure s, nv_webdictionary d			          
-			 WHERE i.category IN(:categories)
+			 WHERE i.category IN ('.implode(",", $categories).')
 			   AND i.website = :wid
 			   AND i.permission <= '.$permission.'
 			   AND i.embedding = '.$embedded.'
@@ -868,12 +868,11 @@ function nvweb_list($vars=array())
                 ':wid' => $website->id,
                 ':lang' => $current['lang'],
                 ':time' => core_time(),
-                ':categories' => implode(",", $categories)
+                //':categories' => implode(",", $categories)
             )
         );
 
 		$rs = $DB->result();
-
 		$total = $DB->foundRows();
 	}
 
