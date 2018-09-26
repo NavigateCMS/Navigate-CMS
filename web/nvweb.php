@@ -104,7 +104,7 @@ function nvweb_parse($request)
         $force_language = "";
         if(isset($request['lang']))
         {
-            $force_language = $request['lang'];
+            $force_language = htmlentities($request['lang']);
         }
         else if(strpos($url, 'lang='))
         {
@@ -117,7 +117,7 @@ function nvweb_parse($request)
         if (!empty($force_language))
             $session['lang'] = $force_language;
         else if (isset($request['lang']))
-            $session['lang'] = $request['lang'];
+            $session['lang'] = htmlentities($request['lang']);
 
         // global data across webgets
         $current = array(
