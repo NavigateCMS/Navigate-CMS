@@ -142,7 +142,7 @@ class naviforms
 		return $out;
 	}
 	
-	public function textfield($name, $value="", $width="400px", $action="", $extra="")
+	public function textfield($name, $value="", $width="400px", $action="", $extra="", $placeholder="")
 	{
         // may happen when converting a property type from (multilanguage) text to a (single) value
         if(is_array($value))
@@ -150,10 +150,19 @@ class naviforms
 		$value = htmlspecialchars($value);
 
         if(!empty($width))
+        {
             $extra .= ' style=" width: '.$width.';"';
+        }
 
         if(!empty($action))
+        {
             $extra .= ' onkeyup="'.$action.'"';
+        }
+
+        if(!empty($placeholder))
+        {
+            $extra .= ' placeholder="'.$placeholder.'" ';
+        }
 
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
 		return $out;	
@@ -284,7 +293,7 @@ class naviforms
 		return $out;	
 	}
 
-    public function pathfield($name, $value="", $width="400px", $action="", $extra="", $language="")
+    public function pathfield($name, $value="", $width="400px", $action="", $extra="", $language="", $placeholder="")
     {
         global $website;
         global $layout;
@@ -334,6 +343,11 @@ class naviforms
                     ');
                 }
             }
+        }
+
+        if(!empty($placeholder))
+        {
+            $extra .= ' placeholder="'.$placeholder.'" ';
         }
 
         $out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
