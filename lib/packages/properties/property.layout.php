@@ -790,14 +790,14 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'" style="margin-bottom: 0px;">';
 				$field[] = '<label>'.$property_name.' '.$language_info.'</label>';
-                $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-title", $title);
-                $field[] = '<span class="navigate-form-row-info">'.t(67, 'Title').'</span>';
+                $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-title", $title, null, null, null, t(67, 'Title'));
                 $field[] = '</div>';
+
                 $field[] = '<div class="navigate-form-row" lang="'.$lang.'" style="margin-bottom: 0px;" nv_property="'.$property->id.'" >';
                 $field[] = '<label>&nbsp;</label>';
-                $field[] = $naviforms->textfield("property-".$property->id."-".$lang."-link", $link);
-                $field[] = '<span class="navigate-form-row-info">'.t(197, 'Link').'</span>';
+                $field[] = $naviforms->pathfield("property-".$property->id."-".$lang."-link", $link, null, null, null, null, t(197, 'Link'));
                 $field[] = '</div>';
+
                 $field[] = '<div class="navigate-form-row" lang="'.$lang.'" nv_property="'.$property->id.'" >';
                 $field[] = '<label>&nbsp;</label>';
                 $field[] = $naviforms->selectfield(
@@ -812,7 +812,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                     ),
                     $target
                 );
-                $field[] = '<span class="navigate-form-row-info">'.t(172, 'Action').'</span>';
+
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;
