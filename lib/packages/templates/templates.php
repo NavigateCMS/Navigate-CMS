@@ -701,14 +701,14 @@ function templates_form($item)
 		</form>');
 
 		$layout->add_script('
-			$("#templates-properties-create").bind("click", function()
+			$("#templates-properties-create").on("click", function()
 			{
 				navigate_templates_edit_property();
 				return false;
 			});
 		
 			function navigate_templates_edit_property(el)
-			{
+			{	
 				if(!el)	// new property
 				{
 					$("#property-id").val("");
@@ -729,7 +729,7 @@ function templates_form($item)
 					   type: "GET",
 					   async: false,
 					   dateType: "json",
-					   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=template_property_load&template='.$item->id.'&id=" + $(el).attr("id"),
+					   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=templates&act=template_property_load&template='.$item->id.'&id=" + $(el).attr("id"),
 					   success: function(data)
 					   {
 						   $("#property-id-span").html(data.id);
@@ -835,7 +835,7 @@ function templates_form($item)
                                            if(data.enabled) checked = \' checked="checked" \';
                                            var tr = \'<tr id="\'+data.id+\'"><td>\'+data.name+\'</td><td>\'+data.type_text+\'</td><td>\'+navigate_templates_element_types[data.element]+\'</td><td align="center"><input name="property-enabled[]" class="raw-checkbox" type="checkbox" value="\'+data.id+\'" \'+checked+\' /></td></tr>\';
                                            $("#template_properties_table").find("tbody:last").append(tr);
-                                           $("#template_properties_table").find("tr:last").bind("dblclick", function() { navigate_templates_edit_property(this); });
+                                           $("#template_properties_table").find("tr:last").on("dblclick", function() { navigate_templates_edit_property(this); });
                                            $("#template_properties_table").tableDnD(
                                             {
                                                 onDrop: function(table, row)

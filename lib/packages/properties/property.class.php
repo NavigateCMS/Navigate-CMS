@@ -413,7 +413,7 @@ class property
             ':options' => serialize($this->options),
             ':dvalue' => value_or_default($this->dvalue, ""),
             ':multilanguage' => $this->multilanguage,
-            ':helper' => value_or_default($this->helper, ''),
+            ':helper' => value_or_default($this->helper, ""),
             ':position' => value_or_default($this->position, 0),
             ':enabled' => value_or_default($this->enabled, 0)
           )
@@ -430,7 +430,7 @@ class property
 	{
 		global $DB;
 		global $website;
-			
+
 		$ok = $DB->execute('
 		    UPDATE nv_properties
                 SET
@@ -454,15 +454,18 @@ class property
                 ':options' => serialize($this->options),
                 ':dvalue' => $this->dvalue,
                 ':multilanguage' => $this->multilanguage,
-                ':helper' => $this->helper,
+                ':helper' => value_or_default($this->helper, ""),
                 ':position' => value_or_default($this->position, 0),
                 ':enabled' => value_or_default($this->enabled, 0),
                 ':id' => $this->id,
-                ':website' => $this->website
+                ':website' => value_or_default($this->website, $website->id)
             )
         );
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}	

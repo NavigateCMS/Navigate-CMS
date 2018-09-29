@@ -136,10 +136,12 @@ class template
 		for($s = 0; $s < count($_REQUEST['template-sections-code']); $s++)
 		{
 			if(empty($_REQUEST['template-sections-code'][$s])) continue;
-			$this->sections[] = array( 'code' => $_REQUEST['template-sections-code'][$s], 
-									   'name' => $_REQUEST['template-sections-name'][$s],
-									   'editor' => $_REQUEST['template-sections-editor'][$s],
-									   'width' => $_REQUEST['template-sections-width'][$s] );
+			$this->sections[] = array(
+			    'code' => $_REQUEST['template-sections-code'][$s],
+				'name' => $_REQUEST['template-sections-name'][$s],
+				'editor' => $_REQUEST['template-sections-editor'][$s],
+				'width' => $_REQUEST['template-sections-width'][$s]
+            );
 		}
 		if(empty($this->sections))
 		{
