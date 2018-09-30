@@ -4058,6 +4058,11 @@
                 <target>Spróbuj ponownie lub wybierz alternatywną metodę płatności.</target>
             </trans-unit>
 
+            <trans-unit id="808">
+                <source>Find product by title</source>
+                <target>Znajdź produkt według tytułu</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

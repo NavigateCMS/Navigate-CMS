@@ -34,7 +34,7 @@ class naviforms
 		return implode("\n", $out);	
 	}
 	
-	public function selectfield($id, $values, $texts, $selected_value="", $onChange="", $multiple=false, $titles=array(), $style="", $control_replacement=true, $allow_custom_value=false, $extra_classes="")
+	public function selectfield($id, $values, $texts, $selected_value="", $onChange="", $multiple=false, $titles=array(), $style="", $control_replacement=true, $allow_custom_value=false, $extra_classes="", $extra_attributes="")
 	{
         $class = '';
         if($control_replacement)
@@ -44,26 +44,36 @@ class naviforms
 
 		$out = array();
 		if($multiple)
-			$out[] = '<select name="'.$id.'[]" id="'.$id.'" onchange="'.$onChange.'" multiple="multiple" style=" height: 100px; '.$style.' ">';
+			$out[] = '<select name="'.$id.'[]" id="'.$id.'" onchange="'.$onChange.'" multiple="multiple" '.$extra_attributes.' style=" height: 100px; '.$style.'">';
 		else
-			$out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" onchange="'.$onChange.'" style="'.$style.'">';
+			$out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" onchange="'.$onChange.'" '.$extra_attributes.' style="'.$style.'">';
 
 		if(!is_array($values))
-		    $values = array();
+        {
+            $values = array();
+        }
 
         if(!is_array($titles))
+        {
             $titles = array();
+        }
 
 		for($i=0; $i < count($values); $i++)
 		{
             if(!isset($titles[$i]))
+            {
                 $titles[$i] = "";
+            }
 
 			if( (is_array($selected_value) && in_array($values[$i], $selected_value)) ||
 				($values[$i]==$selected_value))
-				$out[] = '<option value="'.$values[$i].'" selected="selected" title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            {
+                $out[] = '<option value="'.$values[$i].'" selected="selected" title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            }
 			else
-				$out[] = '<option value="'.$values[$i].'" title="'.$titles[$i].'">'.$texts[$i].'</option>';			
+            {
+                $out[] = '<option value="'.$values[$i].'" title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            }
 		}
 		
 		$out[] = '</select>';
@@ -342,6 +352,19 @@ class naviforms
                             .removeClass("hidden");
                     ');
                 }
+                else if($path[2]=='product')
+                {
+                    $tmp = new product();
+                    $tmp->load($path[3]);
+                    $selected_path_title = $tmp->dictionary[$lang]['title'];
+                    $layout->add_script('
+                        $("#'.$name.'")
+                            .parent()
+                            .find(".naviforms-pathfield-link-info[data-lang='.$lang.']")
+                            .find("img[data-type=product]")
+                            .removeClass("hidden");
+                    ');
+                }
             }
         }
 
@@ -354,9 +377,10 @@ class naviforms
         $out.= '<a class="uibutton naviforms-pathfield-trigger"><i class="fa fa-sitemap"></i></a>';
         $out.= '<div class="subcomment naviforms-pathfield-link-info" data-lang="'.$lang.'">
                     <img src="img/icons/silk/sitemap_color.png" class="hidden" data-type="structure" sprite="false" />
-                    <img src="img/icons/silk/page.png" class="hidden" data-type="element" sprite="false" /> '.
-                    '<span>'.$selected_path_title.'</span>'.
-                '</div>';
+                    <img src="img/icons/silk/page.png" class="hidden" data-type="element" sprite="false" /> 
+                    <img src="img/icons/silk/tag_purple.png" class="hidden" data-type="product" sprite="false" />
+                    <span>'.$selected_path_title.'</span>
+                </div>';
         return $out;
     }
 	

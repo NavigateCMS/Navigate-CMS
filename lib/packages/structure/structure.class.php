@@ -466,6 +466,7 @@ class structure
             $obj->_multilanguage_label = $ws->name;
 			$obj->parent = -1;
 			$obj->children = structure::hierarchy(0, $ws_id);
+			$obj->paths = $ws->homepage();
 
 			$tree[] = $obj;
 		}
@@ -480,6 +481,7 @@ class structure
 			for($i=0; $i < count($tree); $i++)
             {
 				$tree[$i]->dictionary = webdictionary::load_element_strings('structure', $tree[$i]->id);
+                $tree[$i]->paths	  = path::loadElementPaths('structure', $tree[$i]->id, $ws_id);
                 $tree[$i]->label = $tree[$i]->dictionary[$ws->languages_list[0]]['title'];
 
                 $tree[$i]->template_title = $tree[$i]->template;
@@ -524,13 +526,19 @@ class structure
 	
 	public static function hierarchyList($hierarchy, $selected=0, $lang="", $ignore_permissions=false)
 	{
+	    global $website;
+
 		$html = array();
 				
 		if(!is_array($hierarchy))
+        {
             $hierarchy = array();
+        }
 		
 		if(!is_array($selected))
-			$selected = array($selected);
+        {
+            $selected = array($selected);
+        }
 
 		foreach($hierarchy as $node)
 		{	
@@ -546,12 +554,23 @@ class structure
 			if(!$ignore_permissions && !structure::category_allowed($node->id) && strpos($post_html, "ui-state-disabled") > 0)
 				$li_class = ' class="ui-state-disabled" ';
 
-			if(empty($html)) $html[] = '<ul>';
+			if(empty($html))
+            {
+                $html[] = '<ul>';
+            }
 
             if(empty($lang))
+            {
                 $title = $node->label;
+                $path = array_values($node->paths)[0];
+            }
             else
+            {
                 $title = $node->dictionary[$lang]['title'];
+                $path = $node->paths[$lang];
+            }
+
+            $path = nvweb_prepare_link($path, $website->absolute_path());
 
 			if(empty($title))
 			{
@@ -575,9 +594,9 @@ class structure
                 $node_type = 'leaf';
 
 			if(in_array($node->id, $selected))
-				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-selected="true" data-jstree=\'{"selected": true, "type": "'.$node_type.'"}\'><span class="active">'.$title.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-node-path="'.$path.'" data-selected="true" data-jstree=\'{"selected": true, "type": "'.$node_type.'"}\'><span class="active">'.$title.'</span>';
 			else
-				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-selected="false" data-jstree=\'{"selected": false, "type": "'.$node_type.'"}\'><span>'.$title.'</span>';
+				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-node-path="'.$path.'" data-selected="false" data-jstree=\'{"selected": false, "type": "'.$node_type.'"}\'><span>'.$title.'</span>';
 
 			$html[] = $post_html;
 			$html[] = '</li>';

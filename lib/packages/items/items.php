@@ -775,24 +775,10 @@ function run()
             $rows = $DB->result();
 			$total = $DB->foundRows();
 
-			if($_REQUEST['association']=='free')
-			{
-				for($i = 0; $i < count($rows); $i++)
-				{
-					$rows[$i]['path'] = $DB->query_single(
-						'path',
-						'nv_paths',
-						'	website = '.intval($website->id).' AND 
-							type="item" AND 
-							object_id="'.$rows[$i]['id'].'" AND 
-							lang="'.$website->languages_list[0].'"
-						'
-					);
-
-					if(empty($rows[$i]['path']))
-						$rows[$i]['path'] = '/node/'.$rows[$i]['id'];
-				}
-			}
+			for($i=0; $i < count($rows); $i++)
+            {
+                $rows[$i]['path'] = nvweb_source_url('element', $rows[$i]['id']);
+            }
 
 			if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
             {
@@ -803,7 +789,7 @@ function run()
                 $tags_json = array();
                 foreach($rows as $row)
                 {
-                    $tags_json[] = json_decode('{ "id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'" }');
+                    $tags_json[] = json_decode('{"id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'"}');
                 }
                 echo json_encode($tags_json);
             }

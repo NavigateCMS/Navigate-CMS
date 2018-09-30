@@ -4057,6 +4057,12 @@
 			   	<target>Por favor, vuélvelo a intentar o escoge otra forma de pago.</target>
 		   </trans-unit>
 
+
+			<trans-unit id="808" approved="yes">
+				<source>Find product by title</source>
+				<target>Encontrar producto por título</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

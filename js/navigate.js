@@ -198,6 +198,8 @@ $(window).on('load', function()
         navigate_window_resize();
     });
 
+    /* nv link (pathfield) dialog functions */
+
     $('.naviforms-pathfield-trigger').on("click", function()
     {
         var trigger = this;
@@ -221,12 +223,24 @@ $(window).on('load', function()
                         {
                             var input_path = $(trigger).parent().find('input:first');
                             input_path.val($("#nv_link_dialog_dynamic_path").text());
+
                             if($("#nv_link_dialog_replace_text").is(":visible:checked"))
                             {
-                                // replace title for the current row in links table
-                                input_path.parents("tr").find('input[data-role="title"]').val(
-                                    $("#nv_link_dialog_title").val()
-                                );
+
+                                if(input_path.data("role")=="property-link")
+                                {
+                                    $(input_path).parent().prev().find('input[data-role="property-title"]').val(
+                                        $("#nv_link_dialog_title").val()
+                                    );
+                                }
+                                else if(input_path.parents("tr"))
+                                {
+                                    // replace title for the current row in links table
+                                    input_path.parents("tr").find('input[data-role="title"]').val(
+                                        $("#nv_link_dialog_title").val()
+                                    );
+                                }
+
                             }
 
                             var div_info = $(trigger).parent().find('.naviforms-pathfield-link-info');
@@ -234,9 +248,18 @@ $(window).on('load', function()
                             $(div_info).find('img').addClass("hidden");
 
                             if($("#nv_link_dialog_source_element").is(":checked"))
+                            {
                                 $(div_info).find('img[data-type=element]').removeClass("hidden");
+                            }
+                            else if($("#nv_link_dialog_source_product").is(":checked"))
+                            {
+                                $(div_info).find('img[data-type=product]').removeClass("hidden");
+                            }
                             else
+                            {
                                 $(div_info).find('img[data-type=structure]').removeClass("hidden");
+                            }
+
 
                             $('#nv_link_dialog').dialog("close");
                         }
@@ -252,13 +275,172 @@ $(window).on('load', function()
             ],
             close: function()
             {
-
+                $(this).dialog('destroy');
+                $('#nv_link_dialog').addClass("hidden");
             }
         });
     });
 
+    // nv link dialog category tree exists?
+    if($("#nv_link_dialog_category").length > 0)
+    {
+        // prepare category tree
+
+        $("#nv_link_dialog_category .tree_ul").jstree(
+        {
+            plugins: ["changed", "types"],
+            "types" :
+            {
+                "default":  {   "icon": "img/icons/silk/folder.png"         },
+                "leaf":     {   "icon": "img/icons/silk/page_white.png"     }
+            },
+            "core" :
+            {
+                "multiple" : false
+            }
+        }).on("changed.jstree", function(e, data)
+        {
+            if(data.selected.length > 0)
+            {
+                var node = data.instance.get_node(data.selected[0]);
+                var id = node.data.nodeId;
+                var text = $(node.text).text();
+                var path = node.data.nodePath;
+
+                $("#nv_link_dialog_dynamic_path strong").html("nv://structure/" + id);
+
+                $("#nv_link_dialog_real_path span").html(path);
+                $("#nv_link_dialog_real_path").parent().removeClass("hidden");
+
+                $("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
+                $("#nv_link_dialog_replace_text").parent().removeClass("hidden");
+                $("#nv_link_dialog_title").val(text);
+            }
+            else
+            {
+                $("#nv_link_dialog_real_path").parent().addClass("hidden");
+                $("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+                $("#nv_link_dialog_replace_text").parent().addClass("hidden");
+                $("#nv_link_dialog_title").val("");
+            }
+        });
 
 
+        // prepare element search
+
+        $("#nv_link_dialog_element").select2(
+        {
+            placeholder: $("#nv_link_dialog_element").data("placeholder"),
+            minimumInputLength: 1,
+            ajax: {
+                url: $("#nv_link_dialog_element").data("ajax-url"),
+                dataType: "json",
+                delay: 100,
+                data: function(params)
+                {
+                    return {
+                        title: params.term,
+                        embedding: 0,
+                        nd: new Date().getTime(),
+                        page_limit: 30, // page size
+                        page: params.page // page number
+                    };
+                },
+                processResults: function (data, params)
+                {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items,
+                        pagination: { more: (params.page * 30) < data.total_count }
+                    };
+                }
+            },
+            templateSelection: function(row)
+            {
+                if(row.id)
+                {
+                    $("#nv_link_dialog_real_path span").html(row.path);
+                    $("#nv_link_dialog_dynamic_path strong").html("nv://element/" + row.id);
+
+                    $("#nv_link_dialog_real_path").parent().removeClass("hidden");
+                    $("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
+                    $("#nv_link_dialog_replace_text").parent().removeClass("hidden");
+                    $("#nv_link_dialog_title").val(row.text);
+
+                    return row.text + " <helper style='opacity: .5;'>#" + row.id + "</helper>";
+                }
+                else
+                {
+                    $("#nv_link_dialog_real_path").parent().addClass("hidden");
+                    $("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+                    $("#nv_link_dialog_replace_text").parent().addClass("hidden");
+                    $("#nv_link_dialog_title").val("");
+                    return row.text;
+                }
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            triggerChange: true,
+            allowClear: true
+        });
+
+        // prepare product search
+        $("#nv_link_dialog_product").select2(
+        {
+            placeholder: $("#nv_link_dialog_product").data("placeholder"),
+            minimumInputLength: 1,
+            ajax: {
+                url: $("#nv_link_dialog_product").data("ajax-url"),
+                dataType: "json",
+                delay: 100,
+                data: function(params)
+                {
+                    return {
+                        title: params.term,
+                        embedding: 0,
+                        nd: new Date().getTime(),
+                        page_limit: 30, // page size
+                        page: params.page // page number
+                    };
+                },
+                processResults: function (data, params)
+                {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items,
+                        pagination: { more: (params.page * 30) < data.total_count }
+                    };
+                }
+            },
+            templateSelection: function(row)
+            {
+                if(row.id)
+                {
+                    $("#nv_link_dialog_real_path span").html(row.path);
+                    $("#nv_link_dialog_dynamic_path strong").html("nv://element/" + row.id);
+
+                    $("#nv_link_dialog_real_path").parent().removeClass("hidden");
+                    $("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
+                    $("#nv_link_dialog_replace_text").parent().removeClass("hidden");
+                    $("#nv_link_dialog_title").val(row.text);
+
+                    return row.text + " <helper style='opacity: .5;'>#" + row.id + "</helper>";
+                }
+                else
+                {
+                    $("#nv_link_dialog_real_path").parent().addClass("hidden");
+                    $("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+                    $("#nv_link_dialog_replace_text").parent().addClass("hidden");
+                    $("#nv_link_dialog_title").val("");
+                    return row.text;
+                }
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            triggerChange: true,
+            allowClear: true
+        });
+    }
+
+    /* other functions */
 
     $(document.body).on('mousedown', navigate_hide_context_menus);
 
@@ -2125,6 +2307,39 @@ function navigate_string_cut(text, maxlen, morechar)
         text = text + morechar;
 
 	return text;
+}
+
+function nv_link_dialog_source_change()
+{
+    setTimeout(function()
+    {
+        var source = $('#nv_link_dialog_source_structure:checked,#nv_link_dialog_source_element:checked,#nv_link_dialog_source_product:checked').val();
+
+        $("#nv_link_dialog_real_path").parent().addClass("hidden");
+        $("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
+        $("#nv_link_dialog_replace_text").parent().addClass("hidden");
+
+        $("#nv_link_dialog_category").parent().addClass("hidden");
+        $("#nv_link_dialog_element").parent().addClass("hidden");
+        $("#nv_link_dialog_product").parent().addClass("hidden");
+
+        $("#nv_link_dialog_category .jstree").jstree("deselect_all");
+        $("#nv_link_dialog_element").val(null).trigger("change");
+        $("#nv_link_dialog_product").val(null).trigger("change");
+
+        if(source == "element")
+        {
+            $("#nv_link_dialog_element").parent().removeClass("hidden");
+        }
+        else if(source == "product")
+        {
+            $("#nv_link_dialog_product").parent().removeClass("hidden");
+        }
+        else if(source == "structure")
+        {
+            $("#nv_link_dialog_category").parent().removeClass("hidden");
+        }
+    }, 100);
 }
 
 function navigate_confirmation_dialog(ok_callback, content, title, ok_button, cancel_button, cancel_callback)

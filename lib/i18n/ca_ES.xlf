@@ -4070,6 +4070,11 @@
                 <target>Si us plau, torna-ho a intentar o escull una altra forma de pagament.</target>
             </trans-unit>
 
+            <trans-unit id="808" approved="yes">
+                <source>Find product by title</source>
+                <target>Trobar producte per títol</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

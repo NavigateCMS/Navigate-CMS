@@ -735,7 +735,7 @@ function run()
             $query_params = array(
                 ':wid' => $website->id,
                 ':lang' => $website->languages_published[0],
-                ':text' => '%' . $text . '%'
+                ':text' => '%'.$text.'%'
             );
 
             $template_filter = '';
@@ -769,6 +769,11 @@ function run()
             $DB->query($sql, 'array', $query_params);
             $rows = $DB->result();
 			$total = $DB->foundRows();
+
+            for($i=0; $i < count($rows); $i++)
+            {
+                $rows[$i]['path'] = nvweb_source_url('product', $rows[$i]['id']);
+            }
 
 			if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
             {

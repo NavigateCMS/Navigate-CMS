@@ -4059,6 +4059,11 @@
                 <target>Vennligst prøv igjen eller velg en alternativ betalingsmåte.</target>
             </trans-unit>
 
+            <trans-unit id="808">
+                <source>Find product by title</source>
+                <target>Finn produkt etter tittel</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

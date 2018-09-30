@@ -233,7 +233,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 	return $website;
 }
 
-function nvweb_prepare_link($path="")
+function nvweb_prepare_link($path="", $root=NVWEB_ABSOLUTE)
 {
 	$path = trim($path);
 
@@ -251,7 +251,7 @@ function nvweb_prepare_link($path="")
     }
     else
     {
-        $url = NVWEB_ABSOLUTE . $path;
+        $url = $root . $path;
     }
 
     return $url;
@@ -813,16 +813,21 @@ function nvweb_object_enabled($object)
 	return $enabled;
 }
 
-// type: theme, item, structure, (product)
+// type: theme, product, item, structure, (extension?)
 function nvweb_source_url($type, $id, $lang='')
 {
 	global $DB;
 	global $website;
 	global $current;
-    global $theme;
 	
 	if(empty($lang)) 
-		$lang = $current['lang'];
+    {
+        $lang = $current['lang'];
+        if(empty($lang))
+        {
+            $lang = $website->languages_published[0];
+        }
+    }
 
     if($type=='theme')
     {
@@ -831,12 +836,28 @@ function nvweb_source_url($type, $id, $lang='')
         $template_type = $id;
         $id = '';
 
-        //TODO: a) search products
+        // a) search products
         if(empty($id))
         {
-            // $DB->query_single('id', 'nv_products')
+            $id = $DB->query_single(
+                'id',
+                'nv_products',
+                'website = :website_id
+                 AND template = :template_type
+                 AND permission = 0
+                 AND access = 0
+                 AND (date_published = 0 OR date_published < '.core_time().')
+                 AND (date_unpublish = 0 OR date_unpublish > '.core_time().')',
+                NULL,
+                array(
+                    ':website_id' => $website->id,
+                    ':template_type' => $template_type
+                )
+            );
             if(!empty($id))
+            {
                 $type = 'product';
+            }
         }
 
         // b) search items
@@ -858,7 +879,9 @@ function nvweb_source_url($type, $id, $lang='')
                 )
             );
             if(!empty($id))
+            {
                 $type = 'item';
+            }
         }
 
         // c) search structure elements
@@ -883,12 +906,16 @@ function nvweb_source_url($type, $id, $lang='')
                 $type = 'structure';
         }
 
+        // TODO: try to find custom extension paths
+
         if(empty($id))
             return "";
     }
 
     if($type=='element')
+    {
         $type = 'item';
+    }
 
     $url = $DB->query_single(
 		'path',
@@ -896,12 +923,13 @@ function nvweb_source_url($type, $id, $lang='')
 		' type = :type
 		   AND object_id = :object_id
 		   AND lang = :lang
-		   AND website = '.$website->id,
+		   AND website = :wid',
         NULL,
         array(
             ':type' => $type,
             ':object_id' => $id,
-            ':lang' => $lang
+            ':lang' => $lang,
+            ':wid' => $website->id
         )
 	);
 

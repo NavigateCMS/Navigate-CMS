@@ -1338,7 +1338,8 @@ class layout
 
 	public function navigate_editorfield_link_dialog()
 	{
-		global $website;
+        global $DB;
+	    global $website;
 
 		if(in_array('link_dialog', $this->parts_added))
 			return;
@@ -1346,15 +1347,24 @@ class layout
 
 		$naviforms = new naviforms();
 
+        $options = array(
+            'structure'	  => t(16, 'Structure'),
+        	'element'	  => t(180, 'Item')
+        );
+
+        // show product option only if there are products created
+        $products_count = $DB->query_single('COUNT(*)', 'nv_products', 'website='.$website->id);
+        if($products_count > 0)
+        {
+            $options['product'] = t(198, 'Product');
+        }
+
 		$html = array();
 		$html[] = '<div class="navigate-form-row">';
 		$html[] = '<label>'.t(191, 'Source').'</label>';
 		$html[] = $naviforms->buttonset(
 					'nv_link_dialog_source',
-					array(
-						'structure'	  => t(16, 'Structure'),
-						'element'	  => t(180, 'Item')
-					),
+					$options,
 					'structure',
 					'nv_link_dialog_source_change()'
 				);
@@ -1362,7 +1372,6 @@ class layout
 
 		$hierarchy = structure::hierarchy(0);
 		$categories_list = structure::hierarchyList($hierarchy);
-
 
 		$html[] = '<div class="navigate-form-row hidden">';
 		$html[] = '<label>'.t(78, 'Category').'</label>';
@@ -1374,12 +1383,43 @@ class layout
 
 		$html[] = '<div class="navigate-form-row hidden">';
 		$html[] = '<label>'.t(630, 'Element').'</label>';
-		$html[] = $naviforms->selectfield("nv_link_dialog_element", null, null, null, null, false, null, null, false);
+		$html[] = $naviforms->selectfield(
+		    "nv_link_dialog_element",
+            null,
+            null,
+            null,
+            null,
+            false,
+            null,
+            null,
+            false,
+            false,
+            null,
+            'data-placeholder="'.t(533, "Find element by title").'" data-ajax-url="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item"'
+        );
+		$html[] = '</div>';
+
+		$html[] = '<div class="navigate-form-row hidden">';
+		$html[] = '<label>'.t(198, 'Product').'</label>';
+		$html[] = $naviforms->selectfield(
+		    "nv_link_dialog_product",
+            null,
+            null,
+            null,
+            null,
+            false,
+            null,
+            null,
+            false,
+            false,
+            null,
+            'data-placeholder="'.t(808, "Find product by title").'" data-ajax-url="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=products&act=json_find_product"'
+        );
 		$html[] = '</div>';
 
 		$html[] = '<div class="navigate-form-row hidden">';
 		$html[] = '<label>'.t(75, 'Path').'</label>';
-		$html[] = '<div id="nv_link_dialog_real_path">'.$website->absolute_path(true).'<span>?</span></div>';
+		$html[] = '<div id="nv_link_dialog_real_path"><span>?</span></div>';
 		$html[] = '</div>';
 
 		$html[] = '<div class="navigate-form-row hidden">';
@@ -1392,7 +1432,6 @@ class layout
 		$html[] = $naviforms->checkbox("nv_link_dialog_replace_text", true);
 		$html[] = '<input type="hidden" id="nv_link_dialog_title" value="" />';
 		$html[] = '</div>';
-		
 
 		$this->add_content('
 			<div id="nv_link_dialog" title="'.t(631, "Dynamic URL").'" class="hidden">
@@ -1400,122 +1439,8 @@ class layout
 			</div>
 		');
 
-		$this->add_script('		
-			function nv_link_dialog_source_change()
-			{
-				setTimeout(function()
-				{			
-					var source = $(\'#nv_link_dialog_source_structure:checked,#nv_link_dialog_source_element:checked\').val();
-													
-					$("#nv_link_dialog_real_path").parent().addClass("hidden");
-					$("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
-					$("#nv_link_dialog_replace_text").parent().addClass("hidden");
-					
-					$("#nv_link_dialog_element").parent().addClass("hidden");
-					$("#nv_link_dialog_category").parent().addClass("hidden");
-					
-					if(source == "element")
-					{
-						$("#nv_link_dialog_element").parent().removeClass("hidden");
-					}
-					else if(source == "structure")
-					{
-						$("#nv_link_dialog_category").parent().removeClass("hidden");
-					}
-				}, 100);
-			}
-		
-		    $("#nv_link_dialog_category .tree_ul").jstree(
-		    {
-                plugins: ["changed", "types"],
-                "types" : 
-                {
-                    "default":  {   "icon": "img/icons/silk/folder.png"         },
-                    "leaf":     {   "icon": "img/icons/silk/page_white.png"     }
-                },
-                "core" : 
-                {
-                    "multiple" : false
-                }
-            }).on("changed.jstree", function(e, data) 
-            {                               
-                if(data.selected.length > 0)
-                {				
-                    var node = data.instance.get_node(data.selected[0]);
-                    var id = node.data.nodeId;
-                    var text = $(node.text).text();
-                                        
-                    $("#nv_link_dialog_dynamic_path strong").html("nv://structure/" + id);
-                            
-                    $("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
-                    $("#nv_link_dialog_replace_text").parent().removeClass("hidden");
-                    $("#nv_link_dialog_title").val(text);
-                }
-                else
-                {
-                    $("#nv_link_dialog_real_path").parent().addClass("hidden");
-                    $("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
-                    $("#nv_link_dialog_replace_text").parent().addClass("hidden");
-                    $("#nv_link_dialog_title").val("");
-                }		
-            });				   
-
-			$("#nv_link_dialog_element").select2(
-                {
-                    placeholder: "'.t(533, "Find element by title").'",
-                    minimumInputLength: 1,
-                    ajax: {
-                        url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=items&act=json_find_item",
-                        dataType: "json",
-                        delay: 100,
-                        data: function(params)
-                        {
-	                        return {
-				                title: params.term,
-				                embedding: 0,
-				                nd: new Date().getTime(),
-				                page_limit: 30, // page size
-				                page: params.page // page number
-				            };
-                        },
-                        processResults: function (data, params)
-				        {
-				            params.page = params.page || 1;
-				            return {
-								results: data.items,
-								pagination: { more: (params.page * 30) < data.total_count }
-							};
-				        }
-                    },
-                    templateSelection: function(row)
-					{
-						if(row.id)
-						{
-							$("#nv_link_dialog_real_path span").html(row.path);
-							$("#nv_link_dialog_dynamic_path strong").html("nv://element/" + row.id);
-							
-							$("#nv_link_dialog_real_path").parent().removeClass("hidden");
-							$("#nv_link_dialog_dynamic_path").parent().removeClass("hidden");
-							$("#nv_link_dialog_replace_text").parent().removeClass("hidden");
-							$("#nv_link_dialog_title").val(row.text);
-							
-							return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
-						}
-						else
-						{
-							$("#nv_link_dialog_real_path").parent().addClass("hidden");
-							$("#nv_link_dialog_dynamic_path").parent().addClass("hidden");
-							$("#nv_link_dialog_replace_text").parent().addClass("hidden");
-							$("#nv_link_dialog_title").val("");
-							return row.text;
-						}
-					},
-					escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-                    triggerChange: true,
-                    allowClear: true
-                });
-                
-			nv_link_dialog_source_change(); // auto-select structure on load			
+		$this->add_script('			
+            nv_link_dialog_source_change(); // auto-select structure on load
 		');
 	}
 	
