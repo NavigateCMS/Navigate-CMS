@@ -4064,6 +4064,11 @@
                 <target>Finn produkt etter tittel</target>
             </trans-unit>
 
+            <trans-unit id="809">
+                <source>Order summary</source>
+                <target>Bestillingssammendrag</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

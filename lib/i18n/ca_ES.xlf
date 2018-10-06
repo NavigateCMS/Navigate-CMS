@@ -4075,6 +4075,11 @@
                 <target>Trobar producte per títol</target>
             </trans-unit>
 
+            <trans-unit id="809" approved="yes">
+                <source>Order summary</source>
+                <target>Resum de la comanda</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

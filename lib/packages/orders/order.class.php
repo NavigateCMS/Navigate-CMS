@@ -615,8 +615,6 @@ class order
         if(in_array($customer->language, $website->languages_published))
             $email_lang = $customer->language;
 
-        $email_lang = 'es';
-
         $dictionary = new language();
         if($lang->code == $email_lang)
             $dictionary = $lang; // already loaded!
@@ -648,6 +646,78 @@ class order
             $dictionary->t(734, "Order") . ' #' . $this->reference.' — ' . order::status($this->status, $dictionary),
             $message,
             $customer->email,
+            NULL,
+            false
+        );
+
+    }
+
+    public function send_customer_order_creation()
+    {
+        global $website;
+        global $lang;
+
+        $customer = new webuser();
+        $customer->load($this->webuser);
+
+        $email_lang = $website->languages_published[0];
+        if(in_array($customer->language, $website->languages_published))
+            $email_lang = $customer->language;
+
+        $dictionary = new language();
+        if($lang->code == $email_lang)
+            $dictionary = $lang; // already loaded!
+        else
+            $dictionary->load($email_lang);
+
+        $this->load_lines();
+        $lines = array();
+        $lines[] = '<tr>';
+        $lines[] = '<td style="text-align: center; ">'.$dictionary->t(724, "Quantity").'</td>';
+        $lines[] = '<td width="85%">'.$dictionary->t(198, "Product").'</td>';
+        $lines[] = '</tr>';
+        for($l=0; $l < count($this->lines); $l++)
+        {
+            $lines[] = '<tr><td colspan="2"><div style="height: 1px; background-color: #aaaaaa;"></div></td></tr>';
+            $lines[] = '<tr>';
+            $lines[] = '<td valign="top" style="text-align: center;">'.core_decimal2string($this->lines[$l]->quantity).'</td>';
+            $lines[] = '<td>'.$this->lines[$l]->name.'<br /><small>'.$this->lines[$l]->option.'</small></td>';
+            $lines[] = '</tr>';
+        }
+
+        $message = navigate_compose_email(
+            array(
+                array(
+                    'title'   => $dictionary->t(177,"Website"),
+                    'content' => '<a href="' . $website->absolute_path() . $website->homepage() . '">' . $website->name . '</a>'
+                ),
+                array(
+                    'title'   => $dictionary->t(734, "Order"),
+                    'content' => $this->reference . '<br /><small>'.core_ts2date($this->date_created, true).'</small>'
+                ),
+                array(
+                    'title'   => $dictionary->t(25, "Products"),
+                    'content' => '<table width="100%">'.implode("\n", $lines).'</table>'
+                ),
+                array(
+                    'title'   => $dictionary->t(706, "Total"),
+                    'content' => core_price2string($this->total, $this->currency)
+                ),
+                array(
+                    'title'   => $dictionary->t(68, "Status"),
+                    'content' => order::status($this->status, $dictionary) . '<br /><small>'.core_ts2date($this->date_updated).'</small>'
+                ),
+                array(
+                    'footer' => '<a href="' . $website->absolute_path() . $website->homepage() . '" style="text-decoration: none;">&#128712;</a> ' .
+                        $dictionary->t(735, "For any complaint or inquiry, please contact us.")
+                )
+            )
+        );
+
+        navigate_send_email(
+            $dictionary->t(792, "Order created") . ' #' . $this->reference,
+            $message,
+            'coolwind.ws@gmail.com', //$customer->email,
             NULL,
             false
         );

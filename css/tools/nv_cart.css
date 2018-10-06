@@ -487,6 +487,12 @@ input[name='payment_method[]']
     margin-right: 8px;
 }
 
+.nv_cart_order_created_payment_method_info span
+{
+    font-weight: bold;
+}
+
+
 
 /* order steps widget styling */
 

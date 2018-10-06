@@ -4054,13 +4054,17 @@
 
 		   <trans-unit id="807" approved="yes">
 			   	<source>Please try again or choose an alternative payment method.</source>
-			   	<target>Por favor, vuélvelo a intentar o escoge otra forma de pago.</target>
+			   	<target>Por favor, vuelve a intentarlo o escoge otra forma de pago.</target>
 		   </trans-unit>
-
 
 			<trans-unit id="808" approved="yes">
 				<source>Find product by title</source>
 				<target>Encontrar producto por título</target>
+			</trans-unit>
+
+			<trans-unit id="809" approved="yes">
+				<source>Order summary</source>
+				<target>Resumen del pedido</target>
 			</trans-unit>
 
 		</body>

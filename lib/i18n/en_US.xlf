@@ -4063,6 +4063,11 @@
 				<target>Find product by title</target>
 			</trans-unit>
 
+			<trans-unit id="809" approved="yes">
+				<source>Order summary</source>
+				<target>Order summary</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

@@ -16,6 +16,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/payment_methods/payment_method.class.p
     4) choose shipping method
     5) summary and confirmation
     6) payment
+        (on error) payment failed -> choose alternative payment method and repeat step 6
     7) order complete
 */
 
@@ -312,7 +313,13 @@ function nvweb_cart($vars=array())
 
                 case 'payment':
                     $order = new order();
-                    if(empty($cart['order_id']))
+                    $order_exists = !empty($cart['order_id']);
+
+                    if($order_exists)
+                    {
+                        $order->load($cart['order_id']);
+                    }
+                    else
                     {
                         // in this step the order is set as confirmed
                         // only remaining to be paid
@@ -320,21 +327,20 @@ function nvweb_cart($vars=array())
                         $order->save();
                         $cart['order_id'] = @$order->id;
                         $session['cart'] = $cart;
-                    }
-                    else
-                    {
-                        $order->load($cart['order_id']);
+
+                        // notify order creation
+                        $order->send_customer_order_creation();
                     }
 
                     if(empty($order->id))
                     {
-                        // error
+                        // error loading/creating the order
                         throw new Exception($DB->get_last_error());
                     }
                     else
                     {
                         // display payment form or information
-                        $out = nvweb_cart_payment_page($order);
+                        $out = nvweb_cart_payment_page($order, $order_exists);
                     }
                     break;
 
@@ -988,6 +994,8 @@ function nvweb_cart_steps()
             break;
 
         case 'payment':
+        case 'payment_failed':
+        case 'payment_done':
             $out[] = '<span>6 / 6</span> '.t(757, "Payment");
             break;
     }
@@ -1695,7 +1703,7 @@ function nvweb_cart_summary_page($cart)
 
     $out[] = '  <div class="nv_cart-flex-sb">';
 
-    // PAYMENT
+    // PAYMENT METHOD (choose)
     $out[] = '    <div>';
     $out[] = '        <h5>'.t(727, "Payment method").'</h5>';
     $out[] = '        <p>';
@@ -1797,7 +1805,7 @@ function nvweb_cart_summary_page($cart)
     return implode("\n", $out);
 }
 
-function nvweb_cart_payment_page($order)
+function nvweb_cart_payment_page($order, $order_exists=false)
 {
     global $html;
     global $current;
@@ -1812,8 +1820,15 @@ function nvweb_cart_payment_page($order)
         $payment_symbol = '<i class="fa fa-fw fa-id-card"></i> ';
     }
 
-    $out[] = '<div class="nv_cart_order_created_title"><h3>'.$order_created_symbol.t(792, "Order created").'</h3></div>';
-    $out[] = '<p class="nv_cart_order_created_thanks">'.t(793, "Thank you! Your order has been received.").'</p>';
+    if(!$order_exists) // if the order has just been created, show thank you message
+    {
+        $out[] = '<div class="nv_cart_order_created_title"><h3>'.$order_created_symbol.t(792, "Order created").'</h3></div>';
+        $out[] = '<p class="nv_cart_order_created_thanks">'.t(793, "Thank you! Your order has been received.").'</p>';
+    }
+    else
+    {
+        $out[] = '<div class="nv_cart_order_created_title"><h3>'.$order_created_symbol.t(809, "Order summary").'</h3></div>';
+    }
 
     $out[] = '<blockquote class="nv_cart_order_created_summary">';
     $out[] = t(794, "Order reference").': '.$order->reference.'<br />';
@@ -1834,7 +1849,7 @@ function nvweb_cart_payment_page($order)
         $payment_method->load($order->payment_method);
 
         $out[] = '<div class="nv_cart_order_created_payment_title"><h3>'.$payment_symbol.t(757, "Payment").'</h3></div>';
-        $out[] = '<p class="nv_cart_order_created_payment_method_info">'.t(727, "Payment method").': '.$payment_method->dictionary[$current['lang']]['title'].'</p>';
+        $out[] = '<p class="nv_cart_order_created_payment_method_info">'.t(727, "Payment method").': <span>'.$payment_method->dictionary[$current['lang']]['title'].'</span></p>';
         $out[] = '<div class="nv_cart_order_created_payment_method_content">'.$payment_method->checkout($order).'</div>';
     }
 
@@ -1851,8 +1866,23 @@ function nvweb_cart_payment_failed($order)
 {
     global $html;
     global $current;
+    global $session;
 
     $out = array();
+
+    $checkout_url = nvweb_source_url('theme', 'checkout');
+
+    if(!empty($_POST) && !empty($_POST['payment_method_change']))
+    {
+        $order->payment_method = intval($_POST['payment_method_change'][0]);
+        $order->save();
+
+        $cart = $session['cart'];
+        $cart['payment_method'] = $_POST['payment_method_change'][0];
+        $cart['checkout_step'] = 'payment';
+        $session['cart'] = $cart;
+        core_terminate($checkout_url);
+    }
 
     $fontawesome_available = ( strpos($html,'font-awesome.') || strpos($html,'<i class="fa ') );
 
@@ -1873,8 +1903,6 @@ function nvweb_cart_payment_failed($order)
 
     $payment_methods = payment_method::get_available();
 
-/*
-
     $out[] = '    <form action="?" class="payment_failed_choose_method" method="post">';
     $out[] = '        <h5>'.t(727, "Payment method").'</h5>';
     $out[] = '        <p>';
@@ -1882,13 +1910,13 @@ function nvweb_cart_payment_failed($order)
     {
         if(empty($pm->image))
         {
-            $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
+            $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
                 $pm->dictionary[$current['lang']]['title'] .
                 '</label>';
         }
         else
         {
-            $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
+            $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
                 '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$pm->dictionary[$current['lang']]['title'].'" style="height:24px; width: auto;" />' .
                 '</label>';
         }
@@ -1897,7 +1925,7 @@ function nvweb_cart_payment_failed($order)
     $out[] = '        <button type="submit">'.t(152, "Continue").'</button>';
     $out[] = '    </form>';
 
-*/
+
     nvweb_after_body(
         'html',
         '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_cart.css" />'.
@@ -1906,7 +1934,7 @@ function nvweb_cart_payment_failed($order)
 
     nvweb_after_body(
         'js',
-        '$()'
+        '$("input[name=\'payment_method_change[]\'][value='.$order->payment_method.']").trigger("click");'
     );
 
     return implode("\n", $out);
