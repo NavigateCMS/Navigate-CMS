@@ -141,18 +141,26 @@ function nvweb_comments($vars=array())
                         $response = $webgets[$webget]['translations']['comment_published'];
 
                         if($vars['notify']=='inline' || $callback=='inline')
+                        {
                             $out = '<div class="comment-success">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback.'("'.$response.'");');
+                        }
                     }
                     else
                     {
                         $response = $webgets[$webget]['translations']['security_error'];
 
                         if($vars['notify']=='inline' || $callback_error=='inline')
+                        {
                             $out = '<div class="comment-error">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        }
                     }
                 }
                 else
@@ -486,11 +494,15 @@ function nvweb_comments($vars=array())
 			{
 				// Post a comment form (signed in users)
                 if(empty($vars['avatar_size']))
+                {
                     $vars['avatar_size'] = 32;
+                }
 
                 $avatar_url = NVWEB_OBJECT.'?type=blank';
                 if(!empty($webuser->avatar))
+                {
                     $avatar_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$webuser->avatar.'&amp;disposition=inline&width='.$vars['avatar_size'].'&height='.$vars['avatar_size'];
+                }
 
 				$out = '
 					<div class="comments-reply">
@@ -552,29 +564,42 @@ function nvweb_comments($vars=array())
 			list($comments, $comments_total) = nvweb_comments_list(0, NULL, NULL, $vars['order']); // get all comments of the current entry
 
 			if(empty($vars['avatar_size']))
-				$vars['avatar_size'] = '48';
+            {
+                $vars['avatar_size'] = '48';
+            }
 
 			if(empty($vars['date_format']))
-				$vars['date_format'] = '%d %B %Y %H:%M';
+            {
+                $vars['date_format'] = '%d %B %Y %H:%M';
+            }
 
 			for($c=0; $c < $comments_total; $c++)
 			{
 				$avatar = $comments[$c]->avatar;
 				if(!empty($avatar))
-					$avatar = '<img src="'.NVWEB_OBJECT.'?type=image&id='.$avatar.'" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
+                {
+                    $avatar = '<img src="'.NVWEB_OBJECT.'?type=image&id='.$avatar.'" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
+                }
 				else
-					$avatar = '<img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
+                {
+                    $avatar = '<img src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$vars['avatar_size'].'px" height="'.$vars['avatar_size'].'px"/>';
+                }
 
                 $comment = new comment();
                 $comment->load_from_resultset(array($comments[$c]));
                 $depth = 'data-depth="'.$comment->depth().'"';
 
+                $message_text = core_special_chars($comments[$c]->message);
+
+                $message_username = (!empty($comments[$c]->username)? $comments[$c]->username : $comments[$c]->name);
+                $message_username = core_special_chars($message_username);
+
 				$out .= '
 					<div class="comment"'.$depth.'>
 						<div class="comment-avatar">'.$avatar.'</div>
-						<div class="comment-username">'.(!empty($comments[$c]->username)? $comments[$c]->username : $comments[$c]->name).'</div>
+						<div class="comment-username">'.$message_username.'</div>
 						<div class="comment-date">'.Encoding::toUTF8(strftime($vars['date_format'], $comments[$c]->date_created)).'</div>
-						<div class="comment-message">'.nl2br($comments[$c]->message).'</div>
+						<div class="comment-message">'.nl2br($message_text).'</div>
 						<div style="clear:both"></div>
 					</div>
 				';
@@ -594,9 +619,13 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
     $limit = value_or_default($limit, 2147483647);
 
     if($order=='newest' || $order=='hierarchy_newest')
+    {
         $orderby = "nvc.date_created DESC";
+    }
     else
+    {
         $orderby = "nvc.date_created ASC";
+    }
 
     $object = $current['object'];
     $object_id = $current['id'];
@@ -665,7 +694,9 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
             if(!empty($rows_to_add))
             {
                 foreach($rows_to_add as $rta)
+                {
                     $out[] = $rta;
+                }
             }
         }
 

@@ -189,7 +189,7 @@ class grid_notes
         if(empty($comment))
             return 'comment_empty';
 
-        $comment = htmlspecialchars($comment);
+        $comment = core_special_chars($comment);
 
         $DB->execute('
             INSERT INTO nv_notes

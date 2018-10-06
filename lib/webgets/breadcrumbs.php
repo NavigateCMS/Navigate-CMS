@@ -13,16 +13,24 @@ function nvweb_breadcrumbs($vars=array())
 	$out = '';
 
 	if(empty($vars['separator']))
-		$vars['separator'] = '&nbsp;&gt;&nbsp;';
+    {
+        $vars['separator'] = '&nbsp;&gt;&nbsp;';
+    }
 
     if($vars['separator']=='image')
+    {
         $vars['separator'] = '<img src="'.$vars['image'].'" />';
+    }
 
     if($vars['separator']=='base64')
+    {
         $vars['separator'] = base64_decode($vars['base64']);
+    }
 	
 	if(empty($vars['from']))
-		$vars['from'] = 0;
+    {
+        $vars['from'] = 0;
+    }
 
 	// 2 options: we are displaying an element or a category
 	$breadcrumbs = array();
@@ -43,7 +51,7 @@ function nvweb_breadcrumbs($vars=array())
 		while($parent > 0)
 		{
 			$parent = nvweb_breadcrumbs_parent($parent);
-			    $breadcrumbs[] = $parent;
+            $breadcrumbs[] = $parent;
 		}
 			
 		$vars['from'] = intval($vars['from']) + 1;
@@ -62,13 +70,22 @@ function nvweb_breadcrumbs($vars=array())
 		
 		for($i = $vars['from']; $i < count($breadcrumbs); $i++)
 		{
+		    $text = $structure['dictionary'][$breadcrumbs[$i]];
+            $text = core_special_chars($text);
+
             if($vars['links']=='false')
-                $out .= $structure['dictionary'][$breadcrumbs[$i]];
+            {
+                $out .= $text;
+            }
             else
-			    $out .= '<a '.nvweb_menu_action($breadcrumbs[$i]).'>'.$structure['dictionary'][$breadcrumbs[$i]].'</a>';
+            {
+                $out .= '<a '.nvweb_menu_action($breadcrumbs[$i]).'>'.$text.'</a>';
+            }
 
 			if($i + 1 < count($breadcrumbs))
-				$out .= $vars['separator'];
+            {
+                $out .= $vars['separator'];
+            }
 		}
 	}
 	

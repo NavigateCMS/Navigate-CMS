@@ -286,17 +286,23 @@ function nvweb_template_parse($template)
 				
 			case 'request':
                 if(!empty($tag['attributes']['name']))
-				    $content = $_REQUEST[$tag['attributes']['name']];
+                {
+                    $content = $_REQUEST[$tag['attributes']['name']];
+                }
                 else // deprecated: use "request" as attribute [will be removed on navigate cms 2.0]
+                {
                     $content = $_REQUEST[$tag['attributes']['request']];
+                }
 
                 if(is_array($content))
+                {
                     $content = implode(',', $content);
+                }
 
                 if(!isset($tag['attributes']['raw']) || $tag['attributes']['raw']!='true')
                 {
                     // prepare string to be included in a webpage
-                    $content = htmlentities($content);
+                    $content = core_special_chars($content);
                 }
 				break;				
 				
@@ -309,11 +315,17 @@ function nvweb_template_parse($template)
 						// retrieve the category ID from current session
 						$tmp = NULL;
 						if($current['type']=='structure')
-							$tmp = $current['id'];
+                        {
+                            $tmp = $current['id'];
+                        }
 						else if(!empty($current['category']))
-							$tmp = $current['category'];
+                        {
+                            $tmp = $current['category'];
+                        }
 						else if(!empty($current['object']->category))
-							$tmp = $current['object']->category;
+                        {
+                            $tmp = $current['object']->category;
+                        }
 														
 						if(empty($tmp))
 							$content = '';

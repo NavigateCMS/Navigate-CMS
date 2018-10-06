@@ -55,7 +55,9 @@ function nvweb_webuser($vars=array())
             {
                 $theme_translation = $theme->t($code);
                 if(!empty($theme_translation) && $code!=$theme_translation)
+                {
                     $webgets[$webget]['translations'][$code] = $theme_translation;
+                }
             }
         }
     }
@@ -67,27 +69,37 @@ function nvweb_webuser($vars=array())
     {
         case 'id':
             if(!empty($webuser->id))
+            {
                 $out = $webuser->id;
+            }
             break;
 
         case 'username':
             if(!empty($webuser->username))
-                $out = $webuser->username;
+            {
+                $out = core_special_chars($webuser->username);
+            }
             break;
 
         case 'fullname':
             if(!empty($webuser->fullname))
-                $out = $webuser->fullname;
+            {
+                $out = core_special_chars($webuser->fullname);
+            }
             break;
 
         case 'phone':
             if(!empty($webuser->phone))
+            {
                 $out = $webuser->phone;
+            }
             break;
 
         case 'gender':
             if(!empty($webuser->gender))
+            {
                 $out = $webuser->gender;
+            }
             break;
 
         case 'newsletter':
@@ -96,13 +108,17 @@ function nvweb_webuser($vars=array())
 
         case 'email':
             if(!empty($webuser->email))
+            {
                 $out = $webuser->email;
+            }
             break;
 
         case 'authenticate':
             $webuser_website = $vars['website'];
             if(empty($webuser_website))
+            {
                 $webuser_website = $website->id;
+            }
 
             $signin_username = $_REQUEST[(empty($vars['username_field'])? 'signin_username' : $vars['username_field'])];
             $signin_password = $_REQUEST[(empty($vars['password_field'])? 'signin_password' : $vars['password_field'])];
@@ -112,7 +128,9 @@ function nvweb_webuser($vars=array())
             {
                 list($field_name, $field_value) = explode('=', $vars['form']);
                 if($_POST[$field_name]!=$field_value)
+                {
                     return;
+                }
             }
 
             // ignore empty (or partial empty) forms
@@ -125,7 +143,9 @@ function nvweb_webuser($vars=array())
                     $message = $webgets[$webget]['translations']['login_incorrect'];
 
                     if(empty($vars['notify']))
+                    {
                         $vars['notify'] = 'inline';
+                    }
 
                     switch($vars['notify'])
                     {
@@ -149,7 +169,9 @@ function nvweb_webuser($vars=array())
                     if(!empty($vars['notify']))
                     {
                         if($vars['notify']=='callback')
+                        {
                             nvweb_after_body('js', $vars['callback'].'(true);');
+                        }
                     }
                 }
             }
@@ -171,16 +193,22 @@ function nvweb_webuser($vars=array())
             {
                 list($field_name, $field_value) = explode('=', $vars['form']);
                 if($_POST[$field_name]!=$field_value)
+                {
                     return;
+                }
             }
 
             // check if this send request really comes from the website and not from a spambot
             if( parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain &&
                 parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->domain )
+            {
                 return;
+            }
 
             if(empty($vars['email_field']))
+            {
                 $vars['email_field'] = 'newsletter_email';
+            }
 
             $email = $_REQUEST[$vars['email_field']];
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
@@ -245,12 +273,18 @@ function nvweb_webuser($vars=array())
                 }
 
                 if($ok)
+                {
                     $message = $webgets[$webget]['translations']['forgot_password_success'];
+                }
                 else
+                {
                     $message = $webgets[$webget]['translations']['forgot_password_error'];
+                }
 
                 if(empty($vars['notify']))
+                {
                     $vars['notify'] = 'inline';
+                }
 
                 switch($vars['notify'])
                 {
@@ -310,7 +344,9 @@ function nvweb_webuser($vars=array())
             // optional fields
             $username = trim($_POST[$vars['username_field']]);
             if(empty($username))
+            {
                 $username = nvweb_webuser_generate_username($email);
+            }
 
             $error = "";
             if(!filter_var($email, FILTER_VALIDATE_EMAIL))
@@ -368,33 +404,47 @@ function nvweb_webuser($vars=array())
                 $ok = $wu->save();
 
                 if($ok)
+                {
                     $ok = nvweb_webuser_sign_up_send_verification($wu, @$vars['callback_url']);
+                }
 
                 if(!$ok)
+                {
                     $error = t(56, "Unexpected error");
+                }
             }
 
             if(!empty($error))
+            {
                 $out = $error;
+            }
 
             break;
 
         case 'comments':
             // number of comments posted (and published) by the current logged in webuser
             if(!empty($webuser->id))
+            {
                 $out = comment::webuser_comments_count($webuser->id);
+            }
             else
+            {
                 $out = 0;
+            }
             break;
 
         case 'avatar':
             $size = '48';
             $extra = '';
             if(!empty($vars['size']))
+            {
                 $size = intval($vars['size']);
+            }
 
             if(!empty($vars['border']))
+            {
                 $extra .= '&border='.$vars['border'];
+            }
 
             if(!empty($webuser->avatar))
             {
@@ -408,20 +458,31 @@ function nvweb_webuser($vars=array())
                 //  absolute path (http://www...)
                 //  relative path (/img/avatar.png) -> path to the avatar file included in the THEME used
                 if(is_numeric($vars['default']))
+                {
                     $out = '<img class="'.$vars['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$vars['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                }
                 else if(strpos($vars['default'], 'http://')===0)
+                {
                     $out = '<img class="'.$vars['class'].'" src="'.$vars['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                }
                 else if($vars['default']=='none')
-                    $out = ''; // no image
+                {
+                    // no image
+                    $out = '';
+                }
                 else
+                {
                     $out = '<img class="'.$vars['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$vars['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                }
             }
             else // empty avatar, try to get a libravatar/gravatar or show a blank avatar
             {
                 $gravatar_hash = "";
                 $gravatar_default = 'blank';
                 if(!empty($vars['gravatar_default']))
+                {
                     $gravatar_default = $vars['gravatar_default'];
+                }
 
                 if(!empty($webuser->email))
                 {
@@ -436,7 +497,9 @@ function nvweb_webuser($vars=array())
                     $out = '<img class="'.$vars['class'].'" src="'.$gravatar_url.'" width="'.$size.'px" height="'.$size.'px"/>';
                 }
                 else
+                {
                     $out = '<img class="'.$vars['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+                }
             }
             break;
 
@@ -446,16 +509,22 @@ function nvweb_webuser($vars=array())
             {
                 list($field_name, $field_value) = explode('=', $vars['form']);
                 if($_POST[$field_name]!=$field_value)
+                {
                     return;
+                }
             }
 
             // check if this send request really comes from the website and not from a spambot
             if( parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain &&
                 parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->domain )
+            {
                 return;
+            }
 
             if(empty($vars['email_field']))
+            {
                 $vars['email_field'] = 'newsletter_email';
+            }
 
             $email = $_REQUEST[$vars['email_field']];
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
@@ -547,12 +616,18 @@ function nvweb_webuser($vars=array())
 
                 $message = $webgets[$webget]['translations']['subscribe_error'];
                 if($pending_confirmation)
+                {
                     $message = $webgets[$webget]['translations']['email_confirmation'];
+                }
                 else if($ok)
+                {
                     $message = $webgets[$webget]['translations']['subscribed_ok'];
+                }
 
                 if(empty($vars['notify']))
+                {
                     $vars['notify'] = 'inline';
+                }
 
                 switch($vars['notify'])
                 {
@@ -582,9 +657,13 @@ function nvweb_webuser($vars=array())
                         else
                         {
                             if(!empty($vars['error_callback']))
+                            {
                                 nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                            }
                             else
+                            {
                                 nvweb_after_body('js', $vars['callback'].'("'.$message.'");');
+                            }
                         }
                         break;
                 }
@@ -608,13 +687,19 @@ function nvweb_webuser_password_strength($password,  $username="", $email="")
     $score = 100;
 
     if(strlen($password) < 8)
+    {
         $score = 0;
+    }
 
     if($password==$username || $password == $email)
+    {
         $score = 0;
+    }
 
     if(in_array($password, $weak_passwords))
+    {
         $score = 0;
+    }
 
     return $score;
 }
@@ -628,7 +713,9 @@ function nvweb_webuser_sign_up_send_verification($wu, $callback="")
 
     // send a message to verify the new user's email
     if(empty($callback))
+    {
         $callback = $website->homepage();
+    }
 
     $email_confirmation_link = $website->absolute_path().'/nv.webuser/confirm?email='.$wu->email.'&hash='.$wu->activation_key.'&callback='.base64_encode($callback);
 

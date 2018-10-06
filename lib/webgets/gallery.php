@@ -14,18 +14,26 @@ function nvweb_gallery($vars=array())
 
     $border = '';
     if(!empty($vars['border']))
+    {
         $border = '&border='.$vars['border'];
+    }
 
     if(!empty($vars['opacity']))
+    {
         $border .= '&opacity='.$vars['opacity'];
+    }
 
     $items = PHP_INT_MAX; // number of images shown, 0 => all gallery photos
     if(!empty($vars['items']) && $vars['items']!='0')
+    {
         $items = intval($vars['items']);
+    }
 
     $order = 'priority'; // display images using the assigned priority
     if(!empty($vars['order']))
+    {
         $order = $vars['order'];
+    }
 
 	if(!empty($vars['item']))
 	{
@@ -56,14 +64,18 @@ function nvweb_gallery($vars=array())
 		// check publishing is enabled
 		$enabled = nvweb_object_enabled($current['object']);				
 		if($enabled || (($_REQUEST['preview']=='true' && $current['navigate_session']==1)))
-			$item = $current['object'];
+        {
+            $item = $current['object'];
+        }
 	}
 	else if($current['type']=='product')
 	{
 		// check publishing is enabled
 		$enabled = nvweb_object_enabled($current['object']);
 		if($enabled || (($_REQUEST['preview']=='true' && $current['navigate_session']==1)))
-			$item = $current['object'];
+        {
+            $item = $current['object'];
+        }
 	}
 	else if($current['type']=='structure')
 	{
@@ -83,7 +95,10 @@ function nvweb_gallery($vars=array())
 		}
 	}
 
-	if($item==NULL) return '';
+	if($item==NULL)
+    {
+        return '';
+    }
 	
 	if(empty($vars['width']) && empty($vars['height']))
 	{
@@ -91,9 +106,13 @@ function nvweb_gallery($vars=array())
 		$vars['height'] = 90;
 	}
 	else if(empty($vars['height']))
-		$vars['height'] = '';	
+    {
+        $vars['height'] = '';
+    }
 	else if(empty($vars['width']))
-		$vars['width'] = '';			
+    {
+        $vars['width'] = '';
+    }
 	
 	// which gallery model?
 	$out = array();
@@ -103,7 +122,9 @@ function nvweb_gallery($vars=array())
         case 'image':
 
             if(is_array($item->galleries))
+            {
                 $gallery = $item->galleries[0];
+            }
 
             if(is_string($item->galleries))
             {
@@ -113,7 +134,9 @@ function nvweb_gallery($vars=array())
 
             // no images in the gallery?
             if(!is_array($gallery))
+            {
                 return '';
+            }
 
             $gallery = nvweb_gallery_reorder($gallery, $order);
 
@@ -123,9 +146,14 @@ function nvweb_gallery($vars=array())
 
             // no image found at the requested position
             if(empty($image_selected))
+            {
                 return '';
+            }
 
 			list($image_title, $image_description) = nvweb_gallery_image_caption($image_selected, $gallery);
+
+            $image_title = core_special_chars($image_title);
+            $image_description = core_special_chars($image_description);
 
             if(!empty($vars['return']) && $vars['return']=='url')
             {
@@ -141,12 +169,14 @@ function nvweb_gallery($vars=array())
                 $out[] = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border;
             }
             else
+            {
                 $out[] = '<div class="nv_gallery_item">
                             <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
                                 <img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image_selected.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].
-	                                $border.'" alt="'.$image_description.'" title="'.$image_title.'" />
+                                     $border.'" alt="'.$image_description.'" title="'.$image_title.'" />
                             </a>
                         </div>';
+            }
             break;
 
 		case 'greybox':
@@ -178,8 +208,13 @@ function nvweb_gallery($vars=array())
 							 </a>';
 				}
 						
-				if(!$first) $jsout .= ','."\n";
-				
+				if(!$first)
+                {
+                    $jsout .= ','."\n";
+                }
+
+                $image_title = core_special_chars($image_title);
+
 				$jsout .= '{"caption": "'.$image_title.'", "url": "'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline"}';
 				$preload[] = "'".NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline';
 				$first = false;
@@ -203,6 +238,8 @@ function nvweb_gallery($vars=array())
             {
 	            list($image_title, $image_description) = nvweb_gallery_image_caption($image, $gallery);
 
+                $image_title = core_special_chars($image_title);
+
                 $out[] = '<Image Source="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].$border.'" Title="'.$image_title.'"></Image>';
                 $items--;
                 if($items <= 0) break;
@@ -211,9 +248,10 @@ function nvweb_gallery($vars=array())
 
         case 'images':
             // plain IMG without links or divs
-            // TO DO: add alt and title to the image
             if(is_array($item->galleries))
+            {
                 $gallery = $item->galleries[0];
+            }
 
             if(is_string($item->galleries))
             {
@@ -225,11 +263,16 @@ function nvweb_gallery($vars=array())
             $images = array_keys($gallery);
 
             if(empty($images))
+            {
                 return '';
+            }
 
             foreach($images as $img)
             {
 	            list($image_title, $image_description) = nvweb_gallery_image_caption($img, $gallery);
+
+                $image_title = core_special_chars($image_title);
+                $image_description = core_special_chars($image_description);
 
                 $out[] = '<img class="nv_gallery_image" src="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].
 	                        $border.'" alt="'.$image_description.'" title="'.$image_title.'" />';
@@ -240,9 +283,10 @@ function nvweb_gallery($vars=array())
 
         case 'image_links':
             // IMG wrapped by a link
-            // TO DO: add alt and title to the image
             if(is_array($item->galleries))
+            {
                 $gallery = $item->galleries[0];
+            }
 
             if(is_string($item->galleries))
             {
@@ -254,11 +298,16 @@ function nvweb_gallery($vars=array())
             $images = array_keys($gallery);
 
             if(empty($images))
+            {
                 return '';
+            }
 
             foreach($images as $img)
             {
 	            list($image_title, $image_description) = nvweb_gallery_image_caption($img, $gallery);
+
+                $image_title = core_special_chars($image_title);
+                $image_description = core_special_chars($image_description);
 
                 $out[] = '
                     <a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$img.'&amp;disposition=inline">
@@ -266,7 +315,10 @@ function nvweb_gallery($vars=array())
 	                        $border.'" alt="'.$image_description.'" title="'.$image_title.'" />
                     </a>';
                 $items--;
-                if($items <= 0) break;
+                if($items <= 0)
+                {
+                    break;
+                }
             }
             break;
 			
@@ -276,7 +328,9 @@ function nvweb_gallery($vars=array())
 			$out[] = '<div class="nv_gallery">';		
 		
 			if(is_array($item->galleries))
-				$gallery = $item->galleries[0];
+            {
+                $gallery = $item->galleries[0];
+            }
 
 			if(is_string($item->galleries))		
 			{
@@ -298,7 +352,10 @@ function nvweb_gallery($vars=array())
 					$first = false;
 				}
 
-				list($image_title, $image_description) = nvweb_gallery_image_caption($img, $gallery);
+				list($image_title, $image_description) = nvweb_gallery_image_caption($image, $gallery);
+
+                $image_title = core_special_chars($image_title);
+                $image_description = core_special_chars($image_description);
 				
 				$out[] = '<div class="nv_gallery_item" '.$style.'>
 							<a class="nv_gallery_a" href="'.NVWEB_OBJECT.'?wid='.$website->id.'&id='.$image.'&amp;disposition=inline" rel="gallery[item-'.$item->id.']">
@@ -330,9 +387,13 @@ function nvweb_gallery_reorder($gallery=array(), $order='priority')
     switch($order)
     {
         case 'random':
-            uasort($gallery, function ($a, $b) {
-                return rand(-1, 1);
-            });
+            uasort(
+                $gallery,
+                function ($a, $b)
+                {
+                    return rand(-1, 1);
+                }
+            );
             break;
 
         case 'priority':
@@ -362,9 +423,13 @@ function nvweb_gallery_image_caption($image, $gallery)
 		$image_selected_obj = new file();
 		$image_selected_obj->load($image);
         if(isset($image_selected_obj->description[$current['lang']]))
-		    $image_description = $image_selected_obj->description[$current['lang']];
+        {
+            $image_description = $image_selected_obj->description[$current['lang']];
+        }
         if(isset($image_selected_obj->title[$current['lang']]))
-		    $image_title = $image_selected_obj->title[$current['lang']];
+        {
+            $image_title = $image_selected_obj->title[$current['lang']];
+        }
 	}
 
 	return array($image_title, $image_description);

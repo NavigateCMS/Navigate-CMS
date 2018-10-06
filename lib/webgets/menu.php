@@ -84,15 +84,23 @@ function nvweb_menu($vars=array())
 		//	from: 1	--> 8, 9		
 		$parent = $current['hierarchy'][$from];
 
-		if(is_null($parent)) return '';	// the requested level of menu does not exist under the current category
+		if(is_null($parent))
+        {
+            // the requested level of menu does not exist under the current category
+            return '';
+        }
 	}
 
 	$option = -1;	
 	if(isset($vars['option']))
-		$option = intval($vars['option']);
+    {
+        $option = intval($vars['option']);
+    }
 
     if($vars['mode']=='next' || $vars['mode']=='previous')
+    {
         $out = nvweb_menu_render_arrow($vars);
+    }
     else
     {
         $out = nvweb_menu_generate($vars['mode'], $vars['levels'], $parent, 0, $option, $vars['class']);
@@ -129,7 +137,9 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 	$out = "";
 
 	if($level >= $levels && $levels > 0)
+    {
         return '';
+    }
 	
 	nvweb_menu_load_structure($parent);
 
@@ -140,19 +150,31 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
             case 'category_title':
 			case 'current_title':
                 if($current['type']=='structure')
-				    $out = $structure['dictionary'][$current['category']];
+                {
+                    $out = $structure['dictionary'][$current['category']];
+                }
                 else if($current['type']=='item')
+                {
                     $out = $structure['dictionary'][$current['object']->category];
+                }
+
+                $out = core_special_chars($out);
 				break;
 
             case 'category_link':
             case 'category_url':
                 if($current['type']=='structure')
+                {
                     $out = nvweb_source_url('structure', $current['category']);
+                }
                 else if($current['type']=='item')
+                {
                     $out = nvweb_source_url('structure', $current['object']->category);
+                }
                 else
+                {
                     $out = '#';
+                }
                 break;
 			
 			case 'a':
@@ -160,23 +182,36 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
 				{
 					if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
+                    {
                         continue;
+                    }
 
 					if($structure['cat-'.$parent][$m]->visible == 0)
+                    {
                         continue;
+                    }
 
 					$mid = $structure['cat-'.$parent][$m]->id;
 
                     // hide menu items without a title
                     if(empty($structure['dictionary'][$mid]))
+                    {
                         continue;
+                    }
 
 					$aclass = '';
                     if(in_array($mid, $current['hierarchy']))
-						$aclass = ' class="menu_option_active"';
-					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$structure['dictionary'][$mid].'</a>';
+                    {
+                        $aclass = ' class="menu_option_active"';
+                    }
+
+                    $menu_text = core_special_chars($structure['dictionary'][$mid]);
+
+					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$menu_text.'</a>';
 					if($option==$m)
-						return array_pop($out);
+                    {
+                        return array_pop($out);
+                    }
 
                     $out[] = nvweb_menu_generate($mode, $levels, $mid, $level+1);
 				}
@@ -189,27 +224,39 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                 for($m=0; $m < count($structure['cat-'.$parent]); $m++)
                 {
                     if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
+                    {
                         continue;
+                    }
 
                     if($structure['cat-'.$parent][$m]->visible == 0)
+                    {
                         continue;
+                    }
 
                     $mid = $structure['cat-'.$parent][$m]->id;
 
                     // hide menu items without a title
                     if(empty($structure['dictionary'][$mid]))
+                    {
                         continue;
+                    }
 
                     $aclass = '';
                     if(in_array($mid, $current['hierarchy']))
+                    {
                         $aclass = ' class="menu_option_active" selected="selected"';
+                    }
 
                     $target = '';
                     $act = nvweb_menu_action($mid, NULL, false, false);
                     if(strpos($act, 'target="_blank"')!==false)
+                    {
                         $target = 'target="_blank"';
+                    }
                     if(strpos($act, 'onclick')!==false)
+                    {
                         $act = '#';
+                    }
 
                     $act = str_replace('target="_blank"', '', $act);
                     $act = str_replace('data-sid', 'data_sid', $act);
@@ -217,12 +264,17 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                     $act = str_replace('"', '', $act);
                     $act = trim($act);
 
+                    $menu_text = $structure['dictionary'][$mid];
+                    $menu_text = core_special_chars($menu_text);
+
                     $out[] = '<option'.$aclass.' value="'.$mid.'" href="'.$act.'" '.$target.'>'
-                             .$structure['dictionary'][$mid]
+                             .$menu_text
                              .'</option>';
 
                     if($option==$m)
+                    {
                         return array_pop($out);
+                    }
 
                     $submenu = nvweb_menu_generate($mode, $levels, $mid, $level+1);
                     $submenu = strip_tags($submenu, '<option>');
@@ -232,7 +284,9 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                     for($p=0; $p < count($parts); $p++)
                     {
                         if(strpos($parts[$p], '</option')!==false)
+                        {
                             $parts[$p] = '&ndash;&nbsp;'.$parts[$p];
+                        }
                     }
                     $submenu = implode('>', $parts);
 
@@ -251,10 +305,14 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
 				{
 					if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
+                    {
                         continue;
+                    }
 
                     if($structure['cat-'.$parent][$m]->visible == 0)
+                    {
                         continue;
+                    }
 
 					$mid = $structure['cat-'.$parent][$m]->id;
 
@@ -264,12 +322,19 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 
                     $aclass = '';
 					if(in_array($mid, $current['hierarchy']))
-						$aclass = ' class="menu_option_active"';
+                    {
+                        $aclass = ' class="menu_option_active"';
+                    }
+
+                    $menu_text = $structure['dictionary'][$mid];
+                    $menu_text = core_special_chars($menu_text);
 
 					$out[] = '<li'.$aclass.'>';
-					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$structure['dictionary'][$mid].'</a>';
+					$out[] = '<a'.$aclass.' '.nvweb_menu_action($mid).'>'.$menu_text.'</a>';
 					if($option==$m)
-						return array_pop($out);
+                    {
+                        return array_pop($out);
+                    }
 					$out[] = nvweb_menu_generate($mode, $levels, $mid, $level+1);
 					$out[] = '</li>';
                     $ul_items++;
@@ -299,7 +364,9 @@ function nvweb_menu_action($id, $force_type=NULL, $use_javascript=true, $include
 	$type = $structure['actions'][$id]['action-type'];
 		
 	if(!empty($force_type))
-		$type = $force_type;
+    {
+        $type = $force_type;
+    }
 	
 	switch($type)
 	{
@@ -308,16 +375,22 @@ function nvweb_menu_action($id, $force_type=NULL, $use_javascript=true, $include
 			if(empty($url))
             {
                 if($use_javascript)
-				    $url = 'javascript: return false;';
+                {
+                    $url = 'javascript: return false;';
+                }
                 else
+                {
                     $url = '#';
+                }
             }
             else
                 $url = nvweb_prepare_link($url);
 
 			$action = ' href="'.$url.'" ';
             if($include_datasid)
+            {
                 $action.= ' data-sid="'.$id.'" ';
+            }
 			break;
 			
 		case 'jump-branch':
@@ -330,12 +403,18 @@ function nvweb_menu_action($id, $force_type=NULL, $use_javascript=true, $include
 			if(empty($url))
             {
                 if($use_javascript)
+                {
                     $url = 'javascript: return false;';
+                }
                 else
+                {
                     $url = '#';
+                }
             }
 			else
+            {
                 $url = nvweb_prepare_link($url);
+            }
 			$action = ' href="'.$url.'" ';
             if($include_datasid)
                 $action.= ' data-sid="'.$id.'" ';
@@ -344,39 +423,49 @@ function nvweb_menu_action($id, $force_type=NULL, $use_javascript=true, $include
 		case 'do-nothing':
 			$action = ' href="#" onclick="javascript: return false;" ';
             if($include_datasid)
+            {
                 $action.= ' data-sid="'.$id.'" ';
+            }
 			break;
 			
 		default:
 			// Navigate CMS < 1.6.5 compatibility [deprecated]
-            // will be removed by 1.7
+            // will be removed by 3.0
 			$url = $structure['routes'][$id];
 			if(substr($url, 0, 7)=='http://' || substr($url, 0, 7)=='https://')
             {
                 $action = ' href="'.$url.'" target="_blank" ';
                 if($include_datasid)
+                {
                     $action.= ' data-sid="'.$id.'" ';
+                }
 				return $action; // ;)
             }
 			else if(empty($url))
             {
                 $action = ' href="#" onclick="return false;" ';
                 if($include_datasid)
+                {
                     $action.= ' data-sid="'.$id.'" ';
+                }
 				return $action;
             }
 			else
             {
                 $action = ' href="'.NVWEB_ABSOLUTE.$url.'"';
                 if($include_datasid)
+                {
                     $action.= ' data-sid="'.$id.'" ';
+                }
 				return $action;
             }
 			break;	
 	}
 	
 	if($structure['actions'][$id]['action-new-window']=='1' && $type!='do-nothing')
-		$action .= ' target="_blank"';
+    {
+        $action .= ' target="_blank"';
+    }
 	
 	return $action;	
 }
@@ -408,9 +497,11 @@ function nvweb_menu_load_dictionary()
 					
 		$data = $DB->result();
 		
-		if(!is_array($data)) $data = array();
-		$dictionary = array();
-		
+		if(!is_array($data))
+        {
+            $data = array();
+        }
+
 		foreach($data as $item)
 		{
 			$structure['dictionary'][$item->node_id] = $item->text;
@@ -444,9 +535,11 @@ function nvweb_menu_load_routes()
 					
 		$data = $DB->result();
 		
-		if(!is_array($data)) $data = array();
-		$dictionary = array();
-		
+		if(!is_array($data))
+        {
+            $data = array();
+        }
+
 		foreach($data as $item)
 		{
 			$structure['routes'][$item->object_id] = $item->path;
@@ -482,7 +575,9 @@ function nvweb_menu_load_actions()
 		$data = $DB->result();
 		
 		if(!is_array($data))
-		    $data = array();
+        {
+            $data = array();
+        }
 
 		foreach($data as $row)
 		{
@@ -534,10 +629,14 @@ function nvweb_menu_get_children($categories=array(), $sublevels=NULL)
 	{
 		$categories[$c] = trim($categories[$c]);
 		if(empty($categories[$c]) && $categories[$c]!='0') 
+        {
             continue;
+        }
         
         if(!isset($depth[$categories[$c]]))
+        {
             $depth[$categories[$c]] = 0;
+        }
 
 		nvweb_menu_load_structure($categories[$c]);
 
@@ -547,7 +646,9 @@ function nvweb_menu_get_children($categories=array(), $sublevels=NULL)
 
             // the current category is beyond the allowed number of sublevels on hierarchy?
             if(isset($sublevels) && $depth[$structure['cat-'.$categories[$c]][$s]->id] > $sublevels)
+            {
                 continue;
+            }
 
 			array_push($categories, $structure['cat-'.$categories[$c]][$s]->id);
 		}
@@ -594,10 +695,14 @@ function nvweb_menu_render_arrow($vars=array())
             if($structure['cat-'.$parent][$c]->id == $current['category'])
             {
                 if(isset($structure['cat-'.$parent][$c-1]))
+                {
                     $previous = $structure['cat-'.$parent][$c-1]->id;
+                }
 
                 if(isset($structure['cat-'.$parent][$c+1]))
+                {
                     $next = $structure['cat-'.$parent][$c+1]->id;
+                }
 
                 break;
             }
@@ -638,7 +743,9 @@ function nvweb_menu_render_arrow($vars=array())
         if($vars['mode']=='next' && !empty($next))
         {
             if(empty($char))
+            {
                 $char = '&gt;';
+            }
 
             $link = $structure['routes'][$next];
             $title = $structure['dictionary'][$next];
@@ -646,14 +753,18 @@ function nvweb_menu_render_arrow($vars=array())
         else if($vars['mode']=='previous' && !empty($previous))
         {
             if(empty($char))
+            {
                 $char = '&lt;';
+            }
 
             $link = $structure['routes'][$previous];
             $title = $structure['dictionary'][$previous];
         }
 
         if(!empty($link))
+        {
             $out = '<a href="'.$link.'" title="'.$title.'">'.$char.'</a>';
+        }
     }
 
     return $out;

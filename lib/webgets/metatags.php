@@ -58,13 +58,19 @@ function nvweb_metatags($vars=array())
     // global website metatags
     $metatags = $website->metatags;
     if(is_array($metatags))
+    {
         $metatags = $metatags[$current['lang']];
+    }
 
     if(!empty($website->metatag_description[$current['lang']]))
+    {
         $metatags .= "\n".'<meta name="language" content="'.$current['lang'].'" />'."\n";
+    }
 
     if(!empty($website->metatag_description[$current['lang']]))
+    {
         $metatags .= "\n".'<meta name="description" content="'.$website->metatag_description[$current['lang']].'" />'."\n";
+    }
 
 	// retrieve content tags and add it to the global metatags of the website	
     $tags_website = str_replace(', ', ',', $website->metatag_keywords[$current['lang']]);
@@ -78,6 +84,8 @@ function nvweb_metatags($vars=array())
 
     $tags = array_merge($tags_website, $tags_content);
     $tags = implode(',', $tags);
+
+    $tags = core_special_chars($tags);
 
 	if(strpos($metatags, '<meta name="keywords" content="')!==FALSE)
 	{
@@ -118,11 +126,17 @@ function nvweb_metatags($vars=array())
 		$feed->load($feeds[$f]);
 		
 		if(strpos(strtolower($feed->format), 'rss')!==false)
-			$mime = 'application/rss+xml';
+        {
+            $mime = 'application/rss+xml';
+        }
 		else if(strpos(strtolower($feed->format), 'atom')!==false)
-			$mime = 'application/atom+xml';
+        {
+            $mime = 'application/atom+xml';
+        }
 		else
-			$mime = 'text/xml';
+        {
+            $mime = 'text/xml';
+        }
 
         $metatags .= "\n".'<link rel="alternate" type="'.$mime.'" title="'.$feed->dictionary[$current['lang']]['title'].
                               '" href="'.$website->absolute_path().$feed->paths[$current['lang']].'" />';
@@ -174,13 +188,19 @@ function nvweb_metatags($vars=array())
     $out.= $metatags."\n";
 		
 	if(!empty($website->tracking_scripts) && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
-		nvweb_after_body('html', $website->tracking_scripts);
+    {
+        nvweb_after_body('html', $website->tracking_scripts);
+    }
 
 	if(!empty($website->additional_scripts))
-		nvweb_after_body('html', $website->additional_scripts);
+    {
+        nvweb_after_body('html', $website->additional_scripts);
+    }
 
     if(!empty($website->additional_styles))
-		nvweb_after_body('html', $website->additional_styles);
+    {
+        nvweb_after_body('html', $website->additional_styles);
+    }
 
     $events->trigger(
         'metatags',

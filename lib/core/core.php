@@ -3,10 +3,10 @@
  * 
  * Navigate CMS common core functions
  * 
- * @copyright Copyright (C) 2010-2013 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2018 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
- * @version 1.7.7 2013-09-07
+ * @version 2.8.6 2018-10-06
  *
  */
 
@@ -632,6 +632,18 @@ function core_remove_nvtags($text)
     $text = preg_replace("/<nv[^>]+\>/i", "", $text);
     $text = preg_replace("/{{nv[^>]+}}/i", "", $text);
     return $text;
+}
+
+/**
+ * Convert special characters to HTML entities
+ *
+ * @param string $text
+ * @return string
+ */
+function core_special_chars($text)
+{
+    $out = htmlspecialchars($text, ENT_COMPAT, 'UTF-8', false);
+    return $out;
 }
 
 /**

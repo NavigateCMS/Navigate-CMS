@@ -924,9 +924,10 @@ function nvweb_cart_view_summary($cart)
 
     $sm = new shipping_method();
     $sm->load($cart['shipping_method']);
+    $payment_method_title = core_special_chars($sm->dictionary[$current['lang']]['title']);
 
     $out[] = '            <tr class="nv_cart_shipping_method">';
-    $out[] = '                <td colspan="2" style="text-align: right;" class="nv_cart_shipping_method_information">'.t(720, "Shipping method").' <strong>'.$sm->dictionary[$current['lang']]['title'].'</strong></td>';
+    $out[] = '                <td colspan="2" style="text-align: right;" class="nv_cart_shipping_method_information">'.t(720, "Shipping method").' <strong>'.$payment_method_title.'</strong></td>';
     $out[] = '                <td colspan="1" style="text-align: right;" class="nv_cart_shipping_method_price"><span>'.core_price2string($cart['shipping_price'], $website->currency).'</span></td>';
     $out[] = '            </tr>';
 
@@ -1590,9 +1591,14 @@ function nvweb_cart_shipping_page($cart)
 
         $out[] = '    <div class="nv_cart_shipping_method_option_title">';
         if(!empty($sm->image))
+        {
             $out[] = '<img src="'.file::file_url($sm->image, 'inline').'" width="96" />';
+        }
         else
-            $out[] = $sm->dictionary[$session['lang']]['title'];
+        {
+            $shipping_method_title = core_special_chars($sm->dictionary[$session['lang']]['title']);
+            $out[] = $shipping_method_title;
+        }
         $out[] = '    </div>';
         $out[] = '    <p>' . $sm->dictionary[$session['lang']]['description'] . '</p>';
         $out[] = '  </div>';
@@ -1686,7 +1692,9 @@ function nvweb_cart_summary_page($cart)
 
     $customer_username = $webuser->username;
     if($cart['customer'] == 'guest')
+    {
         $customer_username = t(719, "Guest");
+    }
 
     $out[] = '<div class="nv_cart_signed_in_as"><span>'.$customer_username.'</span> <a href="'.$cart_url.'?webuser_signout" title="'.t(5, "Log out").'">'.'&#11198;'.'</a></div>';
 
@@ -1709,16 +1717,19 @@ function nvweb_cart_summary_page($cart)
     $out[] = '        <p>';
     foreach($payment_methods as $pm)
     {
+        $payment_method_title = core_special_chars($pm->dictionary[$current['lang']]['title']);
+
         if(empty($pm->image))
         {
+
             $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
-                $pm->dictionary[$current['lang']]['title'] .
+                $payment_method_title .
                 '</label>';
         }
         else
         {
             $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
-                '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$pm->dictionary[$current['lang']]['title'].'" style="height:24px; width: auto;" />' .
+                '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$payment_method_title.'" style="height:24px; width: auto;" />' .
                 '</label>';
         }
     }
@@ -1848,8 +1859,10 @@ function nvweb_cart_payment_page($order, $order_exists=false)
         $payment_method = new payment_method();
         $payment_method->load($order->payment_method);
 
+        $payment_method_title = core_special_chars($payment_method->dictionary[$current['lang']]['title']);
+
         $out[] = '<div class="nv_cart_order_created_payment_title"><h3>'.$payment_symbol.t(757, "Payment").'</h3></div>';
-        $out[] = '<p class="nv_cart_order_created_payment_method_info">'.t(727, "Payment method").': <span>'.$payment_method->dictionary[$current['lang']]['title'].'</span></p>';
+        $out[] = '<p class="nv_cart_order_created_payment_method_info">'.t(727, "Payment method").': <span>'.$payment_method_title.'</span></p>';
         $out[] = '<div class="nv_cart_order_created_payment_method_content">'.$payment_method->checkout($order).'</div>';
     }
 
@@ -1908,16 +1921,18 @@ function nvweb_cart_payment_failed($order)
     $out[] = '        <p>';
     foreach($payment_methods as $pm)
     {
+        $payment_method_title = core_special_chars($pm->dictionary[$current['lang']]['title']);
+
         if(empty($pm->image))
         {
             $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
-                $pm->dictionary[$current['lang']]['title'] .
+                 $payment_method_title .
                 '</label>';
         }
         else
         {
             $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
-                '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$pm->dictionary[$current['lang']]['title'].'" style="height:24px; width: auto;" />' .
+                '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$payment_method_title.'" style="height:24px; width: auto;" />' .
                 '</label>';
         }
     }
@@ -1956,6 +1971,7 @@ function nvweb_cart_payment_done($order)
 
     $payment_method = new payment_method();
     $payment_method->load($order->payment_method);
+    $payment_method_title = core_special_chars($payment_method->dictionary[$current['lang']]['title']);
 
     $out[] = '<div class="nv_cart_order_paid_title"><h3>'.$order_created_symbol.t(802, "Order paid").'</h3></div>';
     $out[] = '<p class="nv_cart_order_paid_thanks">'.t(803, "Thank you! Your payment has been received.").'</p>';
@@ -1965,7 +1981,7 @@ function nvweb_cart_payment_done($order)
     $out[] = t(794, "Order reference").': '.$order->reference.'<br />';
     $out[] = t(795, "Order date").': '.core_ts2date($order->date_created, true).'<br />';
     $out[] = t(796, "Order total").': '.core_price2string($order->total, $order->currency).'<br />';
-    $out[] = t(727, "Payment method").': '.$payment_method->dictionary[$current['lang']]['title'].'<br />';
+    $out[] = t(727, "Payment method").': '.$payment_method_title.'<br />';
     $out[] = '</blockquote>';
 
     $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';

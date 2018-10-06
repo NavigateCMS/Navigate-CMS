@@ -147,7 +147,7 @@ class naviforms
 	
 	public function textarea($name, $value="", $rows=4, $cols=48, $style="")
 	{
-        $value = htmlspecialchars($value);
+        $value = core_special_chars($value);
 		$out = 	'<textarea name="'.$name.'" id="'.$name.'" rows="'.$rows.'" cols="'.$cols.'" style="'.$style.'">'.$value.'</textarea>';
 		return $out;
 	}
@@ -156,8 +156,10 @@ class naviforms
 	{
         // may happen when converting a property type from (multilanguage) text to a (single) value
         if(is_array($value))
+        {
             $value = array_pop($value);
-		$value = htmlspecialchars($value);
+        }
+        $value = core_special_chars($value);
 
         if(!empty($width))
         {
@@ -185,8 +187,10 @@ class naviforms
 
         // may happen when converting a property type from (multilanguage) text to a (single) value
         if(is_array($value))
+        {
             $value = array_pop($value);
-		$value = htmlspecialchars($value);
+        }
+		$value = core_special_chars($value);
 
 		if(!isset($decimal_separator))
         {
@@ -254,7 +258,7 @@ class naviforms
 	{
 		global $layout;
 		
-		$value = htmlspecialchars($value);
+		$value = core_special_chars($value);
 		
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" style=" width: '.$width.';" />';
 
@@ -311,14 +315,20 @@ class naviforms
 
         // may happen when converting a property type from (multilanguage) text to a (single) value
         if(is_array($value))
+        {
             $value = array_pop($value);
-        $value = htmlspecialchars($value);
+        }
+        $value = core_special_chars($value);
 
         if(!empty($width))
+        {
             $extra .= ' style=" width: '.$width.';"';
+        }
 
         if(!empty($action))
+        {
             $extra .= ' onkeyup="'.$action.'"';
+        }
 
         $selected_path_title = "";
         if(!empty($value))

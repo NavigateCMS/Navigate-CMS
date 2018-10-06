@@ -19,12 +19,16 @@ function nvweb_product($vars=array())
 
 	$product_id = $current['object']->id;
 	if(!empty($vars['pid']))
+    {
         $product_id = $vars['pid'];
+    }
 
     $product->load($product_id);
 
     if($product->website != $website->id)
+    {
         return;
+    }
 
     switch(@$vars['mode'])
 	{
@@ -36,14 +40,19 @@ function nvweb_product($vars=array())
             $texts = webdictionary::load_object_strings("product", $product->id);
             $out = $texts[$current['lang']]['title'];
 			if(!empty($vars['function']))
-			    eval('$out = '.$vars['function'].'("'.$out.'");');
+            {
+                eval('$out = '.$vars['function'].'("'.$out.'");');
+            }
+            $out = core_special_chars($out);
 			break;
 
         case 'date':
             $ts = $product->date_to_display;
             // if no date, return nothing
             if(!empty($ts))
-    			$out = nvweb_content_date_format(@$vars['format'], $ts);
+            {
+                $out = nvweb_content_date_format(@$vars['format'], $ts);
+            }
 			break;
 			
 		case 'date_created':
@@ -65,11 +74,15 @@ function nvweb_product($vars=array())
             $length = 300;
             $allowed_tags = array();
             if(!empty($vars['length']))
+            {
                 $length = intval($vars['length']);
+            }
 			$texts = webdictionary::load_element_strings('product', $product->id);
 			$text = $texts[$current['lang']]['main'];
             if(!empty($vars['allowed_tags']))
+            {
                 $allowed_tags = explode(',', $vars['allowed_tags']);
+            }
 			$out = core_string_cut($text, $length, '&hellip;', $allowed_tags);
 			break;
 
@@ -83,7 +96,10 @@ function nvweb_product($vars=array())
             }
 
             if(empty($out))
+            {
                 $out = $website->name;
+            }
+            $out = core_special_chars($out);
             break;
 			
 		case 'structure':
@@ -99,6 +115,7 @@ function nvweb_product($vars=array())
 					
 				case 'title':
 					$out = $structure['dictionary'][$structure_id];
+                    $out = core_special_chars($out);
 					break;
 					
 				case 'action':
@@ -114,16 +131,24 @@ function nvweb_product($vars=array())
 
             $search_url = nvweb_source_url('theme', 'search');
             if(!empty($search_url))
+            {
                 $search_url .= '?q=';
+            }
             else
+            {
                 $search_url = NVWEB_ABSOLUTE.'/nvtags?q=';
+            }
 
             if(empty($vars['separator']))
+            {
                 $vars['separator'] = ' ';
+            }
 
             $class = 'product-tag';
             if(!empty($vars['class']))
+            {
                 $class = $vars['class'];
+            }
 
             // check publishing is enabled
             $enabled = nvweb_object_enabled($product);
@@ -136,8 +161,14 @@ function nvweb_product($vars=array())
                 {
                     for($i=0; $i < count($itags); $i++)
                     {
-                        if(empty($itags[$i])) continue;
-                        $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                        if(empty($itags[$i]))
+                        {
+                            continue;
+                        }
+
+                        $tag_text = core_special_chars($itags[$i]);
+
+                        $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$tag_text.'</a>';
                     }
                 }
             }
@@ -205,12 +236,18 @@ function nvweb_product($vars=array())
             if($product->inventory)
             {
                 if ($out > 0 && isset($vars['in_stock']))
+                {
                     $out = $theme->t($vars['in_stock']);
+                }
                 else if ($out == 0 && isset($vars['out_of_stock']))
+                {
                     $out = $theme->t($vars['out_of_stock']);
+                }
             }
             else
+            {
                 $out = $theme->t($vars['in_stock']);
+            }
 
             break;
 
@@ -227,9 +264,13 @@ function nvweb_product($vars=array())
             $price = $product->get_price();
 
             if(empty($price['old']) || $price['current'] == $price['old'])
+            {
                 $out = "";
+            }
             else
+            {
                 $out = core_price2string($price['old'], $product->base_price_currency, @$vars['return']);
+            }
 
             break;
 
@@ -245,12 +286,18 @@ function nvweb_product($vars=array())
                         $tax_amount = $price['tax_amount'];
                         $currency = product::currencies($product->base_price_currency, false);
                         if ($currency['placement'] == 'after')
+                        {
                             $out = core_decimal2string($tax_amount) . ' ' . $currency['symbol'];
+                        }
                         else
+                        {
                             $out = $currency['symbol'] . ' ' . core_decimal2string($tax_amount);
+                        }
                     }
                     else
+                    {
                         $out = '';
+                    }
                     break;
 
                 case 'value':
@@ -259,16 +306,22 @@ function nvweb_product($vars=array())
                     switch($product->tax_class)
                     {
                         case 'free':
-                            $out = @value_or_default($theme->t($vars['tax_free']), '0 %');
+                            {
+                                $out = @value_or_default($theme->t($vars['tax_free']), '0 %');
+                            }
                             break;
 
                         case 'included':
-                            $out = @value_or_default($theme->t($vars['tax_included']), '');
+                            {
+                                $out = @value_or_default($theme->t($vars['tax_included']), '');
+                            }
                             break;
 
                         case 'custom':
                         default:
+                        {
                             $out = core_decimal2string($product->tax_value) . ' %';
+                        }
                             break;
                     }
             }
@@ -286,18 +339,22 @@ function nvweb_product($vars=array())
 
                 case 'image':
                     if(!empty($brand->image))
+                    {
                         $out = file::file_url($brand->image);
+                    }
                     break;
 
                 case 'url':
                     if(!empty($brand->url))
+                    {
                         $out = nvweb_prepare_link($brand->url);
+                    }
                     break;
 
                 case 'name':
                 default:
                     // brand name
-                    $out = $brand->name;
+                    $out = core_special_chars($brand->name);
             }
             break;
 
@@ -320,10 +377,14 @@ function nvweb_product($vars=array())
 
             // retrieve last saved text (is a preview request from navigate)
             if($_REQUEST['preview']=='true' && $current['navigate_session']==1)
+            {
                 $texts = webdictionary_history::load_element_strings('product', $product->id, 'latest');
+            }
             // or last approved/saved text
             else if($enabled)
+            {
                 $texts = webdictionary::load_element_strings('product', $product->id);
+            }
 
             // have we found any content?
             if(!empty($texts))
@@ -387,10 +448,14 @@ function nvweb_categories_products($categories=array(), $only_published=false, $
     global $webuser;
 
     if(!is_array($categories))
+    {
         $categories = array(intval($categories));
+    }
 
     if($categories[0] == NULL)
+    {
         $categories = array(0);
+    }
 
     $where = ' i.website = '.$website->id.'
                AND i.category IN ('.implode(",", $categories).')';
@@ -415,18 +480,24 @@ function nvweb_categories_products($categories=array(), $only_published=false, $
             foreach($webuser->groups as $wg)
             {
                 if(empty($wg))
+                {
                     continue;
+                }
                 $access_groups[] = 'i.groups LIKE "%g'.$wg.'%"';
             }
             if(!empty($access_groups))
+            {
                 $access_extra = ' OR (i.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+            }
         }
     }
 
     $where .= ' AND (i.access = 0 OR i.access = '.$access.$access_extra.')';
 
     if(!empty($max))
+    {
         $limit = 'LIMIT '.$max;
+    }
 
     $orderby = nvweb_list_get_orderby($order);
 	$orderby = str_replace(", IFNULL(s.position,0) ASC", "", $orderby); // remove s. order used exclusively at nvweb_list

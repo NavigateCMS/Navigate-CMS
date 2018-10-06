@@ -67,7 +67,9 @@ class language
         }
 
         if($encodeChars)
-            $out = htmlspecialchars($out, ENT_QUOTES, 'UTF-8', false);
+        {
+            $out = core_special_chars($out);
+        }
 		
 		return $out;
 	}

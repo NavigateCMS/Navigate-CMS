@@ -16,11 +16,15 @@ function nvweb_tags($vars=array())
 
             $search_url = nvweb_source_url('theme', 'search');
             if($search_url == $website->absolute_path())
+            {
                 $search_url = NVWEB_ABSOLUTE.'/nvtags';
+            }
 
             $search_parameter = 'q';
             if(!empty($vars['request']))
+            {
                 $search_parameter = $vars['request'];
+            }
 
             $search_url .= '?'.$search_parameter.'=';
 
@@ -37,19 +41,31 @@ function nvweb_tags($vars=array())
 
             $extra = '';
             if(!empty($vars['class']))
+            {
                 $extra = ' class="'.$vars['class'].'" ';
+            }
 
             foreach($tags as $tag => $times)
             {
                 if(empty($tag))
+                {
                     continue;
+                }
+
+                $tag = core_special_chars($tag);
 
                 if($vars['tag']=='li')
+                {
                     $out[] = '<li><a href="'.$search_url.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a></li>';
+                }
                 else if($vars['tag']=='span')
+                {
                     $out[] = '<span count="'.$times.'" '.$extra.'>'.$tag.'</span>'.$vars['separator'];
+                }
                 else
+                {
                     $out[] = '<a href="'.$search_url.$tag.'" count="'.$times.'" '.$extra.'>'.$tag.'</a>'.$vars['separator'];
+                }
             }
             $out = implode("\n", $out);
 			break;
@@ -120,13 +136,19 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
                 if(!empty($search))
                 {
                     if(strpos(strtolower($row_tag), strtolower($search))===false)
+                    {
                         continue;
+                    }
                 }
 
                 if(isset($tags[$row_tag]))
+                {
                     $tags[$row_tag]++;
+                }
                 else
+                {
                     $tags[$row_tag] = 1;
+                }
             }
         }
     }
@@ -143,7 +165,9 @@ function nvweb_tags_retrieve($maxtags="", $categories=array(), $order='top', $se
     }
 
     if(!empty($maxtags))
+    {
         $tags = array_slice($tags, 0, $maxtags, true);
+    }
 
     return $tags;
 }

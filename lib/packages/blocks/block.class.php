@@ -237,7 +237,7 @@ class block
                             switch($field)
                             {
                                 case 'trigger-html':
-                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = htmlspecialchars($value);
+                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = core_special_chars($value);
                                     break;
 
                                 case 'trigger-content':

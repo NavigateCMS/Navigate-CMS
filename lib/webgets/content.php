@@ -23,15 +23,22 @@ function nvweb_content($vars=array())
 			{
                 $rs = nvweb_content_items($current['object']->id, true, 1);
 				$texts = webdictionary::load_element_strings('item', $rs[0]->id);
-				$out = $texts[$current['lang']]['title'];				
+				$out = $texts[$current['lang']]['title'];
+				// sanitize output to avoid XSS problems
+                $out = core_special_chars($out);
 			}
 			else
 			{				
 				$texts = webdictionary::load_element_strings($current['type'], $current['object']->id);				
 				$out = $texts[$current['lang']]['title'];
+                // sanitize output to avoid XSS problems
+                $out = core_special_chars($out);
 			}
 				
-			if(!empty($vars['function']))	eval('$out = '.$vars['function'].'("'.$out.'");');
+			if(!empty($vars['function']))
+            {
+                eval('$out = '.$vars['function'].'("'.$out.'");');
+            }
 			break;
 
         case 'date':
@@ -61,11 +68,15 @@ function nvweb_content($vars=array())
             $length = 300;
             $allowed_tags = array();
             if(!empty($vars['length']))
+            {
                 $length = intval($vars['length']);
+            }
 			$texts = webdictionary::load_element_strings('item', $current['object']->id);				
 			$text = $texts[$current['lang']]['main'];
             if(!empty($vars['allowed_tags']))
+            {
                 $allowed_tags = explode(',', $vars['allowed_tags']);
+            }
 			$out = core_string_cut($text, $length, '&hellip;', $allowed_tags);
 			break;
 
@@ -79,7 +90,9 @@ function nvweb_content($vars=array())
             }
 
             if(empty($out))
+            {
                 $out = $website->name;
+            }
             break;
 			
 		case 'structure':
@@ -100,6 +113,7 @@ function nvweb_content($vars=array())
 					
 				case 'title':
 					$out = $structure['dictionary'][$structure_id];
+                    $out = core_special_chars($out);
 					break;
 					
 				case 'action':
@@ -115,25 +129,37 @@ function nvweb_content($vars=array())
 
             $search_url = nvweb_source_url('theme', 'search');
             if(!empty($search_url))
+            {
                 $search_url .= '?q=';
+            }
             else
+            {
                 $search_url = NVWEB_ABSOLUTE.'/nvtags?q=';
+            }
 
             $ids = array();
             if(empty($vars['separator']))
+            {
                 $vars['separator'] = ' ';
+            }
 
             $class = 'item-tag';
             if(!empty($vars['class']))
+            {
                 $class = $vars['class'];
+            }
 
             if(!empty($vars['id']))
             {
                 $object_type = value_or_default($vars['object_type'], "item");
                 if($object_type == "product")
+                {
                     $itm = new product();
+                }
                 else
+                {
                     $itm = new item();
+                }
 
                 $itm->load($vars['id']);
                 $enabled = nvweb_object_enabled($itm);
@@ -146,14 +172,15 @@ function nvweb_content($vars=array())
                         for($i=0; $i < count($itags); $i++)
                         {
                             if(empty($itags[$i])) continue;
-                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.
+                                core_special_chars($itags[$i]).
+                                '</a>';
                         }
                     }
                 }
             }
             else if($current['type']=='item')
             {
-                // check publishing is enabled
                 $enabled = nvweb_object_enabled($current['object']);
 
                 if($enabled)
@@ -165,14 +192,15 @@ function nvweb_content($vars=array())
                         for($i=0; $i < count($itags); $i++)
                         {
                             if(empty($itags[$i])) continue;
-                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.
+                                core_special_chars($itags[$i]).
+                                '</a>';
                         }
                     }
                 }
             }
             else if($current['type']=='product')
             {
-                // check publishing is enabled
                 $enabled = nvweb_object_enabled($current['object']);
 
                 if($enabled)
@@ -184,7 +212,9 @@ function nvweb_content($vars=array())
                         for($i=0; $i < count($itags); $i++)
                         {
                             if(empty($itags[$i])) continue;
-                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                            $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.
+                                core_special_chars($itags[$i]).
+                                '</a>';
                         }
                     }
                 }
@@ -205,7 +235,9 @@ function nvweb_content($vars=array())
                         {
                             for($i=0; $i < count($itags); $i++)
                             {
-                                $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.$itags[$i].'</a>';
+                                $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.
+                                    core_special_chars($itags[$i]).
+                                    '</a>';
                             }
                         }
                     }
@@ -280,6 +312,7 @@ function nvweb_content($vars=array())
                                     case 'raw':
                                         $texts[$current['lang']][$section] = nl2br($texts[$current['lang']][$section]);
                                         break;
+
                                     case 'html':
                                     case 'tinymce':
                                     default:
@@ -394,11 +427,16 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
             foreach($webuser->groups as $wg)
             {
                 if(empty($wg))
+                {
                     continue;
+                }
                 $access_groups[] = 'i.groups LIKE "%g'.$wg.'%"';
             }
+
             if(!empty($access_groups))
+            {
                 $access_extra = ' OR (i.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+            }
         }
     }
 

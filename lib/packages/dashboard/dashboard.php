@@ -72,7 +72,7 @@ function run()
             {
 				$action = $ri[$i];
 				$ri[$i]->_url = '?fid='.$action->function.'&wid='.$action->website.'&act=load&id='.$action->item;
-                $ri[$i]->_link = '<a href="'.$ri[$i]->_url.'" title="'.htmlspecialchars($action->item_title).' | '.htmlspecialchars(t($action->function_title, $action->function_title)).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a>';
+                $ri[$i]->_link = '<a href="'.$ri[$i]->_url.'" title="'.core_special_chars($action->item_title).' | '.core_special_chars(t($action->function_title, $action->function_title)).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a>';
             }
 
 			echo json_encode($ri);

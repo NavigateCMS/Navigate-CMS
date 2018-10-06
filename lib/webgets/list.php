@@ -28,9 +28,13 @@ function nvweb_list($vars=array())
     $exclude = '';
 
     if(in_array($current['type'], array('item', 'product')))
-	    $categories = array($current['object']->category);
+    {
+        $categories = array($current['object']->category);
+    }
     else if($current['type'] == 'structure')
+    {
         $categories = array($current['object']->id);
+    }
 
 	if(isset($vars['categories']))
 	{
@@ -61,7 +65,9 @@ function nvweb_list($vars=array())
 
                 // if categories parameter is empty, then default to the root category
                 if(empty($categories) || empty($categories[0]))
+                {
                     $categories = array(0);
+                }
             }
             else if(strpos($vars['categories'], ',')===false)
             {
@@ -94,14 +100,18 @@ function nvweb_list($vars=array())
 	}
 
 	if($vars['children']=='true')
+    {
         $categories = nvweb_menu_get_children($categories);
+    }
 
     // if we have categories="x" children="true" [to get the children of a category, but not itself]
     if($vars['children']=='only')
     {
         $children = nvweb_menu_get_children($categories);
         for($c=0; $c < count($categories); $c++)
+        {
             array_shift($children);
+        }
         $categories = $children;
     }
 
@@ -110,7 +120,9 @@ function nvweb_list($vars=array())
         $children = nvweb_menu_get_children($categories, intval($vars['children']));
 
         for($c=0; $c < count($categories); $c++)
+        {
             array_shift($children);
+        }
         $categories = $children;
     }
 
@@ -164,9 +176,14 @@ function nvweb_list($vars=array())
         }
 
         if(!empty($max_items))
+        {
             $vars['items'] = $max_items;
+        }
         else
-            $vars['items'] = 500; // default maximum
+        {
+            // default maximum
+            $vars['items'] = 500;
+        }
     }
 
     if(!empty($vars['exclude']))
@@ -178,14 +195,22 @@ function nvweb_list($vars=array())
         if(!empty($exclude))
         {
             if($vars['source']=='structure' || $vars['source']=='category')
+            {
                 $exclude = 'AND s.id NOT IN('.implode(',', $exclude).')';
+            }
             else if($vars['source']=='product')
+            {
                 $exclude = 'AND p.id NOT IN('.implode(',', $exclude).')';
+            }
             else // item
+            {
                 $exclude = 'AND i.id NOT IN('.implode(',', $exclude).')';
+            }
         }
         else
+        {
             $exclude = '';
+        }
     }
 
     // search parameter (for now only ELEMENTS and PRODUCTS!)
@@ -196,7 +221,9 @@ function nvweb_list($vars=array())
         $search_what = $vars['search'];
 
         if(substr($vars['search'], 0, 1)=='$')
+        {
             $search_what = $_REQUEST[substr($vars['search'], 1)];
+        }
 
         if(!empty($search_what) && !isset($_SESSION['APP_USER#'.APP_UNIQUE]))
         {
@@ -225,7 +252,9 @@ function nvweb_list($vars=array())
         $search_what = array_filter($search_what);
 
         if(empty($search_what))
+        {
             $search_what = array();
+        }
 
         $search = array();
         $search[] = ' 1=1 ';
@@ -289,12 +318,17 @@ function nvweb_list($vars=array())
     // calculate the offset of the first element to retrieve
     // Warning: the paginator applies on all paginated lists on a page (so right now there can only be one in a page)
 	if(empty($_GET['page']))
+    {
         $_GET['page'] = 1;
+    }
+
 	$offset = intval($_GET['page'] - 1) * $vars['items'];
 
     // this list does not use paginator, so offset must be always zero
     if(!isset($vars['paginator']) || $vars['paginator']=='false')
+    {
         $offset = 0;
+    }
 
 	$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
 
@@ -310,20 +344,30 @@ function nvweb_list($vars=array())
             foreach($webuser->groups as $wg)
             {
                 if(empty($wg))
+                {
                     continue;
+                }
+
                 $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
             }
+
             if(!empty($access_groups))
+            {
                 $access_extra = ' OR (s.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+            }
         }
     }
 
     // get order type: REQUEST PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
     $order = @$_REQUEST['order'];
     if(empty($order))
+    {
         $order  = @$vars['order'];
+    }
     if(empty($order))   // default order: latest
+    {
         $order = 'latest';
+    }
 
     $orderby = nvweb_list_get_orderby($order);
 
@@ -335,15 +379,21 @@ function nvweb_list($vars=array())
 
         $visible = '';
         if($vars['filter']=='menu')
+        {
             $visible = ' AND s.visible = 1 ';
+        }
 
 		$templates = "";
         if(!empty($vars['templates']))
         {
             if(strpos($vars['templates'], '$')===0)
+            {
                 $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            }
             else
-	            $templates = explode(",", $vars['templates']);
+            {
+                $templates = explode(",", $vars['templates']);
+            }
 
 	        $templates = array_filter($templates);
 			$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
@@ -403,7 +453,9 @@ function nvweb_list($vars=array())
     {
         $bg = new block_group();
         if(!empty($vars['type']))
+        {
             $bg->load_by_code($vars['type']);
+        }
 
         if(!empty($bg) && !empty($bg->blocks))
         {
@@ -419,7 +471,9 @@ function nvweb_list($vars=array())
                         $bgbo->load($bgb['id']);
 
                         if(empty($bgbo) || empty($bgbo->type))
+                        {
                             continue;
+                        }
 
                         // check if we can display this block
                         if(nvweb_object_enabled($bgbo))
@@ -431,10 +485,14 @@ function nvweb_list($vars=array())
                                 foreach($categories as $list_cat)
                                 {
                                     if(in_array($list_cat, $bgbo->categories))
+                                    {
                                         $bgbo_cat_found = true;
+                                    }
                                 }
                                 if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
+                                {
                                     continue;
+                                }
                             }
 
                             if(!empty($bgbo->exclusions))
@@ -447,7 +505,9 @@ function nvweb_list($vars=array())
                                 }
 
                                 if($bgbo_cat_found) // block excluded categories match the current list categories, skip this block
+                                {
                                     continue;
+                                }
                             }
 
                             // inclusion/exclusion by specific elements
@@ -499,7 +559,9 @@ function nvweb_list($vars=array())
                         }
 
                         for($i=0; $i < count($bgbos); $i++)
+                        {
                             $rs[] = $bgbos[$i];
+                        }
 
                         break;
 
@@ -517,7 +579,9 @@ function nvweb_list($vars=array())
     {
         $filters = '';
         if(!empty($vars['filter']))
+        {
             $filters = nvweb_list_parse_filters($vars['filter'], 'product');
+        }
 
         // reuse structure.access permission
         $access_extra_items = str_replace('s.', 'p.', $access_extra);
@@ -528,15 +592,23 @@ function nvweb_list($vars=array())
         if(!empty($vars['templates']))
         {
             if(strpos($vars['templates'], '$')===0)
+            {
                 $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            }
             else
+            {
                 $templates = explode(",", $vars['templates']);
+            }
 
             $templates = array_filter($templates);
             if($embedded=='1')
+            {
                 $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+            }
             else
+            {
                 $templates = ' AND p.template IN ("'.implode('","', $templates).'")';
+            }
         }
 
         $columns_extra = '';
@@ -634,7 +706,9 @@ function nvweb_list($vars=array())
             {
                 $galleries = $current['object']->galleries;
                 if(!is_array($galleries))
+                {
                     $galleries = mb_unserialize($galleries);
+                }
                 $rs = $galleries[0];
                 $total = count($rs);
             }
@@ -647,9 +721,13 @@ function nvweb_list($vars=array())
 		        if(!empty($vars['templates']))
 		        {
                     if(strpos($vars['templates'], '$')===0)
+                    {
                         $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+                    }
                     else
+                    {
                         $templates = explode(",", $vars['templates']);
+                    }
 
 			        $templates = array_filter($templates);
 					$templates = ' AND i.template IN ("'.implode('","', $templates).'")';
@@ -745,12 +823,16 @@ function nvweb_list($vars=array())
 	{
 		// CUSTOM data source
         if($vars['source']=='comment')
+        {
             $vars['source'] = 'comments';
+        }
 
 		$fname = 'nvweb_'.$vars['source'].'_list';
 
         if($vars['source']=='website_comments')
+        {
             $vars['source'] = 'comments';
+        }
 
 		@nvweb_webget_load($vars['source']);
 
@@ -795,7 +877,9 @@ function nvweb_list($vars=array())
         */
         $filters = '';
         if(!empty($vars['filter']))
+        {
             $filters = nvweb_list_parse_filters($vars['filter'], 'item');
+        }
 
         // reuse structure.access permission
         $access_extra_items = str_replace('s.', 'i.', $access_extra);
@@ -806,15 +890,23 @@ function nvweb_list($vars=array())
         if(!empty($vars['templates']))
         {
             if(strpos($vars['templates'], '$')===0)
+            {
                 $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            }
             else
+            {
                 $templates = explode(",", $vars['templates']);
+            }
 
 	        $templates = array_filter($templates);
 	        if($embedded=='1')
-				$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+            {
+                $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+            }
 			else
-	            $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
+            {
+                $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
+            }
         }
 
         $columns_extra = '';
@@ -955,7 +1047,9 @@ function nvweb_list($vars=array())
                     // extension block
                     $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
                     if(empty($item)) // empty or inexistant block, ignore
+                    {
                         continue;
+                    }
                     $item->type = "extension";
                     $item->extension = $rs[$i]->extension;
                     $item->uid = $rs[$i]->uid;
@@ -1055,7 +1149,9 @@ function nvweb_list($vars=array())
             // protect the "while" loop, maximum 500 nvlist tags parsed!
             $template_tags_processed++;
             if($template_tags_processed > 500)
+            {
                 break;
+            }
 
             // TODO: check if it is really needed to parse the tag based on offsets
             $content = nvweb_list_parse_tag($tag, $item, $vars['source'], $i, ($i+$offset), $total);
@@ -1111,7 +1207,9 @@ function nvweb_list($vars=array())
     }
 
 	if(isset($vars['paginator']) && $vars['paginator']!='false')
-		$out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars);
+    {
+        $out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars);
+    }
 
 	return implode("\n", $out);
 }
@@ -1138,7 +1236,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 			$position = $item_relative_position;
 			if($tag['attributes']['absolute']=='true')
-				$position = $item_absolute_position;
+            {
+                $position = $item_absolute_position;
+            }
 
 			switch($tag['attributes']['type'])
 			{
@@ -1163,20 +1263,32 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 			{
 				case 'title':
                     if($source=='structure' || $source=='category')
-					    $out = $structure['dictionary'][$item->id];
+                    {
+                        $out = $structure['dictionary'][$item->id];
+                    }
                     else
+                    {
                         $out = $structure['dictionary'][$item->category];
+                    }
 
                     if(!empty($tag['attributes']['length']))
+                    {
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
+                    }
+
+                    $out = core_special_chars($out);
 					break;
 
 
                 case 'slug':
                     if($source=='structure' || $source=='category')
-					    $out = $structure['dictionary'][$item->id];
+                    {
+                        $out = $structure['dictionary'][$item->id];
+                    }
                     else
+                    {
                         $out = $structure['dictionary'][$item->category];
+                    }
 
                     // remove spaces, special chars, etc.
                     $out = core_string_clean($out);
@@ -1186,7 +1298,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 				case 'property':
                     $id = $item->id;
                     if($source!='structure' && $source!='category')
+                    {
                         $id = $item->category;
+                    }
 
                     $nvweb_properties_parameters = array_replace(
                         $tag['attributes'],
@@ -1203,18 +1317,26 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 				case 'url':
 				case 'path':
                     if($source=='structure' || $source=='category')
+                    {
                         $out = $structure['routes'][$item->id];
+                    }
                     else
+                    {
                         $out = $structure['routes'][$item->category];
+                    }
 
                     $out = nvweb_prepare_link($out);
 					break;
 
                 case 'id':
                     if($source=='structure' || $source=='category')
+                    {
                         $out = $item->id;
+                    }
                     else // source = 'item'?
+                    {
                         $out = $item->category;
+                    }
                     break;
 
                 case 'count':
@@ -1233,11 +1355,16 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                             foreach($webuser->groups as $wg)
                             {
                                 if(empty($wg))
+                                {
                                     continue;
+                                }
                                 $access_groups[] = 'groups LIKE "%g'.$wg.'%"';
                             }
+
                             if(!empty($access_groups))
+                            {
                                 $access_extra = ' OR (access = 3 AND ('.implode(' OR ', $access_groups).'))';
+                            }
                         }
                     }
 
@@ -1271,13 +1398,19 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					$size = '48';
                     $extra = '';
 					if(!empty($tag['attributes']['size']))
-						$size = intval($tag['attributes']['size']);
+                    {
+                        $size = intval($tag['attributes']['size']);
+                    }
 
                     if(!empty($tag['attributes']['border']))
-						$extra .= '&border='.$tag['attributes']['border'];
+                    {
+                        $extra .= '&border='.$tag['attributes']['border'];
+                    }
 
                     if(!empty($tag['attributes']['opacity']))
-						$extra .= '&opacity='.$tag['attributes']['opacity'];
+                    {
+                        $extra .= '&opacity='.$tag['attributes']['opacity'];
+                    }
 
                     $avatar = $item->author_avatar();
 					if(!empty($avatar))
@@ -1292,20 +1425,30 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         //  absolute path (http://www...)
                         //  relative path (/img/avatar.png) -> path to the avatar file included in the THEME used
                         if(is_numeric($tag['attributes']['default']))
+                        {
                             $out = '<img class="'.$tag['attributes']['class'].'" src="'.NVWEB_OBJECT.'?type=image'.$extra.'&id='.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                        }
                         else if(strpos($tag['attributes']['default'], 'http://')===0)
+                        {
                             $out = '<img class="'.$tag['attributes']['class'].'" src="'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                        }
                         else if($tag['attributes']['default']=='none')
-                            $out = ''; // no image
+                        {
+                            $out = '';
+                        } // no image
                         else
+                        {
                             $out = '<img class="'.$tag['attributes']['class'].'"src="'.NAVIGATE_URL.'/themes/'.$website->theme.'/'.$tag['attributes']['default'].'" width="'.$size.'px" height="'.$size.'px"/>';
+                        }
                     }
                     else // empty avatar, try to get a libravatar/gravatar or show a blank avatar
                     {
 	                    $gravatar_hash = "";
 	                    $gravatar_default = 'blank';
 	                    if(!empty($tag['attributes']['gravatar_default']))
-		                    $gravatar_default = $tag['attributes']['gravatar_default'];
+                        {
+                            $gravatar_default = $tag['attributes']['gravatar_default'];
+                        }
 
 	                    if(!empty($item->email))
 	                    {
@@ -1328,7 +1471,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 		                    $out = '<img class="'.$tag['attributes']['class'].'" src="'.$gravatar_url.'" width="'.$size.'px" height="'.$size.'px"/>';
 	                    }
 						else
-							$out = '<img class="'.$tag['attributes']['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+                        {
+                            $out = '<img class="'.$tag['attributes']['class'].'" src="data:image/gif;base64,R0lGODlhAQABAPAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" width="'.$size.'px" height="'.$size.'px"/>';
+                        }
                     }
 
 					if($tag['attributes']['linked']=='true' && !empty($out))
@@ -1345,12 +1490,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	                    }
 
 						if(!empty($comment_link))
+                        {
                             $out = '<a href="'.$comment_link.'" target="_blank">'.$out.'</a>';
+                        }
 					}
 					break;
 
 				case 'username':
 					$out = $item->author_name();
+                    $out = core_special_chars($out);
 					if($tag['attributes']['linked']=='true' && !empty($out))
 					{
 						if(!empty($item->url))
@@ -1365,15 +1513,21 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	                    }
 
 						if(!empty($comment_link))
+                        {
                             $out = '<a href="'.$comment_link.'" target="_blank">'.$out.'</a>';
+                        }
 					}
 					break;
 
                 case 'webuser_comments':
                     if(!empty($item->user))
+                    {
                         $out = comment::webuser_comments_count($item->user);
+                    }
                     else
+                    {
                         $out = "";
+                    }
                     break;
 
                 case 'website':
@@ -1396,9 +1550,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 				case 'message':
                     if(!empty($tag['attributes']['length']))
+                    {
                         $out = core_string_cut($item->message, $tag['attributes']['length'], '&hellip;');
+                        $out = core_special_chars($out);
+                    }
                     else
-					    $out = nl2br($item->message);
+                    {
+                        $out = core_special_chars($item->message);
+                        $out = nl2br($out);
+                    }
 					break;
 
 				case 'date':
@@ -1407,9 +1567,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         $tag['attributes']['format'] = $tag['attributes']['date_format'];
 
                     if(!empty($tag['attributes']['format'])) // custom date format
+                    {
                         $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_created);
+                    }
                     else
+                    {
                         $out = date($website->date_format.' H:i', $item->date_created);
+                    }
 					break;
 
                 case 'item_url':
@@ -1418,6 +1582,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'item_title':
                     $out = $item->item_title;
+                    $out = core_special_chars($out);
                     break;
 
                 case 'reply_to':
@@ -1482,14 +1647,19 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         }
                     }
                     else
+                    {
                         $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, NULL, NULL, $tag['attributes']);
+                    }
                     break;
 
                 // not for extension_blocks
                 case 'title':
                     $out = $item->dictionary[$current['lang']]['title'];
                     if(!empty($tag['attributes']['length']))
+                    {
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
+                    }
+                    $out = core_special_chars($out);
                     break;
 
                 case 'content':
@@ -1503,7 +1673,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                         }
                     }
                     else
+                    {
                         $out = nvweb_blocks_render($item->type, $item->trigger, $item->action, 'content', $item, $tag['attributes']);
+                    }
                     break;
 
                 // not for extension_blocks
@@ -1511,17 +1683,25 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'path':
                     $out = nvweb_blocks_render_action($item->action, '', $current['lang'], true);
                     if(empty($out))
+                    {
                         $out = '#';
+                    }
                     else
+                    {
                         $out = nvweb_prepare_link($out);
+                    }
                     break;
 
                 // not for extension_blocks
                 case 'target':
                     if($item->action['action-type'][$current['lang']]=='web-n')
+                    {
                         $out = '_blank';
+                    }
                     else
+                    {
                         $out = '_self';
+                    }
                     break;
 
                 // not for extension_blocks (only for standard blocks and block group blocks)
@@ -1529,7 +1709,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $properties_mode = 'block';
 
                     if(!is_numeric($item->id))
+                    {
                         $properties_mode = 'block_group_block';
+                    }
 
                     $nvweb_properties_parameters = array_replace(
                         $tag['attributes'],
@@ -1564,23 +1746,34 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'title':
                     $out = $item->title;
                     if(!empty($tag['attributes']['length']))
+                    {
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;');
+                    }
+                    $out = core_special_chars($out);
                     break;
 
                 case 'url':
                 case 'path':
                     $out = $item->link;
                     if(empty($out))
+                    {
                         $out = '#';
+                    }
                     else
+                    {
                         $out = nvweb_prepare_link($out);
+                    }
                     break;
 
                 case 'target':
                     if($item->new_window == 1)
+                    {
                         $out = '_blank';
+                    }
                     else
+                    {
                         $out = '_self';
+                    }
                     break;
 
                 case 'icon':
@@ -1598,9 +1791,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'title':
                     $title_obj = json_decode($item->title, true);
                     if(empty($title_obj)) // not json
+                    {
                         $out = $item->title;
+                    }
                     else
+                    {
                         $out = $title_obj[$current['lang']];
+                    }
+                    $out = core_special_chars($out);
                     break;
             }
             break;
@@ -1617,15 +1815,20 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 				case 'thumbnail_url':
                     $thumbnail_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item['file'].'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
                     if($tag['attributes']['value']=='thumbnail_url' || @$tag['attributes']['return']=='url')
+                    {
                         $out = $thumbnail_url;
+                    }
                     else
+                    {
                         $out = '<img src="'.$thumbnail_url.'" alt="'.$item[$current['lang']].'" title="'.$item[$current['lang']].'" />';
+                    }
                     break;
 
                 case 'title':
                     $f = new file();
                     $f->load($item['file']);
                     $out = $f->title[$current['lang']];
+                    $out = core_special_chars($out);
                     break;
 
                 case 'alt':
@@ -1633,6 +1836,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $f = new file();
                     $f->load($item['file']);
                     $out = $f->description[$current['lang']];
+                    $out = core_special_chars($out);
                     break;
 
                 default:
@@ -1656,7 +1860,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $lang = $current['lang'];
 
                     if(!empty($tag['attributes']['lang']))
+                    {
                         $lang = $tag['attributes']['lang'];
+                    }
 
                     $out = $item->dictionary[$lang]['title'];
 
@@ -1669,12 +1875,18 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $lang = $current['lang'];
 
                     if(!empty($tag['attributes']['lang']))
+                    {
                         $lang = $tag['attributes']['lang'];
+                    }
 
                     $out = $item->dictionary[$lang]['title'];
 
                     if(!empty($tag['attributes']['length']))
+                    {
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $tag['attributes']['length']);
+                    }
+
+                    $out = core_special_chars($out);
                     break;
 
                 case 'author':
@@ -1687,43 +1899,64 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     }
 
                     if(empty($out))
+                    {
                         $out = $website->name;
+                    }
+
+                    $out = core_special_chars($out);
                     break;
 
                 case 'date':
                     if(!empty($tag['attributes']['format'])) // custom date format
+                    {
                         $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
+                    }
                     else
+                    {
                         $out = date($website->date_format, $item->date_to_display);
+                    }
                     break;
 
                 case 'date_created':
                     if(!empty($tag['attributes']['format'])) // custom date format
+                    {
                         $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_created);
+                    }
                     else
+                    {
                         $out = date($website->date_format, $item->date_created);
+                    }
                     break;
 
                 case 'content':
                 case 'section':
                     $section = $tag['attributes']['section'];
-                    if(empty($section)) $section = 'main';
+                    if(empty($section))
+                    {
+                        $section = 'main';
+                    }
                     $out = $item->dictionary[$current['lang']]['section-'.$section];
 
                     if(!empty($tag['attributes']['length']))
                     {
                         $allowed_tags = '';
                         if(!empty($tag['attributes']['allowed_tags']))
+                        {
                             $allowed_tags = explode(',', $tag['attributes']['allowed_tags']);
+                        }
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $allowed_tags);
                     }
                     break;
 
                 case 'comments':
                     if(method_exists($item, 'comments_count'))
+                    {
                         $out = $item->comments_count();
+                    }
                     else
+                    {
                         $out = nvweb_content_comments_count($item->id, "product");
+                    }
                     break;
 
                 case 'gallery':
@@ -1736,7 +1969,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'photo':
                     $photo = @array_shift(array_keys($item->galleries[0]));
                     if(empty($photo))
+                    {
                         $out = NVWEB_OBJECT . '?type=transparent';
+                    }
                     else
                     {
                         $out = NVWEB_OBJECT . '?wid='.$website->id.'&id='.$photo.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
@@ -1747,7 +1982,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'path':
                     $path = $item->paths[$current['lang']];
                     if(empty($path))
+                    {
                         $path = '/node/'.$item->id;
+                    }
                     $out = nvweb_prepare_link($path);
                     break;
 
@@ -1800,6 +2037,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 // specific "product" nvlist values
                 case 'sku':
                     $out = $item->sku;
+                    $out = core_special_chars($out);
                     break;
 
                 case 'barcode':
@@ -1943,12 +2181,16 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $lang = $current['lang'];
 
                     if(!empty($tag['attributes']['lang']))
+                    {
                         $lang = $tag['attributes']['lang'];
+                    }
 
 					$out = $item->dictionary[$lang]['title'];
 
                     if(!empty($tag['attributes']['length']))
                         $out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $tag['attributes']['length']);
+
+                    $out = core_special_chars($out);
 					break;
 
                 case 'author':
@@ -1961,7 +2203,11 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     }
 
                     if(empty($out))
+                    {
                         $out = $website->name;
+                    }
+
+                    $out = core_special_chars($out);
                     break;
 
 				case 'date':
@@ -1978,7 +2224,10 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     {
 	                    $items = nvweb_content_items($item->id, true, 1, false, 'priority'); // we force finding the first non-embedded item ordered by priority
 	                    if(empty($items))
-	                        $items = nvweb_content_items($item->id, true, 1, true, 'priority'); // find the first embedded item ordered by priority
+                        {
+                            $items = nvweb_content_items($item->id, true, 1, true, 'priority');
+                        }
+                        // find the first embedded item ordered by priority
 	                    $item = $items[0];
                     }
 
@@ -1990,16 +2239,22 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     {
                         $allowed_tags = '';
                         if(!empty($tag['attributes']['allowed_tags']))
+                        {
                             $allowed_tags = explode(',', $tag['attributes']['allowed_tags']);
+                        }
 						$out = core_string_cut($out, $tag['attributes']['length'], '&hellip;', $allowed_tags);
                     }
 					break;
 
 				case 'comments':
 				    if(method_exists($item, 'comments_count'))
-    					$out = $item->comments_count();
+                    {
+                        $out = $item->comments_count();
+                    }
                     else
+                    {
                         $out = nvweb_content_comments_count($item->id);
+                    }
 					break;
 
 				case 'gallery':
@@ -2012,7 +2267,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 				case 'photo':
 					$photo = @array_shift(array_keys($item->galleries[0]));
 					if(empty($photo))
-						$out = NVWEB_OBJECT . '?type=transparent';
+                    {
+                        $out = NVWEB_OBJECT . '?type=transparent';
+                    }
 					else
 					{
 						$out = NVWEB_OBJECT . '?wid='.$website->id.'&id='.$photo.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
@@ -2033,7 +2290,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     {
                         $path = $item->paths[$current['lang']];
                         if(empty($path))
+                        {
                             $path = '/node/'.$item->id;
+                        }
                         $out = nvweb_prepare_link($path);
                     }
 					break;
@@ -2067,10 +2326,14 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     {
 	                    $items = nvweb_content_items($item->id, true, 1, false, 'priority'); // we force finding the first non-embedded item ordered by priority
 	                    if(empty($items))
-	                        $items = nvweb_content_items($item->id, true, 1, true, 'priority'); // find the first embedded item ordered by priority
+                        {
+                            $items = nvweb_content_items($item->id, true, 1, true, 'priority');
+                        }
+                        // find the first embedded item ordered by priority
 	                    $item = $items[0];
 	                    $source = "item";
                     }
+
 					// pass all nvlist tag parameters to properties nvweb, but some attribute/values take preference
 					$nvweb_properties_parameters = array_replace(
 						$tag['attributes'],
@@ -2088,7 +2351,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                 case 'function':
                     $function = @$tag['attributes']['function'];
                     if(!empty($function) && function_exists($function))
+                    {
                         $out = call_user_func($function, array('item' => $item, 'vars' => $tag['attributes']));
+                    }
                     break;
 
 				default:
@@ -2319,10 +2584,14 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
             $property_name = $tag['attributes']['property_id'];
             if(empty($property_name))
+            {
                 $property_name = $tag['attributes']['property_name'];
+            }
 
             if(!method_exists($item, 'property'))
+            {
                 return "";
+            }
 
             $property_value = $item->property($property_name);
             $property_definition = $item->property_definition($property_name);
@@ -2352,7 +2621,9 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
                 case 'boolean':
                     if($property_value=="" && isset($property_definition->dvalue))
+                    {
                         $property_value = $property_definition->dvalue;
+                    }
 
                     break;
             }
@@ -2456,33 +2727,51 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             {
                 $on_offer = $item->on_offer();
                 if(($tag['attributes']['offer']=='true' || $tag['attributes']['offer']=='1') && $on_offer)
+                {
                     $out = $item_html;
+                }
                 else if(($tag['attributes']['offer']=='false' || $tag['attributes']['offer']=='0') && !$on_offer)
+                {
                     $out = $item_html;
+                }
                 else
+                {
                     $out = '';
+                }
             }
 
             if(isset($tag['attributes']['top']))
             {
                 $is_top = $item->is_top(@$tag['attributes']['top_limit']);
                 if(($tag['attributes']['top']=='true' || $tag['attributes']['top']=='1') && $is_top)
+                {
                     $out = $item_html;
+                }
                 else if(($tag['attributes']['top']=='false' || $tag['attributes']['top']=='0') && !$is_top)
+                {
                     $out = $item_html;
+                }
                 else
+                {
                     $out = '';
+                }
             }
 
             if(isset($tag['attributes']['new']))
             {
                 $is_new = $item->is_new(@$tag['attributes']['since']);
                 if(($tag['attributes']['new']=='true' || $tag['attributes']['new']=='1') && $is_new)
+                {
                     $out = $item_html;
+                }
                 else if(($tag['attributes']['new']=='false' || $tag['attributes']['new']=='0') && !$is_new)
+                {
                     $out = $item_html;
+                }
                 else
+                {
                     $out = '';
+                }
             }
             break;
 
@@ -2492,9 +2781,13 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 
             $templates = array();
             if(isset($tag['attributes']['templates']))
+            {
                 $templates = explode(",", $tag['attributes']['templates']);
+            }
             else if(isset($tag['attributes']['template']))
+            {
                 $templates = array($tag['attributes']['template']);
+            }
 
             if(empty($item->template))
             {
@@ -2526,18 +2819,26 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             if(isset($tag['attributes']['each']))
             {
                 if($position % $tag['attributes']['each'] == 0) // condition applies
+                {
                     $out = $item_html;
+                }
                 else // remove the full nvlist_conditional tag, doesn't apply here
+                {
                     $out = '';
+                }
             }
             else if(isset($tag['attributes']['range']))
             {
                 list($pos_min, $pos_max) = explode('-', $tag['attributes']['range']);
 
                 if(($position+1) >= $pos_min && ($position+1) <= $pos_max)
+                {
                     $out = $item_html;
+                }
                 else
+                {
                     $out = '';
+                }
             }
             else if(isset($tag['attributes']['position']))
             {
@@ -2545,40 +2846,62 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 {
                     case 'first':
                         if($position == 0)
+                        {
                             $out = $item_html;
+                        }
                         else
+                        {
                             $out = '';
+                        }
                         break;
 
                     case 'not_first':
                         if($position > 0)
+                        {
                             $out = $item_html;
+                        }
                         else
+                        {
                             $out = '';
+                        }
                         break;
 
                     case 'last':
                         if($position == ($total-1))
+                        {
                             $out = $item_html;
+                        }
                         else
+                        {
                             $out = '';
+                        }
                         break;
 
                     case 'not_last':
                         if($position != ($total-1))
+                        {
                             $out = $item_html;
+                        }
                         else
+                        {
                             $out = '';
+                        }
                         break;
 
                     default:
                         // position "x"?
                         if($tag['attributes']['position']==='0')
+                        {
                             $tag['attributes']['position'] = 1;
+                        }
                         if(($position+1) == $tag['attributes']['position'])
+                        {
                             $out = $item_html;
+                        }
                         else
+                        {
                             $out = '';
+                        }
                         break;
                 }
             }
@@ -2605,16 +2928,24 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             {
                 // allow using "hidden" for internally set "(empty)" types
                 if( $tag['attributes']['trigger'] == 'hidden' )
+                {
                     $tag['attributes']['trigger'] = "";
+                }
 
                 if( $item->trigger['trigger-type'][$current['lang']] != $tag['attributes']['trigger'] )
+                {
                     $output_condition = false;
+                }
             }
 
             if($output_condition)
+            {
                 $out = $item_html;
+            }
             else
+            {
                 $out = "";
+            }
 
             // does the block have a link defined?
             if(isset($tag['attributes']['linked']))
@@ -2702,9 +3033,13 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             }
 
             if($item->access == $access)
+            {
                 $out = $item_html;
+            }
             else
+            {
                 $out = '';
+            }
             break;
 
         case 'gallery':
@@ -2713,12 +3048,16 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             if($tag['attributes']['empty']=='true')
             {
                 if(empty($item->galleries[0]))
+                {
                     $out = $item_html;
+                }
             }
             else if($tag['attributes']['empty']=='false')
             {
                 if(!empty($item->galleries[0]))
+                {
                     $out = $item_html;
+                }
             }
             break;
 
@@ -2728,12 +3067,16 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             if($tag['attributes']['empty']=='true')
             {
                 if(empty($item->dictionary[$current['lang']]['tags']))
+                {
                     $out = $item_html;
+                }
             }
             else if($tag['attributes']['empty']=='false')
             {
                 if(!empty($item->dictionary[$current['lang']]['tags']))
+                {
                     $out = $item_html;
+                }
             }
             break;
 
@@ -2743,11 +3086,17 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             if( isset($tag['attributes']['show_in_menus']) && isset($item->visible) )
             {
                 if($item->visible == 1 && in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
+                {
                     $out = $item_html;
+                }
                 else if($item->visible != 1 && !in_array($tag['attributes']['show_in_menus'], array(1, true, "true")))
+                {
                     $out = $item_html;
+                }
                 else
+                {
                     $out = "";
+                }
             }
             else
             {
@@ -2787,15 +3136,23 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                         $wu = new webuser();
                         $wu->load($item->user);
                         if(!empty($wu->social_website))
+                        {
                             $has_website = true;
+                        }
                     }
 
                     if($has_website && (!isset($tag['attributes']['empty']) || $tag['attributes']['empty'] == 'false'))
+                    {
                         $out = $item_html;
+                    }
                     else if(!$has_website && @$tag['attributes']['empty'] == 'true')
+                    {
                         $out = $item_html;
+                    }
                     else
+                    {
                         $out = "";
+                    }
                     break;
 
                 default:
@@ -2850,7 +3207,9 @@ function nvweb_list_parse_filters($raw, $object='item')
 
     $alias = 'i';
     if($object=='product')
+    {
         $alias = 'p';
+    }
 
     $filters = array();
 
@@ -2895,11 +3254,15 @@ function nvweb_list_parse_filters($raw, $object='item')
                 if(substr($value, 0, 1)=='$')
                 {
                     if(!isset($_REQUEST[substr($value, 1)]))
-                        continue;   // ignore this filter
+                    {
+                        continue;
+                    }   // ignore this filter
 
                     $value = $_REQUEST[substr($value, 1)];
                     if(empty($value)) // ignore empty values
+                    {
                         continue;
+                    }
                 }
                 else if(strpos($value, 'property.') === 0)
                 {
@@ -2927,11 +3290,15 @@ function nvweb_list_parse_filters($raw, $object='item')
                     if(!is_array($comp_value) && substr($comp_value, 0, 1)=='$')
                     {
                         if(!isset($_REQUEST[substr($comp_value, 1)]))
-                            continue;   // ignore this filter
+                        {
+                            continue;
+                        }   // ignore this filter
 
                         $comp_value = $_REQUEST[substr($comp_value, 1)];
                         if(empty($comp_value)) // ignore empty values
+                        {
                             continue;
+                        }
                     }
                     else if(!is_array($comp_value) && strpos($comp_value, 'property.') === 0)
                     {
@@ -2987,15 +3354,23 @@ function nvweb_list_parse_filters($raw, $object='item')
                     else if($comp_type == 'in' || $comp_type == 'nin')
                     {
                         if($comp_type == 'nin')
+                        {
                             $comp_type = 'NOT IN';
+                        }
                         else
+                        {
                             $comp_type = 'IN';
+                        }
 
                         if(!is_array($comp_value))
+                        {
                             $comp_value = explode(",", $comp_value);
+                        }
 
                         if(empty($comp_value))
-                            $comp_value = array(0); // avoid SQL query exception
+                        {
+                            $comp_value = array(0);
+                        } // avoid SQL query exception
 
                         $filters[] = ' 
                             AND '.$alias.'.id IN ( 
@@ -3020,15 +3395,23 @@ function nvweb_list_parse_filters($raw, $object='item')
                     else if($comp_type == 'has' || $comp_type == 'hasnot')
                     {
                         if($comp_type == 'hasnot')
+                        {
                             $comp_type = 'NOT FIND_IN_SET';
+                        }
                         else
+                        {
                             $comp_type = 'FIND_IN_SET';
+                        }
 
                         if(!is_array($comp_value))
+                        {
                             $comp_value = explode(",", $comp_value);
+                        }
 
                         if(empty($comp_value))
-                            $comp_value = array(0); // avoid SQL query exception
+                        {
+                            $comp_value = array(0);
+                        } // avoid SQL query exception
 
                         foreach($comp_value as $comp_value_part)
                         {
@@ -3112,11 +3495,16 @@ function nvweb_list_parse_filters($raw, $object='item')
                     if(substr($value, 0, 1)=='$')
                     {
                         if(!isset($_REQUEST[substr($value, 1)]))
-                            continue;   // ignore this filter
+                        {
+                            // ignore this filter
+                            continue;
+                        }
                         
                         $value = $_REQUEST[substr($value, 1)];
                         if(empty($value)) // ignore empty values
+                        {
                             continue;
+                        }
                     }
                     else if(strpos($value, 'property.') === 0)
                     {
@@ -3137,10 +3525,16 @@ function nvweb_list_parse_filters($raw, $object='item')
                         if(!is_array($comp_value) && substr($comp_value, 0, 1)=='$')
                         {
                             if(!isset($_REQUEST[substr($comp_value, 1)]))
-                                continue;   // ignore this filter
+                            {
+                                // ignore this filter
+                                continue;
+                            }
+
                             $comp_value = $_REQUEST[substr($comp_value, 1)];
                             if(empty($comp_value)) // ignore empty values
+                            {
                                 continue;
+                            }
                         }
                         else if(!is_array($comp_value) && strpos($comp_value, 'property.') === 0)
                         {
@@ -3172,9 +3566,13 @@ function nvweb_list_parse_filters($raw, $object='item')
                         else if($comp_type == 'in' || $comp_type == 'nin')
                         {
                             if($comp_type == 'nin')
+                            {
                                 $comp_type = 'NOT IN';
+                            }
                             else
+                            {
                                 $comp_type = 'IN';
+                            }
 
                             if(is_array($comp_value))
                             {
@@ -3199,15 +3597,23 @@ function nvweb_list_parse_filters($raw, $object='item')
                         else if($comp_type == 'has' || $comp_type == 'hasnot')
                         {
                             if($comp_type == 'hasnot')
+                            {
                                 $comp_type = 'NOT FIND_IN_SET';
+                            }
                             else
+                            {
                                 $comp_type = 'FIND_IN_SET';
+                            }
 
                             if(!is_array($comp_value))
+                            {
                                 $comp_value = explode(",", $comp_value);
+                            }
 
                             if(empty($comp_value))
-                                $comp_value = array(); // avoid SQL query exception
+                            {
+                                $comp_value = array();
+                            } // avoid SQL query exception
 
                             foreach($comp_value as $comp_value_part)
                             {
@@ -3278,26 +3684,40 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 
 	if(!empty($params['paginator_prev']))
-		$paginator_text_prev = $theme->t($params['paginator_prev']);
+    {
+        $paginator_text_prev = $theme->t($params['paginator_prev']);
+    }
 
 	if(!empty($params['paginator_next']))
-		$paginator_text_next = $theme->t($params['paginator_next']);
+    {
+        $paginator_text_next = $theme->t($params['paginator_next']);
+    }
 
 	if(!empty($params['paginator_first']))
-		$paginator_text_first = $theme->t($params['paginator_first']);
+    {
+        $paginator_text_first = $theme->t($params['paginator_first']);
+    }
 
 	if(!empty($params['paginator_last']))
-		$paginator_text_last = $theme->t($params['paginator_last']);
+    {
+        $paginator_text_last = $theme->t($params['paginator_last']);
+    }
 
 	if(!empty($params['paginator_etc']))
-		$paginator_text_etc = $theme->t($params['paginator_etc']);
+    {
+        $paginator_text_etc = $theme->t($params['paginator_etc']);
+    }
 
     // keep existing URL variables except "page" and "route" (route is an internal navigate variable)
     $url_suffix = '';
     if(!is_array($_GET)) $_GET = array();
     foreach($_GET as $key => $val)
     {
-        if($key=='page' || $key=='route') continue;
+        if($key=='page' || $key=='route')
+        {
+            continue;
+        }
+
         if(is_array($val))
         {
             foreach($val as $val_item)
@@ -3354,21 +3774,36 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 				$out[] = '<div class="paginator">';
 
 		        if($page > 1)
-			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+                {
+                    $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+                }
 
 		        for($p = $page - 2; $p < $page + 3; $p++)
 		        {
-		            if($p < 1) continue;
+		            if($p < 1)
+                    {
+                        continue;
+                    }
 
-		            if($p > $pages) break;
+		            if($p > $pages)
+		            {
+		                break;
+                    }
 
 		            if($p==$page)
-		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    }
 		            else
-		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    }
 		        }
 
-		        if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+		        if($page < $pages)
+                {
+                    $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+                }
 
 		        $out[] = '<div style=" clear: both; "></div>';
 
@@ -3387,14 +3822,24 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		        for($p = $page - 2; $p < $page + 3; $p++)
 		        {
-		            if($p < 1) continue;
+		            if($p < 1)
+                    {
+                        continue;
+                    }
 
-		            if($p > $pages) break;
+		            if($p > $pages)
+                    {
+                        break;
+                    }
 
 		            if($p==$page)
-		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    }
 		            else
-		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    }
 		        }
 
                 if($page < $pages)
@@ -3415,9 +3860,13 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 		        for($p = 1; $p <= $pages; $p++)
 		        {
 		            if($p==$page)
-		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    }
 		            else
-		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    }
 		        }
 
 		        $out[] = '<div style=" clear: both; "></div>';
@@ -3429,31 +3878,55 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 		    case 'classic':
 			    $out[] = '<div class="paginator">';
 
-		        if($page > 1) $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+		        if($page > 1)
+                {
+                    $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+                }
 
 		        if($page == 4)
-		            $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
+                {
+                    $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
+                }
 		        else if($page > 3)
-		            $out[] = '<a href="?page=1'.$url_suffix.'">1</a><span class="paginator-etc">'.$paginator_text_etc.'</span>';
+                {
+                    $out[] = '<a href="?page=1'.$url_suffix.'">1</a><span class="paginator-etc">'.$paginator_text_etc.'</span>';
+                }
 
 		        for($p = $page - 2; $p < $page + 3; $p++)
 		        {
-		            if($p < 1) continue;
+		            if($p < 1)
+                    {
+                        continue;
+                    }
 
-		            if($p > $pages) break;
+		            if($p > $pages)
+                    {
+                        break;
+                    }
 
 		            if($p==$page)
-		                $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                    }
 		            else
-		                $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    {
+                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                    }
 		        }
 
 		        if($page + 3 == $pages)
-		            $out[] = '<a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+                {
+                    $out[] = '<a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+                }
 		        else if($page + 3 < $pages)
-		            $out[] = '<span class="paginator-etc">'.$paginator_text_etc.'</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+                {
+                    $out[] = '<span class="paginator-etc">'.$paginator_text_etc.'</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+                }
 
-		        if($page < $pages) $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+		        if($page < $pages)
+                {
+                    $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+                }
 
 		        $out[] = '<div style=" clear: both; "></div>';
 

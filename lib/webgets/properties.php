@@ -18,14 +18,18 @@ function nvweb_properties($vars=array())
             $wproperty = new property();
             $wproperty->load_from_theme($vars['property']);
             if(!empty($wproperty))
+            {
                 $out = nvweb_properties_render($wproperty, $vars);
+            }
             break;
 
         case 'webuser':
             $wuproperty = new property();
             $wuproperty->load_from_webuser($vars['property']);
             if(!empty($wuproperty))
+            {
                 $out = nvweb_properties_render($wuproperty, $vars);
+            }
             break;
 
 
@@ -40,19 +44,26 @@ function nvweb_properties($vars=array())
                 $itm = nvweb_content_items($current['object']->id, true, 1, true, 'priority');
 
                 if(!empty($itm) && isset($itm[0]))
+                {
                     $vars['id'] = $itm[0]->id;
+                }
                 else
+                {
                     $vars['id'] = 0;
+                }
             }
 
             if(!isset($properties['item-'.$vars['id']]) && !empty($vars['id']))
 			{
 				// load item template
 				if(empty($vars['template']))
-					$vars['template'] = $DB->query_single('template', 'nv_items', ' id = '.intval($vars['id']));
+                {
+                    $vars['template'] = $DB->query_single('template', 'nv_items', ' id = '.intval($vars['id']));
+                }
 
                 // if template is not defined (embedded element), take its category template
                 if(empty($vars['template']))
+                {
                     $vars['template'] = $DB->query_single(
                         'template',
                         'nv_structure',
@@ -62,6 +73,7 @@ function nvweb_properties($vars=array())
                             WHERE id = '.intval($vars['id']).'
                         )'
                     );
+                }
 
 				$properties['item-'.$vars['id']] = property::load_properties("item", $vars['template'], 'item', $vars['id']);
 			}
@@ -80,13 +92,19 @@ function nvweb_properties($vars=array())
                     $itm = nvweb_content_items($current['object']->id, true, 1, true, 'priority');
 
                     if(!empty($itm) && isset($itm[0]))
+                    {
                         $vars['id'] = $itm[0]->id;
+                    }
                     else
+                    {
                         $vars['id'] = 0;
+                    }
                 }
 
                 if(!isset($properties['item-'.$vars['id']]))
+                {
                     $properties['item-'.$current['object']->id] = property::load_properties("item", $vars['type'], 'item', $vars['id']);
+                }
             }
 
 			$current_properties	= $properties['item-'.$vars['id']];
@@ -112,7 +130,9 @@ function nvweb_properties($vars=array())
                     $vars['type'] = $DB->query_single('type', 'nv_blocks', ' id = '.intval($vars['id']));
 
                     if(empty($cache['block_types']))
+                    {
                         $cache['block_types'] = block::types();
+                    }
 
                     // we need to know if the block is defined in the active theme or in the database (numeric ID)
                     foreach($cache['block_types'] as $bt)
@@ -167,7 +187,9 @@ function nvweb_properties($vars=array())
 			// now we try to find the property requested
 
             if(!is_array($current_properties))
+            {
                 $current_properties = array();
+            }
 
 			foreach($current_properties as $property)
 			{
@@ -183,9 +205,13 @@ function nvweb_properties($vars=array())
 			if(empty($vars['id']))
 			{
 				if($current['type']=='structure')
-					$vars['id'] = $current['id'];
+                {
+                    $vars['id'] = $current['id'];
+                }
 				else
-					$vars['id'] = $current['object']->category;
+                {
+                    $vars['id'] = $current['object']->category;
+                }
 			}
 						
 			if(!isset($properties['structure-'.$vars['id']]))	
@@ -210,9 +236,13 @@ function nvweb_properties($vars=array())
 				if($property->id == $vars['property'] || $property->name == $vars['property'])
 				{
                     if($vars['return']=='object')
+                    {
                         $out = $property;
+                    }
                     else
-					    $out = nvweb_properties_render($property, $vars);
+                    {
+                        $out = nvweb_properties_render($property, $vars);
+                    }
 					break;	
 				}
 			}			
@@ -220,20 +250,29 @@ function nvweb_properties($vars=array())
 
         case 'comment':
             if(!isset($properties['comment-'.$vars['id']]))
+            {
                 $properties['comment-'.$vars['id']] = property::load_properties("comment", $vars['template'], 'comment', $vars['id']);
+            }
 
             $current_properties	= $properties['comment-'.$vars['id']];
 
             // now we find the property requested
-            if(!is_array($current_properties)) $current_properties = array();
+            if(!is_array($current_properties))
+            {
+                $current_properties = array();
+            }
             foreach($current_properties as $property)
             {
                 if($property->id == $vars['property'] || $property->name == $vars['property'])
                 {
                     if($vars['return']=='object')
+                    {
                         $out = $property;
+                    }
                     else
+                    {
                         $out = nvweb_properties_render($property, $vars);
+                    }
                     break;
                 }
             }
@@ -241,20 +280,29 @@ function nvweb_properties($vars=array())
 
         case 'product':
             if(!isset($properties['product-'.$vars['id']]))
+            {
                 $properties['product-'.$vars['id']] = property::load_properties("product", $vars['template'], 'product', $vars['id']);
+            }
 
             $current_properties	= $properties['product-'.$vars['id']];
 
             // now we find the property requested
-            if(!is_array($current_properties)) $current_properties = array();
+            if(!is_array($current_properties))
+            {
+                $current_properties = array();
+            }
             foreach($current_properties as $property)
             {
                 if($property->id == $vars['property'] || $property->name == $vars['property'])
                 {
                     if($vars['return']=='object')
+                    {
                         $out = $property;
+                    }
                     else
+                    {
                         $out = nvweb_properties_render($property, $vars);
+                    }
                     break;
                 }
             }
@@ -271,21 +319,27 @@ function nvweb_properties($vars=array())
 			if($current['type']=='item')
 			{
 				if(!isset($properties['item-'.$current['object']->id]))
-					$properties['item-'.$current['object']->id] = property::load_properties("item", $current['object']->template, 'item', $current['object']->id);
+                {
+                    $properties['item-'.$current['object']->id] = property::load_properties("item", $current['object']->template, 'item', $current['object']->id);
+                }
 
                 $current_properties = array_merge($current_properties, $properties['item-'.$current['object']->id]);
 			}
 			else if($current['type']=='product')
 			{
 				if(!isset($properties['product-'.$current['object']->id]))
-					$properties['product-'.$current['object']->id] = property::load_properties("product", $current['object']->template, 'product', $current['object']->id);
+                {
+                    $properties['product-'.$current['object']->id] = property::load_properties("product", $current['object']->template, 'product', $current['object']->id);
+                }
 
                 $current_properties = array_merge($current_properties, $properties['product-'.$current['object']->id]);
 			}
 			else if($current['type']=='structure')
 			{
 				if(!isset($properties['structure-'.$current['object']->id]))
-					$properties['structure-'.$current['object']->id] = property::load_properties("structure", $current['object']->template, 'structure', $current['object']->id);
+                {
+                    $properties['structure-'.$current['object']->id] = property::load_properties("structure", $current['object']->template, 'structure', $current['object']->id);
+                }
 
                 $current_properties = array_merge($current_properties, $properties['structure-'.$current['object']->id]);
 
@@ -295,25 +349,33 @@ function nvweb_properties($vars=array())
                 if(!empty($structure_items))
                 {
                     if(empty($structure_items[0]->template))
+                    {
                         $structure_items[0]->template = $current['template'];
+                    }
                     $properties['item-'.$structure_items[0]->id] = property::load_properties("item", $structure_items[0]->template, 'item', $structure_items[0]->id);
                 }
 
                 if(!empty($properties['item-'.$structure_items[0]->id]))
+                {
                     $current_properties = array_merge($current_properties, $properties['item-'.$structure_items[0]->id]);
+                }
 			}
             else
             {
                 // unknown object type, maybe is an object managed by an extension?
                 if(!isset($properties[$current['type'].'-'.$current['object']->id]))
-					$properties[$current['type'].'-'.$current['object']->id] = property::load_properties($current['type'], $current['object']->template, $current['type'], $current['object']->id);
+                {
+                    $properties[$current['type'].'-'.$current['object']->id] = property::load_properties($current['type'], $current['object']->template, $current['type'], $current['object']->id);
+                }
 
                 $current_properties = array_merge($current_properties, $properties[$current['type'].'-'.$current['object']->id]);
             }
 
 			// now we find the property requested
 			if(!is_array($current_properties))
-			    $current_properties = array();
+            {
+                $current_properties = array();
+            }
 
 			foreach($current_properties as $property)
             {
@@ -346,14 +408,18 @@ function nvweb_properties_render($property, $vars)
     // if this property is null (no value assigned (null), (empty) is a value!)
     // get the default value
 	if(!isset($property->value))
+    {
         $property->value = $property->dvalue;
+    }
 
     // check multilanguage properties, where the value can be saved in a language but may be (null) in another language
 	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")) || $property->multilanguage == 'true')
 	{
         // cast variable as array
         if(is_object($property->value))
+        {
             $property->value = (array)$property->value;
+        }
 
 		if(!isset($property->value) || !isset($property->value[$current['lang']]))
         {
@@ -368,10 +434,14 @@ function nvweb_properties_render($property, $vars)
             else
             {
                 if(!is_array($property->value))
+                {
                     $property->value = array();
+                }
 
                 if(is_object($property->dvalue))
+                {
                     $property->dvalue = (array)$property->dvalue;
+                }
 
                 if(is_array($property->dvalue))
                 {
@@ -396,7 +466,9 @@ function nvweb_properties_render($property, $vars)
             $out = $property->value;
 
             if(isset($vars['precision']))
+            {
                 $out = number_format($property->value, $vars['precision']);
+            }
 			break;
 			
 		case 'boolean':
@@ -440,11 +512,14 @@ function nvweb_properties_render($property, $vars)
 			break;
 			
 		case 'text':
-			$out = htmlspecialchars($property->value[$current['lang']]);
+            $out = $property->value[$current['lang']];
+            $out = core_special_chars($out);
 			break;
 			
 		case 'textarea':
-			$out = nl2br(htmlspecialchars($property->value[$current['lang']]));
+		    $out = $property->value[$current['lang']];
+            $out = core_special_chars($out);
+			$out = nl2br($out);
 			break;
 
         case 'rich_textarea':
@@ -453,9 +528,13 @@ function nvweb_properties_render($property, $vars)
 
         case 'source_code':
             if(@$property->multilanguage=='true' || $property->multilanguage=='1')
+            {
                 $out = $property->value[$current['lang']];
+            }
             else
+            {
                 $out = $property->value;
+            }
             break;
 
 		case 'date':
@@ -467,9 +546,13 @@ function nvweb_properties_render($property, $vars)
 			
 		case 'datetime':
             if(!empty($vars['format']))
+            {
                 $out = Encoding::toUTF8(strftime($vars['format'], $property->value));
+            }
             else
+            {
                 $out = date($website->date_format.' H:i', $property->value);
+            }
 			break;
 
 		case 'link':
@@ -491,7 +574,9 @@ function nvweb_properties_render($property, $vars)
             }
 
             if(strpos($link, '://')===false && strpos($link, 'mailto:')===false)
+            {
                 $link = nvweb_prepare_link($link);
+            }
 
             if($vars['link']==='false')
             {
@@ -500,11 +585,17 @@ function nvweb_properties_render($property, $vars)
 			else if(isset($vars['return']))
             {
                 if($vars['return']=='title')
-                    $out = $title;
+                {
+                    $out = core_special_chars($title);
+                }
                 else if($vars['return']=='link' || $vars['return']=='url')
+                {
                     $out = $link;
+                }
                 else if($vars['return']=='target')
+                {
                     $out = $target;
+                }
             }
             else
             {
@@ -517,9 +608,13 @@ function nvweb_properties_render($property, $vars)
 			$extra = '';
 
             if(@$property->multilanguage=='true'  || $property->multilanguage=='1')
+            {
                 $image_id = $property->value[$session['lang']];
+            }
             else
+            {
                 $image_id = $property->value;
+            }
 			
 			if(isset($vars['width']))
             {
@@ -534,13 +629,19 @@ function nvweb_properties_render($property, $vars)
             }
 
 			if(isset($vars['border']))
-				$extra .= '&border='.$vars['border'];
+            {
+                $extra .= '&border='.$vars['border'];
+            }
 
 			if(isset($vars['opacity']))
-				$extra .= '&opacity='.$vars['opacity'];
+            {
+                $extra .= '&opacity='.$vars['opacity'];
+            }
 
             if(isset($vars['quality']))
+            {
                 $extra .= '&quality='.$vars['quality'];
+            }
 
 			$img_url = NVWEB_OBJECT.'?type=image&id='.$image_id.$extra;
 
@@ -551,7 +652,9 @@ function nvweb_properties_render($property, $vars)
             else
             {
                 if($vars['return']=='url')
+                {
                     $out = $img_url;
+                }
                 else
                 {
                     // retrieve additional info (title/alt), if available
@@ -564,10 +667,14 @@ function nvweb_properties_render($property, $vars)
                         $falt = $f->description[$current['lang']];
 
                         if(!empty($ftitle))
+                        {
                             $add .= ' title="'.$ftitle.'" ';
+                        }
 
                         if(!empty($falt))
+                        {
                             $add .= ' alt="'.$falt.'" ';
+                        }
                     }
 
                     $out = '<img class="'.$vars['class'].'" src="'.$img_url.'" '.$add.' />';
@@ -581,11 +688,17 @@ function nvweb_properties_render($property, $vars)
 			    $file = $DB->query_single('name', 'nv_files', ' id = '.intval($property->value).' AND website = '.intval($website->id));
 
                 if($vars['return']=='url' || $vars['return']=='url-download')
+                {
                     $out = NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment';
+                }
                 else if($vars['return']=='url-inline')
+                {
                     $out = NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=inline';
+                }
                 else
-			        $out = '<a href="'.NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment">'.$file.'</a>';
+                {
+                    $out = '<a href="'.NVWEB_OBJECT.'?type=file&id='.$property->value.'&disposition=attachment">'.$file.'</a>';
+                }
             }
 			break;
 			
@@ -602,7 +715,9 @@ function nvweb_properties_render($property, $vars)
 			$out = $property->value;
 			// we want nearest integer down
 			if($vars['option']=='floor')
-				$out = floor($out);
+            {
+                $out = floor($out);
+            }
 			break;
 
         case 'color':
@@ -613,32 +728,50 @@ function nvweb_properties_render($property, $vars)
             // value may be a numeric file ID or a provider#id structure, f.e. youtube#3MteSlpxCpo
             // compatible providers: file,youtube,vimeo
             if(@$property->multilanguage=='true'  || $property->multilanguage=='1')
+            {
                 $video_id = $property->value[$session['lang']];
+            }
             else
+            {
                 $video_id = $property->value;
+            }
 
             $provider = '';
             $reference = '';
 
             $add = '';
             if(isset($vars['width']))
+            {
                 $add .= ' width="'.$vars['width'].'" ';
+            }
             if(isset($vars['height']))
+            {
                 $add .= ' height="'.$vars['height'].'" ';
+            }
 
             $url_add = '&type=image';
             if(isset($vars['width']))
+            {
                 $url_add .= '&width='.$vars['width'].'';
+            }
             if(isset($vars['height']))
+            {
                 $url_add .= '&height='.$vars['height'].'';
+            }
             if(isset($vars['border']))
+            {
                 $url_add .= '&border='.$vars['border'].'';
+            }
 
             if(strpos($video_id, '#')!==false)
+            {
                 list($provider, $reference) = explode("#", $video_id);
+            }
 
             if($provider=='file')
+            {
                 $video_id = $reference;
+            }
 
             $file = new file();
             if(is_numeric($video_id))
@@ -650,19 +783,24 @@ function nvweb_properties_render($property, $vars)
             {
                 $embed = file::embed('youtube', $reference, $add);
                 if(!empty($vars['part']) || $vars['part']!='embed' || !empty($vars['return']))
+                {
                     $file->load_from_youtube($reference);
+                }
             }
             else if($provider == 'vimeo' || !empty($vars['return']))
             {
                 $embed = file::embed('vimeo', $reference, $add);
                 if(!empty($vars['part']) || $vars['part']!='embed')
+                {
                     $file->load_from_vimeo($reference);
+                }
             }
 
             switch(@$vars['return'])
             {
                 case 'title':
                     $out = $file->title;
+                    $out = core_special_chars($out);
                     break;
 
                 case 'mime':
@@ -671,9 +809,14 @@ function nvweb_properties_render($property, $vars)
 
                 case 'author':
                     if(is_numeric($file->uploaded_by))
+                    {
                         $out = $website->name;
+                    }
                     else
+                    {
                         $out = $file->uploaded_by;
+                    }
+                    $out = core_special_chars($out);
                     break;
 
                 case 'path':
@@ -716,6 +859,7 @@ function nvweb_properties_render($property, $vars)
                 case 'name':
                     nvweb_menu_load_dictionary();
                     $out = $structure['dictionary'][$property->value];
+                    $out = core_special_chars($out);
                     break;
 
                 case 'url':
@@ -740,6 +884,7 @@ function nvweb_properties_render($property, $vars)
                 case 'name':
                     nvweb_menu_load_dictionary();
                     $out = $structure['dictionary'][$value[$position]];
+                    $out = core_special_chars($out);
                     break;
 
                 case 'url':
@@ -783,6 +928,7 @@ function nvweb_properties_render($property, $vars)
                     $item = new item();
                     $item->load($property->value);
                     $out = $item->dictionary[$current['lang']]['title'];
+                    $out = core_special_chars($out);
                     break;
 
                 case 'url':

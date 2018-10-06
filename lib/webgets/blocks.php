@@ -17,7 +17,9 @@ function nvweb_blocks($vars=array())
     $access = array();
     $access[] = 0;
     if(empty($current['webuser'])) // 1: only signed in users, 2: only NON signed in users, 3: selected web user groups only
+    {
         $access[] = 2;
+    }
     else
     {
         $access[] = 1;
@@ -26,7 +28,9 @@ function nvweb_blocks($vars=array())
 
     // blocks type cache
     if(empty($webgets[$webget]['block_types']))
+    {
         $webgets[$webget]['block_types'] = block::types();
+    }
 
 	$block_types = $webgets[$webget]['block_types'];
 
@@ -42,17 +46,23 @@ function nvweb_blocks($vars=array())
         // how must we process this block type
         $order_mode = @$block_types[$bti]['order'];
         if(empty($order_mode) || $order_mode=='theme')
+        {
             $order_mode = @$vars['mode'];
+        }
     }
 
     // how many blocks of this type we have to show
     $howmany = @intval($block_types[$bti]['maximum']);
     if(empty($howmany) || ($howmany > intval(@$vars['number']) && !empty($vars['number'])))
-		$howmany = intval(@$vars['number']) + 0;
+    {
+        $howmany = intval(@$vars['number']) + 0;
+    }
 
     // which zone of the block we have to return
     if(empty($vars['zone']))
+    {
         $vars['zone'] = 'block';
+    }
 
     $categories = array();
     if(!empty($vars['categories']))
@@ -62,9 +72,13 @@ function nvweb_blocks($vars=array())
     }
 
     if(isset($current['object']->category))
+    {
         $categories[] = $current['object']->category;
+    }
     else
+    {
         $categories[] = $current['category'];
+    }
 
     $blocks = array();
 
@@ -218,7 +232,10 @@ function nvweb_blocks($vars=array())
 			// fixed position rows
     		foreach($fixed_rows as $fr)
 			{
-				if(!nvweb_block_enabled($fr)) continue;
+				if(!nvweb_block_enabled($fr))
+                {
+                    continue;
+                }
                 $blocks[$fr->position] = $fr->id;
 			}
 
@@ -226,7 +243,10 @@ function nvweb_blocks($vars=array())
 			$pos = 0;
 			foreach($random_rows as $rr)
 			{
-				if(!nvweb_block_enabled($rr)) continue;
+				if(!nvweb_block_enabled($rr))
+                {
+                    continue;
+                }
 				
 				// find next free position
 				$free = false;
@@ -234,7 +254,9 @@ function nvweb_blocks($vars=array())
 				{
 					$free = empty($blocks[$pos]);
 					if(!$free)
-						$pos++;
+                    {
+                        $pos++;
+                    }
 				}
                 $blocks[$pos] = $rr->id;
 			}
@@ -251,7 +273,10 @@ function nvweb_blocks($vars=array())
 
     foreach($blocks as $id)
     {
-        if($howmany > 0 && $shown >= $howmany) break;
+        if($howmany > 0 && $shown >= $howmany)
+        {
+            break;
+        }
 
         $block = new block();
         $block->load($id);
@@ -281,7 +306,11 @@ function nvweb_blocks($vars=array())
                 break;
 
             case 'title':
-                $out.= '<span class="block-'.$vars['type'].'-title" zone="title" ng-block-id="'.$block->id.'">'.$block->dictionary[$current['lang']]['title'].'</span>';
+                $title = $block->dictionary[$current['lang']]['title'];
+                $title = core_special_chars($title);
+                $out.= '<span class="block-'.$vars['type'].'-title" zone="title" ng-block-id="'.$block->id.'">'.
+                    $title.
+                    '</span>';
                 break;
 
             case 'content':
@@ -313,7 +342,9 @@ function nvweb_blocks($vars=array())
 
         // the block requested at a CERTAIN POSITION was this, we've finished
         if(isset($vars['position']) && $vars['position']==$position)
+        {
             break;
+        }
 
         $shown++;
         $position++;
@@ -369,7 +400,9 @@ function nvweb_blocks_init()
                 $theme_translation = $theme->t($code);
 
                 if(!empty($theme_translation) && $theme_translation!=$code)
+                {
                     $webgets[$webget]['translations'][$code] = $theme_translation;
+                }
             }
         }
     }
@@ -388,7 +421,9 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
         $btype = (array)$btype;
 
 		if($btype['title']==$type || $btype['code']==$type)
+        {
             $type  = $btype;
+        }
 	}
 	
 	$lang = $current['lang'];
@@ -399,36 +434,73 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
     $border = true;
     $opacity = '';
 
-	if(!empty($type['width']))      $width = $type['width'];
-	if(!empty($type['height']))     $height = $type['height'];
+	if(!empty($type['width']))
+    {
+        $width = $type['width'];
+    }
+
+	if(!empty($type['height']))
+    {
+        $height = $type['height'];
+    }
 
     // $vars sizes have preference over block type  ($vars is used in nv lists)
-    if(!empty($vars['width']))      $width = $vars['width'];
-    if(!empty($vars['height']))     $height = $vars['height'];
-    if(!empty($vars['border']))     $border = $vars['border'];
-    if(!empty($vars['opacity']))    $opacity = '&opacity='.$vars['opacity'];
+    if(!empty($vars['width']))
+    {
+        $width = $vars['width'];
+    }
 
-    if(!empty($width))  $sizes.= ' width="'.$width.'" ';
-	if(!empty($height)) $sizes.= ' height="'.$height.'" ';
+    if(!empty($vars['height']))
+    {
+	    $height = $vars['height'];
+    }
+
+    if(!empty($vars['border']))
+    {
+        $border = $vars['border'];
+    }
+
+    if(!empty($vars['opacity']))
+    {
+        $opacity = '&opacity='.$vars['opacity'];
+    }
+
+    if(!empty($width))
+    {
+        $sizes.= ' width="'.$width.'" ';
+    }
+
+	if(!empty($height))
+    {
+        $sizes.= ' height="'.$height.'" ';
+    }
 	
 	switch($trigger['trigger-type'][$lang])
 	{
 		case 'image':
 		    if($vars['return'] == 'url')
-		        return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity;
+            {
+                return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity;
+            }
             else
-			    $trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'" '.$sizes.' />';
+            {
+                $trigger_html = '<img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-image'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'" '.$sizes.' />';
+            }
 			break;
 			
 		case 'rollover':
             if($vars['return'] == 'url')
+            {
                 return NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity;
+            }
             else
-			    $trigger_html = '
+            {
+                $trigger_html = '
                     <img src="'.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'"
                          '.$sizes.'
                          onmouseover="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover']['active-'.$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'\';"
                          onmouseout="this.src=\''.NVWEB_ABSOLUTE.'/object?type=image&id='.$trigger['trigger-rollover'][$lang].'&width='.$width.'&height='.$height.'&border='.$border.$opacity.'\';" />';
+            }
 			break;
 			
 		case 'flash':
@@ -497,16 +569,23 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
                 // icons, by the moment only compatible with Font Awesome
                 $icon = '';
                 if(!empty($tl['icon'][$key]))
+                {
                     $icon = '<i class="fa '.$tl['icon'][$key].'"></i>';
+                }
 
                 if(!empty($title) && !empty($icon))
+                {
                     $icon.= " ";
+                }
 
+                $title = core_special_chars($title);
                 $trigger_html[] = $prefix.'<a href="'.$link.'"'.$new_window.'>'.$icon.$title.'</a>'.$suffix;
             }
             $glue = '';
             if(!empty($vars['separator']))
+            {
                 $glue = $vars['separator'];
+            }
             $trigger_html = implode($glue, $trigger_html);
 
             if(!empty($vars['wrapper']))    // "ul", for example
@@ -525,7 +604,9 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
             break;
 
         case 'title':
-            $trigger_html = $block->dictionary[$current['lang']]['title'];
+            $title = $block->dictionary[$current['lang']]['title'];
+            $title = core_special_chars($title);
+            $trigger_html = $title;
             break;
 
 		default:
@@ -534,7 +615,9 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 	}
 
     if($zone=='content' || $zone=='trigger')
+    {
         return $trigger_html;
+    }
 
     $action = nvweb_blocks_render_action($action, $trigger_html, $lang);
 
@@ -577,7 +660,9 @@ function nvweb_blocks_render_action($action, $trigger_html, $lang, $return_url=f
     }
 
     if($return_url)
+    {
         return $url;
+    }
 
     return $action;
 }
@@ -592,10 +677,14 @@ function nvweb_blocks_render_poll($object)
     nvweb_blocks_init();
 
     if($object->class != 'poll')
+    {
         return;
+    }
 
     if(!isset($session['polls'][$object->id]))
+    {
         $session['polls'][$object->id] = false;
+    }
 
     if(($_GET['poll_vote']==$object->id && !empty($_POST['vote'])))
     {
@@ -605,7 +694,9 @@ function nvweb_blocks_render_poll($object)
             foreach($object->trigger[$current['lang']] as $i => $answer)
             {
                 if($answer['code'] == $_POST['vote'])
+                {
                     $object->trigger[$current['lang']][$i]['votes'] = $object->trigger[$current['lang']][$i]['votes'] + 1;
+                }
             }
             $object->save();
             $session['polls'][$object->id] = true;
@@ -782,13 +873,17 @@ function nvweb_block_enabled($object)
             if(!empty($elements['selection']))
             {
                 if(!in_array($current['id'], $elements['selection']))
+                {
                     $enabled = false;
+                }
             }
 
             if(!empty($elements['exclusions']))
             {
                 if(in_array($current['id'], $elements['exclusions']))
+                {
                     $enabled = false;
+                }
             }
         }
     }
