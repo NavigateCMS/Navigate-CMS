@@ -37,12 +37,13 @@ function nvweb_liveedit_render($vars)
 
         case 'structure':
             // load the first item
-            $DB->query('	SELECT id 
-								  FROM nv_items
-								 WHERE category = '.intval($current['category']).'
-								   AND permission < 2
-								   AND website = '.intval($website->id).'
-						   ');
+            $DB->query('
+                SELECT id 
+				FROM nv_items
+				WHERE category = '.intval($current['category']).'
+				  AND permission < 2
+				  AND website = '.intval($website->id).'
+			');
 
             $rs = $DB->first();
 

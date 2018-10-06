@@ -169,12 +169,17 @@ class item
 		
 		foreach($_REQUEST as $key => $value)
 		{
-			if(empty($value)) continue;
+			if(empty($value))
+			{
+			    continue;
+            }
 			
 			foreach($fields as $field)
 			{				
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                {
 					$this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                }
 			}
 
 			if(substr($key, 0, strlen('path-'))=='path-')

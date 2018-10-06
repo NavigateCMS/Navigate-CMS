@@ -46,13 +46,17 @@ function nvweb_sitemap($vars=array())
             if(is_array($data))
             {
                 foreach($data as $item)
+                {
                     $structure_paths[$item->position.'-'.$item->object_id.'-'.$item->lang] = $item->path;
+                }
             }
 
             foreach($structure_paths as $key => $value)
             {
                 if(strpos($value, 'http')===false)
+                {
                     $value = NVWEB_ABSOLUTE.$value;
+                }
 
                 $out[] = '  <url>';
                 $out[] = '      <loc>'.nvweb_sitemap_escape_xml($value).'</loc>';
@@ -83,7 +87,9 @@ function nvweb_sitemap($vars=array())
             if(is_array($data))
             {
                 foreach($data as $item)
+                {
                     $item_paths[$item->position.'-'.$item->object_id.'-'.$item->lang] = array($item->path, $item->date_modified);
+                }
             }
 
             foreach($item_paths as $key => $value)

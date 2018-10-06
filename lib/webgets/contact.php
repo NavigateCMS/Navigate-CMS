@@ -53,7 +53,9 @@ function nvweb_contact($vars=array())
 			{
 				$theme_translation = $theme->t($code);
 				if(!empty($theme_translation) && $code!=$theme_translation)
-					$webgets[$webget]['translations'][$code] = $theme_translation;
+                {
+                    $webgets[$webget]['translations'][$code] = $theme_translation;
+                }
 			}
 		}
 	}
@@ -75,19 +77,25 @@ function nvweb_contact($vars=array())
                     $field_name = trim($field_name);
                     $field_value = trim($field_value);
                     if($_POST[$field_name]!=$field_value)
+                    {
                         return;
+                    }
                 }
 
                 // try to check if this send request really comes from the website and not from a spambot
                 if( parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain &&
                     parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->domain )
+                {
                     return;
+                }
 
                 // prepare fields and labels
                 $fields = explode(',', @$vars['fields']);
                 $labels = explode(',', @$vars['labels']);
                 if(empty($labels))
+                {
                     $labels = $fields;
+                }
 
                 $labels = array_map(
                     function($key)
@@ -100,9 +108,13 @@ function nvweb_contact($vars=array())
                         $tmp = $theme->t($key);
 
                         if(!empty($tmp))
+                        {
                             return $tmp;
+                        }
                         else
+                        {
                             return $webgets['contact']['translations'][$key];
+                        }
                     },
                     $labels
                 );
@@ -124,11 +136,15 @@ function nvweb_contact($vars=array())
                         $field = trim($field);
                         $value = trim($_POST[$field]);
                         if(empty($value))
+                        {
                             $errors[] = $fields[$field];
+                        }
                     }
 
                     if(!empty($errors))
+                    {
                         return nvweb_contact_notify($vars, true, $webgets[$webget]['translations']['fields_blank'].' ('.implode(", ", $errors).')');
+                    }
                 }
 
                 // create e-mail message and send it
@@ -149,12 +165,16 @@ function nvweb_contact($vars=array())
 
                 $subject = $vars['subject'];
                 if(!empty($subject))
+                {
                     $subject = ' | '.$theme->t($subject);
+                }
                 $subject = $website->name.$subject;
 
                 $recipients = $website->contact_emails;
                 if(!empty($vars['recipients']))
+                {
                     $recipients = $vars['recipients'];
+                }
 
                 $event_messages = $events->trigger(
                     'contact',
@@ -174,7 +194,9 @@ function nvweb_contact($vars=array())
                     foreach($event_messages as $module => $result)
                     {
                         if(isset($result['error']) && !empty($result['error']))
+                        {
                             $out[] = $result['error'];
+                        }
                     }
 
                     if(!empty($out))
@@ -192,9 +214,13 @@ function nvweb_contact($vars=array())
                     {
                         $confirmation_email = '';
                         if($vars['receipt_confirmation_email'] == 'webuser')
+                        {
                             $confirmation_email = $webuser->email;
+                        }
                         else
+                        {
                             $confirmation_email = $_POST[$vars['receipt_confirmation_email']];
+                        }
 
                         if(!empty($confirmation_email))
                         {
@@ -221,7 +247,9 @@ function nvweb_contact($vars=array())
                     $out = nvweb_contact_notify($vars, false, $webgets[$webget]['translations']['contact_request_sent']);
                 }
                 else
+                {
                     $out = nvweb_contact_notify($vars, true, $webgets[$webget]['translations']['contact_request_failed']);
+                }
             }
 
     }
@@ -239,9 +267,13 @@ function nvweb_contact_notify($vars, $is_error, $message)
     {
         case 'inline':
             if($is_error)
+            {
                 $out = '<div class="nvweb-contact-form-error">'.$message.'</div>';
+            }
             else
+            {
                 $out = '<div class="nvweb-contact-form-success">'.$message.'</div>';
+            }
             break;
 
         case 'alert':
@@ -258,9 +290,13 @@ function nvweb_contact_notify($vars, $is_error, $message)
             {
                 // if not empty, it's a javascript function call
                 if($is_error && !empty($vars['error_callback']))
+                {
                     nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                }
                 else
+                {
                     nvweb_after_body('js', $vars['notify'].'("'.$message.'");');
+                }
             }
             break;
     }
@@ -293,9 +329,18 @@ function nvweb_contact_generate($fields)
     $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.contact.text_color" AND website = '.intval($website->id), 'id DESC');
     $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.contact.titles_color" AND website = '.intval($website->id), 'id DESC');
 
-    if(!empty($background_color_db))    $background_color = str_replace('"', '', $background_color_db);
-    if(!empty($text_color_db))          $text_color = str_replace('"', '', $text_color_db);
-    if(!empty($title_color_db))         $title_color = str_replace('"', '', $title_color_db);
+    if(!empty($background_color_db))
+    {
+        $background_color = str_replace('"', '', $background_color_db);
+    }
+    if(!empty($text_color_db))
+    {
+        $text_color = str_replace('"', '', $text_color_db);
+    }
+    if(!empty($title_color_db))
+    {
+        $title_color = str_replace('"', '', $title_color_db);
+    }
 
     $out[] = '<div style=" background: '.$background_color.'; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
 
@@ -306,7 +351,9 @@ function nvweb_contact_generate($fields)
             $field = trim($field); // remove unwanted spaces
 
            if(substr($field, -2, 2)=='[]')
+           {
                $field = substr($field, 0, -2);
+           }
 
             if(is_array($_REQUEST[$field]))
             {
@@ -315,10 +362,14 @@ function nvweb_contact_generate($fields)
                 $value = nl2br($value);
             }
             else
+            {
                 $value = nl2br($_REQUEST[$field]);
+            }
 
 	        if(empty($value) && isset($_FILES[$field]))
-		        $value = $_FILES[$field]['name'];
+            {
+                $value = $_FILES[$field]['name'];
+            }
 
             $out[] = '<div style="margin: 25px 0px 10px 0px;">';
             $out[] = '    <div style="color: '.$title_color.'; font-size: 17px; font-weight: bold; font-family: Verdana;">'.$label.'</div>';
@@ -329,7 +380,9 @@ function nvweb_contact_generate($fields)
         }
     }
     else
+    {
         $out[] = $fields;
+    }
 
     $out[] = '</div>';
 

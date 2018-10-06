@@ -20,15 +20,21 @@ function nvweb_forms($vars=array())
 
             $default = $vars['default'];
             if(isset($_REQUEST[$vars['field_name']]) && !empty($_REQUEST[$vars['field_name']]))
+            {
                 $default = $_REQUEST[$vars['field_name']];
+            }
 
             $out[] = '<select name="'.$vars['field_name'].'" id="'.$vars['field_id'].'" class="'.$vars['class'].'">';
             for($c=0; $c < count($country_codes); $c++)
             {
                 if( $country_codes[$c] == $default )
+                {
                     $out[] = '<option value="'.$country_codes[$c].'" selected>'.$country_names[$c].'</option>';
+                }
                 else
+                {
                     $out[] = '<option value="'.$country_codes[$c].'">'.$country_names[$c].'</option>';
+                }
             }
             $out[] = '</select>';
 
@@ -44,21 +50,29 @@ function nvweb_forms($vars=array())
 
             $default = $vars['default'];
             if(isset($_REQUEST[$vars['field_name']]) && !empty($_REQUEST[$vars['field_name']]))
+            {
                 $default = $_REQUEST[$vars['field_name']];
+            }
 
             for($r = 0; $r < count($regions); $r++)
             {
                 if( $regions[$r]->region_id  == $default )
+                {
                     $out[] = '<option data-country="'.$regions[$r]->country_code.'" value="'.$regions[$r]->region_id.'" selected>'.$regions[$r]->name.'</option>';
+                }
                 else
+                {
                     $out[] = '<option data-country="'.$regions[$r]->country_code.'" value="'.$regions[$r]->region_id.'">'.$regions[$r]->name.'</option>';
+                }
             }
             $out[] = '</select>';
 
             if(!empty($vars['country_field']))
             {
                 if(strpos($vars['nvweb_html'], 'jquery')===false)
+                {
                     nvweb_after_body('html', '<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>');
+                }
 
                 nvweb_after_body('js', '
                     $("select[name='.$vars['country_field'].']").on("change", function(event, keep_selected)
