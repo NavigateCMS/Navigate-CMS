@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2018. All rights reserved.                 |
-// | Last modified 02/12/2017                                               |
+// | Last modified 2018/10/08                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -96,14 +96,18 @@ if(empty($_SESSION['APP_USER#'.APP_UNIQUE]) || isset($_GET['logout']))
     }
 
     if(isset($_GET['logout']) && @!empty($user->id))
+    {
         users_log::action(0, $user->id, 'logout', $user->username);
+    }
 
 	core_session_remove();
 	
 	session_start();
 	
 	if($_SERVER['QUERY_STRING']!='logout')
-		$_SESSION["login_request_uri"] = $_SERVER['QUERY_STRING'];
+    {
+        $_SESSION["login_request_uri"] = $_SERVER['QUERY_STRING'];
+    }
 	
 	session_write_close();
 	
@@ -116,7 +120,9 @@ else
 	$user->load($_SESSION['APP_USER#'.APP_UNIQUE]);
 
 	if(empty($user->id))
-		header('location: '.NAVIGATE_MAIN.'?logout');
+    {
+        header('location: '.NAVIGATE_MAIN.'?logout');
+    }
 }
 
 $current_version = update::latest_installed();

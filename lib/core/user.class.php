@@ -152,10 +152,19 @@ class user
 	 */
     public function set_cookie()
 	{
-		$this->cookie_hash = sha1(rand(1, 9999999));
+	    if(function_exists('random_bytes'))
+        {
+            $this->cookie_hash = random_bytes(128);
+        }
+        else
+        {
+            $this->cookie_hash = sha1(rand(1, 9999999)) . sha1(rand(1, 9999999));
+        }
+
 		$this->update();
 
-        setcookie('navigate-user', $this->cookie_hash, time()+60*60*24*7, '/'); // 7 days
+        setcookie('navigate-remember-user-id', sha1($this->id), time()+60*60*24*7, '/'); // 7 days
+        setcookie('navigate-remember-user-token', $this->cookie_hash, time()+60*60*24*7, '/'); // 7 days
 	}
 
 	/**
@@ -165,7 +174,8 @@ class user
     {
         $this->cookie_hash = '';
 		$this->update();
-		setcookie('navigate-user', NULL);
+		setcookie('navigate-remember-user-id', NULL);
+		setcookie('navigate-remember-user-token', NULL);
     }
 
 	/**
@@ -175,12 +185,14 @@ class user
 	 */
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
-		  return $this->update();
+        {
+            return $this->update();
+        }
 		else
-		  return $this->insert();
+        {
+            return $this->insert();
+        }
 	}	
 
 	/**

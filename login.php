@@ -23,19 +23,24 @@ if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 $user = new user();
 $website = new website(); // only needed for the users log
 
-if(!empty($_COOKIE['navigate-user']))
+if(!empty($_COOKIE['navigate-remember-user-token']) && !empty($_COOKIE['navigate-remember-user-id']))
 {
     $nuid = $DB->query_single(
         'id',
         'nv_users',
-        'cookie_hash = :cookie_hash',
+        'cookie_hash = :cookie_hash AND SHA1(id) = :id',
         NULL,
-        array(':cookie_hash' => $_COOKIE['navigate-user'])
+        array(
+            ':cookie_hash' => $_COOKIE['navigate-remember-user-token'],
+            ':id' => $_COOKIE['navigate-remember-user-id']
+        )
     );
 
+    // remember token is accepted
     if(!empty($nuid))
     {
         $user->load($nuid);
+        $user->set_cookie(); // refresh remember me token
         $_SESSION['APP_USER#'.APP_UNIQUE] = $nuid;
 	    session_write_close();
 	    header('location: '.NAVIGATE_MAIN);
@@ -48,16 +53,22 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 	$error = !$user->authenticate($_POST['login-username'], $_POST['login-password']);
 
 	if(empty($error) && $user->blocked == '1')
-		$error = true;
+    {
+        $error = true;
+    }
 
 	if(!$error)
 	{
 		$_SESSION['APP_USER#'.APP_UNIQUE] = $user->id;
 
         if($_REQUEST['login-remember']=='1')
+        {
             $user->set_cookie();
+        }
         else
+        {
             $user->remove_cookie();
+        }
 
 		$login_request_uri = $_SESSION["login_request_uri"];
 
@@ -243,7 +254,7 @@ $current_version = update::latest_installed();
                 <?php echo t(190, 'Ok');?>
             </button>
         </div>
-    </div>
+    </form>
 </div>
 
 </body>
@@ -285,7 +296,7 @@ $(document).ready(function()
                     //$('#navigate-lost-password-dialog').dialog('close');
                     $('#navigate-lost-password-dialog').html('');
                     $('#navigate-lost-password-dialog').append('<div style="text-align: center; margin: 16px; "><i class="fa fa-5x fa-envelope" style="color: #BBD6F5"></i><i style="position: absolute; margin-top: 28px; margin-left: -12px; color: #2E476E;" class="fa fa-2x fa-check"></i></div>');
-                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(454, 'An e-mail with a confirmation link has been sent to your e-mail account.', false, true); ?></div>');
+                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(454, "An e-mail with a confirmation link has been sent to your e-mail account.", false, true); ?></div>');
                 }
                 else if(data=='not_found')
                 {
@@ -357,7 +368,6 @@ $(document).ready(function()
                     $(document).ready(function()
                     {
                         $('#login-username').parent().remove();
-                        $('#login-button a').remove();
                         $('#login-remember').parent().remove();
                         $('#login-button').remove();
                         $('#navigate-lost-password-dialog').remove();
