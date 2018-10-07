@@ -78,14 +78,13 @@ function pquotes($text)
  */
 function core_run()
 {
-	global $layout;
     global $menu_layout;
 
 	$content = "";
 	$fid = 'dashboard'; // default function
 
 	if(isset($_REQUEST['fid']))
-		$fid = $_REQUEST['fid'];
+		$fid = core_special_chars($_REQUEST['fid']);
 
 	$f = core_load_function($fid);
 
@@ -642,7 +641,7 @@ function core_remove_nvtags($text)
  */
 function core_special_chars($text)
 {
-    $out = htmlspecialchars($text, ENT_COMPAT, 'UTF-8', false);
+    $out = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
     return $out;
 }
 
