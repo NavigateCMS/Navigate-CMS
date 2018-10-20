@@ -831,7 +831,7 @@ function nvweb_source_url($type, $id, $lang='')
 
     if($type=='theme')
     {
-        // find the first PUBLIC & PUBLISHED article / element / structure category
+        // find the first PUBLIC & PUBLISHED product / element / structure category
         // that is using the template type given in $id
         $template_type = $id;
         $id = '';
@@ -936,7 +936,9 @@ function nvweb_source_url($type, $id, $lang='')
 	if(empty($url))
 	{
 		if($type=='item')
-			$url = '/node/' . $id;
+        {
+            $url = '/node/' . $id;
+        }
 	}
 	
     $url = nvweb_prepare_link($url);

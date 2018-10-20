@@ -1037,29 +1037,44 @@ function nvweb_template_tweaks($html)
 
 	// tweak 1: try to make absolute all image, css and script paths not starting by http	
 	if(!empty($website->theme))
-		$website_absolute_path = NAVIGATE_URL.'/themes/'.$website->theme;
+    {
+        $website_absolute_path = NAVIGATE_URL.'/themes/'.$website->theme;
+    }
 	else
-		$website_absolute_path = $website->absolute_path(false);
+    {
+        $website_absolute_path = $website->absolute_path(false);
+    }
 
     // stylesheets
     $replacements = array();
     $tags = nvweb_tags_extract($html, 'link', NULL, true, 'UTF-8');
 	foreach($tags as $tag)
 	{		
-		if(!isset($tag['attributes']['href'])) continue;	
+		if(!isset($tag['attributes']['href']))
+        {
+            continue;
+        }
+
 		if(substr($tag['attributes']['href'], 0, 7)!='http://' &&
 		   substr($tag['attributes']['href'], 0, 8)!='https://')
 		{
             // treat "//" paths (without http or https)
             if(substr($tag['attributes']['href'], 0, 2)=='//')
+            {
                 $src = $website->protocol.substr($tag['attributes']['href'], 2);
+            }
             else
-			    $src = $website_absolute_path.'/'.$tag['attributes']['href'];
+            {
+                $src = $website_absolute_path.'/'.$tag['attributes']['href'];
+            }
 
 			$tag['new'] = '<link href="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
 			{
-				if($name!='href') $tag['new'] .= $name.'="'.$value.'" ';
+				if($name!='href')
+                {
+                    $tag['new'] .= $name.'="'.$value.'" ';
+                }
 			}
 			$tag['new'] .= '/>';
 			
@@ -1077,14 +1092,21 @@ function nvweb_template_tweaks($html)
 		   substr($tag['attributes']['src'], 0, 8)!='https://')
 		{
             if(substr($tag['attributes']['src'], 0, 2)=='//')
+            {
                 $src = $website->protocol.substr($tag['attributes']['src'], 2);
+            }
             else
+            {
                 $src = $website_absolute_path.'/'.$tag['attributes']['src'];
+            }
 
 			$tag['new'] = '<script src="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
 			{
-				if($name!='src') $tag['new'] .= $name.'="'.$value.'" ';
+				if($name!='src')
+                {
+                    $tag['new'] .= $name.'="'.$value.'" ';
+                }
 			}
 			$tag['new'] .= '></script>';
 			
@@ -1109,15 +1131,21 @@ function nvweb_template_tweaks($html)
 		   substr($tag['attributes']['poster'], 0, 8)!='https://')
 		{
             if(substr($tag['attributes']['poster'], 0, 2)=='//')
+            {
                 $src = $website->protocol.substr($tag['attributes']['poster'], 2);
+            }
             else
+            {
                 $src = $website_absolute_path.'/'.$tag['attributes']['poster'];
+            }
 
 			$tag['new'] = '<video poster="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
 			{
 				if($name!='poster')
-					$tag['new'] .= $name.'="'.$value.'" ';
+                {
+                    $tag['new'] .= $name.'="'.$value.'" ';
+                }
 			}
 			$tag['new'] .= '>'.$tag['contents'].'</video>';
 
@@ -1147,15 +1175,21 @@ function nvweb_template_tweaks($html)
 			   substr($source['attributes']['src'], 0, 8)!='https://')
 			{
 	            if(substr($source['attributes']['src'], 0, 2)=='//')
-	                $src = $website->protocol.substr($source['attributes']['src'], 2);
+                {
+                    $src = $website->protocol.substr($source['attributes']['src'], 2);
+                }
 	            else
-	                $src = $website_absolute_path.'/'.$source['attributes']['src'];
+                {
+                    $src = $website_absolute_path.'/'.$source['attributes']['src'];
+                }
 
 				$source['new'] = '<source src="'.$src.'" ';
 				foreach($source['attributes'] as $name => $value)
 				{
 					if($name!='poster')
-						$source['new'] .= $name.'="'.$value.'" ';
+                    {
+                        $source['new'] .= $name.'="'.$value.'" ';
+                    }
 				}
 				$source['new'] .= '>'.$source['contents'].'</source>';
 
@@ -1191,11 +1225,15 @@ function nvweb_template_tweaks($html)
 		            substr($src[0], 0, 8)!='https://' &&
                     substr($src[0], 0, 2)!='//')
 				{
-	                $src[0] = $website_absolute_path.'/'.$src[0];
+                    {
+                        $src[0] = $website_absolute_path.'/'.$src[0];
+                    }
 				}
 
                 if(substr($src[0], 0, 2)=='//')
+                {
                     $src[0] = $website->protocol.substr($src[0], 2);
+                }
 
                 $srcset_new[] = implode(" ", $src);
 
@@ -1204,7 +1242,9 @@ function nvweb_template_tweaks($html)
 
 			$tag['new'] = '<img ';
 			foreach($tag['attributes'] as $name => $value)
-				$tag['new'] .= $name.'="'.$value.'" ';
+            {
+                $tag['new'] .= $name.'="'.$value.'" ';
+            }
 			$tag['new'] .= '/>';
 
 			//$html = str_replace($tag['full_tag'], $tag['new'], $html);
@@ -1218,14 +1258,21 @@ function nvweb_template_tweaks($html)
 		   substr($tag['attributes']['src'], 0, 5)!='data:')
 		{
             if(substr($tag['attributes']['src'], 0, 2)=='//')
+            {
                 $src = $website->protocol.substr($tag['attributes']['src'], 2);
+            }
             else
-			    $src = $website_absolute_path.'/'.$tag['attributes']['src'];
+            {
+                $src = $website_absolute_path.'/'.$tag['attributes']['src'];
+            }
 			
 			$tag['new'] = '<img src="'.$src.'" ';
 			foreach($tag['attributes'] as $name => $value)
 			{
-				if($name!='src') $tag['new'] .= $name.'="'.$value.'" ';
+				if($name!='src')
+                {
+                    $tag['new'] .= $name.'="'.$value.'" ';
+                }
 			}			
 			$tag['new'] .= '/>';
 			
@@ -1252,7 +1299,9 @@ function nvweb_template_tweaks($html)
 		{
             $preload = 'metadata';
             if(!empty($tag['attributes']['preload']))
+            {
                 $preload = $tag['attributes']['preload'];
+            }
 
 			$content = array();
 			$content[] = '<video controls="controls" preload="'.$preload.'">';
@@ -1268,7 +1317,9 @@ function nvweb_template_tweaks($html)
 		{
             $preload = 'metadata';
             if(!empty($tag['attributes']['preload']))
+            {
                 $preload = $tag['attributes']['preload'];
+            }
 
 			$content = array();
 			$content[] = '<audio controls="controls" preload="'.$preload.'">';
@@ -1301,14 +1352,20 @@ function nvweb_template_tweaks($html)
 		foreach($tag['attributes'] as $name => $value)
 		{
 			if($name!='src')
+            {
                 $tag['new'] .= $name.'="'.$value.'" ';
+            }
 
 			// width attribute, the image is retrieved from a dynamic source, the width is not expressed in percentage, the width is not already given in the url parameters
 			if($name=='width' && strpos($src, '?')!==false && strpos($value, "%")===false && strpos($src, "&width=")===false)
-				$src .= '&width='.$value;
+            {
+                $src .= '&width='.$value;
+            }
 				
 			if($name=='height' && strpos($src, '?')!==false && strpos($value, "%")===false && strpos($src, "&height=")===false)
-				$src .= '&height='.$value;	
+            {
+                $src .= '&height='.$value;
+            }
 		}
 
 		$tag['new'] = '<img src="'.$src.'" '.$tag['new'].'/>';
@@ -1337,36 +1394,51 @@ function nvweb_template_tweaks($html)
 
 /*
 	convert nv:// paths to real links
-	right now there are two possibilities (ID is a numeric value)
-	nv://element/ID (or elements, or item)
-	nv://structure/ID   (or category)
+	input can be a full html document to find and replace tags in links: <a href="nv://element/123">Title</a>
+    or just the nv path: nv://element/123
+    paths can also contain a query string: <a href='nv://element/123?action=contact&reason=help'>Title</a>
 */
-function nvweb_template_convert_nv_paths($html)
+function nvweb_template_convert_nv_paths($in)
 {
-    // find all urls
-	// attempt to retrieve urls including ?parameters
-    // preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9]+)([?]*)(.*)[\/\"\/']+/i", $html, $matches);
-	preg_match_all("/nv:\/\/(element|elements|structure|category)\/([0-9]+)+/i", $html, $matches);
+    $out = $in;
+    $matches = array();
+
+    if(strpos($in, 'nv://')===0)
+    {
+        // input contains only the nv path (no quotes), use a specific regex
+        preg_match_all("/nv:\/\/(element|elements|product|structure|category)\/([0-9]+)+([?].*)*/i", $in, $matches);
+    }
+    else
+    {
+        // find all urls in input, including start & end single/double quotes
+        preg_match_all("/[\\\"\']nv:\/\/(element|elements|product|structure|category)\/([0-9]+)+([?].*)*[\\\"\']/i", $in, $matches);
+    }
 
 	if(!empty($matches) && !empty($matches[0]))
 	{
-		$matches = $matches[0];
-		foreach($matches as $match)
-		{
-			$parts = explode('/', str_replace('nv://', '', $match));
+        // $matches[0] => full list of nv urls detected, including the query string
+        // $matches[1] => codename of the objects found (element, structure, product...)
+        // $matches[2] => ID of the objects found
+        // $matches[3] => optional query string after the nv path
 
+		for($i=0; $i < count($matches[0]); $i++)
+		{
 			$url = "";
-			switch($parts[0])
+			switch($matches[1][$i])
 			{
 				case 'element':
 				case 'item':
 				case 'elements':
-					$url = nvweb_source_url("element", $parts[1]);
+					$url = nvweb_source_url("element", intval($matches[2][$i]));
+					break;
+
+                case 'product':
+					$url = nvweb_source_url("product", intval($matches[2][$i]));
 					break;
 				
 				case 'structure':
 				case 'category':
-					$url = nvweb_source_url("structure", $parts[1]);
+					$url = nvweb_source_url("structure", intval($matches[2][$i]));
 					break;
 				
 				default:
@@ -1375,23 +1447,13 @@ function nvweb_template_convert_nv_paths($html)
 
 			if(!empty($url))
             {
-                if(strpos($html, 'nv://')===0)
-                {
-                    $html = $url;
-                }
-                else
-                {
-                    $html = str_replace(
-                        array('"' . $match . '"', "'" . $match . "'"),
-                        array('"' . $url . '"', "'" . $url . "'"),
-                        $html
-                    );
-                }
+                $url = $url.$matches[3][$i]; // add existing query string, if any
+                $out = str_replace($matches[0][$i], $url, $out);
             }
 		}
 	}
 
-	return $html;
+	return $out;
 }
 
 function nvweb_template_oembed_parse($html)
