@@ -6,14 +6,18 @@ error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set("UTC");
 
 if(!empty($_POST['NAVIGATE_FOLDER']))
+{
     $_SESSION['NAVIGATE_FOLDER'] = $_POST['NAVIGATE_FOLDER'];
+}
 if(empty($_SESSION['NAVIGATE_FOLDER']))
+{
     $_SESSION['NAVIGATE_FOLDER'] = '/navigate';
+}
 
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.8.5');
+	define('APP_VERSION', '2.8.6');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -26,12 +30,16 @@ else
 	include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php');
 	include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/common.php');
     if(file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/lib/packages/themes/theme.class.php'))
-	    include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/lib/packages/themes/theme.class.php');
+    {
+        include_once(basename($_SESSION['NAVIGATE_FOLDER']).'/lib/packages/themes/theme.class.php');
+    }
     define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
 
 	// restore session values
 	if(!isset($_SESSION['NAVIGATE-SETUP']))
+    {
         $_SESSION = json_decode($session_values, true);
+    }
 	else if(!is_array($_SESSION['NAVIGATE-SETUP']))
 	{
 		$_SESSION['NAVIGATE-SETUP'] = unserialize($_SESSION['NAVIGATE-SETUP']);
@@ -60,7 +68,9 @@ global $theme;
 global $events;
 
 if(!empty($_REQUEST['process']))
+{
     process();
+}
 
 $lang = navigate_install_load_language();
 
@@ -446,7 +456,7 @@ function navigate_install_configuration()
 		'NAVIGATE_PARENT'	=> (empty($_REQUEST['NAVIGATE_PARENT']))? $navigate_parent_url : $_REQUEST['NAVIGATE_PARENT'],
 		'NAVIGATE_PATH'		=> (empty($_REQUEST['NAVIGATE_PATH']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'] : $_REQUEST['NAVIGATE_PATH'],
 		'NAVIGATE_FOLDER'	=> $_SESSION['NAVIGATE_FOLDER'],
-		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'].'/private' : $_REQUEST['NAVIGATE_PRIVATE'],
+		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'].'/private' :  $_REQUEST['NAVIGATE_PRIVATE'],
 		'NAVIGATE_MAIN'		=> (empty($_REQUEST['NAVIGATE_MAIN']))? 'navigate.php' : $_REQUEST['NAVIGATE_MAIN'],
 		
 		'PDO_HOSTNAME'		=> (empty($_REQUEST['PDO_HOSTNAME']))? 'localhost' : $_REQUEST['PDO_HOSTNAME'],		
@@ -467,7 +477,9 @@ function navigate_install_configuration()
 	);
 
     if(!file_exists('.'.$defaults['NAVIGATE_FOLDER'].'/cfg/globals.setup.php'))
+    {
         die('Setup files missing: cfg/globals.setup.php');
+    }
 
     if(!empty($_POST))
 	{
@@ -683,7 +695,8 @@ function navigate_install_configuration()
 	var host_databases = [];
 	$(window).load(function()
 	{
-		(function( $ ) {
+		(function( $ )
+            {
 				$.widget(
                     "ui.combobox",
                     {
@@ -775,9 +788,10 @@ function navigate_install_configuration()
                             this.element.show();
                             $.Widget.prototype.destroy.call( this );
                         }
-                    });
-			    }
-            )( jQuery );
+                   }
+                );
+            }
+        )( jQuery );
 		
 		verify_database();
 		
@@ -814,9 +828,13 @@ function navigate_install_configuration()
             if(!data.error)
             {
                 if(data.create_database_privilege)
+                {
                     $('#pdo_database_create_allowed').show();
+                }
                 else
+                {
                     $('#pdo_database_create_not_allowed').show();
+                }
 
                 $('#pdo_database_empty_warning').show();
 
@@ -916,23 +934,22 @@ function navigate_install_decompress()
 		$('.navigate-install-decompress-extraction').show();
 		
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=extract_zip',
-		  dataType: 'json',
-		  data: {},
-		  success: function(data)
-		  {
-			 if(data!=true)
-			 {
-	 			$('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
-			 }
-			 else
-			 {
-				$('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
-				chmod_files();
-			 }
-			 
-		  }
-		});		
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=extract_zip',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(data!=true)
+                {
+                    $('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
+                }
+                else
+                {
+                    $('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
+                    chmod_files();
+                }
+            }
+        });
 	}	
 	
 	
@@ -941,24 +958,23 @@ function navigate_install_decompress()
 		$('.navigate-install-decompress-permissions').show();
 		
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=chmod',
-		  dataType: 'json',
-		  data: {},
-		  success: function(data)
-		  {
-			 if(data!=true)
-			 {
-	 			$('.navigate-install-decompress-permissions').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
-                 $('input[type=submit]').show();
-			 }
-			 else
-			 {
-				$('.navigate-install-decompress-permissions').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
-			 	$('input[type=submit]').show();
-			 }
-			 
-		  }
-		});		
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=chmod',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(data!=true)
+                {
+                    $('.navigate-install-decompress-permissions').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
+                    $('input[type=submit]').show();
+                }
+                else
+                {
+                    $('.navigate-install-decompress-permissions').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
+                    $('input[type=submit]').show();
+                }
+            }
+        });
 	}	
 	</script>
 	<?php                			    
@@ -974,32 +990,45 @@ function navigate_install_decodesize( $bytes )
 function navigate_install_chmodr($path, $filemode) 
 {
     if (!is_dir($path))
+    {
         return chmod($path, $filemode);
+    }
 
     $dh = opendir($path);
-    while (($file = readdir($dh)) !== false) {
-        if($file != '.' && $file != '..') {
+    while (($file = readdir($dh)) !== false)
+    {
+        if($file != '.' && $file != '..')
+        {
             $fullpath = $path.'/'.$file;
             if(is_link($fullpath))
+            {
                 return FALSE;
+            }
             elseif(!is_dir($fullpath) && !chmod($fullpath, $filemode))
-                    return FALSE;
-            elseif(!navigate_install_chmodr($fullpath, $filemode))
+            {
                 return FALSE;
+            }
+            elseif(!navigate_install_chmodr($fullpath, $filemode))
+            {
+                return FALSE;
+            }
         }
     }
 
     closedir($dh);
 
     if(chmod($path, $filemode))
+    {
         return TRUE;
+    }
     else
+    {
         return FALSE;
+    }
 }
 
 function navigate_install_create_database()
 {	
-	global $DB;
 	global $lang;
 
 	?>
@@ -1051,23 +1080,23 @@ function navigate_install_create_database()
 	function database_create()
 	{
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=database_create',
-		  dataType: 'json',
-		  data: {},
-		  success: function(data)
-		  {
-			 if(!data || data.error)
-			 {
-	 			$('.navigate-install-database-create').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
-				$('input[type=submit]').next().show();
-			 }
-			 else
-			 {
-				$('.navigate-install-database-create').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
-				database_import();
-			 }
-		  }
-		});		
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=database_create',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(!data || data.error)
+                {
+                    $('.navigate-install-database-create').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
+                    $('input[type=submit]').next().show();
+                }
+                else
+                {
+                    $('.navigate-install-database-create').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
+                    database_import();
+                }
+            }
+        });
 	}
 	
 	function database_import()
@@ -1075,22 +1104,22 @@ function navigate_install_create_database()
 		$('.navigate-install-database-import').show();
 		
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=database_import',
-		  dataType: 'json',
-		  data: {},
-		  success: function(data)
-		  {
-			 if(!data || data.error)
-			 {
-	 			$('.navigate-install-database-import').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
-				$('input[type=submit]').next().show();
-			 }
-			 else
-			 {
-				$('.navigate-install-database-import').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
-				account_creation();
-			 }
-		  }
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=database_import',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(!data || data.error)
+                {
+                    $('.navigate-install-database-import').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
+                    $('input[type=submit]').next().show();
+                }
+                else
+                {
+                    $('.navigate-install-database-import').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
+                    account_creation();
+                }
+            }
 		});			
 	}
 	
@@ -1099,22 +1128,22 @@ function navigate_install_create_database()
 		$('.navigate-install-database-account').show();
 		
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=create_account',
-		  dataType: 'json',
-		  data: {},
-		  success: function(data)
-		  {
-			 if(!data || data.error)
-			 {
-	 			$('.navigate-install-database-account').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
-			 }
-			 else
-			 {
-				$('.navigate-install-database-account').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
-				install_default_theme();
-			 }
-		  }
-		});			
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=create_account',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(!data || data.error)
+                {
+                    $('.navigate-install-database-account').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
+                }
+                else
+                {
+                    $('.navigate-install-database-account').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
+                    install_default_theme();
+                }
+            }
+        });
 	}
 
     function install_default_theme()
@@ -1122,22 +1151,22 @@ function navigate_install_create_database()
 		$('.navigate-install-default-theme').show();
 
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=install_default_theme',
-		  dataType: 'json',
-		  data: {},
-		  success: function(data)
-		  {
-			 if(!data || data.error)
-			 {
-	 			$('.navigate-install-default-theme').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
-				$('input[type=submit]').next().show();
-			 }
-			 else
-			 {
-				$('.navigate-install-default-theme').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
-				$('input[type=submit]').show();
-			 }
-		  }
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=install_default_theme',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(!data || data.error)
+                {
+                    $('.navigate-install-default-theme').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
+                    $('input[type=submit]').next().show();
+                }
+                else
+                {
+                    $('.navigate-install-default-theme').find('div:first').removeClass().html('<input type="text" name="" value="'+data.ok+'" class="green" />');
+                    $('input[type=submit]').show();
+                }
+            }
 		});
 	}
 	</script>
@@ -1267,7 +1296,9 @@ function process()
 		case 'verify_zip':
 			sleep(1);
 			if(!file_exists('package.zip'))
-				die(json_encode($lang['missing_package']));
+            {
+                die(json_encode($lang['missing_package']));
+            }
 			else
 			{
 				$zip = new ZipArchive;
@@ -1287,7 +1318,10 @@ function process()
 			$npath = getcwd().NAVIGATE_FOLDER;
 			$npath = str_replace('\\', '/', $npath);
 
-			if(!file_exists($npath)) mkdir($npath);
+			if(!file_exists($npath))
+            {
+                mkdir($npath);
+            }
 			
 			if(file_exists($npath))
 			{
@@ -1312,10 +1346,14 @@ function process()
 			sleep(1);
 			// chmod the directories recursively
 			$npath = getcwd().NAVIGATE_FOLDER;
-			if(!navigate_install_chmodr($npath, 0755))
-				die(json_encode($lang['chmod_failed']));
+			if(!navigate_install_chmodr($npath, 0744))
+            {
+                die(json_encode($lang['chmod_failed']));
+            }
 			else
-				die(json_encode(true));
+            {
+                die(json_encode(true));
+            }
 			break;
 			
 		case 'verify_database':
@@ -1325,7 +1363,9 @@ function process()
 				{
                     $dsn = "mysql:host=".$_REQUEST['PDO_HOSTNAME'].";port=".$_REQUEST['PDO_PORT'].';charset=utf8mb4';
                     if($_REQUEST['PDO_DRIVER']=="mysql-socket")
+                    {
                         $dsn = "mysql:unix_socket=".$_REQUEST['PDO_SOCKET'].";charset=utf8mb4";
+                    }
 
 					$db_test = @new PDO($dsn, $_REQUEST['PDO_USERNAME'], $_REQUEST['PDO_PASSWORD']);
 					
@@ -1402,9 +1442,13 @@ function process()
 					if(PDO_DATABASE!='')
 					{
                         if(PDO_HOSTNAME!="")
+                        {
                             $dsn = "mysql:host=".PDO_HOSTNAME.";port=".PDO_PORT.";charset=utf8mb4";
+                        }
                         else
+                        {
                             $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8mb4";
+                        }
 
 						$db_test = new PDO($dsn, PDO_USERNAME, PDO_PASSWORD);
 						$db_test->exec('CREATE DATABASE IF NOT EXISTS `'.PDO_DATABASE.'` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;');
@@ -1412,9 +1456,13 @@ function process()
 					}
 				
 					if(!$DB->connect())
-						echo json_encode(array('error' => $DB->get_last_error()));				
+                    {
+                        echo json_encode(array('error' => $DB->get_last_error()));
+                    }
 					else
-						echo json_encode(array('ok' => $lang['database_created']));	
+                    {
+                        echo json_encode(array('ok' => $lang['database_created']));
+                    }
 				}
 			}	
 			else
@@ -1427,7 +1475,9 @@ function process()
 		case 'database_import':
 			$DB = new database();
 			if(!$DB->connect())
-				die(json_encode(array('error' => $DB->get_last_error())));		
+            {
+                die(json_encode(array('error' => $DB->get_last_error())));
+            }
 			try
 			{
 				$sql = file_get_contents('navigate.sql');
@@ -1438,10 +1488,21 @@ function process()
 				foreach($sql as $sqlline)
 				{	
 					$sqlline = trim($sqlline);
-					if(empty($sqlline)) continue;		
+
+					if(empty($sqlline))
+                    {
+                        continue;
+                    }
+
 					if(!@$DB->execute($sqlline))
-						$error = $DB->get_last_error();
-					if(!empty($error)) break;
+                    {
+                        $error = $DB->get_last_error();
+                    }
+
+                    if(!empty($error))
+                    {
+					    break;
+                    }
 				}
 			}
 			catch(Exception $e)
@@ -1449,10 +1510,14 @@ function process()
 				$error = $e->getMessage();	
 			}
 			
-			if(!empty($error) && false)
-				echo json_encode(array('error' => $error));
+			if(!empty($error))
+            {
+                echo json_encode(array('error' => $error));
+            }
 			else
-				echo json_encode(array('ok' => $lang['done']));
+            {
+                echo json_encode(array('ok' => $lang['done']));
+            }
 			exit;
 			break;
 			
@@ -1462,7 +1527,9 @@ function process()
 			{
 				$DB = new database();
 				if(!$DB->connect())
-					die(json_encode(array('error' => $DB->get_last_error())));	
+                {
+                    die(json_encode(array('error' => $DB->get_last_error())));
+                }
 					
 				$user = new user();
 				$user->id = 0;
@@ -1506,7 +1573,9 @@ function process()
 			{
 				$DB = new database();
 				if(!$DB->connect())
-					die(json_encode(array('error' => $DB->get_last_error())));
+                {
+                    die(json_encode(array('error' => $DB->get_last_error())));
+                }
 
 				if(@$_SESSION['NAVIGATE-SETUP']['DEFAULT_THEME']=='theme_kit')
 				{
@@ -1583,7 +1652,10 @@ function process()
 				$data[] = 'RewriteRule ^$ '.$nvweb.'?route=nv.empty [L,QSA]';
 				
 				$ok = @file_put_contents(dirname(NAVIGATE_PATH).'/.htaccess', implode("\n", $data));
-				if(!$ok) throw new Exception($lang['unexpected_error']);
+				if(!$ok)
+                {
+                    throw new Exception($lang['unexpected_error']);
+                }
 				echo json_encode('true');
 			}
 			catch(Exception $e)
@@ -1653,7 +1725,9 @@ function navigate_install_load_language()
 
         // last try
         if(empty($lang))
+        {
             $lang = navigate_file_get_contents_curl($translation_url);
+        }
 
 		$lang = (array)@json_decode($lang);
 	}

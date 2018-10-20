@@ -220,7 +220,7 @@ class backup
 
         // prepare temporary folder
         if(!file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/backups'))
-            @mkdir(NAVIGATE_PRIVATE.'/'.$website->id.'/backups', 0755, true);
+            @mkdir(NAVIGATE_PRIVATE.'/'.$website->id.'/backups', 0744, true);
 
         $zip = new ZipArchive();
 

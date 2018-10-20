@@ -585,13 +585,13 @@ class website
 		// finally we create the private folder
 		$this->id = $DB->get_last_id();
 		
-		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0755, true);
-		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/files', 0755, true);
-		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/templates', 0755, true);
-		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/thumbnails', 0755, true);
-		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/webgets', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
+		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0744, true);
+		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/files', 0744, true);
+		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/templates', 0744, true);
+		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/thumbnails', 0744, true);
+		@mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/webgets', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0744, true);
 
         if(method_exists($events, 'trigger'))
         {
@@ -748,13 +748,13 @@ class website
 		    throw new Exception($DB->get_last_error());
 
 		// try to create any missing folder
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/files', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/templates', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/thumbnails', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/webgets', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0755, true);
-        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0755, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/files', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/templates', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/thumbnails', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/webgets', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/backups', 0744, true);
+        @mkdir(NAVIGATE_PRIVATE.'/'.$this->id.'/cache', 0744, true);
 
         if(method_exists($events, 'trigger'))
         {
@@ -999,7 +999,7 @@ class website
                 $css_merged_rules .= $css_rules;
             }
 
-		    mkdir(NAVIGATE_PATH.'/cache/'.$website->id, 0755, true);
+		    mkdir(NAVIGATE_PATH.'/cache/'.$website->id, 0744, true);
 
 		    file_put_contents(NAVIGATE_PATH.'/'.$css_merged_file, $css_merged_rules);
 
