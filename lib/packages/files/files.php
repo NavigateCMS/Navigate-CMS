@@ -1099,7 +1099,7 @@ function files_item_properties($item)
 				}
 			</script>
 			<a href="#" class="button" onclick="navigate_pixlr_edit();"><img src="'.NAVIGATE_URL.'/img/logos/pixlr.png" width="100px" height="42px" /></a> '.
-            ($website->protocol == 'https://' && false? '<a href="#" class="button" onclick="navigate_photopea_edit();"><img src="'.NAVIGATE_URL.'/img/logos/photopea.png" width="100px" height="42px" /></a>' : '')
+            (($website->protocol == 'https://' && false)? '<a href="#" class="button" onclick="navigate_photopea_edit();"><img src="'.NAVIGATE_URL.'/img/logos/photopea.png" width="100px" height="42px" /></a>' : '')
         ));
 
         $navibars->add_tab(t(334, 'Description'));
