@@ -1134,9 +1134,13 @@ function items_form($item)
     $extra_actions = array();
 
 	if(empty($item->id))
-		$navibars->title(t(22, 'Items').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(22, 'Items').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(22, 'Items').' / '.t(170, 'Edit').' ['.$item->id.']');	
+    {
+        $navibars->title(t(22, 'Items').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	$navibars->add_actions(
 		array(
@@ -1214,7 +1218,9 @@ function items_form($item)
     }
 
     if(!empty($item->id))
+    {
         $layout->navigate_notes_dialog('item', $item->id);
+    }
 	
 	$navibars->add_actions(
         array(

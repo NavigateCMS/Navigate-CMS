@@ -46,6 +46,8 @@ require_once(NAVIGATE_PATH.'/lib/external/tracy/src/tracy.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/ref/ref.php');
 
+require_once(NAVIGATE_PATH.'/lib/vendor/autoload.php');
+
 
 /* prepare PHP to run Navigate CMS */
 

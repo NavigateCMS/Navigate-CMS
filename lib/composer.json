@@ -1,0 +1,6 @@
+{
+    "name": "navigatecms/lib",
+    "require": {
+        "mpdf/mpdf": "^7.1"
+    }
+}

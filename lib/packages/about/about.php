@@ -189,8 +189,12 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/" target="_blank">jQuery mb.extruder v2.5</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://pupunzi.open-lab.com/mb-jquery-components/jquery-mb-extruder/" target="_blank">jQuery mb.extruder v2.5</a><br />'
+		)
+	);
 											
 	$navibars->add_tab_content_row(
 		array(
@@ -218,11 +222,26 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v5.2.22</a><br />'));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v5.2.22</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://qtip2.com" target="_blank">qTip2 v2.2.1</a><br />'));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="http://qtip2.com" target="_blank">qTip2 v2.2.1</a><br />'
+		)
+	);
+
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="https://mpdf.github.io" target="_blank">mPDF v7.1.6</a><br />'	// via composer
+		)
+	);
 
     $navibars->add_tab_content_row(
     	array(

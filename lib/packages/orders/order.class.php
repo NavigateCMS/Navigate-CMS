@@ -422,7 +422,9 @@ class order
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         // TODO: do we need to also update the order lines?
 
@@ -662,13 +664,20 @@ class order
 
         $email_lang = $website->languages_published[0];
         if(in_array($customer->language, $website->languages_published))
+        {
             $email_lang = $customer->language;
+        }
 
         $dictionary = new language();
         if($lang->code == $email_lang)
-            $dictionary = $lang; // already loaded!
+        {
+            // already loaded!
+            $dictionary = $lang;
+        }
         else
+        {
             $dictionary->load($email_lang);
+        }
 
         $this->load_lines();
         $lines = array();
@@ -717,7 +726,7 @@ class order
         navigate_send_email(
             $dictionary->t(792, "Order created") . ' #' . $this->reference,
             $message,
-            'coolwind.ws@gmail.com', //$customer->email,
+            $customer->email,
             NULL,
             false
         );
@@ -730,7 +739,9 @@ class order
         global $website;
 
         if(empty($website_id))
+        {
             $website_id = $website->id;
+        }
 
         $order_id = $DB->query_single(
             'id',
