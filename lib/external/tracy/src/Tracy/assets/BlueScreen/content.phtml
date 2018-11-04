@@ -244,6 +244,7 @@ $code = $exception->getCode() ? ' #' . $exception->getCode() : '';
 
 
 			<?php
+            /* navigate modification: do not return the list of internal constants and its values
 			$list = get_defined_constants(TRUE);
 			if (!empty($list['user'])):?>
 			<h3><a data-tracy-ref="^+" class="tracy-toggle tracy-collapsed">Constants</a></h3>
@@ -257,7 +258,7 @@ $code = $exception->getCode() ? ' #' . $exception->getCode() : '';
 			?>
 			</table>
 			</div>
-			<?php endif ?>
+			<?php endif */?>
 
 
 			<h3><a data-tracy-ref="^+" class="tracy-toggle tracy-collapsed">Configuration options</a></h3>
