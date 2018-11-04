@@ -431,9 +431,11 @@ function core_string2decimal($value)
  *  NOTE: this only formats the number to be used in the Navigate CMS interface, not in the website!
  *
  * @param decimal $value
+ * @param integer $decimals number of decimals to return
+ * @param boolean $force_decimals return always the number of decimals specified even if they are zero (ex. 123.40 instead of 123.4)
  * @return string number formatted using user's defined preferences
  */
-function core_decimal2string($value, $decimals = 2)
+function core_decimal2string($value, $decimals=2,  $force_decimals=false)
 {
     global $user;
     global $website;
@@ -441,17 +443,19 @@ function core_decimal2string($value, $decimals = 2)
     // if the decimal part is 0, remove it for cleaner presentation
     $value = sprintf("%F", $value); // was %G
 
-    if( $value - intval($value) === 0 ||
-        $value - intval($value) === 0.0
-    )
+    if( !$force_decimals && ($value - intval($value) === 0 || $value - intval($value) === 0.0) )
     {
         $decimals = 0;
     }
 
     if(!empty($user) && isset($user->decimal_separator))
+    {
         $value = number_format($value, $decimals, $user->decimal_separator, $user->thousands_separator);
+    }
     else  // no user defined, use the website defaults
+    {
         $value = number_format($value, $decimals, $website->decimal_separator, $website->thousands_separator);
+    }
 
     return $value;
 }
