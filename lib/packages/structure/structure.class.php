@@ -76,20 +76,26 @@ class structure
         }
 
         if(!is_array($this->groups))
+        {
             $this->groups = array($this->groups);
+        }
     }
 	
 	public function load_from_post()
 	{
 		if(intval($_REQUEST['parent'])!=$this->id)	// protection against selecting this same category as parent of itself
-			$this->parent 		= intval($_REQUEST['parent']);
+        {
+            $this->parent 		= intval($_REQUEST['parent']);
+        }
 			
 		$this->template 	= $_REQUEST['template'];
 		$this->access		= intval($_REQUEST['access']);
 
         $this->groups	    = $_REQUEST['groups'];
         if($this->access < 3)
+        {
             $this->groups = array();
+        }
 
 		$this->permission	= intval($_REQUEST['permission']);		
 		$this->visible		= intval($_REQUEST['visible']);		
@@ -104,25 +110,36 @@ class structure
 		$fields = array('title', 'action-type', 'action-jump-item', 'action-jump-branch', 'action-new-window', 'action-masked-redirect'); //, 'path', 'visible');
 		foreach($_REQUEST as $key => $value)
 		{
-			if(empty($value)) continue;
+			if(empty($value))
+            {
+                continue;
+            }
 			
 			foreach($fields as $field)
 			{
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
-					$this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                {
+                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                }
 			}
 		
 			if(substr($key, 0, strlen('path-'))=='path-')
-				$this->paths[substr($key, strlen('path-'))] = $value;
+            {
+                $this->paths[substr($key, strlen('path-'))] = $value;
+            }
 		}		
 	}
 
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -178,7 +195,9 @@ class structure
 		global $events;
 
 		if(empty($this->website))
-			$this->website = $website->id;
+        {
+            $this->website = $website->id;
+        }
 
         if(empty($this->position))
         {
@@ -200,11 +219,15 @@ class structure
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute('
 			INSERT INTO nv_structure
@@ -238,7 +261,9 @@ class structure
         );
 
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 
@@ -270,11 +295,15 @@ class structure
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
 		$ok = $DB->execute('
  			UPDATE nv_structure
@@ -306,7 +335,9 @@ class structure
 		);
 			      
 		if(!$ok)
-		    throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		webdictionary::save_element_strings('structure', $this->id, $this->dictionary, $this->website);
 		path::saveElementPaths('structure', $this->id, $this->paths, $this->website);
@@ -378,11 +409,15 @@ class structure
                 foreach($webuser->groups as $wg)
                 {
                     if(empty($wg))
+                    {
                         continue;
+                    }
                     $access_groups[] = 'groups LIKE "%g'.$wg.'%"';
                 }
                 if(!empty($access_groups))
+                {
                     $access_extra = ' OR (access = 3 AND ('.implode(' OR ', $access_groups).'))';
+                }
             }
         }
 
@@ -406,7 +441,9 @@ class structure
 		global $website;
 
 		if(empty($ws_id))
-			$ws_id = $website->id;
+        {
+            $ws_id = $website->id;
+        }
 
 		$ws = new website();
 		$ws->load($ws_id);
@@ -425,14 +462,22 @@ class structure
 		for($i=0; $i < count($result); $i++)
 		{
 			if(empty($result[$i]->date_published)) 
-				$result[$i]->date_published = '&infin;';
+            {
+                $result[$i]->date_published = '&infin;';
+            }
 			else
-				$result[$i]->date_published = core_ts2date($result[$i]->date_published, false);
+            {
+                $result[$i]->date_published = core_ts2date($result[$i]->date_published, false);
+            }
 				
 			if(empty($result[$i]->date_unpublish)) 
-				$result[$i]->date_unpublish = '&infin;';	
+            {
+                $result[$i]->date_unpublish = '&infin;';
+            }
 			else
-				$result[$i]->date_unpublish = core_ts2date($result[$i]->date_unpublish, false);		
+            {
+                $result[$i]->date_unpublish = core_ts2date($result[$i]->date_unpublish, false);
+            }
 				
 			$result[$i]->dates = $result[$i]->date_published.' - '.$result[$i]->date_unpublish;
 		}
@@ -446,14 +491,18 @@ class structure
         global $theme;
 
 		if(empty($ws_id))
-			$ws_id = $website->id;
+        {
+            $ws_id = $website->id;
+        }
 
 		$ws = new website();
 		$ws->load($ws_id);
 
 		$flang = $ws->languages_list[0];
 		if(empty($flang))
+        {
             return array();
+        }
 		
 		$tree = array();
 		
@@ -476,7 +525,9 @@ class structure
 
             $templates = template::elements('structure');
             if(empty($templates))
+            {
                 $templates = array();
+            }
 
 			for($i=0; $i < count($tree); $i++)
             {
@@ -496,24 +547,35 @@ class structure
                 }
 
                 if(method_exists($theme, "t"))
+                {
                     $tree[$i]->template_title = $theme->t($tree[$i]->template_title);
+                }
 
                 for($wl=0; $wl < count($ws->languages_list); $wl++)
                 {
                     $lang = $ws->languages_list[$wl];
 
                     if(empty($tree[$i]->dictionary[$lang]['title']))
+                    {
                         $tree[$i]->dictionary[$lang]['title'] = '[ ? ]';
+                    }
+                    else
+                    {
+                        core_special_chars($tree[$i]->dictionary[$lang]['title']);
+                    }
 
-                    $style = '';
-                    if($lang != $flang)
-                        $style = 'display: none';
+                    // the following could be removed? seems like is not used
+                        $style = '';
+                        if($lang != $flang)
+                        {
+                            $style = 'display: none';
+                        }
 
-                    $label[] = '<span class="structure-label" lang="'.$lang.'" style="'.$style.'">'
-                              .$tree[$i]->dictionary[$lang]['title']
-                              .'</span>';
+                        $label[] = '<span class="structure-label" lang="'.$lang.'" style="'.$style.'">'
+                                  .core_special_chars($tree[$i]->dictionary[$lang]['title'])
+                                  .'</span>';
 
-                    $bc[$tree[$i]->id][$lang] = $tree[$i]->dictionary[$lang]['title'];
+                        $bc[$tree[$i]->id][$lang] = $tree[$i]->dictionary[$lang]['title'];
                 }
 
                 $children = structure::hierarchy($tree[$i]->id, $ws_id);
@@ -548,11 +610,15 @@ class structure
             $has_children = !empty($post_html);
 
 			if(strpos($post_html, 'class="active"')!==false)
-				$li_class = ' class="open" ';
+            {
+                $li_class = ' class="open" ';
+            }
 
 			// disable option if not allowed AND all of its children are not allowed either
 			if(!$ignore_permissions && !structure::category_allowed($node->id) && strpos($post_html, "ui-state-disabled") > 0)
-				$li_class = ' class="ui-state-disabled" ';
+            {
+                $li_class = ' class="ui-state-disabled" ';
+            }
 
 			if(empty($html))
             {
@@ -561,12 +627,12 @@ class structure
 
             if(empty($lang))
             {
-                $title = $node->label;
+                $title = core_special_chars($node->label);
                 $path = array_values($node->paths)[0];
             }
             else
             {
-                $title = $node->dictionary[$lang]['title'];
+                $title = core_special_chars($node->dictionary[$lang]['title']);
                 $path = $node->paths[$lang];
             }
 
@@ -578,30 +644,45 @@ class structure
 				{
 					if(!empty($lval['title']) && $lval['title'] != '[ ? ]')
 					{
-						$title  = '<span style="opacity: 0.8;">'.$lval['title'].' <img align="absmiddle" src="img/icons/silk/comment.png" class="silk-sprite" /><i>'.$lkey.'</i></span>';
+						$title  = '<span style="opacity: 0.8;">'.core_special_chars($lval['title']).' <img align="absmiddle" src="img/icons/silk/comment.png" class="silk-sprite" /><i>'.$lkey.'</i></span>';
 						break;
 					}
 				}
+
 				if(empty($title)) // no translation for ANY language, so just add a placeholder
-					$title = '<span style="opacity: 0.75;"><i class="fa fa-fw fa-language"></i> #'.$node->id.'</span>';
+                {
+                    $title = '<span style="opacity: 0.75;"><i class="fa fa-fw fa-language"></i> #'.$node->id.'</span>';
+                }
 			}
 
 			if(!$ignore_permissions && !structure::category_allowed($node->id))
-				$title = '<div class="ui-state-disabled">'.$title.'</div>';
+            {
+                $title = '<div class="ui-state-disabled">'.$title.'</div>';
+            }
 
             $node_type = 'folder';
             if(!$has_children)
+            {
                 $node_type = 'leaf';
+            }
 
 			if(in_array($node->id, $selected))
-				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-node-path="'.$path.'" data-selected="true" data-jstree=\'{"selected": true, "type": "'.$node_type.'"}\'><span class="active">'.$title.'</span>';
+            {
+                $html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-node-path="'.$path.'" data-selected="true" data-jstree=\'{"selected": true, "type": "'.$node_type.'"}\'><span class="active">'.$title.'</span>';
+            }
 			else
-				$html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-node-path="'.$path.'" data-selected="false" data-jstree=\'{"selected": false, "type": "'.$node_type.'"}\'><span>'.$title.'</span>';
+            {
+                $html[] = '<li '.$li_class.' value="'.$node->id.'" data-node-id="'.$node->id.'" data-node-path="'.$path.'" data-selected="false" data-jstree=\'{"selected": false, "type": "'.$node_type.'"}\'><span>'.$title.'</span>';
+            }
 
 			$html[] = $post_html;
 			$html[] = '</li>';
 		}
-		if(!empty($html)) $html[] = '</ul>';		
+
+		if(!empty($html))
+        {
+            $html[] = '</ul>';
+        }
 		
 		return implode("\n", $html);
 	}
@@ -619,14 +700,18 @@ class structure
 			if(!empty($categories_allowed))
 			{
 				if(!in_array($id, $categories_allowed))
-					$allowed = false;
+                {
+                    $allowed = false;
+                }
 			}
 
 			$categories_excluded = $user->permission("structure.categories.excluded");
 			if(!empty($categories_excluded))
 			{
 				if(in_array($id, $categories_excluded))
-					$allowed = false;
+                {
+                    $allowed = false;
+                }
 			}
 		}
 
@@ -640,12 +725,16 @@ class structure
             foreach($hierarchy as $node)
             {
                 if(!empty($node->children))
+                {
                     $val = structure::hierarchyPath($node->children, $category);
+                }
 
                 if($node->id == $category || (!empty($val)) )
                 {
                     if(empty($val))
+                    {
                         return array($node->label);
+                    }
 
                     return array_merge(array($node->label), $val);
                 }
@@ -659,24 +748,35 @@ class structure
         $html = array();
 
         if(!is_array($hierarchy))
+        {
             $hierarchy = array();
+        }
 
         foreach($hierarchy as $node)
         {
             $post_html = structure::hierarchyListClasses($node->children, $level+1);
 
-            if(empty($html) && $level==1) $html[] = '<ul>';
+            if(empty($html) && $level==1)
+            {
+                $html[] = '<ul>';
+            }
 
             $extra = '';
             if(!empty($post_html))
+            {
                 $extra = 'group';
+            }
 
-            $html[] = '<li class="level'.$level.' '.$extra.'" data-value="'.$node->id.'"><span>'.$node->label.'</span>';
+            $html[] = '<li class="level'.$level.' '.$extra.'" data-value="'.$node->id.'"><span>'.core_special_chars($node->label).'</span>';
 
             $html[] = $post_html;
             $html[] = '</li>';
         }
-        if(!empty($html) && $level==1) $html[] = '</ul>';
+
+        if(!empty($html) && $level==1)
+        {
+            $html[] = '</ul>';
+        }
 
         return implode("\n", $html);
     }
@@ -690,14 +790,21 @@ class structure
 				
 		for($i=0; $i < count($children); $i++)
 		{		
-			if(empty($children[$i])) continue;
+			if(empty($children[$i]))
+            {
+                continue;
+            }
+
 			$ok =	$DB->execute('UPDATE nv_structure 
 									 SET position = '.($i+1).'
 								   WHERE id = '.$children[$i].' 
 									 AND parent = '.intval($parent).'
 									 AND website = '.$website->id);
 							 
-			if(!$ok) return array("error" => $DB->get_last_error()); 
+			if(!$ok)
+            {
+                return array("error" => $DB->get_last_error());
+            }
 		}
 			
 		return true;	
@@ -707,16 +814,22 @@ class structure
 	{
 		// load properties if not already done
 		if(empty($this->properties))
-			$this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+        {
+            $this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+        }
 
 		for($p=0; $p < count($this->properties); $p++)
 		{
 			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
 			{
 				if($raw)
-					$out = $this->properties[$p]->value;
+                {
+                    $out = $this->properties[$p]->value;
+                }
 				else
-					$out = $this->properties[$p]->value;
+                {
+                    $out = $this->properties[$p]->value;
+                }
 
 				break;
 			}
@@ -729,7 +842,9 @@ class structure
 	{
 		// load properties if not already done
 		if(empty($this->properties))
-			$this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+        {
+            $this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+        }
 
 		for($p=0; $p < count($this->properties); $p++)
 		{
@@ -747,12 +862,16 @@ class structure
     {
         // load properties if not already done
         if(empty($this->properties))
+        {
             $this->properties = property::load_properties('structure', $this->template, 'structure', $this->id);
+        }
 
         for($p=0; $p < count($this->properties); $p++)
         {
             if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -767,7 +886,9 @@ class structure
         $DB->query('SELECT * FROM nv_structure WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }
@@ -776,7 +897,9 @@ class structure
 	{
 		$tmp = new structure();
 		foreach($obj as $key => $val)
-			$tmp->$key = $val;
+        {
+            $tmp->$key = $val;
+        }
 
 		return $tmp;
 	}

@@ -15,7 +15,10 @@ class naviforms
 
 		$out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" style="'.$style.'">';
 				
-		if(!is_array($data)) $data = array();
+		if(!is_array($data))
+        {
+            $data = array();
+        }
 		
 		foreach($data as $row)
         {
@@ -24,9 +27,13 @@ class naviforms
 
             if (in_array($row->{$value_field}, $remove_keys)) continue;
             if ($row->{$value_field} == $selected_value)
+            {
                 $out[] = '<option value="' . $row->{$value_field} . '" selected="selected">' . $row->{$title_field} . '</option>';
+            }
             else
+            {
                 $out[] = '<option value="' . $row->{$value_field} . '">' . $row->{$title_field} . '</option>';
+            }
 		}
 		
 		$out[] = '</select>';		
@@ -44,9 +51,13 @@ class naviforms
 
 		$out = array();
 		if($multiple)
-			$out[] = '<select name="'.$id.'[]" id="'.$id.'" onchange="'.$onChange.'" multiple="multiple" '.$extra_attributes.' style=" height: 100px; '.$style.'">';
+        {
+            $out[] = '<select name="'.$id.'[]" id="'.$id.'" onchange="'.$onChange.'" multiple="multiple" '.$extra_attributes.' style=" height: 100px; '.$style.'">';
+        }
 		else
-			$out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" onchange="'.$onChange.'" '.$extra_attributes.' style="'.$style.'">';
+        {
+            $out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" onchange="'.$onChange.'" '.$extra_attributes.' style="'.$style.'">';
+        }
 
 		if(!is_array($values))
         {
@@ -138,9 +149,13 @@ class naviforms
 	public function checkbox($name, $checked=false)
 	{
 		if($checked)
-			$out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" checked="checked" /><label for="'.$name.'"></label>';
+        {
+            $out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" checked="checked" /><label for="'.$name.'"></label>';
+        }
 		else
-			$out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" /><label for="'.$name.'"></label>';
+        {
+            $out = '<input id="'.$name.'" name="'.$name.'" type="checkbox" value="1" /><label for="'.$name.'"></label>';
+        }
 			
 		return $out;
 	}
@@ -195,39 +210,61 @@ class naviforms
 		if(!isset($decimal_separator))
         {
             if(!empty($user))
+            {
                 $decimal_separator = $user->decimal_separator;
+            }
             else
+            {
                 $decimal_separator = ".";
+            }
         }
 
         if(!isset($thousands_separator))
         {
             if(!empty($user))
+            {
                 $thousands_separator = $user->thousands_separator;
+            }
             else
+            {
                 $thousands_separator = "";
+            }
         }
 
         if(!empty($width))
+        {
             $extra .= ' style=" width: '.$width.';"';
+        }
 
         if(!empty($action))
+        {
             $extra .= ' onkeyup="'.$action.'"';
+        }
 
         if(intval($value) == $value)
+        {
             $value = intval($value);
+        }
 
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" '.$extra.' />';
 
 		if(!empty($prefix))
-		    $prefix.= " ";
+        {
+            $prefix.= " ";
+        }
 		else
-		    $prefix = html_entity_decode("&zwnj;");
+        {
+            $prefix = html_entity_decode("&zwnj;");
+        }
 
 		if(!empty($suffix))
-		    $suffix = " " . $suffix;
+        {
+            $suffix = " " . $suffix;
+        }
 		else
-		    $suffix = html_entity_decode("&zwnj;");
+        {
+            $suffix = html_entity_decode("&zwnj;");
+        }
 
 		// we need to add a "ZERO WIDTH NON-JOINER" character instead of empty prefixes/suffixes
         // to workaround a weird inputmask bug with negative values
@@ -263,9 +300,13 @@ class naviforms
 		$out = '<input type="text" name="'.$name.'" id="'.$name.'" value="'.$value.'" style=" width: '.$width.';" />';
 
         if(is_array($source))
+        {
             $source = '["'.implode('","', $source).'"]';
+        }
         else
+        {
             $source = '"'.$source.'"';
+        }
 
 		$layout->add_script('
 			$("#'.$name.'").autocomplete(
@@ -400,9 +441,13 @@ class naviforms
 		global $user;
 
 		if(!empty($value))
-			$value = core_ts2date($value, $hour);
+        {
+            $value = core_ts2date($value, $hour);
+        }
         else
-		    $value = ""; // set empty also for value = 0
+        {
+            $value = "";
+        } // set empty also for value = 0
 
 		$out = '<input type="text" class="datepicker" name="'.$name.'" id="'.$name.'" value="'.$value.'" style="'.$style.'" />
 				<img src="img/icons/silk/calendar_delete.png" width="16" height="16" align="absmiddle" 
@@ -564,7 +609,9 @@ class naviforms
                 <div id="'.$name.'-selector" class="naviforms-colorpicker-selector ui-corner-all"><div style="background: '.$value.'; "></div></div>';
 
         if(!is_array($swatches) || empty($swatches))
+        {
             $swatches = array();
+        }
 
         $swatches = array_map(function($c) { return hex2rgb($c); }, $swatches);
 
@@ -899,7 +946,9 @@ class naviforms
         global $theme;
 
         if(empty($website_id))
+        {
             $website_id = $website->id;
+        }
 
 		$out = array();
         $out[] = '<div id="'.$name.'-droppable-wrapper" class="navigate-droppable-wrapper">';
@@ -951,12 +1000,18 @@ class naviforms
             if($media=='image')
             {
                 if($options == 'a:0:{}')
+                {
                     $options = array();
+                }
 
                 if(empty($options) && !empty($default_value))
+                {
                     $options = array($default_value => t(199, "Default value"));
+                }
                 else
+                {
                     $options = (array)$options;
+                }
 
                 if(!empty($options))
                 {
@@ -969,15 +1024,23 @@ class naviforms
                     // "create" context menu actions (image picker)
                     $ws = new website();
                     if($website_id==$website->id)
+                    {
                         $ws = $website;
+                    }
                     else
+                    {
                         $ws->load($website_id);
+                    }
 
                     $ws_theme = new theme();
-                    if($website_id==$website->id)
+                    if($website_id == $website->id)
+                    {
                         $ws_theme = $theme;
+                    }
                     else
+                    {
                         $ws_theme->load($ws->theme);
+                    }
 
                     $layout->add_content('
                         <ul id="'.$name.'-image_picker" class="navigate-image-picker navi-ui-widget-shadow">
@@ -985,7 +1048,9 @@ class naviforms
                                 function($k, $v) use ($website_id, $ws_theme)
                                 {
                                     if(!empty($ws_theme))
+                                    {
                                         $v = $ws_theme->t($v);
+                                    }
 
                                     return '
                                         <li data-value="'.$k.'" data-src="'.NAVIGATE_DOWNLOAD.'?wid='.$website_id.'&id='.$k.'&amp;disposition=inline&amp;width=75&amp;height=75">
@@ -1117,7 +1182,9 @@ class naviforms
                 // context menu actions
                 $layout->add_script('
                     if('.(empty($default_value)? 'true' : 'false').')
+                    {
                         $("#'.$name.'-droppable").parent().find(".navigate-droppable-create-contextmenu li[action=default]").remove();
+                    }
 
                     $("#'.$name.'-droppable").parent()
                         .find(".navigate-droppable-create")
@@ -1215,7 +1282,9 @@ class naviforms
 			');
 			
 			if(!empty($media))
-				$accept = 'accept: ".draggable-'.$media.'",';
+            {
+                $accept = 'accept: ".draggable-'.$media.'",';
+            }
 							
 			$layout->add_script('
 				$("#'.$name.'-droppable").droppable(
@@ -1293,10 +1362,14 @@ class naviforms
 					 'style=" cursor: pointer; " onclick=" tree_wrapper_'.md5($id).'_reset(); " />';
 
         if(!empty($on_change))
+        {
             $on_change .= '(value);';
+        }
 
         if(empty($tree))
+        {
             $tree = '<ul><li value="0">&nbsp;</li></ul>';
+        }
 
         $out[] = '<div style="float: left;" id="tree_wrapper_'.$id.'">'.$tree.'</div>';
 
@@ -1446,9 +1519,13 @@ class naviforms
         for($r = 0; $r < count($regions); $r++)
         {
             if($regions[$r]->region_id == $value)
+            {
                 $out[] = '<option data-country="'.$regions[$r]->country_code.'" value="'.$regions[$r]->region_id.'" selected>'.$regions[$r]->name.'</option>';
+            }
             else
+            {
                 $out[] = '<option data-country="'.$regions[$r]->country_code.'" value="'.$regions[$r]->region_id.'">'.$regions[$r]->name.'</option>';
+            }
         }
         $out[] = '</select>';
 

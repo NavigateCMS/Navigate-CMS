@@ -639,7 +639,9 @@ class layout
             $ws->load_from_resultset(array($web));
 			
 			if($ws->id == $website->id)
-				$style = ' display: block; ';
+            {
+                $style = ' display: block; ';
+            }
 
             $url = $ws->absolute_path(true);
 					
@@ -650,10 +652,12 @@ class layout
                 $main_config_url = '?fid=websites&act=2&id='.$ws->id;
 			}
 			else			
-				$extruder .= '<div class="voice {}" style=" display: none; ">
+            {
+                $extruder .= '<div class="voice {}" style=" display: none; ">
 								<a href="'.$url.'" target="_blank"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/house_link.png" width="16px" height="16px" /></a>
 								<a class="label" href="?act=0&wid='.$ws->id.'">'.$ws->name.'</a>								
 							  </div>';
+            }
 		}
 
         $extruder .= '<div style="clear: both;"></div>';
@@ -1451,16 +1455,26 @@ class layout
 		
 		foreach($tags as $tag)
 		{
-			if(strpos($tag['attributes']['src'], '/icons/silk/')!==false)
+			if(strpos($tag['attributes']['src'], '/icons/silk/') !== false)
 			{
-				if(@$tag['attributes']['sprite']=='false') continue;
-				$base = basename($tag['attributes']['src'], '.png');
+				if(@$tag['attributes']['sprite']=='false')
+                {
+                    continue;
+                }
+
+                $base = basename($tag['attributes']['src'], '.png');
 				
 				$tag['new'] = '<img class="silk-sprite silk-'.$base.'" ';
 				foreach($tag['attributes'] as $name => $value)
 				{
-					if($name=='src') $tag['new'].= 'src="'.NAVIGATE_URL.'/img/transparent.gif" ';
-					else			 $tag['new'].= $name.'="'.$value.'" ';
+					if($name=='src')
+                    {
+                        $tag['new'].= 'src="'.NAVIGATE_URL.'/img/transparent.gif" ';
+                    }
+					else
+                    {
+                        $tag['new'].= $name.'="'.$value.'" ';
+                    }
 				}
 				$tag['new'] .= '/>';
 				

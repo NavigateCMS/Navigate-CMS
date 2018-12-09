@@ -67,7 +67,9 @@ class navitree
 		$html = array();
 		
 		if($parent > -1)
-			$html[] = '<tr id="node-'.$node->id.'" data-node-id="'.$node->id.'" data-node-parent="'.$parent.'" data-node-children="'.count($node->children).'" class="child-of-node-'.$parent.' droppable">';
+        {
+            $html[] = '<tr id="node-'.$node->id.'" data-node-id="'.$node->id.'" data-node-parent="'.$parent.'" data-node-children="'.count($node->children).'" class="child-of-node-'.$parent.' droppable">';
+        }
 		else
 		{
 			$html[] = '<tr id="node-'.$node->id.'" data-node-id="'.$node->id.'"  data-node-parent="'.$parent.'" data-node-children="'.count($node->children).'" class="droppable">';
@@ -78,7 +80,9 @@ class navitree
 			$treecolumn = false;
 			
 			if($this->columns[$this->treeColumn]==$col) 
-				$treecolumn = true;
+            {
+                $treecolumn = true;
+            }
 
 			if( $node->{$col['property']}===NULL &&
                 strpos($col['property'], 'dictionary|')===false
@@ -92,9 +96,13 @@ class navitree
 			{
 				case 'boolean':
 					if($node->{$col['property']}=='true' || $node->{$col['property']}==1)
-						$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/accept.png" /></td>';
+                    {
+                        $html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/accept.png" /></td>';
+                    }
 					else
-						$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/cancel.png" /></td>';
+                    {
+                        $html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/cancel.png" /></td>';
+                    }
 					break;				
 				
 				case 'count':
@@ -105,7 +113,9 @@ class navitree
 					foreach($col['options'] as $key => $value)
 					{
 						if(	$node->{$col['property']} == $key )
-							$html[] = '	<td align="'.$col['align'].'">'.$value.'</td>';	
+                        {
+                            $html[] = '	<td align="'.$col['align'].'">'.$value.'</td>';
+                        }
 					}
 					break;
 									
@@ -122,14 +132,20 @@ class navitree
                                 if(!in_array($lname, $this->showLanguages)) // hide this language
                                     continue;
                                 else if($this->showLanguages[0]==$lname)    // default language
-                                    $value .= '<span class="navitree-text" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                                {
+                                    $value .= '<span class="navitree-text" language="'.$lname.'">'.core_special_chars($ltexts[$dictionary_value_name]).'</span>';
+                                }
                                 else
-                                    $value .= '<span class="navitree-text" style="display: none;" language="'.$lname.'">'.$ltexts[$dictionary_value_name].'</span>';
+                                {
+                                    $value .= '<span class="navitree-text" style="display: none;" language="'.$lname.'">'.core_special_chars($ltexts[$dictionary_value_name]).'</span>';
+                                }
                             }
                         }
                     }
                     else
+                    {
                         $value = $node->{$col['property']};
+                    }
 
 					if($treecolumn)
 					{
@@ -144,13 +160,19 @@ class navitree
 						else
 						{						
 							if(count($node->children) > 0)
-								$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/folder.png" align="absmiddle" /> '.$value.'</td>';
+                            {
+                                $html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/folder.png" align="absmiddle" /> '.$value.'</td>';
+                            }
 							else
-								$html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/page_white.png" align="absmiddle" /> '.$value.'</td>';
+                            {
+                                $html[] = '	<td align="'.$col['align'].'"><img height="16" width="16" src="img/icons/silk/page_white.png" align="absmiddle" /> '.$value.'</td>';
+                            }
 						}
 					}
 					else
-						$html[] = '	<td align="'.$col['align'].'">'.$value.'</td>';
+                    {
+                        $html[] = '	<td align="'.$col['align'].'">'.$value.'</td>';
+                    }
 					break;
 			}
 		}
@@ -180,9 +202,17 @@ class navitree
 		
 		foreach($this->columns as $col)
 		{
-			if(!empty($col['align']))  $col['align'] = 'text-align: '.$col['align'].';';
-			if(!empty($col['width']))  $col['width'] = 'width: '.$col['width'];			
-			$html[] = '<th class="ui-state-default ui-th-column" style="'.$col['align'].' '.$col['width'].'">'.$col['name'].'</th>';
+			if(!empty($col['align']))
+            {
+                $col['align'] = 'text-align: '.$col['align'].';';
+            }
+
+            if(!empty($col['width']))
+			{
+			    $col['width'] = 'width: '.$col['width'];
+            }
+
+            $html[] = '<th class="ui-state-default ui-th-column" style="'.$col['align'].' '.$col['width'].'">'.$col['name'].'</th>';
 		}
 		
 		$html[] = '</tr>';
@@ -217,20 +247,26 @@ class navitree
 		$html[] = '	
 			$("table#'.$this->id.' tbody tr").on("mouseover", function()
 			{
-				if($(this).hasClass("ui-state-highlight")) return true;
+				if($(this).hasClass("ui-state-highlight")) 
+				{
+				    return true;
+                }
 				$("tr.ui-state-highlight").removeClass("ui-state-highlight"); // Deselect currently selected rows
 				$(".navitree_table_adder").remove();
 				$(".navitree_table_homepager").remove();
 				$(".navitree_table_reorder").remove();
 				$(this).addClass("ui-state-highlight");
-				if(navitree_mode=="reorder") return true;
+				if(navitree_mode=="reorder") 
+				{
+				    return true;
+                }
 									
 				$(this).find("td").eq(1).append("<a href=\"'.$this->addUrl.'" + $(this).find("td:first").html() + "\" title=\"'.t(593, "Add new child").'\" class=\"navitree_table_adder\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/add.png\" /></a>");
 
 				if($(this).data("node-parent") != -1)
 				{
 					if('.(!empty($this->homepagerUrl)? 'true' : 'false').')
-						$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set has homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
+						$(this).find("td").eq(1).append("<a class=\"navitree_table_homepager\" title=\"'.t(594, "Set as homepage").'\" onclick=\"navitree_homepager($(this).parent());\"><img height=\"16\" width=\"16\" src=\"img/icons/silk/house.png\" /></a>");
 				}
 
 				if($(this).hasClass("parent"))
@@ -247,7 +283,9 @@ class navitree
 			    e.preventDefault();
 			    
 				if(navitree_mode=="reorder") 
-				    return true;				   
+				{
+				    return true;
+                }				   
 				    
 				window.location.href = "'.$this->url.'" + $(this).data("node-id");
 			}); 
@@ -283,7 +321,9 @@ class navitree
 				var expanded_ids = $.cookie("navigate-tree-'.$this->id.'");
 				
 				if(!expanded_ids)
-					$(".treeTable").trigger("click");
+                {
+                    $(".treeTable").trigger("click");
+                }
 				else
 				{
 					// close all
@@ -300,7 +340,9 @@ class navitree
 			$(".treeTable").on("click", ".expander", function()
 			{
 				if(navitree_cookie_update)
+				{
 					setTimeout(navitree_save_branch_status, 200);
+                }
 			});
 
 			navitree_load_branch_status();
@@ -374,9 +416,14 @@ class navitree
 						},
 				  success: function(data)
 				  {
-					  if(!data.error)  navitree_reorder_cancel();
-					  else			   $(".message").html(data.error);
-
+					  if(!data.error)  
+					  {
+					      navitree_reorder_cancel();
+                      }
+					  else
+					  {
+					      $(".message").html(data.error);
+                      }
 				  },
 				  dataType: "json"
 				});
