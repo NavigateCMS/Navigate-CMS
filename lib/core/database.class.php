@@ -177,11 +177,19 @@ class database
                 $stm = $this->db->prepare($sql);
                 $stm->execute($parameters);
             }
-            $this->queries_count++;
-            $stm->setFetchMode(PDO::FETCH_NUM);
-            $rs = $stm->fetchAll();
-            $stm->closeCursor();
-            unset($stm);
+
+            if($stm)
+            {
+                $this->queries_count++;
+                $stm->setFetchMode(PDO::FETCH_NUM);
+                $rs = $stm->fetchAll();
+                $stm->closeCursor();
+                unset($stm);
+            }
+            else
+            {
+                throw new Exception("Statement failed: ".$sql);
+            }
         }
         catch(Exception $e)
         {
