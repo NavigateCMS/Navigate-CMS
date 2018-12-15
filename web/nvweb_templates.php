@@ -328,7 +328,9 @@ function nvweb_template_parse($template)
                         }
 														
 						if(empty($tmp))
-							$content = '';
+                        {
+                            $content = '';
+                        }
 						else
 						{
 							$content = $DB->query_single(
@@ -351,6 +353,10 @@ function nvweb_template_parse($template)
 						$content = date('Y');
 						break;
 
+                    case "template":
+                        $content = $current['template'];
+                        break;
+
                     case "website_name":
                         $content = $website->name;
                         break;
@@ -370,7 +376,9 @@ function nvweb_template_parse($template)
 				
 			case 'php':
                 if(!empty($tag['attributes']['code']))
-				    eval('$content = '.$tag['attributes']['code'].';');
+                {
+                    eval('$content = '.$tag['attributes']['code'].';');
+                }
 				break;
 
             case 'theme':
