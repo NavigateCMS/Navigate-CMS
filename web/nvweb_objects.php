@@ -87,8 +87,13 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 		case 'image':
 		case 'img':
         case 'thumbnail':
+            // keep executing even the user or browser cancels the connection (to avoid ending with partial thumbnails)
+            @ignore_user_abort(true);
+
 			if(!$item->enabled && !$ignoreEnabled) 
-				nvweb_clean_exit();
+            {
+                nvweb_clean_exit();
+            }
 
 			$path = $item->absolute_path();
 
@@ -99,21 +104,33 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			$height = intval(@$_REQUEST['height']) + 0;
 
 		    // check size requested and ignore the empty values (or equal to zero)
-		    if(empty($width)) $width = "";
-		    if(empty($height)) $height = "";
+		    if(empty($width))
+            {
+                $width = "";
+            }
+		    if(empty($height))
+            {
+                $height = "";
+            }
 
             // get target quality (only for jpeg thumbnails!)
             $quality = @$_REQUEST['quality'];
             if(empty($quality))
+            {
                 $quality = 95;
+            }
 
 			$resizable = true;
 
 			if($item->mime == 'image/gif')
-				$resizable = !(file::is_animated_gif($path));
+            {
+                $resizable = !(file::is_animated_gif($path));
+            }
 
 			if($item->mime == 'image/svg+xml')
-			    $resizable = false;
+            {
+                $resizable = false;
+            }
 
 			if( isset($_GET['force']) ||
                 (   (!empty($width) || !empty($height)) &&
@@ -133,14 +150,18 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 
                     $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, NULL, $opacity);
                     if (empty($path))
+                    {
                         die();
+                    }
 
                     $etag_add = '-' . $width . '-' . $height . '-' . $border . '-' . $quality;
                     $item->name = $width . 'x' . $height . '-' . $item->name;
                     $item->size = filesize($path);
                     $item->mime = 'image/png';
                     if (strpos(basename($path), '.jpg') !== false)
+                    {
                         $item->mime = 'image/jpeg';
+                    }
                 }
 			}
 

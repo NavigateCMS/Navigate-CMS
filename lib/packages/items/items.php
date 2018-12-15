@@ -271,13 +271,13 @@ function run()
                             {
                                 $dataset[$i]['title'] = '<img src="img/icons/silk/comment.png" align="absmiddle" />';
                                 $dataset[$i]['title'] .= '<small>'.$titles[0]->lang.'</small>&nbsp;&nbsp;';
-                                $dataset[$i]['title'] .= $titles[0]->text;
+                                $dataset[$i]['title'] .= core_special_chars($titles[0]->text);
                             }
                         }
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.$dataset[$i]['title'].'</div>',
+							1 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.core_special_chars($dataset[$i]['title']).'</div>',
 							2 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
 							3	=> $category_text,
 							//4	=> $dataset[$i]['author_username'],
@@ -343,7 +343,9 @@ function run()
 				}
 			}
 			else
-				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            {
+                users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            }
 		
 			$out = items_form($item);
 			break;	
@@ -421,7 +423,9 @@ function run()
 		                $ok = property::save_properties_from_array('item', $item->id, $category->template, $properties);
 	                }
 	                else
+                    {
                         $ok = property::save_properties_from_array('item', $item->id, $item->template, $properties);
+                    }
                 }
 
 				if($ok)
@@ -460,9 +464,13 @@ function run()
             }
 
             if($ok)
+            {
                 echo 'true';
+            }
             else
+            {
                 echo 'false';
+            }
 
 			core_terminate();
 			break;
@@ -831,8 +839,14 @@ function run()
 			}
 		
 			$error = $DB->get_last_error();
-			if(empty($error)) echo 'true';
-			else			  echo 'false';
+			if(empty($error))
+            {
+                echo 'true';
+            }
+			else
+            {
+                echo 'false';
+            }
 							  
 			core_terminate();
 			break;			
@@ -898,12 +912,17 @@ function run()
 			$offset = ($page - 1) * $max;	
 		
 			if($_REQUEST['_search']=='false')
-				list($dataset, $total) = webuser_vote::object_votes_by_webuser('item', intval($_REQUEST['id']), $_REQUEST['sidx'].' '.$_REQUEST['sord'], $offset, $max);
+            {
+                list($dataset, $total) = webuser_vote::object_votes_by_webuser('item', intval($_REQUEST['id']), $_REQUEST['sidx'].' '.$_REQUEST['sord'], $offset, $max);
+            }
 		
 			$out = array();								
 			for($i=0; $i < count($dataset); $i++)
 			{
-				if(empty($dataset[$i])) continue;
+				if(empty($dataset[$i]))
+                {
+                    continue;
+                }
 														
 				$out[$i] = array(
 					0	=> $dataset[$i]['id'],
@@ -926,10 +945,14 @@ function run()
                     echo $response['error'];
                 }
                 else
+                {
                     echo 'true';
+                }
             }
             else    // show ordered list
+            {
                 echo items_order($_REQUEST['category']);
+            }
 
             core_terminate();
             break;
@@ -939,7 +962,9 @@ function run()
 
 			$tags_json = array();
 			foreach(array_keys($tags) as $tag)
-				$tags_json[] = json_decode('{ "id": "'.$tag.'", "label": "'.$tag.'", "value": "'.$tag.'" }');
+            {
+                $tags_json[] = json_decode('{ "id": "'.$tag.'", "label": "'.$tag.'", "value": "'.$tag.'" }');
+            }
 			echo json_encode($tags_json);
 
 			core_terminate();
@@ -1384,7 +1409,9 @@ function items_form($item)
 
 									
 	if(empty($item->id))
+    {
         $item->author = $user->id;
+    }
 	$author_webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->author);	
 	$navibars->add_tab_content($naviforms->hidden('item-author', $item->author));
 	$navibars->add_tab_content_row(array(
@@ -1445,7 +1472,9 @@ function items_form($item)
 	$categories_list = structure::hierarchyList($hierarchy, $item->category);
 
     if(empty($categories_list))
+    {
         $categories_list = '<ul><li value="0">'.t(428, '(no category)').'</li></ul>';
+    }
 
 	$navibars->add_tab_content_row(
         array(

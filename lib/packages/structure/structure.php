@@ -53,11 +53,17 @@ function run()
 				}
 
 				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+                }
 			}
 			else
-				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            {
+                if(!empty($item->id))
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+                }
+            }
 		
 			$out = structure_form($item);
 			break;
@@ -79,6 +85,7 @@ function run()
 
 		case 4:
 		case "remove":
+        case "delete":
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -588,9 +595,13 @@ function structure_form($item)
 	$layout->navigate_media_browser();	// we can use media browser in this function
 	
 	if(empty($item->id))
-		$navibars->title(t(16, 'Structure').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(16, 'Structure').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(16, 'Structure').' / '.t(170, 'Edit').' ['.$item->id.']');
+    {
+        $navibars->title(t(16, 'Structure').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	$navibars->add_actions(
 	    array(
@@ -618,25 +629,12 @@ function structure_form($item)
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
 		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
+		$delete_html[] = 'function navigate_delete_dialog()';
 		$delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								},
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=4&id='.$item->id.'";
-								}
-							}
-						});';		
+		$delete_html[] = '  navigate_confirmation_dialog(
+		                        function() { window.location.href = "?fid=structure&act=delete&id='.$item->id.'"; }, 
+		                        null, null, "'.t(35, 'Delete').'"
+		                    ); ';
 		$delete_html[] = '}';							
 		$delete_html[] = '</script>';						
 									
@@ -682,21 +680,28 @@ function structure_form($item)
 
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$parent->id.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_first.png"> 
-                                        <small>('.mb_strtolower(t(84, 'Parent')).')</small> '.$parent->dictionary[$website->languages_list[0]]["title"].
+                                        <small>('.mb_strtolower(t(84, 'Parent')).')</small> '.
+                                        core_special_chars($parent->dictionary[$website->languages_list[0]]["title"]).
                                     '</a>';
         }
 
         if(!empty($previous_brother))
+        {
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$previous_brother.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_previous.png"> 
-                                        <small>('.mb_strtolower(t(501, 'Previous')).')</small> '.$previous_brother_title.
-                                    '</a>';
+                                        <small>('.mb_strtolower(t(501, 'Previous')).')</small> '.
+                                        core_special_chars($previous_brother_title).
+                                   '</a>';
+        }
 
         if(!empty($next_brother))
+        {
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$next_brother.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_next.png"> 
-                                        <small>('.mb_strtolower(t(502, 'Next')).')</small> '.$next_brother_title.
+                                        <small>('.mb_strtolower(t(502, 'Next')).')</small> '.
+                                        core_special_chars($next_brother_title).
                                     '</a>';
+        }
     }
 
     $events->add_actions(
@@ -730,16 +735,19 @@ function structure_form($item)
     );
 
 	if(empty($item->id))
-		$item->parent = $_GET['parent'];
+    {
+        $item->parent = $_GET['parent'];
+    }
 
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
-	//$navibars->add_tab_content($naviforms->hidden('parent', $item->parent));
 
 	$hierarchy = structure::hierarchy(0);
 	$categories_list = structure::hierarchyList($hierarchy, $item->parent);
 
     if(empty($categories_list))
+    {
         $categories_list = '<ul><li value="0">'.t(428, '(no category)').'</li></ul>';
+    }
 
 	$navibars->add_tab_content_row(
 	    array(
@@ -766,7 +774,9 @@ function structure_form($item)
     ');
 
     if(empty($item->template) && isset($_GET['template']))
+    {
         $item->template = $_GET['template'];
+    }
 
 	$templates = template::elements('structure');
 	$template_select = $naviforms->select_from_object_array('template', $templates, 'id', 'title', $item->template);
@@ -844,7 +854,6 @@ function structure_form($item)
 
         navigate_webuser_groups_visibility('.$item->access.');
     ');
-
 																				
 	$navibars->add_tab_content_row(
 		array(
@@ -971,7 +980,7 @@ function structure_form($item)
 		{
 			$tmp = new Item();
 			$tmp->load($item->dictionary[$lang_code]['action-jump-item']);
-			$jump_item_title = array($tmp->dictionary[$lang_code]['title']);
+			$jump_item_title = array(core_special_chars($tmp->dictionary[$lang_code]['title']));
 			$jump_item_id = array($item->dictionary[$lang_code]['action-jump-item']);
 		}
         $navibars->add_tab_content_row(array(
@@ -1018,7 +1027,9 @@ function structure_form($item)
 	$parent = new structure();
 	$parent->paths = array();
 	if(!empty($item->parent))
-		$parent->load($item->parent);
+    {
+        $parent->load($item->parent);
+    }
 	
 	$layout->add_script('
 		function navigate_structure_select_language(code)
@@ -1241,14 +1252,18 @@ function structure_form($item)
 		
 		$score = $item->score / $item->votes;			
 		
-		$navibars->add_tab_content_panel('<img src="img/icons/silk/chart_pie.png" align="absmiddle" /> '.t(337, 'Summary'), 
-										 array(	'<div class="navigate-panels-summary ui-corner-all"><h2>'.$item->votes.'</h2><br />'.t(352, 'Votes').'</div>',
-												'<div class="navigate-panels-summary ui-corner-all""><h2>'.$score.'</h2><br />'.t(353, 'Score').'</div>',
-												'<div style=" float: left; margin-left: 8px; "><a href="#" class="uibutton" id="items_votes_webuser">'.t(15, 'Users').'</a></div>',
-												'<div style=" float: right; margin-right: 8px; "><a href="#" class="uibutton" id="items_votes_reset">'.t(354, 'Reset').'</a></div>',
-												'<div id="items_votes_webuser_window" style=" display: none; width: 600px; height: 350px; "></div>'
-										 ), 
-										 'navigate-panel-web-summary', '385px', '200px');	
+		$navibars->add_tab_content_panel(
+		    '<img src="img/icons/silk/chart_pie.png" align="absmiddle" /> '.t(337, 'Summary'),
+			array(	'<div class="navigate-panels-summary ui-corner-all"><h2>'.$item->votes.'</h2><br />'.t(352, 'Votes').'</div>',
+			        '<div class="navigate-panels-summary ui-corner-all""><h2>'.$score.'</h2><br />'.t(353, 'Score').'</div>',
+					'<div style=" float: left; margin-left: 8px; "><a href="#" class="uibutton" id="items_votes_webuser">'.t(15, 'Users').'</a></div>',
+					'<div style=" float: right; margin-right: 8px; "><a href="#" class="uibutton" id="items_votes_reset">'.t(354, 'Reset').'</a></div>',
+					'<div id="items_votes_webuser_window" style=" display: none; width: 600px; height: 350px; "></div>'
+            ),
+			'navigate-panel-web-summary',
+            '385px',
+            '200px'
+        );
 											
 										 
 		$layout->add_script('
@@ -1465,7 +1480,7 @@ function structure_form($item)
             $table->addRow($element->id,
                 array(
                     array('content' => $element->id, 'align' => 'left'),
-                    array('content' => $element->dictionary[$website->languages_list[0]]['title'], 'align' => 'left')
+                    array('content' => core_special_chars($element->dictionary[$website->languages_list[0]]['title']), 'align' => 'left')
                 )
             );
             $ids[] = $element->id;
