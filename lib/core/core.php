@@ -3,10 +3,10 @@
  * 
  * Navigate CMS common core functions
  * 
- * @copyright Copyright (C) 2010-2018 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2019 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
- * @version 2.8.6 2018-10-06
+ * @version 2.8.7 2018-12-15
  *
  */
 
@@ -39,6 +39,43 @@ function t($id, $default='', $replace=array(), $encodeChars=false)
 	    $out = $default;
 
     return $out;
+}
+
+/**
+ * Defines the constant NAVIGATE_URL identifying the path of the current executed file
+ * and removes the known part (passed as a parameter)
+ *
+ * @param string $file The name of the currently executing file (just the filename, not the absolute path)
+ * @return void
+ */
+function core_define_navigate_url($file)
+{
+    $navigate_url = "";
+
+    // get the full path to the main file
+    if(!empty($_ENV['SCRIPT_URI']))
+    {
+        $navigate_url = dirname($_ENV['SCRIPT_URI']);
+    }
+    else
+    {
+        $navigate_url = dirname(nvweb_self_url());
+    }
+
+    // remove known part
+    $pos = strpos($navigate_url, '/'.$file);
+    if($pos !== false)
+    {
+        $navigate_url = substr($navigate_url, 0, $pos);
+    }
+
+    // remove trailing slash
+    if(substr($navigate_url, -1)=='/')
+    {
+        $navigate_url = substr($navigate_url, 0, -1);
+    }
+
+    define('NAVIGATE_URL', $navigate_url);
 }
 
 /**

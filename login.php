@@ -2,9 +2,7 @@
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
-$navigate_url = !empty($_ENV['SCRIPT_URI'])? dirname($_ENV['SCRIPT_URI']) : dirname(nvweb_self_url());
-if(substr($navigate_url, -1)=='/')  $navigate_url = substr($navigate_url, 0, -1);
-define('NAVIGATE_URL', $navigate_url);
+core_define_navigate_url('login.php');
 
 // create database connection
 $DB = new database();
@@ -133,7 +131,6 @@ else if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 }
 
 /* LOAD LANGUAGE */
-
 $lang = new language();
 $lang->load($language_default);
 
@@ -166,11 +163,12 @@ if($_REQUEST['action']=='forgot-password')
     core_terminate();
 }
 
+$current_version = update::latest_installed();
+
 $layout = new layout('navigate');
 
 echo $layout->doctype();
 echo $layout->head();
-$current_version = update::latest_installed();
 
 ?>
 <body>
@@ -192,13 +190,13 @@ $current_version = update::latest_installed();
 <div id="navigate-login" class="ui-corner-all" style=" border: solid 1px #ddd; top: 50%; margin-top: -150px; position: absolute; margin-left: -325px; left: 50%; padding: 4px; width: 700px; height: 350px; ">
     <form
     	name="navigate-content-form"
-        action="<?php echo $_SERVER['PHP_SELF'];?>"
+        action="<?php echo NAVIGATE_URL . '/login.php';?>"
     	method="post" 
         enctype="multipart/form-data"
         style=" margin-left: auto; margin-right: auto; margin-top: 50px; height: 350px; ">
 
         <div style=" float: left; margin-right: 55px; margin-left: 20px; ">
-            <img src="img/navigate-logo-430x200.png" width="300" height="140"  />
+            <img src="<?php echo NAVIGATE_URL;?>/img/navigate-logo-430x200.png" width="300" height="140"  />
             <a href="http://www.navigatecms.com" style=" display: block; text-decoration: none; color: #2E476E; text-align:  center; " target="_blank">www.navigatecms.com</a>
         </div>
         <div style=" float: left; width: 288px; ">
@@ -223,7 +221,6 @@ $current_version = update::latest_installed();
                 <a href="#" style=" color: #2E476E; font-size: 10px; line-height: 30px; float: right; text-decoration: none;"><?php echo t(407, 'Forgot password?');?></a>
             </div>
         </div>
-
         <?php
             if(isset($error))
             {
@@ -234,7 +231,6 @@ $current_version = update::latest_installed();
                 <?php
             }
         ?>
-
     </form>
 </div>
 

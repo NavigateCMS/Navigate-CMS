@@ -85,8 +85,8 @@ function nvweb_parse($request)
         define('NVWEB_ABSOLUTE', $nvweb_absolute);
         define('NVWEB_OBJECT', $nvweb_absolute . '/object');
         define('NVWEB_AJAX', $nvweb_absolute . '/nvajax');
-        define('NVWEB_THEME', NAVIGATE_PARENT . NAVIGATE_FOLDER . '/themes/' . $theme->name);
         define('NAVIGATE_URL', NAVIGATE_PARENT . NAVIGATE_FOLDER);
+        define('NVWEB_THEME', NAVIGATE_URL . '/themes/' . $theme->name);
 
         if(!isset($_SESSION['nvweb.' . $website->id]))
         {

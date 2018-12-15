@@ -2,8 +2,8 @@
 // +------------------------------------------------------------------------+
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Naviwebs 2010-2018. All rights reserved.                 |
-// | Last modified 2018/10/08                                               |
+// | Copyright (c) Naviwebs 2010-2019. All rights reserved.                 |
+// | Last modified 2018-12-15                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -36,10 +36,7 @@ if(isset($_REQUEST['debug']) || APP_DEBUG)
 
 require_once('cfg/common.php');
 
-$navigate_url = !empty($_ENV['SCRIPT_URI'])? dirname($_ENV['SCRIPT_URI']) : dirname(nvweb_self_url());
-if(substr($navigate_url, -1)=='/')
-    $navigate_url = substr($navigate_url, 0, -1);
-define('NAVIGATE_URL', $navigate_url);
+core_define_navigate_url('navigate.php');
 
 /* global variables */
 global $DB;

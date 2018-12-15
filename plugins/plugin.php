@@ -50,7 +50,6 @@ function nv_plugin_init()
 		die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
 	}
 
-
 	// global exception catcher
 	try
 	{
@@ -69,7 +68,9 @@ function nv_plugin_init()
 
         if(	($website->permission == 2) ||
             ($website->permission == 1 && empty($_SESSION['APP_USER#'.APP_UNIQUE])))
+        {
             nvweb_clean_exit();
+        }
 
         // global helper variables
 		$session = array();		// user session
@@ -77,13 +78,17 @@ function nv_plugin_init()
 
 		$nvweb_absolute = (empty($website->protocol)? 'http://' : $website->protocol);
 		if(!empty($website->subdomain))
-			$nvweb_absolute .= $website->subdomain.'.';
+        {
+            $nvweb_absolute .= $website->subdomain.'.';
+        }
 		$nvweb_absolute .= $website->domain.$website->folder;
 
 		define('NVWEB_ABSOLUTE', $nvweb_absolute);
 		define('NVWEB_OBJECT', $nvweb_absolute.'/object');
 		if(!defined('NAVIGATE_URL'))
-		    define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
+        {
+            define('NAVIGATE_URL', NAVIGATE_PARENT.NAVIGATE_FOLDER);
+        }
 
 		if(!isset($_SESSION['nvweb.'.$website->id]))
 		{
@@ -94,16 +99,24 @@ function nv_plugin_init()
 		{
 			$session = $_SESSION['nvweb.'.$website->id];
 			if(empty($session['lang']))
-				$session['lang'] = nvweb_country_language();
+            {
+                $session['lang'] = nvweb_country_language();
+            }
 		}
 
         if(isset($_REQUEST['lang']))
+        {
             $session['lang'] = $_REQUEST['lang'];
+        }
 
 		if(!empty($session['webuser']))
-			$webuser->load($session['webuser']);
+        {
+            $webuser->load($session['webuser']);
+        }
 		else if(!empty($_COOKIE["webuser"]))
-			$webuser->load_by_hash($_COOKIE['webuser']);
+        {
+            $webuser->load_by_hash($_COOKIE['webuser']);
+        }
 
         @setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
@@ -163,7 +176,10 @@ function nv_plugin_end($redirect_to="")
 	$DB->disconnect();
 
     if(!empty($redirect_to))
+    {
         header('Location: '.$redirect_to);
+    }
+
 	exit;
 }
 
