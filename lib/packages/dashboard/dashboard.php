@@ -44,7 +44,7 @@ function run()
                                 '<div class="navigate-panel-body-title ui-corner-all">'.
                                     '<a href="'.$items[$c]->paths[$display_language].'" target="_blank">'.
                                         core_ts2date($items[$c]->date_to_display, true).' '.
-                                        '<strong>'.$items[$c]->dictionary[$display_language]['title'].'</strong>'.
+                                        '<strong>'.core_special_chars($items[$c]->dictionary[$display_language]['title']).'</strong>'.
                                     '</a>'.
                                 '</div>',
                                 '<div id="navigatecms-feed-item-'.$items[$c]->id.'" class="navigate-panel-recent-feed-element">'.
@@ -66,13 +66,19 @@ function run()
             $ri = users_log::recent_items(value_or_default($_REQUEST['limit']), 10);
 
             if(!is_array($ri))
+            {
                 $ri = array();
+            }
 
             for($i=0; $i < count($ri); $i++)
             {
 				$action = $ri[$i];
 				$ri[$i]->_url = '?fid='.$action->function.'&wid='.$action->website.'&act=load&id='.$action->item;
-                $ri[$i]->_link = '<a href="'.$ri[$i]->_url.'" title="'.core_special_chars($action->item_title).' | '.core_special_chars(t($action->function_title, $action->function_title)).'"><img src="'.$action->function_icon.'" align="absmiddle" /> '.core_string_cut($action->item_title, 33).'</a>';
+                $ri[$i]->_link = '<a href="'.$ri[$i]->_url.'" title="'.core_special_chars($action->item_title).' | '.core_special_chars(t($action->function_title, $action->function_title)).'">
+                                        <img src="'.$action->function_icon.'" align="absmiddle" /> '.
+                                        core_special_chars(core_string_cut($action->item_title, 33)).
+                                 '</a>';
+                $ri[$i]->item_title = core_special_chars($ri[$i]->item_title);
             }
 
 			echo json_encode($ri);
@@ -118,10 +124,18 @@ function dashboard_create()
 	}
 	
 	// current web settings
-	$navibars->add_actions(	 array(	'<a href="?fid=websites&act=2&id='.$website->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/world_edit.png"> '.t(177, 'Website').'</a>') );
+	$navibars->add_actions(
+	    array(
+	        '<a href="?fid=websites&act=edit&id='.$website->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/world_edit.png"> '.t(177, 'Website').'</a>'
+        )
+    );
 	
 	// user settings
-	$navibars->add_actions(	 array(	'<a href="?fid=settings"><img height="16" align="absmiddle" width="16" src="img/icons/silk/user_edit.png"> '.t(14, 'Settings').'</a>') );
+	$navibars->add_actions(
+	    array(
+	        '<a href="?fid=settings"><img height="16" align="absmiddle" width="16" src="img/icons/silk/user_edit.png"> '.t(14, 'Settings').'</a>'
+        )
+    );
 	
 	$navibars->form();
 
@@ -575,7 +589,9 @@ function dashboard_panel_recent_changes($params)
                     // try to retrieve the title, as it may be assigned later
                     $title = $DB->query_single('text', 'nv_webdictionary', 'website = '.$website->id.' AND node_type = "item" AND node_id = '.$users_log[$r]['item_id'].' AND subtype = "title"', 'id ASC');
                     if(!empty($title))
+                    {
                         $users_log[$r]['title'] = $title;
+                    }
                 }
             }
 
@@ -584,7 +600,7 @@ function dashboard_panel_recent_changes($params)
                 $users_log_html .= '
                     <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
                     '<a href="?fid='.$users_log[$r]['function_id'].'&act=2&id='.$users_log[$r]['item_id'].'" title="'.core_ts2date($users_log[$r]['action_date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
-                    '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_green.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . $users_log[$r]['title'].
+                    '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_green.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . core_special_chars($users_log[$r]['title']).
                     '</a>'.
                     '</div>';
             }
@@ -593,7 +609,7 @@ function dashboard_panel_recent_changes($params)
                 $users_log_html .= '
                     <div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
                     '<a href="?fid='.$users_log[$r]['function_id'].'" title="'.core_ts2date($users_log[$r]['action_date'], true).' - '.t($users_log[$r]['function_lid']).'">'.
-                    '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_red.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . $users_log[$r]['title'].
+                    '<span>'.core_ts2elapsed_time($users_log[$r]['action_date']).'</span><img align="absmiddle" src="img/icons/silk/bullet_red.png" align="absmiddle">'.$users_log[$r]['username'] . ' <img align="absmiddle" src="'.$users_log[$r]['function_icon'].'" align="absmiddle"> ' . core_special_chars($users_log[$r]['title']).
                     '</a>'.
                     '</div>';
             }
@@ -666,7 +682,7 @@ function dashboard_panel_top_elements($params)
 
         $elements_html .= '<div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
             '<a href="?fid=items&act=2&id='.$elements[$e]['id'].'" title="'.core_ts2date($elements[$e]['date_modified'], true).' | '.$elements[$e]['author_username'].'">'.
-            '<strong>'.$elements[$e]['views'].'</strong> <img align="absmiddle" src="img/icons/silk/bullet_star.png" align="absmiddle"> '.$elements[$e]['title'].
+            '<strong>'.$elements[$e]['views'].'</strong> <img align="absmiddle" src="img/icons/silk/bullet_star.png" align="absmiddle"> '.core_special_chars($elements[$e]['title']).
             '</a>'.
             '</div>';
     }
@@ -713,7 +729,7 @@ function dashboard_panel_recent_elements($params)
         if(!@$elements[$e]) break;
         if(empty($elements[$e]['title'])) $elements[$e]['title'] = '('.t(282, 'Untitled').')';
         $elements_html .= '<div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-public">'.
-            '<a href="?fid=items&act=2&id='.$elements[$e]['id'].'" title="'.core_ts2date($elements[$e]['date_modified'], true).' | '.$elements[$e]['author_username'].'">'.$elements[$e]['title'].'</a>'.
+            '<a href="?fid=items&act=2&id='.$elements[$e]['id'].'" title="'.core_ts2date($elements[$e]['date_modified'], true).' | '.$elements[$e]['author_username'].'">'.core_special_chars($elements[$e]['title']).'</a>'.
             '</div>';
     }
 
