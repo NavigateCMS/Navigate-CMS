@@ -71,9 +71,13 @@ class navitable
 	{
 		$this->delete_action = true;
         if(!empty($delete_url))
+        {
             $this->delete_url = $delete_url;
+        }
         else
+        {
             $this->delete_url = '?fid='.$this->default_fid.'&act=json&oper=del';
+        }
     }
 	
 	public function enableSearch()
@@ -158,7 +162,7 @@ class navitable
 								hidden: '.$hidden.'
 							  }';
 		}
-		
+
 		$newcol = preg_replace("/\n|\r|\t/", " ", $newcol);
 		$this->cols[] = $newcol;
 	}
@@ -425,7 +429,9 @@ class navitable
 		global $user;
 
 		if(empty($this->grid_notes_object_name))
-			$this->grid_notes_object_name = $this->default_fid;
+        {
+            $this->grid_notes_object_name = $this->default_fid;
+        }
         $grid_notes_control = '?fid=grid_notes&object='.$this->grid_notes_object_name.'&act=';
 
 		$html = array();
@@ -433,7 +439,9 @@ class navitable
 		$html[] = '<table id="'.$this->id.'"></table>';
 
 		if($this->pager)
-			$html[] = '<div id="'.$this->id.'-pager"></div>';
+        {
+            $html[] = '<div id="'.$this->id.'-pager"></div>';
+        }
 			
 		$html[] = '<script language="javascript" type="text/javascript">';
 
@@ -444,9 +452,13 @@ class navitable
 		$html[] = '$("#'.$this->id.'").jqGrid({';
 		
 		if(!empty($this->initial_url))		
-			$html[] = 'url: "'.$this->initial_url.'",';
+        {
+            $html[] = 'url: "'.$this->initial_url.'",';
+        }
 		else
-			$html[] = 'url: "'.$this->url.'",';
+        {
+            $html[] = 'url: "'.$this->url.'",';
+        }
 		
 		$html[] = 'editurl: "'.$this->url.'",';		
 		$html[] = 'datatype: "json",';	
@@ -462,11 +474,14 @@ class navitable
 		$html[] = 'loadonce: false,';
 
         if($this->click_action == 'redirect')
-			$html[] = 'multiselect: true,';			
+        {
+            $html[] = 'multiselect: true,';
+        }
 		//$html[] = 'multikey: "ctrlKey",';
 				
 		$html[] = 'autowidth: true,';
 		$html[] = 'shrinkToFit: true,';
+		$html[] = 'autoencode: false,';
 		$html[] = 'forceFit: true,';
 
         $html[] = 'onSelectRow: function(rowid, status, e) {
@@ -477,9 +492,13 @@ class navitable
 
         $html[] = 'onSelectAll: function(aRowids, status) {
             if(status)
+            {
                 navitable_'.$this->id.'_selected_rows = aRowids;
+            }
             else
+            {
                 navitable_'.$this->id.'_selected_rows = [];
+            }
 
             // restore cells background color
             $("#'.$this->id.'").find("tr").trigger("mouseenter").trigger("mouseleave");
@@ -518,10 +537,14 @@ class navitable
 		}
 		
 		if(!empty($this->click_action))
-			$html[] = ' ondblClickRow: '.$this->id.'_dclick, ';
+        {
+            $html[] = ' ondblClickRow: '.$this->id.'_dclick, ';
+        }
 		
 		if(!empty($this->title))
-			$html[] = 'caption: "'.$this->title.'",';
+        {
+            $html[] = 'caption: "'.core_special_chars($this->title).'",';
+        }
 
 		$html[] = 'colModel: ['.implode(",\n", $this->cols).']';	
 				
@@ -603,7 +626,8 @@ class navitable
         // http://stackoverflow.com/questions/11174499/shift-click-jqgrid-multiselect-missing-last-row
         $html[] = '$("#'.$this->id.'").jqGrid("setGridParam",
 		{
-			beforeSelectRow: function(rowid, e) {
+			beforeSelectRow: function(rowid, e) 
+			{
 			    if('.($this->disable_select? 'true' : 'false').')
 			        return false;
 
@@ -729,7 +753,9 @@ class navitable
 		{
 	        $this->quicksearch_url = '?fid='.$this->default_fid.'&act=json&_search=true&quicksearch=';
 	        if(strpos($this->default_fid, 'ext_')===0)
-	            $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
+            {
+                $this->quicksearch_url = '?fid='.$this->default_fid.'&mode=json&_search=true&quicksearch=';
+            }
 		}
 
 		$html[] = 'function navitable_update_selected_rows_info(number)';

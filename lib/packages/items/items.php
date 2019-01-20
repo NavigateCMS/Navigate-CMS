@@ -97,7 +97,9 @@ function run()
 					}
 								
 					if($_REQUEST['sidx']=='dates')
-						$_REQUEST['sidx'] = 'i.date_published';
+                    {
+                        $_REQUEST['sidx'] = 'i.date_published';
+                    }
 				
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
@@ -108,13 +110,19 @@ function run()
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
                         else if(isset($_REQUEST['filters']))
 						{
                             if(is_array($_REQUEST['filters']))
+                            {
                                 $filters = json_decode(json_encode($_REQUEST['filters']), FALSE);
+                            }
                             else
-							    $filters = json_decode($_REQUEST['filters']);
+                            {
+                                $filters = json_decode($_REQUEST['filters']);
+                            }
 
 							for($r=0; $r < count($filters->rules); $r++)
 							{
@@ -174,7 +182,9 @@ function run()
 							 OFFSET '.$offset;
 
 					if(!$DB->query($sql, 'array'))
-						throw new Exception($DB->get_last_error());
+                    {
+                        throw new Exception($DB->get_last_error());
+                    }
 
 					$dataset = $DB->result();	
 					$total = $DB->foundRows();
@@ -203,42 +213,66 @@ function run()
 						if(empty($dataset[$i])) continue;
 						
 						if(empty($dataset[$i]['date_published'])) 
-							$dataset[$i]['date_published'] = '&infin;';
+                        {
+                            $dataset[$i]['date_published'] = '&infin;';
+                        }
 						else
-							$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                        {
+                            $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                        }
 							
 						if(empty($dataset[$i]['date_unpublish'])) 
-							$dataset[$i]['date_unpublish'] = '&infin;';	
+                        {
+                            $dataset[$i]['date_unpublish'] = '&infin;';
+                        }
 						else
-							$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+                        {
+                            $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+                        }
 
                         if(empty($dataset[$i]['date_to_display']))
+                        {
                             $dataset[$i]['date_to_display'] = '';
+                        }
                         else
+                        {
                             $dataset[$i]['date_to_display'] = core_ts2date($dataset[$i]['date_to_display'], false);
+                        }
 						
 						if($dataset[$i]['category'] > 0)
                         {
                             $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
                             if(is_array($category_path))
+                            {
                                 $dataset[$i]['category_path'] = implode(' › ', $category_path);
+                            }
                             else
+                            {
                                 $dataset[$i]['category_path'] = $category_path;
+                            }
                         }
 
                         $category_text = '';
                         if($dataset[$i]['association']=='free')
+                        {
                             $category_text = '[ '.mb_strtolower(t(100, 'Free')).' ]';
+                        }
                         else
+                        {
                             $category_text = $dataset[$i]['category_path'];
+                        }
 
 						$item_views = $dataset[$i]['views'];
 						if($item_views > 1000)
-							$item_views = round($item_views/1000) . "K";
+                        {
+                            $item_views = round($item_views/1000) . "K";
+                        }
 
 						$item_comments = $dataset[$i]['comments'];
 						if($item_comments > 1000)
-							$item_comments = round($item_comments/1000) . "K";
+                        {
+                            $item_comments = round($item_comments/1000) . "K";
+                        }
 
                         //$social_rating = '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
                         //    '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>';
@@ -279,7 +313,7 @@ function run()
 							0	=> $dataset[$i]['id'],
 							1 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.core_special_chars($dataset[$i]['title']).'</div>',
 							2 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
-							3	=> $category_text,
+							3	=> core_special_chars($category_text),
 							//4	=> $dataset[$i]['author_username'],
 							4	=> $dataset[$i]['date_to_display'],
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
@@ -331,7 +365,9 @@ function run()
 					property::save_properties_from_post('item', $item->id);
 
                     if(!empty($_REQUEST['items-order']))
+                    {
                         item::reorder($_REQUEST['items-order']);
+                    }
 
 					$layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					$item->load($item->id);
@@ -373,16 +409,22 @@ function run()
 					{
 						$layout->navigate_notification(t(56, 'Unexpected error.'), false);
 						if(!empty($item->id))
-							$out = items_form($item);
+                        {
+                            $out = items_form($item);
+                        }
 						else
-							$out = items_list();
+                        {
+                            $out = items_list();
+                        }
 					}
 				}
 				catch(Exception $e)
 				{
 					$layout->navigate_notification($e->getMessage(), true);
 					if(!empty($item->id))
-						$out = items_form($item);
+                    {
+                        $out = items_form($item);
+                    }
 				}
 			}
 			break;
@@ -501,7 +543,9 @@ function run()
 			{
 				$result[$i]['date'] = core_ts2date($result[$i]['date_created'], true);
 				if($result[$i]['autosave']==1)
-					$result[$i]['date'] .= ' ('.t(273, 'Autosave').')';
+                {
+                    $result[$i]['date'] .= ' ('.t(273, 'Autosave').')';
+                }
 			}
 			
 			echo json_encode($result);
@@ -628,10 +672,14 @@ function run()
             {
 	            $title = $template->sections[$ts]['name'];
 				if(!empty($theme))
-					$title = $theme->t($title);
+                {
+                    $title = $theme->t($title);
+                }
 
 	            if($title == '#main#')
-		            $title = t(238, 'Main content');
+                {
+                    $title = t(238, 'Main content');
+                }
 	            $zones[] = array(
 		            'type' => 'section',
 		            'id' => $template->sections[$ts]['id'],
@@ -643,15 +691,21 @@ function run()
 			{
 				// ignore structure properties
 				if(isset($template->properties[$ps]->element) && $template->properties[$ps]->element != 'item')
-					continue;
+                {
+                    continue;
+                }
 
 				// ignore non-textual properties
 				if(!in_array($template->properties[$ps]->type, array("text", "textarea", "rich_textarea")))
-					continue;
+                {
+                    continue;
+                }
 
 				$title = $template->properties[$ps]->name;
 				if(!empty($theme))
-					$title = $theme->t($title);
+                {
+                    $title = $theme->t($title);
+                }
 
 				$zones[] = array(
 		            'type' => 'property',
@@ -717,7 +771,9 @@ function run()
             {
                 $out = array();
                 foreach($rows as $row)
+                {
                     $out[] = array("id" => $row->id, "label" => $row->text, "value" => $row->text);
+                }
                 echo json_encode($out);
             }
 
@@ -730,7 +786,9 @@ function run()
 
             $text = $_REQUEST['title'];
             if(!empty($_REQUEST['term'])) // tagit request
+            {
                 $text = $_REQUEST['term'];
+            }
 
             $query_params = array(
                 ':wid' => $website->id,
@@ -869,9 +927,13 @@ function run()
 				
 				$changed = webdictionary_history::save_element_strings('item', intval($_REQUEST['id']), $iDictionary, true);
                 if($changed)
+                {
                     echo 'changes_saved';
+                }
                 else
+                {
                     echo 'no_changes';
+                }
 				core_terminate();
 			}
 
@@ -1021,7 +1083,9 @@ function items_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('date_modified', 'DESC');
@@ -1029,13 +1093,15 @@ function items_list()
 	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
 	$navitable->enableSearch();
 	if($user->permission("items.delete") == 'true')
-		$navitable->enableDelete();
+    {
+        $navitable->enableDelete();
+    }
 	$navitable->setGridNotesObjectName("item");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
 	$navitable->addCol(t(67, 'Title'), 'title', "320", "true", "left");
 	$navitable->addCol(t(309, 'Social'), 'comments', "50", "true", "center");
-	$navitable->addCol(t(78, 'Category'), 'category', "210", "true", "left");
+	$navitable->addCol(t(78, 'Category'), 'category', "210", "true", "left", false, "false");
 	//$navitable->addCol(t(266, 'Author'), 'author_username', "80", "true", "left");
 	$navitable->addCol(t(551, 'Date to display'), 'date_to_display', "60", "true", "center");
 	$navitable->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");
@@ -1043,12 +1109,18 @@ function items_list()
 	$navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
 
     $navitable->setLoadCallback('
-        $("td[aria-describedby=\'items_list_category\']").truncate({
-            "width": "auto",
-            "token": "…",
-            "side": "center",
-            "addtitle": true
-        });
+
+        $("td[aria-describedby=\'items_list_category\']").each(function()
+        {            
+            // we need to unescape before truncate to avoid XSS problems
+            $(this).text($(this).html());
+            $(this).truncate({
+                "width": "auto",
+                "token": "…",
+                "side": "center",
+                "addtitle": true
+            });    
+        }); 
 
         if($("#jqgh_items_list_category button").length < 1)
         {
@@ -1287,7 +1359,9 @@ function items_form($item)
     );
 
     if(empty($item->id))
+    {
         $item->date_to_display = core_time();
+    }
 
 	$navibars->add_tab_content_row(
         array(
@@ -1372,7 +1446,9 @@ function items_form($item)
 	if($user->permission("items.publish") == 'false')
 	{
 		if(!isset($item->permission))
-			$item->permission = 1;
+        {
+            $item->permission = 1;
+        }
 
 		$navibars->add_tab_content_row(
 	        array(
@@ -1654,33 +1730,43 @@ function items_form($item)
             );
 
 			if(!isset($template->sections))
-				$template->sections[] = array(
+            {
+                $template->sections[] = array(
                     0 => array(
-	                    'id' => 'main',
+                        'id' => 'main',
                         'name' => '#main#',
                         'editor' => 'tinymce',
                         'width' => '960px'
                     )
                 );
+            }
 			
 			if(!is_array($template->sections))
-				$template->sections = array();
+            {
+                $template->sections = array();
+            }
 
 			// compatibility fix: auto-correct template sections with missing ID (only "code" provided)
 			for($s=0; $s < count($template->sections); $s++)
 			{
 				if(!isset($template->sections[$s]['id']))
-					$template->sections[$s]['id'] = $template->sections[$s]['code'];
+                {
+                    $template->sections[$s]['id'] = $template->sections[$s]['code'];
+                }
 			}
 
 			foreach($template->sections as $section)
 			{								
 				if(is_object($section))
-					$section = (array)$section;
+                {
+                    $section = (array)$section;
+                }
 
                 // ignore empty sections
                 if(empty($section))
+                {
                     continue;
+                }
 
 				if($section['editor']=='tinymce')
 				{
@@ -1912,7 +1998,9 @@ function items_form($item)
 		if(is_array($theme->content_samples))
 		{
 			for($i=0; $i < count($theme->content_samples); $i++)
-				$theme->content_samples[$i]->title = $theme->t($theme->content_samples[$i]->title);
+            {
+                $theme->content_samples[$i]->title = $theme->t($theme->content_samples[$i]->title);
+            }
 		}
 
 		$layout->add_script('
@@ -1922,7 +2010,9 @@ function items_form($item)
 		$category = new structure();		
 		$category->paths = array();
 		if(!empty($item->category))
-			$category->load($item->category);
+        {
+            $category->load($item->category);
+        }
 			
 		$layout->add_script('
 			var item_category_path = '.json_encode($category->paths).';
@@ -2002,7 +2092,9 @@ function items_form($item)
 		// script will be bound to onload event at the end of this php function (after getScript is done)
 		$onload_language = $_REQUEST['tab_language'];
 		if(empty($onload_language))
-			$onload_language = $website->languages_list[0];
+        {
+            $onload_language = $website->languages_list[0];
+        }
 
 		$layout->add_script('
 			function navigate_items_onload()
@@ -2245,10 +2337,22 @@ function items_form($item)
 			
 			for($c=0; $c < $comments_total; $c++)
 			{				
-				if($comments[$c]->status==2)		$comment_status = 'hidden';
-				else if($comments[$c]->status==1)	$comment_status = 'private';
-				else if($comments[$c]->status==-1)	$comment_status = 'new';		
-				else								$comment_status = 'public';		
+				if($comments[$c]->status==2)
+                {
+                    $comment_status = 'hidden';
+                }
+				else if($comments[$c]->status==1)
+                {
+                    $comment_status = 'private';
+                }
+				else if($comments[$c]->status==-1)
+                {
+                    $comment_status = 'new';
+                }
+				else
+                {
+                    $comment_status = 'public';
+                }
 			
 				$navibars->add_tab_content_row(array(
 					'<span class="object-comment-label">'.
@@ -2536,7 +2640,9 @@ function items_labels_form()
         // retrieve ALL tags for the current language
         $labels = nvweb_tags_retrieve(PHP_INT_MAX, array(), 'top', '', $lang, array("item"));
         if(empty($labels))
+        {
             continue;
+        }
 
         $tags = array();
         $max = NULL;
@@ -2544,11 +2650,16 @@ function items_labels_form()
         {
             // we expect the tags to be ordered desc
             if(is_null($max))
+            {
                 $max = $count;
+            }
 
             // fontsize by count --> max: 200% min: 100%
             $font_size = 200 * $count / $max;
-            if($font_size < 100 || $max == 1) $font_size = 100;
+            if($font_size < 100 || $max == 1)
+            {
+                $font_size = 100;
+            }
 
             $tags[] = '<a class="uibutton" style="margin: 0 6px 8px 0; font-size: '.$font_size.'%;" data-tag="'.$label.'" data-lang="'.$lang.'">'.
                 $label.

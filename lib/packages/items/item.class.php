@@ -105,10 +105,14 @@ class item
         }
 
         if(!is_array($this->groups))
+        {
             $this->groups = array($this->groups);
+        }
 
         if($this->association == 'free')
+        {
             $this->category = '';
+        }
     }
 	
 	public function load_from_post()
@@ -129,10 +133,14 @@ class item
 
         $this->groups	        = $_REQUEST['groups'];
         if($this->access < 3)
+        {
             $this->groups = array();
+        }
 
 		if($user->permission("items.publish") != 'false')
-			$this->permission = intval($_REQUEST['permission']);
+        {
+            $this->permission = intval($_REQUEST['permission']);
+        }
 
         // if comment settings were not visible, keep the original values
         if(isset($_REQUEST['item-comments_enabled_to']))
@@ -150,19 +158,27 @@ class item
 		$fields = array('title', 'tags');
 		
 		if(!is_array($template->sections))
+        {
             $template->sections = array('id' => 'main');
+        }
 		
 		foreach($template->sections as $section)
 		{			
 			if(is_object($section)) 
-				$section = (array) $section;
+            {
+                $section = (array) $section;
+            }
 
 			// compatibility fix: auto-correct template sections with missing ID (only "code" provided)
 			if(!isset($section['id']))
-				$section['id'] = $section['code'];
+            {
+                $section['id'] = $section['code'];
+            }
 
 			if(is_array($section))
-				$section = $section['id'];
+            {
+                $section = $section['id'];
+            }
 			
 			$fields[] = 'section-'.$section;	
 		}
@@ -197,13 +213,19 @@ class item
 		$this->galleries = array();
 		
 		$items = explode("#", $_REQUEST['items-gallery-elements-order']);
-		if(!is_array($items)) $items = array();
+		if(!is_array($items))
+        {
+            $items = array();
+        }
 		$gallery_items = array();
 		$gallery_items[0] = array();
 		if(!is_array($website->languages)) $website->languages = array();
 		foreach($items as $item)
 		{
-			if(empty($item)) continue;
+			if(empty($item))
+            {
+                continue;
+            }
 			
 			// capture image captions
 			$gallery_items[0][$item] = array();
@@ -221,9 +243,13 @@ class item
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -235,7 +261,9 @@ class item
 		$affected_rows = 0;
 
 		if($user->permission("items.delete") == 'false')
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        {
+            throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        }
 
 		if(!empty($this->id) && !empty($this->website))
         {
@@ -290,7 +318,9 @@ class item
 			if( $user->permission("items.create") == 'false'    ||
 				!structure::category_allowed($this->category)
 			)
-				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            {
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 		}
 
 		$this->date_created  = core_time();		
@@ -302,7 +332,9 @@ class item
             $this->comments_enabled_to = $website->comments_enabled_for;
             $this->comments_moderator = $website->comments_default_moderator;
             if($this->comments_moderator == 'c_author')
+            {
                 $this->comments_moderator = $this->author;
+            }
         }
 
         $groups = '';
@@ -311,19 +343,27 @@ class item
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
 		if(empty($this->website))
-			$this->website = $website->id;
+        {
+            $this->website = $website->id;
+        }
 
 		if(!empty($user->id) && $user->permission("items.publish") == 'false')
 		{
 			if($this->permission == 0)
-				$this->permission = 1;
+            {
+                $this->permission = 1;
+            }
 		}
 
 		if(empty($this->position))
@@ -373,7 +413,9 @@ class item
         );
 			
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		$this->id = $DB->get_last_id();
 
@@ -388,7 +430,9 @@ class item
 				foreach($cat->dictionary as $cat_lang => $cat_text)
 				{
 					if(empty($this->dictionary[$cat_lang]['title']))
-						$this->dictionary[$cat_lang]['title'] = $cat_text['title'];
+                    {
+                        $this->dictionary[$cat_lang]['title'] = $cat_text['title'];
+                    }
 				}
 			}
 		}
@@ -420,10 +464,14 @@ class item
         if(!is_null($user))
         {
             if($user->permission("items.edit") == 'false' && $this->author != $user->id)
+            {
                 throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 
             if( !structure::category_allowed($this->category) )
+            {
                 throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
         }
 
 		$this->date_modified = core_time();
@@ -434,11 +482,15 @@ class item
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute(' 
             UPDATE nv_items
@@ -490,7 +542,9 @@ class item
         );
 		
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		webdictionary::save_element_strings('item', $this->id, $this->dictionary, $this->website);
 		webdictionary_history::save_element_strings('item', $this->id, $this->dictionary, false, $this->website);
@@ -558,9 +612,13 @@ class item
 			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
 			{
 				if($raw)
-					$out = $this->properties[$p]->value;
+                {
+                    $out = $this->properties[$p]->value;
+                }
 				else
-					$out = $this->properties[$p]->value;
+                {
+                    $out = $this->properties[$p]->value;
+                }
 					
 				break;
 			}
@@ -592,7 +650,9 @@ class item
 		for($p=0; $p < count($this->properties); $p++)
 		{
 			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
-				return true;
+            {
+                return true;
+            }
 		}
 		return false;
 	}
@@ -667,7 +727,9 @@ class item
         $items = array();
 
         if(!is_array($articles))
+        {
             $articles = array();
+        }
 
         foreach($articles as $key => $article)
         {
@@ -729,7 +791,9 @@ class item
 						 		     AND website = '.$website->id);
 
 			if(!$ok)
-			    return array("error" => $DB->get_last_error());
+            {
+                return array("error" => $DB->get_last_error());
+            }
 		}
 
 		return true;
@@ -768,7 +832,9 @@ class item
 								)' ;
 			*/
 			if(!empty($dict_ids))
-				$cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
+            {
+                $cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
+            }
 
 			$where .= ' AND ( ';
 			$where .= implode( ' OR ', $cols);
@@ -787,7 +853,9 @@ class item
         $DB->query('SELECT * FROM nv_items WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }
@@ -796,7 +864,9 @@ class item
 	{
 		$tmp = new item();
 		foreach($obj as $key => $val)
-			$tmp->$key = $val;
+        {
+            $tmp->$key = $val;
+        }
 
 		return $tmp;
 	}
