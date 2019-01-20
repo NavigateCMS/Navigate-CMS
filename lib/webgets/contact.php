@@ -251,7 +251,10 @@ function nvweb_contact($vars=array())
                     $out = nvweb_contact_notify($vars, true, $webgets[$webget]['translations']['contact_request_failed']);
                 }
             }
+            break;
 
+        default:
+            break;
     }
 	
 	return $out;
@@ -350,10 +353,10 @@ function nvweb_contact_generate($fields)
         {
             $field = trim($field); // remove unwanted spaces
 
-           if(substr($field, -2, 2)=='[]')
-           {
-               $field = substr($field, 0, -2);
-           }
+            if(substr($field, -2, 2)=='[]')
+            {
+                $field = substr($field, 0, -2);
+            }
 
             if(is_array($_REQUEST[$field]))
             {

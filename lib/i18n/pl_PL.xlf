@@ -4064,8 +4064,41 @@
             </trans-unit>
 
             <trans-unit id="809">
-            <source>Order summary</source>
-            <target>Podsumowanie zamowienia</target>
+                <source>Order summary</source>
+                <target>Podsumowanie zamowienia</target>
+            </trans-unit>
+
+            <trans-unit id="810">
+                <source>Qty.</source>
+                <target>Qty.</target>
+            <note>Quantity abbreviation</note>
+
+            <trans-unit id="811">
+                <source>Dis.</source>
+                <target>Rab.</target>
+                <note>Discount abbreviation</note>
+            </trans-unit>
+
+            <trans-unit id="812" approved="yes">
+                <source>Logo</source>
+                <target>Logo</target>
+            </trans-unit>
+
+            <trans-unit id="813">
+                <source>(for emails and documents)</source>
+                <target>(dla e-maili i dokumentów)</target>
+            </trans-unit>
+
+            <trans-unit id="814">
+                <source>Shop address information</source>
+                <target>Kupuj informacje adresowe</target>
+            </trans-unit>
+
+            <trans-unit id="815">
+                <source>Legal information</source>
+                <target>Informacje prawne</target>
+            </trans-unit>
+
         </trans-unit>
 
         </body>

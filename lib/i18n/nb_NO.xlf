@@ -4069,6 +4069,38 @@
                 <target>Bestillingssammendrag</target>
             </trans-unit>
 
+            <trans-unit id="810">
+                <source>Qty.</source>
+                <target>Num.</target>
+                <note>Quantity abbreviation</note>
+            </trans-unit>
+
+            <trans-unit id="811">
+                <source>Dis.</source>
+                <target>Rab.</target>
+                <note>Discount abbreviation</note>
+            </trans-unit>
+
+            <trans-unit id="812" approved="yes">
+                <source>Logo</source>
+                <target>Logo</target>
+            </trans-unit>
+
+            <trans-unit id="813">
+                <source>(for emails and documents)</source>
+                <target>(for e-post og dokumenter)</target>
+            </trans-unit>
+
+            <trans-unit id="814">
+                <source>Shop address information</source>
+                <target>Butikkadresseinformasjon</target>
+            </trans-unit>
+
+            <trans-unit id="815">
+                <source>Legal information</source>
+                <target>Juridisk informasjon</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

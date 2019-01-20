@@ -49,7 +49,11 @@ class website
 	public $currency;
 	public $size_unit;
 	public $weight_unit;
-    public $purchase_conditions_path;
+	
+    public $shop_logo;
+    public $shop_address;
+    public $shop_legal_info;
+    public $shop_purchase_conditions_path;
 
 	public $theme;
 	public $theme_options;
@@ -127,7 +131,10 @@ class website
 		$this->size_unit            = $main->size_unit;
 		$this->weight_unit          = $main->weight_unit;
 
-		$this->purchase_conditions_path     = $main->purchase_conditions_path;
+        $this->shop_logo            = $main->shop_logo;
+        $this->shop_address         = $main->shop_address;
+        $this->shop_legal_info      = $main->shop_legal_info;
+        $this->shop_purchase_conditions_path     = $main->shop_purchase_conditions_path;
 
 		$this->mail_mailer		            = $main->mail_mailer;
 		$this->mail_server		            = $main->mail_server;
@@ -144,9 +151,15 @@ class website
         $this->aliases          = json_decode($main->aliases, true);
 		
 		$this->contact_emails	= mb_unserialize($main->contact_emails);
-		if(!is_array($this->contact_emails)) $this->contact_emails = array();
+		if(!is_array($this->contact_emails))
+        {
+            $this->contact_emails = array();
+        }
 				
-		if(!is_array($this->languages)) $this->languages = array();
+		if(!is_array($this->languages))
+        {
+            $this->languages = array();
+        }
 		$this->languages_list	= array_keys($this->languages);
 		
 		date_default_timezone_set($this->default_timezone);
@@ -190,7 +203,9 @@ class website
 		$this->additional_styles            = $_REQUEST['additional_styles'];
 
 		if(empty($_REQUEST['homepage_from_structure']))
-			$this->homepage			= $_REQUEST['homepage'];
+        {
+            $this->homepage			= $_REQUEST['homepage'];
+        }
 
 		$this->permission		= intval($_REQUEST['permission']);
 		$this->default_timezone	= $_REQUEST['default_timezone'];
@@ -204,7 +219,9 @@ class website
 		$this->mail_address		= $_REQUEST['mail_address'];
 
 		if(!empty($_REQUEST['mail_password']))
-			$this->mail_password	= $_REQUEST['mail_password'];			
+        {
+            $this->mail_password	= $_REQUEST['mail_password'];
+        }
 
 		$ce	= explode("\n", $_REQUEST['contact_emails']);
 			
@@ -212,7 +229,10 @@ class website
 		foreach($ce as $cemail)
 		{
 			$cemail = trim($cemail);
-			if(empty($cemail)) continue;
+			if(empty($cemail))
+            {
+                continue;
+            }
 			$this->contact_emails[] = $cemail;
 		}
 		
@@ -223,7 +243,11 @@ class website
         $this->currency = $_REQUEST['website-default_currency'];
         $this->size_unit = $_REQUEST['website-default_size_unit'];
         $this->weight_unit = $_REQUEST['website-default_weight_unit'];
-        $this->purchase_conditions_path = $_REQUEST['website-purchase_conditions_path'];
+
+        $this->shop_logo            = $_REQUEST['website-shop_logo'];
+        $this->shop_address         = $_REQUEST['website-shop_address'];
+        $this->shop_legal_info      = $_REQUEST['website-shop_legal_info'];
+        $this->shop_purchase_conditions_path = $_REQUEST['website-shop_purchase_conditions_path'];
 
         // languages and locales
         $this->languages = array();
@@ -239,7 +263,9 @@ class website
             $variant = trim($language_variants[$li]);
             $code = $language_ids[$li];
             if(!empty($variant))
+            {
                 $code .= '_'.$variant;
+            }
 
             $this->languages[$code] = array(
                 'language' => $language_ids[$li],
@@ -268,7 +294,10 @@ class website
         // website aliases
         $this->aliases = array();
         if(empty($_POST['website-aliases-alias']))
+        {
             $_POST['website-aliases-alias'] = array();
+        }
+
         foreach($_POST['website-aliases-alias'] as $key => $value)
         {
             $value = trim($value);
@@ -276,7 +305,9 @@ class website
             {
                 $value_real = trim($_POST['website-aliases-real'][$key]);
                 if(!empty($value_real))
+                {
                     $this->aliases[$value] = $value_real;
+                }
             }
         }
 
@@ -303,16 +334,23 @@ class website
                         // multilang
                         $value = array();
                         if(!is_array($this->languages_list))
+                        {
                             $this->languages_list = array();
+                        }
+
                         foreach($this->languages_list as $lang)
+                        {
                             $value[$lang] = $_REQUEST['property-'.$theme_option->id.'-'.$lang];
+                        }
                         break;
 
                     case 'link':
                         // multilang and title+link
                         $value = array();
                         foreach($this->languages_list as $lang)
+                        {
                             $value[$lang] = $_REQUEST['property-'.$theme_option->id.'-'.$lang.'-link'].'##'.$_REQUEST['property-'.$theme_option->id.'-'.$lang.'-title'];
+                        }
                         break;
 
                     case 'date':
@@ -346,9 +384,13 @@ class website
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete($delete_related_content=true)
@@ -471,7 +513,7 @@ class website
                 contact_emails, homepage, default_timezone, 
                 metatag_title_order, metatag_description, metatag_keywords, metatags,
                 favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit,
-                purchase_conditions_path, 
+                shop_logo, shop_address, shop_legal_info, shop_purchase_conditions_path,
                 theme, theme_options, block_types
             )
             VALUES
@@ -520,8 +562,11 @@ class website
               :thousands_separator, 
               :currency, 
               :size_unit, 
-              :weight_unit,
-              :purchase_conditions_path,
+              :weight_unit,              
+              :shop_logo,
+              :shop_address,
+              :shop_legal_info,
+              :shop_purchase_conditions_path,
               :theme,
               :theme_options,
               :block_types
@@ -572,7 +617,10 @@ class website
                 ":currency" => value_or_default($this->currency, "dollar"),
                 ":size_unit" => value_or_default($this->size_unit, 'cm'),
                 ":weight_unit" => value_or_default($this->weight_unit, "g"),
-				":purchase_conditions_path" => value_or_default($this->purchase_conditions_path, ""),
+				":shop_logo" => value_or_default($this->shop_logo, ""),
+				":shop_address" => value_or_default($this->shop_address, ""),
+				":shop_legal_info" => value_or_default($this->shop_legal_info, ""),
+				":shop_purchase_conditions_path" => value_or_default($this->shop_purchase_conditions_path, ""),
 				":theme" => value_or_default($this->theme, ''),
 				":theme_options" => json_encode($this->theme_options),
                 ":block_types" => ""
@@ -580,7 +628,9 @@ class website
         );
 		
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		// finally we create the private folder
 		$this->id = $DB->get_last_id();
@@ -688,7 +738,10 @@ class website
                     currency = ?,
                     size_unit = ?,
                     weight_unit = ?,
-                    purchase_conditions_path = ?,
+                    shop_logo = ?,
+                    shop_address = ?,
+                    shop_legal_info = ?,
+                    shop_purchase_conditions_path = ?,
                     theme = ?,
                     theme_options = ?
                 WHERE id = '.$this->id,
@@ -738,14 +791,19 @@ class website
                 value_or_default($this->currency, "dollar"),
                 value_or_default($this->size_unit, 'cm'),
                 value_or_default($this->weight_unit, "g"),
-                value_or_default($this->purchase_conditions_path, ""),
+                value_or_default($this->shop_logo, ""),
+                value_or_default($this->shop_address, ""),
+                value_or_default($this->shop_legal_info, ""),
+                value_or_default($this->shop_purchase_conditions_path, ""),
                 value_or_default($this->theme, ""),
                 json_encode($this->theme_options)
             )
         );
 
 		if(!$ok)
-		    throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		// try to create any missing folder
         @mkdir(NAVIGATE_PRIVATE.'/'.$this->id, 0744, true);
@@ -889,19 +947,30 @@ class website
 	function language_compare($a, $b)
 	{
 		if(array_search($a->code, $this->languages_list) < array_search($b->code, $this->languages_list))
-			return -1;
+        {
+            return -1;
+        }
 		else
-			return 1;
+        {
+            return 1;
+        }
 	}
 	
 	function absolute_path($folder=true)
 	{	
 		$nvweb_absolute = (empty($this->protocol)? 'http://' : $this->protocol);
+
 		if(!empty($this->subdomain))
-			$nvweb_absolute .= $this->subdomain.'.';
-		$nvweb_absolute .= $this->domain;
+        {
+            $nvweb_absolute .= $this->subdomain.'.';
+        }
+
+        $nvweb_absolute .= $this->domain;
+
 		if(!empty($folder))
-			$nvweb_absolute .= $this->folder;
+        {
+            $nvweb_absolute .= $this->folder;
+        }
 
 		return $nvweb_absolute;
 	}
@@ -925,7 +994,9 @@ class website
     {
         $options = array();
         foreach($this->languages_list as $active_language_code)
+        {
             $options[$active_language_code] = language::name_by_code($active_language_code);
+        }
 
         return $options;
     }
@@ -949,19 +1020,27 @@ class website
         $content_css = array();
 
         if(defined('NAVIGATE_URL'))
+        {
             $content_css[] = NAVIGATE_URL . '/css/tools/tinymce.defaults.css';
+        }
         else
+        {
             $content_css[] = '/css/tools/tinymce.defaults.css';
+        }
 
         // deprecated field (will be removed at some point)
         if(!empty($this->tinymce_css))
+        {
             $content_css[] = $this->tinymce_css.'?bogus='.time();
+        }
 
         if(!empty($this->theme) && !empty($ws_theme))
         {
             $style = "";
             if(isset($this->theme_options->style))
+            {
                 $style = @$this->theme_options->style;
+            }
 
 			if(empty($style))
 			{
@@ -971,7 +1050,9 @@ class website
 			}
 
 	        if(($name=='content_selectable' && !isset($ws_theme->styles->$style->$name)) || empty($name))
-		        $name = 'content';
+            {
+                $name = 'content';
+            }
 
             if(!empty($style) && !empty($ws_theme->styles->$style->$name))
             {
@@ -979,9 +1060,13 @@ class website
                 foreach($style_content_css as $scc)
                 {
                     if(strpos($scc, 'http')===false && defined('NAVIGATE_URL'))
+                    {
                         $content_css[] = NAVIGATE_URL.'/themes/'.$this->theme.'/'.$scc.'?bogus='.time();
+                    }
                     else
+                    {
                         $content_css[] = $scc;
+                    }
                 }
             }
         }
@@ -1022,7 +1107,9 @@ class website
 	            foreach($content_css as $csa)
 	            {
 	                if(!empty($csa))
-	                    $content_html .= '<link rel="stylesheet" type="text/css" href="'.trim($csa).'" />'."\n";
+                    {
+                        $content_html .= '<link rel="stylesheet" type="text/css" href="'.trim($csa).'" />'."\n";
+                    }
 	            }
 
 	            $content_css = $content_html;
@@ -1032,7 +1119,9 @@ class website
 	            // do nothing, already an array
             }
 	        else
-	            $content_css = implode(',', $content_css);
+            {
+                $content_css = implode(',', $content_css);
+            }
         }
 
         return $content_css;
@@ -1043,12 +1132,16 @@ class website
         // thumbnails
         $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/thumbnails/*x*');
         for($t=0; $t < count($files); $t++)
+        {
             @unlink($files[$t]);
+        }
 
         // feeds
         $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.feed');
         for($t=0; $t < count($files); $t++)
+        {
             @unlink($files[$t]);
+        }
 
         $this->purge_pages_cache();
     }
@@ -1057,7 +1150,9 @@ class website
     {
         $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/cache/*.page');
         for($t=0; $t < count($files); $t++)
+        {
             @unlink($files[$t]);
+        }
     }
 
     public function bind_events()
@@ -1096,7 +1191,9 @@ class website
 
         $last_cron = null;
         if(file_exists($website_cron_path))
+        {
             $last_cron = file_get_contents($website_cron_path);
+        }
 
         // we only run the following checks once a minute (on the next visit)
         // when was the last cron execution?
@@ -1111,10 +1208,12 @@ class website
             if($current['pagecache_enabled'])
             {
                 $next_change = $this->find_next_publication_event_time($last_cron);
-                if (!empty($next_change))
+                if(!empty($next_change))
                 {
-                    if ($next_change < core_time()) // the change had to happen since the last cron execution?
+                    if($next_change < core_time()) // the change had to happen since the last cron execution?
+                    {
                         $this->purge_cache();
+                    }
                     // else, the change will happen at a later time, the current cache is still valid
                 }
             }
@@ -1134,7 +1233,9 @@ class website
         // item: date_published
 
         if(is_null($from_time))
+        {
             $from_time = core_time();
+        }
 
         $DB->query('
             SELECT MIN(date_published) AS next_change 
@@ -1148,7 +1249,9 @@ class website
         $rsnc = intval($rsnc[0]);
 
         if(!empty($rsnc))
+        {
             $next_change = $rsnc;
+        }
 
         // item: date_unpublish
 
@@ -1162,7 +1265,9 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
         // structure: date_published
 
@@ -1176,7 +1281,9 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
 
         // structure: date_unpublish
@@ -1191,7 +1298,9 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
 
         // block: date_published
@@ -1206,7 +1315,9 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
 
         // block: date_unpublish
@@ -1221,7 +1332,9 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
 
         // product: date_published
@@ -1236,7 +1349,9 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
 
         // product: date_unpublish
@@ -1251,10 +1366,14 @@ class website
 
         $rsnc = $DB->result('next_change');
         if($next_change > intval($rsnc[0]) && !empty($rsnc[0]))
+        {
             $next_change = intval($rsnc[0]);
+        }
 
         if(!$next_change || $next_change == PHP_INT_MAX)
-            $next_change = 0; // no publication event found!
+        {
+            $next_change = 0;
+        } // no publication event found!
 
         return $next_change;
     }
@@ -1269,7 +1388,9 @@ class website
         $DB->query('SELECT * FROM nv_websites WHERE id = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }
@@ -1638,7 +1759,9 @@ class website
 
         $locales = array();
         foreach($win_loc as $short => $locale)
+        {
             $locales[$locale['locale']] = $locale['lang_name'].' ('.$countries[$locale['country']].') ['.$short.']';
+        }
 
         return $locales;
     }
@@ -1666,27 +1789,37 @@ class website
         foreach($tmp as $loc)
         {
             if(in_array($loc, array('C', 'POSIX')))
+            {
                 continue;
+            }
 
             if(strpos($loc, '.')===false)
             {
                 if(in_array($loc.'.utf8', $tmp))
+                {
                     continue;
+                }
             }
             else
             {
                 // there is a dot in the locale name
                 $check = substr($loc, 0, strpos($loc, '.')).'.utf8';
                 if(in_array($check, $tmp) && $check!=$loc)
+                {
                     continue;
+                }
             }
 
             $language = @$languages[substr($loc, 0, 2)];
             if(empty($language))
+            {
                 $language = '?';
+            }
             $country = @$countries[substr($loc, 3,2)];
             if(!empty($country))
+            {
                 $country = ' ('.$country.')';
+            }
 
             $locales[$loc] = $language.$country.' ['.$loc.']';
         }
@@ -1704,13 +1837,19 @@ class website
 		if(is_array($homepage_routes))
 		{
 			if(isset($current) && !empty($current['lang']))
-				$homepage = $homepage_routes[$current['lang']];
+            {
+                $homepage = $homepage_routes[$current['lang']];
+            }
 
 			if(empty($homepage))
-				$homepage = array_shift($homepage_routes);
+            {
+                $homepage = array_shift($homepage_routes);
+            }
 		}
 		else
-			$homepage = $homepage_routes;
+        {
+            $homepage = $homepage_routes;
+        }
 
 		return $homepage;
 	}
@@ -1722,7 +1861,9 @@ class website
         {
             $homepage_relative_url = path::loadElementPaths('structure', $homepage_relative_url);
 	        if(!$all_languages)
+            {
                 $homepage_relative_url = array_shift($homepage_relative_url);
+            }
         }
 
         return $homepage_relative_url;

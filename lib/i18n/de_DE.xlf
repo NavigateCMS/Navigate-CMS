@@ -4068,6 +4068,38 @@
 				<target>Bestellübersicht</target>
 			</trans-unit>
 
+			<trans-unit id="810">
+				<source>Qty.</source>
+				<target>Qtt.</target>
+				<note>Quantity abbreviation</note>
+			</trans-unit>
+
+			<trans-unit id="811">
+				<source>Dis.</source>
+				<target>Rab.</target>
+				<note>Discount abbreviation</note>
+			</trans-unit>
+
+			<trans-unit id="812" approved="yes">
+				<source>Logo</source>
+				<target>Logo</target>
+			</trans-unit>
+
+			<trans-unit id="813">
+				<source>(for emails and documents)</source>
+				<target>(für E-Mails und Dokumente)</target>
+			</trans-unit>
+
+			<trans-unit id="814">
+				<source>Shop address information</source>
+				<target>Informationen zur Geschäftsadresse</target>
+			</trans-unit>
+
+			<trans-unit id="815">
+				<source>Legal information</source>
+				<target>Rechtsinformation</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

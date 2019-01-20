@@ -4080,6 +4080,38 @@
                 <target>Resum de la comanda</target>
             </trans-unit>
 
+            <trans-unit id="810" approved="yes">
+                <source>Qty.</source>
+                <target>Qtt.</target>
+                <note>Quantity abbreviation</note>
+            </trans-unit>
+
+            <trans-unit id="811" approved="yes">
+                <source>Dis.</source>
+                <target>Dte.</target>
+                <note>Discount abbreviation</note>
+            </trans-unit>
+
+            <trans-unit id="812" approved="yes">
+                <source>Logo</source>
+                <target>Logo</target>
+            </trans-unit>
+
+            <trans-unit id="813" approved="yes">
+                <source>(for emails and documents)</source>
+                <target>(per a e-mails i documents)</target>
+            </trans-unit>
+
+            <trans-unit id="814" approved="yes">
+                <source>Shop address information</source>
+                <target>Adreça de la botiga</target>
+            </trans-unit>
+
+            <trans-unit id="815" approved="yes">
+                <source>Legal information</source>
+                <target>Informació legal</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

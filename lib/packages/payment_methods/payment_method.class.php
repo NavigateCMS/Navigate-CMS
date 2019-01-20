@@ -53,7 +53,10 @@ class payment_method
         $fields = array('title', 'description', 'payment-above', 'payment-below');
         foreach($_REQUEST as $key => $value)
         {
-            if(empty($value)) continue;
+            if(empty($value))
+            {
+                continue;
+            }
 
             foreach($fields as $field)
             {
@@ -66,9 +69,13 @@ class payment_method
     public function save()
     {
         if(!empty($this->id))
+        {
             return $this->update();
+        }
         else
+        {
             return $this->insert();
+        }
     }
 
     public function delete()
@@ -142,7 +149,9 @@ class payment_method
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         webdictionary::save_element_strings('payment_method', $this->id, $this->dictionary, $this->website);
 
@@ -160,7 +169,9 @@ class payment_method
         if(!empty($this->extension))
         {
             if(file_exists(NAVIGATE_PATH.'/plugins/'.$this->extension.'/'.$this->extension.'.php'))
+            {
                 @include_once(NAVIGATE_PATH.'/plugins/'.$this->extension.'/'.$this->extension.'.php');
+            }
 
             if(function_exists('nvweb_'.$this->extension.'_checkout'))
             {
@@ -186,9 +197,13 @@ class payment_method
             if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
             {
                 if($raw)
+                {
                     $out = $this->properties[$p]->value;
+                }
                 else
+                {
                     $out = $this->properties[$p]->value;
+                }
 
                 break;
             }
@@ -226,7 +241,10 @@ class payment_method
 
         for($i=0; $i < count($item); $i++)
         {
-            if(empty($item[$i])) continue;
+            if(empty($item[$i]))
+            {
+                continue;
+            }
 
             $ok = $DB->execute('
                 UPDATE nv_payment_methods
@@ -236,7 +254,9 @@ class payment_method
             );
 
             if(!$ok)
+            {
                 return array("error" => $DB->get_last_error());
+            }
         }
 
         return true;
@@ -248,7 +268,9 @@ class payment_method
         global $DB;
 
         if(empty($ws))
+        {
             $ws = $website->id;
+        }
 
         $DB->query('
             SELECT *
@@ -298,7 +320,9 @@ class payment_method
         $cols[] = 'pm.id' . $like;
 
         if(!empty($dict_ids))
+        {
             $cols[] = 'pm.id IN ('.implode(',', $dict_ids).')';
+        }
 
         $where = ' AND ( ';
         $where.= implode( ' OR ', $cols);
@@ -316,7 +340,9 @@ class payment_method
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

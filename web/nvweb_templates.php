@@ -9,13 +9,14 @@
 function nvweb_template_load($template_id=null)
 {
 	global $current;
-	global $DB;
 	global $website;
 	
 	$template = '';
 
 	if(empty($template_id))
+    {
         $template_id = $current['template'];
+    }
 
     if(!empty($template_id))
 	{
@@ -23,19 +24,31 @@ function nvweb_template_load($template_id=null)
 		$template->load($template_id);
 
 		if(!$template->enabled)
-			nvweb_clean_exit();
+        {
+            nvweb_clean_exit();
+        }
 
 		if($template->permission == 2)
-			nvweb_clean_exit();
+        {
+            nvweb_clean_exit();
+        }
 		else if($template->permission == 1 && empty($_SESSION['APP_USER#'.APP_UNIQUE]))
-			nvweb_clean_exit();
+        {
+            nvweb_clean_exit();
+        }
 
 		if(file_exists($template->file))
-			$template->file_contents = @file_get_contents($template->file);	// from theme
+        {
+            $template->file_contents = @file_get_contents($template->file);
+        }	// from theme
 		else if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$template->file))
-			$template->file_contents = @file_get_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$template->file);
+        {
+            $template->file_contents = @file_get_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$template->file);
+        }
         else
+        {
             $template->file_contents = 'NV error: template file not found! ('.$template->file.')';
+        }
 	}
 	
 	return $template;
@@ -69,7 +82,9 @@ function nvweb_dictionary_load()
 	}
 	
 	if(!empty($theme->dictionary))
-		$dictionary = $theme->dictionary;
+    {
+        $dictionary = $theme->dictionary;
+    }
 
 	// webdictionary custom entries
 	$DB->query('SELECT node_id, text
@@ -93,7 +108,10 @@ function nvweb_dictionary_load()
 						
 	$data = $DB->result();
 	
-	if(!is_array($data)) $data = array();
+	if(!is_array($data))
+    {
+        $data = array();
+    }
 	
 	foreach($data as $item)
 	{
@@ -198,7 +216,9 @@ function nvweb_template_parse($template)
 				$tag['attributes']['nvweb_html'] = $html;	// always pass the current buffered output to the webget
 				
 				if(function_exists($fname))
-					$content = $fname($tag['attributes']);
+                {
+                    $content = $fname($tag['attributes']);
+                }
 
                 debugger::stop_timer('nvweb-templates-webget-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]');
 				break;
@@ -214,20 +234,30 @@ function nvweb_template_parse($template)
 			case 'url':
                 $content = '';
                 if(!empty($tag['attributes']['lang']))
+                {
                     $lang = $tag['attributes']['lang'];
+                }
                 else
+                {
                     $lang = $current['lang'];
+                }
 
 				if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['id']))
 				{
 					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
-					if(!empty($url)) $content .= $url;
+					if(!empty($url))
+                    {
+                        $content .= $url;
+                    }
 				}
 				else if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['property']))
 				{
 					$tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
 					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
-					if(!empty($url)) $content .= $url;
+					if(!empty($url))
+                    {
+                        $content .= $url;
+                    }
 				}
 				else if(!empty($tag['attributes']['type']) && empty($tag['attributes']['id']))
                 {
@@ -236,14 +266,21 @@ function nvweb_template_parse($template)
                     {
                         $category = $current['object']->parent;
                         if(empty($category))
+                        {
                             $category = $current['object']->id;
+                        }
                     }
                     else
+                    {
                         $category = $current['object']->category;
+                    }
 
                     $url = nvweb_source_url($tag['attributes']['type'], $category, $lang);
 
-                    if(!empty($url)) $content .= $url;
+                    if(!empty($url))
+                    {
+                        $content .= $url;
+                    }
                 }
 				else
 				{
@@ -791,62 +828,11 @@ function nvweb_templates_find_closing_list_tag($html, $offset)
     }
 
     if(!$found)
-        $closing_tag_position = false;
-
-    return $closing_tag_position;
-
-
-    /*
-
-
-    // no support for nested lists
-    // $template_end = strpos($html, '</nv>', $tag['offset']);
-    // return $template_end;
-
-    // supporting nested lists
-    $loops = 0;
-    $found = false;
-
-    while(!$found)
     {
-        // find next '</nv>' occurrence from offset
-        $next_closing = stripos($html, '</nv>', $offset);
-
-        // check if there is a special '<nv>' opening tag (list, search, conditional) before the next closing found tag
-        $next_opening = stripos_array(
-            $html,
-            array(
-                '<nv object="list" ',
-                '<nv object="search" ',
-                '<nv object="conditional" '
-            ),
-            $offset
-        );
-
-        if(!$next_opening)
-        {
-            $found = true;
-        }
-        else
-        {
-            $found = $next_opening > $next_closing;
-
-            if(!$found)
-            {
-                $offset = $next_closing + strlen('</nv>');
-                $loops++;
-            }
-        }
-
-        if(!$found && ($offset > strlen($html) || $loops > 1000))
-            break;
+        $closing_tag_position = false;
     }
 
-    if(!$found)
-        $next_closing = false;
-
-    return $next_closing;
-    */
+    return $closing_tag_position;
 }
 
 function nvweb_replace_tag_contents($tag_id, $content, $html_source_code)
@@ -899,7 +885,9 @@ function nvweb_real_ip()
 {
      $ip = false;
      if(!empty($_SERVER['HTTP_CLIENT_IP']))
-          $ip = $_SERVER['HTTP_CLIENT_IP'];
+     {
+         $ip = $_SERVER['HTTP_CLIENT_IP'];
+     }
 
      if(!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
      {
@@ -959,7 +947,12 @@ function nvweb_country_language()
         {
             $langs = array_combine($lang_parse[1], $lang_parse[4]);
             foreach ($langs as $lang => $val)
-                if($val === '') $langs[$lang] = 1;
+            {
+                if($val === '')
+                {
+                    $langs[$lang] = 1;
+                }
+            }
             arsort($langs, SORT_NUMERIC);
         }
 
@@ -1134,7 +1127,10 @@ function nvweb_template_tweaks($html)
     $tags = nvweb_tags_extract($html, array('video'), false, true, 'UTF-8');
 	foreach($tags as $tag)
 	{
-		if(!isset($tag['attributes']['poster'])) continue;
+		if(!isset($tag['attributes']['poster']))
+        {
+            continue;
+        }
 		if(substr($tag['attributes']['poster'], 0, 7)!='http://' &&
 		   substr($tag['attributes']['poster'], 0, 8)!='https://')
 		{
@@ -1259,7 +1255,10 @@ function nvweb_template_tweaks($html)
             $replacements[$tag['full_tag']] = $tag['new'];
 		}
 
-		if(!isset($tag['attributes']['src'])) continue;
+		if(!isset($tag['attributes']['src']))
+        {
+            continue;
+        }
 
 		if(substr($tag['attributes']['src'], 0, 7)!='http://' && 
 		   substr($tag['attributes']['src'], 0, 8)!='https://' &&
@@ -1352,7 +1351,10 @@ function nvweb_template_tweaks($html)
     $replacements = array();
 	foreach($tags as $tag)
 	{
-		if(!isset($tag['attributes']['src'])) continue;
+		if(!isset($tag['attributes']['src']))
+        {
+            continue;
+        }
 		$src = $tag['attributes']['src'];
 		
 		$tag['new'] = '';
@@ -1477,7 +1479,9 @@ function nvweb_template_oembed_parse($html)
             $text = $tag['contents'];
 
             if(strpos(@$tag['attributes']['class'], 'nv_oembedded')!==false)
+            {
                 continue;
+            }
 
             // find all urls in content as PLAIN TEXT urls
             if(preg_match_all($reg_exUrl, strip_tags($text), $url))
@@ -1487,7 +1491,9 @@ function nvweb_template_oembed_parse($html)
                 {
                     $replacement = nvweb_template_oembed_url($match);
                     if($replacement!=$match)
+                    {
                         $text = str_replace($match, '<div class="nv_oembedded">'.$replacement.'</div>', $text);
+                    }
                 }
             }
 
@@ -1515,7 +1521,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://api.twitter.com/1/statuses/oembed.json?lang='.$current['lang'].'&url='.urlencode($url); // &omit_script=true
         $response = nvweb_template_oembed_cache('twitter', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
     // Youtube: http://www.youtube.com?watch=3MteSlpxCpo
     else if(strpos($url, 'www.youtube.com/watch'))
@@ -1523,7 +1531,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://www.youtube.com/oembed?url='.urlencode($url).'&format=json';
         $response = nvweb_template_oembed_cache('youtube', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
     // Vimeo: http://vimeo.com/channels/staffpicks/113397445
     else if(strpos($url, 'www.vimeo.com/') || strpos($url, 'vimeo.com/'))
@@ -1531,7 +1541,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://vimeo.com/api/oembed.json?url='.urlencode($url);
         $response = nvweb_template_oembed_cache('vimeo', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
 
     // Instagram: https://www.instagram.com/p/BInLvYQDSHe/
@@ -1543,7 +1555,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://api.instagram.com/oembed?url='.urlencode($url);
         $response = nvweb_template_oembed_cache('instagram', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
     // Flickr: http://www.flickr.com/photos/bees/2362225867
     else if(strpos($url, 'www.flickr.com/photos/'))
@@ -1551,7 +1565,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://www.flickr.com/services/oembed.json?url='.urlencode($url);
         $response = nvweb_template_oembed_cache('flickr', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
     // DailyMotion: http://www.dailymotion.com/video/x40gjsb_stock-video-category-nature-landscapes-corsican-nature-island-of-beauty-sea-beach_shortfilms
     else if(strpos($url, 'www.dailymotion.com/video/'))
@@ -1559,7 +1575,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://www.dailymotion.com/services/oembed?format=json&url='.urlencode($url);
         $response = nvweb_template_oembed_cache('dailymotion', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
     // Scribd: https://www.scribd.com/doc/110799637
     else if(strpos($url, 'www.scribd.com/doc/'))
@@ -1567,7 +1585,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://www.scribd.com/services/oembed?format=json&url='.urlencode($url);
         $response = nvweb_template_oembed_cache('scribd', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
     // Soundcloud: https://soundcloud.com/elvenlied/ivan-torrent-icarus-feat-julie
     else if(strpos($url, 'soundcloud.com/'))
@@ -1575,7 +1595,9 @@ function nvweb_template_oembed_url($url)
         $oembed_url = 'https://soundcloud.com/oembed?format=json&url='.urlencode($url);
         $response = nvweb_template_oembed_cache('soundcloud', $oembed_url);
         if(!empty($response->html))
+        {
             $out = $response->html;
+        }
     }
 
     return $out;
@@ -1597,14 +1619,20 @@ function nvweb_template_oembed_cache($provider, $oembed_url, $minutes=43200)
         $response = core_curl_post($oembed_url, NULL, NULL, 60, "get");
 
 	    if($response=='Not found')
-		    $response = '';
+        {
+            $response = '';
+        }
 
         if(!empty($response))
+        {
             file_put_contents($file, $response);
+        }
     }
 
     if(!empty($response))
+    {
         $response = json_decode($response);
+    }
 
     return $response;
 }
@@ -1621,7 +1649,9 @@ function nvweb_template_processes($html)
 
 		$text = $theme->t("subscribed_ok");
 		if(empty($text) || $text=="subscribed_ok")
-			$text = t(37, "E-Mail confirmed");
+        {
+            $text = t(37, "E-Mail confirmed");
+        }
 
 		nvweb_after_body(
 			"html",
@@ -1651,7 +1681,9 @@ function nvweb_template_processes($html)
 
 		$text = $theme->t("invalid_confirmation");
 		if(empty($text) || $text=="invalid_confirmation")
-			$text = t(777, "Sorry, confirmation link is invalid or has expired.");
+        {
+            $text = t(777, "Sorry, confirmation link is invalid or has expired.");
+        }
 
 		nvweb_after_body(
 			"html",
@@ -1681,7 +1713,9 @@ function nvweb_template_processes($html)
 
         $text = $theme->t("unsubscribed_ok");
         if(empty($text) || $text=="unsubscribed_ok")
+        {
             $text = t(654, "Cancelled subscription");
+        }
 
         nvweb_after_body(
             "html",

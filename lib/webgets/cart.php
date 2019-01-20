@@ -1122,7 +1122,7 @@ function nvweb_cart_identification_page($cart)
     $sign_in_symbol = '';
     $sign_up_symbol = '';
     $pwa_symbol = '';
-    $purchase_conditions_link = nvweb_prepare_link($website->purchase_conditions_path);
+    $purchase_conditions_link = nvweb_prepare_link($website->shop_purchase_conditions_path);
 
     if($fontawesome_available)
     {

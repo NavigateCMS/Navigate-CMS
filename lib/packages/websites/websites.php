@@ -83,11 +83,17 @@ function run()
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
 
 					$DB->queryLimit(
@@ -101,7 +107,6 @@ function run()
 
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
-
 					//echo $DB->get_last_error();
 
 					$out = array();
@@ -123,12 +128,16 @@ function run()
 						}
 
 						if(!empty($dataset[$i]['subdomain']))
-							$homepage .= $dataset[$i]['subdomain'].'.';
+                        {
+                            $homepage .= $dataset[$i]['subdomain'].'.';
+                        }
 						$homepage .= $dataset[$i]['domain'].$dataset[$i]['folder'].$homepage_relative_url;
 
                         $favicon = '';
                         if(!empty($dataset[$i]['favicon']))
+                        {
                             $favicon = '<img src="'.NVWEB_OBJECT.'?type=img&id='.$dataset[$i]['favicon'].'&width=24&height=24" align="absmiddle" height="24" />';
+                        }
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
@@ -157,6 +166,7 @@ function run()
 			if(isset($_REQUEST['form-sent']) && $user->permission('websites.edit')=='true')
 			{
 				$item->load_from_post();
+
 				try
 				{
 					$item->save();
@@ -171,8 +181,11 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);
 				}
+
 				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->name, json_encode($_REQUEST));
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'save', $item->name, json_encode($_REQUEST));
+                }
 			}
 			else
 			{
@@ -193,7 +206,9 @@ function run()
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
 
 					if(!empty($item->id))
-						users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->name, json_encode($_REQUEST));
+                    {
+                        users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->name, json_encode($_REQUEST));
+                    }
 
                     // if we don't have any websites, tell user a new one will be created
                     $test = $DB->query_single('id', 'nv_websites');
@@ -244,7 +259,9 @@ function run()
             $website->mail_ignore_ssl_security = $_REQUEST['mail_ignore_ssl_security'];
 
 			if(!empty($_REQUEST['mail_password']))
-				$website->mail_password = $_REQUEST['mail_password'];
+            {
+                $website->mail_password = $_REQUEST['mail_password'];
+            }
 
 			$ok = navigate_send_email(APP_NAME, APP_NAME.'<br /><br />'.NAVIGATE_URL, $_REQUEST['send_to']);
 			echo json_encode($ok);
@@ -303,7 +320,9 @@ function run()
 				echo ($ok? 'true' : 'false');
 
 				if($ok)
-					users_log::action($_REQUEST['fid'], $website_id, 'replace_urls', "", json_encode($_REQUEST));
+                {
+                    users_log::action($_REQUEST['fid'], $website_id, 'replace_urls', "", json_encode($_REQUEST));
+                }
 			}
 			else
 			{
@@ -341,7 +360,9 @@ function run()
 				');
 
 				if($ok)
-					users_log::action($_REQUEST['fid'], $website_id, 'remove_content', "", json_encode($_REQUEST));
+                {
+                    users_log::action($_REQUEST['fid'], $website_id, 'remove_content', "", json_encode($_REQUEST));
+                }
 
 				echo ($ok? 'true' : $DB->error());
 			}
@@ -380,7 +401,9 @@ function websites_list()
     );
 
 	if(@$_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
 	$navitable->sortBy('id');
@@ -413,12 +436,18 @@ function websites_form($item)
 
 	$theme = new theme();
 	if(!empty($item->theme))
-		$theme->load($item->theme);
+    {
+        $theme->load($item->theme);
+    }
 
 	if(empty($item->id))
-		$navibars->title(t(241, 'Websites').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(241, 'Websites').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(241, 'Websites').' / '.t(170, 'Edit').' ['.$item->id.']');
+    {
+        $navibars->title(t(241, 'Websites').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
     if($user->permission('websites.edit')=='true')
     {
@@ -712,7 +741,9 @@ function websites_form($item)
 
 	$homepage_url = "";
 	if(!empty($item->homepage))
-		$homepage_url = $item->homepage_from_structure();
+    {
+        $homepage_url = $item->homepage_from_structure();
+    }
 
 	$navibars->add_tab_content_row(
 		array(
@@ -1003,7 +1034,9 @@ function websites_form($item)
     $languages = array();
 
     foreach($languages_rs as $lang)
+    {
         $languages[$lang->name] = $lang->code;
+    }
 
     if(empty($item->languages))
     {
@@ -1027,7 +1060,9 @@ function websites_form($item)
 	foreach($item->languages as $lcode => $ldef)
 	{
 		if(!in_array($ldef['system_locale'], $locales))
-			$locales[$ldef['system_locale']] = '? ['.$ldef['system_locale'].']';
+        {
+            $locales[$ldef['system_locale']] = '? ['.$ldef['system_locale'].']';
+        }
 	}
 
     $p = 0;
@@ -1040,9 +1075,13 @@ function websites_form($item)
         $select_language = $naviforms->select_from_object_array('language-id['.$p.']', $languages_rs, 'code', 'name', $ldef['language'], ' width: 150px; ');
 
         if(empty($locales))
+        {
             $select_locale   = $naviforms->textfield('language-locale['.$p.']', $ldef['system_locale'], '300px');
+        }
         else
+        {
             $select_locale   = $naviforms->selectfield('language-locale['.$p.']', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
+        }
 
 	    $uid = uniqid();
         $table->addRow($p, array(
@@ -1191,7 +1230,9 @@ function websites_form($item)
     $timezones = property::timezones();
 
     if(empty($item->default_timezone))
+    {
         $item->default_timezone = date_default_timezone_get();
+    }
 
     $navibars->add_tab_content_row(
         array(
@@ -1338,7 +1379,9 @@ function websites_form($item)
 
     // keep the default value for Navigate CMS < 2.0
     if(empty($item->word_separator))
+    {
         $item->word_separator = "_";
+    }
 
 	$navibars->add_tab_content_row(
         array(
@@ -1435,9 +1478,13 @@ function websites_form($item)
 
     $webuser_name = '';
     if($item->comments_default_moderator=="c_author")
+    {
         $webuser_name = t(545, 'Content author');
+    }
     else if(!empty($item->comments_default_moderator))
+    {
         $webuser_name = $DB->query_single('username', 'nv_users', ' id = '.intval($item->comments_default_moderator));
+    }
 
 	$moderator_id = array('c_author');
 	$moderator_username = array('{'.t(545, 'Content author').'}');
@@ -1520,14 +1567,6 @@ function websites_form($item)
                 ),
                 $item->page_cache
             )
-        )
-    );
-
-    // (FUTURE) TAB Shop
-
-    $navibars->add_tab_content_row(array(
-            '<label>'.t(773, 'Purchase conditions').'</label>',
-            $naviforms->pathfield('website-purchase_conditions_path', $item->purchase_conditions_path, null, null, null)
         )
     );
 
@@ -1651,7 +1690,10 @@ function websites_form($item)
 	');
 
 
-	if(empty($item->contact_emails))	$item->contact_emails = array();
+	if(empty($item->contact_emails))
+    {
+        $item->contact_emails = array();
+    }
 
     $navibars->add_tab_content_row(
         array(
@@ -1871,7 +1913,9 @@ function websites_form($item)
         $navibars->add_tab(t(368, 'Theme').': '.$theme->title);
 
         if(!is_array($theme->options))
+        {
             $theme->options = array();
+        }
 
         // show a language selector (only if it's a multilanguage website and has properties)
         if(!empty($theme->options) && count($item->languages) > 1)
@@ -1904,7 +1948,9 @@ function websites_form($item)
         // 1: get available style IDs
         $styles_values = array_keys((array)$theme->styles);
         if(!is_array($styles_values))
+        {
             $styles_values = array();
+        }
 
         // 2: prepare array of style ID => style name
         $styles = array();
@@ -1912,7 +1958,9 @@ function websites_form($item)
         {
             $styles[$sv] = $theme->styles->$sv->name;
             if(empty($styles[$sv]))
+            {
                 $styles[$sv] = $sv;
+            }
 
             $styles[$sv] = $theme->t($styles[$sv]);
         }
@@ -1937,7 +1985,49 @@ function websites_form($item)
         }
 
 	    navigate_property_layout_scripts($item->id);
+
+        // Shop tab, if theme is compatible
+        if($theme->shop)
+        {
+            $navibars->add_tab(t(10, 'Shop'));
+
+            // logo for emails and documents (PDF)
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(812, 'Logo').'</label>',
+                    $naviforms->dropbox('website-shop_logo', $item->shop_logo, "image"),
+                    '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
+                )
+            );
+
+            // shop address information
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(814, 'Shop address information').'</label>',
+                    $naviforms->textarea('website-shop_address', $item->shop_address),
+                    '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
+                )
+            );
+
+            // legal stuff for emails and documents (PDF)
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(815, 'Legal information').'</label>',
+                    $naviforms->textarea('website-shop_legal_info', $item->shop_legal_info),
+                    '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
+                )
+            );
+
+            $navibars->add_tab_content_row(array(
+                    '<label>'.t(773, 'Purchase conditions').'</label>',
+                    $naviforms->pathfield('website-shop_purchase_conditions_path', $item->shop_purchase_conditions_path, null, null, null)
+                )
+            );
+        }
     }
+
+
+
 
     $events->trigger(
         'websites',

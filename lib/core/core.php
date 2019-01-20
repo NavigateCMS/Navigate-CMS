@@ -6,7 +6,7 @@
  * @copyright Copyright (C) 2010-2019 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
- * @version 2.8.7 2018-12-15
+ * @version 2.8.8 2019-01-20
  *
  */
 
@@ -90,7 +90,9 @@ function protect($text, $wrapped_by="", $keep_numeric=false)
 	global $DB;
 
     if($keep_numeric && is_numeric($text))
+    {
         return $text;
+    }
 
 	return $DB->protect($text, $wrapped_by);
 }
@@ -121,7 +123,9 @@ function core_run()
 	$fid = 'dashboard'; // default function
 
 	if(isset($_REQUEST['fid']))
-		$fid = core_special_chars($_REQUEST['fid']);
+    {
+        $fid = core_special_chars($_REQUEST['fid']);
+    }
 
 	$f = core_load_function($fid);
 
@@ -130,7 +134,9 @@ function core_run()
         // load first function available
         $fid = $menu_layout->menus[0]->items[0]->codename;
         if(empty($fid))
+        {
             $fid = "unknown";
+        }
         else
         {
             header('location: '.NAVIGATE_MAIN.'?fid='.$fid);
@@ -144,7 +150,9 @@ function core_run()
 		$content = run();
 	}
 	else
-		$content = 'function '.$fid.': <strong>'.$f->codename.'</strong> has not been found!';
+    {
+        $content = 'function '.$fid.': <strong>'.$f->codename.'</strong> has not been found!';
+    }
 		
 	return $content;	
 }
@@ -165,10 +173,14 @@ function core_terminate($redirect_to="")
 
 	session_write_close();	
 	if($DB)
-		$DB->disconnect();
+    {
+        $DB->disconnect();
+    }
 
     if(!empty($redirect_to))
+    {
         header('Location: '.$redirect_to);
+    }
 
     flush();
     exit;
@@ -240,7 +252,9 @@ function core_load_function($fid)
             $func = $DB->first();
 
             if(!$menu_layout->function_is_displayed($func->id))
+            {
                 $func = false;
+            }
     }
 
     return $func;
@@ -265,7 +279,9 @@ function core_date2ts($date)
     list($date, $time) = $aDate;
 
 	if(!empty($time))
+    {
         list($hour, $minute) = explode(":", $time);
+    }
 	else			  
 	{
 		$hour = 0;
@@ -273,7 +289,9 @@ function core_date2ts($date)
 	}
 
     if(empty($user->timezone))
+    {
         $user->timezone = 'UTC';
+    }
 	
 	switch($user->date_format)
 	{
@@ -326,14 +344,21 @@ function core_ts2date($timestamp, $time=false)
 	$format = $user->date_format;
 
     if(empty($format))
+    {
         $format = "Y-m-d H:i";
+    }
 
-	if(!$time) $format = str_replace('H:i', '', $format);
+	if(!$time)
+    {
+        $format = str_replace('H:i', '', $format);
+    }
 
     $user_timezone = 'UTC';
 
     if(!empty($user->timezone))
+    {
         $user_timezone = $user->timezone;
+    }
 
 	$date = new DateTime();		
 	if(version_compare(PHP_VERSION, '5.3.0') < 0)
@@ -372,49 +397,73 @@ function core_ts2elapsed_time($timestamp)
     else if($minutes <= 60)
     {
         if($minutes==1)
+        {
             $out = t(565, "one minute ago");
+        }
         else
+        {
             $out = t(566, "%m minutes ago", array('%m' => $minutes));
+        }
     }
     //Hours
     else if($hours <=24)
     {
         if($hours==1)
+        {
             $out = t(567, "an hour ago");
+        }
         else
+        {
             $out = t(568, "%h hours ago", array('%h' => $hours));
+        }
     }
     //Days
     else if($days <= 7)
     {
         if($days==1)
+        {
             $out = t(569, "yesterday");
+        }
         else
+        {
             $out = t(570, "%d days ago", array('%d' => $days));
+        }
     }
     //Weeks
     else if($weeks <= 4.3)
     {
         if($weeks==1)
+        {
             $out = t(571, "a week ago");
+        }
         else
+        {
             $out = t(572, "%w weeks ago", array('%w' => $weeks));
+        }
     }
     //Months
-    else if($months <=12)
+    else if($months <= 12)
     {
         if($months==1)
+        {
             $out = t(573, "a month ago");
+        }
         else
+        {
             $out = t(574, "%m months ago", array('%m' => $months));
+        }
     }
     //Years
     else
     {
         if($years==1)
+        {
             $out = t(575, "one year ago");
+        }
         else
+        {
             $out = t(576, "%y years ago", array('%y' => $years));
+        }
     }
 
     return $out;
@@ -433,7 +482,9 @@ function core_time()
 	    return $ts->format("U");
     }
     else
+    {
         return time();
+    }
 }
 
 /**
@@ -517,11 +568,20 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
     $mail->CharSet = 'UTF-8';
 
     if($website->mail_mailer=='sendmail')
-        $mail->IsSendmail(); // telling the class to use Sendmail
+    {
+        // telling the class to use Sendmail
+        $mail->IsSendmail();
+    }
     else if($website->mail_mailer=='mail')
-        $mail->IsMail(); // telling the class to use PHP Mail
+    {
+        // telling the class to use PHP Mail
+        $mail->IsMail();
+    }
     else
-        $mail->IsSMTP(); // telling the class to use SMTP
+    {
+        // telling the class to use SMTP
+        $mail->IsSMTP();
+    }
 
     try
     {
@@ -530,7 +590,10 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         $mail->Port       = $website->mail_port;
 
         if($website->mail_security=='1')    // SSL/TLS
+        {
             $mail->SMTPSecure = "ssl";
+        }
+
         if($website->mail_security=='2')    // STARTTLS
         {
             $mail->SMTPSecure = "tls";
@@ -563,14 +626,20 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         if(!is_array($recipients))	// single recipient or several emails (multiline)
         {
             if(strpos($recipients, "\n")!=false)
+            {
                 $recipients = explode("\n", $recipients);
+            }
             else
+            {
                 $recipients = array($recipients);
+            }
         }
 
         $from_email_address = $website->mail_address;
         if(empty($from_email_address))
-            $from_email_address = 'no-reply@website.com';
+        {
+            $from_email_address = 'no-reply@'.$website->domain;
+        }
 
         $mail->SetFrom($from_email_address, $website->name);
 
@@ -601,10 +670,14 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         {
             // avoid sending someone the same email two times
             if(in_array($email, $already_sent))
+            {
                 continue;
+            }
 
             if(empty($email) && !empty($name))
+            {
                 $email = $name;
+            }
 
             $mail->ClearAddresses();
             $mail->AddAddress($email, $name);
@@ -619,13 +692,19 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
     catch (phpmailerException $e)
     {
         if(!$quiet)
-            echo $e->errorMessage(); //Pretty error messages from PHPMailer
+        {
+            //Pretty error messages from PHPMailer
+            echo $e->errorMessage();
+        }
         $ok = false;
     }
     catch (Exception $e)
     {
         if(!$quiet)
-            echo $e->getMessage(); //Boring error messages from anything else!
+        {
+            //Boring error messages from anything else!
+            echo $e->getMessage();
+        }
         $ok = false;
     }
 
@@ -700,7 +779,9 @@ function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=arra
     if(!empty($allowedtags))
     {
 	    if(!is_array($allowedtags))
-		    $allowedtags = array($allowedtags);
+        {
+            $allowedtags = array($allowedtags);
+        }
 
         $text = strip_tags($text, '<'.implode('><', $allowedtags).'>');
         $text = core_truncate_html($text, $maxlen, $morechar);
@@ -712,7 +793,10 @@ function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=arra
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
         $olen = strlen($text);
 
-        if($olen < $maxlen) return $text;
+        if($olen < $maxlen)
+        {
+            return $text;
+        }
 
         $pos = strrpos( substr( $text , 0 , $maxlen), ' ') ;
         $text = substr( $text , 0 , $pos );
@@ -756,7 +840,9 @@ function core_truncate_html($str, $len, $end = '&hellip;')
     {
         $len = $len + strlen($matches[$i][0][0]);
         if(substr($matches[$i][0][0],0,1) == '&' )
+        {
             $len = $len-1;
+        }
 
         //if $matches[$i][2] is undefined then its an html entity, want to ignore those for tag counting
         //ignore empty/singleton tags for tag counting
@@ -764,18 +850,24 @@ function core_truncate_html($str, $len, $end = '&hellip;')
         {
             //double check
             if(substr($matches[$i][3][0],-1) !='/' && substr($matches[$i][1][0],-1) !='/')
+            {
                 $openTags[] = $matches[$i][2][0];
+            }
             elseif(end($openTags) == $matches[$i][2][0])
+            {
                 array_pop($openTags);
+            }
             else
+            {
                 $warnings[] = "html has some tags mismatched in it:  $str";
+            }
         }
         $i++;
     }
 
     $closeTags = '';
 
-    if (!empty($openTags))
+    if(!empty($openTags))
     {
         $openTags = array_reverse($openTags);
         foreach ($openTags as $t)
@@ -790,9 +882,13 @@ function core_truncate_html($str, $len, $end = '&hellip;')
         // then, truncate with new len
         $slen = core_strpos_array($str, array(' ', ',', '.', ';', "\n"), $len);
         if(!$slen)
+        {
             $truncated_html = substr($str, 0, $len);
+        }
         else
+        {
             $truncated_html = substr($str, 0, $slen);
+        }
 
         //add the end text
         $truncated_html .= $end ;
@@ -800,7 +896,9 @@ function core_truncate_html($str, $len, $end = '&hellip;')
         $truncated_html .= $closeTagString;
     }
     else
+    {
         $truncated_html = $str;
+    }
 
     return $truncated_html;
 }
@@ -825,9 +923,13 @@ function core_price2string($price, $base_currency, $part=NULL)
         default:
             $currency = product::currencies($base_currency, false);
             if($currency['placement'] == 'after')
+            {
                 $out = core_decimal2string($price, $currency['decimals']).' '.$currency['symbol'];
+            }
             else
+            {
                 $out = $currency['symbol'].' '.core_decimal2string($price, $currency['decimals']);
+            }
     }
 
     return $out;
@@ -836,7 +938,7 @@ function core_price2string($price, $base_currency, $part=NULL)
 
 function core_strpos_array($haystack, $needles, $offset)
 {
-    if ( is_array($needles) )
+    if( is_array($needles) )
     {
         foreach ($needles as $str)
         {
@@ -850,7 +952,9 @@ function core_strpos_array($haystack, $needles, $offset)
             }
 
             if ($pos !== FALSE)
+            {
                 return $pos;
+            }
         }
     }
     else
@@ -924,7 +1028,9 @@ function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $
 	curl_setopt($s, CURLOPT_URL, $url);
 	//set option URL of the location 
 	if ($header) 
-		curl_setopt($s, CURLOPT_HTTPHEADER, $header);
+    {
+        curl_setopt($s, CURLOPT_HTTPHEADER, $header);
+    }
 		
 	//set headers if presents
 	curl_setopt($s, CURLOPT_TIMEOUT, $timeout);
@@ -1000,10 +1106,14 @@ function core_filesize_curl($file)
     curl_close($ch);
 
     if ($data === false)
-      return false;
+    {
+        return false;
+    }
 
     if (preg_match('/Content-Length: (\d+)/', $data, $matches))
-      return (float)$matches[1];
+    {
+        return (float)$matches[1];
+    }
 }
 
 /**
@@ -1181,7 +1291,9 @@ function debug_json_error($prepend='')
 {
     $error = '';
     if(!empty($prepend))
+    {
         $prepend .= ' - ';
+    }
 
     if(function_exists('json_last_error'))
     {
@@ -1254,14 +1366,20 @@ function navigate_compose_email($data, $style=array())
         $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.text_color" AND website = ' . intval($website->id), 'id DESC');
         $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.titles_color" AND website = ' . intval($website->id), 'id DESC');
 
-        if (!empty($background_color_db))
+        if(!empty($background_color_db))
+        {
             $background_color = str_replace('"', '', $background_color_db);
+        }
 
-        if (!empty($text_color_db))
+        if(!empty($text_color_db))
+        {
             $text_color = str_replace('"', '', $text_color_db);
+        }
 
-        if (!empty($title_color_db))
+        if(!empty($title_color_db))
+        {
             $title_color = str_replace('"', '', $title_color_db);
+        }
 
         $style = array(
             'background' => $background_color,
@@ -1312,14 +1430,20 @@ function core_get_language($default=null)
 
     // static function can be called from navigate or from a webget (user then is not a navigate user)
     if(empty($lang) && !empty($webuser->id))
+    {
         $lang = $webuser->language;
+    }
 
     if(empty($lang) && !empty($user->id))
+    {
         $lang = $user->language;
+    }
 
     // default to english
     if(empty($lang))
+    {
         $lang = 'en';
+    }
 
     return $lang;
 }

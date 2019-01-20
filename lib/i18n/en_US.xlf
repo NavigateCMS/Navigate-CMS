@@ -4068,6 +4068,38 @@
 				<target>Order summary</target>
 			</trans-unit>
 
+			<trans-unit id="810" approved="yes">
+				<source>Qty.</source>
+				<target>Qty.</target>
+				<note>Quantity abbreviation</note>
+			</trans-unit>
+
+			<trans-unit id="811" approved="yes">
+				<source>Dis.</source>
+				<target>Dis.</target>
+				<note>Discount abbreviation</note>
+			</trans-unit>
+
+			<trans-unit id="812" approved="yes">
+				<source>Logo</source>
+				<target>Logo</target>
+			</trans-unit>
+
+			<trans-unit id="813" approved="yes">
+				<source>(for emails and documents)</source>
+				<target>(for emails and documents)</target>
+			</trans-unit>
+
+			<trans-unit id="814" approved="yes">
+				<source>Shop address information</source>
+				<target>Shop address information</target>
+			</trans-unit>
+
+			<trans-unit id="815" approved="yes">
+				<source>Legal information</source>
+				<target>Legal information</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

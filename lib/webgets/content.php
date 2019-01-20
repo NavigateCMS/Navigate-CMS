@@ -46,7 +46,9 @@ function nvweb_content($vars=array())
             $ts = $current['object']->date_to_display;
             // if no date, return nothing
             if(!empty($ts))
-    			$out = nvweb_content_date_format(@$vars['format'], $ts);
+            {
+                $out = nvweb_content_date_format(@$vars['format'], $ts);
+            }
 			break;
 			
 		case 'date_created':
@@ -101,9 +103,13 @@ function nvweb_content($vars=array())
 
             $structure_id = 0;
             if($current['type']=='item')
+            {
                 $structure_id = $current['object']->category;
+            }
             else if($current['type']=='structure')
+            {
                 $structure_id = $current['object']->id;
+            }
 
 			switch($vars['return'])
 			{
@@ -191,7 +197,10 @@ function nvweb_content($vars=array())
                     {
                         for($i=0; $i < count($itags); $i++)
                         {
-                            if(empty($itags[$i])) continue;
+                            if(empty($itags[$i]))
+                            {
+                                continue;
+                            }
                             $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.
                                 core_special_chars($itags[$i]).
                                 '</a>';
@@ -211,7 +220,10 @@ function nvweb_content($vars=array())
                     {
                         for($i=0; $i < count($itags); $i++)
                         {
-                            if(empty($itags[$i])) continue;
+                            if(empty($itags[$i]))
+                            {
+                                continue;
+                            }
                             $tags[$i] = '<a class="'.$class.'" href="'.$search_url.$itags[$i].'">'.
                                 core_special_chars($itags[$i]).
                                 '</a>';
@@ -249,7 +261,10 @@ function nvweb_content($vars=array())
 		case 'section':
 		case 'body':
 		default:
-			if(empty($vars['section'])) $vars['section'] = 'main';
+			if(empty($vars['section']))
+            {
+                $vars['section'] = 'main';
+            }
 			$section = "section-".$vars['section'];
 
 			if($current['type']=='item')
@@ -260,10 +275,14 @@ function nvweb_content($vars=array())
 
                 // retrieve last saved text (is a preview request from navigate)
 				if($_REQUEST['preview']=='true' && $current['navigate_session']==1)
-					$texts = webdictionary_history::load_element_strings('item', $current['object']->id, 'latest');
+                {
+                    $texts = webdictionary_history::load_element_strings('item', $current['object']->id, 'latest');
+                }
                 // or last approved/saved text
 				else if($enabled)
-					$texts = webdictionary::load_element_strings('item', $current['object']->id);
+                {
+                    $texts = webdictionary::load_element_strings('item', $current['object']->id);
+                }
 
                 // have we found any content?
                 if(!empty($texts) && !empty($template->sections))
@@ -298,7 +317,9 @@ function nvweb_content($vars=array())
 					$enabled = nvweb_object_enabled($category_item);
 
 					if(!$enabled)
-						continue;
+                    {
+                        continue;
+                    }
 					else
 					{
 						$texts = webdictionary::load_element_strings('item', $category_item->id);
@@ -343,10 +364,14 @@ function nvweb_content_comments_count($object_id = NULL, $object_type = "item")
 
     $element = $current['object'];
     if($current['type']=='structure' && $object_type == "item")
-        $element = $element->elements(0); // item = structure->elements(first)
+    {
+        $element = $element->elements(0);
+    } // item = structure->elements(first)
 
 	if(empty($object_id))
-		$object_id = $element->id;
+    {
+        $object_id = $element->id;
+    }
 
 	$DB->query('SELECT COUNT(*) as total
 				  FROM nv_comments
@@ -371,7 +396,9 @@ function nvweb_content_date_format($format="", $ts)
     setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
 
     if(empty($format))
+    {
         $out = date($website->date_format, $ts);
+    }
     else if(strpos($format, '%day')!==false || strpos($format, '%month')!==false || strpos($format, '%year4'))
     {
         // deprecated: used until Navigate CMS 1.6.7; to be removed in Navigate CMS 2.0
@@ -384,7 +411,9 @@ function nvweb_content_date_format($format="", $ts)
     else
     {
         if(!empty($ts))
+        {
             $out = Encoding::toUTF8(strftime($format, intval($ts)));
+        }
     }
 
 	return $out;
@@ -398,18 +427,24 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
     global $webuser;
 
     if(!is_array($categories))
+    {
         $categories = array(intval($categories));
+    }
 
     if($categories[0] == NULL)
+    {
         $categories = array(0);
+    }
 
     $where = ' i.website = '.$website->id.'
                AND i.category IN ('.implode(",", $categories).')
                AND i.embedding = '.($embedding? '1' : '0');
 
     if($only_published)
+    {
         $where .= ' AND (i.date_published = 0 OR i.date_published < '.core_time().')
                     AND (i.date_unpublish = 0 OR i.date_unpublish > '.core_time().')';
+    }
 
     // status (0 public, 1 private (navigate cms users), 2 hidden)
     $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
@@ -443,7 +478,9 @@ function nvweb_content_items($categories=array(), $only_published=false, $max=NU
     $where .= ' AND (i.access = 0 OR i.access = '.$access.$access_extra.')';
 
     if(!empty($max))
+    {
         $limit = 'LIMIT '.$max;
+    }
 
     $orderby = nvweb_list_get_orderby($order);
 	$orderby = str_replace(", IFNULL(s.position, 0) ASC", "", $orderby); // remove s. order used exclusively at nvweb_list
