@@ -4099,6 +4099,11 @@
                 <target>Informacje prawne</target>
             </trans-unit>
 
+            <trans-unit id="816">
+                <source>Shop information</source>
+                <target>Informacje o sklepie</target>
+            </trans-unit>
+
         </trans-unit>
 
         </body>

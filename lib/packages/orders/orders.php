@@ -173,6 +173,12 @@ function run()
                 </style>';
             core_terminate();
             break;
+
+        case 'generate_pdf':
+            $object->load(intval($_REQUEST['id']));
+            $object->generate_pdf(isset($_REQUEST['download']));
+            core_terminate();
+            break;
 					
 		case 'list':
 		default:			
@@ -231,6 +237,7 @@ function orders_form($object)
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
+    $extra_actions = array();
 
 	$navibars->title(t(26, 'Orders').' / '.t(170, 'Edit').' ['.$object->id.']');
 
@@ -262,6 +269,8 @@ function orders_form($object)
 
     if(!empty($object->id))
     {
+        $extra_actions[] = '<a href="?fid=orders&act=generate_pdf&id='.$object->id.'&download"><i class="fa fa-fw fa-file-pdf-o"></i> '.t(739, 'Download').' | PDF</a>';
+
         $notes = grid_notes::comments('order', $object->id);
         $navibars->add_actions(
             array(
@@ -274,7 +283,6 @@ function orders_form($object)
     }
 
 
-	$extra_actions = array();
     if(!empty($object->id))
     {
         // we attach an event which will be fired by navibars to put an extra button
@@ -289,7 +297,9 @@ function orders_form($object)
     }
 
     if(!empty($object->id))
+    {
         $layout->navigate_notes_dialog('order', $object->id);
+    }
 	
 	$navibars->add_actions(
 	    array(
@@ -617,12 +627,10 @@ function orders_form($object)
     @$taxes_breakout[$object->shipping_tax]['base_amount'] = $taxes_breakout[$object->shipping_tax]['base_amount'] + $object->shipping_amount;
     @$taxes_breakout[$object->shipping_tax]['tax_amount'] = $taxes_breakout[$object->shipping_tax]['tax_amount'] + $object->shipping_tax_amount;
 
-
     $navibars->add_tab_content_row(array(
         '<label><big>'.t(706, 'Total').'</big></label>',
         $naviforms->decimalfield('total', $object->total, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol, NULL, NULL, 'style="font-weight: bold;"')
     ));
-
 
     $table = new naviorderedtable("order_taxes_breakout");
 

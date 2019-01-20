@@ -51,8 +51,8 @@ class website
 	public $weight_unit;
 	
     public $shop_logo;
-    public $shop_address;
-    public $shop_legal_info;
+    public $shop_address;       // multilanguage
+    public $shop_legal_info;    // multilanguage
     public $shop_purchase_conditions_path;
 
 	public $theme;
@@ -131,10 +131,10 @@ class website
 		$this->size_unit            = $main->size_unit;
 		$this->weight_unit          = $main->weight_unit;
 
-        $this->shop_logo            = $main->shop_logo;
-        $this->shop_address         = $main->shop_address;
-        $this->shop_legal_info      = $main->shop_legal_info;
-        $this->shop_purchase_conditions_path     = $main->shop_purchase_conditions_path;
+        $this->shop_logo                        = $main->shop_logo;
+        $this->shop_address                     = json_decode($main->shop_address, true);
+        $this->shop_legal_info                  = json_decode($main->shop_legal_info, true);
+        $this->shop_purchase_conditions_path    = $main->shop_purchase_conditions_path;
 
 		$this->mail_mailer		            = $main->mail_mailer;
 		$this->mail_server		            = $main->mail_server;
@@ -243,11 +243,6 @@ class website
         $this->currency = $_REQUEST['website-default_currency'];
         $this->size_unit = $_REQUEST['website-default_size_unit'];
         $this->weight_unit = $_REQUEST['website-default_weight_unit'];
-
-        $this->shop_logo            = $_REQUEST['website-shop_logo'];
-        $this->shop_address         = $_REQUEST['website-shop_address'];
-        $this->shop_legal_info      = $_REQUEST['website-shop_legal_info'];
-        $this->shop_purchase_conditions_path = $_REQUEST['website-shop_purchase_conditions_path'];
 
         // languages and locales
         $this->languages = array();
@@ -378,6 +373,21 @@ class website
 
                 $this->theme_options[$theme_option->id] = $value;
             }
+        }
+
+        // shop information
+        $this->shop_logo            = $_REQUEST['website-shop_logo'];
+        $this->shop_purchase_conditions_path = $_REQUEST['website-shop_purchase_conditions_path'];
+
+        $this->shop_address = array();
+        $this->shop_legal_info = array();
+
+        foreach($this->languages as $language)
+        {
+            $lcode = $language['code'];
+
+            $this->shop_address[$lcode]     = $_REQUEST['website-shop_address-'.$lcode];
+            $this->shop_legal_info[$lcode]  = $_REQUEST['website-shop_legal_info-'.$lcode];
         }
 	}
 		
@@ -618,8 +628,8 @@ class website
                 ":size_unit" => value_or_default($this->size_unit, 'cm'),
                 ":weight_unit" => value_or_default($this->weight_unit, "g"),
 				":shop_logo" => value_or_default($this->shop_logo, ""),
-				":shop_address" => value_or_default($this->shop_address, ""),
-				":shop_legal_info" => value_or_default($this->shop_legal_info, ""),
+				":shop_address" => json_encode(value_or_default($this->shop_address, "")),
+				":shop_legal_info" => json_encode(value_or_default($this->shop_legal_info, "")),
 				":shop_purchase_conditions_path" => value_or_default($this->shop_purchase_conditions_path, ""),
 				":theme" => value_or_default($this->theme, ''),
 				":theme_options" => json_encode($this->theme_options),
@@ -792,8 +802,8 @@ class website
                 value_or_default($this->size_unit, 'cm'),
                 value_or_default($this->weight_unit, "g"),
                 value_or_default($this->shop_logo, ""),
-                value_or_default($this->shop_address, ""),
-                value_or_default($this->shop_legal_info, ""),
+                json_encode(value_or_default($this->shop_address, "")),
+                json_encode(value_or_default($this->shop_legal_info, "")),
                 value_or_default($this->shop_purchase_conditions_path, ""),
                 value_or_default($this->theme, ""),
                 json_encode($this->theme_options)

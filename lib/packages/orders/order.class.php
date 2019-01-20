@@ -605,6 +605,275 @@ class order
         return $addresses;
     }
 
+    public function generate_pdf($download=false)
+    {
+        global $website;
+        global $lang;
+
+        $currencies = product::currencies();
+        $states = order::status();
+
+        $customer = new webuser();
+        $customer->load($this->webuser);
+
+        $pdf_lang = $website->languages_published[0];
+        if(in_array($customer->language, $website->languages_published))
+        {
+            $pdf_lang = $customer->language;
+        }
+
+        $dictionary = new language();
+        if($lang->code == $pdf_lang)
+        {
+            // already loaded!
+            $dictionary = $lang;
+        }
+        else
+        {
+            $dictionary->load($pdf_lang);
+        }
+
+        $shipping_region_name = "";
+        if(!empty($this->shipping_address->region))
+        {
+            $shipping_region_name = property::country_region_name_by_code($this->shipping_address->region);
+            $shipping_region_name.= ', ';
+        }
+        $shipping_country_name = property::country_name_by_code($this->shipping_address->country);     
+
+        if(@empty($this->billing_address->name))
+        {
+            $this->billing_address = clone $this->shipping_address;
+        }
+
+        $billing_region_name = "";
+        if(!empty($this->billing_address->region))
+        {
+            $billing_region_name = property::country_region_name_by_code($this->billing_address->region);
+            $billing_region_name.= ', ';
+        }
+        $billing_country_name = property::country_name_by_code($this->billing_address->country);
+
+        $shipping_method = new shipping_method();
+        list($shipping_method_id, $shipping_method_rate) = explode("/", $this->shipping_method);
+        $shipping_method->load($shipping_method_id);
+
+
+        $html = '
+            <style>
+                td
+                {
+                    text-align: left;
+                    vertical-align: top;
+                    font-size: 11px;                    
+                }
+                
+                th
+                {
+                    font-size: 11px;
+                    text-align: left;
+                    font-weight: bold;
+                }  
+                
+                .logo
+                {
+                    max-width: 400px;
+                    max-height: 100px;
+                }    
+                
+                .text-small
+                {
+                    font-size: 11px;
+                }
+                
+                h4
+                {
+                    font-size: 11px;
+                    font-weight: bold;
+                    margin-bottom: 0;
+                }
+                
+                hr
+                {
+                    height: 0px;
+                    margin: 8px;                            
+                    padding: 0;
+                    color: #cccccc; 
+                }
+                
+                #order_lines
+                {
+                    width: 100%;
+                }
+                
+                .footer
+                {
+                    text-align: center;
+                }
+            </style>
+        ';
+
+        $logo = '<h2>'.$website->name.'</h2>';
+        if(!empty($website->shop_logo))
+        {
+            $logo = '<img class="logo" src="'.file::file_url($website->shop_logo).'" align="top" />';
+        }
+
+        $html .= '
+            <table width="100%">
+                <tr>
+                    <td>
+                        '.$logo.'
+                    </td>
+                    <td colspan="2" style="text-align: right;">
+                        <br />
+                        <p><strong>'.$dictionary->t(734, "Order").'</strong> #'.$this->reference.'</p>
+                        <br />
+                        <p><strong>'.$dictionary->t(86, "Date").'</strong> '.core_ts2date($this->date_created).'</p>                    
+                    </td>                
+                </tr>
+                <tr>
+                    <td colspan="3"><br /></td>
+                </tr>
+                <tr>
+                    <td width="33%">
+                        <h4>'.$dictionary->t(816, "Shop information").'</h4>
+                        <hr />
+                        <p class="text-small">
+                            '.nl2br($website->shop_address[$pdf_lang]).'
+                        </p>
+                    </td>        
+                    <td width="33%">
+                        <h4>'.$dictionary->t(716, "Shipping address").'</h4>
+                        <hr />
+                        <p class="text-small">
+                            '.$this->shipping_address->name.'<br />
+                            '.(!empty($this->shipping_address->company)? '[ '.$this->shipping_address->company.' ]<br />' : '' ).'
+                            '.$this->shipping_address->address.'<br />
+                            '.$this->shipping_address->zipcode.' '.$this->shipping_address->location.'<br />
+                            '.$shipping_region_name.$shipping_country_name.'<br />
+                            <br />
+                            '.$this->shipping_address->email.'<br />
+                            '.$this->shipping_address->phone.'
+                        </p>                        
+                    </td>                
+                    <td width="33%">
+                        <h4>'.$dictionary->t(717, "Billing address").'</h4>
+                        <hr />
+                        <p class="text-small">
+                            '.$this->billing_address->name.'<br />
+                            '.(!empty($this->billing_address->company)? '[ '.$this->billing_address->company.' ]<br />' : '' ).'
+                            '.$this->billing_address->address.'<br />
+                            '.$this->billing_address->zipcode.' '.$this->billing_address->location.'<br />
+                            '.$billing_region_name.$billing_country_name.'<br />
+                            <br />
+                            '.$this->billing_address->email.'<br />
+                            '.$this->billing_address->phone.'
+                        </p>             
+                    </td>                
+                </tr>
+            </table>            
+        ';
+
+        $this->load_lines();
+        $table_lines = array();
+
+        foreach($this->lines as $line)
+        {
+            $line_option_name = "";
+            if(!empty($line->option))
+            {
+                $line_option_name = '<br /><small><em>'.$line->option.'</em></small>';
+            }
+
+            $table_lines[] = '
+                <tr>
+                    <td>'.$line->sku.'</td>
+                    <td>'.$line->name.$line_option_name.'</td>
+                    <td style="text-align: right;">'.(($line->coupon_unit > 0)? core_decimal2string($line->coupon_unit).' '.$currencies[$line->currency] : "-").'</td>
+                    <td style="text-align: right;">'.core_decimal2string($line->base_price).' '.$currencies[$line->currency].'</td>
+                    <td style="text-align: right;">'.core_decimal2string($line->tax_value).' % <br/><small><em>'.core_decimal2string($line->base_price_tax_amount).' '.$currencies[$line->currency].'</em></small></td>
+                    <td style="text-align: right;">'.core_decimal2string($line->quantity).'</td>
+                    <td style="text-align: right;">'.core_decimal2string($line->total, 2, true).' '.$currencies[$line->currency].'</td>
+                </tr>
+            ';
+        }
+
+        $html .= '
+            <h4>'.$dictionary->t(25, "Products").' / '.$dictionary->t(178, "Services").'</h4>
+            <hr />
+            <table style="width: 100%;" cellpadding="3">
+                <thead>
+                    <tr>            
+                        <th style="width: 96px;">SKU</th>
+                        <th style="width: 224px;">'.$dictionary->t(159, 'Name').'</th>
+                        <th style="text-align: right; width: 48px;">'.$dictionary->t(811, 'Dis.').'</th>
+                        <th style="text-align: right; width: 64px;">'.$dictionary->t(676, 'Base price').'</th>
+                        <th style="text-align: right; width: 48px;">'.$dictionary->t(677, 'Tax').'</th>
+                        <th style="text-align: right; width: 48px;">'.$dictionary->t(810, 'Qty.').'</th>
+                        <th style="text-align: right; width: 96px;">'.$dictionary->t(685, 'Subtotal').'</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    '.implode("", $table_lines).'
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7"><hr /></td>                    
+                    </tr>         
+                    <tr>
+                        <td></td>
+                        <td>'.$dictionary->t(720, 'Shipping method').': '.$shipping_method->dictionary[$website->languages_list[0]]["title"].'</td>
+                        <td></td>
+                        <td style="text-align: right;">'.core_decimal2string($this->shipping_amount).' '.$currencies[$this->currency].'</td>
+                        <td style="text-align: right;">'.core_decimal2string($this->shipping_tax).' % <br/><small><em>'.core_decimal2string($this->shipping_tax_amount).' '.$currencies[$line->currency].'</em></small></td>
+                        <td></td>
+                        <td style="text-align: right;">'.core_decimal2string($this->shipping_invoiced, 2, true).' '.$currencies[$line->currency].'</td>           
+                    </tr>                
+                </tfoot>
+            </table>            
+        ';
+
+        $html .= '
+            <div style="text-align: right;">
+                <strong>'.$dictionary->t(706, 'Total').'</strong>                
+                <br />
+                <strong style="font-size: 14px;">'.core_decimal2string($this->total, 2, true).' '.$currencies[$line->currency].'</strong>
+            </div>
+        ';
+
+        $html .= '
+            <br />
+            <hr />
+            <br />
+            <div class="footer">
+                <small>'.$website->shop_legal_info[$pdf_lang].'</small>
+            </div>
+            <br />
+        ';
+
+        $filename = $dictionary->t(734, "Order").' '.$this->reference.'.pdf';
+
+        $mpdf = new \Mpdf\Mpdf(
+            array(
+                'default_font_size' => 9,
+                'default_font' => 'dejavusanscondensed'
+            )
+        );
+        $mpdf->SetHTMLHeader("");
+        $mpdf->SetHTMLFooter("");
+        $mpdf->WriteHTML($html);
+
+        if($download)
+        {
+            $mpdf->Output($filename, 'D');
+        }
+        else
+        {
+            $mpdf->Output($filename, 'I');
+        }
+    }
+
     public function send_customer_notification()
     {
         global $website;
@@ -615,13 +884,19 @@ class order
 
         $email_lang = $website->languages_published[0];
         if(in_array($customer->language, $website->languages_published))
+        {
             $email_lang = $customer->language;
+        }
 
         $dictionary = new language();
         if($lang->code == $email_lang)
-            $dictionary = $lang; // already loaded!
-        else
+        {
+            $dictionary = $lang;
+        }
+        else // already loaded!
+        {
             $dictionary->load($email_lang);
+        }
 
         $message = navigate_compose_email(
             array(
@@ -775,9 +1050,13 @@ class order
         );
 
         if(!empty($state))
+        {
             return $status[$state];
+        }
         else
+        {
             return $status;
+        }
     }
 
     public static function tax_amount_in_a_price($price, $tax_value)
@@ -811,7 +1090,9 @@ class order
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

@@ -4099,6 +4099,11 @@
 				<target>Información legal</target>
 			</trans-unit>
 
+            <trans-unit id="816" approved="yes">
+                <source>Shop information</source>
+                <target>Información de la tienda</target>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

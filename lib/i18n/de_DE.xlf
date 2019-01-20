@@ -4100,6 +4100,11 @@
 				<target>Rechtsinformation</target>
 			</trans-unit>
 
+            <trans-unit id="816">
+                <source>Shop information</source>
+                <target>Informationen zum Shop</target>
+            </trans-unit>
+
 		</body>
 	</file>
 </xliff>

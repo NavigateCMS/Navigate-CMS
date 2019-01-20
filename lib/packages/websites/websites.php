@@ -1760,9 +1760,11 @@ function websites_form($item)
         $website_languages_selector = $item->languages();
         $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
 
-        $navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
+        $navibars->add_tab_content_row(array(
+            '<label>'.t(63, 'Languages').'</label>',
             $naviforms->buttonset('metatags_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
-        ));
+            )
+        );
 
         $navibars->add_tab_content_row(
             array(
@@ -1987,9 +1989,15 @@ function websites_form($item)
 	    navigate_property_layout_scripts($item->id);
 
         // Shop tab, if theme is compatible
-        if($theme->shop)
+        if($theme->shop && !empty($languages))
         {
             $navibars->add_tab(t(10, 'Shop'));
+
+            $navibars->add_tab_content_row(array(
+                    '<label>'.t(63, 'Languages').'</label>',
+                    $naviforms->buttonset('shop_language_selector', $website_languages_selector, '', "navigate_tabform_language_selector(this);")
+                )
+            );
 
             // logo for emails and documents (PDF)
             $navibars->add_tab_content_row(
@@ -2000,23 +2008,32 @@ function websites_form($item)
                 )
             );
 
-            // shop address information
-            $navibars->add_tab_content_row(
-                array(
-                    '<label>'.t(814, 'Shop address information').'</label>',
-                    $naviforms->textarea('website-shop_address', $item->shop_address),
-                    '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
-                )
-            );
+            foreach($item->languages_list as $lang)
+            {
+                $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 
-            // legal stuff for emails and documents (PDF)
-            $navibars->add_tab_content_row(
-                array(
-                    '<label>'.t(815, 'Legal information').'</label>',
-                    $naviforms->textarea('website-shop_legal_info', $item->shop_legal_info),
-                    '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
-                )
-            );
+                // shop address information
+                $navibars->add_tab_content_row(
+                    array(
+                        '<label>'.t(814, 'Shop address information').' '.$language_info.'</label>',
+                        $naviforms->textarea('website-shop_address-'.$lang, $item->shop_address[$lang]),
+                        '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
+                    ),
+                    '',
+                    'lang="'.$lang.'"'
+                );
+
+                // legal stuff for emails and documents (PDF)
+                $navibars->add_tab_content_row(
+                    array(
+                        '<label>'.t(815, 'Legal information').' '.$language_info.'</label>',
+                        $naviforms->textarea('website-shop_legal_info-'.$lang, $item->shop_legal_info[$lang]),
+                        '<div class="subcomment navigate-form-row-info">'.t(813, "(for emails and documents)").'</div>'
+                    ),
+                    '',
+                    'lang="'.$lang.'"'
+                );
+            }
 
             $navibars->add_tab_content_row(array(
                     '<label>'.t(773, 'Purchase conditions').'</label>',
@@ -2025,8 +2042,6 @@ function websites_form($item)
             );
         }
     }
-
-
 
 
     $events->trigger(

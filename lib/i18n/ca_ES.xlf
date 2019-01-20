@@ -4112,6 +4112,11 @@
                 <target>Informació legal</target>
             </trans-unit>
 
+            <trans-unit id="816" approved="yes">
+                <source>Shop information</source>
+                <target>Informació de la botiga</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

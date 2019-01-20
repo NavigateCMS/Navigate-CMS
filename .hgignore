@@ -16,6 +16,7 @@ cfg/globals.php
 private/thumbnails/*
 lib/external/tinymce/*.gz
 lib/external/tinymce/server_name
+lib/vendor/mpdf/mpdf/tmp/*
 themes/theme_kit
 themes/ocean.zip
 themes/theme_kit.zip

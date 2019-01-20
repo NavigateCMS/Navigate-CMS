@@ -4101,6 +4101,11 @@
                 <target>Juridisk informasjon</target>
             </trans-unit>
 
+            <trans-unit id="816">
+                <source>Shop information</source>
+                <target>Butikkinformasjon</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
