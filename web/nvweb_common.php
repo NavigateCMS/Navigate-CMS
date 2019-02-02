@@ -46,6 +46,8 @@ require_once(NAVIGATE_PATH.'/web/nvweb_objects.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_plugins.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_xmlrpc.php');
 
+require_once(NAVIGATE_PATH.'/lib/vendor/autoload.php');
+
 // preload widely used webgets
 require_once(NAVIGATE_PATH.'/lib/webgets/list.php');
 
@@ -60,18 +62,24 @@ define('NAVIGATE_UPLOAD_MAX_SIZE', min($max_upload, $max_post, $memory_limit));
 // Suppress DateTime warnings
 $nv_default_timezone = @date_default_timezone_get();
 if(empty($nv_default_timezone))
+{
     $nv_default_timezone = 'UTC';
+}
 
 date_default_timezone_set($nv_default_timezone);
 
 if(!defined("APP_UNIQUE"))
+{
     define("APP_UNIQUE", "nv_default");
+}
 
 debugger::init();
 include_once(NAVIGATE_PATH.'/cfg/session.php');
 debugger::dispatch();
 
 if(!defined('APP_UNIQUE'))
+{
     define('APP_UNIQUE', 'nv_default');
+}
 
 ?>

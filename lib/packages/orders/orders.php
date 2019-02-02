@@ -365,6 +365,19 @@ function orders_form($object)
         "notify_customer_wrapper", 'data-previous-value="'.$object->status.'" style="display: none;"'
     );
 
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+            '<label>'.t(205, "Comment").'</label>',
+            '<div style="clear: both;">'.
+                '<label>&nbsp;</label>'.
+                $naviforms->textarea('notify_customer_comment', "", 3, 48).
+            '</div>',
+            '<div class="subcomment navigate-form-row-info">('.t(764, "optional").')</div>'
+        ),
+        "notify_customer_comment_wrapper", 'style="display: none;"'
+    );
+
     $layout->add_script('
         function navigate_orders_status_change()
         {
@@ -373,7 +386,19 @@ function orders_form($object)
             {
                 $("#notify_customer_wrapper").show();
             }
-        }    
+        }   
+        
+        $("#notify_customer").on("click change blur", function()
+        {
+            if($(this).is(":checked"))
+            {
+                $("#notify_customer_comment_wrapper").show();
+            }
+            else
+            {
+                $("#notify_customer_comment_wrapper").hide();
+            }
+        }); 
     ');
 
     $navibars->add_tab_content_row(

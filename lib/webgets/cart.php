@@ -243,11 +243,15 @@ function nvweb_cart($vars=array())
                 case 'checkout':
                     // check current step: cart, identification, address, shipping, summary, payment, notification
                     if(empty($cart['checkout_step']) || $_POST['action'] == 'checkout')
+                    {
                         $cart['checkout_step'] = 'cart';
+                    }
 
                     // redirect to checkout page, only if there are products in the cart
                     if(!empty($cart['products']))
+                    {
                         $cart['checkout_step'] = 'identification';
+                    }
 
                     $session['cart'] = $cart;
                     $checkout_url = nvweb_source_url('theme', 'checkout');
@@ -259,7 +263,9 @@ function nvweb_cart($vars=array())
             $session['cart'] = nvweb_cart_update($cart);
 
             if($is_ajax)
+            {
                 $out = json_encode($session['cart']);
+            }
             break;
 
         case 'cart_url':
@@ -318,6 +324,14 @@ function nvweb_cart($vars=array())
                     if($order_exists)
                     {
                         $order->load($cart['order_id']);
+
+                        // the order may be already created but still not paid
+                        // and the user may have changed the payment form
+                        if(!$order->payment_done)
+                        {
+                            $order->payment_method = $cart['payment_method'];
+                            $order->save();
+                        }
                     }
                     else
                     {
@@ -355,8 +369,9 @@ function nvweb_cart($vars=array())
                     $order->load($cart['order_id']);
                     $out = nvweb_cart_payment_done($order);
 
-                    // remove cart, order creation is finished
+                    // remove cart, order creation process is completed
                     unset($cart);
+                    unset($session['cart']);
                     break;
             }
             break;
@@ -1288,11 +1303,15 @@ function nvweb_cart_address_page($cart)
             empty($address_shipping['email']) ||
             empty($address_shipping['phone'])
             )
+        {
             $errors[] = '['.t(716, "Shipping address").'] '.t(444, "You left some required fields blank.");
+        }
 
         // validate email address
         if( !filter_var($address_shipping['email'], FILTER_VALIDATE_EMAIL) )
+        {
             $errors[] = '['.t(716, "Shipping address").'] '.t(768, "Invalid e-mail address").': '.$address_shipping['email'];
+        }
 
         if( !$billing_same_as_shipping )
         {
@@ -1304,10 +1323,14 @@ function nvweb_cart_address_page($cart)
                 empty($address_billing['email']) ||
                 empty($address_billing['phone'])
             )
+            {
                 $errors[] = '['.t(717, "Billing address").'] '.t(444, "You left some required fields blank.");
+            }
 
             if( !filter_var($address_shipping['email'], FILTER_VALIDATE_EMAIL) )
+            {
                 $errors[] = '['.t(717, "Billing address").'] '.t(768, "Invalid e-mail address").': '.$address_billing['email'];
+            }
         }
 
         if(empty($errors))
@@ -1490,10 +1513,13 @@ function nvweb_cart_address_page($cart)
         $("input[name=order_billing_same_as_shipping]").on("click change", function()
         {        
             if($(this).is(":checked"))
+            {
                 $(".order_billing_address_wrapper").slideUp();
+            }
             else
+            {
                 $(".order_billing_address_wrapper").slideDown();
-                
+            }                
         });
         
         $("input[name=order_billing_same_as_shipping]").trigger("change"); 
@@ -1545,13 +1571,20 @@ function nvweb_cart_shipping_page($cart)
     $shipping_methods = shipping_method::get_available();
 
     if(empty($cart['customer']))
+    {
         core_terminate($cart_url);
+    }
 
     $customer_username = $webuser->username;
     if($cart['customer'] == 'guest')
+    {
         $customer_username = t(719, "Guest");
+    }
 
-    $out[] = '    <div class="nv_cart_signed_in_as"><span>'.$customer_username.'</span> <a href="'.$cart_url.'?webuser_signout" title="'.t(5, "Log out").'">'.'&#11198;'.'</a></div>';
+    $out[] = '    <div class="nv_cart_signed_in_as">
+                        <span>'.$customer_username.'</span> 
+                        <a href="'.$cart_url.'?webuser_signout" title="'.t(5, "Log out").'">'.'&#11198;'.'</a>
+                  </div>';
 
     $out[] = '<div class="nv_cart_shipping_form">';
     $out[] = '    <form action="?mode=shipping" method="post">';
@@ -1560,7 +1593,9 @@ function nvweb_cart_shipping_page($cart)
     foreach($shipping_methods as $sm)
     {
         if(!nvweb_object_enabled($sm))
+        {
             continue;
+        }
 
         $shipping_rate = $sm->calculate(
             $cart['address_shipping']['country'],
@@ -1570,7 +1605,9 @@ function nvweb_cart_shipping_page($cart)
         );
 
         if(empty($shipping_rate))
+        {
             continue;
+        }
 
         $shipping_price = $shipping_rate->cost->value;
 
@@ -1605,9 +1642,13 @@ function nvweb_cart_shipping_page($cart)
 
         $out[] = '  <div class="nv_cart_shipping_method_option_right">';
         if($shipping_price > 0)
+        {
             $out[] = '     <div>'.core_price2string($shipping_price, $cart['currency']).'</div>';
+        }
         else
+        {
             $out[] = '     <div>'.t(699, "Free shipping").'</div>';
+        }
         $out[] = '     <input type="radio" name="order_shipping_method" value="'.$sm->id.'/'.$shipping_rate->id.'" />';
         $out[] = '  </div>';
 
@@ -1625,7 +1666,9 @@ function nvweb_cart_shipping_page($cart)
     $out[] = '         <div class="nv_cart_shipping_address_information"><p>';
     $out[] = '          '.$cart['address_shipping']['name'].'<br />';
     if(!empty($cart['address_shipping']['company']))
+    {
         $out[] = '[ '.$cart['address_shipping']['company'].' ]<br />';
+    }
     $out[] = '          '.$cart['address_shipping']['address'].'<br />';
     $out[] = '          '.$cart['address_shipping']['zipcode'].' '.$cart['address_shipping']['location'].'<br />';
     if(!empty($cart['address_shipping']['region']))
@@ -1675,7 +1718,9 @@ function nvweb_cart_summary_page($cart)
     $checkout_url = nvweb_source_url('theme', 'checkout');
 
     if(empty($cart['customer']))
+    {
         core_terminate($cart_url);
+    }
 
     if(!empty($_POST))
     {
@@ -1737,7 +1782,6 @@ function nvweb_cart_summary_page($cart)
     $out[] = '    </div>';
 
     // SHIPPING INFO
-
     $country_name = property::country_name_by_code($cart['address_shipping']['country']);
     $out[] = '  <div class="nv_cart-flex-sb">';
     $out[] = '      <div>';
@@ -1745,7 +1789,9 @@ function nvweb_cart_summary_page($cart)
     $out[] = '         <div class="nv_cart_shipping_address_information"><p>';
     $out[] = '          '.$cart['address_shipping']['name'].'<br />';
     if(!empty($cart['address_shipping']['company']))
+    {
         $out[] = '[ '.$cart['address_shipping']['company'].' ]<br />';
+    }
     $out[] = '          '.$cart['address_shipping']['address'].'<br />';
     $out[] = '          '.$cart['address_shipping']['zipcode'].' '.$cart['address_shipping']['location'].'<br />';
     if(!empty($cart['address_shipping']['region']))

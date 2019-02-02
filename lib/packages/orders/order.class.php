@@ -1,4 +1,5 @@
 <?php
+
 class order
 {
     public $id;
@@ -28,9 +29,9 @@ class order
             // carrier, reference, tracking_url
 
     public $shipping_address;
-            // name, nin, company, address, location, zipcode, region, country, phone, email
+            // object: name, nin, company, address, location, zipcode, region, country, phone, email
     public $billing_address;
-            // name, nin, company, address, location, zipcode, region, country, phone, email
+            // object: name, nin, company, address, location, zipcode, region, country, phone, email
 
     public $coupon;
     public $coupon_code;
@@ -42,7 +43,7 @@ class order
     public $payment_method;
     public $payment_data;
 
-    public $history;
+    public $history; // (json) array[] = array(time(), 'event_codename', object or array);
 
     public $lines;  // from table nv_orders_lines
             // id, website, order, customer, product, sku, name, option, quantity, currency,
@@ -121,22 +122,34 @@ class order
         $this->lines                = array();
 
         if(empty($this->customer_data))
+        {
             $this->customer_data = json_decode("{}");
+        }
 
         if(empty($this->shipping_data))
+        {
             $this->shipping_data = json_decode("{}");
+        }
 
         if(empty($this->shipping_address))
+        {
             $this->shipping_address = json_decode("{}");
+        }
 
         if(empty($this->billing_address))
+        {
             $this->billing_address = json_decode("{}");
+        }
 
         if(empty($this->payment_data))
+        {
             $this->payment_data = json_decode("{}");
+        }
 
         if(empty($this->history))
+        {
             $this->history = json_decode("{}");
+        }
     }
 
     public function load_lines()
@@ -221,9 +234,13 @@ class order
     public function save()
     {
         if(!empty($this->id))
+        {
             return $this->update();
+        }
         else
+        {
             return $this->insert();
+        }
     }
 
     public function delete()
@@ -291,7 +308,7 @@ class order
                 'customer_data' => json_encode($this->customer_data),
                 'customer_notes' => $this->customer_notes,
                 'date_created' => core_time(),
-                'date_updated' => 0,
+                'date_updated' => core_time(),
                 'currency' => value_or_default($this->currency, ""),
                 'subtotal_amount' => value_or_default($this->subtotal_amount, 0),
                 'subtotal_taxes_cost' => value_or_default($this->subtotal_taxes_cost, 0),
@@ -429,7 +446,42 @@ class order
         // TODO: do we need to also update the order lines?
 
         if($this->notify_customer)
-            $this->send_customer_notification();
+        {
+            $private_comment_to_customer = trim($_REQUEST['notify_customer_comment']);
+            $this->send_customer_notification($private_comment_to_customer);
+            $this->history[] = array(
+                time(),
+                'notify_customer',
+                array(
+                    'status' => $this->status,
+                    'comment' => $private_comment_to_customer
+                )
+            );
+            $this->update_history();
+        }
+
+        return true;
+    }
+
+    public function update_history()
+    {
+        global $DB;
+
+        $ok = $DB->execute(' 
+ 			UPDATE nv_orders
+			  SET history = :history
+			WHERE id = :id	AND	website = :website',
+            array(
+                'id' => $this->id,
+                'website' => $this->website,
+                'history' => json_encode($this->history)
+            )
+        );
+
+        if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
         return true;
     }
@@ -480,9 +532,9 @@ class order
             'tracking_url' => ''
         );
 
-        $order->shipping_address = $cart['address_shipping'];
+        $order->shipping_address = (object) $cart['address_shipping'];  // (is array)
         // name, nin, company, address, location, zipcode, region, country, phone, email
-        $order->billing_address = $cart['address_billing'];
+        $order->billing_address = (object) $cart['address_billing'];    // (is array)
         // name, nin, company, address, location, zipcode, region, country, phone, email
 
         $order->coupon = $cart['coupon'];
@@ -610,6 +662,7 @@ class order
         global $website;
         global $lang;
 
+        $out = false;
         $currencies = product::currencies();
         $states = order::status();
 
@@ -643,6 +696,8 @@ class order
 
         if(@empty($this->billing_address->name))
         {
+            // make a copy of the shipping_address array
+            //$this->billing_address = array_merge($this->shipping_address, array());
             $this->billing_address = clone $this->shipping_address;
         }
 
@@ -805,10 +860,10 @@ class order
             <table style="width: 100%;" cellpadding="3">
                 <thead>
                     <tr>            
-                        <th style="width: 96px;">SKU</th>
+                        <th style="width: 72px;">SKU</th>
                         <th style="width: 224px;">'.$dictionary->t(159, 'Name').'</th>
                         <th style="text-align: right; width: 48px;">'.$dictionary->t(811, 'Dis.').'</th>
-                        <th style="text-align: right; width: 64px;">'.$dictionary->t(676, 'Base price').'</th>
+                        <th style="text-align: right; width: 96px;">'.$dictionary->t(676, 'Base price').'</th>
                         <th style="text-align: right; width: 48px;">'.$dictionary->t(677, 'Tax').'</th>
                         <th style="text-align: right; width: 48px;">'.$dictionary->t(810, 'Qty.').'</th>
                         <th style="text-align: right; width: 96px;">'.$dictionary->t(685, 'Subtotal').'</th>
@@ -866,15 +921,18 @@ class order
 
         if($download)
         {
-            $mpdf->Output($filename, 'D');
+            $mpdf->Output($filename, \Mpdf\Output\Destination::DOWNLOAD); // 'INLINE' for inline download
+            $out = true;
         }
         else
         {
-            $mpdf->Output($filename, 'I');
+            $out = $mpdf->Output($filename, \Mpdf\Output\Destination::STRING_RETURN);
         }
+
+        return $out;
     }
 
-    public function send_customer_notification()
+    public function send_customer_notification($comment)
     {
         global $website;
         global $lang;
@@ -898,6 +956,15 @@ class order
             $dictionary->load($email_lang);
         }
 
+        $comment_array = array();
+        if(!empty($comment))
+        {
+            $comment_array = array(
+                'title'   => $dictionary->t(205, "Comment"),
+                'content' => nl2br($comment)
+            );
+        }
+
         $message = navigate_compose_email(
             array(
                 array(
@@ -912,21 +979,23 @@ class order
                     'title'   => $dictionary->t(68, "Status"),
                     'content' => order::status($this->status, $dictionary) . '<br /><small>'.core_ts2date($this->date_updated).'</small>'
                 ),
+                $comment_array,
                 array(
-                    'footer' => '<a href="' . $website->absolute_path() . $website->homepage() . '" style="text-decoration: none;">&#128712;</a> ' .
+                    'footer' => '<a href="' . $website->absolute_path() . $website->homepage() . '" style="text-decoration: none; color: #fff;">&#128712;</a> ' .
                         $dictionary->t(735, "For any complaint or inquiry, please contact us.")
                 )
             )
         );
 
-        navigate_send_email(
+        $sent = navigate_send_email(
             $dictionary->t(734, "Order") . ' #' . $this->reference.' — ' . order::status($this->status, $dictionary),
             $message,
-            $customer->email,
+            $this->customer_data->email,
             NULL,
             false
         );
 
+        return $sent;
     }
 
     public function send_customer_order_creation()
@@ -992,20 +1061,36 @@ class order
                     'content' => order::status($this->status, $dictionary) . '<br /><small>'.core_ts2date($this->date_updated).'</small>'
                 ),
                 array(
-                    'footer' => '<a href="' . $website->absolute_path() . $website->homepage() . '" style="text-decoration: none;">&#128712;</a> ' .
+                    'footer' => '<a href="' . $website->absolute_path() . $website->homepage() . '" style="text-decoration: none; color: #fff;">&#128712;</a> ' .
                         $dictionary->t(735, "For any complaint or inquiry, please contact us.")
                 )
             )
         );
 
+        $pdf_data = $this->generate_pdf();
+
         navigate_send_email(
             $dictionary->t(792, "Order created") . ' #' . $this->reference,
             $message,
-            $customer->email,
-            NULL,
+            $this->customer_data->email,
+            array(
+                0 => array(
+                    'name' => $dictionary->t(734, "Order").' '.$this->reference.'.pdf',
+                    'data' => $pdf_data
+                )
+            ),
             false
         );
 
+        $this->history[] = array(
+            time(),
+            'notify_customer',
+            array(
+                'status' => $this->status,
+                'order_pdf' => $dictionary->t(734, "Order").' '.$this->reference.'.pdf'
+            )
+        );
+        $this->update_history();
     }
 
     public static function find_by_reference($reference, $website_id=null)
