@@ -75,6 +75,10 @@ function nvweb_list($vars=array())
                     'property'	=> 	$vars['categories']
                 ));
             }
+            else if(strpos($vars['categories'], ',')!==false)
+            {
+                $categories = explode(",", $vars['categories']);
+            }
 
             if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
             {
@@ -316,13 +320,14 @@ function nvweb_list($vars=array())
 	// RETRIEVE OBJECTS
 
     // calculate the offset of the first element to retrieve
-    // Warning: the paginator applies on all paginated lists on a page (so right now there can only be one in a page)
-	if(empty($_GET['page']))
+    // what is the name of the "page" parameter in the url
+    if(empty($vars['page_parameter']))
     {
-        $_GET['page'] = 1;
+        $vars['page_parameter'] = 'page';
     }
+    $page = value_or_default($_REQUEST[$vars['page_parameter']], 1);
 
-	$offset = intval($_GET['page'] - 1) * $vars['items'];
+	$offset = intval($page - 1) * $vars['items'];
 
     // this list does not use paginator, so offset must be always zero
     if(!isset($vars['paginator']) || $vars['paginator']=='false')
@@ -837,7 +842,14 @@ function nvweb_list($vars=array())
 		@nvweb_webget_load($vars['source']);
 
 		if(function_exists($fname))
-			list($rs, $total) = $fname($offset, $vars['items'], $permission, $order, $vars);
+        {
+            @list($rs, $total, $processed_html) = $fname($offset, $vars['items'], $permission, $order, $vars);
+            // check if the custom source has already parsed the template, so we don't need to do anything else
+            if(!empty($processed_html))
+            {
+                return $processed_html;
+            }
+        }
     }
     else if(!in_array($vars['source'], array('item', 'element')))
     {
@@ -1208,7 +1220,7 @@ function nvweb_list($vars=array())
 
 	if(isset($vars['paginator']) && $vars['paginator']!='false')
     {
-        $out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars);
+        $out[] = nvweb_list_paginator($vars['paginator'], $page, $total, $vars['items'], $vars);
     }
 
 	return implode("\n", $out);
@@ -3713,7 +3725,7 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
     if(!is_array($_GET)) $_GET = array();
     foreach($_GET as $key => $val)
     {
-        if($key=='page' || $key=='route')
+        if($key==$params['page_parameter'] || $key=='route')
         {
             continue;
         }
@@ -3739,10 +3751,10 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 				$out[] = '<div class="paginator">';
 
 		        if($page > 1)
-			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
 
 			    if($page < $pages)
-			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
 
 		        $out[] = '<div style=" clear: both; "></div>';
 
@@ -3754,14 +3766,14 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		        if($page > 1)
 		        {
-			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="first">'.$paginator_text_first.'</a>'; // <|
-			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+			        $out[] = '<a href="?'.$params['page_parameter'].'=1'.$url_suffix.'" rel="first">'.$paginator_text_first.'</a>'; // <|
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
 		        }
 
 			    if($page < $pages)
 			    {
-			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
-			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="last">'.$paginator_text_last.'</a>'; // |❭
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($pages - 1).$url_suffix.'" rel="last">'.$paginator_text_last.'</a>'; // |❭
 			    }
 
 		        $out[] = '<div style=" clear: both; "></div>';
@@ -3775,7 +3787,7 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		        if($page > 1)
                 {
-                    $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+                    $out[] = '<a href="?'.$params['page_parameter'].'='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
                 }
 
 		        for($p = $page - 2; $p < $page + 3; $p++)
@@ -3792,17 +3804,17 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		            if($p==$page)
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
                     }
 		            else
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'">'.$p.'</a>';
                     }
 		        }
 
 		        if($page < $pages)
                 {
-                    $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+                    $out[] = '<a href="?'.$params['page_parameter'].'='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
                 }
 
 		        $out[] = '<div style=" clear: both; "></div>';
@@ -3816,8 +3828,8 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 				if($page > 1)
 		        {
-			        $out[] = '<a href="?page=1'.$url_suffix.'" rel="first">'.$paginator_text_first.'</a>'; // <|
-			        $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+			        $out[] = '<a href="?'.$params['page_parameter'].'=1'.$url_suffix.'" rel="first">'.$paginator_text_first.'</a>'; // <|
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
 		        }
 
 		        for($p = $page - 2; $p < $page + 3; $p++)
@@ -3834,18 +3846,18 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		            if($p==$page)
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
                     }
 		            else
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'">'.$p.'</a>';
                     }
 		        }
 
                 if($page < $pages)
 			    {
-			        $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
-			        $out[] = '<a href="?page='.($pages - 1).$url_suffix.'" rel="last">'.$paginator_text_last.'</a>'; // |❭
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+			        $out[] = '<a href="?'.$params['page_parameter'].'='.($pages - 1).$url_suffix.'" rel="last">'.$paginator_text_last.'</a>'; // |❭
 			    }
 
 		        $out[] = '<div style=" clear: both; "></div>';
@@ -3861,11 +3873,11 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 		        {
 		            if($p==$page)
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
                     }
 		            else
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'">'.$p.'</a>';
                     }
 		        }
 
@@ -3880,16 +3892,16 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		        if($page > 1)
                 {
-                    $out[] = '<a href="?page='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+                    $out[] = '<a href="?'.$params['page_parameter'].'='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
                 }
 
 		        if($page == 4)
                 {
-                    $out[] = '<a href="?page=1'.$url_suffix.'">1</a>';
+                    $out[] = '<a href="?'.$params['page_parameter'].'=1'.$url_suffix.'">1</a>';
                 }
 		        else if($page > 3)
                 {
-                    $out[] = '<a href="?page=1'.$url_suffix.'">1</a><span class="paginator-etc">'.$paginator_text_etc.'</span>';
+                    $out[] = '<a href="?'.$params['page_parameter'].'=1'.$url_suffix.'">1</a><span class="paginator-etc">'.$paginator_text_etc.'</span>';
                 }
 
 		        for($p = $page - 2; $p < $page + 3; $p++)
@@ -3906,26 +3918,26 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 
 		            if($p==$page)
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'" class="paginator-current">'.$p.'</a>';
                     }
 		            else
                     {
-                        $out[] = '<a href="?page='.$p.$url_suffix.'">'.$p.'</a>';
+                        $out[] = '<a href="?'.$params['page_parameter'].'='.$p.$url_suffix.'">'.$p.'</a>';
                     }
 		        }
 
 		        if($page + 3 == $pages)
                 {
-                    $out[] = '<a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+                    $out[] = '<a href="?'.$params['page_parameter'].'='.$pages.$url_suffix.'">'.$pages.'</a>';
                 }
 		        else if($page + 3 < $pages)
                 {
-                    $out[] = '<span class="paginator-etc">'.$paginator_text_etc.'</span><a href="?page='.$pages.$url_suffix.'">'.$pages.'</a>';
+                    $out[] = '<span class="paginator-etc">'.$paginator_text_etc.'</span><a href="?'.$params['page_parameter'].'='.$pages.$url_suffix.'">'.$pages.'</a>';
                 }
 
 		        if($page < $pages)
                 {
-                    $out[] = '<a href="?page='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+                    $out[] = '<a href="?'.$params['page_parameter'].'='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
                 }
 
 		        $out[] = '<div style=" clear: both; "></div>';
