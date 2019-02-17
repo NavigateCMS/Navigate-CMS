@@ -185,49 +185,11 @@ function nvweb_product($vars=array())
             break;
 
         case 'size':
-            $separator = value_or_default($vars['separator'], ' x ');
-
-            switch($vars['return'])
-            {
-                case 'width':
-                    $out = core_decimal2string($product->width);
-                    break;
-
-                case 'height':
-                    $out = core_decimal2string($product->height);
-                    break;
-
-                case 'depth':
-                    $out = core_decimal2string($product->depth);
-                    break;
-
-                case 'unit':
-                    $out = $product->size_unit;
-                    break;
-
-                default:
-                    $out =  core_decimal2string($product->width) . $separator .
-                            core_decimal2string($product->height) . $separator .
-                            core_decimal2string($product->depth) . ' ' .
-                            $product->size_unit;
-            }
+            $out = nvweb_product_size($product, @$vars['return'], @$vars['separator']);
             break;
 
         case 'weight':
-            switch($vars['return'])
-            {
-                case 'value':
-                    $out = core_decimal2string($product->weight);
-                    break;
-
-                case 'unit':
-                    $out = $product->weight_unit;
-                    break;
-
-                default:
-                    $out = core_decimal2string($product->weight) . ' ' . $product->weight_unit;
-            }
-
+            $out = nvweb_product_weight($product, $vars['return']);
             break;
 
         case 'stock':
@@ -262,69 +224,19 @@ function nvweb_product($vars=array())
             // current price may be different if the product is on sale
 
             $price = $product->get_price();
-
-            if(empty($price['old']) || $price['current'] == $price['old'])
-            {
-                $out = "";
-            }
-            else
-            {
-                $out = core_price2string($price['old'], $product->base_price_currency, @$vars['return']);
-            }
-
+            $out = nvweb_product_old_price($price, @$vars['return']);
             break;
 
 
         case 'tax':
             $price = $product->get_price();
-
-            switch($vars['return'])
-            {
-                case 'amount':
-                    if($product->tax_class == 'custom')
-                    {
-                        $tax_amount = $price['tax_amount'];
-                        $currency = product::currencies($product->base_price_currency, false);
-                        if ($currency['placement'] == 'after')
-                        {
-                            $out = core_decimal2string($tax_amount) . ' ' . $currency['symbol'];
-                        }
-                        else
-                        {
-                            $out = $currency['symbol'] . ' ' . core_decimal2string($tax_amount);
-                        }
-                    }
-                    else
-                    {
-                        $out = '';
-                    }
-                    break;
-
-                case 'value':
-                default:
-                    // percentage / free / included
-                    switch($product->tax_class)
-                    {
-                        case 'free':
-                            {
-                                $out = @value_or_default($theme->t($vars['tax_free']), '0 %');
-                            }
-                            break;
-
-                        case 'included':
-                            {
-                                $out = @value_or_default($theme->t($vars['tax_included']), '');
-                            }
-                            break;
-
-                        case 'custom':
-                        default:
-                        {
-                            $out = core_decimal2string($product->tax_value) . ' %';
-                        }
-                            break;
-                    }
-            }
+            $out = nvweb_product_tax(
+                $product,
+                $price,
+                @$vars['return'],
+                @$vars['tax_free'],
+                @$vars['tax_included']
+            );
             break;
 
         case 'brand':
@@ -523,6 +435,135 @@ function nvweb_categories_products($categories=array(), $only_published=false, $
     $rs = $DB->result();
 
     return $rs;
+}
+
+function nvweb_product_tax($product, $price, $part, $tax_free_lid, $tax_included_lid)
+{
+    global $theme;
+
+    if(!is_array($price))
+    {
+        $price = (array) $price;
+    }
+
+    switch($part)
+    {
+        case 'amount':
+            if($product->tax_class == 'custom')
+            {
+                $tax_amount = $price['tax_amount'];
+                $currency = product::currencies($price['currency'], false);
+                if ($currency['placement'] == 'after')
+                {
+                    $out = core_decimal2string($tax_amount) . ' ' . $currency['symbol'];
+                }
+                else
+                {
+                    $out = $currency['symbol'] . ' ' . core_decimal2string($tax_amount);
+                }
+            }
+            else
+            {
+                $out = '';
+            }
+            break;
+
+        case 'value':
+        default:
+            // percentage / free / included
+            switch($product->tax_class)
+            {
+                case 'free':
+                    {
+                        $out = @value_or_default($theme->t($tax_free_lid), '0 %');
+                    }
+                    break;
+
+                case 'included':
+                    {
+                        $out = @value_or_default($theme->t($tax_included_lid), '');
+                    }
+                    break;
+
+                case 'custom':
+                default:
+                {
+                    $out = core_decimal2string($product->tax_value) . ' %';
+                }
+                break;
+            }
+    }
+
+    return $out;
+}
+
+function nvweb_product_old_price($price, $part="")
+{
+    if(!is_array($price))
+    {
+        $price = (array) $price;
+    }
+
+    if(empty($price['old']) || $price['current'] == $price['old'])
+    {
+        $out = "";
+    }
+    else
+    {
+        $out = core_price2string($price['old'], $price['currency'], $part);
+    }
+    return $out;
+}
+
+function nvweb_product_size($product, $return="", $separator="")
+{
+    $separator = value_or_default($separator, ' x ');
+
+    switch($return)
+    {
+        case 'width':
+            $out = core_decimal2string($product->width);
+            break;
+
+        case 'height':
+            $out = core_decimal2string($product->height);
+            break;
+
+        case 'depth':
+            $out = core_decimal2string($product->depth);
+            break;
+
+        case 'unit':
+            $out = $product->size_unit;
+            break;
+
+        default:
+            $out =  core_decimal2string($product->width) . $separator .
+                    core_decimal2string($product->height) . $separator .
+                    core_decimal2string($product->depth) . ' ' .
+                    $product->size_unit;
+    }
+
+    return $out;
+}
+
+function nvweb_product_weight($product, $return="")
+{
+    switch($return)
+    {
+        case 'value':
+            $out = core_decimal2string($product->weight);
+            break;
+
+        case 'unit':
+            $out = $product->weight_unit;
+            break;
+
+        default:
+            $out = core_decimal2string($product->weight) . ' ' . $product->weight_unit;
+    }
+
+    return $out;
 }
 
 ?>

@@ -127,7 +127,9 @@ class product
         }
 
         if(!is_array($this->groups))
+        {
             $this->groups = array($this->groups);
+        }
 
         $this->brand            =  $main->brand;
 
@@ -189,10 +191,14 @@ class product
 
         $this->groups	        = $_REQUEST['groups'];
         if($this->access < 3)
+        {
             $this->groups = array();
+        }
 
 		if($user->permission("products.publish") != 'false')
-			$this->permission = intval($_REQUEST['permission']);
+        {
+            $this->permission = intval($_REQUEST['permission']);
+        }
 
         // if comment settings were not visible, keep the original values
         if(isset($_REQUEST['product-comments_enabled_to']))
@@ -210,31 +216,44 @@ class product
 		$fields = array('title', 'tags');
 		
 		if(!is_array($template->sections))
+        {
             $template->sections = array('id' => 'main');
+        }
 		
 		foreach($template->sections as $section)
 		{			
 			if(is_object($section)) 
-				$section = (array) $section;
+            {
+                $section = (array) $section;
+            }
 
 			if(is_array($section))
-				$section = $section['id'];
+            {
+                $section = $section['id'];
+            }
 			
 			$fields[] = 'section-'.$section;	
 		}
 		
 		foreach($_REQUEST as $key => $value)
 		{
-			if(empty($value)) continue;
+			if(empty($value))
+            {
+                continue;
+            }
 			
 			foreach($fields as $field)
 			{				
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
-					$this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                {
+                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                }
 			}
 
 			if(substr($key, 0, strlen('path-'))=='path-')
+            {
                 $this->paths[substr($key, strlen('path-'))] = $value;
+            }
 		}
 
 		// image galleries
@@ -244,10 +263,17 @@ class product
 		if(!is_array($items)) $items = array();
 		$gallery_items = array();
 		$gallery_items[0] = array();
-		if(!is_array($website->languages)) $website->languages = array();
+		if(!is_array($website->languages))
+        {
+            $website->languages = array();
+        }
+
 		foreach($items as $item)
 		{
-			if(empty($item)) continue;
+			if(empty($item))
+            {
+                continue;
+            }
 			
 			// capture image captions
 			$gallery_items[0][$item] = array();
@@ -316,7 +342,9 @@ class product
         $affected_rows = 0;
 
 		if($user->permission("products.delete") == 'false')
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        {
+            throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        }
 
 		if(!empty($this->id) && !empty($this->website))
 		{
@@ -373,7 +401,9 @@ class product
 			if( $user->permission("products.create") == 'false'    ||
 				!structure::category_allowed($this->category)
 			)
-				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            {
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 		}
 
 		$this->date_created  = core_time();		
@@ -385,7 +415,9 @@ class product
             $this->comments_enabled_to = $website->comments_enabled_for;
             $this->comments_moderator = $website->comments_default_moderator;
             if($this->comments_moderator == 'c_author')
+            {
                 $this->comments_moderator = $this->author;
+            }
         }
 
         $groups = '';
@@ -394,19 +426,27 @@ class product
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
 		if(empty($this->website))
-			$this->website = $website->id;
+        {
+            $this->website = $website->id;
+        }
 
 		if(!empty($user->id) && $user->permission("products.publish") == 'false')
 		{
 			if($this->permission == 0)
-				$this->permission = 1;
+            {
+                $this->permission = 1;
+            }
 		}
 
 		if(empty($this->position))
@@ -484,7 +524,9 @@ class product
         );
 			
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		$this->id = $DB->get_last_id();
 
@@ -515,10 +557,14 @@ class product
         if(!is_null($user))
         {
             if($user->permission("products.edit") == 'false' && $this->author != $user->id)
+            {
                 throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 
             if( !structure::category_allowed($this->category) )
+            {
                 throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
         }
 
 		$this->date_modified = core_time();
@@ -529,11 +575,15 @@ class product
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute(' 
             UPDATE nv_products
@@ -625,7 +675,9 @@ class product
         );
 		
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		webdictionary::save_element_strings('product', $this->id, $this->dictionary, $this->website);
 		webdictionary_history::save_element_strings('product', $this->id, $this->dictionary, false, $this->website);
@@ -656,16 +708,22 @@ class product
 	{
 		// load properties if not already done
 		if(empty($this->properties))
+        {
             $this->properties = property::load_properties('product', $this->template, 'product', $this->id);
+        }
 
 		for($p=0; $p < count($this->properties); $p++)
 		{
 			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
 			{
 				if($raw)
-					$out = $this->properties[$p]->value;
+                {
+                    $out = $this->properties[$p]->value;
+                }
 				else
-					$out = $this->properties[$p]->value;
+                {
+                    $out = $this->properties[$p]->value;
+                }
 					
 				break;
 			}
@@ -678,12 +736,16 @@ class product
 	{
 		// load properties if not already done
         if(empty($this->properties))
+        {
             $this->properties = property::load_properties('product', $this->template, 'product', $this->id);
+        }
 
 		for($p=0; $p < count($this->properties); $p++)
 		{
 			if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
-				return true;
+            {
+                return true;
+            }
 		}
 		return false;
 	}
@@ -694,7 +756,9 @@ class product
 
 		// load properties if not already done
         if(empty($this->properties))
+        {
             $this->properties = property::load_properties('product', $this->template, 'product', $this->id);
+        }
 
 		for($p=0; $p < count($this->properties); $p++)
 		{
@@ -712,7 +776,9 @@ class product
     {
         $url = $this->paths[$lang];
 	    if(empty($url))
-		    $url = '/product/'.$this->id;
+        {
+            $url = '/product/'.$this->id;
+        }
         $url = nvweb_prepare_link($url);
         return $url;
     }
@@ -770,7 +836,10 @@ class product
 
 		for($i=0; $i < count($items); $i++)
 		{
-			if(empty($items[$i])) continue;
+			if(empty($items[$i]))
+            {
+                continue;
+            }
 
 			$ok = $DB->execute('
               UPDATE nv_products
@@ -780,7 +849,9 @@ class product
             );
 
 			if(!$ok)
-			    return array("error" => $DB->get_last_error());
+            {
+                return array("error" => $DB->get_last_error());
+            }
 		}
 
 		return true;
@@ -815,7 +886,9 @@ class product
 			// all columns to look for
 			$cols[] = 'p.id LIKE ' .  protect('%'.$text.'%').' ';
 			if(!empty($dict_ids))
-				$cols[] = 'p.id IN ('.implode(',', $dict_ids).')';
+            {
+                $cols[] = 'p.id IN ('.implode(',', $dict_ids).')';
+            }
 
 			$where .= ' AND ( ';
 			$where .= implode( ' OR ', $cols);
@@ -834,7 +907,9 @@ class product
         $DB->query('SELECT * FROM nv_products WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }
@@ -870,7 +945,9 @@ class product
             $current = round($current + $tax_amount, 2);
 
             if(!empty($old_price))
+            {
                 $old_price = round($old_price + ($old_price / 100 * $tax_value), 2);
+            }
         }
 
         return array(
@@ -879,7 +956,8 @@ class product
             'base_price' => $base_price, // current product price without taxes
             'old_without_taxes' => $old_price_without_taxes, // old product price (only if offer is active) without taxes
             'tax_value' => $tax_value, // for the current price
-            'tax_amount' => $tax_amount // for the current price
+            'tax_amount' => $tax_amount, // for the current price
+            'currency' => $this->base_price_currency
         );
     }
 
@@ -894,7 +972,9 @@ class product
                 (empty($this->offer_begin_date) || core_time() >= $this->offer_begin_date) &&
                 (empty($this->offer_end_date) || core_time() <= $this->offer_end_date)
             )
+            {
                 $on_offer = true;
+            }
         }
 
         return $on_offer;
@@ -910,12 +990,16 @@ class product
         $rs = product::top_products($limit);
 
         if(empty($rs))
+        {
             return false;
+        }
 
         foreach($rs as $top_product)
         {
             if($top_product->product == $this->id)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -957,17 +1041,23 @@ class product
         if(!empty($this->date_to_display))
         {
             if( floor((time() - $this->date_to_display) / 86400) < $since )
+            {
                 $is_new = true;
+            }
         }
         else if(!empty($this->date_published))
         {
             if( floor((time() - $this->date_published) / 86400) < $since )
+            {
                 $is_new = true;
+            }
         }
         else
         {
             if( floor((time() - $this->date_created) / 86400) < $since )
+            {
                 $is_new = true;
+            }
         }
 
         return $is_new;
@@ -1009,7 +1099,9 @@ class product
         {
             $out = array();
             foreach($currencies as $key => $val)
+            {
                 $out[$key] = $val['symbol'];
+            }
         }
 
         if(!empty($value) && $value != 'all')
@@ -1044,7 +1136,9 @@ class product
 	{
 		$tmp = new product();
 		foreach($obj as $key => $val)
-			$tmp->$key = $val;
+        {
+            $tmp->$key = $val;
+        }
 
 		return $tmp;
 	}
