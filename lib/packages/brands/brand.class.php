@@ -14,8 +14,8 @@ class brand
 
         if($DB->query('
             SELECT * FROM nv_brands 
-            WHERE id = '.intval($id).' AND 
-                  website = '.$website->id)
+            WHERE id = '.intval($id).' 
+              AND website = '.$website->id)
         )
         {
             $data = $DB->result();
@@ -45,9 +45,13 @@ class brand
     public function save()
     {
         if(!empty($this->id))
+        {
             return $this->update();
+        }
         else
+        {
             return $this->insert();
+        }
     }
 
     public function delete()
@@ -138,7 +142,9 @@ class brand
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

@@ -2,7 +2,7 @@
 /**
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2018 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2019 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com)
  * @license GPLv2
  */
@@ -43,9 +43,13 @@ class database
 				try 
 				{
                     if(PDO_HOSTNAME!="")
+                    {
                         $dsn = "mysql:host=".PDO_HOSTNAME.";port=".PDO_PORT.";charset=utf8mb4;dbname=".PDO_DATABASE;
+                    }
                     else
+                    {
                         $dsn = "mysql:unix_socket=".PDO_SOCKET.";charset=utf8mb4;dbname=".PDO_DATABASE;
+                    }
 					$this->db = new PDO($dsn, PDO_USERNAME, PDO_PASSWORD);
                     $this->db->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
                     $this->db->exec('SET NAMES utf8mb4');
@@ -61,7 +65,10 @@ class database
 		}
 		
 		if($this->db)
-			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); // PDO::ERRMODE_EXCEPTION
+        {
+            // PDO::ERRMODE_EXCEPTION
+            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        }
 		
 		return !empty($this->db);		
 	}
@@ -129,7 +136,9 @@ class database
 			// avoid firing a fatal error exception when the result is NULL
             // and the query is not malformed
 			if(!$statement)
+            {
                 return false;
+            }
 
 			$statement->setFetchMode($fetch);
 			$this->lastResult = $statement->fetchAll();
@@ -316,7 +325,9 @@ class database
 					$stm = $this->db->prepare($sql);
                     $this->queries_count++;
 					if($stm->execute()) 
-						$this->lastAffectedRows = $stm->rowCount();
+                    {
+                        $this->lastAffectedRows = $stm->rowCount();
+                    }
                     @$stm->closeCursor();
                     unset($stm);
 				}
@@ -392,14 +403,20 @@ class database
 			for($i=0; $i < $total; $i++)
 			{
 				if(is_array($this->lastResult[$i]))
-					array_push($result, $this->lastResult[$i][$column]);
+                {
+                    array_push($result, $this->lastResult[$i][$column]);
+                }
 				else if(is_object($this->lastResult[$i]))
-					array_push($result, $this->lastResult[$i]->$column);
+                {
+                    array_push($result, $this->lastResult[$i]->$column);
+                }
 			}
 			return $result;			
 		}
 		else
-			return $this->lastResult;
+        {
+            return $this->lastResult;
+        }
 	}
 			
 
@@ -408,7 +425,7 @@ class database
 	 *
 	 * @return array|object The first row or object of the last query sent to database
 	 */				
-	public function first()
+    public function first()
 	{
 		return $this->lastResult[0];
 	}

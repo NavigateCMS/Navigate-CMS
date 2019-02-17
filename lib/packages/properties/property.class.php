@@ -88,9 +88,13 @@ class property
         $this->suffix       = $main->suffix;
 
 		if($this->type == 'date')
-			$this->dvalue = core_ts2date($this->dvalue, false);		
+        {
+            $this->dvalue = core_ts2date($this->dvalue, false);
+        }
 		else if($this->type == 'datetime')
-			$this->dvalue	= 	core_ts2date($this->dvalue, true);
+        {
+            $this->dvalue	= 	core_ts2date($this->dvalue, true);
+        }
 
 	}
 	
@@ -105,16 +109,24 @@ class property
         $this->helper       = $_REQUEST['property-helper'];
 
 		if(($this->type == 'date' || $this->type == 'datetime') && !empty($this->dvalue))
-			$this->dvalue	= 	core_date2ts($this->dvalue);
+        {
+            $this->dvalue	= 	core_date2ts($this->dvalue);
+        }
 
         if(empty($this->type))
+        {
             $this->type = 'value';
+        }
 
         if(empty($this->element) || $this->element == 'element')
+        {
             $this->element = 'item';
+        }
 		
 		if(isset($_REQUEST['property-position']))
-			$this->position		= $_REQUEST['property-position'];
+        {
+            $this->position		= $_REQUEST['property-position'];
+        }
 		$this->enabled		= intval($_REQUEST['property-enabled']);	
 		
 		// parse property options
@@ -126,7 +138,10 @@ class property
 		foreach($options as $option)
 		{
 			$option = explode('#', $option, 2);
-			if(empty($option[1])) continue;
+			if(empty($option[1]))
+            {
+                continue;
+            }
 			$this->options[trim($option[0])] = trim($option[1]);
 		}
 	}
@@ -152,7 +167,9 @@ class property
             if($source=='website')
             {
                 if(empty($ws_theme->options))
+                {
                     $ws_theme->options = array();
+                }
 
                 foreach($ws_theme->options as $to)
                 {
@@ -172,10 +189,14 @@ class property
                 foreach($ws_theme->templates as $tt)
                 {
                     if($tt->type != $template)
+                    {
                         continue;
+                    }
 
                     if(empty($tt->properties))
+                    {
                         $tt->properties = array();
+                    }
 
                     foreach($tt->properties as $tp)
                     {
@@ -213,21 +234,31 @@ class property
         $this->suffix       = $theme_option->suffix;
 
         if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
+        {
             $this->name = $ws_theme->t(substr($this->name, 1));
+        }
 
         if(substr($this->helper, 0, 1)=='@')
+        {
             $this->helper = $ws_theme->t(substr($this->helper, 1));
+        }
 
         $this->value = $value;
 
         if(!isset($value) && isset($ws->theme_options->{$this->id}))
+        {
             $this->value = $ws->theme_options->{$this->id};
+        }
 
         if(empty($this->value) && empty($this->id))
+        {
             $this->value = $this->dvalue;
+        }
 
         if(is_object($this->value))
+        {
             $this->value = (array)$this->value;
+        }
     }
 
     public function load_from_webuser($property_id, $webuser_id=null)
@@ -254,7 +285,9 @@ class property
         }
 
         if(empty($ws_theme->webusers['properties']))
+        {
             $ws_theme->webusers['properties'] = array();
+        }
 
         foreach($ws_theme->webusers['properties'] as $to)
         {
@@ -287,10 +320,14 @@ class property
         $this->suffix       = $webuser_option->suffix;
 
         if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
+        {
             $this->name = $ws_theme->t(substr($this->name, 1));
+        }
 
         if(substr($this->helper, 0, 1)=='@')
+        {
             $this->helper = $ws_theme->t(substr($this->helper, 1));
+        }
 
         $values = property::load_properties_associative('webuser', '', 'webuser', $wu->id);
 
@@ -302,7 +339,9 @@ class property
         }
 
         if(is_object($this->value))
+        {
             $this->value = (array)$this->value;
+        }
     }
 
     public function load_from_object($object, $value=null, $dictionary=null)
@@ -329,15 +368,21 @@ class property
         $this->suffix       = $object->suffix;
 
         if(!empty($dictionary))
+        {
             $this->name = $dictionary->t($this->name);
+        }
 
         $this->value = $value;
 
         if(empty($this->value) && empty($this->id))
+        {
             $this->value = $this->dvalue;
+        }
 
         if(is_object($this->value))
+        {
             $this->value = (array)$this->value;
+        }
 
         // translate option titles (when property type = option)
         if(!empty($this->options))
@@ -346,7 +391,9 @@ class property
             foreach($this->options as $key => $value)
             {
                 if(!empty($dictionary))
+                {
                     $value = $dictionary->t($value);
+                }
 
                 $options[$key] = $value;
             }
@@ -358,9 +405,13 @@ class property
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -419,7 +470,10 @@ class property
           )
         );
 			
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 		
@@ -481,7 +535,9 @@ class property
         $data = array();
 
         if(empty($website_id))
+        {
             $website_id = $website->id;
+        }
 
         if(is_numeric($code))
         {
@@ -550,7 +606,9 @@ class property
                             {
                                 // note: properties in block group blocks can't have the same name
                                 if(isset($bgb->properties))
+                                {
                                     $data = array_merge($data, $bgb->properties);
+                                }
                             }
                             break;
                         }
@@ -606,7 +664,9 @@ class property
                     $template_properties = $theme_template->properties;
 
                     if(empty($template_properties))
+                    {
                         $template_properties = array();
+                    }
 
                     $data = array();
 
@@ -623,7 +683,9 @@ class property
                             ($element == 'item' && $template_properties[$p]->element=="element") ||
                             $template_properties[$p]->element == $element
                         )
+                        {
                             $data[] = $template_properties[$p];
+                        }
                     }
                     break;
             }
@@ -686,12 +748,17 @@ class property
 				}
 			}
 			
-			$ok =	$DB->execute('UPDATE nv_properties
-									 SET position = '.($i+1).' '.$enabled.' 
-								   WHERE id = '.$item[$i].'
-								     AND website = '.$website->id);
+			$ok =	$DB->execute('
+                UPDATE nv_properties
+				   SET position = '.($i+1).' '.$enabled.' 
+				 WHERE id = '.$item[$i].'
+				   AND website = '.$website->id
+            );
 			
-			if(!$ok) return array("error" => $DB->get_last_error()); 
+			if(!$ok)
+            {
+                return array("error" => $DB->get_last_error());
+            }
 		}
 			
 		return true;	
@@ -703,20 +770,32 @@ class property
 		global $properties;
 		
 		if(isset($properties[$object_type.'-'.$object_id]))
-			$props = $properties[$object_type.'-'.$object_id];
+        {
+            $props = $properties[$object_type.'-'.$object_id];
+        }
 		else
-			$props = property::load_properties($element, $template, $object_type, $object_id);
+        {
+            $props = property::load_properties($element, $template, $object_type, $object_id);
+        }
 
 		// now create the associative array by property name => value
 		$associative_properties = array();
 		
-		if(!is_array($props)) $props = array();
+		if(!is_array($props))
+        {
+            $props = array();
+        }
+
 		foreach($props as $property)
 		{
             if(is_numeric($property->id))
+            {
                 $associative_properties[$property->name] = $property->value;
+            }
             else
+            {
                 $associative_properties[$property->id] = $property->value;
+            }
 		}
 
 		return $associative_properties;
@@ -804,7 +883,9 @@ class property
                 );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
+                {
                     $object_id = 0;
+                }
             }
             // we must find the REAL numeric block group ID (based on its code) to get the assigned property values
             // at the end, $object_id MUST BE the numeric ID of the block group (we have only its codename, not the numeric ID)
@@ -822,7 +903,9 @@ class property
                 );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
+                {
                     $object_id = 0;
+                }
             }
 
             $object_type = "block_group-extension-block";
@@ -869,23 +952,33 @@ class property
 		$values = $DB->result();
         
 		if(!is_array($values))
+        {
             $values = array();
+        }
 
         $o_properties = array();
 
         if(!is_array($e_properties))
+        {
             $e_properties = array();
+        }
 
         $p = 0;
 		foreach($e_properties as $e_property)
 		{
             if(is_object($e_property))
+            {
                 $o_properties[$p] = clone $e_property;
+            }
             else
+            {
                 $o_properties[$p] = $e_property;
+            }
 
             if(isset($o_properties[$p]->dvalue))
+            {
                 $o_properties[$p]->value = $o_properties[$p]->dvalue;
+            }
 
 			foreach($values as $value)
 			{
@@ -905,10 +998,17 @@ class property
 			}
 
             if(substr($o_properties[$p]->name, 0, 1)=='@')  // get translation from theme dictionary
-                $o_properties[$p]->name = $theme->t(substr($o_properties[$p]->name, 1));
+            {
+                if(method_exists($theme, 't'))
+                {
+                    $o_properties[$p]->name = $theme->t(substr($o_properties[$p]->name, 1));
+                }
+            }
 
             if(is_object($o_properties[$p]->value))
+            {
                 $o_properties[$p]->value = (array)$o_properties[$p]->value;
+            }
 
             $p++;
 		}
@@ -945,7 +1045,9 @@ class property
                 );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
+                {
                     $object_id = 0;
+                }
             }
         }
         else if($object_type=='extension_block')
@@ -1002,7 +1104,9 @@ class property
         }
 
         if(!is_array($properties))
+        {
             $properties = array();
+        }
 
 		foreach($properties as $property)
 		{
@@ -1012,33 +1116,49 @@ class property
 
             // multilanguage property?
             if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+            {
                 $property_value = '[dictionary]';
+            }
 
             // date/datetime property?
             if($property->type=='date' || $property->type=='datetime')
+            {
                 $property_value = core_date2ts($_REQUEST['property-'.$property->id]);
+            }
 
             if($property->type=='moption' && !empty($_REQUEST['property-'.$property->id]))
+            {
                 $property_value = implode(',', $_REQUEST['property-'.$property->id]);
+            }
 
             if($property->type=='coordinates')
+            {
                 $property_value = $_REQUEST['property-'.$property->id.'-latitude'].'#'.$_REQUEST['property-'.$property->id.'-longitude'];
+            }
 
             if($property->type=='decimal')
+            {
                 $property_value = core_string2decimal($_REQUEST['property-'.$property->id]);
+            }
 
             if($property->type=='webuser_groups' && !empty($_REQUEST['property-'.$property->id]))
+            {
                 $property_value = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
+            }
 
             // boolean (checkbox): if not checked,  form does not send the value
             if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
+            {
                 $property_value = 0;
+            }
 
             // item (select2): if no selection, the form does not send a value (HTML);
             // if we don't set an empty value, Navigate would take that as non-existant field and would set the default value,
             // which is different as the user may really want to set "empty" as the value
             if(($property->type=='element' || $property->type=='item') && !isset($_REQUEST['property-'.$property->id]))
+            {
                 $property_value = "";
+            }
 
             $query_params = array(
                 ':wid' => $website->id,
@@ -1094,14 +1214,18 @@ class property
             // save in the dictionary the multilanguage properties
             $default_language = '';
             if($property->multilanguage === 'false' || $property->multilanguage === false)
+            {
                 $default_language = $website->languages_list[0];
+            }
 
             if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
                 foreach($website->languages_list as $lang)
                 {
                     if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                    {
                         $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
+                    }
 
                     $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
                 }
@@ -1117,7 +1241,9 @@ class property
                     $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $link;
 
                     if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
+                    {
                         $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $dictionary[$lang]['property-'.$property->id.'-'.$default_language];
+                    }
                 }
             }
 		}
@@ -1126,11 +1252,21 @@ class property
         {
             $property_element = $_REQUEST['property-element'];
             if($object_type=='block_group_block')
+            {
                 $property_element = 'block_group_block';
+            }
             else if($object_type=='block_group-extension-block')
+            {
                 $property_element = 'block_group-extension-block';
+            }
 
-			webdictionary::save_element_strings('property-'.$property_element, $object_id, $dictionary, $website->id, $object_uid);
+			webdictionary::save_element_strings(
+			    'property-'.$property_element,
+                $object_id,
+                $dictionary,
+                $website->id,
+                $object_uid
+            );
         }
 
         return true;
@@ -1174,7 +1310,9 @@ class property
                 );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
+                {
                     $object_id = 0;
+                }
             }
 
             if(!empty($node_uid))
@@ -1234,7 +1372,9 @@ class property
             }
 
             if(!isset($block->properties) || empty($block->properties))
+            {
                 return false;
+            }
 
             $properties = $block->properties;
         }
@@ -1244,22 +1384,30 @@ class property
         }
 
         if(!is_array($properties))
+        {
             $properties = array();
+        }
 
         foreach($properties as $property)
    		{
             if(!isset($properties_assoc[$property->name]) && !isset($properties_assoc[$property->id]))
+            {
                 continue;
+            }
 
             $values_dict = array();
             $value = '';
 
             // we try to find the property value by "property name", if empty then we try to find it via "property id"
             if(isset($properties_assoc[$property->name]))
+            {
                 $value = $properties_assoc[$property->name];
+            }
 
             if(empty($value))
+            {
                 $value = $properties_assoc[$property->id];
+            }
 
             // multilanguage property?
             if( in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) ||
@@ -1268,10 +1416,14 @@ class property
             )
             {
 	            if(isset($properties_assoc[$property->name]))
+                {
                     $values_dict = $properties_assoc[$property->name];
+                }
 
 	            if(empty($values_dict))
+                {
                     $values_dict = $properties_assoc[$property->id];
+                }
 
                 $value = '[dictionary]';
             }
@@ -1279,7 +1431,9 @@ class property
             if($property->type=='coordinates')
             {
                 if(is_array($value))
+                {
                     $value = $value['latitude'].'#'.$value['longitude'];
+                }
                 // if it isn't an array, then we suppose it already has the right format
             }
 
@@ -1287,14 +1441,20 @@ class property
             // (no thousands separator, dot as decimal separator)
 
             if($property->type=='webuser_groups' && !empty($value))
+            {
                 $value = 'g'.implode(',g', $value);
+            }
 
             // boolean (checkbox): if not checked,  form does not send the value
             if($property->type=='boolean' && empty($value))
+            {
                 $value = 0;
+            }
 
             if(is_null($value))
-                $value = ""; // should not be needed because of value_or_default, but doing this here fixes some warnings
+            {
+                $value = "";
+            } // should not be needed because of value_or_default, but doing this here fixes some warnings
 
             // remove the old property value row
 
@@ -1352,22 +1512,30 @@ class property
             // set the dictionary for the multilanguage properties
             $default_language = '';
             if(isset($property->multilanguage) && ($property->multilanguage === 'false' || $property->multilanguage === false))
+            {
                 $default_language = $ws->languages_list[0];
+            }
 
             if(in_array($property->type, array('text', 'textarea', 'rich_textarea', 'link')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
             {
                 foreach($ws->languages_list as $lang)
                 {
                     if(!empty($default_language))   // property is NOT multilanguage, use the first value for all languages
-	                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$default_language];
+                    {
+                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$default_language];
+                    }
 	                else
-	                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$lang];
+                    {
+                        $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $values_dict[$lang];
+                    }
                 }
             }
    		}
 
    		if(!empty($dictionary))
-        	webdictionary::save_element_strings('property-'.$property_object_type, $object_id, $dictionary, $ws->id, $node_uid);
+        {
+            webdictionary::save_element_strings('property-'.$property_object_type, $object_id, $dictionary, $ws->id, $node_uid);
+        }
 
        return true;
    	}
@@ -1378,7 +1546,9 @@ class property
         global $website;
 
         if(empty($website_id))
+        {
             $website_id = $website->id;
+        }
 
         webdictionary::save_element_strings('property-'.$element_type, $element_id, array());
 
@@ -1429,7 +1599,9 @@ class property
 
         $code = 'country_code';
         if($alpha3)
+        {
             $code = 'alpha3';
+        }
 
 		$DB->query(
 		    'SELECT '.$code.' AS country_code, name
@@ -1527,74 +1699,85 @@ class property
 		$out = array();
 		
 		if(!empty($country))
-			$timezone_identifiers = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, strtoupper($country));
+        {
+            $timezone_identifiers = DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, strtoupper($country));
+        }
 		else
-			$timezone_identifiers = DateTimeZone::listIdentifiers(); // DateTimeZone::ALL
+        {
+            $timezone_identifiers = DateTimeZone::listIdentifiers();
+        } // DateTimeZone::ALL
 			
-		foreach( $timezone_identifiers as $value )
+		foreach($timezone_identifiers as $value)
 		{
-			//if ( preg_match( '/^(America|Antartica|Arctic|Asia|Atlantic|Europe|Indian|Pacific)\//', $value ) || true )
-			//{
-				$ex = explode("/", $value, 2); // obtain continent, city	
+            $ex = explode("/", $value, 2); // obtain continent, city
 
-				$this_tz = new DateTimeZone($value);
-				$now = new DateTime("now", $this_tz);
-				$offset = $this_tz->getOffset($now);
-				$utc = $offset / 3600;
-										
-				if($utc > 0) $utc = '+'.$utc;
-				else if($utc == 0) $utc = '-'.$utc;
+            $this_tz = new DateTimeZone($value);
+            $now = new DateTime("now", $this_tz);
+            $offset = $this_tz->getOffset($now);
+            $utc = $offset / 3600;
 
-				$continent = $ex[0];	 
+            if($utc > 0)
+            {
+                $utc = '+'.$utc;
+            }
+            else if($utc == 0)
+            {
+                $utc = '-'.$utc;
+            }
 
-				switch($continent)
-				{
-					case 'Africa':
-						$continent = t(284, 'Africa');
-						break;
+            $continent = $ex[0];
 
-					case 'America':
-						$continent = t(310, 'America');
-						break;
-						
-					case 'Antartica':
-						$continent = t(311, 'Antartica');
-						break;						
+            switch($continent)
+            {
+                case 'Africa':
+                    $continent = t(284, 'Africa');
+                    break;
 
-					case 'Arctic':
-						$continent = t(312, 'Arctic');
-						break;						
+                case 'America':
+                    $continent = t(310, 'America');
+                    break;
 
-					case 'Asia':
-						$continent = t(313, 'Asia');
-						break;						
+                case 'Antartica':
+                    $continent = t(311, 'Antartica');
+                    break;
 
-					case 'Atlantic':
-						$continent = t(314, 'Atlantic');
-						break;						
+                case 'Arctic':
+                    $continent = t(312, 'Arctic');
+                    break;
 
-					case 'Europe':
-						$continent = t(315, 'Europe');
-						break;						
+                case 'Asia':
+                    $continent = t(313, 'Asia');
+                    break;
 
-					case 'Indian':
-						$continent = t(316, 'Indian');
-						break;						
+                case 'Atlantic':
+                    $continent = t(314, 'Atlantic');
+                    break;
 
-					case 'Pacific':
-						$continent = t(317, 'Pacific');
-						break;	
-						
-					default:
-						// leave it in english
-				}
-				$city = str_replace('_', ' ', $ex[1]);
-				
-				if(!empty($city))			
-					$out[$value] = $offset.'#'.'(UTC'.$utc.') '.$continent.'/'.$city;
-				else
-					$out[$value] = $offset.'#'.'(UTC'.$utc.') '.$value;
-			//}
+                case 'Europe':
+                    $continent = t(315, 'Europe');
+                    break;
+
+                case 'Indian':
+                    $continent = t(316, 'Indian');
+                    break;
+
+                case 'Pacific':
+                    $continent = t(317, 'Pacific');
+                    break;
+
+                default:
+                    // leave it in english
+            }
+            $city = str_replace('_', ' ', $ex[1]);
+
+            if(!empty($city))
+            {
+                $out[$value] = $offset.'#'.'(UTC'.$utc.') '.$continent.'/'.$city;
+            }
+            else
+            {
+                $out[$value] = $offset.'#'.'(UTC'.$utc.') '.$value;
+            }
 		}		
 		
 		asort($out, SORT_NUMERIC);
@@ -1639,15 +1822,21 @@ class property
         $DB->query('SELECT * FROM nv_properties WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out['nv_properties'] = json_encode($DB->result());
+        }
 
         $DB->query('SELECT * FROM nv_properties_items WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out['nv_properties_items'] = json_encode($DB->result());
+        }
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

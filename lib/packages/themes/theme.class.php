@@ -294,23 +294,24 @@ class theme
 	public static function types()
 	{		
 		$template_types = array(
-            'home'			=>	t(187, 'Home page'),
-            'content'		=>	t(9, 'Content'),
-            'gallery'		=>	t(210, 'Gallery'),
-            'blog'			=>	t(375, 'Blog'),
-            'blog_entry'	=>	t(376, 'Blog entry'),
-            'item'			=>	t(630, 'Element'),
-            'product'		=>	t(198, 'Product'),
-            'product_list'	=>	t(737, 'Product list'),
-            'cart'	        =>	t(736, 'Cart'),
-            'checkout'      =>	t(738, 'Checkout'),
-            'list'			=>	t(39, 'List'),
-            'contact'	    =>	t(377, 'Contact'),
-            'search'		=>	t(41, 'Search'),
-            'newsletter'	=>	t(249, 'Newsletter'),
-            'portfolio'     =>  t(447, 'Portfolio'),
-            'portfolio_item'=>  t(448, 'Portfolio item'),
-            'not_found'     =>  t(13, 'Not found')
+            'home'			    =>	t(187, 'Home page'),
+            'content'		    =>	t(9, 'Content'),
+            'gallery'		    =>	t(210, 'Gallery'),
+            'blog'			    =>	t(375, 'Blog'),
+            'blog_entry'	    =>	t(376, 'Blog entry'),
+            'item'			    =>	t(630, 'Element'),
+            'product'		    =>	t(198, 'Product'),
+            'product_list'	    =>	t(737, 'Product list'),
+            'cart'	            =>	t(736, 'Cart'),
+            'checkout'          =>	t(738, 'Checkout'),
+            'customer_account'  =>	t(817, 'Customer account'),
+            'list'			    =>	t(39, 'List'),
+            'contact'	        =>	t(377, 'Contact'),
+            'search'		    =>	t(41, 'Search'),
+            'newsletter'	    =>	t(249, 'Newsletter'),
+            'portfolio'         =>  t(447, 'Portfolio'),
+            'portfolio_item'    =>  t(448, 'Portfolio item'),
+            'not_found'         =>  t(13, 'Not found')
         );
 
 		return $template_types;
