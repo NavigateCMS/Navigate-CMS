@@ -77,7 +77,9 @@ class grid_notes
         $ids = array();
 
         for($i=0; $i < count($dataset); $i++)
+        {
             $ids[] = intval($dataset[$i][$field_id]);
+        }
         
         $ids = array_filter($ids);
 
@@ -88,14 +90,14 @@ class grid_notes
                    FROM nv_notes gn, nv_users u
                   WHERE gn.website = :wid
                     AND gn.item_type = :item_type
-                    AND gn.item_id IN (:item_ids)
+                    AND gn.item_id IN ('.implode(",", $ids).')
                     AND u.id = gn.user
                   ORDER BY gn.item_id ASC, gn.date_created DESC',
                 'object',
                 array(
                     ':wid' => $website->id,
                     ':item_type' => $type,
-                    ':item_ids' => implode(",", $ids)
+                    //':item_ids' => implode(",", $ids) prepared statements do not allow multiple values for IN()
                 )
             );
 
@@ -103,7 +105,9 @@ class grid_notes
         }
 
         if(!is_array($grid_notes))
+        {
             $grid_notes = array();
+        }
 
         for($i=0; $i < count($dataset); $i++)
         {
@@ -115,17 +119,25 @@ class grid_notes
                 if($gnote->item_id == $dataset[$i][$field_id])
                 {
                     if(empty($background))
-                        $background = $gnote->background; // the latest background saved is the one shown
+                    {
+                        $background = $gnote->background;
+                    } // the latest background saved is the one shown
                     
                     if(!empty($gnote->note))
+                    {
                         $notes[] = $gnote;
+                    }
                 }
             }
 
             if(empty($notes))
+            {
                 $dataset[$i]['_grid_notes_html'] = '<img src="img/icons/silk/note_edit.png" ng-notes="'.count($notes).'" class="grid_note_edit" align="absmiddle" />';
+            }
             else
+            {
                 $dataset[$i]['_grid_notes_html'] = '<span class="navigate_grid_notes_span">'.count($notes).'</span><img src="img/skins/badge.png" ng-notes="'.count($notes).'" width="18px" height="18px" class="grid_note_edit" align="absmiddle" />';
+            }
 
             $dataset[$i]['_grid_notes_html'] .= ' ';
             $dataset[$i]['_grid_notes_html'] .= '<img src="img/icons/silk/color_swatch.png" title="" ng-background="'.$background.'" class="grid_color_swatch" align="absmiddle" />';
@@ -140,11 +152,15 @@ class grid_notes
         global $website;
 
         if(empty($id) || !is_numeric($id))
+        {
             return array();
+        }
 
         $extra = '';
         if($notes_only)
+        {
             $extra = ' AND gn.note != "" ';
+        }
 
         $DB->query("    
             SELECT gn.*, u.username as username
@@ -187,7 +203,9 @@ class grid_notes
         global $user;
 
         if(empty($comment))
+        {
             return 'comment_empty';
+        }
 
         $comment = core_special_chars($comment);
 
@@ -216,7 +234,9 @@ class grid_notes
         global $website;
 
         if(empty($id))
+        {
             return 'invalid_id';
+        }
 
         $DB->execute('
             DELETE FROM nv_notes
@@ -264,7 +284,9 @@ class grid_notes
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

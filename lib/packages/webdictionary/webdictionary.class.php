@@ -59,7 +59,9 @@ class webdictionary
 				foreach($extension_dictionary as $word)
 				{
 					if($word['node_id']==$id)
-						$this->text[$word['lang']] = $word['text'];
+                    {
+                        $this->text[$word['lang']] = $word['text'];
+                    }
 				}
 
 				// we need to load the database versions of the theme strings
@@ -108,7 +110,9 @@ class webdictionary
 				foreach($theme_dictionary as $word)
 				{
 					if($word['node_id']==$id)
-						$this->text[$word['lang']] = $word['text'];
+                    {
+                        $this->text[$word['lang']] = $word['text'];
+                    }
 				}
 
 				// we need to load the database versions of the theme strings
@@ -130,9 +134,15 @@ class webdictionary
 
 				$data = $DB->result();
 
-				if(!is_array($data)) $data = array();
+				if(!is_array($data))
+                {
+                    $data = array();
+                }
+
 				foreach($data as $item)
-					$this->text[$item->lang] = $item->text;
+                {
+                    $this->text[$item->lang] = $item->text;
+                }
 			}
 		}
 	}
@@ -168,7 +178,9 @@ class webdictionary
 		foreach($_REQUEST as $key => $value)
 		{
 			if(substr($key, 0, strlen("webdictionary-text-"))=="webdictionary-text-")
-				$this->text[substr($key, strlen("webdictionary-text-"))] = $value;
+            {
+                $this->text[substr($key, strlen("webdictionary-text-"))] = $value;
+            }
 		}
 	}
 	
@@ -267,7 +279,9 @@ class webdictionary
 		global $website;
 
 		if(empty($this->website))
-			$this->website = $website->id;
+        {
+            $this->website = $website->id;
+        }
 		
 		if(empty($this->node_id)) 
 		{
@@ -313,7 +327,10 @@ class webdictionary
 				)
 			);
 			
-			if(!$ok) throw new Exception($DB->get_last_error());
+			if(!$ok)
+            {
+                throw new Exception($DB->get_last_error());
+            }
 		}
 
 		return true;
@@ -399,6 +416,7 @@ class webdictionary
             foreach($dictionary as $lang => $texts)
             {
                 $subtypes = array_keys($texts);
+                $subtypes_sql = implode(",", array_map( function($k) { return protect($k);}, $subtypes ));
 
                 $DB->execute('
                     DELETE FROM nv_webdictionary
@@ -406,13 +424,12 @@ class webdictionary
                        AND node_id = :node_id 
                        AND website = :wid 
                        AND lang = :lang
-                       AND subtype IN (:subtype)',
+                       AND subtype IN ('.$subtypes_sql.')',
                     array(
                         ':wid' => $website_id,
                         ':lang' => $lang,
                         ':node_id' => $node_id,
-                        ':node_type' => $node_type,
-                        ':subtype' => implode(",", array_map(function($k){ return protect($k);}, $subtypes))
+                        ':node_type' => $node_type
                     )
                 );
             }
@@ -423,6 +440,7 @@ class webdictionary
             foreach($dictionary as $lang => $texts)
             {
                 $subtypes = array_keys($texts);
+                $subtypes_sql = implode(",", array_map(function($k){ return protect($k);}, $subtypes));
 
                 $DB->execute(
                     'DELETE FROM nv_webdictionary
@@ -430,14 +448,13 @@ class webdictionary
                            AND node_id = :node_id 
                            AND website = :wid 
                            AND lang = :lang
-                           AND subtype IN (:subtype)
+                           AND subtype IN ('.$subtypes_sql.')
                            AND node_uid = :node_uid',
                     array(
                         ':wid' => $website_id,
                         ':lang' => $lang,
                         ':node_id' => $node_id,
                         ':node_type' => $node_type,
-                        ':subtype' => implode(",", array_map(function($k){ return protect($k);}, $subtypes)),
                         ':node_uid' => $node_uid
                     )
                 );
@@ -505,7 +522,9 @@ class webdictionary
 			// 2 => ID or name.ID   (name of the theme or extension)
 
 			if(!is_numeric($id))
-				list($object, $id) = explode(".", $id, 2);
+            {
+                list($object, $id) = explode(".", $id, 2);
+            }
 
 			switch($type)
 			{
@@ -587,7 +606,9 @@ class webdictionary
 				);
 
 				if(!$ok)
-					$errors[] = $DB->get_last_error();
+                {
+                    $errors[] = $DB->get_last_error();
+                }
 			}
 		}
 
@@ -604,7 +625,9 @@ class webdictionary
         $DB->query('SELECT * FROM nv_webdictionary WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }
