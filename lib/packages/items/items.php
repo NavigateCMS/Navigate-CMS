@@ -201,7 +201,9 @@ function run()
 					$permissions = array(
                         0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(69, 'Published'),
                         1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(70, 'Private'),
-                        2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
+                        2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden'),
+                        "published_later" => '<img src="img/icons/silk/clock.png" align="absmiddle" /> '.t(42, 'Ready'),
+                        "unpublished" => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
                     );
 
                     $hierarchy = structure::hierarchy(0);
@@ -210,14 +212,23 @@ function run()
 					$out = array();								
 					for($i=0; $i < count($dataset); $i++)
 					{
-						if(empty($dataset[$i])) continue;
-						
+						if(empty($dataset[$i]))
+                        {
+                            continue;
+                        }
+
+                        $permission = $permissions[$dataset[$i]['permission']];
+
 						if(empty($dataset[$i]['date_published'])) 
                         {
                             $dataset[$i]['date_published'] = '&infin;';
                         }
 						else
                         {
+                            if($dataset[$i]['date_published'] >= core_time())
+                            {
+                                $permission = $permissions["published_later"];
+                            }
                             $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
                         }
 							
@@ -227,6 +238,10 @@ function run()
                         }
 						else
                         {
+                            if($dataset[$i]['date_unpublish'] < core_time())
+                            {
+                                $permission = $permissions["unpublished"];
+                            }
                             $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
                         }
 
@@ -317,7 +332,7 @@ function run()
 							//4	=> $dataset[$i]['author_username'],
 							4	=> $dataset[$i]['date_to_display'],
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
-							6	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
+							6	=> $access[$dataset[$i]['access']].' '.$permission,
 							7 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
