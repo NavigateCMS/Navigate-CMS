@@ -1125,6 +1125,7 @@ function nvweb_template_tweaks($html)
 	// poster attribute (<video>)
     $replacements = array();
     $tags = nvweb_tags_extract($html, array('video'), false, true, 'UTF-8');
+
 	foreach($tags as $tag)
 	{
 		if(!isset($tag['attributes']['poster']))
@@ -1168,13 +1169,18 @@ function nvweb_template_tweaks($html)
 	// sources (video, audio)
     $replacements = array();
 	$tags = nvweb_tags_extract($html, array('video', 'audio'), false, true, 'UTF-8');
+
 	foreach($tags as $tag)
 	{
 		$tag_sources = nvweb_tags_extract($tag['contents'], 'source', true, true, 'UTF-8');
 
 		foreach($tag_sources as $source)
 		{
-			if(!isset($source['attributes']['src'])) continue;
+			if(!isset($source['attributes']['src']))
+            {
+                continue;
+            }
+
 			if(substr($source['attributes']['src'], 0, 7)!='http://' &&
 			   substr($source['attributes']['src'], 0, 8)!='https://')
 			{
@@ -1190,15 +1196,23 @@ function nvweb_template_tweaks($html)
 				$source['new'] = '<source src="'.$src.'" ';
 				foreach($source['attributes'] as $name => $value)
 				{
-					if($name!='poster')
+					if($name!='src')
                     {
                         $source['new'] .= $name.'="'.$value.'" ';
                     }
 				}
-				$source['new'] .= '>'.$source['contents'].'</source>';
+
+				if(!empty($source['contents']))
+                {
+				    $source['new'] .= '>'.$source['contents'].'</source>';
+                }
+                else
+                {
+                    $source['new'] .= '>';
+                }
 
 				//$html = str_replace($source['full_tag'], $source['new'], $html);
-                $replacements[$tag['full_tag']] = $tag['new'];
+                $replacements[$source['full_tag']] = $source['new'];
 			}
 		}
 	}
@@ -1390,7 +1404,6 @@ function nvweb_template_tweaks($html)
         array_values($replacements),
         $html
     );
-
 
     // tweak 4: add Navigate CMS content default styles
     $default_css = file_get_contents(NAVIGATE_PATH.'/css/tools/tinymce.defaults.css');

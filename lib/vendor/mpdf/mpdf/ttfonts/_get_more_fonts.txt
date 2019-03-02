@@ -1,0 +1,2 @@
+If you need more fonts, you can get the full repository included in mpdf on:
+https://github.com/mpdf/mpdf/tree/development/ttfonts
