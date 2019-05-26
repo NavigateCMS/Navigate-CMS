@@ -1072,7 +1072,7 @@
 
             <trans-unit id="213" approved="yes">
               <source>Image caption</source>
-              <target>Image caption</target>
+              <target>Billedtekst</target>
             </trans-unit>
 
             <trans-unit id="214" approved="yes">
@@ -1122,7 +1122,7 @@
 
             <trans-unit id="223" approved="yes">
               <source>Default value 5 stars, if you want a different value: default_value#number_of_stars</source>
-              <target>Default value 5 stars, if you want a different value: default_value#number_of_stars</target>
+              <target>Forvalgt verdi 5 stjerner, hvis du ønsker en annen verdi: default_value#number_of_stars</target>
             </trans-unit>
 
             <trans-unit id="224" approved="yes">
