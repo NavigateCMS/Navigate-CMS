@@ -4104,6 +4104,11 @@
                 <target>Información de la tienda</target>
             </trans-unit>
 
+			<trans-unit id="817" approved="yes">
+				<source>Customer account</source>
+				<target>Cuenta del cliente</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

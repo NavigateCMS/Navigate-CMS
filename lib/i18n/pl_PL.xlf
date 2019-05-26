@@ -4104,6 +4104,11 @@
                 <target>Informacje o sklepie</target>
             </trans-unit>
 
+            <trans-unit id="817">
+                <source>Customer account</source>
+                <target>Konto klienta</target>
+            </trans-unit>
+
         </trans-unit>
 
         </body>
