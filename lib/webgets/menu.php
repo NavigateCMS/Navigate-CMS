@@ -178,7 +178,8 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                 break;
 			
 			case 'a':
-				$out[] = '<div class="menu_level_'.$level.' '.$class.'">';	
+                $out = array();
+				$out[] = '<div class="menu_level_'.$level.' '.$class.'">';
 				for($m=0; $m < count($structure['cat-'.$parent]); $m++)
 				{
 					if(!nvweb_object_enabled($structure['cat-'.$parent][$m]))
@@ -220,6 +221,7 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 				break;
 
             case 'select':
+                $out = array();
                 $out[] = '<select class="menu_level_'.$level.' '.$class.'">';
                 for($m=0; $m < count($structure['cat-'.$parent]); $m++)
                 {
@@ -233,7 +235,14 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
                         continue;
                     }
 
-                    $mid = $structure['cat-'.$parent][$m]->id;
+                    if(isset($structure['cat-'.$parent][$m]))
+                    {
+                        $mid = $structure['cat-'.$parent][$m]->id;
+                    }
+                    else
+                    {
+                        $mid = null;
+                    }
 
                     // hide menu items without a title
                     if(empty($structure['dictionary'][$mid]))
