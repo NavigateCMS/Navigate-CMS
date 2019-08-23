@@ -666,7 +666,7 @@ class layout
 		{
 			// mb extruder
 			$this->add_content('
-			  <div id="navigate-website-selector-top" class="{title:\''.str_replace("'", "\\'", @core_special_chars($main_title)).'\'}">
+			  <div id="navigate-website-selector-top" class="{title:\''.str_replace(array("'", '&#039;'), "\\'", @core_special_chars($main_title)).'\'}">
 				'.$extruder.'
 			  </div>
 			  <a id="navigate-website-main-link" href="'.$main_url.'" target="_blank" style=" margin-right: 5px; display: none; "><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/house_link.png" width="16px" height="16px" /></a>
