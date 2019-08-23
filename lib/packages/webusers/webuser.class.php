@@ -217,7 +217,7 @@ class webuser
             );
 
             // remove properties
-            property::remove_properties('webuser', $this->id);
+            property::remove_properties('webuser', $this->id, $this->website);
 
             // remove grid notes
             grid_notes::remove_all('webuser', $this->id);

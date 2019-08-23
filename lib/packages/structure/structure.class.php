@@ -161,7 +161,7 @@ class structure
 			webuser_vote::remove_object_votes('structure', $this->id);
 
             // remove the properties
-            property::remove_properties('structure', $this->id);
+            property::remove_properties('structure', $this->id, $this->website);
 
             // remove the structure entry
 			$DB->execute('
