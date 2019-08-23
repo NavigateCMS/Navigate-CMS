@@ -18,20 +18,31 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
         $item = new file();
 
 		if(is_numeric($id))
-			$item->load($id);
+        {
+            $item->load($id);
+        }
 		else
-			$item->load($_REQUEST['id']);
+        {
+            // filter "id" parameter to avoid XSS problems
+            // note: if ID is not numeric, then it could be an external URL request
+            $url = filter_var($_REQUEST['id'], FILTER_SANITIZE_URL);
+            $item->load($url);
+        }
 	}
 	
 	if(empty($type) && !empty($item->type)) 
-		$type = $item->type;
+    {
+        $type = $item->type;
+    }
 
     // if the type requested is not a special type, check its access permissions
     if(!in_array($type, array("blank", "transparent", "flag")))
     {
         $enabled = nvweb_object_enabled($item);
-        if (!$enabled && !$ignorePermissions)
+        if(!$enabled && !$ignorePermissions)
+        {
             $type = 'not_allowed';
+        }
     }
 
     switch($type)
@@ -56,12 +67,16 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			$cached = file::cacheHeaders(filemtime($path), $etag);			
 
 			if(!$cached)
+            {
                 readfile($path);
+            }
 			break;
 				
 		case 'flag':
 			if($_REQUEST['code']=='ca')
+            {
                 $_REQUEST['code'] = 'catalonia';
+            }
 				
 			header('Content-Disposition: attachment; filename="'.$_REQUEST['code'].'.png"');
 			header('Content-Type: image/png');
@@ -70,7 +85,9 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 
 			$path = NAVIGATE_PATH.'/img/icons/flags/'.$_REQUEST['code'].'.png';
             if(!file_exists($path))
+            {
                 $path = NAVIGATE_PATH.'/img/transparent.gif';
+            }
 			
 			$etag = base64_encode($path.filemtime($path));
 			header('ETag: "'.$etag.'"');
@@ -177,7 +194,9 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			$cached = file::cacheHeaders(filemtime($path), $etag);			
 
 			if(!$cached)
+            {
                 readfile($path);
+            }
 			
 			break;
 		
@@ -185,7 +204,10 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 		case 'video':
 		case 'file':
 		default:		
-			if(!$item->enabled && !$ignoreEnabled) nvweb_clean_exit();
+			if(!$item->enabled && !$ignoreEnabled)
+            {
+                nvweb_clean_exit();
+            }
 			
 			$path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
 			
@@ -248,7 +270,9 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 	session_write_close();
 
 	if($DB)
+    {
         $DB->disconnect();
+    }
 	exit;
 }
 
