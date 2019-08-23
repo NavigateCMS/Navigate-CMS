@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2019. All rights reserved.                 |
-// | Last modified 2018-12-15                                               |
+// | Last modified 2019-07-15                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -30,7 +30,7 @@ require_once('cfg/globals.php');
 
 if(isset($_REQUEST['debug']) || APP_DEBUG)
 {
-    error_reporting(E_ALL ^ E_NOTICE);
+    error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
     ini_set('display_errors', 1);
 }
 
