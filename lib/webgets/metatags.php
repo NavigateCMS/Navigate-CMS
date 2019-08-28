@@ -16,7 +16,9 @@ function nvweb_metatags($vars=array())
 
     $separator = ' | ';
     if(!empty($vars['title_separator']))
+    {
         $separator = $vars['title_separator'];
+    }
 		
 	switch($current['type'])
 	{
@@ -180,8 +182,10 @@ function nvweb_metatags($vars=array())
     {
         foreach($item->paths as $path_lang => $path_route)
         {
-            if(in_array($path_lang, $website->languages_published) )
+            if(in_array($path_lang, $website->languages_published))
+            {
                 $metatags .= "\n". '<link rel="alternate" hreflang="'.$current['lang'].'" href="'.nvweb_prepare_link('/'.$current['route']).'" />';
+            }
         }
     }
 

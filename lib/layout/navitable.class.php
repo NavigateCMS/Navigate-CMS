@@ -29,7 +29,10 @@ class navitable
 
 	public function __construct($id="")	
 	{
-		if(empty($id)) $id = 'navitable-'.time();
+		if(empty($id))
+        {
+            $id = 'navitable-'.time();
+        }
 		$this->cols = array();
 		$this->id = $id;
 		$this->data_index = 'id';
@@ -131,9 +134,20 @@ class navitable
 				
 		if(!empty($edit))
 		{
-			if(empty($edit['options'])) $edit['options'] = '{}';						
-			if(empty($edit['rules'])) $edit['rules'] = '{}';
-			if(empty($edit['form'])) $edit['form'] = '{}';			
+			if(empty($edit['options']))
+            {
+                $edit['options'] = '{}';
+            }
+
+			if(empty($edit['rules']))
+            {
+                $edit['rules'] = '{}';
+            }
+
+			if(empty($edit['form']))
+            {
+                $edit['form'] = '{}';
+            }
 			
 			$newcol		 = '{	label: "'.$label.'",
 								name: "'.$index.'", 
@@ -185,7 +199,10 @@ class navitable
 		{		
 			$data = $dataset[$i];
 			
-			if(empty($data)) continue;
+			if(empty($data))
+            {
+                continue;
+            }
 			
 			unset($row);
 			$row = array();
@@ -193,15 +210,24 @@ class navitable
 			$obj->rows[$i]['id'] = $data[$indexID]; // FIRST COLUMN MUST BE THE ID
 			$obj->rows[$i]['cell'] = array(); 
 			
-			if(empty($data)) $data = array();
+			if(empty($data))
+            {
+                $data = array();
+            }
+
 			foreach($data as $key => $value)
 			{
 				$row[] = $value;
 			}
-			$obj->rows[$i]['cell'] = $row;
+
+				$obj->rows[$i]['cell'] = $row;
 		}
 
-		if(empty($total)) $total = count($obj->rows);
+		if(empty($total))
+        {
+            $total = count($obj->rows);
+        }
+
 		$obj->records = $total;
 				
 		$obj->total = ceil($obj->records / $max);	// pages
@@ -226,49 +252,65 @@ class navitable
 			case 'eq':	// equal
 				$compare = $compareField.' = '.protect($compareValue);
                 if($returnResult)
+                {
                     $result = (strcasecmp($compareField, $compareValue)==0);
+                }
 				break;
 			
 			case 'ne': // not equal
 				$compare = $compareField.' != '.protect($compareValue);
                 if($returnResult)
+                {
                     $result = (strcasecmp($compareField, $compareValue)!=0);
+                }
 				break;
 				
 			case 'lt': // less
 				$compare = $compareField.' < '.protect($compareValue);
                 if($returnResult)
+                {
                     $result = ($compareField < $compareValue);
+                }
 				break;
 							
 			case 'le': // less or equal
 				$compare = $compareField.' <= '.protect($compareValue);
                 if($returnResult)
+                {
                     $result = ($compareField <= $compareValue);
+                }
 				break;
 							
 			case 'gt': // greater
 				$compare = $compareField.' > '.protect($compareValue);
                 if($returnResult)
+                {
                     $result = ($compareField > $compareValue);
+                }
 				break;
 							
 			case 'ge': // greater or equal
 				$compare = $compareField.' >= '.protect($compareValue);
                 if($returnResult)
+                {
                     $result = ($compareField >= $compareValue);
+                }
 				break;
 
             case 'nu': // is null
                 $compare = $compareField.' IS NULL ';
                 if($returnResult)
-                    $result = empty($compareField); // or is_null()?
+                {
+                    $result = empty($compareField);
+                } // or is_null()?
                 break;
 
             case 'nn': // is not null
                 $compare = $compareField.' IS NOT NULL ';
                 if($returnResult)
+                {
                     $result = !empty($compareField);
+                }
                 break;
 
             case 'in': // is in
@@ -288,9 +330,13 @@ class navitable
                         function($v)
                         {
                             if(is_integer($v))
+                            {
                                 return $v;
+                            }
                             else
+                            {
                                 return '"'.$v.'"';
+                            }
                         },
                         $compareValue
                     );
@@ -298,7 +344,9 @@ class navitable
                     $compare = $compareField.' IN ('.implode(",", $compareValue).') ';
 
                     if($returnResult)
+                    {
                         $result = in_array($compareField, $compareValue);
+                    }
                 }
                 else
                     $compare = ' 1=1 ';
@@ -307,37 +355,49 @@ class navitable
             case 'ni': // is not in
                 $compare = $compareField.' NOT IN ('.$compareField.') ';
                 if($returnResult)
+                {
                     $result = !in_array($compareField, explode(',', $compareField));
+                }
                 break;
 							
 			case 'bw': // begins with
 				$compare = $compareField.' LIKE '.protect($compareValue.'%');
                 if($returnResult)
+                {
                     $result = (substr_compare($compareField, $compareValue, 0, strlen($compareValue), true)==0);
+                }
 				break;
 				
 			case 'bn': // not begins with
 				$compare = $compareField.' NOT LIKE '.protect($compareValue.'%');
                 if($returnResult)
+                {
                     $result = (substr_compare($compareField, $compareValue, 0, strlen($compareValue), true)!=0);
+                }
 				break;
 							
 			case 'ew': // ends with			
 				$compare = $compareField.' LIKE '.protect('%'.$compareValue);
                 if($returnResult)
+                {
                     $result = (substr_compare($compareField, $compareValue, -strlen($compareValue), strlen($compareValue), true)==0);
+                }
 				break;
 
 			case 'en': // NOT ends with			
 				$compare = $compareField.' NOT LIKE '.protect('%'.$compareValue);
                 if($returnResult)
+                {
                     $result = (substr_compare($compareField, $compareValue, -strlen($compareValue), strlen($compareValue), true)!=0);
+                }
 				break;
 
 			case 'nc': // NOT contains
 				$compare = $compareField.' NOT LIKE '.protect('%'.$compareValue.'%');
                 if($returnResult)
+                {
                     $result = (strpos($compareField, $compareValue)===false);
+                }
                 break;
 							
 			default:
@@ -346,7 +406,9 @@ class navitable
 				{
 					$compare = $compareField.' LIKE '.protect('%'.$compareValue.'%');
 	                if($returnResult)
-	                    $result = (strpos($compareField, $compareValue)!==false);
+                    {
+                        $result = (strpos($compareField, $compareValue)!==false);
+                    }
 				}
 				else // nothing to search, ignore this filter!
 				{
@@ -356,7 +418,9 @@ class navitable
 		}
 
         if($returnResult)
+        {
             return $result;
+        }
 
 		return $compare;
 	}
@@ -365,18 +429,28 @@ class navitable
 	public static function jqgridsearch($filters)
 	{
 	    if(is_string($filters))
+        {
             $filters = json_decode($filters, true);
+        }
 
 		$groupOp = ' AND ';
 		if($filters['groupOp'] == 'OR')
-		    $groupOp = ' OR ';
+        {
+            $groupOp = ' OR ';
+        }
 		
 		$where = '';
 
 		foreach($filters['rules'] as $rule)
 		{
-			if(empty($where)) $where =  ' AND ( ';
-			else			  $where .= $groupOp;
+			if(empty($where))
+            {
+                $where =  ' AND ( ';
+            }
+			else
+            {
+                $where .= $groupOp;
+            }
 
 			$where .= navitable::jqgridcompare($rule['field'], $rule['op'], $rule['data']);
 		}
@@ -391,16 +465,24 @@ class navitable
         $filters = json_decode($filters);
 
         if($filters->groupOp=='OR')
+        {
             $result = false;
+        }
         else
+        {
             $result = true;
+        }
 
         foreach($filters->rules as $rule)
         {
             if($filters->groupOp=='OR')
+            {
                 $result = $result || navitable::jqgridcompare($row[$rule->field], $rule->op, $rule->data, true);
+            }
             else
+            {
                 $result = $result && navitable::jqgridcompare($row[$rule->field], $rule->op, $rule->data, true);
+            }
         }
 
         return $result;
@@ -629,20 +711,22 @@ class navitable
 			beforeSelectRow: function(rowid, e) 
 			{
 			    if('.($this->disable_select? 'true' : 'false').')
+                {
 			        return false;
+                }
 
                 var $this = $(this), rows = this.rows,
                 // get id of the previous selected row
                 startId = $this.jqGrid("getGridParam", "selrow"),
                 startRow, endRow, iStart, iEnd, i, rowidIndex;
 
-                if (!e.ctrlKey && !e.shiftKey)
+                if(!e.ctrlKey && !e.shiftKey)
                 {
                     //  intentionally left here to show differences with
                     //  Oleg\'s solution. Just have normal behavior instead.
                     //  $this.jqGrid("resetSelection");
                 }
-                else if (startId && e.shiftKey)
+                else if(startId && e.shiftKey)
                 {
                     // Do not clear existing selections
                     // get DOM elements of the previous selected and
@@ -650,7 +734,7 @@ class navitable
                     startRow = rows.namedItem(startId);
                     endRow = rows.namedItem(rowid);
 
-                    if (startRow && endRow)
+                    if(startRow && endRow)
                     {
                         // get min and max from the indexes of the previous selected
                         // and the currect selected rows
@@ -745,7 +829,7 @@ class navitable
 			$html[] = 'function '.$this->id.'_dclick(rowid, iRow, iCol, e)';
 			$html[] = '{';
 			$html[] = '		navigate_unselect_text();	';
-			$html[] = '		if(typeof('.$this->click_action.')!="undefined") '.$this->click_action.'(rowid); ';
+			$html[] = '		if(typeof('.$this->click_action.')!="undefined") { '.$this->click_action.'(rowid); } ';
 			$html[] = '}';
 		}
 
@@ -923,7 +1007,9 @@ class navitable
                             var new_background = $(this).css('background-color');
 
                             if(new_background=='rgb(255, 255, 255)')
+                            {
                                 new_background = '';
+                            }
 
                             $(tr).find('td').css('background', new_background);
                         },
@@ -943,7 +1029,9 @@ class navitable
 			            var new_background = $(this).css('background-color');
 
 			            if(new_background=='rgb(255, 255, 255)')
-			                new_background = navigate_grid_default_row_background;
+                        {
+                            new_background = navigate_grid_default_row_background;
+                        }
 
 			            // now save this preference
 			            $.ajax({
@@ -973,8 +1061,8 @@ class navitable
                     {
                           if($(e).target != $('#navigate_grid_color_picker span'))
                           {
-                            $('#navigate_grid_color_picker').hide();
-                            $(window).off('click', remove_grid_color_picker);
+                              $('#navigate_grid_color_picker').hide();
+                              $(window).off('click', remove_grid_color_picker);
                           }
                     };
 
