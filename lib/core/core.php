@@ -1263,6 +1263,22 @@ function core_javascript_json($json)
 	return json_decode($json);	
 }
 
+function core_remove_directory_traversal($path)
+{
+    // info: https://es.wikipedia.org/wiki/Directory_traversal
+
+    $path = str_replace(
+        array(
+            '../', '..\\',
+            '%2e%2e%2f', '%2e%2e/', '..%2f', '%2e%2e%5c',
+            '..%c1%1c', '..%c0%9v', '..%c0%af'
+        ),
+        '',
+        $path);
+
+    return $path;
+}
+
 /**
  * Completely removes the current session, even the created cookie
  *

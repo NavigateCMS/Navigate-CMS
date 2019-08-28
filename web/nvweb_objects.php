@@ -23,9 +23,15 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
         }
 		else
         {
-            // filter "id" parameter to avoid XSS problems
-            // note: if ID is not numeric, then it could be an external URL request
-            $url = filter_var($_REQUEST['id'], FILTER_SANITIZE_URL);
+            // sanitize "id" parameter to avoid XSS problems
+            // note: if the "id" parameter is not numeric, then it could be the name of a navigate theme file
+            $url = $_REQUEST['id'];
+            $url = filter_var($url, FILTER_SANITIZE_URL);
+            // disallow use of < > chars in a URL
+            $url = str_replace(array('<', '>'), '', $url);
+            // prevent directory traversal attacks
+            $url = core_remove_directory_traversal($url);
+            // additional checking inside
             $item->load($url);
         }
 	}
@@ -204,18 +210,18 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 		case 'video':
 		case 'file':
 		default:		
-			if(!$item->enabled && !$ignoreEnabled)
+			if(!is_integer($item->id) || (!$item->enabled && !$ignoreEnabled))
             {
                 nvweb_clean_exit();
             }
-			
+
 			$path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
-			
+
 			$etag_add = '';
 
             clearstatcache();
 			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filemtime($path).'-'.$item->permission.$etag_add);
-						
+
 			header('ETag: "'.$etag.'"');
             header('Content-type: '.$item->mime);
             header("Accept-Ranges: bytes");

@@ -35,7 +35,7 @@ class file
 		if(!is_numeric($id) && strpos($id, '#')===false)
 		{
 			// then it may be a http/https path?, so create a virtual file object
-			$id = urldecode($id);
+            $id = urldecode($id);
 			$this->id = $id;
             $this->website = $website->id;
 			$this->parent = 0;
@@ -1306,7 +1306,8 @@ class file
             }
             else
             {
-                $path = $this->id;
+                // the requested file is not found in the navigate folder, so we return empty
+                $path = ""; //$this->id;
             }
         }
 

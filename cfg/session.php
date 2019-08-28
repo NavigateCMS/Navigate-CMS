@@ -21,7 +21,9 @@ if(!preg_match("/^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])".
 {
     $session_cookie_domain = $_SERVER['SERVER_NAME'];
     if(substr_count($_SERVER['SERVER_NAME'], '.') > 1)
+    {
         $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
+    }
 
     session_set_cookie_params(3600, '/', $session_cookie_domain, false, false);
 }

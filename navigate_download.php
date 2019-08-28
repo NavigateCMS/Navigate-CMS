@@ -1,6 +1,8 @@
 <?php
 if(!empty($_REQUEST['sid']))
+{
     session_id($_REQUEST['sid']);
+}
 
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
@@ -12,14 +14,22 @@ global $DB;
 global $config;
 global $website;
 
-if(empty($_REQUEST['id'])) exit;
+if(empty($_REQUEST['id']))
+{
+    exit;
+}
 
 // create database connection
 $DB = new database();
-if(!$DB->connect())	exit;
+if(!$DB->connect())
+{
+    exit;
+}
 
 if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
+{
     exit;
+}
 
 $item = new file();
 
@@ -27,9 +37,21 @@ $id = $_REQUEST['id'];
 if(!empty($_REQUEST['id']))
 {
 	if(is_int($id))
-		$item->load($id);
+    {
+        $item->load($id);
+    }
 	else
-		$item->load($_REQUEST['id']);
+    {
+        // sanitize "id" parameter to avoid XSS problems
+        // note: if the "id" parameter is not numeric, then it could be an external URL request
+        $url = $_REQUEST['id'];
+        $url = filter_var($url, FILTER_SANITIZE_URL);
+        // disallow use of < > chars in a URL
+        $url = str_replace(array('<', '>'), '', $url);
+        // prevent directory traversal
+        $url = core_remove_directory_traversal($url);
+        $item->load($url);
+    }
 }
 
 if(!$item->id)
@@ -42,11 +64,17 @@ if(!$item->id)
 
 $website = new Website();
 if(!empty($_GET['wid']))
+{
     $website->load(intval($_GET['wid']));
+}
 else if($item->website > 0)
-	$website->load($item->website);
+{
+    $website->load($item->website);
+}
 else
-	$website->load();
+{
+    $website->load();
+}
 
 $path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
 
