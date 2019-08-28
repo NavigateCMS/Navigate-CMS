@@ -1279,6 +1279,19 @@ function core_remove_directory_traversal($path)
     return $path;
 }
 
+function core_remove_sessions($days)
+{
+    $sessions = glob(NAVIGATE_PRIVATE . '/sessions/sess_*');
+    foreach($sessions as $session_file)
+    {
+        if(filemtime($session_file) < (time() - $days * 86400))
+        {
+            // too old, remove
+            @unlink($session_file);
+        }
+    }
+}
+
 /**
  * Completely removes the current session, even the created cookie
  *

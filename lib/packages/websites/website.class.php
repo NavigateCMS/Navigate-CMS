@@ -1228,6 +1228,9 @@ class website
                 }
             }
 
+            // remove very old PHP session files (TODO: that should be executed once a day, not every minute)
+            core_remove_sessions(365); // 365 days
+
             $events->trigger('website', 'cron', array());
 
             file_put_contents($website_cron_path, core_time());
