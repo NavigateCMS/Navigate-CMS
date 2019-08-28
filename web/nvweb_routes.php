@@ -305,9 +305,13 @@ function nvweb_route_parse($route="")
 			{
 				$ok = webuser::email_verification($email, $hash);
 				if($ok)
-					$session['nv.webuser/verify:email_confirmed'] = time();
+                {
+                    $session['nv.webuser/verify:email_confirmed'] = time();
+                }
                 else
+                {
                     $session['nv.webuser/verify:invalid_confirmation'] = time();
+                }
 			}
 			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage().'?_s='.time());
 			break;
@@ -330,10 +334,14 @@ function nvweb_route_parse($route="")
                     $webuser->set_cookie();
 
                     if(!empty($_REQUEST['callback']))
+                    {
                         $redirect = base64_decode($_REQUEST['callback']);
+                    }
                 }
                 else
+                {
                     $session['nv.webuser/verify:invalid_confirmation'] = time();
+                }
 			}
 
 			nvweb_clean_exit($redirect);
@@ -346,7 +354,9 @@ function nvweb_route_parse($route="")
 			{
 				$ok = comment::notifications_unsubscribe($cid, $hash);
 				if($ok)
-					$session['nv.comments/unsubscribe'] = time();
+                {
+                    $session['nv.comments/unsubscribe'] = time();
+                }
 			}
 			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage());
 			break;
@@ -373,7 +383,9 @@ function nvweb_route_parse($route="")
 				$current['template'] = $current['object']->template;
 
 				if($current['navigate_session']==1 && !empty($_REQUEST['template']))
-					$current['template'] = $_REQUEST['template'];
+                {
+                    $current['template'] = $_REQUEST['template'];
+                }
 			}
 			break;
 
@@ -412,7 +424,7 @@ function nvweb_route_parse($route="")
 		// redirect to home page of the current website
 		case 'nvweb.home':
 		case 'nv.home':
-			header('location: '.NVWEB_ABSOLUTE.$website->homepage());
+			header('location: ' . NVWEB_ABSOLUTE . $website->homepage());
 			nvweb_clean_exit();
 			break;
 
@@ -433,12 +445,23 @@ function nvweb_route_parse($route="")
         // empty path
         case '':
 		case '/':
-		case 'nv.empty':
+        case 'nv.empty':
 			if($website->empty_path_action == 'homepage_noredirect')
 			{
-				$route = $website->homepage();
-				if(strpos($route, '/')===0)
-					$route = substr($route, 1);
+                if(strpos($_SERVER['REQUEST_URI'], 'nv.empty') !== false)
+                {
+                    // ignore the "noredirect" preference, to prevent showing this special tag in the URL
+                    header('location: ' . NVWEB_ABSOLUTE . $website->homepage());
+                    nvweb_clean_exit();
+                }
+			    else
+                {
+				    $route = $website->homepage();
+    				if(strpos($route, '/')===0)
+                    {
+                        $route = substr($route, 1);
+                    }
+                }
 			}
 			else // other empty path cases simply are processed like a wrong path action
 			{
@@ -657,11 +680,17 @@ function nvweb_route_parse($route="")
                         }
 
                         if(strpos($out,'<rss')!==false)
+                        {
                             header('Content-Type: application/rss+xml');
+                        }
                         else if(strpos($out,'<atom')!==false)
+                        {
                             header('Content-Type: application/atom+xml');
+                        }
                         else if(strpos($out,'<xml')!==false)
+                        {
                             header('Content-Type: application/xml');
+                        }
 
                         echo $out;
                         nvweb_clean_exit();
