@@ -2,6 +2,21 @@
 require_once('../cfg/globals.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_common.php');
 
+// initialize global variables
+$DB = null;
+$current = null;
+$session = null;
+$webuser = null;
+$website = null;
+$theme = null;
+$template = null;
+$dictionary = null;
+$plugins = null;
+$events = null;
+$webgets = null;
+$idn = null;
+$html = null;
+
 function nvweb_parse($request)
 {
     debugger::timer('nvweb-page-init');
@@ -50,7 +65,9 @@ function nvweb_parse($request)
         )
         {
             if (!empty($website->redirect_to))
+            {
                 header('location: ' . $website->redirect_to);
+            }
             nvweb_clean_exit();
         }
 
@@ -61,16 +78,22 @@ function nvweb_parse($request)
         $webuser = new webuser();
         $theme = new theme();
         if (!empty($website->theme))
+        {
             $theme->load($website->theme);
+        }
 
         $route = $request['route'];
         // remove last '/' in route if exists
         if (substr($route, -1) == '/')
+        {
             $route = substr($route, 0, -1);
+        }
 
         // remove the "folder" part of the route (only if this url is really under a folder)
         if (!empty($website->folder) && strpos('/' . $route, $website->folder) === 0)
+        {
             $route = substr('/' . $route, strlen($website->folder) + 1);
+        }
 
         $nvweb_absolute = $website->absolute_path();
         try
@@ -98,7 +121,9 @@ function nvweb_parse($request)
             $session = $_SESSION['nvweb.' . $website->id];
 
             if (empty($session['lang']))
+            {
                 $session['lang'] = nvweb_country_language();
+            }
         }
 
         $force_language = "";
@@ -115,9 +140,13 @@ function nvweb_parse($request)
         }
 
         if (!empty($force_language))
+        {
             $session['lang'] = $force_language;
+        }
         else if (isset($request['lang']))
+        {
             $session['lang'] = htmlentities($request['lang']);
+        }
 
         // global data across webgets
         $current = array(
@@ -153,6 +182,77 @@ function nvweb_parse($request)
         $website->cron();
 
         debugger::stop_timer('nvweb-website-cron');
+
+        debugger::timer('nvweb-load-webuser');
+
+        if(!empty($session['webuser']))
+        {
+            $webuser->load($session['webuser']);
+        }
+        else if(!empty($_COOKIE["webuser"]))
+        {
+            $webuser->load_by_hash($_COOKIE['webuser']);
+        }
+
+        // if the webuser was removed, it doesn't exist anymore,
+        //  $session/$_COOKIE may have obsolete data, force a log out
+        // also check date range access
+        if( (empty($webuser->id) &&
+            (!empty($session['webuser']) || !empty($_COOKIE['webuser']))) || !$webuser->access_allowed()
+        )
+        {
+            $webuser->unset_cookie();
+            unset($GLOBALS['webuser']);
+            $webuser = new webuser();
+        }
+
+        if (!empty($webuser->id))
+        {
+            $webuser->lastseen = core_time();
+            $webuser->save(false); // don't trigger the webuser_modified event
+        }
+
+        // check if the webuser wants to sign out
+        if(isset($request['webuser_signout']))
+        {
+            $webuser->unset_cookie();
+            unset($GLOBALS['webuser']);
+
+            // restart purchasing process, if any
+            if(isset($session['cart']['checkout_step']))
+            {
+                $session['cart']['checkout_step'] = 'cart';
+            }
+
+            if(isset($session['cart']['customer']))
+            {
+                $session['cart']['customer'] = '';
+            }
+
+            // set webuser blank
+            $webuser = new webuser();
+        }
+
+        $current['webuser'] = @$session['webuser'];
+
+        setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
+        date_default_timezone_set($webuser->timezone ? $webuser->timezone : $website->default_timezone);
+
+        // help developers to find problems
+        if($current['navigate_session'] == 1 && APP_DEBUG)
+        {
+            error_reporting(E_ALL ^ E_NOTICE);
+            ini_set('display_errors', true);
+        }
+
+        debugger::stop_timer('nvweb-load-webuser');
+
+        if(isset($_GET['_nvka']))
+        {
+            // nvweb keep alive
+            nvweb_clean_exit();
+        }
+
         debugger::timer('nvweb-page-cache-check');
 
         if($current['pagecache_enabled'])
@@ -188,69 +288,12 @@ function nvweb_parse($request)
         $events->extension_backend_bindings(null, true);
 
         debugger::stop_timer('nvweb-load-plugins');
-        debugger::timer('nvweb-load-webuser');
-
-        if (!empty($session['webuser']))
-            $webuser->load($session['webuser']);
-        else if (!empty($_COOKIE["webuser"]))
-            $webuser->load_by_hash($_COOKIE['webuser']);
-
-        // if the webuser was removed, it doesn't exist anymore,
-        //  $session/$_COOKIE may have obsolete data, force a log out
-        // also check date range access
-        if( (empty($webuser->id) &&
-            (!empty($session['webuser']) || !empty($_COOKIE['webuser']))) || !$webuser->access_allowed()
-        )
-        {
-            $webuser->unset_cookie();
-            unset($webuser);
-            $webuser = new webuser();
-        }
-
-        if (!empty($webuser->id))
-        {
-            $webuser->lastseen = core_time();
-            $webuser->save(false); // don't trigger the webuser_modified event
-        }
-
-        // check if the webuser wants to sign out
-        if(isset($request['webuser_signout']))
-        {
-            $webuser->unset_cookie();
-            unset($webuser);
-
-            // restart purchasing process, if any
-            if(isset($session['cart']['checkout_step']))
-                $session['cart']['checkout_step'] = 'cart';
-
-            // set webuser blank
-            $webuser = new webuser();
-        }
-
-        $current['webuser'] = @$session['webuser'];
-
-        setlocale(LC_ALL, $website->languages[$session['lang']]['system_locale']);
-        date_default_timezone_set($webuser->timezone ? $webuser->timezone : $website->default_timezone);
-
-        // help developers to find problems
-        if($current['navigate_session'] == 1 && APP_DEBUG)
-        {
-            error_reporting(E_ALL ^ E_NOTICE);
-            ini_set('display_errors', true);
-        }
-
-        debugger::stop_timer('nvweb-load-webuser');
-
-        if(isset($_GET['_nvka']))
-        {
-            // nvweb keep alive
-            nvweb_clean_exit();
-        }
 
         debugger::timer('nvweb-parse-route');
 
         // parse route
         nvweb_route_parse($current['route']);
+
         $permission = nvweb_check_permission();
 
         // if no preview & permission not allowed
@@ -267,7 +310,9 @@ function nvweb_parse($request)
         $events->trigger('theme', 'template_load', array('template' => &$template));
 
         if (empty($template))
+        {
             throw new Exception('Navigate CMS: no template found!');
+        }
 
         debugger::stop_timer('nvweb-parse-route');
         debugger::timer('nvweb-template-special-tags');
@@ -362,7 +407,9 @@ function nvweb_parse($request)
             foreach ($stmp as $key => $val)
             {
                 if (substr($key, 0, 4) == 'PMA_') // hide phpMyAdmin single signon settings!!
+                {
                     continue;
+                }
 
                 echo '[' . $key . '] => ' . print_r($val, true) . "\n";
             }
@@ -381,7 +428,9 @@ function nvweb_parse($request)
             echo "!-->";
 
             if (isset($_GET['profiling']))
+            {
                 debugger::bar_dump(debugger::get_timers('list'));
+            }
         }
         else
         {
@@ -393,7 +442,9 @@ function nvweb_parse($request)
             if(function_exists('ob_start') && !$zlib_oc_enabled)
             {
                 if(ob_get_level() > 0)
+                {
                     while(@ob_end_flush());
+                }
 
                 // open gzip buffer
                 ob_start("ob_gzhandler");
@@ -401,7 +452,9 @@ function nvweb_parse($request)
                 ob_end_flush();
             }
             else
+            {
                 echo $html;
+            }
 
             // finally, save this page request into the website pages cache (only for anonymous users)
             if($current['pagecache_enabled'])
@@ -415,15 +468,15 @@ function nvweb_parse($request)
     {
         ?>
         <html>
-        <body>
-        ERROR
-        <br/><br/>
-        <?php
-        echo $e->getMessage();
-        echo '<br />';
-        echo $e->getFile() . ' ' . $e->getLine();
-        ?>
-        </body>
+            <body>
+                ERROR
+                <br/><br/>
+                <?php
+                echo $e->getMessage();
+                echo '<br />';
+                echo $e->getFile() . ' ' . $e->getLine();
+                ?>
+            </body>
         </html>
         <?php
     }
