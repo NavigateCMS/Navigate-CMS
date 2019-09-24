@@ -4110,6 +4110,31 @@
 				<target>Customer account</target>
 			</trans-unit>
 
+			<trans-unit id="818" approved="yes">
+				<source>Overview</source>
+				<target>Overview</target>
+			</trans-unit>
+
+			<trans-unit id="819" approved="yes">
+				<source>Addresses</source>
+				<target>Addresses</target>
+			</trans-unit>
+
+			<trans-unit id="820" approved="yes">
+				<source>Downloads</source>
+				<target>Downloads</target>
+			</trans-unit>
+
+			<trans-unit id="821" approved="yes">
+				<source>Your account</source>
+				<target>Your account</target>
+			</trans-unit>
+
+			<trans-unit id="822" approved="yes">
+				<source>Sign out</source>
+				<target>Sign out</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

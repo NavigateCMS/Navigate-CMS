@@ -4109,7 +4109,30 @@
                 <target>Konto klienta</target>
             </trans-unit>
 
-        </trans-unit>
+            <trans-unit id="818">
+                <source>Overview</source>
+                <target>Przegląd</target>
+            </trans-unit>
+
+            <trans-unit id="819">
+                <source>Addresses</source>
+                <target>Adresy</target>
+            </trans-unit>
+
+            <trans-unit id="820">
+                <source>Downloads</source>
+                <target>Pliki do pobrania</target>
+            </trans-unit>
+
+            <trans-unit id="821">
+                <source>Your account</source>
+                <target>Twoje konto</target>
+            </trans-unit>
+
+            <trans-unit id="822">
+                <source>Sign out</source>
+                <target>Wyloguj się</target>
+            </trans-unit>
 
         </body>
     </file>

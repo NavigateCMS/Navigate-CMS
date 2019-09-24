@@ -31,7 +31,7 @@
 
 			<trans-unit id="5" approved="yes">
 				<source>Log out</source>
-				<target>Log out</target>
+				<target>Abmelden</target>
 			</trans-unit>
 
 			<trans-unit id="6" approved="yes">
@@ -106,7 +106,7 @@
 
 			<trans-unit id="20" approved="yes">
 				<source>Templates</source>
-				<target>Templates</target>
+				<target>Vorlagen</target>
 			</trans-unit>
 
 			<trans-unit id="21" approved="yes">
@@ -761,7 +761,7 @@
 
 			<trans-unit id="151" approved="yes">
 				<source>The selected items will be permanently deleted.</source>
-				<target>Das gewählte Element wird dauerhaft gelöscht</target>
+				<target>Das gewählte Element wird dauerhaft gelöscht.</target>
 			</trans-unit>
 
 			<trans-unit id="152" approved="yes">
@@ -796,7 +796,7 @@
 
 			<trans-unit id="158" approved="yes">
 				<source>Thumbnail</source>
-				<target>Thumbnail</target>
+				<target>Vorschaubild</target>
 			</trans-unit>
 
 			<trans-unit id="159" approved="yes">
@@ -901,7 +901,7 @@
 
 			<trans-unit id="179" approved="yes">
 				<source>Thumbnails</source>
-				<target>Thumbnails</target>
+				<target>Vorschaubilder</target>
 			</trans-unit>
 
 			<trans-unit id="180" approved="yes">
@@ -1081,7 +1081,7 @@
 
 			<trans-unit id="215" approved="yes">
 				<source>Credits</source>
-				<target>Credits</target>
+				<target>Danksagung</target>
 			</trans-unit>
 
 			<trans-unit id="216" approved="yes">
@@ -1436,7 +1436,7 @@
 
 			<trans-unit id="286" approved="yes">
 				<source>Drag to reorder. Double click to assign image captions.</source>
-				<target>Verschieben um die Reihenfolge zu ändern. Doppelklicken um die Bildunterschrift einzugeben</target>
+				<target>Verschieben um die Reihenfolge zu ändern. Doppelklicken um die Bildunterschrift einzugeben.</target>
 			</trans-unit>
 
 			<trans-unit id="287" approved="yes">
@@ -1476,7 +1476,7 @@
 
 			<trans-unit id="294" approved="yes">
 				<source>Error updating.</source>
-				<target>Fehler beim Aktualisieren</target>
+				<target>Fehler beim Aktualisieren.</target>
 			</trans-unit>
 
 			<trans-unit id="295" approved="yes">
@@ -1651,7 +1651,7 @@
 
 			<trans-unit id="329" approved="yes">
 				<source>Backups</source>
-				<target>Backups</target>
+				<target>Sicherungen</target>
 			</trans-unit>
 
 			<trans-unit id="330" approved="yes">
@@ -2041,7 +2041,7 @@
 
 			<trans-unit id="407" approved="yes">
 				<source>Forgot password?</source>
-				<target>Passwort vergessen</target>
+				<target>Passwort vergessen?</target>
 			</trans-unit>
 
 			<trans-unit id="408" approved="yes">
@@ -2206,7 +2206,7 @@
 
 			<trans-unit id="440" approved="yes">
 				<source>Error saving the data, please do an external backup of your changes to prevent data loss</source>
-				<target>Fehler beim Speichern der Daten, bitte führe ein externes Backup deiner Daten durch um Datenverlust zu vermeiden.</target>
+				<target>Fehler beim Speichern der Daten, bitte führe eine externe Sicherung deiner Daten durch, um Datenverlust zu vermeiden</target>
 			</trans-unit>
 
 			<trans-unit id="441" approved="yes">
@@ -2236,7 +2236,7 @@
 
 			<trans-unit id="446" approved="yes">
 				<source>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</source>
-				<target>Es tut uns leid, aber deine Kontaktanfrage konnte nicht abgeschickt werden. Bitte versuche es noch einmal oder finde einen anderen Weg um mit uns Kontakt aufzunehmen</target>
+				<target>Es tut uns leid, aber deine Kontaktanfrage konnte nicht abgeschickt werden. Bitte versuche es noch einmal oder finde einen anderen Weg um mit uns Kontakt aufzunehmen.</target>
 			</trans-unit>
 
 			<trans-unit id="447" approved="yes">
@@ -2281,7 +2281,7 @@
 
 			<trans-unit id="455" approved="yes">
 				<source>Your new password has been activated.</source>
-				<target>Dein neues Passwort ist nun aktiv</target>
+				<target>Dein neues Passwort ist nun aktiv.</target>
 			</trans-unit>
 
 			<trans-unit id="456" approved="yes">
@@ -2376,7 +2376,7 @@
 
 			<trans-unit id="474" approved="yes">
 				<source>Server locale</source>
-				<target>Server locale</target>
+				<target>Server-Locale</target>
 			</trans-unit>
 
 			<trans-unit id="475" approved="yes">
@@ -2666,7 +2666,7 @@
 
 			<trans-unit id="532" approved="yes">
 				<source>Navigate CMS Marketplace</source>
-				<target>Navigate CMS Marketplace</target>
+				<target>Navigate CMS Marktplatz</target>
 			</trans-unit>
 
 			<trans-unit id="533" approved="yes">
@@ -3290,9 +3290,9 @@
 				<target>Zusätzliche Stile</target>
 			</trans-unit>
 
-			<trans-unit id="657">
+			<trans-unit id="657" approved="yes">
 				<source>Tracking scripts</source>
-				<target>Tracking scripts</target>
+				<target>Nachverfolgungs Skripte</target>
 			</trans-unit>
 
 			<trans-unit id="658">
@@ -3417,9 +3417,9 @@
 				<target>Marken</target>
 			</trans-unit>
 
-			<trans-unit id="682">
+			<trans-unit id="682" approved="yes">
 				<source>Coupons</source>
-				<target>Gutscheine</target>
+				<target>Gutschein</target>
 			</trans-unit>
 
 			<trans-unit id="683" approved="yes">
@@ -3622,9 +3622,9 @@
 				<target>Versandbezug</target>
 			</trans-unit>
 
-			<trans-unit id="722">
+			<trans-unit id="722" approved="yes">
 				<source>Tracking URL</source>
-				<target>Tracking URL</target>
+				<target>Tracking-URL</target>
 			</trans-unit>
 
 			<trans-unit id="723">
@@ -4108,6 +4108,31 @@
 			<trans-unit id="817">
 				<source>Customer account</source>
 				<target>Kundenkonto</target>
+			</trans-unit>
+
+			<trans-unit id="818">
+				<source>Overview</source>
+				<target>Überblick</target>
+			</trans-unit>
+
+			<trans-unit id="819">
+				<source>Addresses</source>
+				<target>Adressen</target>
+			</trans-unit>
+
+			<trans-unit id="820">
+				<source>Downloads</source>
+				<target>Downloads</target>
+			</trans-unit>
+
+			<trans-unit id="821">
+				<source>Your account</source>
+				<target>Ihr Konto</target>
+			</trans-unit>
+
+			<trans-unit id="822">
+				<source>Sign out</source>
+				<target>Ausloggen</target>
 			</trans-unit>
 
 		</body>

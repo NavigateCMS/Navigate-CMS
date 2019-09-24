@@ -4109,6 +4109,31 @@
 				<target>Cuenta del cliente</target>
 			</trans-unit>
 
+			<trans-unit id="818" approved="yes">
+				<source>Overview</source>
+				<target>Vista general</target>
+			</trans-unit>
+
+			<trans-unit id="819" approved="yes">
+				<source>Addresses</source>
+				<target>Direcciones</target>
+			</trans-unit>
+
+			<trans-unit id="820" approved="yes">
+				<source>Downloads</source>
+				<target>Descargas</target>
+			</trans-unit>
+
+			<trans-unit id="821" approved="yes">
+				<source>Your account</source>
+				<target>Tu cuenta</target>
+			</trans-unit>
+
+			<trans-unit id="822" approved="yes">
+				<source>Sign out</source>
+				<target>Cerrar sesión</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

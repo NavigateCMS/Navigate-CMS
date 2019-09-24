@@ -426,7 +426,7 @@
 
             <trans-unit id="84" approved="yes">
               <source>Parent</source>
-              <target>Overnevnt</target>
+              <target>Ovennevnt</target>
             </trans-unit>
 
             <trans-unit id="85" approved="yes">
@@ -3857,9 +3857,9 @@
               <target>En e-post med bekreftelse er sendt til adressen din.</target>
             </trans-unit>
 
-            <trans-unit id="768">
+            <trans-unit id="768" approved="yes">
               <source>Invalid e-mail address</source>
-              <target>Ugyldig epostadresse</target>
+              <target>Ugyldig e-postadresse</target>
             </trans-unit>
 
             <trans-unit id="769">
@@ -3892,9 +3892,9 @@
               <target>Bekreft kontoen din</target>
             </trans-unit>
 
-            <trans-unit id="775">
+            <trans-unit id="775" approved="yes">
               <source>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</source>
-              <target>Dette er en automatisk epost sendt som følge av en forespørsel om opprettelse av kontoer. Hvis du mottok denne e-posten ved feil, ignorerer du bare den.</target>
+              <target>Dette er en automatisk e-post sendt som følge av en forespørsel om opprettelse av kontoer. Ignorer denne e-posten hvis du mottok den ved en feil.</target>
             </trans-unit>
 
             <trans-unit id="776">
@@ -4109,6 +4109,31 @@
             <trans-unit id="817">
                 <source>Customer account</source>
                 <target>Kundekonto</target>
+            </trans-unit>
+
+            <trans-unit id="818">
+                <source>Overview</source>
+                <target>Oversikt</target>
+            </trans-unit>
+
+            <trans-unit id="819">
+                <source>Addresses</source>
+                <target>Adresser</target>
+            </trans-unit>
+
+            <trans-unit id="820">
+                <source>Downloads</source>
+                <target>Nedlastinger</target>
+            </trans-unit>
+
+            <trans-unit id="821">
+                <source>Your account</source>
+                <target>Kontoen din</target>
+            </trans-unit>
+
+            <trans-unit id="822">
+                <source>Sign out</source>
+                <target>Logg ut</target>
             </trans-unit>
 
         </body>
