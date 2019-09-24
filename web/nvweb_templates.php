@@ -189,16 +189,16 @@ function nvweb_template_parse($template)
     global $theme;
     global $idn;
 	global $session;
-	
+
 	$html = $template;
-	
+
 	// now parse autoclosing tags
 	$tags = nvweb_tags_extract($html, 'nv', true, true, 'UTF-8');
 
 	foreach($tags as $tag)
 	{
 		$content = '';
-		
+
 		switch($tag['attributes']['object'])
 		{
 			// MAIN OBJECT TYPES
@@ -1774,13 +1774,21 @@ function nvweb_webget_load($webget_name)
 	if(!function_exists($fname))
 	{
 		if(file_exists(NAVIGATE_PATH.'/lib/webgets/'.$webget_name.'.php'))
-			@include_once(NAVIGATE_PATH.'/lib/webgets/'.$webget_name.'.php');
+        {
+            @include_once(NAVIGATE_PATH.'/lib/webgets/'.$webget_name.'.php');
+        }
 		else if(file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/webgets/'.$webget_name.'.php'))
-			@include_once(NAVIGATE_PRIVATE.'/'.$website->id.'/webgets/'.$webget_name.'.php');
+        {
+            @include_once(NAVIGATE_PRIVATE.'/'.$website->id.'/webgets/'.$webget_name.'.php');
+        }
 		else if(file_exists(NAVIGATE_PATH.'/plugins/'.$webget_name.'/'.$webget_name.'.php'))
-			@include_once(NAVIGATE_PATH.'/plugins/'.$webget_name.'/'.$webget_name.'.php');
+        {
+            @include_once(NAVIGATE_PATH.'/plugins/'.$webget_name.'/'.$webget_name.'.php');
+        }
         else if(file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$website->theme.'.nvweb.php'))
+        {
             @include_once(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$website->theme.'.nvweb.php');
+        }
 	}
 }
 

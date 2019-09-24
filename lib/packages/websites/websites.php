@@ -156,6 +156,10 @@ function run()
 			exit;
 			break;
 
+        case 'cache_clean':
+            update::cache_clean(intval($_REQUEST['id']));
+            // don't break, show website edit form
+
         case 'edit':
 		case 2: // edit/new form
 			if(!empty($_REQUEST['id']))
@@ -190,7 +194,9 @@ function run()
 			else
 			{
 				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->name);
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'load', $item->name);
+                }
 			}
 
 			$out = websites_form($item);
@@ -460,6 +466,7 @@ function websites_form($item)
 	    );
 
 	    $extra_actions = array();
+        $extra_actions[] = '<a href="?fid=websites&id='.$item->id.'&act=cache_clean"><img height="16" align="absmiddle" width="16" src="img/icons/silk/lightning_delete.png"> '.t(660, 'Clear cache').'</a>';
 	    $extra_actions[] = '<a href="#" action="navigate_reset_statistics" onclick="javascript: navigate_reset_statistics();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/chart_line.png"> '.t(429, 'Reset statistics').'</a>';
 
         $layout->add_script('
@@ -955,7 +962,8 @@ function websites_form($item)
         )
     );
 
-	$navibars->add_tab_content_row(array(
+	$navibars->add_tab_content_row(
+	    array(
             '<label>'.t(68, 'Status').'</label>',
             $naviforms->selectfield(
                 'permission',
@@ -1014,7 +1022,9 @@ function websites_form($item)
 
 	/* Languages selector */
 	if(!is_array($item->languages_list))
+    {
         $item->languages_list = array();
+    }
 
     $table = new naviorderedtable("website_languages_table");
     //$table->setWidth("600px");
@@ -1054,7 +1064,9 @@ function websites_form($item)
     }
 
     if(empty($item->languages))
+    {
         $item->languages = array();
+    }
 
 	// add previously assigned locales if they are missing
 	foreach($item->languages as $lcode => $ldef)
@@ -1094,12 +1106,14 @@ function websites_form($item)
         ));
     }
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>'.t(63, 'Languages').'</label>',
             '<div>'.$table->generate().'</div>',
             '<div class="subcomment">
                 <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'
-            </div>' )
+            </div>'
+        )
     );
 
     $navibars->add_tab_content_row(array(
@@ -1340,17 +1354,21 @@ function websites_form($item)
         ));
     }
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>'.t(485, 'Aliases').'</label>',
             '<div>'.$table->generate().'</div>',
             '<div class="subcomment">
                 <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'
-            </div>' )
+            </div>'
+        )
     );
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>&nbsp;</label>',
-            '<button id="websites-aliases-add"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').'</button>')
+            '<button id="websites-aliases-add"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(472, 'Add').'</button>'
+        )
     );
 
     $layout->add_script('
@@ -1458,7 +1476,8 @@ function websites_form($item)
 	);
 
     // default comment options for elements
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>'.t(252, 'Comments enabled for').'</label>',
             $naviforms->selectfield('comments_enabled_for',
                 array(
@@ -1554,7 +1573,8 @@ function websites_form($item)
         });
     ');
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>'.t(750, 'Page cache').'</label>',
             $naviforms->selectfield('page_cache',
                 array(
@@ -1575,7 +1595,8 @@ function websites_form($item)
 
 	$navibars->add_tab(t(44, "E-Mail"));
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>'.t(548, "Method").'</label>',
             $naviforms->buttonset(
                 'mail_mailer',

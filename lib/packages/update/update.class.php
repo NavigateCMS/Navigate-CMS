@@ -17,8 +17,7 @@ class update
     public function load($id)
 	{
 		global $DB;
-		global $website;
-		
+
 		if($DB->query('SELECT * FROM nv_updates WHERE id = '.intval($id)))
 		{
 			$data = $DB->result();
@@ -43,22 +42,23 @@ class update
 		global $DB;
 
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
 	{
 		global $DB;
-		global $website;
 
 		// remove all old entries
 		if(!empty($this->id))
 		{
-			$DB->execute('DELETE FROM nv_updaes
-								WHERE id = '.intval($this->id)
-						);
+			$DB->execute('DELETE FROM nv_updates WHERE id = '.intval($this->id));
 		}
 		
 		return $DB->get_affected_rows();		
@@ -83,7 +83,9 @@ class update
 		);
 
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 	
 		$this->id = $DB->get_last_id();
 		
@@ -408,10 +410,14 @@ class update
 		}
 		
 		if($error)
-			file_put_contents($ulog, "execute insert failed:\n".$DB->get_last_error()."\n", FILE_APPEND);
+        {
+            file_put_contents($ulog, "execute insert failed:\n".$DB->get_last_error()."\n", FILE_APPEND);
+        }
 
         if(file_exists(NAVIGATE_PATH.'/updates/update/update-post.php'))
+        {
             include_once(NAVIGATE_PATH.'/updates/update/update-post.php');
+        }
 
 		file_put_contents($ulog, "update finished!\n", FILE_APPEND);
 		
@@ -425,28 +431,38 @@ class update
 		return true;
 	}
 
-	public static function cache_clean()
+	public static function cache_clean($website_id = "*")
     {
         // do some cleaning: css&js navigate cache, thumbnails cache, tinymce cache and pages cache
         $navigatecms_cache = glob(NAVIGATE_PATH . '/cache/*.min.*');
         for($t=0; $t < count($navigatecms_cache); $t++)
+        {
             @unlink($navigatecms_cache[$t]);
+        }
 
         $navigatecms_cache = glob(NAVIGATE_PATH . '/cache/*.js');
         for($t=0; $t < count($navigatecms_cache); $t++)
+        {
             @unlink($navigatecms_cache[$t]);
+        }
 
         $tinymce_cache = glob(NAVIGATE_PATH . '/lib/external/tinymce/*.gz');
         for($t=0; $t < count($tinymce_cache); $t++)
+        {
             @unlink($tinymce_cache[$t]);
+        }
 
-        $thumbnails = glob(NAVIGATE_PRIVATE . '/*/thumbnails/*x*');
+        $thumbnails = glob(NAVIGATE_PRIVATE . '/'.$website_id.'/thumbnails/*x*');
         for($t=0; $t < count($thumbnails); $t++)
+        {
             @unlink($thumbnails[$t]);
+        }
 
-        $pages = glob(NAVIGATE_PRIVATE.'/*/cache/*.page');
+        $pages = glob(NAVIGATE_PRIVATE.'/'.$website_id.'/cache/*.page');
         for($t=0; $t < count($pages); $t++)
+        {
             @unlink($pages[$t]);
+        }
     }
 }
 

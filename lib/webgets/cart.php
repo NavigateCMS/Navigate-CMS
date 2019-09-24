@@ -429,7 +429,9 @@ function nvweb_cart_update($old_cart)
     foreach($old_cart['lines'] as $old_line)
     {
         if(is_null($old_line))
+        {
             continue;
+        }
 
         $line = array(
             'id' => $old_line['id'], // product id
@@ -1088,16 +1090,22 @@ function nvweb_cart_identification_page($cart)
                 ));
 
                 if($ok)
+                {
                     $sign_in_info = t(767, "An e-mail with a confirmation has been sent to your address.");
+                }
                 else
+                {
                     $sign_in_error = t(56, "Unexpected error");
+                }
                 break;
 
             case 'sign_up':
                 // check if this request really comes from the website and not from a spambot
                 if( parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain &&
                     parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->domain )
+                {
                     return;
+                }
 
                 $error = nvweb_webuser(array(
                     "mode" => "sign_up",
@@ -1109,9 +1117,13 @@ function nvweb_cart_identification_page($cart)
                 ));
 
                 if(empty($error))
+                {
                     $sign_up_info = t(767, "An e-mail with a confirmation has been sent to your address.");
+                }
                 else
+                {
                     $sign_up_error = $error;
+                }
 
                 break;
 
@@ -1245,7 +1257,9 @@ function nvweb_cart_address_page($cart)
     $cart_url = nvweb_source_url('theme', 'cart');
 
     if(empty($cart['customer']))
+    {
         core_terminate($cart_url);
+    }
 
     $customer_username = $webuser->username;
     if($cart['customer'] == 'guest')

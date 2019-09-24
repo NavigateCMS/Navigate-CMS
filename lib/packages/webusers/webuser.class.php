@@ -79,7 +79,9 @@ class webuser
 			}
 
 			if($blocked==1)
-				return false;
+            {
+                return false;
+            }
 
 			$session['webuser'] = $this->id;
 
@@ -102,7 +104,6 @@ class webuser
     public function load_by_profile($network, $network_user_id)
     {
         global $DB;
-        global $session;
 
         // the profile exists (connected to a social network)?
         $swuser = $DB->query_single(
@@ -157,7 +158,10 @@ class webuser
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
         $this->groups = explode(',', $groups);
-        if(!is_array($this->groups))  $this->groups = array($groups);
+        if(!is_array($this->groups))
+        {
+            $this->groups = array($groups);
+        }
 	}
 	
 	public function load_from_post()
@@ -165,16 +169,22 @@ class webuser
 		//$this->website      = $_REQUEST['webuser-website'];
 		$this->username		= trim($_REQUEST['webuser-username']);
 		if(!empty($_REQUEST['webuser-password']))
-			$this->set_password($_REQUEST['webuser-password']);			
+        {
+            $this->set_password($_REQUEST['webuser-password']);
+        }
    		$this->email	    = trim($_REQUEST['webuser-email']);
    		$this->groups	    = $_REQUEST['webuser-groups'];
 		$this->fullname		= $_REQUEST['webuser-fullname'];
 		$this->gender		= $_REQUEST['webuser-gender'][0];		
 		$this->avatar		= $_REQUEST['webuser-avatar'];		
 		if(!empty($_REQUEST['webuser-birthdate']))
-			$this->birthdate	= core_date2ts($_REQUEST['webuser-birthdate']);
+        {
+            $this->birthdate	= core_date2ts($_REQUEST['webuser-birthdate']);
+        }
 		else
-			$this->birthdate	= '';
+        {
+            $this->birthdate	= '';
+        }
 		$this->language		= $_REQUEST['webuser-language'];			
 		$this->newsletter	= ($_REQUEST['webuser-newsletter']=='1'? '1' : '0');
 		$this->access		= $_REQUEST['webuser-access'];
@@ -198,9 +208,13 @@ class webuser
 	public function save($trigger_webuser_modified=true)
 	{
 		if(!empty($this->id))
-		  return $this->update($trigger_webuser_modified);
+        {
+            return $this->update($trigger_webuser_modified);
+        }
 		else
-		  return $this->insert();
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -253,11 +267,15 @@ class webuser
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
 		$ok = $DB->execute(' 
 		    INSERT INTO nv_webusers
@@ -306,7 +324,9 @@ class webuser
         );							
 				
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 
@@ -334,11 +354,15 @@ class webuser
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
 		$ok = $DB->execute('
 		    UPDATE nv_webusers
@@ -447,7 +471,9 @@ class webuser
 
         $website_check = '';
 		if($website > 0)
-			$website_check = 'AND website  = '.intval($website);
+        {
+            $website_check = 'AND website  = '.intval($website);
+        }
 
 		$ok = $DB->query(
 		    'SELECT * 
@@ -517,7 +543,9 @@ class webuser
         );
 
         if(empty($username))
+        {
             return false;
+        }
 
         return $this->authenticate($website, $username, $password);
     }
@@ -544,7 +572,9 @@ class webuser
 
         $cookie_domain = $website->domain;
         if(!empty($website->subdomain))
+        {
             $cookie_domain = $website->subdomain.'.'.$cookie_domain;
+        }
 
 		setcookie('webuser', $this->cookie_hash, time()+60*60*24*365, '/', $cookie_domain); // 365 days
 	}
@@ -560,7 +590,9 @@ class webuser
 
         $cookie_domain = $website->domain;
         if(!empty($website->subdomain))
+        {
             $cookie_domain = $website->subdomain.'.'.$cookie_domain;
+        }
 
         setcookie('webuser', NULL, -1, '/', $cookie_domain);
 
@@ -663,7 +695,9 @@ class webuser
 			{
 				// account is confirmed!
                 if(empty($wu->email_verification_date)) // maybe the email was already verified by a previous newsletter subscription ;)
-				    $wu->email_verification_date = time();
+                {
+                    $wu->email_verification_date = time();
+                }
 				$wu->access = 0;
 				$wu->activation_key = "";
 				$status = $wu->save();
@@ -671,9 +705,13 @@ class webuser
 		}
 
 		if(!$status)
-		    return $status;
+        {
+            return $status;
+        }
 		else
-		    return $wu->id;
+        {
+            return $wu->id;
+        }
 	}
 
 	public function quicksearch($text)
@@ -701,7 +739,9 @@ class webuser
         $already_updated = false;
 
         if(is_array($extra))
+        {
             $extra = serialize($extra);
+        }
 
         // the profile exists?
         $swuser = $DB->query_single(
@@ -752,7 +792,9 @@ class webuser
                 $wuser->lastseen = core_time();
                 $wuser->access = 0;
                 foreach ($data as $field => $value)
-                {   $wuser->$field = $value;    }
+                {
+                    $wuser->$field = $value;
+                }
                 $already_updated = true;
 
                 $wuser->insert();
@@ -782,7 +824,9 @@ class webuser
         {
             // either way, now we have a webuser account that we need to update
             foreach ($data as $field => $value)
+            {
                 $wuser->$field = $value;
+            }
 
             $wuser->update();
         }
@@ -823,16 +867,22 @@ class webuser
 
         // load properties if not already done
         if(empty($this->properties))
+        {
             $this->properties = property::load_properties('webuser', $theme->name, 'webuser', $this->id);
+        }
 
         for($p=0; $p < count($this->properties); $p++)
         {
             if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
             {
                 if($raw)
+                {
                     $out = $this->properties[$p]->value;
+                }
                 else
+                {
                     $out = $this->properties[$p]->value;
+                }
 
                 break;
             }
@@ -847,7 +897,9 @@ class webuser
 
         // load properties if not already done
         if(empty($this->properties))
+        {
             $this->properties = property::load_properties('webuser', $theme->name, 'webuser', $this->id);
+        }
 
         for($p=0; $p < count($this->properties); $p++)
         {
@@ -867,12 +919,16 @@ class webuser
 
         // load properties if not already done
         if(empty($this->properties))
+        {
             $this->properties = property::load_properties('webuser', $theme->name, 'webuser', $this->id);
+        }
 
         for($p=0; $p < count($this->properties); $p++)
         {
             if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -1012,7 +1068,9 @@ class webuser
         fputcsv($fp, $fields);
 
         foreach ($out as $fields)
+        {
             fputcsv($fp, $fields);
+        }
 
         header('Content-Description: File Transfer');
         header('Content-Type: text/csv');
@@ -1041,7 +1099,9 @@ class webuser
         $DB->query('SELECT * FROM nv_webusers WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out['nv_webusers'] = json_encode($DB->result());
+        }
 
         $DB->query('SELECT nwp.* FROM nv_webuser_profiles nwp, nv_webusers nw
                     WHERE nwp.webuser = nw.id
@@ -1049,10 +1109,14 @@ class webuser
             'object');
 
         if($type='json')
+        {
             $out['nv_webuser_profiles'] = json_encode($DB->result());
+        }
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
