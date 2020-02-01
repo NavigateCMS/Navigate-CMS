@@ -3133,7 +3133,6 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             break;
 
         case 'comment':
-
             switch($tag['attributes']['check'])
             {
                 case 'website':

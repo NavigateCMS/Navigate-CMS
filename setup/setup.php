@@ -17,7 +17,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.8.6');
+	define('APP_VERSION', '2.8.8');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -297,11 +297,8 @@ $lang = navigate_install_load_language();
     });
 </script>
 
-
 </body>
-
 </html>
-
 <?php
 
 function navigate_install_requirements()
@@ -525,7 +522,6 @@ function navigate_install_configuration()
                 $defaults['PDO_SOCKET'] = '';
             }
 
-
             $globals = str_replace('{PDO_DRIVER}', 			$defaults['PDO_DRIVER'], $globals);
 			$globals = str_replace('{PDO_HOSTNAME}', 		$defaults['PDO_HOSTNAME'], $globals);				
 			$globals = str_replace('{PDO_PORT}', 		    $defaults['PDO_PORT'], $globals);
@@ -562,7 +558,9 @@ function navigate_install_configuration()
 	}
 
 	if($error)
-		die($lang['unexpected_error'].' could not create file (cfg/globals.php).');
+    {
+        die($lang['unexpected_error'].' could not create file (cfg/globals.php).');
+    }
 		
 	?>
     <h2>
@@ -714,23 +712,7 @@ function navigate_install_configuration()
                                 {
                                     delay: 0,
                                     minLength: 0,
-                                    source: host_databases /*function( request, response ) {
-                                        var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
-                                        response( select.children( "option" ).map(function() {
-                                            var text = $( this ).text();
-                                            if ( this.value && ( !request.term || matcher.test(text) ) )
-                                                return {
-                                                    label: text.replace(
-                                                        new RegExp(
-                                                            "(?![^&;]+;)(?!<[^<>]*)(" +
-                                                            $.ui.autocomplete.escapeRegex(request.term) +
-                                                            ")(?![^<>]*>)(?![^&;]+;)", "gi"
-                                                        ), "<strong>$1</strong>" ),
-                                                    value: text,
-                                                    option: this
-                                                };
-                                        }) );
-                                    }*/,
+                                    source: host_databases,
                                     select: function( event, ui )
                                     {
                                         $('#ui-autocomplete-input').val(ui.item.value);
@@ -770,7 +752,8 @@ function navigate_install_configuration()
                                 .addClass( "ui-corner-right ui-button-icon" )
                                 .click(function() {
                                     // close if already visible
-                                    if ( input.autocomplete( "widget" ).is( ":visible" ) ) {
+                                    if ( input.autocomplete( "widget" ).is( ":visible" ) )
+                                    {
                                         input.autocomplete( "close" );
                                         return;
                                     }
@@ -788,8 +771,8 @@ function navigate_install_configuration()
                             this.element.show();
                             $.Widget.prototype.destroy.call( this );
                         }
-                   }
-                );
+                    }
+                 );
             }
         )( jQuery );
 		
@@ -802,9 +785,13 @@ function navigate_install_configuration()
             $('.pdo-hostname,.pdo-port,.pdo-socket').hide();
 
             if($(this).val()=='mysql-socket')
+            {
                 $('.pdo-socket').show();
+            }
             else
+            {
                 $('.pdo-hostname,.pdo-port').show();
+            }
         });
 	});
 	
@@ -883,6 +870,11 @@ function navigate_install_decompress()
                     <div class="progressbar"></div>
                 </div>              
                 <br />
+				<div class="navigate-install-make-dir-check" style=" display: none; ">
+                    <label><?php echo $lang['make_dir'];?></label>
+                    <div class="progressbar"></div>
+                </div>
+                <br />
 				<div class="navigate-install-decompress-extraction" style=" display: none; ">
                     <label><?php echo $lang['file_extraction'];?></label>
                     <div class="progressbar"></div>
@@ -910,23 +902,45 @@ function navigate_install_decompress()
 	function verify_zip()
 	{
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=verify_zip',
+            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=verify_zip',
+            dataType: 'json',
+            data: {},
+            success: function(data)
+            {
+                if(data!=true)
+                {
+                    $('.navigate-install-decompress-check').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
+                }
+                else
+                {
+                    $('.navigate-install-decompress-check').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
+                    make_dir();
+                }
+            }
+		});		
+	}
+
+	function make_dir()
+	{
+        $('.navigate-install-make-dir-check').show();
+
+		$.ajax({
+		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=make_dir',
 		  dataType: 'json',
 		  data: {},
 		  success: function(data)
 		  {
-			 if(data!=true)
+			 if(data != true)
 			 {
-	 			$('.navigate-install-decompress-check').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
+	 			$('.navigate-install-make-dir-check').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
 			 }
 			 else
 			 {
-				$('.navigate-install-decompress-check').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
+				$('.navigate-install-make-dir-check').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
 				extract_zip();
 			 }
-			 
 		  }
-		});		
+		});
 	}
 	
 	function extract_zip()
@@ -950,8 +964,7 @@ function navigate_install_decompress()
                 }
             }
         });
-	}	
-	
+	}
 	
 	function chmod_files()
 	{
@@ -989,7 +1002,7 @@ function navigate_install_decodesize( $bytes )
 
 function navigate_install_chmodr($path, $filemode) 
 {
-    if (!is_dir($path))
+    if(!is_dir($path))
     {
         return chmod($path, $filemode);
     }
@@ -1233,7 +1246,7 @@ function navigate_install_completed()
 		
 		function htaccess_install()
 		{		
-			$( "#htaccess_dialog" ).dialog(
+			$("#htaccess_dialog").dialog(
 			{
 				title: "Navigate CMS",
 				resizable: false,
@@ -1243,15 +1256,19 @@ function navigate_install_completed()
 					"<?php echo $lang['ok'];?>": function() 
 					{
 						$( this ).dialog( "close" );
-						$.getJSON( '<?php echo $_SERVER['PHP_SELF'];?>?process=apache_htaccess', 
-							{
-							}, 
+						$.getJSON(
+						    '<?php echo $_SERVER['PHP_SELF'];?>?process=apache_htaccess',
+							{},
 							function success(data, textStatus, jqXHR) 
 							{
 								if(data.error)
-									data = data.error;
+                                {
+                                    data = data.error;
+                                }
 								else
-									data = "<?php echo $lang['done'];?>";
+                                {
+                                    data = "<?php echo $lang['done'];?>";
+                                }
 									
 								$('<div style=" margin: 10px; ">'+data+'</div>').dialog(
 								{
@@ -1312,16 +1329,33 @@ function process()
 					die(json_encode(true));
 				}
 			}
-			break;	
+			break;
+
+        case 'make_dir':
+            $npath = getcwd().NAVIGATE_FOLDER;
+            $npath = str_replace('\\', '/', $npath);
+
+            if(!file_exists($npath))
+            {
+                $result = mkdir($npath);
+                if(!$result)
+                {
+                    die(json_encode($lang['folder_create_error']));
+                }
+                else
+                {
+                    die(json_encode(true));
+                }
+            }
+            else
+            {
+                die(json_encode(true));
+            }
+            break;
 			
 		case 'extract_zip':
-			$npath = getcwd().NAVIGATE_FOLDER;
-			$npath = str_replace('\\', '/', $npath);
-
-			if(!file_exists($npath))
-            {
-                mkdir($npath);
-            }
+            $npath = getcwd().NAVIGATE_FOLDER;
+            $npath = str_replace('\\', '/', $npath);
 			
 			if(file_exists($npath))
 			{
@@ -1346,7 +1380,7 @@ function process()
 			sleep(1);
 			// chmod the directories recursively
 			$npath = getcwd().NAVIGATE_FOLDER;
-			if(!navigate_install_chmodr($npath, 0744))
+			if(!navigate_install_chmodr($npath, 0755))
             {
                 die(json_encode($lang['chmod_failed']));
             }
@@ -1550,7 +1584,10 @@ function process()
 
 				$ok = $user->insert();
 		
-				if(!$ok) throw new Exception($lang['error']);
+				if(!$ok)
+                {
+                    throw new Exception($lang['error']);
+                }
 
                 // create default website details
                 $website = new website();
@@ -1721,7 +1758,9 @@ function navigate_install_load_language()
 
         // try an alternate way for language retrieving
         if(empty($lang))
+        {
             $lang = @file_get_contents($translation_url);
+        }
 
         // last try
         if(empty($lang))
@@ -1767,6 +1806,7 @@ function navigate_install_load_language()
 			'proceed_step_4'			=>	'Proceed to step 4: Database import',
 			'decompress'				=>	'Decompress',
 			'verify_package'			=>	'Verify package.zip',
+			'make_dir'                  =>  'Create or find folder',
 			'file_extraction'			=>	'File extraction',
 			'change_permissions'		=>	'Change file permissions',
 			'proceed_step_3'			=>	'Proceed to step 3: Configuration',
@@ -1783,7 +1823,8 @@ function navigate_install_load_language()
 			'missing_package' 			=>  'Missing package.zip file!',
 			'invalid_package'			=>  'package.zip is invalid, please download it again.',
 			'extraction_failed'			=>  'Zip extraction failed!',
-			'folder_not_exists'			=>  'navigate folder does not exist and could not be created.',
+			'folder_create_error'		=>  'navigate folder not found and could not be created.',
+			'folder_not_exists'			=>  'navigate folder does not exist.',
 			'chmod_failed' 				=>  'Change file permissions failed!',
 			'configure_your_server'		=>  'Please configure your web server to let Navigate generate your site.',
 			'apache_config' 			=>  'Apache configuration',
