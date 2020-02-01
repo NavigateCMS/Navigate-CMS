@@ -1013,21 +1013,24 @@ function core_http_request($url, $timeout=8)
  * Execute a CURL HTTP POST request with parameters
  * Author: Mahesh Chari
  * Website: http://www.maheshchari.com/simple-curl-function-to-send-data-remote-server/
+ * Modified and extended by Navigate CMS team
  *
  * @param string $url
  * @param mixed $postdata Array of parameter => value or POST string
  * @param string $header HTTP header
  * @param mixed $timeout Number of seconds to wait for a HTTP response
+ * @param string $method HTTP method of the request
+ * @param string $filepath absolute path of the file (only used in PUT requests)
  * @return string Body of the response
  */
-function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $method="post")
+function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $method="post", $filepath=NULL)
 {
 	$s = curl_init();
 	// initialize curl handler 
 	
 	curl_setopt($s, CURLOPT_URL, $url);
 	//set option URL of the location 
-	if ($header) 
+	if($header)
     {
         curl_setopt($s, CURLOPT_HTTPHEADER, $header);
     }
@@ -1046,6 +1049,11 @@ function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $
 	curl_setopt($s, CURLOPT_COOKIEJAR, 'cache/cookie.curl.txt');
 	curl_setopt($s, CURLOPT_COOKIEFILE, 'cache/cookie.curl.txt');
 	//set a cookie text file, make sure it is writable chmod 777 permission to cookie.txt
+
+    if(!empty($filepath))
+    {
+        $fh_res = fopen($filepath, 'r');
+    }
 	
 	if(strtolower($method) == 'post')
 	{
@@ -1059,11 +1067,26 @@ function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $
 		curl_setopt($s,CURLOPT_CUSTOMREQUEST, 'DELETE');
 		//file transfer time delete
 	}
+    else if(strtolower($method) == 'propfind')
+    {
+        curl_setopt($s,CURLOPT_CUSTOMREQUEST, 'PROPFIND');
+    }
+    else if(strtolower($method) == 'mkcol')
+    {
+        curl_setopt($s,CURLOPT_CUSTOMREQUEST, 'MKCOL');
+    }
 	else if(strtolower($method) == 'put')
 	{
 		curl_setopt($s,CURLOPT_CUSTOMREQUEST, 'PUT');
 		curl_setopt($s,CURLOPT_POSTFIELDS, $postdata);
 		//file transfer to post ,put method and set data
+
+        curl_setopt($s, CURLOPT_PUT, 1);
+
+        curl_setopt($s, CURLOPT_INFILE, $fh_res);
+        curl_setopt($s, CURLOPT_INFILESIZE, filesize($filepath));
+
+        curl_setopt($s, CURLOPT_BINARYTRANSFER, TRUE); // --data-binary
 	}
 	
 	curl_setopt($s,CURLOPT_HEADER, 0);			 
@@ -1072,15 +1095,20 @@ function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $
 	//proxy as Mozilla browser 
 	curl_setopt($s, CURLOPT_SSL_VERIFYPEER, false);
 	// don't need to SSL verify ,if present it need openSSL PHP extension
-	
-	$html = curl_exec($s);
-	//run handler
-	
-	$status = curl_getinfo($s, CURLINFO_HTTP_CODE);
-	// get the response status
-	
-	curl_close($s);
-	//close handler
+
+    //run handler
+    $html = curl_exec($s);
+
+    // get the response status
+    $status = curl_getinfo($s, CURLINFO_HTTP_CODE);
+
+    //close handler
+    curl_close($s);
+
+    if(!empty($filepath))
+    {
+        fclose($fh_res);
+    }
 
     @unlink('cache/cookie.curl.txt');
 	
