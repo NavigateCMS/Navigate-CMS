@@ -172,7 +172,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                     $opacity = value_or_default(@$_REQUEST['opacity'], NULL);
 
                     $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, NULL, $opacity);
-                    if (empty($path))
+                    if(empty($path))
                     {
                         die();
                     }
@@ -181,27 +181,67 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                     $item->name = $width . 'x' . $height . '-' . $item->name;
                     $item->size = filesize($path);
                     $item->mime = 'image/png';
-                    if (strpos(basename($path), '.jpg') !== false)
+                    if(strpos(basename($path), '.jpg') !== false)
                     {
                         $item->mime = 'image/jpeg';
                     }
                 }
 			}
 
-			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add);
+			$etag = $item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add;
+			$etag = base64_encode($etag);
 			header('ETag: "'.$etag.'"');
 			header('Content-type: '.$item->mime);
 			header('Access-Control-Allow-Origin: *'); // allow external access (f.e. Photopea, Pixlr, etc.)
 			header("Content-Length: ". $item->size);
-			if(empty($_REQUEST['disposition'])) $_REQUEST['disposition'] = 'inline';
+            header("Accept-Ranges: bytes");
+			if(empty($_REQUEST['disposition']))
+            {
+                $_REQUEST['disposition'] = 'inline';
+            }
 			header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');						
 			
 			// check the browser cache and stop downloading again the file
 			$cached = file::cacheHeaders(filemtime($path), $etag);			
 
-			if(!$cached)
+            if(!$cached)
             {
-                readfile($path);
+                $range = 0;
+                $size = filesize($path);
+
+                if(isset($_SERVER['HTTP_RANGE']))
+                {
+                    list($a, $range) = explode("=", $_SERVER['HTTP_RANGE']);
+                    str_replace($range, "-", $range);
+                    $size2 = $size - 1;
+                    $new_length = $size - $range;
+                    header("HTTP/1.1 206 Partial Content");
+                    header("Content-Length: $new_length");
+                    header("Content-Range: bytes $range$size2/$size");
+                }
+                else
+                {
+                    $size2 = $size - 1;
+                    header("Content-Range: bytes 0-$size2/$size");
+                    header("Content-Length: ".$size);
+                }
+
+                $fp = fopen($path, "rb");
+
+                if(is_resource($fp))
+                {
+                    @fseek($fp, $range);
+                    while(!@feof($fp) && (connection_status()==0))
+                    {
+                        set_time_limit(0);
+                        print(@fread($fp, 1024 * 1024)); // 1 MB
+                        flush();
+                        ob_flush();
+                        // wait for 1 second (so 1 MB/s)
+                        usleep(1000000);
+                    }
+                    fclose($fp);
+                }
             }
 			
 			break;
@@ -220,13 +260,17 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			$etag_add = '';
 
             clearstatcache();
-			$etag = base64_encode($item->id.'-'.$item->name.'-'.$item->date_added.'-'.filemtime($path).'-'.$item->permission.$etag_add);
+            $etag = $item->id.'-'.$item->name.'-'.$item->date_added.'-'.filemtime($path).'-'.$item->permission.$etag_add;
+			$etag = base64_encode($etag);
 
 			header('ETag: "'.$etag.'"');
             header('Content-type: '.$item->mime);
             header("Accept-Ranges: bytes");
 
-            if(empty($_REQUEST['disposition'])) $_REQUEST['disposition'] = 'attachment';
+            if(empty($_REQUEST['disposition']))
+            {
+                $_REQUEST['disposition'] = 'attachment';
+            }
             header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');
 
             // check the browser cache and stop downloading again the file
@@ -262,10 +306,11 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                     while(!@feof($fp) && (connection_status()==0))
                     {
                         set_time_limit(0);
-                        print(@fread($fp, 1024 * 1024)); // 1 MB per second
+                        print(@fread($fp, 1024 * 1024)); // 1 MB
                         flush();
                         ob_flush();
-                        sleep(1);
+                        // wait for 1 second (so 1 MB/s)
+                        usleep(1000000);
                     }
                     fclose($fp);
                 }

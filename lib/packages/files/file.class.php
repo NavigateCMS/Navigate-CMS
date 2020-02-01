@@ -1,6 +1,6 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php');
-require_once(NAVIGATE_PATH.'/lib/external/class.upload/class.upload.php');
+require_once(NAVIGATE_PATH.'/lib/external/class.upload/src/class.upload.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_templates.php');
 
 // remember, all files are saved in the private directory using ID as filename: NAVIGATE_PRIVATE
@@ -127,11 +127,15 @@ class file
                 $this->groups = explode(',', $groups);
             }
             else
+            {
                 $this->groups = $main->groups;
+            }
         }
 
         if(!is_array($this->groups))
+        {
             $this->groups = array($groups);
+        }
 
         if($this->type=='video')
         {
@@ -161,9 +165,13 @@ class file
 		$this->mime			= $_REQUEST['mime'];
 
         if(isset($_REQUEST['width']))
+        {
             $this->width		= $_REQUEST['width'];
+        }
         if(isset($_REQUEST['height']))
-		    $this->height		= $_REQUEST['height'];
+        {
+            $this->height		= $_REQUEST['height'];
+        }
 
 		$this->date_added	= core_time();
 		//$this->uploaded_by	= $_REQUEST['uploaded_by'];		// ?
@@ -172,7 +180,9 @@ class file
 
         $this->groups	    = $_REQUEST['groups'];
         if($this->access < 3)
+        {
             $this->groups = array();
+        }
 
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
@@ -184,7 +194,9 @@ class file
             $lcode = $language['code'];
 
             if(!isset($_REQUEST['title-'.$lcode]))
+            {
                 break;
+            }
 
             $this->title[$lcode]	= $_REQUEST['title-'.$lcode];
             $this->description[$lcode]	= $_REQUEST['description-'.$lcode];
@@ -196,8 +208,14 @@ class file
         global $website;
 
         // check cache before trying to download oembed info
-        if($cache)  $cache = 30 * 24 * 60; // 30 days
-        else        $cache = 0;
+        if($cache)
+        {
+            $cache = 30 * 24 * 60; // 30 days
+        }
+        else
+        {
+            $cache = 0;
+        }
 
         $info = nvweb_template_oembed_cache(
             'youtube',
@@ -206,10 +224,14 @@ class file
         );
 
 	    if($info == 'Not found')
-		    $info = '';
+        {
+            $info = '';
+        }
 
         if(empty($info))
+        {
             return false;
+        }
 
         $this->id			= 'youtube#'.$reference;
         $this->type			= 'video';
@@ -225,7 +247,9 @@ class file
 
         $vtpath = $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg', "youtube", $reference);
         if(empty($vtpath)) // for some videos, maxresdefault is not available, so try to retrieve the alternative hqdefault thumbnail
+        {
             $vtpath = $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/hqdefault.jpg', "youtube", $reference);
+        }
 
         $this->extra        = array(
             'reference'  =>  $reference,
@@ -244,8 +268,14 @@ class file
     {
         global $website;
 
-        if($cache)  $cache = 30 * 24 * 60; // 30 days
-        else        $cache = 0;
+        if($cache)
+        {
+            $cache = 30 * 24 * 60; // 30 days
+        }
+        else
+        {
+            $cache = 0;
+        }
 
         $info = nvweb_template_oembed_cache(
             'vimeo',
@@ -254,7 +284,9 @@ class file
         );
 
         if(empty($info))
+        {
             return false;
+        }
 
         $this->id			= 'vimeo#'.$reference;
         $this->type			= 'video';
@@ -307,7 +339,9 @@ class file
                 // try to retrieve the file via cURL
                 $video_thumbnail_data = @core_file_curl($image_url);
                 if(empty($video_thumbnail_data))
+                {
                     return;
+                }
             }
 
             file_put_contents($video_thumbnail_path, $video_thumbnail_data);
@@ -320,9 +354,13 @@ class file
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 
     /* folder types:
@@ -339,7 +377,9 @@ class file
 	    global $website;
 
 	    if(empty($wid))
-		    $wid = $website->id;
+        {
+            $wid = $website->id;
+        }
 
         $file = new file();
         $file->id = 0;
@@ -370,7 +410,9 @@ class file
 		global $user;
 
 		if($user->permission("files.delete")=='false')
-			throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        {
+            throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        }
 
 		if($this->type == 'folder')
 		{
@@ -417,11 +459,15 @@ class file
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute('
             INSERT INTO nv_files
@@ -459,7 +505,10 @@ class file
             )
         );
 			
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 		
@@ -476,11 +525,15 @@ class file
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute('
             UPDATE nv_files
@@ -528,7 +581,10 @@ class file
             )
         );
 
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}		
@@ -539,7 +595,9 @@ class file
 		global $website;
 		
 		if(empty($wid))
-			$wid = $website->id;
+        {
+            $wid = $website->id;
+        }
 		
 		$files = array();
 
@@ -571,7 +629,9 @@ class file
 		global $website;
 
 		if(empty($wid))
-			$wid = $website->id;
+        {
+            $wid = $website->id;
+        }
 
 		$DB->query(
 		    'SELECT * FROM nv_files
@@ -744,7 +804,9 @@ class file
             finfo_close($finfo);
 
             if(strpos($mimetype, ';')!==false)
+            {
                 $mimetype = substr($mimetype, 0, strpos($mimetype, ';'));
+            }
 
             $file_type = 'file';
             foreach($mime_types as $extension => $mime_info)
@@ -787,7 +849,9 @@ class file
 		if(is_array($thumbs))	
 		{
 			foreach($thumbs as $t)	
-				@unlink($t);		
+            {
+                @unlink($t);
+            }
 		}
 	}
 
@@ -796,10 +860,14 @@ class file
 		global $website;
 
 		if($this->type != 'image')
-			return;
+        {
+            return;
+        }
 
 		if(file::is_animated_gif($this->absolute_path()) || $this->mime == 'image/svg+xml')
-			return;
+        {
+            return;
+        }
 
 		if($website->resize_uploaded_images > 0)
 		{
@@ -873,11 +941,26 @@ class file
         }
         else
         {
-            $handle = new upload($path);
+            $handle = new \Verot\Upload\Upload($path);
             $dimensions = array(
                 'width'  => $handle->image_src_x,
                 'height' => $handle->image_src_y
             );
+
+            // fallback - use imagemagick if installed
+            if(empty($dimensions['width']) || empty($dimensions['height']))
+            {
+                if(extension_loaded('imagick'))
+                {
+                    $tmp = new Imagick($path);
+                    $d = $tmp->getImageGeometry();
+                    $dimensions = array(
+                        'width' => $d['width'],
+                        'height' => $d['height']
+                    );
+                    unset($tmp);
+                }
+            }
         }
 		return $dimensions;
 	}
@@ -909,25 +992,37 @@ class file
         }
 
         if(!get_class($item)=='file')
+        {
             return;
+        }
 
         // precondition, the original image file must exist
         if(!file_exists($item->absolute_path()) || filesize($item->absolute_path()) < 1)
+        {
             return;
+        }
 
 		$original  = $item->absolute_path();
 		$thumbnail = '';
 
 		$item_id = $item->id;
         if(!empty($ftname))
+        {
             $item_id = $ftname;
+        }
 		else if(!is_numeric($item_id))
-			$item_id = md5($item->id);
+        {
+            $item_id = md5($item->id);
+        }
 			
 		if($border===true || $border==='true' || $border===1)
-			$border = 1;
+        {
+            $border = 1;
+        }
 		else 
-			$border = 0;
+        {
+            $border = 0;
+        }
 
         // do we have the thumbnail already created for this image?
 
@@ -956,7 +1051,7 @@ class file
 			}
 		}
 
-        // do we have to create a new thumbnail
+        // do we have to create a new thumbnail?
 		if(empty($thumbnail) || isset($_GET['force']) || !(file_exists($thumbnail) && filesize($thumbnail) > 0))
 		{
 		    if($item->mime == 'application/pdf')
@@ -981,11 +1076,35 @@ class file
 
 			$thumbnail = $thumbnail_path_png;
 
-			$handle = new upload($original);
+			$handle = new \Verot\Upload\Upload($original);
+
 			$size = array(
                 'width' => $handle->image_src_x,
 				'height' => $handle->image_src_y
             );
+
+            if(empty($size['width']) || empty($size['height']))
+            {
+                // class.upload error, no image size
+                // try to use imagemagick to get the value
+
+                if(extension_loaded('imagick'))
+                {
+                    $tmp = new Imagick($original);
+                    $d = $tmp->getImageGeometry();
+                    $size = array(
+                        'width' => $d['width'],
+                        'height' => $d['height']
+                    );
+                    unset($tmp);
+                }
+
+                if(empty($size['width']) || empty($size['height']))
+                {
+                    // so it is impossible to get image size
+                    return NULL;
+                }
+            }
 
 			$handle->image_convert = 'png';
             $handle->file_max_size = '512M'; // maximum image size: 512M (it really depends on available memory)
@@ -999,17 +1118,25 @@ class file
 			else if(empty($width))
 			{
 			    if(!empty($size['height']))
-				    $width = round(($height / $size['height']) * $size['width']);
+                {
+                    $width = round(($height / $size['height']) * $size['width']);
+                }
                 else
+                {
                     $width = NULL;
+                }
 				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity);
 			}
 			else if(empty($height))
 			{
 			    if(!empty($size['width']))
-				    $height = round(($width / $size['width']) * $size['height']);
+                {
+                    $height = round(($width / $size['width']) * $size['height']);
+                }
                 else
+                {
                     $height = NULL;
+                }
 				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity);
 			}
 
@@ -1029,10 +1156,10 @@ class file
 				$handle->image_resize = true;
 				$handle->image_ratio_no_zoom_in = true;
 				$borderP = array(
-						floor( ($height - $size['height']) / 2 ),
-						ceil( ($width - $size['width']) / 2 ),
-						ceil( ($height - $size['height']) / 2 ),
-						floor( ($width - $size['width']) / 2 )
+                    floor( ($height - $size['height']) / 2 ),
+                    ceil( ($width - $size['width']) / 2 ),
+                    ceil( ($height - $size['height']) / 2 ),
+                    floor( ($width - $size['width']) / 2 )
 				);
 				$handle->image_border = $borderP;
 
@@ -1040,9 +1167,13 @@ class file
 				{
 					$handle->image_border = array();
 					if($height > $width)
-						$handle->image_ratio_y = true;
+                    {
+                        $handle->image_ratio_y = true;
+                    }
 					else
-						$handle->image_ratio_x = true;
+                    {
+                        $handle->image_ratio_x = true;
+                    }
 				}
 
 				$handle->image_border_color = '#FFFFFF';
@@ -1096,15 +1227,21 @@ class file
             $handle->process(dirname($thumbnail));
 
             if(!empty($handle->error))
+            {
                 throw new Exception($handle->error);
+            }
 
             if(!empty($handle->file_dst_pathname))
+            {
                 rename($handle->file_dst_pathname, $thumbnail);
+            }
 
             clearstatcache(true, $thumbnail);
 
             if(!file_exists($thumbnail) || filesize($thumbnail) < 1)
+            {
                 return NULL;
+            }
 
             // try to recompress the png thumbnail file to achieve the minimum file size,
             // only if some extra apps are available
@@ -1187,7 +1324,9 @@ class file
         $f->load($id);
         $thumbnails = glob(NAVIGATE_PRIVATE.'/'.$f->website.'/thumbnails/*x*-*-'.$id.'*');
         for($t=0; $t < count($thumbnails); $t++)
+        {
             @unlink($thumbnails[$t]);
+        }
     }
 	
 	public static function loadTree($id_parent=0)
@@ -1246,7 +1385,9 @@ class file
 				$tree[$i]->children = $children;
 				$tree[$i]->label = $tree[$i]->name;
 				if(empty($tree[$i]->label)) 
-					$tree[$i]->label = '[ ? ]';
+                {
+                    $tree[$i]->label = '[ ? ]';
+                }
 			}	
 		}
 		
@@ -1263,18 +1404,28 @@ class file
 		{	
 			$li_class = '';
 			$post_html = file::hierarchyList($node->children, $selected);
-			if(strpos($post_html, 'class="active"')!==false) $li_class = ' class="open" ';
+			if(strpos($post_html, 'class="active"')!==false)
+            {
+                $li_class = ' class="open" ';
+            }
 					
 			if(empty($html)) $html[] = '<ul>';
 			if($node->id == $selected)
-				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span class="active">'.$node->label.'</span>';
+            {
+                $html[] = '<li '.$li_class.' value="'.$node->id.'"><span class="active">'.$node->label.'</span>';
+            }
 			else
-				$html[] = '<li '.$li_class.' value="'.$node->id.'"><span>'.$node->label.'</span>';
+            {
+                $html[] = '<li '.$li_class.' value="'.$node->id.'"><span>'.$node->label.'</span>';
+            }
 
 			$html[] = $post_html;
 			$html[] = '</li>';
 		}
-		if(!empty($html)) $html[] = '</ul>';		
+		if(!empty($html))
+        {
+            $html[] = '</ul>';
+        }
 		
 		return implode("\n", $html);
 	}	
@@ -1334,14 +1485,20 @@ class file
         // is the filename already absolute?
         // or the file is already uploaded into files folder?
         if(file_exists($tmp_name))
+        {
             $tmp_file_path = $tmp_name;
+        }
         else
+        {
             $tmp_file_path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name;
+        }
 
         if(file_exists($tmp_file_path))
         {
             if(empty($mime))
+            {
                 $mime = file::getMime($target_name, $tmp_file_path);
+            }
 
             $target_name = rawurldecode($target_name);
 
@@ -1351,7 +1508,9 @@ class file
 		        $DB->query('SELECT id FROM nv_files WHERE website = '.$website->id.' AND id = '.$parent);
 		        $rs = $DB->result('id');
 		        if(empty($rs) || $rs[0] != $parent) // parent folder invalid, put file in the root folder
-			        $parent = 0;
+                {
+                    $parent = 0;
+                }
 	        }
 
             $file = new file();
@@ -1383,7 +1542,9 @@ class file
             );
 
             if($file->type == 'image')
+            {
                 $file->resize_uploaded_image();
+            }
         }
 
         return $file;
@@ -2399,12 +2560,18 @@ class file
     public static function file_url($id, $disposition="")
     {
         if(!empty($disposition))
+        {
             $disposition = '&amp;disposition=' . $disposition;
+        }
 
 	    if(defined("NVWEB_OBJECT"))
+        {
             $url = NVWEB_OBJECT.'?id='.$id.$disposition;
+        }
 	    else
-		    $url = NAVIGATE_DOWNLOAD.'?id='.$id.$disposition;
+        {
+            $url = NAVIGATE_DOWNLOAD.'?id='.$id.$disposition;
+        }
 
 
         return $url;
@@ -2455,7 +2622,9 @@ class file
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
@@ -2464,7 +2633,9 @@ class file
 	{
 		$tmp = new file();
 		foreach($obj as $key => $val)
-			$tmp->$key = $val;
+        {
+            $tmp->$key = $val;
+        }
 
 		return $tmp;
 	}
