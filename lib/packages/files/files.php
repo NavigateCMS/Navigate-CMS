@@ -250,7 +250,7 @@ function run()
         case "edit":
 			$item->load($_REQUEST['id']);
 
-            if(@$_REQUEST['op']=='replace_file')
+            if(@$_REQUEST['op']=='replace_file' && !empty($_FILES))
             {
                 if($_FILES['file-replace']['error'] == 0)
                 {
@@ -265,6 +265,7 @@ function run()
                         if(move_uploaded_file($_FILES['file-replace']['tmp_name'], $destination))
                         {
                             $mime = file::getMime($_FILES['file-replace']['name'], $destination);
+                            $item->name = $_FILES['file-replace']['name'];
                             $item->mime = $mime[0];
                             $item->type = $mime[1];
                             $item->date_added = core_time();
