@@ -1,6 +1,14 @@
 #Options -MultiViews
 Options +FollowSymLinks
 Options -Indexes
+
+#<IfModule mod_xsendfile.c>
+#  <Files *.php>
+#    XSendFile On
+#	 XSendFilePath /home/account/public_html/navigate
+#    SetEnv NV_MOD_X_SENDFILE_ENABLED 1
+#  </Files>
+#</IfModule>
  
 RewriteEngine On
 RewriteBase /

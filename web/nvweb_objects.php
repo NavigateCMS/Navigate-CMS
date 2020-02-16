@@ -202,8 +202,15 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');						
 			
 			// check the browser cache and stop downloading again the file
-			$cached = file::cacheHeaders(filemtime($path), $etag);			
+			$cached = file::cacheHeaders(filemtime($path), $etag);
 
+			// may return a 404 Error if misconfigured in htaccess
+            if(isset($_SERVER['NV_MOD_X_SENDFILE_ENABLED']) || isset($_SERVER['REDIRECT_NV_MOD_X_SENDFILE_ENABLED']))
+            {
+                // relative path to private files (to avoid exposing absolute path in response headers)
+                $path = 'private/'.$website->id.'/files/'.$item->id;
+                header("X-Sendfile: ".$path);
+            }
             if(!$cached)
             {
                 $range = 0;
@@ -243,14 +250,13 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                     fclose($fp);
                 }
             }
-			
 			break;
 		
 		case 'archive':
 		case 'video':
 		case 'file':
-		default:		
-			if(!is_integer($item->id) || (!$item->enabled && !$ignoreEnabled))
+		default:
+			if(!is_numeric($item->id) || (!$item->enabled && !$ignoreEnabled))
             {
                 nvweb_clean_exit();
             }
@@ -276,7 +282,13 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
             // check the browser cache and stop downloading again the file
             $cached = file::cacheHeaders(filemtime($path), $etag);
 
-            if(!$cached)
+            if(isset($_SERVER['NV_MOD_X_SENDFILE_ENABLED']) || isset($_SERVER['REDIRECT_NV_MOD_X_SENDFILE_ENABLED']))
+            {
+                // relative path to private files (to avoid exposing absolute path in response headers)
+                $path = 'private/'.$website->id.'/files/'.$item->id;
+                header("X-Sendfile: ".$path);
+            }
+            else if(!$cached)
             {
                 $range = 0;
                 $size = filesize($path);

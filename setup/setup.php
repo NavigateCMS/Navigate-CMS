@@ -1337,7 +1337,7 @@ function process()
 
             if(!file_exists($npath))
             {
-                $result = mkdir($npath);
+                $result = @mkdir($npath);
                 if(!$result)
                 {
                     die(json_encode($lang['folder_create_error']));
@@ -1681,6 +1681,19 @@ function process()
 				$data = array();
 				$data[] = 'Options +FollowSymLinks';
                 $data[] = 'Options -Indexes';
+                $data[] = '';
+                $data[] = '#alpha testing for X-SendFile header';
+                $data[] = '#<IfModule mod_xsendfile.c>';
+                $data[] = '#    <Files *.php>';
+                $data[] = '#         XSendFile On';
+                $data[] = '#         SetEnv NV_MOD_X_SENDFILE_ENABLED 1';
+                $data[] = '#         <IfModule mod_headers.c>';
+                $data[] = '#            RequestHeader set X-Sendfile-Type X-Sendfile';
+                $data[] = '#         </IfModule>';
+                $data[] = '#    </Files>';
+                $data[] = '#</IfModule>';
+                $data[] = '';
+
 				$data[] = 'RewriteEngine On';
 				$data[] = 'RewriteBase /';
 				$data[] = 'RewriteCond %{REQUEST_FILENAME} !-f';
