@@ -250,24 +250,13 @@ class naviforms
 
 		if(!empty($prefix))
         {
-            $prefix.= " ";
-        }
-		else
-        {
-            $prefix = html_entity_decode("&zwnj;");
+            $prefix = $prefix . " ";
         }
 
 		if(!empty($suffix))
         {
             $suffix = " " . $suffix;
         }
-		else
-        {
-            $suffix = html_entity_decode("&zwnj;");
-        }
-
-		// we need to add a "ZERO WIDTH NON-JOINER" character instead of empty prefixes/suffixes
-        // to workaround a weird inputmask bug with negative values
 
         $layout->add_script('
             $("#'.$name.'").inputmask(
