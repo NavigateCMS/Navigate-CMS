@@ -103,12 +103,12 @@ else if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
 {
     preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $_SERVER['HTTP_ACCEPT_LANGUAGE'], $lang_parse);
 
-    if (count($lang_parse[1])) 
+    if(count($lang_parse[1]))
 	{
         $langs = array_combine($lang_parse[1], $lang_parse[4]);
         foreach ($langs as $lang => $val) 
 		{
-            if ($val === '') $langs[$lang] = 1;
+            if($val === '') $langs[$lang] = 1;
         }
         arsort($langs, SORT_NUMERIC);
     }
@@ -135,7 +135,7 @@ $lang = new language();
 $lang->load($language_default);
 
 // is it a recover password request?
-if($_REQUEST['action']=='forgot-password')
+if(isset($_REQUEST['action']) && $_REQUEST['action']=='forgot-password')
 {
     $value = mb_strtolower(trim($_REQUEST['value']));
     // look for an existing username or e-mail in Navigate CMS users table
@@ -148,16 +148,22 @@ if($_REQUEST['action']=='forgot-password')
     );
 
     if(!$found_id)
+    {
         echo 'not_found';
+    }
     else
     {
         $user->load($found_id);
         $sent = $user->forgot_password();
 
         if(!$sent)
+        {
             echo 'not_sent';
+        }
         else
+        {
             echo 'sent';
+        }
     }
 
     core_terminate();
@@ -324,7 +330,7 @@ $(document).ready(function()
 
 <?php
     // are we on a password change process?
-    if($_REQUEST['action']=='password-reset')
+    if(isset($_REQUEST['action']) && $_REQUEST['action']=='password-reset')
     {
         $value = trim($_REQUEST['value']);
 

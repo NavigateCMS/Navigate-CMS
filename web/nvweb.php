@@ -19,8 +19,6 @@ $html = null;
 
 function nvweb_parse($request)
 {
-    debugger::timer('nvweb-page-init');
-
     /* global variables */
     global $DB;
     global $current;
@@ -37,11 +35,10 @@ function nvweb_parse($request)
     global $html;
 
     $idn = new \Mso\IdnaConvert\IdnaConvert();
-    $events = new events();
 
     // create database connection
     $DB = new database();
-    if (!$DB->connect())
+    if(!$DB->connect())
     {
         die(APP_NAME . ' # ERROR<br /> ' . $DB->get_last_error());
     }
@@ -58,7 +55,17 @@ function nvweb_parse($request)
             $website->load(intval($request['wid']));
         }
         else
+        {
             $website = nvweb_load_website_by_url($url);
+        }
+
+        $events = new events();
+        $events->extension_preinit_bindings();
+        // we can't start the debugger before the website object is loaded
+        // (because an extension could be disabled for that website)
+        debugger::init();
+        debugger::dispatch();
+        debugger::timer('nvweb-page-init');
 
         if (($website->permission == 2) ||
             ($website->permission == 1 && empty($_SESSION['APP_USER#' . APP_UNIQUE]))
@@ -77,20 +84,20 @@ function nvweb_parse($request)
         $webgets = array();    // webgets static data
         $webuser = new webuser();
         $theme = new theme();
-        if (!empty($website->theme))
+        if(!empty($website->theme))
         {
             $theme->load($website->theme);
         }
 
         $route = $request['route'];
         // remove last '/' in route if exists
-        if (substr($route, -1) == '/')
+        if(substr($route, -1) == '/')
         {
             $route = substr($route, 0, -1);
         }
 
         // remove the "folder" part of the route (only if this url is really under a folder)
-        if (!empty($website->folder) && strpos('/' . $route, $website->folder) === 0)
+        if(!empty($website->folder) && strpos('/' . $route, $website->folder) === 0)
         {
             $route = substr('/' . $route, strlen($website->folder) + 1);
         }
@@ -100,7 +107,7 @@ function nvweb_parse($request)
         {
             $nvweb_absolute = $idn->encodeUri($nvweb_absolute);
         }
-        catch (\InvalidArgumentException $e)
+        catch(\InvalidArgumentException $e)
         {
             // do nothing, the domain is already in punycode
         }
@@ -120,7 +127,7 @@ function nvweb_parse($request)
         {
             $session = $_SESSION['nvweb.' . $website->id];
 
-            if (empty($session['lang']))
+            if(empty($session['lang']))
             {
                 $session['lang'] = nvweb_country_language();
             }
@@ -135,15 +142,17 @@ function nvweb_parse($request)
         {
             $params = parse_url($url, PHP_URL_QUERY);
             parse_str($params, $params);
-            if (isset($params['lang']))
+            if(isset($params['lang']))
+            {
                 $force_language = $params['lang'];
+            }
         }
 
-        if (!empty($force_language))
+        if(!empty($force_language))
         {
             $session['lang'] = $force_language;
         }
-        else if (isset($request['lang']))
+        else if(isset($request['lang']))
         {
             $session['lang'] = htmlentities($request['lang']);
         }
@@ -206,7 +215,7 @@ function nvweb_parse($request)
             $webuser = new webuser();
         }
 
-        if (!empty($webuser->id))
+        if(!empty($webuser->id))
         {
             $webuser->lastseen = core_time();
             $webuser->save(false); // don't trigger the webuser_modified event
@@ -288,7 +297,6 @@ function nvweb_parse($request)
         $events->extension_backend_bindings(null, true);
 
         debugger::stop_timer('nvweb-load-plugins');
-
         debugger::timer('nvweb-parse-route');
 
         // parse route
@@ -309,7 +317,7 @@ function nvweb_parse($request)
         $template = nvweb_template_load();
         $events->trigger('theme', 'template_load', array('template' => &$template));
 
-        if (empty($template))
+        if(empty($template))
         {
             throw new Exception('Navigate CMS: no template found!');
         }
@@ -342,7 +350,7 @@ function nvweb_parse($request)
         debugger::timer('nvweb-template-process-new-nv-tags-delayed-lists');
 
         // if the content has added any nv tag, process them
-        if (strpos($html, '{{nv ') !== false || strpos($html, '<nv '))
+        if(strpos($html, '{{nv ') !== false || strpos($html, '<nv '))
         {
             $html = nvweb_template_parse_special($html);
             $html = nvweb_template_parse_lists($html);
@@ -350,7 +358,7 @@ function nvweb_parse($request)
         }
 
         // if we have a delayed nv list we need to parse it now
-        if (!empty($current['delayed_nvlists']) || !empty($current['delayed_nvsearches']))
+        if(!empty($current['delayed_nvlists']) || !empty($current['delayed_nvsearches']))
         {
             $html = nvweb_template_parse_lists($html, true);
 
@@ -427,7 +435,7 @@ function nvweb_parse($request)
 
             echo "!-->";
 
-            if (isset($_GET['profiling']))
+            if(isset($_GET['profiling']))
             {
                 debugger::bar_dump(debugger::get_timers('list'));
             }
@@ -464,7 +472,7 @@ function nvweb_parse($request)
             }
         }
     }
-    catch (Exception $e)
+    catch(Exception $e)
     {
         ?>
         <html>

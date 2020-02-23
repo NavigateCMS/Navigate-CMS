@@ -44,12 +44,16 @@ class layout
 	{
 		global $website;
         global $user;
+
         $out = array();
+        $wtitle = "";
 
         if($this->type == 'navigate')
         {
             if(!empty($website->name))
+            {
                 $wtitle = $website->name.' | ';
+            }
 
             $out[] = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
             $out[] = '<meta name="viewport" content="width=device-width, user-scalable=no">';
@@ -57,9 +61,13 @@ class layout
             $out[] = '<meta http-equiv="Pragma" content="no-cache" />';
 
             if(@$_REQUEST['navigate_privacy']=='true' || $user->permission('navigatecms.privacy_mode')=='true')
+            {
                 $_SESSION['navigate_privacy'] = true;
+            }
 	        else
-		        $_SESSION['navigate_privacy'] = false;
+            {
+                $_SESSION['navigate_privacy'] = false;
+            }
 
             if(@$_SESSION['navigate_privacy'])
             {
@@ -403,17 +411,28 @@ class layout
 		global $user;
         global $current_version;
 
-		if(empty($user->skin)) $user->skin = 'cupertino';
-		if(empty($user->language)) $user->language = 'en';
+		if(empty($user->skin))
+        {
+            $user->skin = 'cupertino';
+        }
+
+		if(empty($user->language))
+        {
+            $user->language = 'en';
+        }
 
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery.min.js?r='.$current_version->revision.'"></script>';
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/js/jquery-migrate.js?r='.$current_version->revision.'"></script>';
 
         //$out[] = '<script language="javascript" type="text/javascript">$.uiBackCompat = false;</script>';
         if(APP_DEBUG)
+        {
             $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateMute = true;</script>';
+        }
         else
+        {
             $out[] = '<script language="javascript" type="text/javascript">jQuery.migrateTrace = false;</script>';
+        }
 
         // jqgrid translation
 		$out[] = '<script language="javascript" src="'.NAVIGATE_URL.'/lib/external/jqgrid/i18n/grid.locale-'.$user->language.'.js?r='.$current_version->revision.'"></script>';
@@ -431,7 +450,10 @@ class layout
 
         $out = array();
 
-		if(empty($user->skin)) $user->skin = 'cupertino';
+		if(empty($user->skin))
+        {
+            $user->skin = 'cupertino';
+        }
 		$out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/skins/'.$user->skin.'.css?r='.$current_version->revision.'" />';
 
         $out[] = '<script type="text/javascript">$.datepicker.setDefaults( $.datepicker.regional[ "'.$user->language.'" ] );</script>';

@@ -2,8 +2,8 @@
 // +------------------------------------------------------------------------+
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Naviwebs 2010-2019. All rights reserved.                 |
-// | Last modified 2019-07-15                                               |
+// | Copyright (c) Naviwebs 2010-2020. All rights reserved.                 |
+// | Last modified 2020-02-23                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -73,6 +73,11 @@ if(!$DB->connect())
 	die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
 }
 
+$events = new events();
+$events->extension_preinit_bindings();
+debugger::init();
+debugger::dispatch();
+
 // session checking
 if(ini_get("session.use_cookies") && !empty($_COOKIE['navigate-session-id']))
 {
@@ -137,7 +142,9 @@ $lang = new language();
 $lang->load($user->language);
 
 if(@$_COOKIE['navigate-language'] != $user->language)
-	setcookie('navigate-language', $user->language, time() + 86400 * 30);
+{
+    setcookie('navigate-language', $user->language, time() + 86400 * 30);
+}
 
 set_time_limit(0);
 
@@ -168,7 +175,9 @@ else
 
 // if there are no websites, auto-create the first one
 if(empty($website->id))
+{
     $website->create_default();
+}
 
 // check allowed websites for this user
 $wa = $user->websites;
@@ -178,7 +187,9 @@ if(!empty($wa))
     {
         $website = new website();
         if(!empty($wa[0])) // load first website allowed
+        {
             $website->load(intval($wa[0]));
+        }
 
         if(empty($website->id) && $user->permission('websites.edit')=='false')
         {
@@ -208,7 +219,9 @@ if(empty($_SESSION['website_active']) && $_REQUEST['fid']!='websites')
 // load website basics
 $nvweb_absolute = (empty($website->protocol)? 'http://' : $website->protocol);
 if(!empty($website->subdomain))
-	$nvweb_absolute .= $website->subdomain.'.';
+{
+    $nvweb_absolute .= $website->subdomain.'.';
+}
 $nvweb_absolute .= $website->domain.$website->folder;
 
 define('NVWEB_ABSOLUTE', $nvweb_absolute);
@@ -252,12 +265,16 @@ $layout->navigate_additional_scripts();
 if(!isset($_GET['mute']))
 {
 	if(!APP_DEBUG && headers_sent())
+    {
         ob_start("ob_gzhandler");
+    }
 
     echo $layout->generate();
 
     if(!APP_DEBUG)
+    {
         ob_end_flush();
+    }
 }
 
 session_write_close();

@@ -102,7 +102,9 @@ function run()
 
             $extensions_allowed = $user->permission("extensions.allowed");
             if(!empty($extensions_allowed) && !in_array($extension, $extensions_allowed))
+            {
                 $out = t(610, "Sorry, you are not allowed to execute this function.");
+            }
             else
             {
                 if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php'))
@@ -132,7 +134,9 @@ function run()
                     // core file curl failed, try using file_get_contents...
                     $tmp = @file_get_contents($url);
                     if(!empty($tmp))
+                    {
                         @file_put_contents($tmp_file, $tmp);
+                    }
                     unset($tmp);
                 }
 
@@ -214,7 +218,7 @@ function run()
             }
 
 		default:
-            $list = extension::list_installed(null, false);
+            $list = extension::list_installed("all", false);
 			$out = extensions_grid($list);
 			break;
 	}
@@ -243,7 +247,9 @@ function extensions_grid($list)
     }
 
     if(!$marketplace)
+    {
         $navibars->add_actions(	array ( 'search_form' ));
+    }
 
     $grid = new navigrid('extensions');
 
@@ -469,9 +475,13 @@ function extensions_options($extension, $saved=null)
     if($saved!==null)
     {
         if($saved)
+        {
             $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+        }
         else
+        {
             $layout->navigate_notification(t(56, "Unexpected error"), true, true);
+        }
     }
 
     $navibars = new navibars();
@@ -602,7 +612,9 @@ function extensions_dialog($extension, $function, $params)
         $out = $layout->generate();
     }
     else
+    {
         $out = 'ERROR: "'.$function.'" function does not exist!';
+    }
 
     return $out;
 }

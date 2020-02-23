@@ -347,9 +347,7 @@ class extension
         global $user;
 
         $extensions = glob(NAVIGATE_PATH.'/plugins/*/*.plugin');
-
         $updates = @$_SESSION['extensions_updates'];
-        $enabled = array();
 
         $DB->query('
             SELECT extension, enabled
@@ -371,7 +369,9 @@ class extension
         if(!$ignore_permissions)
         {
             if(method_exists($user, "permission"))
+            {
                 $allowed_extensions = $user->permission("extensions.allowed");
+            }
         }
 
         for($t=0; $t < count($extensions); $t++)
@@ -392,7 +392,14 @@ class extension
             {
                 $extensions[$t] = (array)$extension_json;
 
-                if(!empty($type) && $extensions[$t]['type']!=$type)
+                if(!empty($type) && $extensions[$t]['type']!=$type && $type!='all')
+                {
+                    $extensions[$t] = '';
+                    continue;
+                }
+
+                // ignore preinit type extensions
+                if(empty($type) && $extensions[$t]['type'] == 'debugger' && $type!='all')
                 {
                     $extensions[$t] = '';
                     continue;
@@ -406,17 +413,23 @@ class extension
                 }
 
                 $extensions[$t]['code'] = $code;
-                $extensions[$t]['update'] = ((version_compare($updates[$code], $extensions[$t]['version']) > 0)? $updates[$code] : '');
+                $extensions[$t]['update'] = ((isset($updates[$code]) && isset($extensions[$t]) && version_compare($updates[$code], $extensions[$t]['version']) > 0)? $updates[$code] : '');
 
                 if(isset($properties) && isset($properties[$code]))
+                {
                     $extensions[$t]['enabled'] = ($properties[$code]['enabled']===0)? '0' : '1';
+                }
                 else
+                {
                     $extensions[$t]['enabled'] = '1';
+                }
             }
         }
 
         if(!is_array($extensions))
+        {
             $extensions = array();
+        }
 
         $extensions = array_filter($extensions);
         sort($extensions);
@@ -453,7 +466,9 @@ class extension
     public static function include_php($extension_code)
     {
         if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php'))
+        {
             include_once(NAVIGATE_PATH.'/plugins/'.$extension_code.'/'.$extension_code.'.php');
+        }
     }
 
     public static function blocks()

@@ -42,7 +42,6 @@ require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/IdnaConvert.php');
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
-require_once(NAVIGATE_PATH.'/lib/external/tracy/src/tracy.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/ref/ref.php');
 
@@ -73,9 +72,6 @@ if(!defined("APP_UNIQUE"))
     define("APP_UNIQUE", "nv_default");
 }
 
-debugger::init();
 include_once(NAVIGATE_PATH.'/cfg/session.php');
-debugger::dispatch();
-
 
 ?>

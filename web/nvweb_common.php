@@ -38,7 +38,6 @@ require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
 
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
-require_once(NAVIGATE_PATH.'/lib/external/tracy/src/tracy.php');
 
 require_once(NAVIGATE_PATH.'/web/nvweb_routes.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_templates.php');
@@ -73,9 +72,7 @@ if(!defined("APP_UNIQUE"))
     define("APP_UNIQUE", "nv_default");
 }
 
-debugger::init();
 include_once(NAVIGATE_PATH.'/cfg/session.php');
-debugger::dispatch();
 
 if(!defined('APP_UNIQUE'))
 {

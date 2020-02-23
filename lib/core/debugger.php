@@ -6,44 +6,44 @@ class debugger
 
     static function init()
     {
+        global $events;
+
         self::$starting_microtime = microtime(true);
 
-        /* prepare Tracy debugger
-            note: if you don't want your users to see Tracy fatal errors, set "PRODUCTION" instead of "DEVELOPMENT")
-        */
-        error_reporting(E_ALL | E_WARNING | E_PARSE);
+        error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
         if(!file_exists(NAVIGATE_PRIVATE . '/tmp'))
+        {
             @mkdir(NAVIGATE_PRIVATE . '/tmp');
+        }
 
-        Tracy\Debugger::enable(
-            Tracy\Debugger::DEVELOPMENT,
-            NAVIGATE_PRIVATE . '/tmp'
-        );
-
-        Tracy\Debugger::$maxDepth = PHP_INT_MAX; // default: 3
-        Tracy\Debugger::$maxLength = PHP_INT_MAX; // default: 150
+        $events->trigger('debugger', 'init');
     }
 
     static function dispatch()
     {
-        Tracy\Debugger::dispatch();
-
-        if(!APP_DEBUG)
-        {
-            Tracy\Debugger::$showBar = false;
-            Tracy\Debugger::$logSeverity = E_ERROR | E_WARNING | E_PARSE;
-        }
+        global $events;
+        $events->trigger('debugger', 'dispatch');
     }
 
     static function dump($variable)
     {
-        return Tracy\Debugger::dump($variable);
+        global $events;
+        return $events->trigger('debugger', 'dump', array('var' => $variable));
     }
 
     static function bar_dump($message, $title="", $options=array())
     {
-        return Tracy\Debugger::barDump($message, $title, $options);
+        global $events;
+        return $events->trigger(
+            'debugger',
+            'bardump',
+            array(
+                'message' => $message,
+                'title' => $title,
+                'options' => $options
+            )
+        );
     }
 
     /*
@@ -51,28 +51,58 @@ class debugger
      */
     static function log($message, $priority = 'info')
     {
-        return Tracy\Debugger::log($message, $priority);
+        global $events;
+        return $events->trigger(
+            'debugger',
+            'log',
+            array(
+                'message' => $message,
+                'priority' => $priority
+            )
+        );
     }
 
     static function console($message, $title="")
     {
+        global $events;
+
         if(is_array($message) || is_object($message))
+        {
             $message = print_r($message, true);
+        }
 
         if(!empty($title))
+        {
             $message = $title .":\n".$message;
+        }
 
-        return Tracy\Debugger::fireLog($message);
+        return $events->trigger(
+            'debugger',
+            'console',
+            array(
+                'message' => $message
+            )
+        );
     }
 
+    // TODO: maybe create an internal timer without the need of a plugin
     static function timer($name="")
     {
-        return Tracy\Debugger::timer($name);
+        global $events;
+        return $events->trigger(
+            'debugger',
+            'timer',
+            array(
+                'name' => $name
+            )
+        );
     }
 
     static function stop_timer($name)
     {
-        self::$timers[][$name] = (int)(self::timer($name)*1000);
+        // code based on Nette Tracy Timers
+        $time_elapsed = (int)self::timer($name);
+        self::$timers[][$name] = $time_elapsed * 1000;
     }
 
     static function get_timers($format='array')
@@ -94,7 +124,9 @@ class debugger
 
         }
         else
+        {
             return self::$timers;
+        }
     }
 }
 
