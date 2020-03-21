@@ -129,6 +129,9 @@ class events
      * Automatically binds extension events to Navigate CMS modules
      * It checks the "bindings" section of every extension definition
      * but ONLY of the preinit types: [debugger]
+     *
+     * Note: this function is executed for EVERY WEBSITE managed under the SAME Navigate CMS instance
+     * because, in this moment, we don't know which website is selected and we don't know which extensions are enabled or not
      */
     public function extension_preinit_bindings()
     {

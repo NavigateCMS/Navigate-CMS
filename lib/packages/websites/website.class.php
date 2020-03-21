@@ -627,7 +627,7 @@ class website
                 ":currency" => value_or_default($this->currency, "dollar"),
                 ":size_unit" => value_or_default($this->size_unit, 'cm'),
                 ":weight_unit" => value_or_default($this->weight_unit, "g"),
-				":shop_logo" => value_or_default($this->shop_logo, ""),
+				":shop_logo" => value_or_default($this->shop_logo, 0),
 				":shop_address" => json_encode(value_or_default($this->shop_address, "")),
 				":shop_legal_info" => json_encode(value_or_default($this->shop_legal_info, "")),
 				":shop_purchase_conditions_path" => value_or_default($this->shop_purchase_conditions_path, ""),
@@ -801,7 +801,7 @@ class website
                 value_or_default($this->currency, "dollar"),
                 value_or_default($this->size_unit, 'cm'),
                 value_or_default($this->weight_unit, "g"),
-                value_or_default($this->shop_logo, ""),
+                value_or_default($this->shop_logo, 0),
                 json_encode(value_or_default($this->shop_address, "")),
                 json_encode(value_or_default($this->shop_legal_info, "")),
                 value_or_default($this->shop_purchase_conditions_path, ""),
@@ -896,7 +896,9 @@ class website
 
             $domain = array_pop($host);
             if(!empty($host))
+            {
                 $domain = array_pop($host) . '.' . $domain;
+            }
 
             $subdomain = implode('.', $host);
         }
@@ -908,7 +910,9 @@ class website
 
         $folder = dirname($url['path']);
         if($folder=='/' || $folder=='\\')
+        {
             $folder = '';
+        }
 
         $this->name				= APP_OWNER;
 

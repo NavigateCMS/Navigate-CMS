@@ -93,9 +93,13 @@ class layout
 	public function add_style_tag($src, $merged_and_compressed=true)
 	{
 		if($merged_and_compressed)
-			$this->styles[] = $src;
+        {
+            $this->styles[] = $src;
+        }
 		else
-			$this->styles_unmerged[] = $src;
+        {
+            $this->styles_unmerged[] = $src;
+        }
 	}
 	
 	public function includes()

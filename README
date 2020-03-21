@@ -25,9 +25,9 @@ http://demo.navigatecms.com/navigate/demo.php?lang=en
 Bug tracker
 -----------
 
-Found a bug? Please create an issue on BitBucket!
+Found a bug? Please create an issue on Github!
 
-https://bitbucket.org/navigatecms/navigatecms/issues?status=new&status=open
+https://github.com/NavigateCMS/Navigate-CMS/issues
 
 
 Support
@@ -47,7 +47,7 @@ Marc Lobato <info@navigatecms.com>
 Copyright and license
 ---------------------
 
-Copyright 2010-2018 Naviwebs S.C.
+Copyright 2010-2020 Naviwebs S.C.
 
 This software is licensed under the GNU General Public License version 2 (the "GPL License").
 

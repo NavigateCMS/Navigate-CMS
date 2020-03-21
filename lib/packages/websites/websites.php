@@ -1919,7 +1919,9 @@ function websites_form($item)
             var selected = $("input[name=\'website_additional_code[]\']:checked").val();
         
             if(typeof(el)!="undefined")
-                selected = $(el).prev().attr("value");         
+            { 
+                selected = $(el).prev().attr("value");
+            }         
             
             $("#tracking_scripts_wrapper,#additional_scripts_wrapper,#additional_styles_wrapper").hide();
             $("#"+selected+"_wrapper").show();
@@ -2063,7 +2065,6 @@ function websites_form($item)
             );
         }
     }
-
 
     $events->trigger(
         'websites',
