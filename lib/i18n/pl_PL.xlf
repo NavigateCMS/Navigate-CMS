@@ -4134,6 +4134,21 @@
                 <target>Wyloguj się</target>
             </trans-unit>
 
+            <trans-unit id="823">
+                <source>No order has been made yet.</source>
+                <target>Nie złożono jeszcze zamówienia.</target>
+            </trans-unit>
+
+            <trans-unit id="824">
+                <source>View</source>
+                <target>Pokaż</target>
+            </trans-unit>
+
+            <trans-unit id="825">
+                <source>The requested order does not exist or cannot be shown.</source>
+                <target>Żądane zamówienie nie istnieje lub nie można go wyświetlić.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

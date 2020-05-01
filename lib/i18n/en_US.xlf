@@ -4135,6 +4135,21 @@
 				<target>Sign out</target>
 			</trans-unit>
 
+			<trans-unit id="823">
+			   <source>No order has been made yet.</source>
+			   <target>No order has been made yet.</target>
+		   </trans-unit>
+
+		   <trans-unit id="824">
+			   <source>View</source>
+			   <target>View</target>
+		   </trans-unit>
+
+		   <trans-unit id="825">
+			   <source>The requested order does not exist or cannot be shown.</source>
+			   <target>The requested order does not exist or cannot be shown.</target>
+		   </trans-unit>
+
 		</body>
 	</file>
 </xliff>

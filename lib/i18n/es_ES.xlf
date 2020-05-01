@@ -4134,6 +4134,21 @@
 				<target>Cerrar sesión</target>
 			</trans-unit>
 
+			<trans-unit id="823" approved="yes">
+				<source>No order has been made yet.</source>
+				<target>No consta ningún pedido realizado.</target>
+			</trans-unit>
+
+			<trans-unit id="824" approved="yes">
+				<source>View</source>
+				<target>Ver</target>
+			</trans-unit>
+
+			<trans-unit id="825" approved="yes">
+				<source>The requested order does not exist or cannot be shown.</source>
+				<target>El pedido solicitado no existe o no puede ser mostrado.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

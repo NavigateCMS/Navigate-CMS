@@ -26,7 +26,7 @@
 
             <trans-unit id="4" approved="yes">
               <source>Login incorrect.</source>
-              <target>Login incorrect.</target>
+              <target>Feilaktige innloggingsdetaljer.</target>
             </trans-unit>
 
             <trans-unit id="5" approved="yes">
@@ -251,7 +251,7 @@
 
             <trans-unit id="49" approved="yes">
               <source>Decimal separator</source>
-              <target>Decimal separator</target>
+              <target>Desimaltegn</target>
             </trans-unit>
 
             <trans-unit id="50" approved="yes">
@@ -861,7 +861,7 @@
 
             <trans-unit id="171" approved="yes">
               <source>Order</source>
-              <target>Order</target>
+              <target>Sorter</target>
               <note from="developer" approved="yes">to sort, to set positions</note>
             </trans-unit>
 
@@ -1182,7 +1182,7 @@
 
             <trans-unit id="235" approved="yes">
               <source>File saved successfully.</source>
-              <target>Fil lagret</target>
+              <target>Fil lagret.</target>
             </trans-unit>
 
             <trans-unit id="236" approved="yes">
@@ -1877,7 +1877,7 @@
 
             <trans-unit id="374" approved="yes">
               <source>Item installed successfully.</source>
-              <target>Element installert</target>
+              <target>Element installert.</target>
             </trans-unit>
 
             <trans-unit id="375" approved="yes">
@@ -2167,7 +2167,7 @@
 
             <trans-unit id="432" approved="yes">
               <source>Read only mode</source>
-              <target>Read only mode</target>
+              <target>Srivebeskyttet modus</target>
             </trans-unit>
 
             <trans-unit id="433" approved="yes">
@@ -2968,7 +2968,7 @@
 
             <trans-unit id="592" approved="yes">
               <source>Company</source>
-              <target>Company</target>
+              <target>Bedrift</target>
             </trans-unit>
 
             <trans-unit id="593" approved="yes">
@@ -3113,12 +3113,12 @@
 
             <trans-unit id="621" approved="yes">
               <source>Append</source>
-              <target>Append</target>
+              <target>Legg til</target>
             </trans-unit>
 
             <trans-unit id="622" approved="yes">
               <source>Date range</source>
-              <target>Date range</target>
+              <target>Datoområde</target>
             </trans-unit>
 
             <trans-unit id="623" approved="yes">
@@ -3138,7 +3138,7 @@
 
             <trans-unit id="626" approved="yes">
               <source>Display the home page, without changing the route</source>
-              <target>Display the home page, without changing the route</target>
+              <target>Vis hjemmesiden, uten å endre ruten</target>
             </trans-unit>
 
             <trans-unit id="627" approved="yes">
@@ -3178,12 +3178,12 @@
 
             <trans-unit id="634" approved="yes">
               <source>Hyphen</source>
-              <target>Hyphen</target>
+              <target>Bindestrek</target>
             </trans-unit>
 
             <trans-unit id="635" approved="yes">
               <source>Underscore</source>
-              <target>Underscore</target>
+              <target>Understrek</target>
             </trans-unit>
 
             <trans-unit id="636" approved="yes">
@@ -3223,7 +3223,7 @@
 
             <trans-unit id="643" approved="yes">
               <source>Decimal</source>
-              <target>Decimal</target>
+              <target>Desimal</target>
             </trans-unit>
 
             <trans-unit id="644" approved="yes">
@@ -3405,12 +3405,12 @@
 
             <trans-unit id="679" approved="yes">
               <source>Included</source>
-              <target>Included</target>
+              <target>Inkludert</target>
             </trans-unit>
 
             <trans-unit id="680" approved="yes">
               <source>Custom</source>
-              <target>Custom</target>
+              <target>Egendefinert</target>
               <note>used to enter a specific value instead of a predefined one</note>
             </trans-unit>
 
@@ -3431,7 +3431,7 @@
 
             <trans-unit id="684" approved="yes">
               <source>Regions</source>
-              <target>Regions</target>
+              <target>Fylker</target>
               <note from="developer" approved="yes">a generic word to refer to states, provinces and other similar zones in a country</note>
             </trans-unit>
 
@@ -3640,7 +3640,7 @@
 
             <trans-unit id="725" approved="yes">
               <source>Amount</source>
-              <target>Amount</target>
+              <target>Mengde</target>
             </trans-unit>
 
             <trans-unit id="726" approved="yes">
@@ -3691,7 +3691,7 @@
 
             <trans-unit id="735" approved="yes">
               <source>For any complaint or inquiry, please contact us.</source>
-              <target>For any complaint or inquiry, please contact us.</target>
+              <target>Klager eller spørsmål, kontakt oss.</target>
             </trans-unit>
 
             <trans-unit id="736" approved="yes">
@@ -4134,6 +4134,21 @@
             <trans-unit id="822">
                 <source>Sign out</source>
                 <target>Logg ut</target>
+            </trans-unit>
+
+            <trans-unit id="823">
+                <source>No order has been made yet.</source>
+                <target>Ingen bestillinger er lagt inn ennå.</target>
+            </trans-unit>
+
+            <trans-unit id="824">
+                <source>View</source>
+                <target>Showet</target>
+            </trans-unit>
+
+            <trans-unit id="825">
+                <source>The requested order does not exist or cannot be shown.</source>
+                <target>Den forespurte ordren eksisterer ikke eller kan ikke vises.</target>
             </trans-unit>
 
         </body>
