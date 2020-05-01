@@ -4,14 +4,16 @@ class update
 	public $id;
 	public $version;
 	public $revision;
+	public $commit;
 	public $date_updated;
 	public $status;
 	public $changelog;
+	public static $latest_version_endpoint = 'http://update.navigatecms.com/latest';
+	public static $updates_list_endpoint = 'http://update.navigatecms.com/from?revision=';
 
 	public function __construct()
     {
-        // to avoid PHP 7.x warning about having a
-        // function with the same name as the class
+
     }
 
     public function load($id)
@@ -21,7 +23,7 @@ class update
 		if($DB->query('SELECT * FROM nv_updates WHERE id = '.intval($id)))
 		{
 			$data = $DB->result();
-			$this->load_from_resultset($data); // there will be as many entries as languages enabled
+			$this->load_from_resultset($data);
 		}
 	}
 	
@@ -33,14 +35,13 @@ class update
 		$this->version		= $main->version;		
 		$this->revision		= $main->revision;
 		$this->date_updated	= $main->date_updated;
+		$this->commit       = $main->commit;
 		$this->status		= $main->status;
 		$this->changelog	= $main->changelog;
 	}	
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
         {
             return $this->update();
@@ -70,12 +71,13 @@ class update
 		
 		$ok = $DB->execute(' 
  			INSERT INTO nv_updates
-				(id, version, revision, date_updated, status, changelog)
+				(id, version, revision, commit, date_updated, status, changelog)
 			VALUES 
-				( 0, :version, :revision, :date_updated, :status, :changelog )',
+				( 0, :version, :revision, :commit, :date_updated, :status, :changelog )',
 			array(
 				'version' => $this->version,
 				'revision' => $this->revision,
+				'commit' => $this->commit,
 				'date_updated' => $this->date_updated,
 				'status' => $this->status,
 				'changelog' => $this->changelog
@@ -97,17 +99,20 @@ class update
 		global $DB;
 					
 		if(empty($this->id))
-			return false;
+        {
+            return false;
+        }
 		
 		$ok = $DB->execute(' 
  			UPDATE nv_updates
-			   SET version = :version, revision = :revision, date_updated = :date_updated, 
-			   	   status = :status, changelog = :changelog
+			   SET version = :version, revision = :revision, commit = :commit,
+			       date_updated = :date_updated, status = :status, changelog = :changelog
 		     WHERE id = :id',
 			array(
 				'id' => $this->id,
 				'version' => $this->version,
 				'revision' => $this->revision,
+				'commit' => $this->commit,
 				'date_updated' => $this->date_updated,
 				'status' => $this->status,
 				'changelog' => $this->changelog
@@ -115,29 +120,16 @@ class update
 		);
 
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}		
 	
 	public static function latest_available()
 	{
-	    $latest_version_endpoint = 'http://update.navigatecms.com/latest';
-
-        $context = stream_context_create(array(
-                'http' => array(
-                    'timeout' => 10
-                )
-            )
-        );
-
-		$latest_update = @file_get_contents($latest_version_endpoint, 0, $context);
-
-        if(empty($latest_update))
-        {
-            // try with curl
-            $latest_update = @core_http_request($latest_version_endpoint);
-        }
+        $latest_update = @core_http_request(update::$latest_version_endpoint);
 
 		// if update info could not be loaded set the same version installed, to avoid looking for updates if the connection cannot be established
 		if(empty($latest_update))
@@ -169,23 +161,9 @@ class update
 	
 	public static function updates_available()
 	{
-	    $updates_list_endpoint = 'http://update.navigatecms.com/from?revision=';
-
 		$latest_installed = update::latest_installed();
-        $context = stream_context_create(array(
-                'http' => array(
-                    'timeout' => 20
-                )
-            )
-        );
 
-		$list = file_get_contents($updates_list_endpoint.$latest_installed->revision, 0, $context);
-
-        if(empty($list))
-        {
-            // try with curl, if available
-            $list = core_http_request($updates_list_endpoint.$latest_installed->revision);
-        }
+        $list = core_http_request((update::$updates_list_endpoint).$latest_installed->revision);
 
 		$list = json_decode($list, true);
 		if(!$list) $list = array();
@@ -199,9 +177,14 @@ class update
 		
 		@set_time_limit(0);
         if(empty($updates))
-		    $updates = update::updates_available();
+        {
+            $updates = update::updates_available();
+        }
 		
-		if(empty($updates[0]['Revision'])) return false;
+		if(empty($updates[0]['Revision']))
+        {
+            return false;
+        }
 		
 		$ulog = NAVIGATE_PATH.'/updates/update-'.$updates[0]['Revision'].'.log.txt';
 		
@@ -211,7 +194,7 @@ class update
 		$ufile = NAVIGATE_PATH.'/updates/update-'.$updates[0]['Revision'].'.zip';
 		if(!file_exists($ufile) || filesize($ufile) < 1000)
 		{
-			file_put_contents($ulog, "download update...\n", FILE_APPEND);
+			file_put_contents($ulog, "downloading update...\n", FILE_APPEND);
 
             //$data = file_get_contents($updates[0]['Zip URL']);
 			//file_put_contents($ufile, $data);
@@ -223,11 +206,11 @@ class update
                 core_file_curl($updates[0]['Zip URL'], $ufile);
             }
 
-            file_put_contents($ulog, "update downloaded\n", FILE_APPEND);
+            file_put_contents($ulog, "update package downloaded\n", FILE_APPEND);
 		}
 		else
 		{
-			file_put_contents($ulog, "update already downloaded\n", FILE_APPEND);	
+			file_put_contents($ulog, "update package already downloaded\n", FILE_APPEND);
 		}
 		
 		return update::install_from_file($updates[0]['Version'], $updates[0]['Revision'], $ufile, $ulog);
@@ -235,7 +218,6 @@ class update
 	
 	public static function install_from_repository($file_id)
 	{
-		global $DB;
 		global $website;
 		
 		@set_time_limit(0);
@@ -288,36 +270,44 @@ class update
 		
 		// do file changes
 		file_put_contents($ulog, "parse file changes\n", FILE_APPEND);
-		$hgchanges = file_get_contents(NAVIGATE_PATH.'/updates/update/changes.txt');
-		$hgchanges = explode("\n", $hgchanges);
+		$changeset = file_get_contents(NAVIGATE_PATH.'/updates/update/changes.txt');
+        $changeset = explode("\n", $changeset);
 		
-		foreach($hgchanges as $change)
+		foreach($changeset as $change)
 		{
 			file_put_contents($ulog, $change."\n", FILE_APPEND);								
 			$change = trim($change);
-			if(empty($change)) continue;
+			if(empty($change))
+            {
+                continue;
+            }
 		
-			$change = explode(" ", $change, 2);
+            $change = explode("\t", $change);
 
-			// new, removed and modified files
-			// M = modified
-			// A = added
-			// R = removed
-			// C = clean
-			// ! = missing (deleted by non-hg command, but still tracked)
-			// ? = not tracked
-			// I = ignored
-			//   = origin of the previous file listed as A (added)
+            // GIT
+            // Added (A),
+            // Copied (C),
+            // Deleted (D),
+            // Modified (M),
+            // Renamed (R),
+            // Type changed (T) (i.e. regular file, symlink, submodule, …​),
+            // Unmerged (U),
+            // Unknown (X), or
+            // have had their pairing Broken (B)
 			
 			$file = str_replace('\\', '/', $change[1]);
 
 			//if(substr($file, 0, strlen('plugins/'))=='plugins/') continue;
-			if(substr($file, 0, strlen('setup/'))=='setup/') continue;	
+			if(substr($file, 0, strlen('setup/'))=='setup/')
+            {
+                continue;
+            }
 			
-			switch($change[0])
+            switch(substr($change[0], 0, 1))
 			{
 				case 'A':
 					// added a new file
+
 				case 'M':
 					// modified file				
 					if(!file_exists(NAVIGATE_PATH.'/updates/update/'.$file)) 
@@ -333,11 +323,25 @@ class update
 					}
 					break;
 					
-				case 'R':
-					// remove file
+				case 'D':
+					// delete file
 					@unlink(NAVIGATE_PATH.'/'.$file);
 					break;
-					
+
+                case 'R':
+                    // moved (renamed) file
+                    // 1) delete old file
+                    @unlink(NAVIGATE_PATH.'/'.$file);
+                    // 2) put new file
+                    $file_new = str_replace('\\', '/', $change[2]);
+                    @mkdir(dirname(NAVIGATE_PATH.'/'.$file), 0777, true);
+                    if(!@copy(NAVIGATE_PATH.'/updates/update/'.$file_new, NAVIGATE_PATH.'/'.$file_new))
+                    {
+                        file_put_contents($ulog, "cannot copy file!\n", FILE_APPEND);
+                        return false;
+                    }
+                    break;
+                    
 				default:
 					// all other cases
 					// IGNORE the change, as we are now only getting the modified files
@@ -363,7 +367,10 @@ class update
 				foreach($sql as $sqlline)
 				{	
 					$sqlline = trim($sqlline);			
-					if(empty($sqlline)) continue;
+					if(empty($sqlline))
+                    {
+                        continue;
+                    }
 					file_put_contents($ulog, "execute sql:\n".$sqlline."\n", FILE_APPEND);				
 					if(!$DB->execute($sqlline))
 					{

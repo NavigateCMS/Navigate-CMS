@@ -989,7 +989,7 @@ function core_bytes($bytes)
  * @param integer $timeout
  * @return string Body of the response
  */
-function core_http_request($url, $timeout=8) 
+function core_http_request($url, $timeout = 12)
 {	
 	if(function_exists('curl_init'))
 	{
@@ -1003,7 +1003,13 @@ function core_http_request($url, $timeout=8)
 	}
 	else
 	{
-		$data = file_get_contents($url);	
+        $context = stream_context_create(array(
+                'http' => array(
+                    'timeout' => $timeout
+                )
+            )
+        );
+		$data = file_get_contents($url, false, $context);
 	}
 	
 	return $data;
