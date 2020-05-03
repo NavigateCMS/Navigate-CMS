@@ -26,7 +26,7 @@ class feed_parser
 
         if($this->cache > 0)
         {
-            if(file_exists($feed_cache))
+            if(file_exists($feed_cache) && filesize($feed_cache) > 0)
             {
                 if(filemtime($feed_cache) > (time() - $this->cache))
                 {
@@ -35,7 +35,7 @@ class feed_parser
                 }
             }
         }
-        $this->data = file_get_contents($url);
+        $this->data = core_http_request($url);
         file_put_contents($feed_cache, $this->data);
     }
 

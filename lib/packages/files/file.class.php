@@ -332,7 +332,7 @@ class file
         )
         {
             // download the image from the source
-            $video_thumbnail_data = @file_get_contents($image_url);
+            $video_thumbnail_data = @core_http_request($image_url);
 
             if(empty($video_thumbnail_data))
             {
