@@ -216,29 +216,39 @@ function run()
                 $tmp = trim(substr($_FILES['extension-upload']['name'], 0, strpos($_FILES['extension-upload']['name'], '.')));
                 $extension_name = filter_var($tmp, FILTER_SANITIZE_EMAIL);
 
-                if($tmp!=$extension_name) // INVALID file name
+                if($tmp != $extension_name) // INVALID file name
                 {
                     $layout->navigate_notification(t(344, 'Security error'), true, true);
                 }
                 else
                 {
-                    @mkdir(NAVIGATE_PATH.'/plugins/'.$extension_name);
+                    // security validation
+                    $secure = extension::check_upload($_FILES['extension-upload'], $extension_name);
 
-                    $zip = new ZipArchive;
-                    if($zip->open($_FILES['extension-upload']['tmp_name']) === TRUE)
+                    if($secure !== true)
                     {
-                        $zip->extractTo(NAVIGATE_PATH.'/plugins/'.$extension_name);
-                        $zip->close();
-
-                        $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                        $layout->navigate_notification(t(344, 'Security error'), true, true);
                     }
-                    else // zip extraction failed
+                    else // everything seems fine, go ahead
                     {
-                        $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                        @mkdir(NAVIGATE_PATH.'/plugins/'.$extension_name);
+
+                        $zip = new ZipArchive;
+                        if($zip->open($_FILES['extension-upload']['tmp_name']) === TRUE)
+                        {
+                            $zip->extractTo(NAVIGATE_PATH.'/plugins/'.$extension_name);
+                            $zip->close();
+
+                            $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                        }
+                        else // zip extraction failed
+                        {
+                            $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                        }
                     }
                 }
             }
-            // don't break
+            // don't break!
 
 		default:
             $list = extension::list_installed("all", false);

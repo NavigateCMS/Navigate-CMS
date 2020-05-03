@@ -74,6 +74,19 @@ function disable_magic_quotes()
 	}
 }
 
+function core_recursive_file_search($folder, $pattern)
+{
+    $dir = new RecursiveDirectoryIterator($folder);
+    $ite = new RecursiveIteratorIterator($dir);
+    $files = new RegexIterator($ite, $pattern, RegexIterator::GET_MATCH);
+    $fileList = array();
+    foreach($files as $file)
+    {
+        $fileList = array_merge($fileList, $file);
+    }
+    return $fileList;
+}
+
 /**
  * Return the real IP address of the current visitor
  *

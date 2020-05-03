@@ -471,6 +471,85 @@ class extension
         }
     }
 
+    public static function check_upload($file_upload, $extension_name)
+    {
+        // check mime
+        if(!in_array($file_upload['type'], array('application/zip', 'application/x-zip-compressed')))
+        {
+            return false;
+        }
+
+        // check file extension
+        if(pathinfo($file_upload['name'], PATHINFO_EXTENSION) != 'zip')
+        {
+            return false;
+        }
+
+        // extract the zip in a temporary folder
+        $zip = new ZipArchive;
+        if($zip->open($file_upload['tmp_name']) !== true)
+        {
+            return false;
+        }
+
+        $tempdir = NAVIGATE_PRIVATE . '/tmp/' . uniqid('plugin-check-');
+
+        mkdir($tempdir);
+        $zip->extractTo($tempdir);
+        $zip->close();
+
+        // extension definition exists?
+        if(!file_exists($tempdir . '/' . $extension_name . '.plugin'))
+        {
+            core_remove_folder($tempdir);
+            return false;
+        }
+
+        // it's a valid json?
+        $extension_def = file_get_contents($tempdir . '/' . $extension_name . '.plugin');
+        $extension_def = json_decode($extension_def);
+        
+        if(json_last_error() != JSON_ERROR_NONE)
+        {
+            core_remove_folder($tempdir);
+            return false;
+        }
+
+        // check every php file included
+        $files = core_recursive_file_search($tempdir,  '/.*\/*.php/');
+
+        $prohibited_functions = array(
+            'eval(',
+            'system(',
+            'exec(',
+            'shell_exec(',
+            'popen(',
+            'proc_open(',
+            'passthru(',
+            '`' // https://www.php.net/manual/en/language.operators.execution.php
+        );
+
+        foreach($files as $file)
+        {
+            // remove all spaces
+            $file_content = file_get_contents($file);
+            $file_content = str_replace(array(' ', "\t", "\r", "\n"), '', $file_content);
+
+            foreach($prohibited_functions as $pf)
+            {
+                if(stripos($file_content, $pf) !== false)
+                {
+                    core_remove_folder($tempdir);
+                    return false;
+                }
+            }
+        }
+
+        core_remove_folder($tempdir);
+
+        return true;
+    }
+
     public static function blocks()
     {
         $out = array();

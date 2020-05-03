@@ -1211,22 +1211,26 @@ function core_file_curl($url, $file)
  */
 function core_remove_folder($dir) 
 {
-   if(is_dir($dir)) 
-   {
-     $objects = scandir($dir);
-     foreach ($objects as $object) 
-	 {
-       if($object != "." && $object != "..") 
-	   {
-         if(filetype($dir."/".$object) == "dir") 
-         	core_remove_folder($dir."/".$object); 
-		 else 
-		 	unlink($dir."/".$object);
-       }
-     }
-     reset($objects);
-     rmdir($dir);
-   }
+    if(is_dir($dir))
+    {
+        $objects = scandir($dir);
+        foreach ($objects as $object)
+        {
+            if($object != "." && $object != "..")
+            {
+                if(filetype($dir."/".$object) == "dir")
+                {
+                    core_remove_folder($dir."/".$object);
+                }
+                else
+                {
+                    unlink($dir."/".$object);
+                }
+            }
+        }
+        reset($objects);
+        rmdir($dir);
+    }
 } 
 
 /**
