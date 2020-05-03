@@ -137,7 +137,10 @@ function navigate_media_browser()
 function navigate_media_browser_refresh()
 {
 	// drag & drop support
-	$("#navigate_media_browser_items > div").not("#file-more").not("div[mimetype='folder/back']").draggable(
+	$("#navigate_media_browser_items > div")
+        .not("#file-more")
+        .not("div[mimetype='folder/back']")
+        .draggable(
 	{ 
 		revert: true,  
 		scroll: true, 

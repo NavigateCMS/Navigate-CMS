@@ -645,13 +645,111 @@ function navigate_notification(text, sticky, css_icon)
 function navigate_t(id, text)
 {
 	if(navigate_lang_dictionary && navigate_lang_dictionary[id]!=null)
-		return navigate_lang_dictionary[id];
+    {
+        return navigate_lang_dictionary[id];
+    }
 	else
-		return text;
+    {
+        return text;
+    }
 }
 
-function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element, meta)
+function navigate_tinymce_add_content_event(editor_id, file_id, media, mime, web_id, element, meta)
 {
+    var content_added = false;
+    // sync ajax
+    $.ajax(
+        {
+            url: "?mute&fid=extensions&act=tinymce_add_content_event",
+            dataType: "json",
+            async: false,
+            data: {
+                file_id: file_id,
+                media: media,
+                mime: mime
+            },
+            success: function(json_rs)
+            {
+                if(json_rs != "" && Object.keys(json_rs).length > 0)
+                {
+                    var buttons_html = "";
+                    for(extension_name in json_rs)
+                    {
+                        buttons_html += '<button data-extension="'+extension_name+'" data-content="'+$.base64.encode(json_rs[extension_name]['out'])+'">' +
+                                            '<img src="plugins/'+extension_name+'/thumbnail.png" /><br /><br />' +
+                                            json_rs[extension_name]['title'] +
+                                        '</button>';
+                    }
+
+                    buttons_html += '<button data-extension="default">' +
+                                        '<i class="fa fa-fw fa-3x fa-paste"></i><br /><br />(' + navigate_t(582, 'default') + ')'
+                                    '</button>';
+
+                    var embed_dialog_html = '' +
+                        '<div class="embed_dialog_extensions">' +
+                            buttons_html +
+                        '</div>';
+
+                    // close any open dialog
+                    $(".ui-dialog-content").dialog().dialog("close");
+
+                    $(embed_dialog_html).dialog({
+                        modal: true,
+                        title: '<i class="fa fa-lg fa-document"></i> ' + navigate_t(620, "Insert")
+                    });
+
+                    $(".embed_dialog_extensions button")
+                        .button()
+                        .on("click", function()
+                        {
+                            if($(this).data('extension') == 'default')
+                            {
+                                navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element, meta, true);
+                            }
+                            else
+                            {
+                                var html = $.base64.decode($(this).data('content'));
+                                var editor = tinyMCE.get(editor_id);
+
+                                var selection_active  = (editor.selection.getContent({format : 'text'})!="");
+                                var selection_content = editor.selection.getContent({format: 'html'});
+
+                                   if(selection_active)
+                                   {
+                                       tinyMCE.activeEditor.selection.setContent(html);
+                                       tinyMCE.activeEditor.execCommand('mceCleanup', false);
+                                   }
+                                   else
+                                   {
+                                       tinyMCE.get(editor_id).execCommand('mceInsertContent', false, html);
+                                       tinyMCE.get(editor_id).execCommand('mceCleanup', false);
+                                   }
+                            }
+
+                            $('.embed_dialog_extensions').dialog('close');
+                        });
+
+                    content_added = true;
+                }
+            }
+        }
+    );
+
+    return content_added;
+}
+
+function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element, meta, do_not_trigger_event)
+{
+    if(!do_not_trigger_event)
+    {
+        // check if there is an extension to threat this adding content event
+        var content_added = navigate_tinymce_add_content_event(editor_id, file_id, media, mime, web_id, element, meta);
+        if(content_added)
+        {
+            return;
+        }
+    }
+
     var editor = tinyMCE.get(editor_id);
 	var html = '';
     var embed_dialog = false;
@@ -659,9 +757,9 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 	var selection_active  = (editor.selection.getContent({format : 'text'})!="");
 	var selection_content = editor.selection.getContent({format: 'html'});
 
-	switch(media)
-	{
-		case 'image':
+    switch(media)
+    {
+        case 'image':
             var max_width = $('#' + editor_id + '_ifr').contents().find('body').width();
             var or_styles = '';
 
@@ -680,10 +778,14 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 
                 // try an alternative method (Chrome browser work around)
                 if(!max_width || max_width==0)
+                {
                     max_width = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('width');
+                }
 
                 if(!max_width || max_height==0)
+                {
                     max_height = $($(editor.selection.getContent({format: 'raw'}))[0]).attr('height');
+                }
 
                 var or_styles = ' style="' + $(editor.selection.getContent({format: 'raw'}))[0].style.cssText + '" ';
 
@@ -693,7 +795,9 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                     for(var i = or_attrs.length - 1; i >= 0; i--)
                     {
                         if(or_attrs[i].name!='style' && or_attrs[i].name!='width' && or_attrs[i].name!='height' && or_attrs[i].name!='src')
+                        {
                             or_styles += ' ' + or_attrs[i].name + '="' + or_attrs[i].value + '" ';
+                        }
                     }
                 }
 
@@ -723,33 +827,51 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             var body_width = $(editor.contentAreaContainer).width() - 37;
 
             if(max_width==0 || max_width > image_width)
+            {
                 max_width = image_width;
+            }
 
             if(max_height==0 || max_height > image_height)
+            {
                 max_height = image_height;
+            }
 
             var scaled_height = Math.ceil((max_width * image_height) / image_width);
             var scaled_width = Math.ceil((max_height * image_width) / image_height);
 
             var active_editor_lang = editor_id;
             if(active_editor_lang.indexOf("-") > 0)
+            {
                 active_editor_lang = active_editor_lang.split("-").pop();
+            }
 
             if(typeof(title)=='string')
+            {
                 title = $.parseJSON(title);
-            
+            }
+
             if (title && title[active_editor_lang])
+            {
                 title = title[active_editor_lang];
+            }
             else
+            {
                 title = "";
+            }
 
             if(typeof(alt)=='string')
+            {
                 alt = $.parseJSON(alt);
+            }
 
             if (alt && alt[active_editor_lang])
+            {
                 alt = alt[active_editor_lang];
+            }
             else
+            {
                 alt = "";
+            }
 
             if(embed_dialog)
             {
@@ -852,61 +974,63 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
                         '" ' + or_styles +
                     ' />';
             }
-			break;
-		
-		case 'video':
-			if(selection_content=='') selection_content = '[video]';
-			html = '<a rel="video" navigate="navigate" type="'+mime+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
-			/*
-			html = '<video controls="controls">';
-			html+= '<source src="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline" />';
-			html+= '<a rel="video" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=attachment">'+selection_content+'</a>';
-			html+= '</video>';
-			*/
-			break;
-			
-		case 'flash':
-			html = '<object data="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline" type="application/x-shockwave-flash" width="400" height="225">';
-			html+= '<param name="movie" value="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline" />';
-			html+= '<param name="bgcolor" value="transparent" />';
-			html+= '<param name="height" value="225" />';
-			html+= '<param name="width" value="400" />';
-			html+= '<param name="quality" value="high" />';
-			html+= '<param name="menu" value="false" />';
-			html+= '<param name="allowscriptaccess" value="samedomain" />';
-			html+= '</object>';
-			break;
-			
-		case 'audio':
-			if(selection_content=='') selection_content = '[audio]';	
-			html = '<a rel="audio" navigate="navigate" type="'+mime+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
-			/*
-			html = '<audio controls="controls">';				
-			html+= '<source src="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">';
-			html+= '<a rel="audio" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
-			html+= '</audio>';
-			*/
-			break;
-			
-		default:
-			if(selection_content=='')
+            break;
+
+        case 'video':
+            if(selection_content=='') selection_content = '[video]';
+            html = '<a rel="video" navigate="navigate" type="'+mime+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
+            /*
+            html = '<video controls="controls">';
+            html+= '<source src="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline" />';
+            html+= '<a rel="video" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=attachment">'+selection_content+'</a>';
+            html+= '</video>';
+            */
+            break;
+
+        case 'flash':
+            html = '<object data="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline" type="application/x-shockwave-flash" width="400" height="225">';
+            html+= '<param name="movie" value="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline" />';
+            html+= '<param name="bgcolor" value="transparent" />';
+            html+= '<param name="height" value="225" />';
+            html+= '<param name="width" value="400" />';
+            html+= '<param name="quality" value="high" />';
+            html+= '<param name="menu" value="false" />';
+            html+= '<param name="allowscriptaccess" value="samedomain" />';
+            html+= '</object>';
+            break;
+
+        case 'audio':
+            if(selection_content=='') selection_content = '[audio]';
+            html = '<a rel="audio" navigate="navigate" type="'+mime+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
+            /*
+            html = '<audio controls="controls">';
+            html+= '<source src="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">';
+            html+= '<a rel="audio" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
+            html+= '</audio>';
+            */
+            break;
+
+        default:
+            if(selection_content=='')
                 selection_content = '[' + navigate_t(82, "File") + ']';
 
             if($($.parseHTML(selection_content)).is("A"))
                 selection_content = $(selection_content).text();
 
-			html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline"> ' + selection_content + '</a>';
-	}
+            html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline"> ' + selection_content + '</a>';
+    }
 
     if(embed_dialog)
-        return;
-
-	if(selection_active)
     {
-		tinyMCE.activeEditor.selection.setContent(html);
+        return;
+    }
+
+    if(selection_active)
+    {
+        tinyMCE.activeEditor.selection.setContent(html);
         tinyMCE.activeEditor.execCommand('mceCleanup', false);
     }
-	else
+    else
     {
         tinyMCE.get(editor_id).execCommand('mceInsertContent', false, html);
         tinyMCE.get(editor_id).execCommand('mceCleanup', false);

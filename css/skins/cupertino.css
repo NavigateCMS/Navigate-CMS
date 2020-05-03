@@ -2510,6 +2510,24 @@ ul.ui-sortable li.tagit-choice
 	width: 280px;
 }
 
+.embed_dialog_extensions i
+{
+    margin-top: 7px;
+    margin-bottom: 8px;
+}
+
+.embed_dialog_extensions img
+{
+	width: 64px;
+	height: auto;
+}
+
+.embed_dialog_extensions button
+{
+	margin: 8px 8px 8px 0;
+	width: 128px;
+}
+
 /* jstree styles */
 .jstree-default .jstree-clicked
 {

@@ -9,6 +9,7 @@ function run()
 	global $layout;
 	global $DB;
 	global $website;
+	global $events;
 	
 	$out = '';
 	$item = new extension();
@@ -118,6 +119,27 @@ function run()
             }
             break;
 
+        case 'tinymce_add_content_event':
+            $events_out = $events->trigger(
+                'tinymce_add_content',
+                'add_file',
+                array(
+                    'file_id' => $_REQUEST['file_id'],
+                    'media' => $_REQUEST['media'],
+                    'mime' => $_REQUEST['mime']
+                )
+            );
+
+            if(empty($events_out))
+            {
+                $events_out = array();
+            }
+
+            echo json_encode($events_out);
+
+            core_terminate();
+            break;
+
         case 'install_from_hash':
             $url = base64_decode($_GET['hash']);
 
@@ -216,6 +238,7 @@ function run()
                     }
                 }
             }
+            // don't break
 
 		default:
             $list = extension::list_installed("all", false);

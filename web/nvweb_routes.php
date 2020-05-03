@@ -502,7 +502,7 @@ function nvweb_route_parse($route="")
                         // must simulate a row from nv_paths, with id NULL or 0
                         // example:
                         // $rs = array((object)array('id' => 0,'website' => 1,'path' => '/en/contact','type' => 'structure','object_id' => 5,'lang' => 'en'));
-                        $rs = $ext_result;
+                        $rs = $ext_result['out'];
                         break;
                     }
                 }

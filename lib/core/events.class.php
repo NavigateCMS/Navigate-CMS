@@ -2,10 +2,12 @@
 class events
 {
     public $events;
+    public $extensions;
 
     public function __construct()
     {
         $this->events = array();
+        $this->extensions = extension::list_installed();
     }
 
     /**
@@ -57,7 +59,24 @@ class events
                 debugger::console($trigger, $module.'/'.$event);
             }
 
-            $messages[$trigger['extension']] = call_user_func($trigger['function'], $parameter);
+            $event_out = call_user_func($trigger['function'], $parameter);
+            if(!empty($event_out))
+            {
+                $extension_info = array('title' => '?');
+                foreach($this->extensions as $extension)
+                {
+                    if($extension['code'] == $trigger['extension'])
+                    {
+                        $extension_info = $extension;
+                        break;
+                    }
+                }
+
+                $messages[$trigger['extension']] = array(
+                    'out' => $event_out,
+                    'title' => @$extension_info['title']
+                );
+            }
         }
 
         return $messages;

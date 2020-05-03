@@ -308,33 +308,45 @@ function nvweb_comments($vars=array())
 
                 foreach($extensions_messages as $ext_name => $ext_result)
                 {
-                    if(isset($ext_result['error']))
+                    if(isset($ext_result['out']['error']))
                     {
-                        $response = $ext_result['error'];
+                        $response = $ext_result['out']['error'];
                         if($vars['notify']=='inline' || $callback_error=='inline')
+                        {
                             $out = '<div class="comment-error">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        }
                         return $out;
                     }
                 }
 
                 $comment->insert();
                 if(!empty($properties))
+                {
                     property::save_properties_from_array('comment', $comment->id, $object->template, $properties);
+                }
 
                 // reload the object to retrieve the new comments
                 if($comment->object_type == "product")
+                {
                     $object = new product();
+                }
                 else
+                {
                     $object = new item();
+                }
 
                 $object->load($comment->object_id);
 
                 if( in_array($current['type'], array('item', 'product')) &&
                     (!isset($vars['object']) && !isset($vars['element']))
                 )
+                {
                     $current['object'] = $object;
+                }
 
                 // trigger the "new_comment" event through the extensions system
                 $events->trigger(
@@ -352,24 +364,34 @@ function nvweb_comments($vars=array())
                     {
                         $response = $webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'];
                         if($vars['notify']=='inline' || $callback_error=='inline')
+                        {
                             $out = '<div class="comment-success">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback.'("'.$response.'");');
+                        }
                     }
                     else
                     {
                         $response = $webgets[$webget]['translations']['your_comment_has_been_received_and_will_be_published_shortly'];
                         if($vars['notify']=='inline' || $callback_error=='inline')
+                        {
                             $out = '<div class="comment-success">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback.'("'.$response.'");');
+                        }
                     }
                 }
 
                 $notify_addresses = $website->contact_emails;
 
                 if(!empty($object->comments_moderator))
+                {
                     $notify_addresses[] = user::email_of($object->comments_moderator);
+                }
 
                 $hash = sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails) );
 
@@ -477,7 +499,7 @@ function nvweb_comments($vars=array())
                     $extra_fields = array_map(
                         function($v)
                         {
-                            return $v;
+                            return $v['out'];
                         },
                         array_values($extensions_messages)
                     );
@@ -488,7 +510,6 @@ function nvweb_comments($vars=array())
                         $out
                     );
                 }
-
 			}
 			else if($object->comments_enabled_to > 0 && !empty($webuser->id))
 			{
@@ -528,7 +549,7 @@ function nvweb_comments($vars=array())
                     $extra_fields = array_map(
                         function($v)
                         {
-                            return $v;
+                            return $v['out'];
                         },
                         array_values($extensions_messages)
                     );

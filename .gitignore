@@ -1,4 +1,3 @@
-syntax: glob
 cache/scripts.*.min.jgz
 cache/styles.*.min.css
 cache/1/*
@@ -23,6 +22,4 @@ themes/theme_kit.zip
 plugins/twitter_timeline
 plugins/webuser_login_box
 cache/*
-
-syntax: glob
 plugins

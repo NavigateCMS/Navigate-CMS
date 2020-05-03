@@ -191,11 +191,11 @@ function nvweb_contact($vars=array())
                 if(!empty($event_messages))
                 {
                     $out = array();
-                    foreach($event_messages as $module => $result)
+                    foreach($event_messages as $module => $result['out'])
                     {
-                        if(isset($result['error']) && !empty($result['error']))
+                        if(isset($result['out']['error']) && !empty($result['out']['error']))
                         {
-                            $out[] = $result['error'];
+                            $out[] = $result['out']['error'];
                         }
                     }
 
