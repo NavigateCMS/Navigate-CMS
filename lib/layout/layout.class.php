@@ -985,7 +985,9 @@ class layout
         global $current_version;
 
 		if(in_array('media_browser', $this->parts_added))
-			return;
+        {
+            return;
+        }
 
 		array_push($this->parts_added, 'media_browser');
 
@@ -1018,7 +1020,9 @@ class layout
 		                </div>';
 
 		if($user->permission("files.upload")=="true")
+        {
             $html[] = ' 	<div id="navigate_media_browser_upload_button" class="uibutton"><img src="img/icons/silk/page_white_get.png" width="16" height="16" /></div>';
+        }
 
 		// resource type selector
 		$html[] = ' 	<div id="navigate_media_browser_buttons" >';
@@ -1068,7 +1072,9 @@ class layout
 			)
 		);
 		if(!empty($extra_contextmenu_actions))
-			array_unshift($extra_contextmenu_actions, '<hr />');
+        {
+            array_unshift($extra_contextmenu_actions, '<hr />');
+        }
 
         $this->add_content('
             <ul id="contextmenu-files" style="display: none" class="ui-corner-all">
@@ -1237,11 +1243,11 @@ class layout
         $description_dialog[] = '<div class="navigate-form-row">';
         $description_dialog[] = '<label>'.t(63, 'Languages').'</label>';
         $description_dialog[] = $naviforms->buttonset(
-                'files_texts_language_selector',
-                $website_languages_selector,
-                '',
-                "navigate_tabform_language_selector(this);"
-            );
+            'files_texts_language_selector',
+            $website_languages_selector,
+            '',
+            "navigate_tabform_language_selector(this);"
+        );
         $description_dialog[] = '</div>';
 
         foreach($website->languages_list as $lang)

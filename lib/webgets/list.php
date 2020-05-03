@@ -2224,10 +2224,17 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 				case 'date':
                 case 'date_post':
-					if(!empty($tag['attributes']['format'])) // custom date format
-						$out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
-					else
-						$out = date($website->date_format, $item->date_to_display);
+                    if(!empty($item->date_to_display))
+                    {
+                        if(!empty($tag['attributes']['format'])) // custom date format
+                        {
+                            $out = nvweb_content_date_format($tag['attributes']['format'], $item->date_to_display);
+                        }
+                        else
+                        {
+                            $out = date($website->date_format, $item->date_to_display);
+                        }
+                    }
 					break;
 
 				case 'content':
