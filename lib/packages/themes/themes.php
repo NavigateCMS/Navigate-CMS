@@ -99,7 +99,7 @@ function run()
                 $error = false;
                 parse_str(parse_url($url, PHP_URL_QUERY), $query);
 
-                $tmp_file = sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip';
+                $tmp_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $query['code'] . '.zip';
                 @core_file_curl($url, $tmp_file);
                 if(@filesize($tmp_file) == 0)
                 {
@@ -107,7 +107,9 @@ function run()
                     // core file curl failed, try using file_get_contents...
                     $tmp = @file_get_contents($url);
                     if(!empty($tmp))
+                    {
                         @file_put_contents($tmp_file, $tmp);
+                    }
                     unset($tmp);
                 }
 

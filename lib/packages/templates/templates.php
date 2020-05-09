@@ -277,9 +277,13 @@ function templates_form($item)
 	$naviforms = new naviforms();
 	
 	if(empty($item->id))
-		$navibars->title(t(20, 'Templates').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(20, 'Templates').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(20, 'Templates').' / '.t(170, 'Edit').' ['.$item->id.']');		
+    {
+        $navibars->title(t(20, 'Templates').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
     $readonly = false;
     if(!empty($item->id) && !is_numeric($item->id))
@@ -289,15 +293,20 @@ function templates_form($item)
     }
 	else if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+            )
+        );
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+                '<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -327,9 +336,13 @@ function templates_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=templates&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=templates&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        (!empty($item->id)? '<a href="?fid=templates&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+            '<a href="?fid=templates&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 
 	$navibars->form();
 
@@ -338,18 +351,28 @@ function templates_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-											$naviforms->textfield('title', $item->title),
-										));		
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(67, 'Title').'</label>',
+			$naviforms->textfield('title', $item->title),
+        )
+    );
 
     if($readonly)
     {
-        $navibars->add_tab_content_row(array(	'<label>'.t(82, 'File').'</label>',
-                                                        '<span>'.$item->file.'</span>'
-                                                    ));
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(82, 'File').'</label>',
+                '<span>'.$item->file.'</span>'
+            )
+        );
     }
     else
     {
@@ -445,38 +468,47 @@ function templates_form($item)
 		}
 	');
 																				
-	$navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
-											$naviforms->selectfield('permission', 
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-													),
-												array(
-														0 => t(69, 'Published'),
-														1 => t(70, 'Private'),
-														2 => t(81, 'Hidden')
-													),
-												$item->permission,
-												'',
-												false,
-												array(
-														0 => t(360, 'Visible to everybody'),
-														1 => t(359, 'Visible only to Navigate CMS users'),
-														2 => t(358, 'Hidden to everybody')												
-												)
-											)
-										)
-									);						
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(68, 'Status').'</label>',
+			$naviforms->selectfield(
+			    'permission',
+                array(
+                        0 => 0,
+                        1 => 1,
+                        2 => 2
+                ),
+                array(
+                        0 => t(69, 'Published'),
+                        1 => t(70, 'Private'),
+                        2 => t(81, 'Hidden')
+                ),
+                $item->permission,
+                '',
+                false,
+                array(
+                        0 => t(360, 'Visible to everybody'),
+                        1 => t(359, 'Visible only to Navigate CMS users'),
+                        2 => t(358, 'Hidden to everybody')
+                )
+            )
+        )
+    );
 									
-	$navibars->add_tab_content_row(array(	'<label>'.t(62, 'Statistics').'</label>',
-											$naviforms->checkbox('statistics', $item->statistics),
-										));																									
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(62, 'Statistics').'</label>',
+			$naviforms->checkbox('statistics', $item->statistics),
+        )
+    );
 													
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(65, 'Enabled').'</label>',
-											$naviforms->checkbox('enabled', $item->enabled),
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(65, 'Enabled').'</label>',
+			$naviforms->checkbox('enabled', $item->enabled),
+        )
+    );
 
 	if(!empty($item->id))
 	{											
@@ -507,31 +539,46 @@ function templates_form($item)
 			$select_editor.= '	<option value="raw" '.$selected['raw'].'>'.t(268, 'Raw').'</option>';			
 			$select_editor.= '</select>';
 			
-			$table->addRow($p, array(
-					array('content' => '<input type="text" name="template-sections-code[]" value="'.$item->sections[$p]['code'].'" style="width: 140px;" />', 'align' => 'left'),			
-					array('content' => '<input type="text" name="template-sections-name[]" value="'.template::section_name($item->sections[$p]['name']).'" style="width: 290px;" />', 'align' => 'left'),
-					array('content' => $select_editor, 'align' => 'left'),
-					array('content' => '<div style=" white-space: nowrap; "><input type="text" name="template-sections-width[]" value="'.template::section_name($item->sections[$p]['width']).'" style="width: 40px;" /> px</div>', 'align' => 'left'),
-					array('content' => ((!empty($disabled) || $readonly)? '' : '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_templates_sections_remove(this);" />'), 'align' => 'center')
-				));			
+			$table->addRow(
+                $p,
+                array(
+                    array('content' => '<input type="text" name="template-sections-code[]" value="'.$item->sections[$p]['code'].'" style="width: 140px;" />', 'align' => 'left'),
+                    array('content' => '<input type="text" name="template-sections-name[]" value="'.template::section_name($item->sections[$p]['name']).'" style="width: 290px;" />', 'align' => 'left'),
+                    array('content' => $select_editor, 'align' => 'left'),
+                    array('content' => '<div style=" white-space: nowrap; "><input type="text" name="template-sections-width[]" value="'.template::section_name($item->sections[$p]['width']).'" style="width: 40px;" /> px</div>', 'align' => 'left'),
+                    array('content' => ((!empty($disabled) || $readonly)? '' : '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_templates_sections_remove(this);" />'), 'align' => 'center')
+                )
+            );
 		}
 
         if($readonly)
         {
-            $navibars->add_tab_content_row(array(	'<label>'.t(236, 'Sections').'</label>',
-                                                    '<div>'.$table->generate().'</div>'));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(236, 'Sections').'</label>',
+                    '<div>'.$table->generate().'</div>'
+                )
+            );
         }
         else
         {
-            $navibars->add_tab_content_row(array(	'<label>'.t(236, 'Sections').'</label>',
-                                                    '<div>'.$table->generate().'</div>',
-                                                    '<div class="subcomment">
-                                                        <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'.
-                                                         '.t(192, 'Double click any row to edit').'
-                                                    </div>' ));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(236, 'Sections').'</label>',
+                    '<div>'.$table->generate().'</div>',
+                    '<div class="subcomment">
+                        <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'.
+                         '.t(192, 'Double click any row to edit').'
+                    </div>'
+                )
+            );
 
-            $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                                    '<button id="templates-sections-create"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(38, 'Create').'</button>'));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>&nbsp;</label>',
+                    '<button id="templates-sections-create"><img src="img/icons/silk/add.png" align="absmiddle" style="cursor:pointer;" /> '.t(38, 'Create').'</button>'
+                )
+            );
 		
         }
 
@@ -546,7 +593,8 @@ function templates_form($item)
 					<label>'.t(237, 'Code').'</label>
 					'.$naviforms->textfield('section-code', '').'					
 				</div>			
-			</form>');
+			</form>'
+        );
 			
 		
 		$section_widths = templates_section_widths();
@@ -594,17 +642,26 @@ function templates_form($item)
 			});
 		');
 		
-		$navibars->add_tab_content_row(array(	'<label>'.t(210, 'Gallery').'</label>',
-												$naviforms->checkbox('gallery', $item->gallery),
-											));	
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(210, 'Gallery').'</label>',
+				$naviforms->checkbox('gallery', $item->gallery),
+            )
+        );
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(250, 'Comments').'</label>',
-												$naviforms->checkbox('comments', $item->comments),
-											));	
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(250, 'Comments').'</label>',
+				$naviforms->checkbox('comments', $item->comments),
+            )
+        );
 											
-		$navibars->add_tab_content_row(array(	'<label>'.t(265, 'Tags').'</label>',
-												$naviforms->checkbox('tags', $item->tags),
-											));												
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(265, 'Tags').'</label>',
+				$naviforms->checkbox('tags', $item->tags),
+            )
+        );
 
 
 		$navibars->add_tab(t(77, "Properties"));
@@ -624,36 +681,53 @@ function templates_form($item)
         $properties = property::elements($item->id);
 		$types		= property::types();
 
-        $element_types = array(	'item'	=> 	t(180, 'Item'),
-								'structure' => t(16, 'Structure')/*,
-								'product' => t(214, 'Product')*/);
+        $element_types = array(
+            'item'	=> 	t(180, 'Item'),
+			'structure' => t(16, 'Structure'),
+			'product' => t(214, 'Product')
+        );
 		
 		for($p=0; $p < count($properties); $p++)
 		{
-			$table->addRow($properties[$p]->id, array(
-					array('content' => $properties[$p]->name, 'align' => 'left'),
-					array('content' => $types[$properties[$p]->type], 'align' => 'left'),
-					array('content' => $element_types[$properties[$p]->element], 'align' => 'left'),					
-					array('content' => '<input type="checkbox" name="property-enabled[]" class="raw-checkbox" value="'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),
-				));
+			$table->addRow(
+                $properties[$p]->id,
+                array(
+                    array('content' => $properties[$p]->name, 'align' => 'left'),
+                    array('content' => $types[$properties[$p]->type], 'align' => 'left'),
+                    array('content' => $element_types[$properties[$p]->element], 'align' => 'left'),
+                    array('content' => '<input type="checkbox" name="property-enabled[]" class="raw-checkbox" value="'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),
+                )
+            );
 		}
 
         if($readonly)
         {
-            $navibars->add_tab_content_row(array(	'<label>'.t(77, 'Properties').'</label>',
-                                                    '<div>'.$table->generate().'</div>'));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(77, 'Properties').'</label>',
+                    '<div>'.$table->generate().'</div>'
+                )
+            );
         }
         else
         {
-            $navibars->add_tab_content_row(array(	'<label>'.t(77, 'Properties').'</label>',
-                                                    '<div>'.$table->generate().'</div>',
-                                                    '<div class="subcomment">
-                                                        <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'.
-                                                         '.t(192, 'Double click any row to edit').'
-                                                    </div>' ));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(77, 'Properties').'</label>',
+                    '<div>'.$table->generate().'</div>',
+                    '<div class="subcomment">
+                        <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'.
+                         '.t(192, 'Double click any row to edit').'
+                    </div>'
+                )
+            );
 
-            $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                                    '<button id="templates-properties-create"><img src="img/icons/silk/add.png" align="absmiddle" /> '.t(38, 'Create').'</button>'));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>&nbsp;</label>',
+                    '<button id="templates-properties-create"><img src="img/icons/silk/add.png" align="absmiddle" /> '.t(38, 'Create').'</button>'
+                )
+            );
         }
 	
 		$navibars->add_content('
@@ -956,10 +1030,13 @@ function templates_section_widths()
 	global $DB;
 	global $website;
 	
-	$DB->query('SELECT sections
-				  FROM nv_templates
-				 WHERE website = '.intval($website->id),
-				'array');
+	$DB->query(
+	    'SELECT sections
+              FROM nv_templates
+             WHERE website = '.intval($website->id),
+
+        'array'
+    );
 				
 	$result = $DB->result();
 	
@@ -967,7 +1044,10 @@ function templates_section_widths()
 	foreach($result as $sections)
 	{
 		$sections = mb_unserialize($sections['sections']);
-		if(!is_array($sections)) $sections = array();
+		if(!is_array($sections))
+        {
+            $sections = array();
+        }
 		foreach($sections as $section)
 		{
 			if(!empty($section['width']) && !in_array($section['width'], $widths))

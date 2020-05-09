@@ -48,7 +48,7 @@ class template
 		$this->id			= $main->id;
 		$this->website		= $main->website;		
 		$this->title  		= $main->title;
-		$this->file			= $main->file;
+		$this->file			= str_replace(array('../', '..\\'), '', $main->file);
 		$this->sections		= mb_unserialize($main->sections);
 		$this->gallery		= $main->gallery;
 		$this->comments		= $main->comments;		
@@ -74,10 +74,15 @@ class template
 		for($t=0; $t < count($ws_theme->templates); $t++)
 		{
 			if($ws_theme->templates[$t]->type == $id)
-				$template = $ws_theme->templates[$t];
+            {
+                $template = $ws_theme->templates[$t];
+            }
 		}
 
-		if(!$template) return;
+		if(!$template)
+        {
+            return;
+        }
 
         $defaults = array(
             'sections' => array(
@@ -96,6 +101,9 @@ class template
             'enabled' => 1,
             'properties' => array()
         );
+
+        // filter file path
+        $template->file = str_replace(array('../', '..\\'), '', $template->file);
 
 		$this->id			= $template->type;
 		$this->website		= $website->id;
@@ -117,7 +125,9 @@ class template
             {
                 $poptions = array();
                 foreach($this->properties[$p]->options as $key => $value)
+                {
                     $poptions[$key] = $ws_theme->t($value);
+                }
 
                 $this->properties[$p]->options = $poptions;
             }
@@ -127,7 +137,7 @@ class template
 	public function load_from_post()
 	{
 		$this->title  		= $_REQUEST['title'];
-		$this->file			= $_REQUEST['file'];
+		$this->file			= str_replace(array('../', '..\\'), '', $_REQUEST['file']);
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);	
 		
@@ -135,7 +145,10 @@ class template
 		$this->sections		= array();
 		for($s = 0; $s < count($_REQUEST['template-sections-code']); $s++)
 		{
-			if(empty($_REQUEST['template-sections-code'][$s])) continue;
+			if(empty($_REQUEST['template-sections-code'][$s]))
+            {
+                continue;
+            }
 			$this->sections[] = array(
 			    'code' => $_REQUEST['template-sections-code'][$s],
 				'name' => $_REQUEST['template-sections-name'][$s],
@@ -165,9 +178,13 @@ class template
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
