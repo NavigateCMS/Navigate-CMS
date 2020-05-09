@@ -66,7 +66,9 @@ function run()
                     $rs = $DB->result();
 
                     for($r=0; $r < count($rs); $r++)
+                    {
                         $rs[$r]->date = core_ts2date($rs[$r]->date);
+                    }
 
                     echo json_encode($rs);
                     break;
@@ -101,14 +103,25 @@ function run()
 
 						default:
 					}
-								
+
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'dates', 'title', 'category', 'date_modified', 'permission', 'comments'))
+                    )
+                    {
+                        return false;
+                    }
+
 					if($_REQUEST['sidx']=='dates')
-						$_REQUEST['sidx'] = 'p.date_published';
+                    {
+                        $_REQUEST['sidx'] = 'p.date_published';
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+
 				
 					$page       =   intval($_REQUEST['page']);
 					$max	    =   intval($_REQUEST['rows']);
 					$offset     =   ($page - 1) * $max;
-					$orderby    =   $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where      =   ' p.website = :wid';
 
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
@@ -120,9 +133,13 @@ function run()
                         else if(isset($_REQUEST['filters']))
 						{
                             if(is_array($_REQUEST['filters']))
+                            {
                                 $filters = json_decode(json_encode($_REQUEST['filters']), FALSE);
+                            }
                             else
-							    $filters = json_decode($_REQUEST['filters']);
+                            {
+                                $filters = json_decode($_REQUEST['filters']);
+                            }
 
 							for($r=0; $r < count($filters->rules); $r++)
 							{
@@ -153,7 +170,9 @@ function run()
 							$where .= navitable::jqgridsearch(json_encode($filters));
 						}
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
 
                     $query_params = array(
@@ -217,30 +236,49 @@ function run()
 					$out = array();								
 					for($i=0; $i < count($dataset); $i++)
 					{
-						if(empty($dataset[$i])) continue;
+						if(empty($dataset[$i]))
+                        {
+                            continue;
+                        }
 						
 						if(empty($dataset[$i]['date_published'])) 
-							$dataset[$i]['date_published'] = '&infin;';
+                        {
+                            $dataset[$i]['date_published'] = '&infin;';
+                        }
 						else
-							$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                        {
+                            $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                        }
 							
 						if(empty($dataset[$i]['date_unpublish'])) 
-							$dataset[$i]['date_unpublish'] = '&infin;';	
+                        {
+                            $dataset[$i]['date_unpublish'] = '&infin;';
+                        }
 						else
-							$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+                        {
+                            $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+                        }
 
                         if(empty($dataset[$i]['date_to_display']))
+                        {
                             $dataset[$i]['date_to_display'] = '';
+                        }
                         else
+                        {
                             $dataset[$i]['date_to_display'] = core_ts2date($dataset[$i]['date_to_display'], false);
+                        }
 						
 						if($dataset[$i]['category'] > 0)
                         {
                             $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
                             if(is_array($category_path))
+                            {
                                 $dataset[$i]['category_path'] = implode(' › ', $category_path);
+                            }
                             else
+                            {
                                 $dataset[$i]['category_path'] = $category_path;
+                            }
                         }
 
                         $item_image = '<img src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" />';
@@ -250,18 +288,26 @@ function run()
                             $item_image = array_keys($item_galleries[0]);
                             $item_image = $item_image[0];
                             if(is_numeric($item_image))
+                            {
                                 $item_image = '<img class="products_list_image_lazyload" src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" data-src="'.file::file_url($item_image, 'inline').'&width=64&height=48&border=true" />';
+                            }
                             else
+                            {
                                 $item_image = '<img src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" />';
+                            }
                         }
 
 						$item_views = $dataset[$i]['views'];
 						if($item_views > 1000)
-							$item_views = round($item_views/1000) . "K";
+                        {
+                            $item_views = round($item_views/1000) . "K";
+                        }
 
 						$item_comments = $dataset[$i]['comments'];
 						if($item_comments > 1000)
-							$item_comments = round($item_comments/1000) . "K";
+                        {
+                            $item_comments = round($item_comments/1000) . "K";
+                        }
 
                         //$social_rating = '<img src="img/icons/silk/star.png" align="absmiddle" width="12px" height="12px" /> '.
                         //    '<span style="font-size: 90%;">'.$dataset[$i]['score'].' ('.$dataset[$i]['votes'].')</span>';
@@ -352,7 +398,9 @@ function run()
 					property::save_properties_from_post('product', $item->id);
 
                     if(!empty($_REQUEST['products-order']))
+                    {
                         item::reorder($_REQUEST['products-order']);
+                    }
 
 					$layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					$item->load($item->id);
@@ -364,7 +412,9 @@ function run()
 				}
 			}
 			else
-				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            {
+                users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            }
 		
 			$out = products_form($item);
 			break;
@@ -392,16 +442,22 @@ function run()
 					{
 						$layout->navigate_notification(t(56, 'Unexpected error.'), false);
 						if(!empty($item->id))
-							$out = products_form($item);
+                        {
+                            $out = products_form($item);
+                        }
 						else
-							$out = products_list();
+                        {
+                            $out = products_list();
+                        }
 					}
 				}
 				catch(Exception $e)
 				{
 					$layout->navigate_notification($e->getMessage(), true);
 					if(!empty($item->id))
-						$out = products_form($item);
+                    {
+                        $out = products_form($item);
+                    }
 				}
 			}
 			break;
@@ -464,9 +520,13 @@ function run()
             }
 
             if($ok)
-				echo 'true';
+            {
+                echo 'true';
+            }
 			else
-				echo 'false';
+            {
+                echo 'false';
+            }
 
 			core_terminate();
 			break;
@@ -492,12 +552,18 @@ function run()
 			
 			$result = $DB->result();
 			
-			if(!is_array($result)) $result = array();
+			if(!is_array($result))
+            {
+                $result = array();
+            }
+
 			for($i=0; $i < count($result); $i++)
 			{
 				$result[$i]['date'] = core_ts2date($result[$i]['date_created'], true);
 				if($result[$i]['autosave']==1)
-					$result[$i]['date'] .= ' ('.t(273, 'Autosave').')';
+                {
+                    $result[$i]['date'] .= ' ('.t(273, 'Autosave').')';
+                }
 			}
 			
 			echo json_encode($result);
@@ -533,7 +599,9 @@ function run()
 		case "raw_zone_content": // return raw item contents
 
 			if(empty($_REQUEST['section']))
-				$_REQUEST['section'] = 'main';
+            {
+                $_REQUEST['section'] = 'main';
+            }
 		
 			if($_REQUEST['history']=='true')
 			{
@@ -609,10 +677,15 @@ function run()
             {
 	            $title = $template->sections[$ts]['name'];
 				if(!empty($theme))
-					$title = $theme->t($title);
+                {
+                    $title = $theme->t($title);
+                }
 
 	            if($title == '#main#')
-		            $title = t(238, 'Main content');
+                {
+                    $title = t(238, 'Main content');
+                }
+
 	            $zones[] = array(
 		            'type' => 'section',
 		            'id' => $template->sections[$ts]['id'],
@@ -624,15 +697,21 @@ function run()
 			{
 				// ignore structure properties
 				if(isset($template->properties[$ps]->element) && $template->properties[$ps]->element != 'item')
-					continue;
+                {
+                    continue;
+                }
 
 				// ignore non-textual properties
 				if(!in_array($template->properties[$ps]->type, array("text", "textarea", "rich_textarea")))
-					continue;
+                {
+                    continue;
+                }
 
 				$title = $template->properties[$ps]->name;
 				if(!empty($theme))
-					$title = $theme->t($title);
+                {
+                    $title = $theme->t($title);
+                }
 
 				$zones[] = array(
 		            'type' => 'property',
@@ -715,7 +794,9 @@ function run()
             {
                 $out = array();
                 foreach($rows as $row)
+                {
                     $out[] = array("id" => $row->id, "label" => $row->text, "value" => $row->text);
+                }
                 echo json_encode($out);
             }
 
@@ -746,7 +827,10 @@ function run()
             }
 
             $limit = intval($_REQUEST['page_limit']);
-            if(empty($limit)) $limit = null;
+            if(empty($limit))
+            {
+                $limit = null;
+            }
             $limit = value_or_default($limit, 1000);
 
             $sql = '
@@ -797,7 +881,10 @@ function run()
             $text = $_REQUEST['term'];
 
             $limit = intval($_REQUEST['page_limit']);
-            if(empty($limit)) $limit = null;
+            if(empty($limit))
+            {
+                $limit = null;
+            }
             $limit = value_or_default($limit, 20);
 
             $sql = '
@@ -829,7 +916,9 @@ function run()
             {
                 $out = array();
                 foreach($rows as $row)
+                {
                     $out[] = array("id" => $row['id'], "label" => $row['name'], "value" => $row['name']);
+                }
 
                 echo json_encode($out);
             }
@@ -880,8 +969,14 @@ function run()
 			}
 		
 			$error = $DB->get_last_error();
-			if(empty($error)) echo 'true';
-			else			  echo 'false';
+			if(empty($error))
+            {
+                echo 'true';
+            }
+			else
+            {
+                echo 'false';
+            }
 							  
 			core_terminate();
 			break;
@@ -904,9 +999,13 @@ function run()
 				
 				$changed = webdictionary_history::save_element_strings('product', intval($_REQUEST['id']), $iDictionary, true);
                 if($changed)
+                {
                     echo 'changes_saved';
+                }
                 else
+                {
                     echo 'no_changes';
+                }
 
 				core_terminate();
 			}
@@ -948,12 +1047,17 @@ function run()
 			$offset = ($page - 1) * $max;	
 		
 			if($_REQUEST['_search']=='false')
-				list($dataset, $total) = webuser_vote::object_votes_by_webuser('product', intval($_REQUEST['id']), $_REQUEST['sidx'].' '.$_REQUEST['sord'], $offset, $max);
+            {
+                list($dataset, $total) = webuser_vote::object_votes_by_webuser('product', intval($_REQUEST['id']), $_REQUEST['sidx'].' '.$_REQUEST['sord'], $offset, $max);
+            }
 		
 			$out = array();								
 			for($i=0; $i < count($dataset); $i++)
 			{
-				if(empty($dataset[$i])) continue;
+				if(empty($dataset[$i]))
+                {
+                    continue;
+                }
 														
 				$out[$i] = array(
 					0	=> $dataset[$i]['id'],
@@ -976,10 +1080,14 @@ function run()
                     echo $response['error'];
                 }
                 else
+                {
                     echo 'true';
+                }
             }
             else    // show ordered list
+            {
                 echo products_order($_REQUEST['category']);
+            }
 
             core_terminate();
             break;
@@ -989,7 +1097,9 @@ function run()
 
 			$tags_json = array();
 			foreach(array_keys($tags) as $tag)
-				$tags_json[] = json_decode('{ "id": "'.$tag.'", "label": "'.$tag.'", "value": "'.$tag.'" }');
+            {
+                $tags_json[] = json_decode('{ "id": "'.$tag.'", "label": "'.$tag.'", "value": "'.$tag.'" }');
+            }
 			echo json_encode($tags_json);
 
 			core_terminate();
@@ -1045,7 +1155,9 @@ function products_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=products&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=products&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid=products&act=json');
 	$navitable->sortBy('date_modified', 'DESC');
@@ -1053,7 +1165,9 @@ function products_list()
 	$navitable->setEditUrl('id', '?fid=products&act=edit&id=');
 	$navitable->enableSearch();
 	if($user->permission("products.delete") == 'true')
-		$navitable->enableDelete();
+    {
+        $navitable->enableDelete();
+    }
 	$navitable->setGridNotesObjectName("product");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");
@@ -1193,9 +1307,13 @@ function products_form($item)
     $extra_actions = array();
 
 	if(empty($item->id))
-		$navibars->title(t(25, 'Products').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(25, 'Products').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(25, 'Products').' / '.t(170, 'Edit').' ['.$item->id.']');
+    {
+        $navibars->title(t(25, 'Products').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	$navibars->add_actions(
 		array(
@@ -1233,7 +1351,9 @@ function products_form($item)
 
         $extra_actions[] = '<a href="#" onclick="navigate_products_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>';
 		if($user->permission("products.create") != 'false')
+        {
             $extra_actions[] = '<a href="?fid=products&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+        }
 
         $layout->add_script('
             function navigate_delete_dialog()
@@ -1273,7 +1393,9 @@ function products_form($item)
     }
 
     if(!empty($item->id))
+    {
         $layout->navigate_notes_dialog('product', $item->id);
+    }
 	
 	$navibars->add_actions(
         array(
@@ -1315,7 +1437,9 @@ function products_form($item)
     );
 
     if(empty($item->id))
+    {
         $item->date_to_display = core_time();
+    }
 
 	$navibars->add_tab_content_row(
         array(
@@ -1383,9 +1507,13 @@ function products_form($item)
         function navigate_webuser_groups_visibility(access_value)
         {
             if(access_value==3)
+            {
                 $("#webuser-groups-field").show();
+            }
             else
+            {
                 $("#webuser-groups-field").hide();
+            }
         }
 
         navigate_webuser_groups_visibility('.$item->access.');
@@ -1400,7 +1528,9 @@ function products_form($item)
 	if($user->permission("products.publish") == 'false')
 	{
 		if(!isset($item->permission))
-			$item->permission = 1;
+        {
+            $item->permission = 1;
+        }
 
 		$navibars->add_tab_content_row(
 	        array(
@@ -1436,13 +1566,17 @@ function products_form($item)
 	}
 
 	if(empty($item->id))
+    {
         $item->author = $user->id;
+    }
 	$author_webuser = $DB->query_single('username', 'nv_users', ' id = '.$item->author);	
 	$navibars->add_tab_content($naviforms->hidden('product-author', $item->author));
-	$navibars->add_tab_content_row(array(
-        '<label>'.t(266, 'Author').'</label>',
-		$naviforms->textfield('product-author-text', $author_webuser)
-    ));
+	$navibars->add_tab_content_row(
+	    array(
+            '<label>'.t(266, 'Author').'</label>',
+		    $naviforms->textfield('product-author-text', $author_webuser)
+        )
+    );
 
 	if($item->date_modified > 0)
 	{																		
@@ -1482,7 +1616,9 @@ function products_form($item)
 	$categories_list = structure::hierarchyList($hierarchy, $item->category);
 
     if(empty($categories_list))
+    {
         $categories_list = '<ul><li value="0">'.t(428, '(no category)').'</li></ul>';
+    }
 
 	$navibars->add_tab_content_row(
         array(
@@ -1605,7 +1741,9 @@ function products_form($item)
 
 			$open_live_site = '';												
 			if(!empty($item->paths[$lang]))
-				$open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
+            {
+                $open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
+            }
 												
 			$navibars->add_tab_content_row(
                 array(
@@ -1617,24 +1755,32 @@ function products_form($item)
             );
 
 			if(!isset($template->sections))
-				$template->sections[] = array(
+            {
+                $template->sections[] = array(
                     'id' => 'main',
                     'name' => '#main#',
                     'editor' => 'tinymce',
                     'width' => '960px'
                 );
+            }
 			
 			if(!is_array($template->sections))
-				$template->sections = array();
+            {
+                $template->sections = array();
+            }
 
 			foreach($template->sections as $section)
 			{								
 				if(is_object($section))
-					$section = (array)$section;
+                {
+                    $section = (array)$section;
+                }
 
                 // ignore empty sections
                 if(empty($section))
+                {
                     continue;
+                }
 
 				if($section['editor']=='tinymce')
                 {
@@ -1646,7 +1792,10 @@ function products_form($item)
 
                         foreach($translate_extensions as $te)
                         {
-                            if($te['enabled']=='0') continue;
+                            if($te['enabled']=='0')
+                            {
+                                continue;
+                            }
                             $translate_extensions_titles[] = $te['title'];
                             $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'section-'.$section['id'].'-'.$lang.'\', \''.$lang.'\');';
                         }
@@ -1714,7 +1863,10 @@ function products_form($item)
 
                         foreach($translate_extensions as $te)
                         {
-                            if($te['enabled']=='0') continue;
+                            if($te['enabled']=='0')
+                            {
+                                continue;
+                            }
                             $translate_extensions_titles[] = $te['title'];
                             $translate_extensions_actions[] = 'javascript: navigate_textarea_translate_'.$te['code'].'(\'section-'.$section['id'].'-'.$lang.'\', \''.$lang.'\');';
                         }
@@ -1815,9 +1967,13 @@ function products_form($item)
                     {
                         var tags = $(this).tagit("assignedTags");
                         if(tags.length > 0)
+                        {
                             tags = tags.join(",");
+                        }
                         else
+                        {
                             tags = "";
+                        }
                             
                         $("#tags-'.$lang.'")
                             .val(tags)
@@ -1827,9 +1983,13 @@ function products_form($item)
                     {                    
                         var tags = $(this).tagit("assignedTags");
                         if(tags.length > 0)
+                        {
                             tags = tags.join(",");
+                        }
                         else
+                        {
                             tags = "";
+                        }
                             
                         $("#tags-'.$lang.'")
                             .val(tags)
@@ -1846,10 +2006,19 @@ function products_form($item)
                         $("#tags-'.$lang.'").next().find("span.tagit-label").each(function()
                         {
                             if($(this).text() != "")
+                            {
                                 tags.push($(this).text());
+                            }
                         });
-                        if(tags.length > 0) tags = tags.join(",");
-                        else                tags = "";
+                        
+                        if(tags.length > 0) 
+                        {
+                            tags = tags.join(",");
+                        }
+                        else                
+                        {
+                            tags = "";
+                        }
                                                     
                         $("#tags-'.$lang.'").val(tags);
                         $("#tags-'.$lang.'").trigger("change");                                                
@@ -1866,7 +2035,9 @@ function products_form($item)
 		if(is_array($theme->content_samples))
 		{
 			for($i=0; $i < count($theme->content_samples); $i++)
-				$theme->content_samples[$i]->title = $theme->t($theme->content_samples[$i]->title);
+            {
+                $theme->content_samples[$i]->title = $theme->t($theme->content_samples[$i]->title);
+            }
 		}
 
 		$layout->add_script('
@@ -1876,7 +2047,9 @@ function products_form($item)
 		$category = new structure();		
 		$category->paths = array();
 		if(!empty($item->category))
-			$category->load($item->category);
+        {
+            $category->load($item->category);
+        }
 			
 		$layout->add_script('
 			var product_category_path = '.json_encode($category->paths).';
@@ -1962,7 +2135,9 @@ function products_form($item)
 		// script will be bound to onload event at the end of this php function (after getScript is done)
 		$onload_language = $_REQUEST['tab_language'];
 		if(empty($onload_language))
-			$onload_language = $website->languages_list[0];
+        {
+            $onload_language = $website->languages_list[0];
+        }
 
 		$layout->add_script('
 			function navigate_products_onload()
@@ -2006,7 +2181,9 @@ function products_form($item)
             );
 
             if(!is_array($item->galleries[0])) 
-	            $item->galleries[0] = array();
+            {
+                $item->galleries[0] = array();
+            }
 			$gallery_elements_order = implode('#', array_keys($item->galleries[0]));
 			
 			$navibars->add_tab_content(
@@ -2048,7 +2225,10 @@ function products_form($item)
 			// now the image captions	
 			foreach($item->galleries[0] as $image_id => $image_dictionary)
 			{		
-				if(!is_array($image_dictionary)) $image_dictionary = array();	
+				if(!is_array($image_dictionary))
+                {
+                    $image_dictionary = array();
+                }
 				foreach($website->languages_list as $lang)
 				{
 					$gallery .= $naviforms->hidden('products-gallery-item-'.$image_id.'-dictionary-'.$lang, $image_dictionary[$lang]);
@@ -2121,7 +2301,9 @@ function products_form($item)
 		$properties_html = '';
 
 		if(!empty($item->template) && $item->template != '0')
-			$properties_html = navigate_property_layout_form('product', $item->template, 'product', $item->id);
+        {
+            $properties_html = navigate_property_layout_form('product', $item->template, 'product', $item->id);
+        }
 
 		if(!empty($properties_html))
 		{
@@ -2140,20 +2322,20 @@ function products_form($item)
 			
 			$navibars->add_tab_content_row(
 				array(
-						'<label>'.t(252, 'Comments enabled to').'</label>',
-						$naviforms->selectfield('item-comments_enabled_to',
-							array(
-                                0 => 0,
-                                1 => 1,
-                                2 => 2
-							),
-							array(
-                                0 => t(253, 'Nobody'),
-                                1 => t(24, 'Registered users'),
-                                2 => t(254, 'Everyone')
-							),
-							$item->comments_enabled_to
-						)
+                    '<label>'.t(252, 'Comments enabled to').'</label>',
+                    $naviforms->selectfield('item-comments_enabled_to',
+                        array(
+                            0 => 0,
+                            1 => 1,
+                            2 => 2
+                        ),
+                        array(
+                            0 => t(253, 'Nobody'),
+                            1 => t(24, 'Registered users'),
+                            2 => t(254, 'Everyone')
+                        ),
+                        $item->comments_enabled_to
+                    )
 				)
 			);
 
@@ -2197,10 +2379,22 @@ function products_form($item)
 
 			for($c=0; $c < $comments_total; $c++)
 			{				
-				if($comments[$c]->status==2)		$comment_status = 'hidden';
-				else if($comments[$c]->status==1)	$comment_status = 'private';
-				else if($comments[$c]->status==-1)	$comment_status = 'new';		
-				else								$comment_status = 'public';		
+				if($comments[$c]->status==2)
+                {
+                    $comment_status = 'hidden';
+                }
+				else if($comments[$c]->status==1)
+                {
+                    $comment_status = 'private';
+                }
+				else if($comments[$c]->status==-1)
+                {
+                    $comment_status = 'new';
+                }
+				else
+                {
+                    $comment_status = 'public';
+                }
 			
 				$navibars->add_tab_content_row(array(
 					'<span class="object-comment-label">'.
@@ -2631,7 +2825,9 @@ function products_labels_form()
         // retrieve ALL tags for the current language
         $labels = nvweb_tags_retrieve(PHP_INT_MAX, array(), 'top', '', $lang, array("product"));
         if(empty($labels))
+        {
             continue;
+        }
 
         $tags = array();
         $max = NULL;
@@ -2639,11 +2835,16 @@ function products_labels_form()
         {
             // we expect the tags to be ordered desc
             if(is_null($max))
+            {
                 $max = $count;
+            }
 
             // fontsize by count --> max: 200% min: 100%
             $font_size = 200 * $count / $max;
-            if($font_size < 100 || $max == 1) $font_size = 100;
+            if($font_size < 100 || $max == 1)
+            {
+                $font_size = 100;
+            }
 
             $tags[] = '<a class="uibutton" style="margin: 0 6px 8px 0; font-size: '.$font_size.'%;" data-tag="'.$label.'" data-lang="'.$lang.'">'.
                 $label.

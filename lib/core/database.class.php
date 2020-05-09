@@ -233,6 +233,16 @@ class database
 		$this->lastResult = '';	
 		$fetch = PDO::FETCH_ASSOC;
 
+		if(empty(trim($order)))
+        {
+            $order = 'RAND()';
+        }
+
+		if($offset < 0)
+        {
+            $offset = 0;
+        }
+
 		try
 		{
 			$sql = ' SELECT SQL_CALC_FOUND_ROWS '.$cols.'

@@ -30,18 +30,33 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = " 1=1 ";
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
+
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'category', 'codename', 'icon', 'lid', 'enabled'))
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+
 				
 					$DB->queryLimit('id,lid,category,codename,icon,enabled', 
 									'nv_functions', 
@@ -76,7 +91,8 @@ function run()
 			session_write_close();
 			exit;
 			break;
-		
+
+        case 'edit':
 		case 2: // edit/new form		
 			if(!empty($_REQUEST['id']))
 			{
@@ -133,17 +149,23 @@ function functions_list()
 	
 	$navibars->title(t(240, 'Functions'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
+	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
 	
 	$navitable->addCol("ID", 'id', "80", "true", "left");	
 	$navitable->addCol(t(78, 'Category'), 'category', "100", "true", "left");	

@@ -53,18 +53,33 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = " o.website = ".intval($website->id)." ";
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $object->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $object->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
+
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'reference', 'date_created', 'total', 'payment_done', 'status'))
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+
 
                     $sql = ' SELECT SQL_CALC_FOUND_ROWS
 					                o.id, o.reference, o.date_created, o.total, o.status, o.payment_done, o.currency,
@@ -83,7 +98,9 @@ function run()
 							 OFFSET '.$offset;
 
                     if(!$DB->query($sql, 'array'))
+                    {
                         throw new Exception($DB->get_last_error());
+                    }
 
                     $dataset = $DB->result();
                     $total = $DB->foundRows();
@@ -204,7 +221,9 @@ function orders_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=orders&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=orders&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid=orders&act=json');
 	$navitable->sortBy('id', 'desc');

@@ -34,19 +34,34 @@ function run()
 				default: // list or search	
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
-					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+					$offset = max(0, ($page - 1) * $max);
+
 					$where = ' website = '.$website->id;
-										
+
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
+
+					// filter orderby vars
+					if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'object_type', 'object_id', 'date_created', 'user', 'message', 'status'))
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
 					$DB->queryLimit(
                         'id,object_type,object_id,user,email,date_created,status,message',
@@ -70,7 +85,7 @@ function run()
                     );
 					
 					$permissions = array(	
-							-1=> '<img src="img/icons/silk/new.png" align="absmiddle" /> '.t(257, 'To review'),	
+						   -1 => '<img src="img/icons/silk/new.png" align="absmiddle" /> '.t(257, 'To review'),
 							0 => '<img src="img/icons/silk/world.png" align="absmiddle" /> '.t(64, 'Published'),
 							1 => '<img src="img/icons/silk/world_dawn.png" align="absmiddle" /> '.t(251, 'Private'),
 							2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(181, 'Hidden'),
@@ -86,9 +101,13 @@ function run()
 						
 						// retrieve item title
                         if($dataset[$i]['object_type'] == "item")
+                        {
                             $item = new item();
+                        }
                         else if($dataset[$i]['object_type'] == "product")
+                        {
                             $item = new product();
+                        }
 
                         $item->load($dataset[$i]['object_id']);
                         $title = $item->dictionary[$website->languages_list[0]]['title'];
@@ -337,12 +356,14 @@ function comments_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
+	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('date_created', 'desc');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
+	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
 	$navitable->enableDelete();	
 	
 	$navitable->addCol("ID", 'id', "50", "true", "left");

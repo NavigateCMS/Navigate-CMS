@@ -34,25 +34,40 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = " 1=1 ";
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
-				
-					$DB->queryLimit('id,username,email,profile,language,blocked', 
-									'nv_users', 
-									$where, 
-									$orderby, 
-									$offset, 
-									$max);
+
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'username', 'email', 'profile', 'language', 'blocked') )
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+
+					$DB->queryLimit(
+					    'id,username,email,profile,language,blocked',
+						'nv_users',
+                        $where,
+						$orderby,
+						$offset,
+						$max
+                    );
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
@@ -84,7 +99,8 @@ function run()
 			exit;
 			break;
 		
-		case 2: // edit/new form		
+		case 2: // edit/new form
+        case 'edit':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));
@@ -151,12 +167,14 @@ function users_list()
 	);
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=users&act=1&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=users&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
-	$navitable->setURL('?fid=users&act=1');
+	$navitable->setURL('?fid=users&act=json');
     $navitable->sortBy('id', 'DESC');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid=users&act=2&id=');
+	$navitable->setEditUrl('id', '?fid=users&act=edit&id=');
     $navitable->enableDelete();
 	
 	$navitable->addCol("ID", 'id', "80", "true", "left");	

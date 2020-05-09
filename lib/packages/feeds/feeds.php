@@ -32,18 +32,32 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = " f.website = ".$website->id;
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
+
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'title', 'categories', 'format', 'views', 'permission', 'enabled'))
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 								
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS f.*, d.text as title
 							   FROM nv_feeds f
@@ -96,7 +110,8 @@ function run()
 			core_terminate();
 			break;
 		
-		case 2: // edit/new form	
+		case 2: // edit/new form
+        case 'edit':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -182,20 +197,20 @@ function feeds_list()
 									'search_form' ));
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
+	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
+	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
 	
 	$navitable->addCol("ID", 'id', "80", "true", "left");	
-	$navitable->addCol(t(67, 'Title'), 'title', "400", "true", "left");	
-	
+	$navitable->addCol(t(67, 'Title'), 'title', "400", "true", "left");
 	$navitable->addCol(t(330, 'Categories'), 'categories', "80", "true", "center");	
 	$navitable->addCol(t(331, 'Format'), 'format', "80", "true", "center");	
-	$navitable->addCol(t(332, 'Views'), 'views', "80", "true", "center");	
-	
+	$navitable->addCol(t(332, 'Views'), 'views', "80", "true", "center");
 	$navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
 	$navitable->addCol(t(65, 'Enabled'), 'enabled', "80", "true", "center");		
 	

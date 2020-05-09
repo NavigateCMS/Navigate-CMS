@@ -35,12 +35,23 @@ function run()
                     // as we don't expect a lot of templates, we will always return the whole dataset
                     // for this reason, paginate is useless
 
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'title', 'enabled', 'permission'))
+                    )
+                    {
+                        return false;
+                    }
                     $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
 					if(isset($_REQUEST['quicksearch']))
-                       $dataset = template::search($orderby, array('quicksearch' => $_REQUEST['quicksearch']));
+                    {
+                        $dataset = template::search($orderby, array('quicksearch' => $_REQUEST['quicksearch']));
+                    }
 	                else
-                       $dataset = template::search($orderby);
+                    {
+                        $dataset = template::search($orderby);
+                    }
 
 					$total = count($dataset);
 					
@@ -77,9 +88,13 @@ function run()
 			if(!empty($_REQUEST['id']))
 			{
                 if(is_numeric($_REQUEST['id']))
-				    $item->load(intval($_REQUEST['id']));
+                {
+                    $item->load(intval($_REQUEST['id']));
+                }
                 else
+                {
                     $item->load_from_theme($_REQUEST['id']);
+                }
 			}
 		
 			if(isset($_REQUEST['form-sent']))
@@ -102,7 +117,9 @@ function run()
 				users_log::action($_REQUEST['fid'], $item->id, 'save', $item->title, json_encode($_REQUEST));				
 			}
 			else
-				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->title);
+            {
+                users_log::action($_REQUEST['fid'], $item->id, 'load', $item->title);
+            }
 		
 			$out = templates_form($item);
 			break;
@@ -219,12 +236,18 @@ function templates_list()
 	
 	$navibars->title(t(20, 'Templates'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('id');

@@ -31,7 +31,6 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = " i.website = ".$website->id;
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
@@ -49,6 +48,15 @@ function run()
                             $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
                         }
 					}
+
+					// filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'date_created', 'title', 'size', 'status'))
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 								
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS i.*
 							   FROM nv_backups i
@@ -88,7 +96,8 @@ function run()
 			core_terminate();
 			break;
 		
-		case 2: // edit/new form	
+		case 2: // edit/new form
+        case 'edit':
 			if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
@@ -196,23 +205,27 @@ function backups_list()
         array(	'<a href="#" onclick="navigate_restore_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(412, 'Restore').'</a> ' )
     );
 
-	$navibars->add_actions(	array(	'<a href="?fid=backups&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid=backups&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        '<a href="?fid=backups&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+            '<a href="?fid=backups&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+            'search_form'
+        )
+    );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=backups&act=1&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=backups&act=1&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
-	$navitable->setURL('?fid=backups&act=1');
+	$navitable->setURL('?fid=backups&act=json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid=backups&act=2&id=');
+	$navitable->setEditUrl('id', '?fid=backups&act=edit&id=');
 	
 	$navitable->addCol("ID", 'id', "80", "true", "left");	
 	$navitable->addCol(t(196, 'Date and time'), 'date_created', "150", "true", "center");
-
     $navitable->addCol(t(67, 'Title'), 'title', "400", "true", "left");
-	
 	$navitable->addCol(t(409, 'Size'), 'size', "80", "true", "center");
 	$navitable->addCol(t(68, 'Status'), 'status', "150", "true", "left");
 

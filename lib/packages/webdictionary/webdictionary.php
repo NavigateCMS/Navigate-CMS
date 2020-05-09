@@ -31,19 +31,31 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
-
-					$where = ' website = '.$website->id;				
+					$where = ' website = '.$website->id;
 															
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $wtext->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $wtext->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        {
+                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                        }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
+
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'node_id', 'source', 'lang', 'text') )
+                    )
+                    {
+                        return false;
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
 					list($dataset, $total) = webdictionary_search($where, $orderby, $offset, $max);
 
@@ -51,17 +63,29 @@ function run()
 					{
 						$origin = "";
 						if(!empty($dataset[$i]['theme']))
-							$origin = '<i class="fa fa-fw fa-paint-brush ui-text-light" title="'.t(368, "Theme").'"></i> '.$dataset[$i]['theme'];
+                        {
+                            $origin = '<i class="fa fa-fw fa-paint-brush ui-text-light" title="'.t(368, "Theme").'"></i> '.$dataset[$i]['theme'];
+                        }
 						else if(!empty($dataset[$i]['extension']))
-							$origin = '<i class="fa fa-fw fa-puzzle-piece ui-text-light" title="'.t(617, "Extension").'"></i> '.$dataset[$i]['extension'];
+                        {
+                            $origin = '<i class="fa fa-fw fa-puzzle-piece ui-text-light" title="'.t(617, "Extension").'"></i> '.$dataset[$i]['extension'];
+                        }
 
-						if(empty($dataset[$i])) continue;
+						if(empty($dataset[$i]))
+                        {
+                            continue;
+                        }
 
 						$string_id = $dataset[$i]['id'];
 						if(!empty($dataset[$i]['theme']))
-						    $string_id = $dataset[$i]['theme'].'.'.$string_id;
+                        {
+                            $string_id = $dataset[$i]['theme'].'.'.$string_id;
+                        }
+
 						if(!empty($dataset[$i]['extension']))
-						    $string_id = $dataset[$i]['extension'].'.'.$string_id;
+                        {
+                            $string_id = $dataset[$i]['extension'].'.'.$string_id;
+                        }
 
 						$out[$i] = array(
 							0	=> $string_id,	// this 4th column won't appear, it works as ghost column for setting a unique ID to the row
@@ -157,7 +181,9 @@ function webdictionary_list()
 	if(count($website->languages) > 0)
 	{
 		foreach($website->languages as $wslg_code => $wslg)
-			$wslg_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.language::name_by_code($wslg_code).'</a>';
+        {
+            $wslg_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.language::name_by_code($wslg_code).'</a>';
+        }
 
 		$events->add_actions(
 			'blocks',
@@ -180,7 +206,9 @@ function webdictionary_list()
 
 	$navitable->setQuickSearchURL('?fid='.$_REQUEST['fid'].'&act=json&_search=true&quicksearch=');
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
 	$navitable->sortBy('node_id');

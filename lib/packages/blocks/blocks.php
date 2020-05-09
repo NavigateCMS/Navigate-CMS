@@ -64,19 +64,17 @@ function run()
 							$_REQUEST['searchField'] = 'b.date_modified';
 					}
 
-					if($_REQUEST['sidx']=='dates')
-						$_REQUEST['sidx'] = 'b.date_published';
-				
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby= $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = " 1=1 ";
 					
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
-							$where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        {
+                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                        }
 						else if(isset($_REQUEST['filters']))
                         {
 							$where .= navitable::jqgridsearch($_REQUEST['filters']);
@@ -87,8 +85,24 @@ function run()
                             }
                         }
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
+
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'type', 'title', 'dates', 'date_modified', 'access', 'enabled'))
+                    )
+                    {
+                        return false;
+                    }
+                    if($_REQUEST['sidx']=='dates')
+                    {
+                        $_REQUEST['sidx'] = 'b.date_published';
+                    }
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+
 										
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS b.*, d.text as title 
 							   FROM nv_blocks b
@@ -118,9 +132,13 @@ function run()
                     for($i=0; $i < count($block_types); $i++)
                     {
 	                    if(is_numeric($block_types[$i]['id']))
+                        {
                             $block_types_list[$block_types[$i]['code']] = $block_types[$i]['title'];
+                        }
 	                    else
-		                    $block_types_list[$block_types[$i]['id']] = $block_types[$i]['title'];
+                        {
+                            $block_types_list[$block_types[$i]['id']] = $block_types[$i]['title'];
+                        }
                     }
 
                     $dataset = grid_notes::summary($dataset, 'block', 'id');
@@ -129,7 +147,10 @@ function run()
 					$out = array();								
 					for($i=0; $i < count($dataset); $i++)
 					{
-						if(empty($dataset[$i])) continue;
+						if(empty($dataset[$i]))
+                        {
+                            continue;
+                        }
 						
 						$access = array(
                             0 => '<img src="img/icons/silk/page_white_go.png" align="absmiddle" title="'.t(254, 'Everybody').'" />',
@@ -139,17 +160,26 @@ function run()
 						);						
 						
 						if(empty($dataset[$i]['date_published'])) 
-							$dataset[$i]['date_published'] = '&infin;';
+                        {
+                            $dataset[$i]['date_published'] = '&infin;';
+                        }
 						else
-							$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                        {
+                            $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                        }
 							
 						if(empty($dataset[$i]['date_unpublish'])) 
-							$dataset[$i]['date_unpublish'] = '&infin;';	
+                        {
+                            $dataset[$i]['date_unpublish'] = '&infin;';
+                        }
 						else
-							$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+                        {
+                            $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
+                        }
 							
 						if($dataset[$i]['category'] > 0)
-							$dataset[$i]['category'] = $DB->query_single(
+                        {
+                            $dataset[$i]['category'] = $DB->query_single(
                                 'text',
                                 'nv_webdictionary',
                                 ' 	node_type = "structure" AND
@@ -158,6 +188,7 @@ function run()
                                     lang = "'.$website->languages_list[0].'"
                                 '
                             );
+                        }
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
@@ -197,7 +228,9 @@ function run()
 
 					// set block order
                     if(!empty($item->type) && !empty($_REQUEST['blocks-order']))
-					    block::reorder($item->type, $_REQUEST['blocks-order'], $_REQUEST['blocks-order-fixed']);
+                    {
+                        block::reorder($item->type, $_REQUEST['blocks-order'], $_REQUEST['blocks-order-fixed']);
+                    }
 
 					unset($item);
 					$item = new block();
@@ -211,7 +244,9 @@ function run()
 				users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 			}
 			else
-				users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            {
+                users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+            }
 		
 			$out = blocks_form($item);
 			break;	
@@ -308,9 +343,13 @@ function run()
             foreach($rs as $row)
             {
                 if(substr($row['blocks'], 0, 2)=='a:') // nv < 2.1
+                {
                     $row['blocks']	= mb_unserialize($row['blocks']);
+                }
                 else // nv >= 2.1
+                {
                     $row['blocks']  = json_decode($row['blocks'], true);
+                }
 
                 $dataset[] = array(
                     'id' => $row['id'],
@@ -350,7 +389,9 @@ function run()
                 users_log::action($_REQUEST['fid'], $item->id, 'save', $item->title, json_encode($_REQUEST));
             }
             else if(!empty($_REQUEST['id']))
+            {
                 users_log::action($_REQUEST['fid'], $item->id, 'edit', $item->title);
+            }
 
 			$out = block_group_form($item);
 			break;
@@ -418,7 +459,9 @@ function run()
 			for($i=0; $i < count($dataset); $i++)
 			{
                 if($dataset[$i]['id'] > $max_id)
+                {
                     $max_id = $dataset[$i]['id'];
+                }
 
 				if($dataset[$i]['id'] == $_REQUEST['id'])
 				{
@@ -437,7 +480,9 @@ function run()
 	            if(isset($_REQUEST['form-sent']))
 				{
 					if(empty($item))
-						$item = array('id' => $max_id + 1);
+                    {
+                        $item = array('id' => $max_id + 1);
+                    }
 
 					$item['type'] = $_REQUEST['type'];
 					$item['title'] = $_REQUEST['title'];
@@ -449,9 +494,13 @@ function run()
 					$item['notes'] = pquotes($_REQUEST['notes']);
 
 					if(!is_null($position))
-						$dataset[$position] = $item;
+                    {
+                        $dataset[$position] = $item;
+                    }
 	                else
-	                    $dataset[] = $item;
+                    {
+                        $dataset[] = $item;
+                    }
 
 					try
 					{
@@ -502,9 +551,13 @@ function run()
             if(!empty($_REQUEST['id']))
             {
                 if(is_numeric($_REQUEST['id']))
+                {
                     $property->load(intval($_REQUEST['id']));
+                }
                 else
+                {
                     $property->load_from_theme($_REQUEST['id'], null, 'block', $_REQUEST['block']);
+                }
             }
 
             header('Content-type: text/json');
@@ -523,7 +576,9 @@ function run()
             $property = new property();
 
             if(!empty($_REQUEST['property-id']))
+            {
                 $property->load(intval($_REQUEST['property-id']));
+            }
 
             $property->load_from_post();
             $property->save();
@@ -544,7 +599,9 @@ function run()
             $property = new property();
 
             if(!empty($_REQUEST['property-id']))
+            {
                 $property->load(intval($_REQUEST['property-id']));
+            }
 
             $property->delete();
 
@@ -559,7 +616,9 @@ function run()
             $block_uid = $_REQUEST['block_uid'];
 
             if(isset($_REQUEST['form-sent']))
+            {
                 $status = property::save_properties_from_post('block_group_block', $block_code, $block_group, $block_code, $block_uid);
+            }
 
             $out = block_group_block_options($block_group, $block_code, $block_uid, $status);
 
@@ -576,7 +635,9 @@ function run()
             $block_extension = $_REQUEST['block_extension'];    // extension name
 
             if(isset($_REQUEST['form-sent']))
+            {
                 $status = property::save_properties_from_post('extension_block', $block_group, $block_id, null, $block_uid);
+            }
 
             $out = block_group_extension_block_options($block_group, $block_extension, $block_id, $block_uid, $status);
 
@@ -614,7 +675,9 @@ function blocks_list()
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
+        {
             $group_blocks_links[] = '<a class="ui-menu-action-bigger" href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+        }
 
         $events->add_actions(
             'blocks',
@@ -645,7 +708,9 @@ function blocks_list()
     );
 	
 	if(@$_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=blocks&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=blocks&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid=blocks&act=json');
 	$navitable->sortBy('date_modified', 'desc');
@@ -653,7 +718,9 @@ function blocks_list()
 	$navitable->setEditUrl('id', '?fid=blocks&act=edit&id=');
 	$navitable->enableSearch();
 	if($user->permission("blocks.delete") == 'true')
-		$navitable->enableDelete();
+    {
+        $navitable->enableDelete();
+    }
 	$navitable->setGridNotesObjectName("block");
 	
 	$navitable->addCol("ID", 'id', "40", "true", "left");	
@@ -779,11 +846,15 @@ function blocks_form($item)
     $layout->navigate_editorfield_link_dialog();
 		
 	if(empty($item->id))
-		$navibars->title(t(23, 'Blocks').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(23, 'Blocks').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(23, 'Blocks').' / '.t(170, 'Edit').' ['.$item->id.']');			
+    {
+        $navibars->title(t(23, 'Blocks').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
-		$navibars->add_actions(
+    $navibars->add_actions(
 		array(
 			'<a href="#" onclick="javascript: navigate_media_browser();" title="Ctrl+M">
 				<img height="16" align="absmiddle" width="16" src="img/icons/silk/images.png"> '.t(36, 'Media').'
@@ -864,7 +935,9 @@ function blocks_form($item)
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
+        {
             $group_blocks_links[] = '<a href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+        }
 
         $events->add_actions(
             'blocks',
@@ -894,7 +967,9 @@ function blocks_form($item)
 	);
 
     if(!empty($item->id))
+    {
         $layout->navigate_notes_dialog('block', $item->id);
+    }
 
 	$navibars->form(NULL, '?fid=blocks&act=edit&id='.$item->id);
 
@@ -921,22 +996,34 @@ function blocks_form($item)
 	for($i=0; $i < count($block_types); $i++)
 	{
         if($item->type == $block_types[$i]['code'])
+        {
             $block_type_width = $block_types[$i]['width'];
+        }
 
 		$block_size_helper = '';
 
 		if(!empty($block_types[$i]['width']) || !empty($block_types[$i]['height']))
 		{
-	        if(empty($block_types[$i]['width'])) $block_types[$i]['width'] = '***';
-			if(empty($block_types[$i]['height'])) $block_types[$i]['height'] = '***';
+	        if(empty($block_types[$i]['width']))
+            {
+                $block_types[$i]['width'] = '***';
+            }
+			if(empty($block_types[$i]['height']))
+            {
+                $block_types[$i]['height'] = '***';
+            }
 
 			$block_size_helper = ' ('.$block_types[$i]['width'].' x '.$block_types[$i]['height'].' px)';
 		}
 
 		if(is_numeric($block_types[$i]['id']))
-			$block_types_keys[] = $block_types[$i]['code'];     // block type created via navigate interface
+        {
+            $block_types_keys[] = $block_types[$i]['code'];
+        }     // block type created via navigate interface
 		else
-			$block_types_keys[] = $block_types[$i]['id'];       // block described in theme definition
+        {
+            $block_types_keys[] = $block_types[$i]['id'];
+        }       // block described in theme definition
 
 		$block_types_info[] = $block_types[$i]['title'].$block_size_helper;
 	}
@@ -1028,7 +1115,10 @@ function blocks_form($item)
         navigate_webuser_groups_visibility('.$item->access.');
     ');
 
-	if(empty($item->id)) $item->enabled = true;
+	if(empty($item->id))
+    {
+        $item->enabled = true;
+    }
 										
 	$navibars->add_tab_content_row(
         array(
@@ -1054,7 +1144,9 @@ function blocks_form($item)
         case 'poll':
             $options = array();
             foreach($website->languages_list as $lang)
+            {
                 $options[$lang] = language::name_by_code($lang);
+            }
 
             $navibars->add_tab_content_row(
                 array(
@@ -1158,7 +1250,9 @@ function blocks_form($item)
         default:
             $options = array();
             foreach($website->languages_list as $lang)
+            {
                 $options[$lang] = language::name_by_code($lang);
+            }
 
             $navibars->add_tab_content_row(
                 array(
@@ -1198,17 +1292,23 @@ function blocks_form($item)
 		            {
                         // navigate 1.x compatibility
                         if(!isset($tb->id) && isset($tb->code))
+                        {
                             $tb->id = $tb->code;
+                        }
 
                         if($tb->id == $item->type && isset($tb->trigger))
 			            {
 				            if(!is_array($tb->trigger))
-					            $tb->trigger = array($tb->trigger);
+                            {
+                                $tb->trigger = array($tb->trigger);
+                            }
 
 				            foreach($block_trigger_types as $btt_key => $btt_val)
 				            {
 					            if(empty($btt_key) || in_array($btt_key, $tb->trigger))
-					                continue;
+                                {
+                                    continue;
+                                }
 
 					            unset($block_trigger_types[$btt_key]);
 				            }
@@ -1379,9 +1479,13 @@ function blocks_form($item)
                 if(!empty($block_type_width))
 				{
 					if($block_type_width > 500)
-                    	$editor_width = $block_type_width.'px';
+                    {
+                        $editor_width = $block_type_width.'px';
+                    }
 					else
-						$editor_width = '500px';
+                    {
+                        $editor_width = '500px';
+                    }
 				}
 
                 $translate_menu = '';
@@ -1543,7 +1647,9 @@ function blocks_form($item)
 		            foreach($website->languages as $bcpl)
 		            {
 			            if($bcpl['language'] == $lang)
-				            continue;
+                        {
+                            continue;
+                        }
 
 			            $block_copyfrom_titles[] = language::name_by_code($bcpl['language']);
 			            $block_copyfrom_actions[] = 'javascript: navigate_blocks_copy_from_language(\''.$bcpl['language'].'\', \''.$lang.'\');';
@@ -1757,7 +1863,9 @@ function blocks_form($item)
         {
             // navigate 1.x compatibility
             if(!isset($bt['id']) && isset($bt['code']))
+            {
                 $bt['id'] = $bt['code'];
+            }
 
             if($bt['id'] == $item->type)
             {
@@ -1784,9 +1892,13 @@ function blocks_form($item)
 
     $default_value = 1;
     if(!empty($item->categories))
+    {
         $default_value = 0;
+    }
     else if(!empty($item->exclusions))
+    {
         $default_value = 2;
+    }
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(330, 'Categories').'</label>',
@@ -1826,19 +1938,27 @@ function blocks_form($item)
     );
 										
 	if(!is_array($item->categories))
-		$item->categories = array();
+    {
+        $item->categories = array();
+    }
 
     if(!is_array($item->exclusions))
+    {
         $item->exclusions = array();
+    }
 
     $navibars->add_tab_content($naviforms->hidden('categories', implode(',', $item->categories)));
     $navibars->add_tab_content($naviforms->hidden('exclusions', implode(',', $item->exclusions)));
 
 	$elements_display = "all";
 	if(!empty($item->elements['exclusions']))
-		$elements_display = "exclusions";
+    {
+        $elements_display = "exclusions";
+    }
 	else if(!empty($item->elements['selection']))
-		$elements_display = "selection";
+    {
+        $elements_display = "selection";
+    }
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(22, 'Elements').' '.t(428, '(no category)').'</label>',
@@ -1868,11 +1988,15 @@ function blocks_form($item)
 	');
 
 	if(!is_array($item->elements))
-		$item->elements = array();
+    {
+        $item->elements = array();
+    }
 	$items_ids = array_values($item->elements);
 	$items_ids = $items_ids[0];
 	if(empty($items_ids))
-		$items_ids = array();
+    {
+        $items_ids = array();
+    }
 	$items_titles = array();
 	for($i=0; $i < count($items_ids); $i++)
 	{
@@ -2015,7 +2139,9 @@ function blocks_types_list()
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
+        {
             $group_blocks_links[] = '<a href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+        }
 
         $events->add_actions(
             'blocks',
@@ -2074,9 +2200,13 @@ function blocks_type_form($item)
 	$naviforms = new naviforms();
 	
 	if(empty($item['id']))
-		$navibars->title(t(23, 'Blocks').' / '.t(167, 'Types').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(23, 'Blocks').' / '.t(167, 'Types').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(23, 'Blocks').' / '.t(167, 'Types').' / '.t(170, 'Edit').' ['.$item['id'].']');	
+    {
+        $navibars->title(t(23, 'Blocks').' / '.t(167, 'Types').' / '.t(170, 'Edit').' ['.$item['id'].']');
+    }
 
     $readonly = false;
 
@@ -2117,7 +2247,9 @@ function blocks_type_form($item)
     if($bg_total > 0 && $bg_total <= 10)
     {
         foreach($bg_rs as $bg)
+        {
             $group_blocks_links[] = '<a href="?fid=blocks&act=block_group_edit&id='.$bg['id'].'"><i class="fa fa-fw fa-caret-right"></i> '.$bg['title'].'</a>';
+        }
 
         $events->add_actions(
             'blocks',
@@ -2152,8 +2284,12 @@ function blocks_type_form($item)
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item['id']));	
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item['id'])? $item['id'] : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item['id'])? $item['id'] : t(52, '(new)')).'</span>'
+        )
+    );
 
     // TODO: in Navigate CMS 2.0+ add several block types (p.e. Ad (Google adsense, ...), Map (Bing, Yahoo, Google, ...))
     $block_modes = block::modes();
@@ -2629,9 +2765,13 @@ function block_group_form($item)
     $naviforms = new naviforms();
 
     if(empty($item->id))
+    {
         $navibars->title(t(23, 'Blocks').' / '.t(506, 'Groups').' / '.t(38, 'Create'));
+    }
     else
+    {
         $navibars->title(t(23, 'Blocks').' / '.t(506, 'Groups').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
     if(empty($item->id))
     {
@@ -2707,7 +2847,9 @@ function block_group_form($item)
         $blocks_selected = array();
 
         if(!is_array($item->blocks))
+        {
             $item->blocks = array();
+        }
 
         $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', json_encode($item->blocks)));
         $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
@@ -2727,7 +2869,9 @@ function block_group_form($item)
                     $block->load($item->blocks[$p]['id']);
 
                     if(empty($block) || empty($block->type))
+                    {
                         continue;
+                    }
 
                     $blocks_selected[] = '
                         <div class="block_group_block ui-state-default" data-block-id="'.$block->id.'" data-block-type="block" data-block-uid="'.$item->blocks[$p]['uid'].'">
@@ -3075,9 +3219,11 @@ function block_group_form($item)
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
     $navibars->add_tab_content($naviforms->hidden('id', $item->id));
 
-    $navibars->add_tab_content_row(array(
+    $navibars->add_tab_content_row(
+        array(
             '<label>ID</label>',
-            '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' )
+            '<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
     );
 
     $navibars->add_tab_content_row(array(
@@ -3090,11 +3236,15 @@ function block_group_form($item)
     {
         $blgroups[$theme->block_groups[$blg]->id] = '';
         if(!empty($theme->block_groups[$blg]->description))
+        {
             $blgroups[$theme->block_groups[$blg]->id] = $theme->t($theme->block_groups[$blg]->description);
+        }
     }
 
     if(!in_array($item->code, $blgroups))
+    {
         $blgroups[$item->code] = $item->code;
+    }
 
     $navibars->add_tab_content_row(array(
         '<label>'.t(237, 'Code').'</label>',
@@ -3122,7 +3272,9 @@ function block_group_form($item)
     }
 
     if(!empty($item->id))
+    {
         $layout->navigate_notes_dialog('block_group', $item->id);
+    }
 
     $layout->add_script('
 	    $.ajax({
@@ -3150,7 +3302,9 @@ function block_group_block_options($block_group, $code, $block_uid, $status)
     $properties = $block->properties;
 
     if(empty($properties))
+    {
         return;
+    }
 
     $layout = null;
     $layout = new layout('navigate');
@@ -3158,9 +3312,13 @@ function block_group_block_options($block_group, $code, $block_uid, $status)
     if($status!==null)
     {
         if($status)
+        {
             $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+        }
         else
+        {
             $layout->navigate_notification(t(56, "Unexpected error"), true, true);
+        }
     }
 
     $navibars = new navibars();
@@ -3216,7 +3374,9 @@ function block_group_block_options($block_group, $code, $block_uid, $status)
         foreach($properties_values as $pv)
         {
             if($pv->id == $option->id)
+            {
                 $property_value = $pv->value;
+            }
         }
 
         $property->load_from_object($option, $property_value, $theme);
@@ -3260,7 +3420,9 @@ function block_group_extension_block_options($block_group, $block_extension, $bl
     global $theme;
 
     if(empty($block_extension))
+    {
         throw new Exception("Unknown extension: {".$block_extension."} for block with uid:".$block_uid);
+    }
 
     $extension = new extension();
     $extension->load($block_extension);
@@ -3269,7 +3431,9 @@ function block_group_extension_block_options($block_group, $block_extension, $bl
     $properties = $block->properties;
 
     if(empty($properties))
+    {
         return;
+    }
 
     $layout = null;
     $layout = new layout('navigate');
@@ -3277,9 +3441,13 @@ function block_group_extension_block_options($block_group, $block_extension, $bl
     if($status!==null)
     {
         if($status)
+        {
             $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+        }
         else
+        {
             $layout->navigate_notification(t(56, "Unexpected error"), true, true);
+        }
     }
 
     $navibars = new navibars();
@@ -3335,7 +3503,9 @@ function block_group_extension_block_options($block_group, $block_extension, $bl
         foreach($properties_values as $pv)
         {
             if($pv->id == $option->id)
+            {
                 $property_value = $pv->value;
+            }
         }
 
         $property->load_from_object($option, $property_value, $extension);

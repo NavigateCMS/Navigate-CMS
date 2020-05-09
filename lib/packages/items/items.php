@@ -95,16 +95,25 @@ function run()
 							break;
 						default:
 					}
+
+                    // filter orderby vars
+                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($_REQUEST['sidx'], array('id', 'dates', 'title', 'comments', 'category', 'date_to_display', 'date_modified', 'permission', 'note'))
+                    )
+                    {
+                        return false;
+                    }
 								
 					if($_REQUEST['sidx']=='dates')
                     {
                         $_REQUEST['sidx'] = 'i.date_published';
                     }
-				
+
+                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 					$where = ' i.website = '.$website->id;
 					
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
@@ -153,7 +162,9 @@ function run()
 							$where .= navitable::jqgridsearch(json_encode($filters));
 						}
 						else	// single search
-							$where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        {
+                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                        }
 					}
 
 
@@ -596,7 +607,9 @@ function run()
 		case "raw_zone_content": // return raw contents from a product
 
 			if(empty($_REQUEST['section']))
-				$_REQUEST['section'] = 'main';
+            {
+                $_REQUEST['section'] = 'main';
+            }
 		
 			if($_REQUEST['history']=='true')
 			{
@@ -686,7 +699,8 @@ function run()
             for($ts=0; $ts < count($template->sections); $ts++)
             {
 	            $title = $template->sections[$ts]['name'];
-				if(!empty($theme))
+
+	            if(!empty($theme))
                 {
                     $title = $theme->t($title);
                 }
@@ -695,6 +709,7 @@ function run()
                 {
                     $title = t(238, 'Main content');
                 }
+
 	            $zones[] = array(
 		            'type' => 'section',
 		            'id' => $template->sections[$ts]['id'],
