@@ -13,6 +13,8 @@ function run()
 		
 			if(isset($_REQUEST['form-sent']))
 			{
+                naviforms::check_csrf_token();
+
 				// update user	
 				$user->language = $_REQUEST['user-language'];
 				$user->email = $_REQUEST['user-email'];
@@ -20,7 +22,9 @@ function run()
 				$user->timezone = $_REQUEST['user-timezone'];
 				$user->date_format = $_REQUEST['user-date_format'];
 				if(!empty($_REQUEST['user-password']))
-					$user->set_password($_REQUEST['user-password']);
+                {
+                    $user->set_password($_REQUEST['user-password']);
+                }
 				$user->update();
                 $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 			}
@@ -49,19 +53,36 @@ function settings_form()
 	$navibars->add_tab(t(43, "General"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.$user->id.'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+            '<span>'.$user->id.'</span>'
+        )
+    );
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(1, 'User').'</label>',
-											'<span>'.$user->username.'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(1, 'User').'</label>',
+			'<span>'.$user->username.'</span>'
+        )
+    );
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(2, 'Password').'</label>',
-											'<input type="password" name="user-password" value="" size="32" />',
-											'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(2, 'Password').'</label>',
+			'<input type="password" name="user-password" value="" size="32" />',
+			'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>'
+        )
+    );
 											
-	$navibars->add_tab_content_row(array(	'<label>'.t(44, 'E-Mail').'</label>',
-                                            $naviforms->textfield('user-email', $user->email)));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(44, 'E-Mail').'</label>',
+            $naviforms->textfield('user-email', $user->email)
+        )
+    );
 
 
 	if($user->profile == 1 && false) // Administrator (shown as example, never enabled here) 
@@ -70,14 +91,22 @@ function settings_form()
 		$DB->query('SELECT id, name FROM nv_profiles');		
 		$data = $DB->result();	
 		$select = $naviforms->select_from_object_array('user-profile', $data, 'id', 'name', $user->profile);
-		$navibars->add_tab_content_row(array(	'<label>'.t(45, 'Profile').'</label>',
-												$select ));
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(45, 'Profile').'</label>',
+				$select
+            )
+        );
 	}
 	else
 	{
 		$user_profile_name = $DB->query_single('name', 'nv_profiles', ' id = '.intval($user->profile));
-		$navibars->add_tab_content_row(array(	'<label>'.t(45, 'Profile').'</label>',
-												'<span>'.$user_profile_name.'</span>' ));		
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(45, 'Profile').'</label>',
+				'<span>'.$user_profile_name.'</span>'
+            )
+        );
 	}
 
 	// Language selector
@@ -94,7 +123,9 @@ function settings_form()
 	$timezones = property::timezones();
 	
 	if(empty($user->timezone))
-		$user->timezone = date_default_timezone_get();
+    {
+        $user->timezone = date_default_timezone_get();
+    }
 
 	$navibars->add_tab_content_row(
 	    array(
@@ -135,8 +166,7 @@ function settings_form()
 			$select
         )
     );
-	
-	
+
 	return $navibars->generate();
 }
 ?>

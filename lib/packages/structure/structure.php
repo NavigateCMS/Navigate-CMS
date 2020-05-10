@@ -26,13 +26,17 @@ function run()
         case 'edit':
 		case 2: // edit/new form		
 			if(!empty($_REQUEST['id']))	
-				$item->load(intval($_REQUEST['id']));	
+            {
+                $item->load(intval($_REQUEST['id']));
+            }
 																
 			if(isset($_REQUEST['form-sent']))
 			{
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
 					property::save_properties_from_post('structure', $item->id);
 					$item = $item->reload();
@@ -42,7 +46,9 @@ function run()
                     {
                         $response = item::reorder($_POST['elements-order']);
                         if($response!==true)
+                        {
                             throw new Exception($response);
+                        }
                     }
 
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
@@ -726,6 +732,7 @@ function structure_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
 	    array(

@@ -40,4 +40,13 @@ setcookie(session_name(), session_id(), time() + 3600, '/', $session_cookie_doma
 // also refresh PHPSESSID cookie, to avoid problems
 setcookie("PHPSESSID", session_id(), time() + 3600, '/', $session_cookie_domain);
 
+// set CSRF token, if not already there
+if(!isset($_SESSION['csrf_token']))
+{
+    $_SESSION['csrf_token'] = bin2hex(openssl_random_pseudo_bytes( 32 ));
+    $_SESSION['csrf_token_time'] = time();
+}
+
+header('X-Csrf-Token: '.$_SESSION['csrf_token']);
+
 ?>

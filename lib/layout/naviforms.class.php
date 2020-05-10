@@ -131,7 +131,9 @@ class naviforms
         $out[] = '</div>';
         $out[] = '<ul id="'.$id.'_splitbutton_menu" class="nv_splitbutton_menu" style="display: none; position: absolute; ">';
         for($i=0; $i < count($texts); $i++)
+        {
             $out[] = '<li><a href="'.$links[$i].'">'.$texts[$i].'</a></li>';
+        }
         $out[] = '</ul>';
 
         $layout->add_script('
@@ -159,6 +161,11 @@ class naviforms
 			
 		return $out;
 	}
+
+	public function csrf_token($name='_nv_csrf_token')
+    {
+        return '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$_SESSION['csrf_token'].'" />';
+    }
 	
 	public function textarea($name, $value="", $rows=4, $cols=48, $style="")
 	{
@@ -1559,6 +1566,27 @@ class naviforms
 
         $out = implode("\n", $out);
         return $out;
+    }
+
+    public static function check_csrf_token($variable_name='_nv_csrf_token')
+    {
+        if($variable_name == 'header')
+        {
+            $token_sent = $_SERVER['HTTP_X_CSRF_TOKEN'];
+        }
+        else
+        {
+            $token_sent = $_POST[$variable_name];
+        }
+
+        $csfr_check = @hash_equals($_SESSION['csrf_token'], $token_sent);
+
+        if(!$csfr_check)
+        {
+            throw new Exception(t(344, "Security error"));
+        }
+
+        return true;
     }
 }
 

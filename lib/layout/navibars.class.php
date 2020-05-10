@@ -107,10 +107,14 @@ class navibars
 	function form($tag="", $action="")
 	{
 		if(empty($action))
-			$action = $_SERVER['QUERY_STRING'];
+        {
+            $action = $_SERVER['QUERY_STRING'];
+        }
 			
 		if(empty($tag))
-			$tag = '<form name="navigate-content-form" action="?'.$action.'" method="post" enctype="multipart/form-data">';
+        {
+            $tag = '<form name="navigate-content-form" action="?'.$action.'" method="post" enctype="multipart/form-data">';
+        }
 		
 		$this->elements['form'] = $tag;
 	}	

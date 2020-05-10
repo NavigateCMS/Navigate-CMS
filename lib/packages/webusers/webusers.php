@@ -144,6 +144,8 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
                     property::save_properties_from_post('webuser', $item->id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
@@ -154,12 +156,16 @@ function run()
 				}
 
 				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->username, json_encode($_REQUEST));
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'save', $item->username, json_encode($_REQUEST));
+                }
 			}
 			else
 			{
 				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->username);
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'load', $item->username);
+                }
 			}
 		
 			$out = webusers_form($item);
@@ -241,6 +247,8 @@ function run()
 
                 try
                 {
+                    naviforms::check_csrf_token();
+
                     $ok = $webuser_group->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					users_log::action($_REQUEST['fid'], $webuser_group->id, 'save_webuser_group', $webuser_group->name, json_encode($_REQUEST));
@@ -558,6 +566,7 @@ function webusers_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
 	
 	$navibars->add_tab_content_row(array(
@@ -897,9 +906,13 @@ function webuser_groups_form($item)
     $naviforms = new naviforms();
 
     if(empty($item->id))
+    {
         $navibars->title(t(24, 'Web users').' / '.t(506, 'Groups').' / '.t(38, 'Create'));
+    }
     else
+    {
         $navibars->title(t(24, 'Web users').' / '.t(506, 'Groups').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
     if(empty($item->id))
     {
@@ -960,6 +973,7 @@ function webuser_groups_form($item)
     $navibars->add_tab(t(43, "Main"));
 
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
     $navibars->add_tab_content($naviforms->hidden('id', $item->id));
 
     $navibars->add_tab_content_row(array(	'<label>ID</label>',

@@ -104,6 +104,8 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -197,17 +199,20 @@ function functions_form($item)
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
-									);
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+            )
+		);
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-								
-
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
 		
 		$delete_html = array();
 		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
@@ -237,41 +242,65 @@ function functions_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=functions&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=functions&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        (!empty($item->id)? '<a href="?fid=functions&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+            '<a href="?fid=functions&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+            'search_form'
+        )
+    );
 
 	$navibars->form();
 
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(78, 'Category').'</label>',
-											$naviforms->textfield('category', $item->category),
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(78, 'Category').'</label>',
+			$naviforms->textfield('category', $item->category),
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(237, 'Code').'</label>',
-											$naviforms->textfield('codename', $item->codename),
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(237, 'Code').'</label>',
+			$naviforms->textfield('codename', $item->codename),
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(242, 'Icon').'</label>',
-											$naviforms->textfield('icon', $item->icon),
-											'<img src="'.NAVIGATE_URL.'/'.$item->icon.'" align="absmiddle" />'
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(242, 'Icon').'</label>',
+			$naviforms->textfield('icon', $item->icon),
+			'<img src="'.NAVIGATE_URL.'/'.$item->icon.'" align="absmiddle" />'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>#'.t(67, 'Title').' (lid)</label>',
-											$naviforms->textfield('lid', $item->lid),
-											(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.t($item->lid, $item->lid).'</strong></em>')
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>#'.t(67, 'Title').' (lid)</label>',
+			$naviforms->textfield('lid', $item->lid),
+			(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.t($item->lid, $item->lid).'</strong></em>')
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(65, 'Enabled').'</label>',
-											$naviforms->checkbox('enabled', $item->enabled),
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(65, 'Enabled').'</label>',
+			$naviforms->checkbox('enabled', $item->enabled),
+        )
+    );
 
 	return $navibars->generate();
 }

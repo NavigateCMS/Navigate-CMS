@@ -48,7 +48,12 @@ if(!empty($_COOKIE['navigate-remember-user-token']) && !empty($_COOKIE['navigate
 
 if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 {
-	$error = !$user->authenticate($_POST['login-username'], $_POST['login-password']);
+    $error = !@hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+
+    if(empty($error))
+    {
+	    $error = !$user->authenticate($_POST['login-username'], $_POST['login-password']);
+    }
 
 	if(empty($error) && $user->blocked == '1')
     {
@@ -76,6 +81,9 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 		$_SESSION["login_request_uri"] = '';
 
         setcookie('navigate-session-id', session_id(), time() + 60, '/'); // 60 seconds
+
+        // force regenerate csrf token
+        unset($_SESSION['csrf_token']);
 
 		session_write_close();
 
@@ -210,13 +218,13 @@ echo $layout->head();
                 <label style=" padding-top: 6px; margin-bottom: 6px; font-size: 15px; "><?php echo t(1, 'User');?></label>
                 <br />
                 <input type="text" value="" size="32" name="login-username" id="login-username" style=" width: 278px; font-size: 20px; " />
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'];?>" />
             </div>
             <div class="navigate-form-row">
                 <label style=" padding-top: 6px; margin-bottom: 6px; font-size: 15px; "><?php echo t(2, 'Password');?></label>
                 <br />
                 <input type="password" value="" size="32" name="login-password" id="login-password"  style=" width: 278px; font-size: 20px; " />
             </div>
-
             <div class="navigate-form-row">
                 <input type="checkbox" name="login-remember" id="login-remember" value="1" />
                 <label onclick="$('#login-remember').trigger('click');" style=" margin-left: 3px; margin-top: 2px; position: absolute; "><?php echo t(406, 'Remember me');?></label>

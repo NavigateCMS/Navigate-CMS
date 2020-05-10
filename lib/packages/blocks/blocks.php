@@ -222,6 +222,8 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
                     property::save_properties_from_post('block', $item->id);
 					$id = $item->id;
@@ -379,6 +381,7 @@ function run()
                 $item->load_from_post();
                 try
                 {
+                    naviforms::check_csrf_token();
                     $item->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
                 }
@@ -580,6 +583,7 @@ function run()
                 $property->load(intval($_REQUEST['property-id']));
             }
 
+            naviforms::check_csrf_token();
             $property->load_from_post();
             $property->save();
 
@@ -617,6 +621,7 @@ function run()
 
             if(isset($_REQUEST['form-sent']))
             {
+                naviforms::check_csrf_token();
                 $status = property::save_properties_from_post('block_group_block', $block_code, $block_group, $block_code, $block_uid);
             }
 
@@ -636,6 +641,7 @@ function run()
 
             if(isset($_REQUEST['form-sent']))
             {
+                naviforms::check_csrf_token();
                 $status = property::save_properties_from_post('extension_block', $block_group, $block_id, null, $block_uid);
             }
 
@@ -915,7 +921,9 @@ function blocks_form($item)
         ');
 
         if($user->permission("blocks.create") == 'true')
+        {
             $extra_actions[] = '<a href="?fid=blocks&act=duplicate&id='.$item->id.'" onclick="$(this).attr(\'#\');"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+        }
     }
 
     array_unshift($extra_actions, '<a href="?fid=blocks&act=block_types_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/brick_edit.png"> '.t(167, 'Types').'</a>');
@@ -981,7 +989,8 @@ function blocks_form($item)
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
-	
+	$navibars->add_tab_content($naviforms->csrf_token());
+
 	$navibars->add_tab_content_row(
         array(
             '<label>ID</label>',
@@ -2282,7 +2291,8 @@ function blocks_type_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item['id']));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item['id']));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
 	    array(
@@ -3218,6 +3228,7 @@ function block_group_form($item)
 
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
     $navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 
     $navibars->add_tab_content_row(
         array(
@@ -3349,6 +3360,7 @@ function block_group_block_options($block_group, $code, $block_uid, $status)
     $navibars->add_tab(t(200, 'Options'));
 
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 
     // show a language selector (only if it's a multi language website)
     if(count($website->languages) > 1)
@@ -3478,6 +3490,7 @@ function block_group_extension_block_options($block_group, $block_extension, $bl
     $navibars->add_tab(t(200, 'Options'));
 
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 
     // show a language selector (only if it's a multi language website)
     if(count($website->languages) > 1)

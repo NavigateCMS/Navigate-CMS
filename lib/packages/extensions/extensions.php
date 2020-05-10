@@ -73,6 +73,7 @@ function run()
             $status = null;
             if(isset($_REQUEST['form-sent']))
             {
+                naviforms::check_csrf_token();
                 $extension->load_from_post();
                 $status = $extension->save();
             }
@@ -541,6 +542,7 @@ function extensions_options($extension, $saved=null)
     $navibars->add_tab(t(7, 'Configuration'));
 
     $navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 
     // show a language selector (only if it's a multi language website and has properties)
     if(!empty($extension->definition->options) && count($website->languages) > 1)

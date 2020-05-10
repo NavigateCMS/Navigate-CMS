@@ -103,6 +103,8 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
                     permission::update_permissions(json_decode($_REQUEST['navigate_permissions_changes'], true), $item->id, 0);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
@@ -232,7 +234,8 @@ function profiles_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
 		array(

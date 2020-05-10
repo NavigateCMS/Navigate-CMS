@@ -106,12 +106,12 @@ function run()
 			if($_REQUEST['form-sent']=='true')
 			{						
 				$item->load_from_post();
-								
+                naviforms::check_csrf_token();
+
 				try
 				{
                     // update an existing backup
 					$item->save();
-					$id = $item->id;
 
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -307,19 +307,30 @@ function backups_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
-    $navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-                                            $naviforms->textfield('title', $item->title),
-                                            ''
-                                        ));
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(67, 'Title').'</label>',
+            $naviforms->textfield('title', $item->title),
+            ''
+        )
+    );
 
-    $navibars->add_tab_content_row(array(	'<label>'.t(168, 'Notes').'</label>',
-											$naviforms->textarea('notes', $item->notes),
-										));
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(168, 'Notes').'</label>',
+			$naviforms->textarea('notes', $item->notes),
+        )
+    );
 
     $navibars->add_tab_content_row(array('<br />'));
 

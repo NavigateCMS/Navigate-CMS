@@ -387,6 +387,8 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
 					property::save_properties_from_post('item', $item->id);
 
@@ -1379,7 +1381,8 @@ function items_form($item)
 	$navibars->add_tab(t(43, "Main")); // tab #0
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
         array(

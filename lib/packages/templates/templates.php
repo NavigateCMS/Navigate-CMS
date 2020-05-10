@@ -102,11 +102,17 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
 					if(!empty($_REQUEST['property-enabled']))
-						$enableds = array_values($_REQUEST['property-enabled']);
+                    {
+                        $enableds = array_values($_REQUEST['property-enabled']);
+                    }
 					else
-						$enableds = array();
+                    {
+                        $enableds = array();
+                    }
 					property::reorder("template", $item->id, $_REQUEST['template-properties-order'], $enableds);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -129,7 +135,9 @@ function run()
 			{
 				$item->load(intval($_REQUEST['id']));	
 			}
-			
+
+			naviforms::check_csrf_token('header');
+
 			$data = $_REQUEST['templates-file-edit-area'];
 			
 			$data = str_replace("\r\n", "\r", $data);
@@ -349,7 +357,8 @@ function templates_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
 	    array(
@@ -388,7 +397,9 @@ function templates_form($item)
 	
 	$navibars->add_content('
 		<div id="templates-file-edit-dialog" style=" display: none; ">
-			<textarea name="templates-file-edit-area" id="templates-file-edit-area" style=" width: 99%; height: 98%; ">'.htmlentities(@file_get_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$item->file), ENT_COMPAT, 'UTF-8').'</textarea>
+			<textarea name="templates-file-edit-area" id="templates-file-edit-area" style=" width: 99%; height: 98%; ">'.
+                htmlentities(@file_get_contents(NAVIGATE_PRIVATE.'/'.$website->id.'/templates/'.$item->file), ENT_COMPAT, 'UTF-8').
+            '</textarea>
 		</div>
 	');
 							
@@ -431,7 +442,8 @@ function templates_form($item)
                     }
 				},
 				buttons: {
-					"'.t(58, 'Cancel').'": function() {
+					"'.t(58, 'Cancel').'": function() 
+					{
 						$("#templates-file-edit-dialog").dialog("close");
 					},
 					"'.t(34, 'Save').'": function()
@@ -458,7 +470,7 @@ function templates_form($item)
 									navigate_notification("'.t(56, 'Unexpected error.').'");
 								}
 						   }
-						 });
+						});
 					}					
 				}				
 			}).dialogExtend(

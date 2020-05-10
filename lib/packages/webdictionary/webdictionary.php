@@ -107,9 +107,13 @@ function run()
 		
 		case 'edit': // edit/new form
 			if(!empty($_REQUEST['path']) && !is_numeric($_REQUEST['id']))
-				$wtext->load($_REQUEST['path']);
+            {
+                $wtext->load($_REQUEST['path']);
+            }
 			else if(!empty($_REQUEST['id']))
-				$wtext->load($_REQUEST['id']);
+            {
+                $wtext->load($_REQUEST['id']);
+            }
 
 			if(isset($_REQUEST['form-sent']))
 			{
@@ -117,6 +121,7 @@ function run()
 
 				try
 				{
+                    naviforms::check_csrf_token();
 					$wtext->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -149,11 +154,16 @@ function run()
 		case 'edit_language':
 			if($_REQUEST['form-sent']=='true')
 			{
+                naviforms::check_csrf_token();
 				$status = webdictionary::save_translations_post($_REQUEST['code']);
 				if($status=='true')
+                {
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+                }
 				else
-					$layout->navigate_notification(implode('<br />', $status), true, true);
+                {
+                    $layout->navigate_notification(implode('<br />', $status), true, true);
+                }
 			}
 
 			$out = webdictionary_edit_language_form($_REQUEST['code']);
@@ -306,15 +316,20 @@ function webdictionary_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
     $navibars->add_tab_content($naviforms->hidden('theme', $item->theme));
 
 	$node_id_text = (!empty($item->node_id)? $item->node_id : t(52, '(new)'));
 	if(!empty($item->node_id) && !is_numeric($item->node_id))
 	{
 		if($item->node_type == 'extension')
-			$node_id_text .= ' | '.$item->extension_name;
+        {
+            $node_id_text .= ' | '.$item->extension_name;
+        }
 		else
-			$node_id_text .= ' | '.$theme->title;
+        {
+            $node_id_text .= ' | '.$theme->title;
+        }
 	}
 	
 	$navibars->add_tab_content_row(
@@ -331,7 +346,9 @@ function webdictionary_form($item)
 
     $data = array();
     foreach($website->languages_list as $l)
+    {
         $data[$l] = language::name_by_code($l);
+    }
 
 	// load installed translation services
     $translate_extensions = extension::list_installed('translate', false);
@@ -580,12 +597,15 @@ function webdictionary_edit_language_form($code)
 	$navibars->add_tab(t(188, "Translate"));
 
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 
 	$origin = "";
 	foreach($website->languages_list as $l)
 	{
 		if($l==$code)
-			continue;
+        {
+            continue;
+        }
 		else
 		{
 			$origin = $l;
@@ -708,7 +728,9 @@ function webdictionary_edit_language_form($code)
 		{
 			$translation = $dict_dest[$otext['node_id']];
 			if(is_numeric($otext['source']))
-				$otext['source'] = 'global.'.$otext['source'];
+            {
+                $otext['source'] = 'global.'.$otext['source'];
+            }
 
 			// note: PHP does not allow using dots in $_POST variable names, unless they are used in an array
 			$table.= '

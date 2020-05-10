@@ -181,6 +181,8 @@ function run()
 
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
 					$id = $item->id;
 					unset($item);
@@ -703,6 +705,7 @@ function websites_form($item)
 	$navibars->add_tab(t(7, "Settings"));
 
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
 
 	$navibars->add_tab_content_row(

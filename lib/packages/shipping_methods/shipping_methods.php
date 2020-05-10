@@ -147,13 +147,17 @@ function run()
         case 'create':
 		case 'edit':
 			if(!empty($_REQUEST['id']))
-				$object->load(intval($_REQUEST['id']));
+            {
+                $object->load(intval($_REQUEST['id']));
+            }
 
 			if(isset($_REQUEST['form-sent']))
 			{
 				$object->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$object->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -335,7 +339,8 @@ function shipping_methods_form($object)
 	$navibars->add_tab(t(43, "Main"), "", 'fa fa-database');
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $object->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $object->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
 	    array(

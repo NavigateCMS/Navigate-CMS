@@ -123,6 +123,8 @@ function run()
 								
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
 					$id = $item->id;
 					unset($item);
@@ -287,109 +289,131 @@ function feeds_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 																														
-	$navibars->add_tab_content_row(array(	'<label>'.t(331, 'Format').'</label>',
-											$naviforms->selectfield('format', 
-												array(
-														0 => 'RSS2.0',
-														1 => 'RSS0.91',
-														2 => 'ATOM',
-														3 => 'ATOM0.3',
-														4 => 'OPML',
-														5 => 'MBOX',
-														6 => 'HTML'
-													),
-												array(
-														0 => 'RSS 2.0 ('.t(333, 'Recommended').')',
-														1 => 'RSS 0.91',
-														2 => 'ATOM',
-														3 => 'ATOM 0.3',
-														4 => 'OPML',
-														5 => 'mBox',
-														6 => 'HTML'
-													),
-												$item->format
-											)
-										)
-									);										
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(331, 'Format').'</label>',
+            $naviforms->selectfield('format',
+                array(
+                        0 => 'RSS2.0',
+                        1 => 'RSS0.91',
+                        2 => 'ATOM',
+                        3 => 'ATOM0.3',
+                        4 => 'OPML',
+                        5 => 'MBOX',
+                        6 => 'HTML'
+                    ),
+                array(
+                        0 => 'RSS 2.0 ('.t(333, 'Recommended').')',
+                        1 => 'RSS 0.91',
+                        2 => 'ATOM',
+                        3 => 'ATOM 0.3',
+                        4 => 'OPML',
+                        5 => 'mBox',
+                        6 => 'HTML'
+                    ),
+                $item->format
+            )
+        )
+    );
 									
-	$navibars->add_tab_content_row(array(	'<label>'.t(335, 'Entries').'</label>',
-											$naviforms->selectfield('entries', 
-												array(
-														0 => 10,
-														1 => 15,
-														2 => 20,
-														3 => 25,
-														4 => 50
-													),
-												array(
-														0 => 10,
-														1 => 15,
-														2 => 20,
-														3 => 25,
-														4 => 50
-													),
-												$item->entries
-											)
-										)
-									);	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(335, 'Entries').'</label>',
+            $naviforms->selectfield('entries',
+                array(
+                        0 => 10,
+                        1 => 15,
+                        2 => 20,
+                        3 => 25,
+                        4 => 50
+                    ),
+                array(
+                        0 => 10,
+                        1 => 15,
+                        2 => 20,
+                        3 => 25,
+                        4 => 50
+                    ),
+                $item->entries
+            )
+        )
+    );
 									
-	$navibars->add_tab_content_row(array(	'<label>'.t(336, 'Display').'</label>',
-											$naviforms->selectfield('content', 
-												array(
-														0 => 'title',
-														1 => 'resume',
-														2 => 'content'
-													),
-												array(
-														0 => t(67, 'Title'),
-														1 => t(337, 'Summary'),
-														2 => t(9, 'Content')
-													),
-												$item->content
-											)
-										)
-									);																																									
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(336, 'Display').'</label>',
+            $naviforms->selectfield('content',
+                array(
+                        0 => 'title',
+                        1 => 'resume',
+                        2 => 'content'
+                    ),
+                array(
+                        0 => t(67, 'Title'),
+                        1 => t(337, 'Summary'),
+                        2 => t(9, 'Content')
+                    ),
+                $item->content
+            )
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(157, 'Image').'</label>',
-											$naviforms->dropbox('image', $item->image, 'image'),
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(157, 'Image').'</label>',
+			$naviforms->dropbox('image', $item->image, 'image'),
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
-											$naviforms->selectfield('permission', 
-												array(
-														0 => 0,
-														1 => 1,
-														2 => 2
-													),
-												array(
-														0 => t(69, 'Published'),
-														1 => t(70, 'Private'),
-														2 => t(81, 'Hidden')
-													),
-												$item->permission,
-												'',
-												false,
-												array(
-														0 => t(360, 'Visible to everybody'),
-														1 => t(359, 'Visible only to Navigate CMS users'),
-														2 => t(358, 'Hidden to everybody')												
-												)
-											)
-										)
-									);	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(68, 'Status').'</label>',
+            $naviforms->selectfield('permission',
+                array(
+                        0 => 0,
+                        1 => 1,
+                        2 => 2
+                    ),
+                array(
+                        0 => t(69, 'Published'),
+                        1 => t(70, 'Private'),
+                        2 => t(81, 'Hidden')
+                    ),
+                $item->permission,
+                '',
+                false,
+                array(
+                        0 => t(360, 'Visible to everybody'),
+                        1 => t(359, 'Visible only to Navigate CMS users'),
+                        2 => t(358, 'Hidden to everybody')
+                )
+            )
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(65, 'Enabled').'</label>',
-											$naviforms->checkbox('enabled', $item->enabled),
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(65, 'Enabled').'</label>',
+			$naviforms->checkbox('enabled', $item->enabled),
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(332, 'Views').'</label>',
-											intval($item->views),
-										));						
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(332, 'Views').'</label>',
+			intval($item->views),
+        )
+    );
 
 	
 	$navibars->add_tab(t(54, "Text").' / '.t(74, "Paths"));
@@ -406,21 +430,29 @@ function feeds_form($item)
 	}
 	$lang_selector[] = '</div>';
 	
-	$navibars->add_tab_content_row(array(	'<label>'.t(63, 'Languages').'</label>',
-											implode("\n", $lang_selector)
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(63, 'Languages').'</label>',
+			implode("\n", $lang_selector)
+        )
+    );
 
 	foreach($website->languages_list as $lang_code)
 	{		
 		$navibars->add_tab_content('<div class="language_fields" id="language_fields_'.$lang_code.'" style=" display: none; ">');
 		
-		$navibars->add_tab_content_row(array(	'<label>'.t(67, 'Title').'</label>',
-												$naviforms->textfield('title-'.$lang_code, @$item->dictionary[$lang_code]['title'])
-											));		
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(67, 'Title').'</label>',
+				$naviforms->textfield('title-'.$lang_code, @$item->dictionary[$lang_code]['title'])
+            )
+        );
 											
 		$open_live_site = '';												
 		if(!empty($item->paths[$lang_code]))
-			$open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang_code].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
+        {
+            $open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang_code].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
+        }
 											
 											
 		$navibars->add_tab_content_row(
@@ -439,9 +471,12 @@ function feeds_form($item)
 			)
 		);
 
-		$navibars->add_tab_content_row(array(	'<label>'.t(334, 'Description').'</label>',
-												$naviforms->textarea('description-'.$lang_code, @$item->dictionary[$lang_code]['description'])
-											));													
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(334, 'Description').'</label>',
+				$naviforms->textarea('description-'.$lang_code, @$item->dictionary[$lang_code]['description'])
+            )
+        );
 											
 		$navibars->add_tab_content('</div>');												
 										
@@ -475,7 +510,9 @@ function feeds_form($item)
 		{
 		    var caret_position = null;
             if($(el).is("input") && $(el).is(":focus"))
+            {
                 caret_position = $(el).caret();
+            }
 
 			var path = $(el).val();
 			

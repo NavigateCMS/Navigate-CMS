@@ -138,11 +138,15 @@ class block
 
         $this->categories 	= '';
         if(!empty($_REQUEST['categories']))
+        {
             $this->categories	= explode(',', $_REQUEST['categories']);
+        }
 
         $this->exclusions 	= '';
         if(!empty($_REQUEST['exclusions']))
+        {
             $this->exclusions	= explode(',', $_REQUEST['exclusions']);
+        }
 
         if($_REQUEST['all_categories']=='1' || (is_array($_REQUEST['all_categories']) && $_REQUEST['all_categories'][0] == '1'))
         {
@@ -161,7 +165,9 @@ class block
 		$this->action			= array();
 
         if(empty($this->class))
+        {
             $this->class = 'block';
+        }
 
         switch($this->class)
         {
@@ -178,11 +184,15 @@ class block
                         $pos = array_search("poll-answers-table-row-".$fcode, $answers_order);
 
                         if($pos===false)
+                        {
                             $pos = $fcode;
+                        }
 
                         $fval = trim($fval);
                         if(empty($fval))
+                        {
                             continue;
+                        }
 
                         $this->trigger[$lang][$pos] = array(
                             'title' => $fval,

@@ -103,6 +103,8 @@ function run()
 				$item->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$item->save();
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -228,32 +230,52 @@ function functions_form($item)
 	$navibars->add_tab(t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $item->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
-	$navibars->add_tab_content_row(array(	'<label>ID</label>',
-											'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>' ));														
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>ID</label>',
+			'<span>'.(!empty($item->id)? $item->id : t(52, '(new)')).'</span>'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(237, 'Code').'</label>',
-											$naviforms->textfield('codename', $item->codename),
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(237, 'Code').'</label>',
+			$naviforms->textfield('codename', $item->codename),
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(242, 'Icon').'</label>',
-											$naviforms->textfield('icon', $item->icon),
-											'<img src="'.NAVIGATE_URL.'/'.$item->icon.'" align="absmiddle" />'
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(242, 'Icon').'</label>',
+			$naviforms->textfield('icon', $item->icon),
+			'<img src="'.NAVIGATE_URL.'/'.$item->icon.'" align="absmiddle" />'
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>#'.t(67, 'Title').' (lid)</label>',
-											$naviforms->textfield('lid', $item->lid),
-											(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.t($item->lid, $item->lid).'</strong></em>')
-										));																				
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>#'.t(67, 'Title').' (lid)</label>',
+			$naviforms->textfield('lid', $item->lid),
+			(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.t($item->lid, $item->lid).'</strong></em>')
+        )
+    );
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(245, 'Notes').'</label>',
-											$naviforms->textarea('notes', $item->notes),
-										));												
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(245, 'Notes').'</label>',
+			$naviforms->textarea('notes', $item->notes),
+        )
+    );
 										
-	$navibars->add_tab_content_row(array(	'<label>'.t(65, 'Enabled').'</label>',
-											$naviforms->checkbox('enabled', $item->enabled),
-										));	
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(65, 'Enabled').'</label>',
+			$naviforms->checkbox('enabled', $item->enabled),
+        )
+    );
 										
 
 	$navibars->add_tab(t(200, "Options"));

@@ -128,19 +128,25 @@ function run()
         case 'create':
 		case 'edit':
 			if(!empty($_REQUEST['id']))
-				$object->load(intval($_REQUEST['id']));
+            {
+                $object->load(intval($_REQUEST['id']));
+            }
 
 			if(isset($_REQUEST['form-sent']))
 			{
 				$object->load_from_post();
 				try
 				{
+                    naviforms::check_csrf_token();
+
 					$object->save();
                     property::save_properties_from_post('payment_method', $object->id);
 
                     // set block order
                     if(!empty($_REQUEST['payment_methods-order']))
+                    {
                         payment_method::reorder($_REQUEST['payment_methods-order']);
+                    }
 
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
@@ -325,7 +331,8 @@ function payment_methods_form($object)
 	$navibars->add_tab(t(43, "Main"), "", 'fa fa-database');
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
-	$navibars->add_tab_content($naviforms->hidden('id', $object->id));	
+	$navibars->add_tab_content($naviforms->hidden('id', $object->id));
+    $navibars->add_tab_content($naviforms->csrf_token());
 	
 	$navibars->add_tab_content_row(
 	    array(
