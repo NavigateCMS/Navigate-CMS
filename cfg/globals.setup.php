@@ -2,6 +2,12 @@
 /* NAVIGATE */
 /* Globals configuration file */
 
+// prevent running this file directly
+if(count(get_included_files()) ==1)
+{
+    exit;
+}
+
 /* App installation details */
 define('APP_NAME', 'Navigate CMS');
 define('APP_VERSION', '{APP_VERSION}');
