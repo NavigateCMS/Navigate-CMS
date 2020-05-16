@@ -446,15 +446,17 @@ function navigate_install_configuration()
     $app_owner_default = substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.'));
     $app_owner_default = str_replace('www.', '', $app_owner_default);
 
+    $_REQUEST['APP_OWNER'] = navigate_simple_xss_cleaner($_REQUEST['APP_OWNER']);
+
 	$defaults = array(
 		'APP_OWNER' 		=> (empty($_REQUEST['APP_OWNER']))? $app_owner_default : $_REQUEST['APP_OWNER'],
 		'APP_REALM' 		=> 'NaviWebs-NaviGate',		
 
-		'NAVIGATE_PARENT'	=> (empty($_REQUEST['NAVIGATE_PARENT']))? $navigate_parent_url : $_REQUEST['NAVIGATE_PARENT'],
-		'NAVIGATE_PATH'		=> (empty($_REQUEST['NAVIGATE_PATH']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'] : $_REQUEST['NAVIGATE_PATH'],
+		'NAVIGATE_PARENT'	=> $navigate_parent_url,
+		'NAVIGATE_PATH'		=> $navigate_parent_folder . $_SESSION['NAVIGATE_FOLDER'],
 		'NAVIGATE_FOLDER'	=> $_SESSION['NAVIGATE_FOLDER'],
-		'NAVIGATE_PRIVATE'	=> (empty($_REQUEST['NAVIGATE_PRIVATE']))? $navigate_parent_folder.$_SESSION['NAVIGATE_FOLDER'].'/private' :  $_REQUEST['NAVIGATE_PRIVATE'],
-		'NAVIGATE_MAIN'		=> (empty($_REQUEST['NAVIGATE_MAIN']))? 'navigate.php' : $_REQUEST['NAVIGATE_MAIN'],
+		'NAVIGATE_PRIVATE'	=> $navigate_parent_folder . $_SESSION['NAVIGATE_FOLDER'] . '/private',
+		'NAVIGATE_MAIN'		=> 'navigate.php',
 		
 		'PDO_HOSTNAME'		=> (empty($_REQUEST['PDO_HOSTNAME']))? 'localhost' : $_REQUEST['PDO_HOSTNAME'],		
 		'PDO_PORT'		    => (empty($_REQUEST['PDO_PORT']))? '3306' : $_REQUEST['PDO_PORT'],
@@ -616,30 +618,6 @@ function navigate_install_configuration()
                     <input style=" width: auto; " type="checkbox" name="NAVIGATECMS_STATS" id="NAVIGATECMS_STATS" value="true" <?php echo ($defaults['NAVIGATECMS_STATS']? 'checked="checked"' : '');?> /><label for="NAVIGATECMS_STATS"><?php echo $lang['app_statistics'];?></label>
                 </div>
             </div>
-            <!--
-            <div id="tabs-2">
-                <div>
-                    <label>Absolute path to application</label>
-                    <input type="text" name="NAVIGATE_PATH" value="<?php echo $defaults['NAVIGATE_PATH'];?>" />
-                </div>
-                <div>
-                    <label>Absolute path to private files</label>
-                    <input type="text" name="NAVIGATE_PRIVATE" value="<?php echo $defaults['NAVIGATE_PRIVATE'];?>" />
-                </div>        
-                <div>
-                    <label>Absolute URL to application parent folder</label>
-                    <input type="text" name="NAVIGATE_PARENT" value="<?php echo $defaults['NAVIGATE_PARENT'];?>" disabled="disabled" />
-                </div>    
-                <div>
-                    <label>Relative URL to application</label>
-                    <input type="text" name="NAVIGATE_URL" value="<?php echo $defaults['NAVIGATE_URL'];?>" />
-                </div>        
-                <div>
-                    <label>Application core (relative)</label>
-                    <input type="text" name="NAVIGATE_MAIN" value="<?php echo $defaults['NAVIGATE_MAIN'];?>" />
-                </div>      
-            </div>
-            -->            
             <div id="tabs-2">
                 <div>
                     <label><?php echo $lang['driver'];?></label>
@@ -1716,6 +1694,13 @@ function process()
 			break;
 	}
 	
+}
+
+function navigate_simple_xss_cleaner($input_str)
+{
+    $return_str = str_replace( array('<','>',"'",'"',')','('), array('','','&apos;','&#x22;','&#x29;','&#x28;'), $input_str );
+    $return_str = str_ireplace( '%3Cscript', '', $return_str );
+    return $return_str;
 }
 
 function navigate_favicon()
