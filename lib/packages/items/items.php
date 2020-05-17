@@ -942,8 +942,11 @@ function run()
 			break;			
 			
 		case 'autosave':
-			
-			if(!empty($_REQUEST['id']))
+            if(!naviforms::check_csrf_token('header'))
+            {
+                echo 'false';
+            }
+			else if(!empty($_REQUEST['id']))
 			{					
 				$iDictionary = array();
 				
@@ -1307,7 +1310,9 @@ function items_form($item)
 
         $extra_actions[] = '<a href="#" onclick="navigate_items_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>';
 		if($user->permission("items.create") != 'false')
+        {
             $extra_actions[] = '<a href="?fid=items&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+        }
 
         $layout->add_script('
             function navigate_delete_dialog()

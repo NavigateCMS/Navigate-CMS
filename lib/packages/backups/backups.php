@@ -201,9 +201,12 @@ function backups_list()
 	
 	$navibars->title(t(329, 'Backups'));
 
+	// TODO
+    /*
     $navibars->add_actions(
         array(	'<a href="#" onclick="navigate_restore_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(412, 'Restore').'</a> ' )
     );
+    */
 
 	$navibars->add_actions(
 	    array(
@@ -259,15 +262,19 @@ function backups_form($item)
 	{
         if($item->status=='completed')
         {
+            // TODO
+            /*
             $navibars->add_actions(		
 	            array(	'<a href="#" onclick="navigate_restore_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(412, 'Restore').'</a> ' )
             );
+            */
         }
 
         $navibars->add_actions(		
-	        array(  '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-	        		'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>' 
-	        		)
+	        array(
+	            '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+	        	'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
 		);		
 		
 		$delete_html = array();
@@ -298,9 +305,13 @@ function backups_form($item)
 		$navibars->add_content(implode("\n", $delete_html));
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=backups&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=backups&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        (!empty($item->id)? '<a href="?fid=backups&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+								'<a href="?fid=backups&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 
 	$navibars->form();
 
@@ -346,23 +357,34 @@ function backups_form($item)
     }
 
     // show current backup status
-    $navibars->add_tab_content_row(array(	'<label>'.t(68, 'Status').'</label>',
-                                            backup::status($item->status),
-                                        ));
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(68, 'Status').'</label>',
+            backup::status($item->status),
+        )
+    );
 
     if(empty($item->status))
     {
         $estimated_size = backup::estimated_size();
 
         $navibars->add_tab_content_row(array('<br />'));
-        $navibars->add_tab_content_row(array(	'<label>'.t(420, 'Estimated size').'</label>',
-											    core_bytes($estimated_size),
-										));
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(420, 'Estimated size').'</label>',
+				core_bytes($estimated_size),
+            )
+        );
     }
     else if($item->status != 'completed' && $item->status != 'error') // process running, no errors found
     {
-        $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                                '<button id="backup_refresh_status"><img src="'.NAVIGATE_URL.'/img/icons/silk/reload.png" align="absmiddle" /> '.t(423, "Refresh").'</button>'));
+        $navibars->add_tab_content_row(
+            array(
+                '<label>&nbsp;</label>',
+                '<button id="backup_refresh_status"><img src="'.NAVIGATE_URL.'/img/icons/silk/reload.png" align="absmiddle" /> '.t(423, "Refresh").'</button>'
+            )
+        );
+
         $layout->add_script('
             $("#backup_refresh_status").bind("click", function(e)
             {
@@ -375,17 +397,25 @@ function backups_form($item)
     else if($item->status == 'completed') // process complete, no errors
     {
 		$navibars->add_tab_content_row(array('<br />'));
-        $navibars->add_tab_content_row(array(	'<label>'.t(409, 'Size').'</label>',
-											    core_bytes($item->size)
-										));    	
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(409, 'Size').'</label>',
+				core_bytes($item->size)
+            )
+        );
 
-        $navibars->add_tab_content_row(array(	'<label>'.t(421, 'Created on').'</label>',
-                                                core_ts2date($item->date_created, true)
-										));
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(421, 'Created on').'</label>',
+                core_ts2date($item->date_created, true)
+            )
+        );
 
-        $navibars->add_tab_content_row(array(   '<label>'.t(82, 'File').'</label>',
-                                                '<a href="?fid=backups&act=download&id='.$item->id.'">'.$item->file.'</a>'
-                                       )
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(82, 'File').'</label>',
+                '<a href="?fid=backups&act=download&id='.$item->id.'">'.$item->file.'</a>'
+            )
         );
 
     }

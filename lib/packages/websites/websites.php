@@ -286,7 +286,11 @@ function run()
 			break;
 
         case 'reset_statistics':
-            if($user->permission('websites.edit')=='true')
+            if(!naviforms::check_csrf_token('header'))
+            {
+                echo 'false';
+            }
+            else if($user->permission('websites.edit')=='true')
             {
 				$website_id = trim($_REQUEST['website']);
 				$website_id = intval($website_id);
@@ -306,7 +310,11 @@ function run()
 			$new = trim($_REQUEST['new']);
 			$website_id = trim($_REQUEST['website']);
 
-			if(!empty($old) && !empty($new))
+            if(!naviforms::check_csrf_token('header'))
+            {
+                echo 'false';
+            }
+			else if(!empty($old) && !empty($new))
 			{
 				// replace occurrences in nv_webdictionary
 				$ok = $DB->execute('
@@ -354,7 +362,11 @@ function run()
 
 			$authenticated = $user->authenticate($user->username, $password);
 
-			if($authenticated)
+            if(!naviforms::check_csrf_token('header'))
+            {
+                echo 'false';
+            }
+			else if($authenticated)
 			{
 				// remove all content except Webusers and Files
 				@set_time_limit(0);
@@ -539,8 +551,8 @@ function websites_form($item)
 	            {
 	                $("#navigate_replace_urls_dialog").dialog({
 	                        resizable: true,
-	                        height: 180,
-	                        width: 520,
+	                        height: 190,
+	                        width: 550,
 	                        modal: true,
 	                        title: "'.t(603, 'Replace URLs').'",
 	                        buttons: {
@@ -608,7 +620,9 @@ function websites_form($item)
                                         $("a[action=\'navigate_remove_website_data\']").parent().fadeOut();
                                     }
                                     else
+                                    {
                                         navigate_notification("'.t(56, "Unexpected error.").' " + data, true);
+                                    }
                                 }
                             );
                         },

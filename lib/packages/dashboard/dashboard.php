@@ -11,9 +11,12 @@ function run()
             switch($_REQUEST['oper'])
             {
                 case 'settings_panels':	// save dashboard panels state
-                    $dashboard_panels = $_REQUEST['dashboard_panels'];
-                    $user->setting('dashboard-panels', json_encode($dashboard_panels));
-                    echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $dashboard_panels = $_REQUEST['dashboard_panels'];
+                        $user->setting('dashboard-panels', json_encode($dashboard_panels));
+                        echo json_encode(true);
+                    }
                     core_terminate();
                     break;
 

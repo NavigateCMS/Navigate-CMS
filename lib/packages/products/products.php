@@ -985,7 +985,11 @@ function run()
 
 
 		case 'autosave':
-			if(!empty($_REQUEST['id']))
+            if(!naviforms::check_csrf_token('header'))
+            {
+                echo 'false';
+            }
+			else if(!empty($_REQUEST['id']))
 			{					
 				$iDictionary = array();
 				
@@ -1075,15 +1079,18 @@ function run()
         case 'products_order':
             if(!empty($_POST['products-order']))
             {
-                // save new order
-                $response = product::reorder($_POST['products-order']);
-                if($response!==true)
+                if(naviforms::check_csrf_token('header'))
                 {
-                    echo $response['error'];
-                }
-                else
-                {
-                    echo 'true';
+                    // save new order
+                    $response = product::reorder($_POST['products-order']);
+                    if($response!==true)
+                    {
+                        echo $response['error'];
+                    }
+                    else
+                    {
+                        echo 'true';
+                    }
                 }
             }
             else    // show ordered list
