@@ -2,6 +2,7 @@ var navigatecms = {
     forms: {
         datepicker:		{ }
     },
+    csrf_token: null,
     beforeunload: false,
     resize_callbacks: []
 };
@@ -2142,20 +2143,27 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                         case "BrowserNotSupported":
                             alert(navigate_lang_dictionary[401]);
                             break;
+
                         case "TooManyFiles":
                             alert(navigate_lang_dictionary[402]);
                             break;
+
                         case "FileTooLarge":
                             // program encountered a file whose size is greater than maxfilesize
                             // FileTooLarge also has access to the file which was too large
                             // use file.name to reference the filename of the culprit file
                             alert(navigate_lang_dictionary[403] + ': ' + file.name);
                             break;
+
                         default:
                             if(file && file.name)
+                            {
                                 alert(err + ': ' + file.name);
+                            }
                             else
+                            {
                                 alert(err);
+                            }
                             break;
                     }
                 },
@@ -2167,19 +2175,32 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                     // user dragging files over #dropzone
                     navigate_status(navigate_lang_dictionary[260], "img/icons/misc/dropbox.png", true); // Drag & Drop files now to upload them
                     if(callbacks.dragOver)
+                    {
                         callbacks.dragOver();
+                    }
                 },
                 dragleave: function()
                 {
                     // user dragging files out of #dropzone
                     navigate_status(navigate_lang_dictionary[42], "ready"); // ready
                     if(callbacks.dragLeave)
+                    {
                         callbacks.dragLeave();
+                    }
+                },
+                sending: function(file, xhr, formData)
+                {
+                    // Will send the filesize along with the file as POST data.
+                    formData.append("filesize", file.size);
+                    formData.append("_nv_csrf_token", navigatecms.csrf_token);
                 },
                 processing: function(file)
                 {
                     var fname = file.fileName;
-                    if(!fname)  fname = file.name;
+                    if(!fname)
+                    {
+                        fname = file.name;
+                    }
 
                     navigate_status(navigate_lang_dictionary[261] + ": " + fname, "loader"); // uploading
                     $("link[rel*=shortcut]").remove().clone().appendTo("head").attr("href", "img/loader.gif");
@@ -2191,14 +2212,18 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                     }
 
                     if(callbacks.uploadStarted)
+                    {
                         callbacks.uploadStarted(file);
+                    }
                 },
                 complete: function(file)
                 {
                     // response is the data you got back from server in JSON format.
                     
                     if(!file || !file.xhr)
+                    {
                         return false;
+                    }
                     
                     var response = $.parseJSON(file.xhr.response);
 
@@ -2209,11 +2234,19 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
 
                     var uploaded = [];
 
-                    if(response.filename)	uploaded = response;
-                    else if(response[0])	uploaded = response[0];
+                    if(response.filename)
+                    {
+                        uploaded = response;
+                    }
+                    else if(response[0])
+                    {
+                        uploaded = response[0];
+                    }
 
-                    if(uploaded.error)
-                        navigate_notification(navigate_lang_dictionary[262] + ": " + uploaded.filename); // Error uploading file
+                    if(!uploaded || !uploaded.filename || uploaded.error)
+                    {
+                        navigate_notification(navigate_lang_dictionary[262] + ": " + uploaded.filename);
+                    } // Error uploading file
                     else
                     {
                         $.ajax(
@@ -2223,7 +2256,9 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                             success: function(data)
                             {
                                 if(callbacks.afterOne)
+                                {
                                     callbacks.afterOne(data);
+                                }
                             },
                             type: "post",
                             dataType: "json",
@@ -2258,7 +2293,9 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                     navigate_status(navigate_lang_dictionary[42], "ready"); // ready
 
                     if(callbacks.afterAll)
+                    {
                         callbacks.afterAll();
+                    }
                 },
                 previewTemplate: "", // remove default template
                 addedfile: function(file) {},

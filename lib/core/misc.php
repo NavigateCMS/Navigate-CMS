@@ -965,4 +965,5 @@ function generate_password($length = 8, $add_dashes = false, $available_sets = '
     return $dash_str;
 }
 
+
 ?>

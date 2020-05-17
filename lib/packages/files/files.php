@@ -20,7 +20,9 @@ function run()
 			{
                 $tmp_name = $_REQUEST['tmp_name'];
                 if($tmp_name=="{{BASE64}}")
+                {
                     $tmp_name = base64_encode($_REQUEST['name']);
+                }
 
                 $file = file::register_upload(
                     $tmp_name,
@@ -131,7 +133,9 @@ function run()
                         $item->enabled = intval($_POST['enabled']);
                         $item->groups = $_POST['groups'];
                         if($item->access < 3)
+                        {
                             $item->groups = array();
+                        }
                         $status = $item->save();
                         echo json_encode($status);
                     }
@@ -159,7 +163,9 @@ function run()
                             $lcode = $language['code'];
 
                             if(!isset($_REQUEST['titles'][$lcode]))
+                            {
                                 break;
+                            }
 
                             $item->title[$lcode]	= $_REQUEST['titles'][$lcode];
                             $item->description[$lcode]	= $_REQUEST['descriptions'][$lcode];
@@ -183,11 +189,14 @@ function run()
                     $item->load($_REQUEST['id']);
                     if(!empty($_POST))
                     {
-                        $item->focalpoint = $_REQUEST['top'].'#'.$_REQUEST['left'];
-                        $status = $item->save();
-                        // remove cached thumbnails
-                        file::thumbnails_remove($item->id);
-                        echo json_encode($status);
+                        if(naviforms::check_csrf_token('header'))
+                        {
+                            $item->focalpoint = $_REQUEST['top'].'#'.$_REQUEST['left'];
+                            $status = $item->save();
+                            // remove cached thumbnails
+                            file::thumbnails_remove($item->id);
+                            echo json_encode($status);
+                        }
                     }
                     else
                     {
@@ -254,34 +263,37 @@ function run()
             {
                 if($_FILES['file-replace']['error'] == 0)
                 {
-                    $destination = NAVIGATE_PRIVATE.'/'.$item->website.'/files/'.$item->id;
-                    $filesize = filesize($_FILES['file-replace']['tmp_name']);
-
-                    if($filesize > 0) // not an empty file, continue
+                    if(naviforms::check_csrf_token())
                     {
-                        @unlink($destination);
-                        $item->size = $filesize;
+                        $destination = NAVIGATE_PRIVATE.'/'.$item->website.'/files/'.$item->id;
+                        $filesize = filesize($_FILES['file-replace']['tmp_name']);
 
-                        if(move_uploaded_file($_FILES['file-replace']['tmp_name'], $destination))
+                        if($filesize > 0) // not an empty file, continue
                         {
-                            $mime = file::getMime($_FILES['file-replace']['name'], $destination);
-                            $item->name = $_FILES['file-replace']['name'];
-                            $item->mime = $mime[0];
-                            $item->type = $mime[1];
-                            $item->date_added = core_time();
-                            $item->uploaded_by = (empty($user->id) ? '0' : $user->id);
-                            $item->refresh(); // including save
+                            @unlink($destination);
+                            $item->size = $filesize;
 
-                            $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+                            if(move_uploaded_file($_FILES['file-replace']['tmp_name'], $destination))
+                            {
+                                $mime = file::getMime($_FILES['file-replace']['name'], $destination);
+                                $item->name = $_FILES['file-replace']['name'];
+                                $item->mime = $mime[0];
+                                $item->type = $mime[1];
+                                $item->date_added = core_time();
+                                $item->uploaded_by = (empty($user->id) ? '0' : $user->id);
+                                $item->refresh(); // including save
+
+                                $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+                            }
+                            else
+                            {
+                                $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                            }
                         }
                         else
                         {
                             $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
                         }
-                    }
-                    else
-                    {
-                        $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
                     }
                 }
                 else
@@ -512,7 +524,10 @@ function files_browser($parent, $search="")
 					rename: true,
 					preinit: attachCallbacks,
 					flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
-			        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap"
+			        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap",
+			        multipart_params : {
+                        "_nv_csrf_token" : "'.$_SESSION['csrf_token'].'"
+                    }
 				});
 
 				function attachCallbacks(Uploader)
@@ -740,11 +755,13 @@ function files_item_properties($item)
             e.stopPropagation();
             e.preventDefault();
             $(this).parent().find("form").remove();
-            $(this).after(\'<form action="?fid=files&act=edit&op=replace_file&id='.$item->id.'" enctype="multipart/form-data" method="post"><input type="file" name="file-replace" style=" display: none;" /></form>\');
+            $(this).after(\'<form action="?fid=files&act=edit&op=replace_file&id='.$item->id.'" enctype="multipart/form-data" method="post"><input type="file" name="file-replace" style=" display: none;" />'.$naviforms->csrf_token().'</form>\');
             $(this).next().find("input").on("change", function()
             {
                 if($(this).val()!="")
+                {
                     $(this).parent().submit();
+                }
             });
             $(this).next().find("input").trigger("click");
     
@@ -1011,12 +1028,16 @@ function files_item_properties($item)
 
         $original_image_link = NAVIGATE_DOWNLOAD.'?id='.$item->id.'&disposition=inline&sid='.session_id().'&seed='.time();
         if(strpos(NAVIGATE_DOWNLOAD, '//')==0)
+        {
             $original_image_link = $website->protocol.substr($original_image_link, 2);
+        }
 
         // Photopea only works with https, so the "edit with Photopea" button will only appear if the website supports the protocol
         $photopea_upload = NAVIGATE_URL.'/navigate_upload.php?wid='.$website->id.'&engine=photopea&id='.$item->id.'&session_id='.session_id().'&seed=';
         if(strpos($photopea_upload, '//')==0)
+        {
             $photopea_upload = $website->protocol.substr($original_image_link, 2);
+        }
         $photopea_upload = str_replace('http:', 'https:', $photopea_upload);
 
         $navibars->add_tab_content_row(array(

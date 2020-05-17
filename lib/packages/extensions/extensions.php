@@ -22,20 +22,26 @@ function run()
             break;
 
         case 'disable':
-            $extension = new extension();
-            $extension->load($_REQUEST['extension']);
-            $extension->enabled = 0;
-            $ok = $extension->save();
-            echo json_encode($ok);
+            if(naviforms::check_csrf_token('header'))
+            {
+                $extension = new extension();
+                $extension->load($_REQUEST['extension']);
+                $extension->enabled = 0;
+                $ok = $extension->save();
+                echo json_encode($ok);
+            }
             core_terminate();
             break;
 
         case 'enable':
-            $extension = new extension();
-            $extension->load($_REQUEST['extension']);
-            $extension->enabled = 1;
-            $ok = $extension->save();
-            echo json_encode($ok);
+            if(naviforms::check_csrf_token('header'))
+            {
+                $extension = new extension();
+                $extension->load($_REQUEST['extension']);
+                $extension->enabled = 1;
+                $ok = $extension->save();
+                echo json_encode($ok);
+            }
             core_terminate();
             break;
 
@@ -54,6 +60,11 @@ function run()
         case 'remove':
             try
             {
+                if(!naviforms::check_csrf_token('header'))
+                {
+                    throw new Exception(t(344, "Security error"));
+                }
+
                 $extension = new extension();
                 $extension->load($_REQUEST['extension']);
                 $status = $extension->delete();
@@ -211,7 +222,11 @@ function run()
         // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
 
         case 'extension_upload':
-            if(isset($_FILES['extension-upload']) && $_FILES['extension-upload']['error']==0  && $user->permission("extensions.install")=="true")
+            if(!naviforms::check_csrf_token())
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(isset($_FILES['extension-upload']) && $_FILES['extension-upload']['error']==0  && $user->permission("extensions.install")=="true")
             {
                 // uncompress ZIP and copy it to the extensions dir
                 $tmp = trim(substr($_FILES['extension-upload']['name'], 0, strpos($_FILES['extension-upload']['name'], '.')));
@@ -408,11 +423,12 @@ function extensions_grid($list)
                     });
                 }
             }
-            $("#extension-upload-button").bind("click", function()
+            
+            $("#extension-upload-button").on("click", function()
             {
                 $("#extension-upload-button").parent().find("form").remove();
-                $("#extension-upload-button").after(\'<form action="?fid=extensions&act=extension_upload" enctype="multipart/form-data" method="post"><input type="file" name="extension-upload" style=" display: none;" /></form>\');
-                $("#extension-upload-button").next().find("input").bind("change", function()
+                $("#extension-upload-button").after(\'<form action="?fid=extensions&act=extension_upload" enctype="multipart/form-data" method="post"><input type="file" name="extension-upload" style=" display: none;" /><input type="hidden" id="_nv_csrf_token" name="_nv_csrf_token" value="\'+navigatecms.csrf_token+\'" /></form>\');
+                $("#extension-upload-button").next().find("input").on("change", function()
                 {
                     if($(this).val()!="")
                         $(this).parent().submit();

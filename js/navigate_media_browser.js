@@ -1023,10 +1023,14 @@ function navigate_media_browser_focalpoint(file_id)
             focalpoint_left = ((focalpoint_left/100) * $(img).width()) - ($(".focalpoint_select").width() / 2);
 
             if(focalpoint_top < 0)
+            {
                 focalpoint_top = ($(img).height() / 2) - ($(".focalpoint_select").height() / 2);
+            }
 
             if(focalpoint_left < 0)
+            {
                 focalpoint_left = ($(img).width() / 2) - ($(".focalpoint_select").width() / 2);
+            }
 
             $(".focalpoint_select")
                 .css({
@@ -1050,7 +1054,9 @@ function navigate_media_browser_focalpoint(file_id)
                             function(result)
                             {
                                 if(result=='true')
+                                {
                                     $(ui.helper).effect("highlight", 'slow');
+                                }
                             }
                         );
                     }

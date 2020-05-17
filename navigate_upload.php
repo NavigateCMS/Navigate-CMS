@@ -5,7 +5,9 @@
 header("Content-Type: application/json");
 
 if(empty($_REQUEST['session_id']))
+{
     die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to retrieve session_id."}, "id" : "id"}');
+}
 
 session_id($_REQUEST['session_id']);
 
@@ -25,13 +27,19 @@ global $website;
 // create database connection
 $DB = new database();
 if(!$DB->connect())
-	die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
+{
+    die(APP_NAME.' # ERROR<br /> '.$DB->get_last_error());
+}
 
 // session checking
 if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 {
 	$DB->disconnect();
 	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "No user logged in."}, "id" : "id"}');
+}
+else if(!naviforms::check_csrf_token('_nv_csrf_token'))
+{
+    die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Security error."}, "id" : "id"}');
 }
 else
 {
@@ -42,9 +50,13 @@ else
 // load the working website
 $website = new Website();
 if(!empty($_SESSION['website_active']))
-	$website->load($_SESSION['website_active']);
+{
+    $website->load($_SESSION['website_active']);
+}
 else	
-	$website->load(); // load the first available
+{
+    $website->load();
+} // load the first available
 
 // force loading user permissions before disconnecting from the database
 $user->permission("");
@@ -235,9 +247,13 @@ if($user->permission("files.upload")=="true")
             );
 
             if(!empty($file))
+            {
                 echo json_encode(array('location' => file::file_url($file->id)));
+            }
             else
+            {
                 echo json_encode(false);
+            }
 
             $DB->disconnect();
             core_terminate();
@@ -358,7 +374,9 @@ function navigate_upload_remove_temporary($targetDir, $maxFileAge=86400)
 
 			// Remove temp files if they are older than the max age
 			if (preg_match('/\\.tmp$/', $file) && (filemtime($filePath) < time() - $maxFileAge))
-				@unlink($filePath);
+            {
+                @unlink($filePath);
+            }
 		}
 		closedir($dir);
 	}

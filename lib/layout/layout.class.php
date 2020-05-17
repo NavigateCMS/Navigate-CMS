@@ -26,14 +26,11 @@ class layout
         {
 		    $out[] = '<!DOCTYPE html>';
             $out[] = '<!--
-              _   _             _             _          _____ __  __  _____
-             | \ | |           (_)           | |        / ____|  \/  |/ ____|
-             |  \| | __ ___   ___  __ _  __ _| |_ ___  | |    | \  / | (___
-             | . ` |/ _` \ \ / / |/ _` |/ _` | __/ _ \ | |    | |\/| |\___ \
-             | |\  | (_| |\ V /| | (_| | (_| | ||  __/ | |____| |  | |____) |
-             |_| \_|\__,_| \_/ |_|\__, |\__,_|\__\___|  \_____|_|  |_|_____/
-                                   __/ |
-                                  |___/
+ _  _          _           _          ___ __  __ ___ 
+| \| |__ ___ _(_)__ _ __ _| |_ ___   / __|  \/  / __|
+| .` / _` \ V / / _` / _` |  _/ -_) | (__| |\/| \__ \
+|_|\_\__,_|\_/|_\__, \__,_|\__\___|  \___|_|  |_|___/
+                |___/                                
             -->';
 		    $out[] = '<html>';
         }
@@ -267,7 +264,9 @@ class layout
 		if(APP_DEBUG)
 		{
 			foreach($this->styles as $cssfile)
-				$out[] = '<link rel="stylesheet" type="text/css" href="'.$cssfile.'?r='.$current_version->revision.'" />';
+            {
+                $out[] = '<link rel="stylesheet" type="text/css" href="'.$cssfile.'?r='.$current_version->revision.'" />';
+            }
 		}
 		else
 		{
@@ -323,12 +322,18 @@ class layout
             $stylesheet = array_pop($stylesheets);
 
             for($ss=0; $ss < count($stylesheets); $ss++)
+            {
                 @unlink($stylesheets[$ss]);
+            }
 
 			if(!empty($stylesheet))
-				$out[] = '<link rel="stylesheet" type="text/css" href="'.$stylesheet.'?r='.$current_version->revision.'&_='.filemtime($stylesheet).'" />';
+            {
+                $out[] = '<link rel="stylesheet" type="text/css" href="'.$stylesheet.'?r='.$current_version->revision.'&_='.filemtime($stylesheet).'" />';
+            }
 			else			
-				$out[] = '<link rel="stylesheet" type="text/css" href="cache/styles.css?r='.$current_version->revision.'&_='.filemtime('cache/styles.css').'" />';
+            {
+                $out[] = '<link rel="stylesheet" type="text/css" href="cache/styles.css?r='.$current_version->revision.'&_='.filemtime('cache/styles.css').'" />';
+            }
 		}
 		
 		if(APP_DEBUG)
@@ -375,7 +380,9 @@ class layout
                     file_put_contents('cache/scripts.min.jgz', gzencode($scripts_min, 8)); // level 9 causes parsing errors !?
                 }
                 else
-                    file_put_contents('cache/scripts.min.jgz', gzencode($tmp, 8)); // level 9 causes parsing errors !?
+                {
+                    file_put_contents('cache/scripts.min.jgz', gzencode($tmp, 8));
+                } // level 9 causes parsing errors !?
 
 				if(file_exists('cache/scripts.min.jgz'))
 				{
@@ -393,7 +400,9 @@ class layout
             $javascript = array_pop($javascripts);
 
             for($js=0; $js < count($javascripts); $js++)
+            {
                 @unlink($javascripts[$js]);
+            }
 
             if(!empty($javascript) && !APP_FAILSAFE)
             {
@@ -478,6 +487,12 @@ class layout
 				$out[] = '<link rel="stylesheet" type="text/css" href="'.$css_file.'?r='.$current_version->revision.'" />';
 			}
 		}
+
+        // csrf token for ajax requests and uploads
+        $out[] = '<script language="javascript" type="text/javascript">
+                    $.ajaxSetup({ beforeSend: function(xhr) {xhr.setRequestHeader("X-Csrf-Token", "'.$_SESSION['csrf_token'].'"); }});
+                    navigatecms.csrf_token = "'.$_SESSION['csrf_token'].'";
+                 </script>';
 
         return implode("\n", $out);
 	}	
@@ -1319,7 +1334,10 @@ class layout
                     rename: true,
                     preinit: attachCallbacks,
                     flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
-                    silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap"
+                    silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap",
+                    multipart_params: {
+                        "_nv_csrf_token" : "'.$_SESSION['csrf_token'].'"
+                    }
                 });
 
                 function attachCallbacks(Uploader)
@@ -1329,7 +1347,9 @@ class layout
                         var media = $("select[name=media_browser_type]").val();
                         var parent = 0;
                         if(media=="folder")
+                        {
                             parent = navigate_media_browser_parent;
+                        }
 
                         $.ajax(
                         {

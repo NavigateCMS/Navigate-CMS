@@ -806,7 +806,7 @@ class naviforms
 				
 				automatic_uploads: true,
 			    paste_data_images: true,
-				images_upload_url: "navigate_upload.php?engine=tinymce&session_id='.session_id().'&debug",
+				images_upload_url: "navigate_upload.php?engine=tinymce&session_id='.session_id().'",
 				
 				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px 42px 48px 56px 64px", 
                 

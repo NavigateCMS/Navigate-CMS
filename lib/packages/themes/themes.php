@@ -20,34 +20,41 @@ function run()
             break;
 
         case 'remove':
-            // check the theme is not actually used in any website
-            $usages = $DB->query_single(
-                'COUNT(*)',
-                'nv_websites',
-                ' theme = :theme',
-                null,
-                array(
-                    ':theme' => $_REQUEST['theme']
-                )
-            );
-            if($usages == 0)
+            if(!naviforms::check_csrf_token('header'))
             {
-                try
-                {
-                    $theme = new theme();
-                    $theme->load($_REQUEST['theme']);
-                    $status = $theme->delete();
-                    echo json_encode($status);
-                }
-                catch(Exception $e)
-                {
-                    echo $e->getMessage();
-                }
+                echo t(344, "Security error");
             }
             else
             {
-                $status = t(537, "Can't remove the theme because it is currently being used by another website.");
-                echo $status;
+                // check the theme is not actually used in any website
+                $usages = $DB->query_single(
+                    'COUNT(*)',
+                    'nv_websites',
+                    ' theme = :theme',
+                    null,
+                    array(
+                        ':theme' => $_REQUEST['theme']
+                    )
+                );
+                if($usages == 0)
+                {
+                    try
+                    {
+                        $theme = new theme();
+                        $theme->load($_REQUEST['theme']);
+                        $status = $theme->delete();
+                        echo json_encode($status);
+                    }
+                    catch(Exception $e)
+                    {
+                        echo $e->getMessage();
+                    }
+                }
+                else
+                {
+                    $status = t(537, "Can't remove the theme because it is currently being used by another website.");
+                    echo $status;
+                }
             }
             core_terminate();
             break;
@@ -75,7 +82,9 @@ function run()
 
         case 'theme_sample_content_export':
             if(empty($_POST))
+            {
                 $out = themes_sample_content_export_form();
+            }
             else
             {
                 $categories = explode(',', $_POST['categories']);
@@ -160,7 +169,11 @@ function run()
             // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
 
         case 'theme_upload':
-            if(isset($_FILES['theme-upload']) && $_FILES['theme-upload']['error']==0 &&  $user->permission("themes.install")=="true")
+            if(!naviforms::check_csrf_token())
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(isset($_FILES['theme-upload']) && $_FILES['theme-upload']['error']==0 &&  $user->permission("themes.install")=="true")
             {
                 // uncompress ZIP and copy it to the themes dir
                 $tmp = trim(substr($_FILES['theme-upload']['name'], 0, strpos($_FILES['theme-upload']['name'], '.')));
