@@ -58,12 +58,14 @@ function run()
                     }
                     $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 				
-					$DB->queryLimit('id,lid,codename,icon,enabled', 
-									'nv_menus', 
-									$where, 
-									$orderby, 
-									$offset, 
-									$max);
+					$DB->queryLimit(
+					    'id,lid,codename,icon,enabled',
+                        'nv_menus',
+                        $where,
+                        $orderby,
+                        $offset,
+                        $max
+                    );
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
@@ -152,9 +154,13 @@ function functions_list()
 	
 	$navibars->title(t(244, 'Menus'));
 
-	$navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-									'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 	
 	if($_REQUEST['quicksearch']=='true')
     {
@@ -189,9 +195,13 @@ function functions_form($item)
 	$naviforms = new naviforms();
 	
 	if(empty($item->id))
-		$navibars->title(t(244, 'Menus').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(244, 'Menus').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(244, 'Menus').' / '.t(170, 'Edit').' ['.$item->id.']');		
+    {
+        $navibars->title(t(244, 'Menus').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	if(empty($item->id))
 	{
@@ -221,9 +231,13 @@ function functions_form($item)
         ');
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=menus&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=menus&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        (!empty($item->id)? '<a href="?fid=menus&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=menus&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 
 	$navibars->form();
 
@@ -290,7 +304,10 @@ function functions_form($item)
 	$sortable_assigned[] = '<ul id="sortable_assigned" class="connectedSortable">';
 	$sortable_unassigned[] = '<ul id="sortable_unassigned" class="connectedSortable">';	
 	
-	if(empty($item->functions)) $item->functions = array();
+	if(empty($item->functions))
+    {
+        $item->functions = array();
+    }
 	
 	// already included menus on the profile
 	foreach($item->functions as $f)
@@ -300,9 +317,13 @@ function functions_form($item)
 			if($function->id == $f)
 			{
 				if($function->enabled=='1')
-					$sortable_assigned[] = '<li class="ui-state-highlight" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+                {
+                    $sortable_assigned[] = '<li class="ui-state-highlight" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+                }
 				else
-					$sortable_assigned[] = '<li class="ui-state-highlight ui-state-disabled" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+                {
+                    $sortable_assigned[] = '<li class="ui-state-highlight ui-state-disabled" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+                }
 			}			
 		}
 	}
@@ -313,9 +334,13 @@ function functions_form($item)
 		if(!in_array($function->id, $item->functions))
 		{
 			if($function->enabled=='1')
-				$sortable_unassigned[] = '<li class="ui-state-default" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+            {
+                $sortable_unassigned[] = '<li class="ui-state-default" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+            }
 			else
-				$sortable_unassigned[] = '<li class="ui-state-default ui-state-disabled" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+            {
+                $sortable_unassigned[] = '<li class="ui-state-default ui-state-disabled" value="'.$function->id.'" category="'.$function->category.'"><img src="'.NAVIGATE_URL.'/'.$function->icon.'" align="absmiddle" /> '.t($function->lid, $function->lid).'</li>';
+            }
 		}
 	}
 	
@@ -325,17 +350,24 @@ function functions_form($item)
 	//$navibars->add_tab_content('<pre>'.print_r($item->menus, true).'</pre>'); // margin-top: 12px; margin-left: 5px; float: left;
 	// position: absolute; margin-left: 483px; margin-top: -9px; width: 291px; height: 20px;
 
-	$navibars->add_tab_content_row(array(	'<label>'.t(78, 'Category').'</label>',
-											$naviforms->selectfield('menus_functions_category_select', $func_cats, $func_cats, 'web', "navigate_menus_change_functions_category();", false)
-										)
-									);
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(78, 'Category').'</label>',
+			$naviforms->selectfield('menus_functions_category_select', $func_cats, $func_cats, 'web', "navigate_menus_change_functions_category();", false)
+        )
+    );
 	
-	$navibars->add_tab_content($naviforms->hidden("menu-functions", implode('#', $item->functions)));	
-	$navibars->add_tab_content_row(array(	'<label>'.t(240, 'Functions').'</label>',
-											implode("\n", $sortable_assigned),
-											implode("\n", $sortable_unassigned)
-										)
-									);
+	$navibars->add_tab_content(
+	    $naviforms->hidden("menu-functions", implode('#', $item->functions))
+    );
+
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(240, 'Functions').'</label>',
+			implode("\n", $sortable_assigned),
+			implode("\n", $sortable_unassigned)
+        )
+    );
 									
 	$layout->add_script('
 		$("#menus_functions_category_select").css({ "width": "300px", "margin-left": "303px" });

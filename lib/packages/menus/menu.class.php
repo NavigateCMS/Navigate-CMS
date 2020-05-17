@@ -42,7 +42,10 @@ class menu
 		$this->functions = $DB->result('function_id');
 		*/
 		$this->functions	= json_decode($main->functions);
-		if(empty($this->functions))	$this->functions = array();		
+		if(empty($this->functions))
+        {
+            $this->functions = array();
+        }
 	}
 	
 	public function load_from_post()
@@ -59,19 +62,22 @@ class menu
 		foreach($functions as $function)
 		{
 			if(!empty($function))
-				$this->functions[] = $function;
+            {
+                $this->functions[] = $function;
+            }
 		}
-	}	
-	
+	}
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
-		  return $this->update();
+        {
+            return $this->update();
+        }
 		else
-		  return $this->insert();
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -111,7 +117,9 @@ class menu
 		);
 				
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 		
@@ -139,7 +147,9 @@ class menu
         );
 		
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}
@@ -179,7 +189,9 @@ class menu
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

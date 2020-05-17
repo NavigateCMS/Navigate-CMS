@@ -83,6 +83,8 @@ class structure
 	
 	public function load_from_post()
 	{
+	    global $purifier;
+
 		if(intval($_REQUEST['parent'])!=$this->id)	// protection against selecting this same category as parent of itself
         {
             $this->parent 		= intval($_REQUEST['parent']);
@@ -119,13 +121,13 @@ class structure
 			{
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
                 {
-                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $purifier->purify($value);
                 }
 			}
 		
 			if(substr($key, 0, strlen('path-'))=='path-')
             {
-                $this->paths[substr($key, strlen('path-'))] = $value;
+                $this->paths[substr($key, strlen('path-'))] = $purifier->purify($value);
             }
 		}		
 	}

@@ -52,6 +52,8 @@ class feed
 	
 	public function load_from_post()
 	{
+	    global $purifier;
+
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
 		$this->format  		= $_REQUEST['format'];
@@ -67,31 +69,42 @@ class feed
 		
 		foreach($_REQUEST as $key => $value)
 		{
-			if(empty($value)) continue;
+			if(empty($value))
+            {
+                continue;
+            }
 			
 			foreach($fields as $field)
 			{
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
-					$this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                {
+                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $purifier->purify($value);
+                }
 			}
 		
 			if(substr($key, 0, strlen('path-'))=='path-')
-				$this->paths[substr($key, strlen('path-'))] = $value;
+            {
+                $this->paths[substr($key, strlen('path-'))] = $purifier->purify($value);
+            }
 		}	
 		
 		$this->categories 	= '';
 		if($_REQUEST['categories']!='true')
-			$this->categories	= explode(',', $_REQUEST['categories']);				
+        {
+            $this->categories	= explode(',', $_REQUEST['categories']);
+        }
 	}
 
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -159,7 +172,9 @@ class feed
 		);
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
 		$this->id = $DB->get_last_id();
 			
@@ -208,7 +223,9 @@ class feed
 		);
 							  
 		if(!$ok)
-		    throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		webdictionary::save_element_strings('feed', $this->id, $this->dictionary);
 		path::saveElementPaths('feed', $this->id, $this->paths);
@@ -248,7 +265,9 @@ class feed
 		$cols[] = 'i.id' . $like;
 
 		if(!empty($dict_ids))
-			$cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
+        {
+            $cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
+        }
 			
 		$where = ' AND ( ';	
 		$where.= implode( ' OR ', $cols); 
@@ -264,7 +283,9 @@ class feed
 		global $DB;
 	
 		if(empty($id))
-			$id = $current['id'];
+        {
+            $id = $current['id'];
+        }
 
 		$item = new feed();
 		$item->load($id);
@@ -272,7 +293,9 @@ class feed
 		$permission = nvweb_object_enabled($item);
 	
 		if(!$permission)
+        {
             return;
+        }
 
         $feed = new UniversalFeedCreator();
 		
@@ -296,7 +319,10 @@ class feed
 		if(!empty($item->categories[0]))
 		{			
 			$limit = intval($item->entries);		 
-			if($limit <= 0)	$limit = 10;
+			if($limit <= 0)
+            {
+                $limit = 10;
+            }
 
             $DB->query(' SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
                                 i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate, d.text as title, i.position as position,
@@ -380,7 +406,9 @@ class feed
                         $galleries = mb_unserialize($rs[$x]->galleries);
                         $photo = @array_shift(array_keys($galleries[0]));
                         if(!empty($photo))
+                        {
                             $image = $website->absolute_path(false) . '/object?type=image&id='.$photo;
+                        }
                     }
 
                     if(empty($image))
@@ -393,9 +421,13 @@ class feed
                             if($properties[$p]->type=='image')
                             {
                                 if(!empty($properties[$p]->value))
+                                {
                                     $image = $properties[$p]->value;
+                                }
                                 else if(!empty($properties[$p]->dvalue))
+                                {
                                     $image = $properties[$p]->dvalue;
+                                }
 
                                 if(is_array($image))
                                 {
@@ -404,12 +436,16 @@ class feed
                                 }
 
                                 if(!empty($image))
+                                {
                                     $image = $website->absolute_path(false) . '/object?type=image&id='.$image;
+                                }
                             }
 
                             // we only need the first image
                             if(!empty($image))
+                            {
                                 break;
+                            }
                         }
                     }
 
@@ -418,7 +454,9 @@ class feed
                         $fitem->image = $image;
 	                    // feedly will only display images of >450px --> http://blog.feedly.com/2015/07/31/10-ways-to-optimize-your-feed-for-feedly/
 						if(strpos($item->format, 'RSS')!==false)
-							$fitem->description = '<img src="'.$image.'&width=640"><br />'.$fitem->description;
+                        {
+                            $fitem->description = '<img src="'.$image.'&width=640"><br />'.$fitem->description;
+                        }
 					}
 
 					//$item->author = $contents->rows[$x]->author_name;
@@ -460,7 +498,9 @@ class feed
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
