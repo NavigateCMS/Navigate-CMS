@@ -41,6 +41,8 @@ require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/IdnaConvert.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 
+require_once(NAVIGATE_PATH.'/lib/external/htmlpurifier-lite/library/HTMLPurifier.auto.php');
+
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/ref/ref.php');
@@ -71,6 +73,11 @@ if(!defined("APP_UNIQUE"))
 {
     define("APP_UNIQUE", "nv_default");
 }
+
+
+$purifier_config = HTMLPurifier_Config::createDefault();
+$purifier_config->set('Cache.DefinitionImpl', null);
+$purifier = new HTMLPurifier($purifier_config);
 
 include_once(NAVIGATE_PATH.'/cfg/session.php');
 

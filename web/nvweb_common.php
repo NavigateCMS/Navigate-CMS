@@ -37,6 +37,8 @@ require_once(NAVIGATE_PATH.'/lib/external/php-ixr/IXR_Library.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
 
+require_once(NAVIGATE_PATH.'/lib/external/htmlpurifier-lite/library/HTMLPurifier.auto.php');
+
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
 
 require_once(NAVIGATE_PATH.'/web/nvweb_routes.php');
@@ -52,6 +54,10 @@ require_once(NAVIGATE_PATH.'/lib/webgets/list.php');
 
 disable_magic_quotes();
 @ini_set('default_charset', 'utf-8');
+
+$purifier_config = HTMLPurifier_Config::createDefault();
+$purifier_config->set('Cache.DefinitionImpl', null);
+$purifier = new HTMLPurifier($purifier_config);
 
 $max_upload = (int)(ini_get('upload_max_filesize'));
 $max_post = (int)(ini_get('post_max_size'));

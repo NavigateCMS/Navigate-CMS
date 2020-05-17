@@ -151,6 +151,13 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
+			'<a href="http://htmlpurifier.org" target="_blank">HTML Purifier v4.12.0</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
 			'<a href="http://player.bitgravity.com" target="_blank">Bitgravity free video player v6</a><br />'
 		)
 	);
