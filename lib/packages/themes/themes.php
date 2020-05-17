@@ -172,19 +172,29 @@ function run()
                 }
                 else
                 {
-                    @mkdir(NAVIGATE_PATH.'/themes/'.$theme_name);
+                    // security validation
+                    $secure = theme::check_upload($_FILES['extension-upload'], $theme_name);
 
-                    $zip = new ZipArchive;
-                    if($zip->open($_FILES['theme-upload']['tmp_name']) === TRUE)
+                    if($secure !== true)
                     {
-                        $zip->extractTo(NAVIGATE_PATH.'/themes/'.$theme_name);
-                        $zip->close();
-
-                        $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                        $layout->navigate_notification(t(344, 'Security error'), true, true);
                     }
-                    else // zip extraction failed
+                    else // everything seems fine, go ahead
                     {
-                        $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                        @mkdir(NAVIGATE_PATH.'/themes/'.$theme_name);
+
+                        $zip = new ZipArchive;
+                        if($zip->open($_FILES['theme-upload']['tmp_name']) === TRUE)
+                        {
+                            $zip->extractTo(NAVIGATE_PATH.'/themes/'.$theme_name);
+                            $zip->close();
+
+                            $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                        }
+                        else // zip extraction failed
+                        {
+                            $layout->navigate_notification(t(262, 'Error uploading file'), true, true);
+                        }
                     }
                 }
             }

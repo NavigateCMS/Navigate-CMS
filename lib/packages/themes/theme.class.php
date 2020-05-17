@@ -507,6 +507,85 @@ class theme
         }
     }
 
+    public static function check_upload($file_upload, $theme_name)
+    {
+        // check mime
+        if(!in_array($file_upload['type'], array('application/zip', 'application/x-zip-compressed')))
+        {
+            return false;
+        }
+
+        // check file extension
+        if(pathinfo($file_upload['name'], PATHINFO_EXTENSION) != 'zip')
+        {
+            return false;
+        }
+
+        // extract the zip in a temporary folder
+        $zip = new ZipArchive;
+        if($zip->open($file_upload['tmp_name']) !== true)
+        {
+            return false;
+        }
+
+        $tempdir = NAVIGATE_PRIVATE . '/tmp/' . uniqid('theme-check-');
+
+        mkdir($tempdir);
+        $zip->extractTo($tempdir);
+        $zip->close();
+
+        // theme definition exists?
+        if(!file_exists($tempdir . '/' . $theme_name . '.plugin'))
+        {
+            core_remove_folder($tempdir);
+            return false;
+        }
+
+        // it's a valid json?
+        $theme_def = file_get_contents($tempdir . '/' . $theme_name . '.plugin');
+        $theme_def = json_decode($theme_def);
+
+        if(json_last_error() != JSON_ERROR_NONE)
+        {
+            core_remove_folder($tempdir);
+            return false;
+        }
+
+        // check every php file included
+        $files = core_recursive_file_search($tempdir,  '/.*\/*.php/');
+
+        $prohibited_functions = array(
+            'eval(',
+            'system(',
+            'exec(',
+            'shell_exec(',
+            'popen(',
+            'proc_open(',
+            'passthru(',
+            '`' // https://www.php.net/manual/en/language.operators.execution.php
+        );
+
+        foreach($files as $file)
+        {
+            // remove all spaces
+            $file_content = file_get_contents($file);
+            $file_content = str_replace(array(' ', "\t", "\r", "\n"), '', $file_content);
+
+            foreach($prohibited_functions as $pf)
+            {
+                if(stripos($file_content, $pf) !== false)
+                {
+                    core_remove_folder($tempdir);
+                    return false;
+                }
+            }
+        }
+
+        core_remove_folder($tempdir);
+
+        return true;
+    }
+
     public function import_sample($ws=null)
     {
         global $DB;
@@ -1129,9 +1208,13 @@ class theme
         // properties
         // array ('structure' => ..., 'item' => ..., 'block' => ...)
         if(file_exists($ptf.'/properties.var_export'))
+        {
             eval('$properties = '.str_replace("stdClass::__set_state", "(object)", file_get_contents($ptf.'/properties.var_export')).';');
+        }
         else
+        {
             $properties = unserialize(file_get_contents($ptf.'/properties.serialized'));
+        }
 
         $elements_with_properties = array('structure', 'item', 'block', 'block_group_block');
 
@@ -1844,7 +1927,9 @@ class theme
         $post = array();
 
         if(!is_array($list))
+        {
             return false;
+        }
 
         foreach($list as $theme)
         {

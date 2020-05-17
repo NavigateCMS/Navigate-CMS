@@ -21,7 +21,9 @@ class extension
 
         // retrieve extension definition from filesystem
         if(file_exists(NAVIGATE_PATH.'/plugins/'.$code.'/'.$code.'.plugin'))
+        {
             $this->definition = @json_decode(file_get_contents(NAVIGATE_PATH.'/plugins/'.$code.'/'.$code.'.plugin'));
+        }
 
         debug_json_error('extension: '.$code);
 
@@ -90,14 +92,18 @@ class extension
                         // multilang
                         $value = array();
                         foreach($website->languages_list as $lang)
+                        {
                             $value[$lang] = $_REQUEST['property-'.$extension_option->id.'-'.$lang];
+                        }
                         break;
 
                     case 'link':
                         // multilang and title+link
                         $value = array();
                         foreach($website->languages_list as $lang)
+                        {
                             $value[$lang] = $_REQUEST['property-'.$extension_option->id.'-'.$lang.'-link'].'##'.$_REQUEST['property-'.$extension_option->id.'-'.$lang.'-title'];
+                        }
                         break;
 
                     case 'date':
@@ -116,7 +122,9 @@ class extension
                     case 'boolean':
                         $value = 0;
                         if($_REQUEST['property-'.$extension_option->id]=='1')
+                        {
                             $value = 1;
+                        }
                         break;
 
                     default:
@@ -189,7 +197,9 @@ class extension
         $ok = false;
 
         if($user->permission("themes.delete")=="false")
+        {
             throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+        }
 
         if(file_exists(NAVIGATE_PATH.'/plugins/'.$this->code.'/'.$this->code.'.plugin'))
         {
@@ -234,22 +244,29 @@ class extension
             $file = '';
 
             if(!is_array($extension_languages))
-				$extension_languages = array();
+            {
+                $extension_languages = array();
+            }
 
             // if we are in Navigate CMS, user has the default language
             // if we call this function from the website, the session has the default language
             $current_language = $session['lang'];
             if(empty($current_language) && !empty($webuser))
+            {
                 $current_language = $webuser->language;
+            }
 
             if(empty($current_language) && !empty($user))
+            {
                 $current_language = $user->language;
+            }
 
             foreach($extension_languages as $lcode => $lfile)
             {
                 if( $lcode==@$user->language ||
                     $lcode==@$session['lang'] ||
-                    empty($file)    )
+                    empty($file)
+                )
                 {
                     $file = $lfile;
                 }
@@ -257,10 +274,14 @@ class extension
 
             $json = '';
             if(file_exists(NAVIGATE_PATH.'/plugins/'.$this->code.'/'.$file))
+            {
                 $json = @file_get_contents(NAVIGATE_PATH.'/plugins/'.$this->code.'/'.$file);
+            }
 
             if(!empty($json))
+            {
                 $this->dictionary = (array)json_decode($json);
+            }
 
             // maybe we have a custom translation added in navigate / webdictionary ?
             if(!empty($website->id))
@@ -281,7 +302,9 @@ class extension
                 $rs = $DB->result();
 
                 for($r=0; $r < count($rs); $r++)
+                {
                     $this->dictionary[$rs[$r]->subtype] = $rs[$r]->text;
+                }
             }
         }
 
@@ -289,10 +312,14 @@ class extension
 		{
             $out = $code;
             if(substr($out, 0, 1)=='@')  // get translation from theme dictionary
+            {
                 $out = substr($out, 1);
+            }
 
             if(!empty($this->dictionary[$out]))
+            {
                 $out = $this->dictionary[$out];
+            }
         }
 
         return $out;
@@ -312,7 +339,9 @@ class extension
                     $json = @file_get_contents(NAVIGATE_PATH.'/plugins/'.$this->code.'/'.$lfile);
 
                     if(!empty($json))
+                    {
                         $jarray = (array)json_decode($json);
+                    }
 
                     if(!empty($jarray))
                     {
@@ -443,10 +472,14 @@ class extension
         $post = array();
 
         if(!is_array($list))
+        {
             return false;
+        }
 
         foreach($list as $extension)
+        {
             $post[$extension['code']] = $extension['version'];
+        }
 
         $latest_update = core_curl_post(
             'http://update.navigatecms.com/extensions',
@@ -456,7 +489,9 @@ class extension
         );
 
         if(empty($latest_update))
+        {
             return false;
+        }
 
         $latest_update = json_decode($latest_update, true);
 
