@@ -2636,7 +2636,6 @@ class file
         {
             $tmp->$key = $val;
         }
-
 		return $tmp;
 	}
 }

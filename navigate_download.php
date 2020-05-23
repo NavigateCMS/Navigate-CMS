@@ -56,7 +56,7 @@ if(!empty($_REQUEST['id']))
 
 if(!$item->id)
 {
-	echo 'Error: no item found with id '.$_REQUEST['id'].'.';	
+	echo 'Error: no item found with id '.$_REQUEST['id'].'.';
 	session_write_close();
 	$DB->disconnect(); 	// we don't need the database anymore (we'll see)
 	exit;

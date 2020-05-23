@@ -24,13 +24,17 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 		else
         {
             // sanitize "id" parameter to avoid XSS problems
-            // note: if the "id" parameter is not numeric, then it could be the name of a navigate theme file
+            // note: if the "id" parameter is not numeric, then it could be the path of a navigate theme file
             $url = $_REQUEST['id'];
+
             $url = filter_var($url, FILTER_SANITIZE_URL);
+
             // disallow use of < > chars in a URL
             $url = str_replace(array('<', '>'), '', $url);
+
             // prevent directory traversal attacks
             $url = core_remove_directory_traversal($url);
+
             // additional checking inside
             $item->load($url);
         }
@@ -256,12 +260,27 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 		case 'video':
 		case 'file':
 		default:
-			if(!is_numeric($item->id) || (!$item->enabled && !$ignoreEnabled))
+			if(!$item->enabled && !$ignoreEnabled)
             {
                 nvweb_clean_exit();
             }
 
-			$path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
+			if(is_numeric($item->id))
+            {
+                $path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;
+            }
+			else
+            {
+                // maybe a theme file
+			    $file = new file();
+			    $file->load($item->id);
+			    $path = $file->absolute_path();
+
+			    if(empty($path) || !file_exists($path) )
+                {
+                    nvweb_clean_exit();
+                }
+            }
 
 			$etag_add = '';
 
