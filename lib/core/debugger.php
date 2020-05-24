@@ -35,6 +35,7 @@ class debugger
     static function bar_dump($message, $title="", $options=array())
     {
         global $events;
+
         return $events->trigger(
             'debugger',
             'bardump',

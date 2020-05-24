@@ -205,7 +205,6 @@ if(!empty($wa))
 
 $_SESSION['website_active'] = $website->id;
 
-$events = new events();
 $events->extension_backend_bindings(null, false);
 $website->bind_events();
 
