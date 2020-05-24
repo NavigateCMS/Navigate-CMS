@@ -313,7 +313,9 @@ class webuser_vote
 		);
 
 		if(empty($table[$object]))
-			return false;
+        {
+            return false;
+        }
 		
 		$DB->execute('
 			UPDATE '.$table[$object].' 
@@ -321,8 +323,8 @@ class webuser_vote
 			        score = :score
 			 WHERE id = :object_id',
             array(
-                ':votes' => $votes,
-                ':score' => $score,
+                ':votes' => value_or_default($votes, 0),
+                ':score' => value_or_default($score, 0),
                 ':object_id' => $object_id
             )
 		);

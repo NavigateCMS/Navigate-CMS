@@ -17,13 +17,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$object->load($id);
-						$object->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $object->load($id);
+                            $object->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 
                 case 'load_regions':
@@ -122,9 +129,13 @@ function run()
 					{
 					    $shipping_method_image = $dataset[$i]['image'];
                         if(!empty($shipping_method_image))
+                        {
                             $shipping_method_image = '<img src="'.file::file_url($shipping_method_image, 'inline').'&width=64&height=48&border=true" />';
+                        }
                         else
+                        {
                             $shipping_method_image = '-';
+                        }
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
@@ -171,7 +182,12 @@ function run()
 			break;
 					
 		case 'delete':
-			if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+			else if(!empty($_REQUEST['id']))
 			{
 				$object->load(intval($_REQUEST['id']));	
 				if($object->delete() > 0)
@@ -288,7 +304,7 @@ function shipping_methods_form($object)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=shipping_methods&act=delete&id='.$object->id.'"; }, 
+                    function() { window.location.href = "?fid=shipping_methods&act=delete&id='.$object->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }

@@ -7,7 +7,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	global $website;
@@ -22,13 +21,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -168,9 +174,15 @@ function run()
 			$out = comments_form($item);
 			break;
 					
-		case 4: // remove
+		case 4:
+        case 'delete':
 		case 'remove':
-			if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+            else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -179,7 +191,9 @@ function run()
 					$out = comments_list();
 
 					if(!empty($item->id))
-						users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->name, json_encode($_REQUEST));
+                    {
+                        users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->name, json_encode($_REQUEST));
+                    }
 				}
 				else
 				{
@@ -190,10 +204,18 @@ function run()
 			break;
 
         case 'remove_spam':
-            $count = comment::remove_spam();
-            $layout->navigate_notification(t(524, 'Items removed successfully').': <strong>'.$count.'</strong>', false);
-            $out = comments_list();
-			users_log::action($_REQUEST['fid'], $website->id, 'remove_spam', "", json_encode($_REQUEST));
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+            else
+            {
+                $count = comment::remove_spam();
+                $layout->navigate_notification(t(524, 'Items removed successfully').': <strong>'.$count.'</strong>', false);
+                $out = comments_list();
+			    users_log::action($_REQUEST['fid'], $website->id, 'remove_spam', "", json_encode($_REQUEST));
+            }
             break;
 
         case 'json_find_webuser': // json find webuser by name (for "user" autocomplete)
@@ -310,6 +332,8 @@ function run()
 
 function comments_list()
 {
+    global $layout;
+
 	$navibars = new navibars();
 	$navitable = new navitable("comments_list");
 	
@@ -320,35 +344,23 @@ function comments_list()
         )
     );
 
-    $delete_html = array();
-    $delete_html[] = '<div id="navigate-delete-dialog" class="hidden">';
-    $delete_html[] = t(60, 'Do you really want to delete the selected items?')."<br /><br />";
-    $delete_html[] = t(523, 'This function can NOT be undone.');
-    $delete_html[] = '</div>';
-    $delete_html[] = '<script language="javascript" type="text/javascript">';
-    $delete_html[] = 'function navigate_delete_dialog()';
-    $delete_html[] = '{';
-    $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-    $delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(522, 'Remove Spam').'",
-							buttons: {
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove_spam";
-								},
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								}
-							}
-						});';
-    $delete_html[] = '}';
-    $delete_html[] = '</script>';
-
-    $navibars->add_content(implode("\n", $delete_html));
+    $layout->add_script('
+       function navigate_delete_dialog()
+       {
+           navigate_confirmation_dialog(
+               function() 
+               {
+                    window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove_spam&rtk='.$_SESSION['request_token'].'";
+               }, 
+               "'.t(60, 'Do you really want to delete the selected items?').
+                "<br /><br />".
+                t(523, 'This function can NOT be undone.').
+                '", 
+                "'.t(522, 'Remove Spam').'", 
+                "'.t(35, 'Delete').'"
+           );
+       }
+   ');
 
 	$navibars->add_actions(	array(
         '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
@@ -418,33 +430,16 @@ function comments_form($item)
 				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
 			)
 		);
-		
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'";
-								},
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								}
-							}
-						});';		
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 	
 	$navibars->add_actions(

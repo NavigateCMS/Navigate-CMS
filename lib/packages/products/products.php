@@ -27,13 +27,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 
                 case 'products_by_tag':
@@ -422,7 +429,12 @@ function run()
 			break;
 
         case 'delete':
-			if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+			else if(!empty($_REQUEST['id']))
 			{			
 				$item->load(intval($_REQUEST['id']));
 				$deleted = false;
@@ -467,6 +479,12 @@ function run()
         case 'duplicate':
 			if(!empty($_REQUEST['id']))
 			{
+                if($_REQUEST['rtk'] != $_SESSION['request_token'])
+                {
+                    $layout->navigate_notification(t(344, 'Security error'), true, true);
+                    break;
+                }
+
 				$item->load(intval($_REQUEST['id']));
 
                 $properties = property::load_properties_associative(
@@ -1021,30 +1039,43 @@ function run()
 			break;
 
 		case 'votes_reset':
-			webuser_vote::remove_object_votes('product', intval($_REQUEST['id']));
-			
-			echo 'true';
+            if(naviforms::check_csrf_token('header'))
+            {
+			    webuser_vote::remove_object_votes('product', intval($_REQUEST['id']));
+			    echo 'true';
+            }
+            else
+            {
+                echo 'false';
+            }
 			core_terminate();
 			break;
 
 		case 'votes_by_webuser':
 			if($_POST['oper']=='del')
 			{
-				$ids = explode(',', $_POST['id']);
-				
-				for($i=0; $i < count($ids); $i++)
-				{
-					if($ids[$i] > 0)	
-					{
-						$vote = new webuser_vote();
-						$vote->load($ids[$i]);
-						$vote->delete();	
-					}
-				}
-				
-				webuser_vote::update_object_score('product', $vote->object_id);
-					
-				echo 'true';
+                if(!naviforms::check_csrf_token('header'))
+                {
+                    echo 'false';
+                }
+                else
+                {
+                    $ids = explode(',', $_POST['id']);
+
+                    for($i=0; $i < count($ids); $i++)
+                    {
+                        if($ids[$i] > 0)
+                        {
+                            $vote = new webuser_vote();
+                            $vote->load($ids[$i]);
+                            $vote->delete();
+                        }
+                    }
+
+                    webuser_vote::update_object_score('product', $vote->object_id);
+
+                    echo 'true';
+                }
 				core_terminate();	
 			}
 		
@@ -1361,14 +1392,14 @@ function products_form($item)
         $extra_actions[] = '<a href="#" onclick="navigate_products_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>';
 		if($user->permission("products.create") != 'false')
         {
-            $extra_actions[] = '<a href="?fid=products&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+            $extra_actions[] = '<a href="?fid=products&act=duplicate&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
         }
 
         $layout->add_script('
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=products&act=delete&id='.$item->id.'"; }, 
+                    function() { window.location.href = "?fid=products&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }
@@ -2458,11 +2489,21 @@ function products_form($item)
 				    navigate_confirmation_dialog(
 				        function()
                         {                         
-                            $.post("?fid=products&act=votes_reset&id='.$item->id.'", function(data)
-                            {
-                                $("#navigate-panel-web-summary").addClass("ui-state-disabled");
-                                navigate_notification("'.t(355, 'Votes reset').'");
-                            });
+                            $.post(
+                                "?fid=products&act=votes_reset&id='.$item->id.'", 
+                                function(data)
+                                {
+                                    if(data=="true")
+                                    {
+                                        $("#navigate-panel-web-summary").addClass("ui-state-disabled");   
+                                        navigate_notification("'.t(355, 'Votes reset').'"); 
+                                    }
+                                    else
+                                    {   
+                                        navigate_notification(navigate_lang_dictionary[56]);           
+                                    }
+                                }
+                            );
                         },
                         "'.t(497, "Do you really want to erase this data?").'",
                         null,

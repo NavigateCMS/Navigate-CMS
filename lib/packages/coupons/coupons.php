@@ -17,13 +17,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$object->load($id);
-						$object->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $object->load($id);
+                            $object->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -73,7 +80,9 @@ function run()
 							 OFFSET '.$offset;
 
                     if(!$DB->query($sql, 'array'))
+                    {
                         throw new Exception($DB->get_last_error());
+                    }
 
                     $dataset = $DB->result();
                     $total = $DB->foundRows();
@@ -132,7 +141,12 @@ function run()
 			break;
 					
 		case 'delete':
-			if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+            else if(!empty($_REQUEST['id']))
 			{
 				$object->load(intval($_REQUEST['id']));	
 				if($object->delete() > 0)
@@ -173,7 +187,9 @@ function coupons_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=coupons&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=coupons&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid=coupons&act=json');
 	$navitable->sortBy('id');
@@ -205,9 +221,13 @@ function coupons_form($object)
     $currencies = product::currencies();
 	
 	if(empty($object->id))
-		$navibars->title(t(682, 'Coupons').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(682, 'Coupons').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(682, 'Coupons').' / '.t(170, 'Edit').' ['.$object->id.']');
+    {
+        $navibars->title(t(682, 'Coupons').' / '.t(170, 'Edit').' ['.$object->id.']');
+    }
 
     if(empty($object->id))
     {
@@ -239,7 +259,7 @@ function coupons_form($object)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=coupons&act=delete&id='.$object->id.'"; }, 
+                    function() { window.location.href = "?fid=coupons&act=delete&id='.$object->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }
@@ -275,7 +295,9 @@ function coupons_form($object)
     }
 
     if(!empty($object->id))
+    {
         $layout->navigate_notes_dialog('coupon', $object->id);
+    }
 	
 	$navibars->add_actions(
 	    array(

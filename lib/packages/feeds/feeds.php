@@ -19,13 +19,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -141,9 +148,15 @@ function run()
 		
 			$out = feeds_form($item);
 			break;
-			
-		case 4: // remove 
-			if(!empty($_REQUEST['id']))
+
+        case 'delete':
+		case 4: // remove
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+			else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -247,42 +260,31 @@ function feeds_form($item)
 	}
 	else
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
-											'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
-										)
-									);		
-		
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								},
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=4&id='.$item->id.'";
-								}
-							}
-						});';		
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>',
+				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
+            )
+        );
+
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid='.$_REQUEST['fid'].'&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 	
-	$navibars->add_actions(	array(	(!empty($item->id)? '<a href="?fid=feeds&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-									'<a href="?fid=feeds&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
-									'search_form' ));
+	$navibars->add_actions(
+	    array(
+	        (!empty($item->id)? '<a href="?fid=feeds&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+			'<a href="?fid=feeds&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'search_form'
+        )
+    );
 
 	$navibars->form();
 

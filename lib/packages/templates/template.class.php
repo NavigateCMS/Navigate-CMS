@@ -143,6 +143,10 @@ class template
 		
 		// sections
 		$this->sections		= array();
+		if(empty($_REQUEST['template-sections-code']))
+        {
+            $_REQUEST['template-sections-code'] = array();
+        }
 		for($s = 0; $s < count($_REQUEST['template-sections-code']); $s++)
 		{
 			if(empty($_REQUEST['template-sections-code'][$s]))

@@ -2506,16 +2506,24 @@ function nv_link_dialog_source_change()
 function navigate_confirmation_dialog(ok_callback, content, title, ok_button, cancel_button, cancel_callback)
 {
     if(!title || title == "")
+    {
         title = navigate_t(59, "Confirmation");
+    }
 
     if(!content || content == "")
+    {
         content = navigate_t(57, "Do you really want to delete the item?");
+    }
 
     if(!ok_button || ok_button=="")
+    {
         ok_button = navigate_t(190, "Ok");
+    }
 
     if(!cancel_button || cancel_button=="")
+    {
         cancel_button = navigate_t(58, "Cancel");
+    }
 
     $('<div>' + content +'</div>').dialog(
     {
@@ -2531,7 +2539,9 @@ function navigate_confirmation_dialog(ok_callback, content, title, ok_button, ca
                 click: function()
                 {
                     if(typeof(ok_callback)=="function")
+                    {
                         ok_callback();
+                    }
 
                     $(this).dialog("close");
                 }
@@ -2541,7 +2551,9 @@ function navigate_confirmation_dialog(ok_callback, content, title, ok_button, ca
                 click: function()
                 {
                     if(typeof(cancel_callback)=="function")
+                    {
                         cancel_callback();
+                    }
                     $(this).dialog("close");
                 }
             }

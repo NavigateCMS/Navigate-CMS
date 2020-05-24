@@ -111,16 +111,23 @@ function run()
                     break;
 
                 case 'delete':
-					try
-					{
-                        $item->load($_REQUEST['id']);
-	                    $status = $item->delete();
-                        echo json_encode($status);
-					}
-					catch(Exception $e)
-					{
-						echo $e->getMessage();
-					}
+                    if(!naviforms::check_csrf_token('header'))
+                    {
+                        echo t(344, 'Security error');
+                    }
+                    else
+                    {
+                        try
+                        {
+                            $item->load($_REQUEST['id']);
+                            $status = $item->delete();
+                            echo json_encode($status);
+                        }
+                        catch(Exception $e)
+                        {
+                            echo $e->getMessage();
+                        }
+                    }
                     break;
 
                 case 'permissions':
@@ -579,43 +586,41 @@ function files_browser($parent, $search="")
 		function navigate_files_remove(elements)
 		{
 		    if(!elements || elements=="" || elements==undefined || $(elements).length == 0)
+		    {
 		        var elements = $(".ui-selected img").parent();
+            }
 
 			if($(elements).length > 0)
 			{
-				$("<div>'.t(151, 'These items will be permanently deleted and cannot be recovered. Are you sure?').'</div>").dialog(
-				{
-					title: "'.t(59, 'Confirmation').'",
-					resizable: false,
-					height:140,
-					modal: true,
-					buttons:
-					{
-						"'.t(152, 'Continue').'": function()
-						{
-							$(elements).each(function()
-							{
-							    if(!$(this) || !$(this).attr) return;
-								var itemId = $(this).attr("id").substring(5);
+			    navigate_confirmation_dialog(
+                    function() 
+                    { 
+                        $(elements).each(function()
+                        {
+                            if(!$(this) || !$(this).attr) 
+                            {   
+                                return; 
+                            }
+                            var itemId = $(this).attr("id").substring(5);
 
-								$.ajax(
-								{
-									async: false,
-									url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id=" + itemId,
-									success: function(data)
-									{
-										$("#item-" + itemId).remove();
-									}
-								});
-							});
-							$(this).dialog("close");
-						},
-						"'.t(58, 'Cancel').'": function()
-						{
-							$(this).dialog("close");
-						}
-					}
-				});
+                            $.ajax(
+                            {
+                                async: false,
+                                url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id=" + itemId,
+                                success: function(data)
+                                {
+                                    if(data=="1")
+                                    {
+                                        $("#item-" + itemId).remove();
+                                    }
+                                }
+                            });
+                        }); 
+                    }, 
+                    "<div>'.t(151, 'These items will be permanently deleted and cannot be recovered. Are you sure?').'</div>", 
+                    "'.t(59, 'Confirmation').'",
+                    "'.t(152, 'Continue').'"
+                );			
 			}
 		}
 	');
@@ -786,47 +791,34 @@ function files_item_properties($item)
 		)
 	);
 
-	$delete_html = array();
-	$delete_html[] = '<script language="javascript" type="text/javascript">';
-	$delete_html[] = 'function navigate_delete_dialog()';		
-	$delete_html[] = '{';				
-	$delete_html[] = '$("<div id=\"navigate-delete-dialog\">'.t(57, 'Do you really want to delete this item?').'</div>").dialog(
-					  {
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: 
-							{
-								"'.t(35, 'Delete').'": function()
-								{
-									$.ajax(
-									{
-										async: false,
-										url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id='.$item->id.'",
-										success: function(data)
-										{
-											if(data=="true" || data=="1")
-												window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";
-											else if(data!="")
-												navigate_notification(data);
-										}
-									});
-									$(this).dialog("close");		
-                                    $("#navigate-delete-dialog").remove();
-								},
-								"'.t(58, 'Cancel').'": function()
-								{
-									$(this).dialog("close");
-									$("#navigate-delete-dialog").remove();
-								}
-							}
-						});
-					}';		
-	$delete_html[] = '</script>';						
-								
-	$navibars->add_content(implode("\n", $delete_html));
+    $layout->add_script('
+        function navigate_delete_dialog()
+        {
+            navigate_confirmation_dialog(
+                function() 
+                {  
+                    $.ajax(
+                    {
+                        async: false,
+                        url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'",
+                        success: function(data)
+                        {
+                            if(data=="true" || data=="1")
+                            {
+                                window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";
+                            }
+                            else if(data!="")
+                            {
+                                navigate_notification(data);
+                            }
+                        }
+                    });                
+                }, 
+                null, null, "'.t(35, 'Delete').'"
+            );
+        }
+    ');
+
 	
 	$navibars->form();
 

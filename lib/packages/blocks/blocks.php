@@ -22,13 +22,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -254,8 +261,12 @@ function run()
 			break;	
 
         case 'delete':
-		case 4: // remove 
-			if(!empty($_REQUEST['id']))
+		case 4:
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -401,7 +412,11 @@ function run()
 
         case 'block_group_delete':
             $item = new block_group();
-            if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(!empty($_REQUEST['id']))
             {
                 $item->load(intval($_REQUEST['id']));
                 if($item->delete() > 0)
@@ -523,29 +538,37 @@ function run()
 			break;
 
         case 'block_type_delete':
-		case 84: // remove block type		
-            $dataset = block::custom_types();
-			$item = NULL;
-			
-			for($i=0; $i < count($dataset); $i++)
-			{
-				if($dataset[$i]['id'] == $_REQUEST['id'])
-				{
-					unset($dataset[$i]);
-					break;
-				}
-			}
-			
-			try
-			{													
-				block::types_update($dataset);
-                $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
-                $out = blocks_types_list();
-			}
-			catch(Exception $e)
-			{
-				$out = $layout->navigate_message("error", t(23, 'Blocks'), t(56, 'Unexpected error.'));			
-			}
+		case 84: // remove block type
+
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else
+            {
+                $dataset = block::custom_types();
+                $item = NULL;
+
+                for($i=0; $i < count($dataset); $i++)
+                {
+                    if($dataset[$i]['id'] == $_REQUEST['id'])
+                    {
+                        unset($dataset[$i]);
+                        break;
+                    }
+                }
+
+                try
+                {
+                    block::types_update($dataset);
+                    $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
+                    $out = blocks_types_list();
+                }
+                catch(Exception $e)
+                {
+                    $out = $layout->navigate_message("error", t(23, 'Blocks'), t(56, 'Unexpected error.'));
+                }
+            }
 			break;
 
         case 'block_property_load':
@@ -599,18 +622,22 @@ function run()
             break;
 
         case 'block_property_remove': // remove property
-
-            $property = new property();
-
-            if(!empty($_REQUEST['property-id']))
+            if(!naviforms::check_csrf_token('header'))
             {
-                $property->load(intval($_REQUEST['property-id']));
+                echo 'false';
             }
+            else
+            {
+                $property = new property();
 
-            $property->delete();
+                if(!empty($_REQUEST['property-id']))
+                {
+                    $property->load(intval($_REQUEST['property-id']));
+                }
 
-            session_write_close();
-            exit;
+                $property->delete();
+            }
+            core_terminate();
             break;
 
         case 'block_group_block_options':
@@ -914,7 +941,7 @@ function blocks_form($item)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=blocks&act=delete&id='.$item->id.'"; }, 
+                    function() { window.location.href = "?fid=blocks&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }
@@ -2243,7 +2270,7 @@ function blocks_type_form($item)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=blocks&act=block_type_delete&id='.$item['id'].'"; }, 
+                    function() { window.location.href = "?fid=blocks&act=block_type_delete&id='.$item['id'].'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }
@@ -2802,7 +2829,7 @@ function block_group_form($item)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=blocks&act=block_group_delete&id='.$item->id.'"; }, 
+                    function() { window.location.href = "?fid=blocks&act=block_group_delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }

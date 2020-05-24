@@ -19,13 +19,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -119,8 +126,13 @@ function run()
 			break;
 
         case 'delete':
-		case 4: // remove 
-			if(!empty($_REQUEST['id']))
+		case 4:
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+            else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -214,7 +226,7 @@ function profiles_form($item)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=profiles&act=delete&id='.$item->id.'"; }, 
+                    function() { window.location.href = "?fid=profiles&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }

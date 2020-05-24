@@ -22,13 +22,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -170,27 +177,32 @@ function run()
 		
 			$out = webusers_form($item);
 			break;
-					
-		case 4: // remove
-		case 'remove':
-			if(!empty($_REQUEST['id']))
-			{
-				$item->load(intval($_REQUEST['id']));	
-				if($item->delete() > 0)
-				{
-					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
-					$out = webusers_list();
-					users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->username, json_encode($_REQUEST));
-				}
-				else
-				{
-					$layout->navigate_notification(t(56, 'Unexpected error.'), false);
-					$out = webusers_form($item);
-				}
-			}
-			break;
-			
-		case 90: // json request: timezones by country
+
+        case 'remove':
+        case 4:
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+            else if(!empty($_REQUEST['id']))
+            {
+                $item->load(intval($_REQUEST['id']));
+                if($item->delete() > 0)
+                {
+                    $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
+                    $out = webusers_list();
+                    users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->username, json_encode($_REQUEST));
+                }
+                else
+                {
+                    $layout->navigate_notification(t(56, 'Unexpected error.'), false);
+                    $out = webusers_form($item);
+                }
+            }
+            break;
+
+        case 90: // json request: timezones by country
 			$timezones = property::timezones($_REQUEST['country']);			
 			
 			if(empty($timezones))
@@ -267,31 +279,53 @@ function run()
             break;
 
         case 'webuser_group_delete':
-            $webuser_group = new webuser_group();
-
-            if(!empty($_REQUEST['id']))
-                $webuser_group->load(intval($_REQUEST['id']));
-
-            try
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
             {
-                $webuser_group->delete();
-                $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
-                $out = webuser_groups_list();
-				users_log::action($_REQUEST['fid'], $webuser_group->id, 'remove_webuser_group', $webuser_group->name, json_encode($_REQUEST));
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
             }
-            catch(Exception $e)
+            else
             {
-                $out = $layout->navigate_message("error", t(24, 'Web users').' / '.t(506, 'Groups'), t(56, 'Unexpected error.'));
+                $webuser_group = new webuser_group();
+
+                if(!empty($_REQUEST['id']))
+                {
+                    $webuser_group->load(intval($_REQUEST['id']));
+                }
+
+                try
+                {
+                    $webuser_group->delete();
+                    $layout->navigate_notification(t(55, 'Item removed successfully.'), false);
+                    $out = webuser_groups_list();
+                    users_log::action($_REQUEST['fid'], $webuser_group->id, 'remove_webuser_group', $webuser_group->name, json_encode($_REQUEST));
+                }
+                catch(Exception $e)
+                {
+                    $out = $layout->navigate_message("error", t(24, 'Web users').' / '.t(506, 'Groups'), t(56, 'Unexpected error.'));
+                }
             }
             break;
 
         case "remove_old_unconfirmed":
-            $number = webuser::remove_old_unconfirmed_accounts();
-            if($number > 0)
-                $layout->navigate_notification(t(524, 'Items removed successfully').' ('.$number.')', false);
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
             else
-                $layout->navigate_notification(t(645, 'No results found'), false);
-            $out = webusers_list();
+            {
+                $number = webuser::remove_old_unconfirmed_accounts();
+                if($number > 0)
+                {
+                    $layout->navigate_notification(t(524, 'Items removed successfully').' ('.$number.')', false);
+                }
+                else
+                {
+                    $layout->navigate_notification(t(645, 'No results found'), false);
+                }
+                $out = webusers_list();
+            }
             break;
 					
 		case 0: // list / search result
@@ -324,7 +358,7 @@ function webusers_list()
             function navigate_webusers_remove_old_unconfirmed()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=webusers&act=remove_old_unconfirmed"; }, 
+                    function() { window.location.href = "?fid=webusers&act=remove_old_unconfirmed&rtk='.$_SESSION['request_token'].'"; }, 
                     "'.t(497, "Do you really want to erase this data?").'", 
                     null, "'.t(35, 'Delete').'"
                 );
@@ -354,7 +388,9 @@ function webusers_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
     $navitable->sortBy('id', 'DESC');
@@ -470,9 +506,6 @@ function webusers_list()
 
 function webusers_form($item)
 {
-	global $user;
-	global $DB;
-	global $website;
     global $theme;
 	global $layout;
     global $events;
@@ -482,9 +515,13 @@ function webusers_form($item)
 	$layout->navigate_media_browser();	// we can use media browser in this function
 	
 	if(empty($item->id))
-		$navibars->title(t(24, 'Web users').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(24, 'Web users').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(24, 'Web users').' / '.t(170, 'Edit').' ['.$item->id.']');		
+    {
+        $navibars->title(t(24, 'Web users').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	$navibars->add_actions(
         array(
@@ -524,33 +561,16 @@ function webusers_form($item)
 				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
             )
         );
-		
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'";
-								},
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								}
-							}
-						});';		
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 	
 	$navibars->add_actions(
@@ -645,7 +665,9 @@ function webusers_form($item)
     ));
 
 	if(empty($item->access_begin))
-		$item->access_begin = '';
+    {
+        $item->access_begin = '';
+    }
 
     $navibars->add_tab_content_row(
         array(
@@ -655,7 +677,10 @@ function webusers_form($item)
     );
 
 	if(empty($item->access_end))
-		$item->access_end = '';
+    {
+        $item->access_end = '';
+    }
+
 	$navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<img src="img/icons/silk/date_delete.png" /> '.t(624, 'End').'</label>',
@@ -751,7 +776,9 @@ function webusers_form($item)
 	$timezones = property::timezones();
 	
 	if(empty($item->timezone))
-		$item->timezone = date_default_timezone_get();	
+    {
+        $item->timezone = date_default_timezone_get();
+    }
 
 	$navibars->add_tab_content_row(
         array(
@@ -897,9 +924,6 @@ function webuser_groups_list()
 
 function webuser_groups_form($item)
 {
-    global $user;
-    global $DB;
-    global $website;
     global $layout;
 
     $navibars = new navibars();
@@ -931,32 +955,15 @@ function webuser_groups_form($item)
             )
         );
 
-        $delete_html = array();
-        $delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-        $delete_html[] = '<script language="javascript" type="text/javascript">';
-        $delete_html[] = 'function navigate_delete_dialog()';
-        $delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-        $delete_html[] = '$("#navigate-delete-dialog").dialog({
-                            resizable: true,
-                            height: 150,
-                            width: 300,
-                            modal: true,
-                            title: "'.t(59, 'Confirmation').'",
-                            buttons: {
-                                "'.t(58, 'Cancel').'": function() {
-                                    $(this).dialog("close");
-                                },
-                                "'.t(35, 'Delete').'": function() {
-                                    $(this).dialog("close");
-                                    window.location.href = "?fid='.$_REQUEST['fid'].'&act=webuser_group_delete&id='.$item->id.'";
-                                }
-                            }
-                        });';
-        $delete_html[] = '}';
-        $delete_html[] = '</script>';
-
-        $navibars->add_content(implode("\n", $delete_html));
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid='.$_REQUEST['fid'].'&act=webuser_group_delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
     }
 
     $navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/user.png"> '.t(24, 'Web users').'</a>' ) );

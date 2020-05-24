@@ -92,7 +92,12 @@ function run()
 		case 4:
 		case "remove":
         case "delete":
-			if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+			else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -350,21 +355,28 @@ function run()
 		case 'votes_by_webuser':
 			if($_POST['oper']=='del')
 			{
-				$ids = explode(',', $_POST['id']);
-				
-				for($i=0; $i < count($ids); $i++)
-				{
-					if($ids[$i] > 0)	
-					{
-						$vote = new webuser_vote();
-						$vote->load($ids[$i]);
-						$vote->delete();	
-					}
-				}
-				
-				webuser_vote::update_object_score('structure', $vote->object_id);
-					
-				echo 'true';
+                if(!naviforms::check_csrf_token('header'))
+                {
+                    echo 'false';
+                }
+                else
+                {
+                    $ids = explode(',', $_POST['id']);
+
+                    for($i=0; $i < count($ids); $i++)
+                    {
+                        if($ids[$i] > 0)
+                        {
+                            $vote = new webuser_vote();
+                            $vote->load($ids[$i]);
+                            $vote->delete();
+                        }
+                    }
+
+                    webuser_vote::update_object_score('structure', $vote->object_id);
+
+                    echo 'true';
+                }
 				core_terminate();	
 			}
 		
@@ -632,19 +644,15 @@ function structure_form($item)
             )
         );
 
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';
-		$delete_html[] = '{';
-		$delete_html[] = '  navigate_confirmation_dialog(
-		                        function() { window.location.href = "?fid=structure&act=delete&id='.$item->id.'"; }, 
-		                        null, null, "'.t(35, 'Delete').'"
-		                    ); ';
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid=structure&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 
     $extra_actions = array();

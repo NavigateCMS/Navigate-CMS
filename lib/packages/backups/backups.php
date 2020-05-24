@@ -75,8 +75,14 @@ function run()
 					
 					$out = array();		
 					
-					if(empty($dataset)) $rows = 0;
-					else				$rows = count($dataset);
+					if(empty($dataset))
+                    {
+                        $rows = 0;
+                    }
+					else
+                    {
+                        $rows = count($dataset);
+                    }
 	
 					for($i=0; $i < $rows; $i++)
 					{						
@@ -124,8 +130,13 @@ function run()
 			$out = backups_form($item);
 			break;
 			
-		case 4: // remove 
-			if(!empty($_REQUEST['id']))
+		case 4:
+        case 'delete':
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -276,33 +287,16 @@ function backups_form($item)
 	        	'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
             )
 		);		
-		
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';				
-		$delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								},
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid=backups&act=4&id='.$item->id.'";
-								}
-							}
-						});';		
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid=backups&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 	
 	$navibars->add_actions(

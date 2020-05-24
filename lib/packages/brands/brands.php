@@ -16,13 +16,20 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$object->load($id);
-						$object->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $object->load($id);
+                            $object->delete();
+                        }
+                        echo json_encode(true);
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 					
 				default: // list or search	
@@ -126,7 +133,11 @@ function run()
 			break;
 					
 		case 'delete':
-			if(!empty($_REQUEST['id']))
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(!empty($_REQUEST['id']))
 			{
 				$object->load(intval($_REQUEST['id']));	
 				if($object->delete() > 0)
@@ -239,7 +250,7 @@ function brands_form($object)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=brands&act=delete&id='.$object->id.'"; }, 
+                    function() { window.location.href = "?fid=brands&act=delete&id='.$object->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }

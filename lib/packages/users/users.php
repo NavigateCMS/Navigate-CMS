@@ -5,7 +5,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php'
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	
@@ -19,15 +18,22 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-                    $deleted = 0;
-					foreach($ids as $id)
-					{
-                        $item = new user();
-						$item->load($id);
-						$deleted = $deleted + $item->delete();
-					}
-					echo json_encode((count($ids)==$deleted));
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        $deleted = 0;
+                        foreach($ids as $id)
+                        {
+                            $item = new user();
+                            $item->load($id);
+                            $deleted = $deleted + $item->delete();
+                        }
+                        echo json_encode((count($ids)==$deleted));
+                    }
+                    else
+                    {
+                        echo json_encode(false);
+                    }
 					break;
 
 				default: // list or search	
@@ -125,9 +131,15 @@ function run()
 		
 			$out = users_form($item);
 			break;
-					
-		case 4: // remove 
-			if(!empty($_REQUEST['id']))
+
+        case 'delete':
+		case 4:
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
+            }
+			else if(!empty($_REQUEST['id']))
 			{
 				$item->load(intval($_REQUEST['id']));	
 				if($item->delete() > 0)
@@ -222,33 +234,16 @@ function users_form($item)
 				'<a href="#" onclick="navigate_delete_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cancel.png"> '.t(35, 'Delete').'</a>'
 			)
 		);
-		
-		$delete_html = array();
-		$delete_html[] = '<div id="navigate-delete-dialog" class="hidden">'.t(57, 'Do you really want to delete this item?').'</div>';
-		$delete_html[] = '<script language="javascript" type="text/javascript">';
-		$delete_html[] = 'function navigate_delete_dialog()';		
-		$delete_html[] = '{';
-        $delete_html[] = '$("#navigate-delete-dialog").removeClass("hidden");';
-		$delete_html[] = '$("#navigate-delete-dialog").dialog({
-							resizable: true,
-							height: 150,
-							width: 300,
-							modal: true,
-							title: "'.t(59, 'Confirmation').'",
-							buttons: {
-								"'.t(35, 'Delete').'": function() {
-									$(this).dialog("close");
-									window.location.href = "?fid=users&act=4&id='.$item->id.'";
-								},
-								"'.t(58, 'Cancel').'": function() {
-									$(this).dialog("close");
-								}
-							}
-						});';		
-		$delete_html[] = '}';							
-		$delete_html[] = '</script>';						
-									
-		$navibars->add_content(implode("\n", $delete_html));
+
+        $layout->add_script('
+            function navigate_delete_dialog()
+            {
+                navigate_confirmation_dialog(
+                    function() { window.location.href = "?fid=users&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    null, null, "'.t(35, 'Delete').'"
+                );
+            }
+        ');
 	}
 	
 	$navibars->add_actions(

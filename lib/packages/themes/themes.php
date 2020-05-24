@@ -66,14 +66,22 @@ function run()
         */
 
         case 'theme_sample_content_import':
-            try
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
             {
-                $theme->import_sample();
-                $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+                break;
             }
-            catch(Exception $e)
+            else
             {
-                $layout->navigate_notification($e->getMessage(), true, true);
+                try
+                {
+                    $theme->import_sample();
+                    $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                }
+                catch(Exception $e)
+                {
+                    $layout->navigate_notification($e->getMessage(), true, true);
+                }
             }
 
             $themes = theme::list_available();

@@ -492,6 +492,7 @@ class layout
         $out[] = '<script language="javascript" type="text/javascript">
                     $.ajaxSetup({ beforeSend: function(xhr) {xhr.setRequestHeader("X-Csrf-Token", "'.$_SESSION['csrf_token'].'"); }});
                     navigatecms.csrf_token = "'.$_SESSION['csrf_token'].'";
+                    navigatecms.request_token = "'.$_SESSION['request_token'].'";
                  </script>';
 
         return implode("\n", $out);

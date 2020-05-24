@@ -45,6 +45,9 @@ if(!isset($_SESSION['csrf_token']))
 {
     $_SESSION['csrf_token'] = bin2hex(openssl_random_pseudo_bytes( 32 ));
     $_SESSION['csrf_token_time'] = time();
+
+    // we create a specific token for direct GET requests that make modifications
+    $_SESSION['request_token'] = bin2hex(openssl_random_pseudo_bytes( 16 ));
 }
 
 header('X-Csrf-Token: '.$_SESSION['csrf_token']);

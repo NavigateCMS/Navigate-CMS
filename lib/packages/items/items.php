@@ -27,13 +27,16 @@ function run()
 			switch($_REQUEST['oper'])
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
-					foreach($ids as $id)
-					{
-						$item->load($id);
-						$item->delete();
-					}
-					echo json_encode(true);
+                    if(naviforms::check_csrf_token('header'))
+                    {
+                        $ids = $_REQUEST['ids'];
+                        foreach($ids as $id)
+                        {
+                            $item->load($id);
+                            $item->delete();
+                        }
+                        echo json_encode(true);
+                    }
 					break;
 
                 case 'elements_by_tag':
@@ -415,8 +418,12 @@ function run()
 			break;	
 
         case 'delete':
-		case 4: // remove 
-			if(!empty($_REQUEST['id']))
+		case 4:
+            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            {
+                $layout->navigate_notification(t(344, 'Security error'), true, true);
+            }
+            else if(!empty($_REQUEST['id']))
 			{			
 				$item->load(intval($_REQUEST['id']));
 
@@ -460,6 +467,12 @@ function run()
         case 'duplicate':
 			if(!empty($_REQUEST['id']))
 			{
+                if($_REQUEST['rtk'] != $_SESSION['request_token'])
+                {
+                    $layout->navigate_notification(t(344, 'Security error'), true, true);
+                    break;
+                }
+
 				$item->load(intval($_REQUEST['id']));
 
 				if($item->association == 'category' && $item->embedding == 1)
@@ -977,30 +990,43 @@ function run()
 			break;
 			
 		case 'votes_reset':
-			webuser_vote::remove_object_votes('item', intval($_REQUEST['id']));
-			
-			echo 'true';
+            if(naviforms::check_csrf_token('header'))
+            {
+			    webuser_vote::remove_object_votes('item', intval($_REQUEST['id']));
+			    echo 'true';
+            }
+            else
+            {
+                echo 'false';
+            }
 			core_terminate();
 			break;
 			
 		case 'votes_by_webuser':
 			if($_POST['oper']=='del')
 			{
-				$ids = explode(',', $_POST['id']);
-				
-				for($i=0; $i < count($ids); $i++)
-				{
-					if($ids[$i] > 0)	
-					{
-						$vote = new webuser_vote();
-						$vote->load($ids[$i]);
-						$vote->delete();	
-					}
-				}
-				
-				webuser_vote::update_object_score('item', $vote->object_id);
-					
-				echo 'true';
+                if(!naviforms::check_csrf_token('header'))
+                {
+                    echo 'false';
+                }
+                else
+                {
+                    $ids = explode(',', $_POST['id']);
+
+                    for($i=0; $i < count($ids); $i++)
+                    {
+                        if($ids[$i] > 0)
+                        {
+                            $vote = new webuser_vote();
+                            $vote->load($ids[$i]);
+                            $vote->delete();
+                        }
+                    }
+
+                    webuser_vote::update_object_score('item', $vote->object_id);
+
+                    echo 'true';
+                }
 				core_terminate();	
 			}
 		
@@ -1311,14 +1337,14 @@ function items_form($item)
         $extra_actions[] = '<a href="#" onclick="navigate_items_preview();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/monitor.png"> '.t(274, 'Preview').'</a>';
 		if($user->permission("items.create") != 'false')
         {
-            $extra_actions[] = '<a href="?fid=items&act=duplicate&id='.$item->id.'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
+            $extra_actions[] = '<a href="?fid=items&act=duplicate&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/page_copy.png"> '.t(477, 'Duplicate').'</a>';
         }
 
         $layout->add_script('
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid=items&act=delete&id='.$item->id.'"; }, 
+                    function() { window.location.href = "?fid=items&act=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }
@@ -2445,9 +2471,16 @@ function items_form($item)
 				        function()
                         {                         
                             $.post("?fid=items&act=votes_reset&id='.$item->id.'", function(data)
-                            {
-                                $("#navigate-panel-web-summary").addClass("ui-state-disabled");
-                                navigate_notification("'.t(355, 'Votes reset').'");
+                            {                                
+                                if(data=="true")
+                                {   
+                                    navigate_notification("'.t(355, 'Votes reset').'");
+                                    $("#navigate-panel-web-summary").addClass("ui-state-disabled"); 
+                                }
+                                else
+                                {   
+                                    navigate_notification(navigate_lang_dictionary[56]);           
+                                }
                             });
                         },
                         "'.t(497, "Do you really want to erase this data?").'",
