@@ -1,6 +1,7 @@
 {
     "name": "navigatecms/lib",
     "require": {
-        "mpdf/mpdf": "^7.1"
+        "mpdf/mpdf": "^7.1",
+        "jbroadway/urlify": "^1.2"
     }
 }

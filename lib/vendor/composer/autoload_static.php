@@ -11,6 +11,10 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
     );
 
     public static $prefixLengthsPsr4 = array (
+        'v' => 
+        array (
+            'voku\\' => 5,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -26,6 +30,11 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
     );
 
     public static $prefixDirsPsr4 = array (
+        'voku\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
+            1 => __DIR__ . '/..' . '/voku/stop-words/src/voku',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -37,6 +46,16 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+    );
+
+    public static $prefixesPsr0 = array (
+        'U' => 
+        array (
+            'URLify' => 
+            array (
+                0 => __DIR__ . '/..' . '/jbroadway/urlify',
+            ),
         ),
     );
 
@@ -55,6 +74,7 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378::$classMap;
 
         }, null, ClassLoader::class);

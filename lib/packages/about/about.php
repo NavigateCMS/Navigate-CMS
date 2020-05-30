@@ -80,17 +80,33 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.09</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/maschek/imgmap" target="_blank">TinyMCE imgmap plugin v1.09</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-   											'<a href="http://www.assembla.com/spaces/lorem-ipsum" target="_blank">TinyMCE LoremIpsum plugin v0.13</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+   			'<a href="http://www.assembla.com/spaces/lorem-ipsum" target="_blank">TinyMCE LoremIpsum plugin v0.13</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://www.jquery.com" target="_blank">jQuery v2.2.3 + jQuery Migrate v1.3</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.jquery.com" target="_blank">jQuery v2.2.3 + jQuery Migrate v1.3</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />'
+		)
+	);
 
     $navibars->add_tab_content_row(
     	array(
@@ -152,6 +168,13 @@ function about_layout()
 		array(
 			'<label>&nbsp;</label>',
 			'<a href="http://htmlpurifier.org" target="_blank">HTML Purifier v4.12.0</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/jbroadway/urlify" target="_blank">URLify for PHP v1.2</a><br />'
 		)
 	);
 
