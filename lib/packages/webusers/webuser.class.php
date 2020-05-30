@@ -576,7 +576,7 @@ class webuser
             $cookie_domain = $website->subdomain.'.'.$cookie_domain;
         }
 
-		setcookie('webuser', $this->cookie_hash, time()+60*60*24*365, '/', $cookie_domain); // 365 days
+        setcookie_samesite('webuser', $this->cookie_hash, time()+60*60*24*365, '/', $cookie_domain); // 365 days
 	}
 	
 	public static function unset_cookie()
@@ -594,7 +594,7 @@ class webuser
             $cookie_domain = $website->subdomain.'.'.$cookie_domain;
         }
 
-        setcookie('webuser', NULL, -1, '/', $cookie_domain);
+        setcookie_samesite('webuser', NULL, -1, '/', $cookie_domain);
 
         if(method_exists($events, 'trigger'))
         {

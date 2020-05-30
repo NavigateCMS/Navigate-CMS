@@ -13,7 +13,8 @@
     expires : 365,
     domain : '',
     secure : false,
-    path : '/'
+    path : '/',
+    samesite: 'Lax'
   };
 
   // Returns the cookie or null if it does not exist.
@@ -50,6 +51,7 @@
     var options = typeof options != 'undefined' ? $.extend(dOptions, options) : dOptions;
     // Set cookie attributes based on options
     var path = '; path=' + (options.path);
+    var samesite = '; samesite=' + (options.samesite);
     var domain = '; domain=' + (options.domain);
     var secure = options.secure ? '; secure' : '';
 	if (cookieValue && (typeof cookieValue == 'function' || typeof cookieValue == 'object'  || typeof cookieValue == 'array')) {
@@ -66,7 +68,7 @@
     }
     var expires = '; expires=' + date.toUTCString();
     // Write the cookie
-    document.cookie = [cookieName, '=', cookieValue, expires, path, domain, secure].join('');
+    document.cookie = [cookieName, '=', cookieValue, expires, path, samesite, domain, secure].join('');
   };
   
   $.setSubCookie = function(cookie,key,value,options){

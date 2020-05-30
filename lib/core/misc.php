@@ -6,7 +6,8 @@
  * @copyright All rights reserved to each function author.
  * @author Various (PHP Community)
  * @license GPLv2 License
- * @version 1.3 2016-01-05 19:48
+ * @version 1.5
+ * @updated 2020-05-30
  * @note if you are the creator of one of this functions and your name is not here send an email to info@navigatecms.com to be properly credited :)
  *
  */
@@ -544,12 +545,18 @@ function array_filter_quicksearch($array, $text)
         $keep = false;
 
         if(is_array($value))
+        {
             $keep = array_filter_quicksearch($value, $text);
+        }
         else
+        {
             $keep = (mb_strpos(strtolower($value), $text) !== false);
+        }
 
         if($keep)
+        {
             $out[$key] = $value;
+        }
     }
 
     $out = array_filter($out);
@@ -632,7 +639,8 @@ function command_exists($command)
         ),
         $pipes
     );
-    if ($process !== false) {
+    if ($process !== false)
+    {
         $stdout = stream_get_contents($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
         fclose($pipes[1]);
@@ -671,9 +679,13 @@ function slug($input)
 function value_or_default($value, $default="")
 {
 	if((is_null($value) || $value=="") && !is_numeric($value))
-		return $default;
+    {
+        return $default;
+    }
 	else
-		return $value;
+    {
+        return $value;
+    }
 }
 
 /**
@@ -912,7 +924,9 @@ if (function_exists('mb_ereg_replace'))
     {
         return mb_ereg_replace('[\x00\x0A\x0D\x1A\x22\x27\x5C]', '\\\0', $string);
     }
-} else {
+}
+else
+{
     function mb_escape($string)
     {
         return preg_replace('~[\x00\x0A\x0D\x1A\x22\x27\x5C]~u', '\\\$0', $string);
@@ -934,13 +948,25 @@ function generate_password($length = 8, $add_dashes = false, $available_sets = '
 {
     $sets = array();
     if(strpos($available_sets, 'l') !== false)
+    {
         $sets[] = 'abcdefghjkmnpqrstuvwxyz';
+    }
+
     if(strpos($available_sets, 'u') !== false)
+    {
         $sets[] = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+    }
+
     if(strpos($available_sets, 'd') !== false)
+    {
         $sets[] = '23456789';
+    }
+
     if(strpos($available_sets, 's') !== false)
+    {
         $sets[] = '!@#$%&*?';
+    }
+
     $all = '';
     $password = '';
     foreach($sets as $set)
@@ -950,10 +976,14 @@ function generate_password($length = 8, $add_dashes = false, $available_sets = '
     }
     $all = str_split($all);
     for($i = 0; $i < $length - count($sets); $i++)
+    {
         $password .= $all[array_rand($all)];
+    }
     $password = str_shuffle($password);
     if(!$add_dashes)
+    {
         return $password;
+    }
     $dash_len = floor(sqrt($length));
     $dash_str = '';
     while(strlen($password) > $dash_len)
@@ -963,6 +993,48 @@ function generate_password($length = 8, $add_dashes = false, $available_sets = '
     }
     $dash_str .= $password;
     return $dash_str;
+}
+
+/**
+ * Support samesite cookie flag in both php 7.2 (current production) and php >= 7.3 (when we get there)
+ * From: https://github.com/GoogleChromeLabs/samesite-examples/blob/master/php.md and https://stackoverflow.com/a/46971326/2308553
+ *
+ * @param [type] $name
+ * @param [type] $value
+ * @param [type] $expire
+ * @param [type] $path
+ * @param [type] $domain
+ * @param [type] $secure
+ * @param [type] $httponly
+ * @return void
+ */
+function setcookie_samesite($name, $value=NULL, $expire=0, $path='/', $domain='none', $secure=false, $httponly=true, $samesite='Lax')
+{
+    global $session_cookie_domain;
+    if($domain == 'none')
+    {
+        $domain = $session_cookie_domain;
+    }
+
+    if(PHP_VERSION_ID < 70300)
+    {
+        setcookie($name, $value, $expire, "$path; samesite=".$samesite, $domain, $secure, $httponly);
+    }
+    else
+    {
+        setcookie(
+            $name,
+            $value,
+            array(
+                'expires' => $expire,
+                'path' => $path,
+                'domain' => $domain,
+                'samesite' => $samesite,
+                'secure' => $secure,
+                'httponly' => $httponly,
+            )
+        );
+    }
 }
 
 

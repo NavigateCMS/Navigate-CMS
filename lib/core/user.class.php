@@ -152,6 +152,8 @@ class user
 	 */
     public function set_cookie()
 	{
+	    global $session_cookie_domain;
+
 	    if(function_exists('random_bytes'))
         {
             $this->cookie_hash = random_bytes(128);
@@ -163,8 +165,17 @@ class user
 
 		$this->update();
 
-        setcookie('navigate-remember-user-id', sha1($this->id), time()+60*60*24*7, '/'); // 7 days
-        setcookie('navigate-remember-user-token', $this->cookie_hash, time()+60*60*24*7, '/'); // 7 days
+        setcookie_samesite(
+            'navigate-remember-user-id',
+            sha1(APP_UNIQUE.'#'.$this->id),
+            time()+60*60*24*7 // 7 days
+        );
+
+        setcookie_samesite(
+            'navigate-remember-user-token',
+            $this->cookie_hash,
+            time()+60*60*24*7 // 7 days
+        );
 	}
 
 	/**
@@ -174,8 +185,8 @@ class user
     {
         $this->cookie_hash = '';
 		$this->update();
-		setcookie('navigate-remember-user-id', NULL);
-		setcookie('navigate-remember-user-token', NULL);
+        setcookie_samesite('navigate-remember-user-id', NULL);
+        setcookie_samesite('navigate-remember-user-token', NULL);
     }
 
 	/**

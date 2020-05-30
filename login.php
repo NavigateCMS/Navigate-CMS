@@ -26,7 +26,7 @@ if(!empty($_COOKIE['navigate-remember-user-token']) && !empty($_COOKIE['navigate
     $nuid = $DB->query_single(
         'id',
         'nv_users',
-        'cookie_hash = :cookie_hash AND SHA1(id) = :id',
+        'cookie_hash = :cookie_hash AND SHA1(CONCAT("'.APP_UNIQUE.'", "#", id)) = :id',
         NULL,
         array(
             ':cookie_hash' => $_COOKIE['navigate-remember-user-token'],
@@ -80,7 +80,7 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 
 		$_SESSION["login_request_uri"] = '';
 
-        setcookie('navigate-session-id', session_id(), time() + 60, '/'); // 60 seconds
+        setcookie_samesite('navigate-session-id', session_id(), time() + 60, '/'); // 60 seconds
 
         // force regenerate csrf token
         unset($_SESSION['csrf_token']);

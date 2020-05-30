@@ -1,7 +1,7 @@
 <?php
 /* Navigate CMS session management */
 
-$session_name = 'NVSID_'.substr(md5(NAVIGATE_PATH), 0, 8);
+$session_name = 'NVSID_'.substr(md5(APP_UNIQUE), 0, 16);
 
 // retrieve session id via cookie except if a "session_id" parameter has been given when calling navigate_upload.php
 if(isset($_COOKIE[$session_name]) && empty($_REQUEST['session_id']))
@@ -28,7 +28,31 @@ if(!preg_match(
         $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
     }
 
-    @session_set_cookie_params(3600, '/', $session_cookie_domain, false, false);
+
+    // need to identify PHP version to know how to activate SameSite cookie parameter
+    if(PHP_VERSION_ID < 70300)
+    {
+        $session_cookie_prefs = array(
+            'lifetime' => 3600,
+            'path' => '/;SameSite=Strict',
+            'domain' => $session_cookie_domain,
+            'secure' => false,
+            'httponly' => true
+        );
+    }
+    else
+    {
+        $session_cookie_prefs = array(
+            'lifetime' => 3600,
+            'path' => '/',
+            'domain' => $session_cookie_domain,
+            'secure' => false,
+            'httponly' => true,
+            'sameSite' => 'Lax'
+        );
+    }
+
+    @session_set_cookie_params($session_cookie_prefs);
 }
 
 @session_save_path(NAVIGATE_PRIVATE.'/sessions');
@@ -36,9 +60,10 @@ if(!preg_match(
 session_start();
 
 // set/refresh session cookie
-setcookie(session_name(), session_id(), time() + 3600, '/', $session_cookie_domain);
+setcookie_samesite(session_name(), session_id(), time() + 3600, '/', $session_cookie_domain);
+
 // also refresh PHPSESSID cookie, to avoid problems
-setcookie("PHPSESSID", session_id(), time() + 3600, '/', $session_cookie_domain);
+setcookie_samesite("PHPSESSID", session_id(), time() + 3600, '/', $session_cookie_domain);
 
 // set CSRF token, if not already there
 if(!isset($_SESSION['csrf_token']))

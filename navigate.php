@@ -143,7 +143,7 @@ $lang->load($user->language);
 
 if(@$_COOKIE['navigate-language'] != $user->language)
 {
-    setcookie('navigate-language', $user->language, time() + 86400 * 30);
+    setcookie_samesite('navigate-language', $user->language, time() + 86400 * 30);
 }
 
 set_time_limit(0);
