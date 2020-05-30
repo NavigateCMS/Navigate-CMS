@@ -106,9 +106,9 @@ function run()
 		
 			if(isset($_REQUEST['form-sent']))
 			{
-				$item->load_from_post();
 				try
 				{
+                    $item->load_from_post();
                     naviforms::check_csrf_token();
 
 					$item->save();

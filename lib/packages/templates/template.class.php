@@ -137,7 +137,15 @@ class template
 	public function load_from_post()
 	{
 		$this->title  		= $_REQUEST['title'];
-		$this->file			= str_replace(array('../', '..\\'), '', $_REQUEST['file']);
+		$path  = trim(str_replace(array('..', '\\', '/', '//', ' '), '', $_REQUEST['file']));
+		$path = basename($path);
+		$path = rtrim($path, ".\t\n\r\0\x0B");
+		$path = ltrim($path, ".\t\n\r\0\x0B");
+		if(PHP_MAJOR_VERSION >= 7)
+        {
+            $path = URLify::filter($path, 128, 'en', true, false, true, '-');
+        }
+        $this->file			= $path;
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);	
 		
