@@ -55,7 +55,9 @@ $current_version = update::latest_installed();
 /*	1/ Create temporary folder	*/
 // we assume we are in navigate/setup folder
 if(!@mkdir('distribution'))
+{
     die(APP_NAME.' # ERROR<br /> '."Can't create distribution folder.");
+}
 
 /*	2/ Dump database structure	*/
 
@@ -105,13 +107,17 @@ foreach($tables as $table)
 	foreach($rs as $row)
 	{
 		$row = array_values($row);
-		$row = array_map(protect, $row);
+		$row = array_map('protect_v1', $row);
 		$row = implode(',', $row);
         // every 100 rows, a new sentence
 		if($rcount % 100 == 0)
-			$sql[] = 'INSERT INTO '.$table.' VALUES ('.$row.');';
+        {
+            $sql[] = 'INSERT INTO '.$table.' VALUES ('.$row.');';
+        }
 		else
-			$sql[count($sql)-1] = rtrim($sql[count($sql)-1], ';').', ('.$row.');';
+        {
+            $sql[count($sql)-1] = rtrim($sql[count($sql)-1], ';').', ('.$row.');';
+        }
 			
 		$rcount++;
 	}	
@@ -152,22 +158,52 @@ foreach($navigate_files as $file)
 	//echo 'Adding '.$index.'/'.$total.' ('.round(($index/$total*100),2).'%)<br />';
 	//flush();
 	
-	if(!file_exists($file)) continue;	
+	if(!file_exists($file))
+    {
+        continue;
+    }
 	
 	$file = substr($file, strlen(NAVIGATE_PATH.'/'));
 	
 	// file must be excluded from package?
-	if($file=='cfg/globals.php') continue;
-	if(substr($file, 0, strlen('setup/'))=='setup/') continue;
-	if(substr($file, 0, strlen('docs/'))=='docs/') continue;
-	if(substr($file, 0, strlen('updates/'))=='updates/') continue;
-    if(substr($file, 0, strlen('private/'))=='private/') continue;
-    if(substr($file, 0, strlen('themes/'))=='themes/') continue;
-    if(substr($file, 0, strlen('cache/'))=='cache/') continue;
+	if($file=='cfg/globals.php')
+    {
+        continue;
+    }
 
-    // exclude e-shop development files (until official release)
-    if(substr($file, 0, strlen('lib/packages/products'))=='lib/packages/products') continue;
-    if(substr($file, 0, strlen('lib/packages/brands'))=='lib/packages/brands') continue;
+	if(substr($file, 0, strlen('setup/'))=='setup/')
+    {
+        continue;
+    }
+
+	if(substr($file, 0, strlen('docs/'))=='docs/')
+    {
+        continue;
+    }
+
+	if(substr($file, 0, strlen('updates/'))=='updates/')
+    {
+        continue;
+    }
+
+    if(substr($file, 0, strlen('private/'))=='private/')
+    {
+        continue;
+    }
+
+    if(substr($file, 0, strlen('themes/'))=='themes/')
+    {
+        continue;
+    }
+
+    if(substr($file, 0, strlen('cache/'))=='cache/')
+    {
+        continue;
+    }
+
+    // exclude development files (until official release)
+    // if(substr($file, 0, strlen('lib/packages/products'))=='lib/packages/products') continue;
+    // if(substr($file, 0, strlen('lib/packages/brands'))=='lib/packages/brands') continue;
 
     // from 1.9.1, do not include ANY private file
 
@@ -177,7 +213,9 @@ foreach($navigate_files as $file)
         if( substr($file, 0, strlen('plugins/votes/'))!='plugins/votes/' &&
             substr($file, 0, strlen('plugins/twitter_timeline/'))!='plugins/twitter_timeline/'
         )
+        {
             continue;
+        }
     }
 
     if(substr($file, 0, strlen('lib/external/tinymce/'))=='lib/external/tinymce/')
@@ -185,7 +223,9 @@ foreach($navigate_files as $file)
         $pi = pathinfo($file);
         if( $pi['dirname']=='lib/external/tinymce'  &&
             $pi['extension']=='gz') // tinymce root && .gz extension => ignore
-        continue;
+        {
+            continue;
+        }
     }
 	if(substr($file, 0, strlen('setup/'))=='setup/') continue;
 	if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
@@ -235,16 +275,46 @@ function rrmdir($dir)
 {
    if (is_dir($dir)) {
      $objects = scandir($dir);
-     foreach ($objects as $object) {
-       if ($object != "." && $object != "..") {
-         if (filetype($dir."/".$object) == "dir")
-             rrmdir($dir."/".$object);
-         else unlink($dir."/".$object);
-       }
+     foreach ($objects as $object)
+     {
+        if ($object != "." && $object != "..")
+        {
+             if (filetype($dir."/".$object) == "dir")
+             {
+                 rrmdir($dir."/".$object);
+             }
+             else
+             {
+                 unlink($dir."/".$object);
+             }
+        }
      }
      reset($objects);
      rmdir($dir);
    }
+}
+
+function protect_v1($str, $wrapped_by="")
+{
+    if(is_integer($str))
+    {
+        // do nothing
+    }
+    else if($wrapped_by=='double')
+    {
+        $str = str_replace('"', "\\".'"', $str);
+    }
+    else if($wrapped_by=='single')
+    {
+        $str = str_replace("'", "\\"."'", $str);
+    }
+    else
+    {
+        $str = str_replace('"', "\\".'"', $str);
+        $str = '"'.$str.'"';
+    }
+
+    return $str;
 }
 
 ?>
