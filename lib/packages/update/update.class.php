@@ -77,7 +77,7 @@ class update
 			array(
 				'version' => $this->version,
 				'revision' => $this->revision,
-				'commit' => $this->commit,
+				'commit' => value_or_default($this->commit, ""),
 				'date_updated' => $this->date_updated,
 				'status' => $this->status,
 				'changelog' => $this->changelog
@@ -112,7 +112,7 @@ class update
 				'id' => $this->id,
 				'version' => $this->version,
 				'revision' => $this->revision,
-				'commit' => $this->commit,
+				'commit' => value_or_default($this->commit),
 				'date_updated' => $this->date_updated,
 				'status' => $this->status,
 				'changelog' => $this->changelog
@@ -213,7 +213,7 @@ class update
 			file_put_contents($ulog, "update package already downloaded\n", FILE_APPEND);
 		}
 		
-		return update::install_from_file($updates[0]['Version'], $updates[0]['Revision'], $ufile, $ulog);
+		return update::install_from_file($updates[0]['Version'], $updates[0]['Revision'], $updates[0]['Commit'], $ufile, $ulog);
 	}
 	
 	public static function install_from_repository($file_id)
@@ -232,10 +232,10 @@ class update
 		$ufile = NAVIGATE_PATH.'/updates/update-'.$latest->revision.'c.zip';
 		copy(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$file_id, $ufile);
 		
-		return update::install_from_file($latest->version.'c', $latest->revision, $ufile, $ulog);
+		return update::install_from_file($latest->version.'c', $latest->revision, $latest->commit, $ufile, $ulog);
 	}
 		
-	public static function install_from_file($version, $revision, $ufile, $ulog)
+	public static function install_from_file($version, $revision, $commit, $ufile, $ulog)
 	{	
 		global $DB;
 				
@@ -403,6 +403,7 @@ class update
 		$urow->id = 0;
 		$urow->version = $version; 
 		$urow->revision = $revision;
+		$urow->commit = $commit;
 		$urow->date_updated = time();
 		$urow->status = 'ok';
 		$urow->changelog = '';	
