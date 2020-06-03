@@ -958,33 +958,33 @@ class layout
                                 });
                             });
 
-                            $(container).find('.grid_note_save').button(
-                            {
-                                icons: { primary: 'ui-icon-disk' }
-                            }).on('click', function()
-                            {
-                                var background_color;
-                                if($('#' + row_id).find('.grid_color_swatch').length > 0)
-                                    background_color = $('#' + row_id).find('.grid_color_swatch').attr('ng-background');
-                                else
-                                    background_color = $('.grid_note:visible:first').css('background-color');
-
-                                $.post('".$grid_control_url."grid_notes_add_comment',
+                            $(container)
+                                .find('.grid_note_save')
+                                .button({icon: 'ui-icon-disk'})
+                                .on('click', function()
                                 {
-                                    comment: $(container).find('.grid_note_comment').val(),
-                                    id: row_id,
-                                    background: background_color
-                                },
-                                function(result)
-                                {
-                                    if(result=='true') // reload dialog and table
+                                    var background_color;
+                                    if($('#' + row_id).find('.grid_color_swatch').length > 0)
+                                        background_color = $('#' + row_id).find('.grid_color_swatch').attr('ng-background');
+                                    else
+                                        background_color = $('.grid_note:visible:first').css('background-color');
+    
+                                    $.post('".$grid_control_url."grid_notes_add_comment',
                                     {
-                                        $(container).parent().remove();
-                                        $('.navigate_grid_notes_span').html(parseInt($('.navigate_grid_notes_span').text()) + 1);
-                                        if(callback) callback('".$element_type."', '".$element_id."');
-                                    }
+                                        comment: $(container).find('.grid_note_comment').val(),
+                                        id: row_id,
+                                        background: background_color
+                                    },
+                                    function(result)
+                                    {
+                                        if(result=='true') // reload dialog and table
+                                        {
+                                            $(container).parent().remove();
+                                            $('.navigate_grid_notes_span').html(parseInt($('.navigate_grid_notes_span').text()) + 1);
+                                            if(callback) callback('".$element_type."', '".$element_id."');
+                                        }
+                                    });
                                 });
-                            });
                         });
                     }
                 });

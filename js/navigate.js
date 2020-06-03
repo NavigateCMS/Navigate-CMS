@@ -18,7 +18,7 @@ $(window).on('load', function()
 {
     $("#navigate-menu").css('opacity', 1);
     $("button, input:submit, a.uibutton, div.uibutton").not(".mce-tinymce button").button();
-    $(".buttonset").buttonset();
+    $(".buttonset").controlgroup();
     $(".buttonset").find('label').on('click', function()
     {
         // force buttonset to update the state on click
@@ -34,7 +34,7 @@ $(window).on('load', function()
             // no need to to anything else
         }
 
-        $(this).parents('.buttonset').buttonset('refresh');
+        $(this).parents('.buttonset').controlgroup('refresh');
     });
     jQuery.longclick.duration = 1000; // default longlick duration
 
@@ -96,7 +96,9 @@ $(window).on('load', function()
                 {
                     // in case of a duplicated request, simply ignore it
                     if($('#navigate-recent-items li').length > 0)
+                    {
                         return;
+                    }
 
                     $(data).each(function()
                     {
@@ -2022,7 +2024,7 @@ function navigate_tinymce_scroll(event, element, reset)
 $.fn.buttonsetv = function()
 {
     $(':radio, :checkbox', this).wrap('<div style="margin: 1px"/>');
-    $(this).buttonset();
+    $(this).controlgroup();
     $('label:first', this).removeClass('ui-corner-left').addClass('ui-corner-top');
     $('label:last', this).removeClass('ui-corner-right').addClass('ui-corner-bottom');
     mw = 0; // max witdh
@@ -2066,7 +2068,9 @@ function navigate_selector_upgrade(el)
 
     // force defined width
     if(width)
+    {
         $(el).prev().find('a:first').css('width', width);
+    }
 
     classes = classes.replace("select2 ", "");
     $(el).next().addClass(classes);
@@ -2081,9 +2085,7 @@ function navigate_selector_upgrade(el)
             buttons: [
                 {
                     text: navigate_t(190, "Ok"),
-                    icons: {
-                        primary: "ui-icon-check"
-                    },
+                    icon: "ui-icon-check",
                     click: function()
                     {
                         var new_value = $(this).find('input[name="create_custom_value"]').val();
@@ -2100,9 +2102,7 @@ function navigate_selector_upgrade(el)
                 },
                 {
                     text: navigate_t(58, "Cancel"),
-                    icons: {
-                        primary: "ui-icon-close"
-                    },
+                    icon: "ui-icon-close",
                     click: function()
                     {
                         $( this ).dialog( "close" );
@@ -2606,10 +2606,6 @@ function navigate_decimal_to_string(value)
         var menu = null;
         var settings =
         {
-            selected: function(event, ui)
-            {
-                document.location = ui.item.children()[0];
-            },
             showMenu: function()
             {
                 if (menu) menu.hide();
@@ -2617,17 +2613,17 @@ function navigate_decimal_to_string(value)
                     {
                         my: "left top",
                         at: "left bottom",
-                        of: $(this).prev()
+                        of: $(this).parent().parent()
                     }
                 );
 
                 // use relative coordinates, to minimize scroll bug (not perfect, though)
                 $(this).parent().next().css({
-                    'margin-left': $(this).prev().position().left - 2, // - $(this).parents('.ui-tabs-panel').offset().left
-                    'margin-top': $(this).prev().height(),
+                    'margin-left': $(this).parent().position().left - 2, // - $(this).parents('.ui-tabs-panel').offset().left
+                    'margin-top': $(this).parent().height(),
                     'left': '0',
                     'top': '',
-                    'z-index': 1000
+                    'z-index': 10000
                 });
 
 				$(this).parents('.ui-tabs-panel:first').animate(
@@ -2644,13 +2640,9 @@ function navigate_decimal_to_string(value)
                 return false;
             }
         };
-        if (options)
-        {
-            $.extend(settings, options);
-        }
-        var buttonConfig = { text: false, icons: { primary: "ui-icon-triangle-1-s" }};
-        return this.button().next().button(buttonConfig).click(settings.showMenu).parent().buttonset()
-            // this may change to select: in jquery ui 1.9
-            .next().menu({selected: settings.selected});
+
+        console.log(this);
+
+        return this.click(settings.showMenu);
     };
 })(jQuery);

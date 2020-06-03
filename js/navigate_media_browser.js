@@ -17,11 +17,12 @@ function navigate_media_browser()
 
     $('select#media_browser_order')
         .imageselectmenu({
-        appendTo: '#navigate_media_browser_buttons',
-        select: navigate_media_browser_select_order
-    });
+            appendTo: '#navigate_media_browser_buttons',
+            select: navigate_media_browser_select_order
+        }
+    );
 
-	$("#navigate_media_browser_buttons").find("div").eq(0).buttonset().css("float", "left");
+	$("#navigate_media_browser_buttons").find("div").eq(0).controlgroup().css("float", "left");
 	$("#media_browser_search img").button().removeClass('ui-corner-all');
 
 	navigate_media_browser_website = navigate['website_id'];
@@ -52,10 +53,14 @@ function navigate_media_browser()
 				$("#navigate_media_browser_items").css({height: pos.height - 30 - 50});
 
                 if(pos.type)
-				    $('select[name="media_browser_type"]').val(pos.type);
+                {
+                    $('select[name="media_browser_type"]').val(pos.type);
+                }
 
                 if(pos.order)
-				    $('select[name="media_browser_order"]').val(pos.order);
+                {
+                    $('select[name="media_browser_order"]').val(pos.order);
+                }
 
 				if(pos.folder_id > 0)
 				{
@@ -204,34 +209,38 @@ function navigate_media_browser_refresh()
             return false;
         });
 
-        $("#navigate_media_browser_items div.draggable-folder").droppable({
-            hoverClass: "ui-state-highlight",
-            tolerance: "pointer",
-            drop: function(event, ui)
-            {
-                var folder = $(this).attr("id").substring(5);
-                var item = $(ui.draggable).attr("id").substring(5);
-
-                $.ajax(
+        $("#navigate_media_browser_items div.draggable-folder")
+            .droppable({
+                classes: {
+                    "ui-droppable-hover": "ui-state-highlight"
+                },
+                tolerance: "pointer",
+                drop: function(event, ui)
                 {
-                    async: false,
-                    type: "post",
-                    data: {
-                        item: item,
-                        folder: folder
-                    },
-                    url: NAVIGATE_APP + "?fid=files&act=json&op=move",
-                    success: function(data)
+                    var folder = $(this).attr("id").substring(5);
+                    var item = $(ui.draggable).attr("id").substring(5);
+
+                    $.ajax(
                     {
-                        if(data=="true")
+                        async: false,
+                        type: "post",
+                        data: {
+                            item: item,
+                            folder: folder
+                        },
+                        url: NAVIGATE_APP + "?fid=files&act=json&op=move",
+                        success: function(data)
                         {
-                            $(".navigate_media_browser_clone").remove();
-                            $(ui.draggable).remove();
+                            if(data=="true")
+                            {
+                                $(".navigate_media_browser_clone").remove();
+                                $(ui.draggable).remove();
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
-        });
+        );
     }
 
     $("#navigate_media_browser_items div")

@@ -17,17 +17,20 @@ $.widget( "custom.iconselectmenu", $.ui.selectmenu,
 {
     _renderItem: function( ul, item )
     {
-        var li = $( "<li>", { text: item.label } );
+        var li = $( "<li>" );
+        var wrapper = $( "<div>", { text: item.label } );
 
         if( item.disabled )
+        {
             li.addClass( "ui-state-disabled" );
+        }
 
         $( "<span>", {
             style: item.element.attr( "data-style" ),
             "class": "ui-icon " + item.element.attr( "data-class" )
-        }).appendTo( li );
+        }).appendTo( wrapper );
 
-        return li.appendTo( ul );
+        return li.append(wrapper).appendTo( ul );
     }
 });
 
@@ -36,13 +39,18 @@ $.widget( "custom.imageselectmenu", $.ui.selectmenu,
 {
     _renderItem: function( ul, item )
     {
-        var li = $( "<li>", { text: item.label } );
+        var li = $( "<li>" );
+        var wrapper = $( "<div>", { text: item.label } );
 
         if( item.disabled )
+        {
             li.addClass( "ui-state-disabled" );
+        }
 
         if(!item.element.attr('data-src'))
+        {
             item.element.attr('data-src', "img/transparent.gif");
+        }
 
         $( "<img />", {
             style: item.element.attr( "data-style" ),
@@ -55,9 +63,9 @@ $.widget( "custom.imageselectmenu", $.ui.selectmenu,
                 "margin-right": "4px",
                 "vertical-align": "-3px"
             })
-            .prependTo( li );
+            .prependTo( wrapper );
 
-        return li.appendTo( ul );
+        return li.append(wrapper).appendTo( ul );
     },
     updateIcon: function()
     {
@@ -69,7 +77,9 @@ $.widget( "custom.imageselectmenu", $.ui.selectmenu,
             .prepend('<img src="img/transparent.gif" class="'+icon+'" />');
         $('#'+this.ids.button+' img').css({
             'margin-right': '4px',
-            'margin-left': '-4px',
+            'margin-left': '3px',
+            'margin-top': '1px',
+            'margin-bottom': '0px',
             'vertical-align': '-5px'
         });
     }

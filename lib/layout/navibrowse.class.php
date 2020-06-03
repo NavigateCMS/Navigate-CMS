@@ -524,7 +524,9 @@ class navibrowse
 						navibrowse_selected = $("div.navibrowse-file.ui-selected, div.navibrowse-folder.ui-selected");
 
 						if(navibrowse_selected.length > 1)
-							$(ui.helper).append("<div id=\"navibrowse-item-badge\">" + navibrowse_selected.length + "</div>");
+						{
+						    $(ui.helper).append("<div id=\"navibrowse-item-badge\">" + navibrowse_selected.length + "</div>");
+                        }
 					},
 					stop: function()
 					{
@@ -537,7 +539,9 @@ class navibrowse
 			$html[] = '
 			    $(".navibrowse-folder").droppable(
                 {
-                    hoverClass: "ui-selected",
+                    classes: {
+                        "ui-droppable-hover": "ui-selected"
+                    },
                     tolerance: "pointer",
                     drop: function(event, ui)
                     {

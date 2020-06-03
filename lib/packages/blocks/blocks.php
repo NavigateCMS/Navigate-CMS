@@ -772,9 +772,7 @@ function blocks_list()
             	.button()
             	.css(
             	{
-                	"float": "right",
-                	"margin-top": "0px",
-                	"padding": "0px"
+                	"float": "right"
             	})
             	.on("click", function(e)
             	{
@@ -1774,14 +1772,18 @@ function blocks_form($item)
 										var input_value = $(this).find("select").val();
 
 										if(input_name)
+                                        {
 											$("select[name=\""+input_name+"\"]").val(input_value).trigger("change");
+                                        }
 									}
 									else
 									{
 										// standard input or checkbox field
 										$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("input").val($(this).find("input").val());
 										if($(this).find("input").attr("checked"))
+										{
 											$("#trigger_links_table_" + to).find("tr:visible:last").find("td").eq(i).find("input").attr("checked", "checked");
+                                        }
 									}
 								});
 							});
@@ -3213,9 +3215,7 @@ function block_group_form($item)
                     buttons: [
                         {
                             text: navigate_t(190, "Ok"),
-                            icons: {
-                                primary: "ui-icon-check"
-                            },
+                            icon: "ui-icon-check",
                             click: function()
                             {
                                 var new_value = {};
@@ -3237,9 +3237,7 @@ function block_group_form($item)
                         },
                         {
                             text: navigate_t(58, "Cancel"),
-                            icons: {
-                                primary: "ui-icon-close"
-                            },
+                            icon: "ui-icon-close",
                             click: function()
                             {
                                 $( this ).dialog( "close" );

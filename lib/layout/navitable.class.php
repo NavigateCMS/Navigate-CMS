@@ -957,26 +957,27 @@ class navitable
                                         );
                                     });
 
-                                    $(container).find('.grid_note_save').button({
-                                        icons: { primary: 'ui-icon-disk' }
-                                    }).on('click', function()
-                                    {
-                                        $.post('".$grid_notes_control."grid_notes_add_comment',
+                                    $(container)
+                                        .find('.grid_note_save')
+                                        .button({icon: 'ui-icon-disk' })
+                                        .on('click', function()
                                         {
-                                            comment: $(container).find('.grid_note_comment').val(),
-                                            id: row_id,
-                                            background: $('#' + row_id).find('.grid_color_swatch').attr('ng-background')
-                                        },
-                                        function(result)
-                                        {
-                                            if(result=='true') // reload dialog and table
+                                            $.post('".$grid_notes_control."grid_notes_add_comment',
                                             {
-                                                $(container).parent().remove();
-                                                $('#' + row_id).find('.grid_note_edit').trigger('click');
-                                                $('#".$this->id."').trigger('reloadGrid', [{current:true}]);
-                                            }
+                                                comment: $(container).find('.grid_note_comment').val(),
+                                                id: row_id,
+                                                background: $('#' + row_id).find('.grid_color_swatch').attr('ng-background')
+                                            },
+                                            function(result)
+                                            {
+                                                if(result=='true') // reload dialog and table
+                                                {
+                                                    $(container).parent().remove();
+                                                    $('#' + row_id).find('.grid_note_edit').trigger('click');
+                                                    $('#".$this->id."').trigger('reloadGrid', [{current:true}]);
+                                                }
+                                            });
                                         });
-                                    });
                                 });
                             }
                         });

@@ -100,7 +100,7 @@ class naviforms
 	public function buttonset($name, $options, $default, $onclick="", $jqueryui_icons=array(), $multiple=false)
 	{
 		$buttonset = array();
-		$buttonset[] = '<div class="buttonset">';
+		$buttonset[] = '<div class="buttonset controlgroup">';
 
 		foreach($options as $key => $val)
 		{
@@ -126,8 +126,9 @@ class naviforms
         global $layout;
 
         $out = array();
-        $out[] = '<div id="'.$id.'" class="nv-splitbutton" style="float: left;">';
-        $out[] =    '<a class="'.$id.'_splitbutton_main" href="'.$links[0].'">'.$title.'</a><a href="#">'.t(200, 'Options').'</a>';
+        $out[] = '<div id="'.$id.'" class="nv-splitbutton" style="float: left; margin-right: 6px;">';
+        $out[] =    '<a class="'.$id.'_splitbutton_main ui-corner-left" href="'.$links[0].'">'.$title.'</a>';
+        $out[] =    '<a class="ui-corner-right" href="#">'.t(200, 'Options').'</a>';
         $out[] = '</div>';
         $out[] = '<ul id="'.$id.'_splitbutton_menu" class="nv_splitbutton_menu" style="display: none; position: absolute; ">';
         for($i=0; $i < count($texts); $i++)
@@ -137,7 +138,10 @@ class naviforms
         $out[] = '</ul>';
 
         $layout->add_script('
-            $(".'.$id.'_splitbutton_main").splitButton();
+            $("#'.$id.'").controlgroup();
+            $("#'.$id.' a:last").button({ showLabel: false, icon: "ui-icon-triangle-1-s" });
+            $("#'.$id.'_splitbutton_menu").menu({selected: function(event, ui) { document.location = ui.item.children()[0]; }});
+            $(".'.$id.'_splitbutton_main").next().splitButton();
         ');
 
 		return implode("\n", $out);
@@ -1076,7 +1080,9 @@ class naviforms
                                 $("#'.$name.'-image_picker").show();
                                 
                                 if($("#'.$name.'-image_picker").position().top + $("#'.$name.'-image_picker").height() > $(window).height())                    
+                                {
                                     $("#'.$name.'-image_picker").css("top", $(window).height() - $("#'.$name.'-image_picker").height() - 8);
+                                }
 
                                 $("#'.$name.'-image_picker li").off().on("click", function()
                                 {
@@ -1286,7 +1292,9 @@ class naviforms
 				$("#'.$name.'-droppable").droppable(
 				{
 					'.$accept.'
-					hoverClass: "navigate-droppable-hover",
+                    classes: {
+                        "ui-droppable-hover": "navigate-droppable-hover"
+                    },				
 					drop: function(event, ui) 
 					{
 						var file_id = $(ui.draggable).attr("id").substring(5);
