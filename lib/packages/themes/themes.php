@@ -194,7 +194,7 @@ function run()
                 else
                 {
                     // security validation
-                    $secure = theme::check_upload($_FILES['extension-upload'], $theme_name);
+                    $secure = theme::check_upload($_FILES['theme-upload'], $theme_name);
 
                     if($secure !== true)
                     {

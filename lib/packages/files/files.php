@@ -1336,7 +1336,9 @@ function files_media_browser($limit = 50, $offset = 0)
 		{
 	        $website_root = $ws->absolute_path(true).'/object';
 	        if(empty($website_root))
-	            $website_root = NVWEB_OBJECT;
+            {
+                $website_root = NVWEB_OBJECT;
+            }
 	        $download_link = $website_root.'?id='.$f->id.'&disposition=attachment';
 
 	        if($f->type == 'image')

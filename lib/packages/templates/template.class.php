@@ -48,7 +48,7 @@ class template
 		$this->id			= $main->id;
 		$this->website		= $main->website;		
 		$this->title  		= $main->title;
-		$this->file			= str_replace(array('../', '..\\'), '', $main->file);
+		$this->file			= str_replace('..', '', $main->file);
 		$this->sections		= mb_unserialize($main->sections);
 		$this->gallery		= $main->gallery;
 		$this->comments		= $main->comments;		

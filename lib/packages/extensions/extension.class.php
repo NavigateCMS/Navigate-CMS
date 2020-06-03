@@ -579,6 +579,15 @@ class extension
                 }
             }
         }
+        
+        // check for "dangerous" files
+        $htaccess = core_recursive_file_search($tempdir,  '/.htaccess/');
+        $phpini = core_recursive_file_search($tempdir,  '/php.ini/');
+        if(!empty($htaccess) || !empty($phpini))
+        {
+            core_remove_folder($tempdir);
+            return false;
+        }
 
         core_remove_folder($tempdir);
 

@@ -535,14 +535,14 @@ class theme
         $zip->close();
 
         // theme definition exists?
-        if(!file_exists($tempdir . '/' . $theme_name . '.plugin'))
+        if(!file_exists($tempdir . '/' . $theme_name . '.theme'))
         {
             core_remove_folder($tempdir);
             return false;
         }
 
         // it's a valid json?
-        $theme_def = file_get_contents($tempdir . '/' . $theme_name . '.plugin');
+        $theme_def = file_get_contents($tempdir . '/' . $theme_name . '.theme');
         $theme_def = json_decode($theme_def);
 
         if(json_last_error() != JSON_ERROR_NONE)
@@ -579,6 +579,15 @@ class theme
                     return false;
                 }
             }
+        }
+
+        // check for "dangerous" files
+        $htaccess = core_recursive_file_search($tempdir,  '/.htaccess/');
+        $phpini = core_recursive_file_search($tempdir,  '/php.ini/');
+        if(!empty($htaccess) || !empty($phpini))
+        {
+            core_remove_folder($tempdir);
+            return false;
         }
 
         core_remove_folder($tempdir);
