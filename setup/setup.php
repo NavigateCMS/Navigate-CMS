@@ -92,9 +92,9 @@ $lang = navigate_install_load_language();
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php echo APP_NAME;?> v<?php echo APP_VERSION;?> - <?php echo $lang['install'];?></title>
-        <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1.11.3/jquery.min.js"></script>
-        <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/jquery.ui/1.11.4/jquery-ui.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/jquery.ui/1.11.4/themes/cupertino/jquery-ui.min.css" type="text/css" />
+        <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.js"></script>
+        <script language="javascript" type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-ui-dist@1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-ui-themes@1.12.0/themes/cupertino/jquery-ui.min.css" type="text/css" />
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo navigate_favicon(); ?>">
         <style type="text/css">
             html
@@ -721,10 +721,8 @@ function navigate_install_configuration()
                                 .attr( "tabIndex", -1 )
                                 .insertAfter( input )
                                 .button({
-                                    icons: {
-                                        primary: "ui-icon-triangle-1-s"
-                                    },
-                                    text: false
+                                    icon: "ui-icon-triangle-1-s",
+                                    showLabel: false
                                 })
                                 .removeClass( "ui-corner-all" )
                                 .addClass( "ui-corner-right ui-button-icon" )

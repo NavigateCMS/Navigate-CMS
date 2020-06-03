@@ -807,7 +807,7 @@ function websites_form($item)
 					buttons: [
 					    {
 					      text: "'.t(190, "Ok").'",
-					      icons: {  primary: "ui-icon-check"    },
+					      icon: "ui-icon-check",
 					      click: function()
 					      {
 					            $("#homepage_from_structure").val("");
@@ -817,7 +817,7 @@ function websites_form($item)
 					    },
 					    {
 					      text: "'.t(58, "Cancel").'",
-					      icons: { primary: "ui-icon-close" },
+					      icon: "ui-icon-close",
 					      click: function()
 					      {
 			                 setTimeout(

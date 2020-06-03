@@ -414,8 +414,8 @@ function webusers_list()
         {
             $("#jqgh_webusers_list_groups").prepend("<button>");
             $("#jqgh_webusers_list_groups button").button({
-                icons: { primary: "ui-icon-gear" },
-                text: false
+                icon: "ui-icon-gear",
+                showLabel: false
             }).css({
                 "float": "right",
                 "margin-top": "0px",

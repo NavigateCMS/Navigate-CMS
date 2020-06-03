@@ -469,7 +469,7 @@ function structure_tree($hierarchy)
     foreach($website->languages_list as $lang)
     {
         $lang_selector[] = '<li><a href="#" language="'.$lang.'">
-                                <span class="ui-icon ui-icon-carat-1-e"></span> '.language::name_by_code($lang).'
+                                <span class="ui-icon ui-icon-caret-1-e"></span> '.language::name_by_code($lang).'
                             </a></li>';
     }
 

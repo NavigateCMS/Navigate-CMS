@@ -1235,8 +1235,7 @@ function products_list()
             	.css(
             	{
                 	"float": "right",
-                	"margin-top": "0px",
-                	"padding": "0px"
+                	"margin-top": "-1px"
             	})
             	.on("click", function(e)
             	{

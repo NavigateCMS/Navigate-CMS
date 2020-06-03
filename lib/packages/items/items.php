@@ -1191,8 +1191,7 @@ function items_list()
             	.css(
             	{
                 	"float": "right",
-                	"margin-top": "0px",
-                	"padding": "0px"
+                	"margin-top": "-1px"
             	})
             	.on("click", function(e)
             	{
@@ -1676,61 +1675,57 @@ function items_form($item)
     );
 
 	$layout->add_script('
-	    $("#div_category_order button").button(
-	    {
-	        icons:
-	        {
-                primary: "ui-icon-arrowthick-2-n-s"
-            }
-	    }).on("click", function(e)
-	    {
-	        e.stopPropagation();
-	        e.preventDefault();
-	        navigate_status(navigate_t(6, "Loading") + "...", "loader");
-
-	        $("#items_order_window").load("?fid=items&act=items_order&category=" + $("#category").val() + "&_bogus=" + new Date().getTime(), function()
-	        {
-	            navigate_status(navigate_t(42, "Ready"), "ready");
-                $("#items_order_window").dialog({
-                    modal: true,
-                    title: "'.t(171, 'Order').'",
-                    width: 600,
-                    height: 500,
-                    buttons:
-                    {
-                        "'.t(58, 'Cancel').'": function()
+	    $("#div_category_order button")
+	        .button({icon: "ui-icon-arrowthick-2-n-s"})
+	        .on("click", function(e)
+            {
+                e.stopPropagation();
+                e.preventDefault();
+                navigate_status(navigate_t(6, "Loading") + "...", "loader");
+    
+                $("#items_order_window").load("?fid=items&act=items_order&category=" + $("#category").val() + "&_bogus=" + new Date().getTime(), function()
+                {
+                    navigate_status(navigate_t(42, "Ready"), "ready");
+                    $("#items_order_window").dialog({
+                        modal: true,
+                        title: "'.t(171, 'Order').'",
+                        width: 600,
+                        height: 500,
+                        buttons:
                         {
-                            $(this).dialog("destroy");
-                        },
-                        "'.t(190, 'Ok').'": function()
-                        {
-                            var dialog = this;
-                            // save
-                            $.post(
-                                "?fid=items&act=items_order&category=" + $("#category").val() + "&_bogus=" + new Date().getTime(),
-                                {
-                                    "items-order": $("#items-order").val()
-                                },
-                                function(response)
-                                {
-                                    if(response=="true")
+                            "'.t(58, 'Cancel').'": function()
+                            {
+                                $(this).dialog("destroy");
+                            },
+                            "'.t(190, 'Ok').'": function()
+                            {
+                                var dialog = this;
+                                // save
+                                $.post(
+                                    "?fid=items&act=items_order&category=" + $("#category").val() + "&_bogus=" + new Date().getTime(),
                                     {
-                                        $(dialog).dialog("destroy");
-                                    }
-                                    else
+                                        "items-order": $("#items-order").val()
+                                    },
+                                    function(response)
                                     {
-                                        $("<div>"+response+"</div>").dialog({
-                                            modal: true,
-                                            title: "'.t(56, "Unexpected error").'"
-                                        });
+                                        if(response=="true")
+                                        {
+                                            $(dialog).dialog("destroy");
+                                        }
+                                        else
+                                        {
+                                            $("<div>"+response+"</div>").dialog({
+                                                modal: true,
+                                                title: "'.t(56, "Unexpected error").'"
+                                            });
+                                        }
                                     }
-                                }
-                            );
+                                );
+                            }
                         }
-                    }
+                    });
                 });
             });
-	    });
 	');
 
 	$templates = template::elements('element');
