@@ -1,6 +1,7 @@
 var navigatecms = {
     forms: {
-        datepicker:		{ }
+        datepicker:		{ },
+        imask: []
     },
     csrf_token: null,
     beforeunload: false,
@@ -2581,6 +2582,7 @@ function navigate_string_to_decimal(value)
 
 function navigate_decimal_to_string(value)
 {
+    value = parseFloat(value.toFixed(2));
     value = value + "";
     value = value.replace(/\./g, navigate["decimal_separator"]);
     return value;
@@ -2640,8 +2642,6 @@ function navigate_decimal_to_string(value)
                 return false;
             }
         };
-
-        console.log(this);
 
         return this.click(settings.showMenu);
     };

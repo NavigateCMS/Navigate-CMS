@@ -153,7 +153,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="https://github.com/RobinHerbots/jquery.inputmask" target="_blank">jQuery Inputmask v5.0.3</a><br />'
+			'<a href="https://imask.js.org" target="_blank">IMask js v6.0.5</a><br />'
 		)
 	);
 

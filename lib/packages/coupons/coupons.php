@@ -408,7 +408,7 @@ function coupons_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(696, 'Minimum spend').'</label>',
-            $naviforms->decimalfield('minimum_spend', $object->minimum_spend, 2, NULL, NULL, NULL, NULL, '80px'),
+            $naviforms->decimalfield('minimum_spend', $object->minimum_spend, 2, NULL, NULL, NULL, NULL, '100px'),
             '<span class="current-currency">'.$currencies[value_or_default($object->currency, $website->currency)].'</span>'
         )
     );
@@ -416,14 +416,16 @@ function coupons_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(695, 'Times allowed globally').'</label>',
-            $naviforms->decimalfield('times_allowed_globally', $object->times_allowed_globally, 0, NULL, NULL, NULL, NULL, '80px'),
+            $naviforms->decimalfield('times_allowed_globally', $object->times_allowed_globally, 0, NULL, NULL, NULL, NULL, '100px'),
+            '<span class="navigate-form-row-info">0 => &infin;</span>'
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(694, 'Times allowed per customer').'</label>',
-            $naviforms->decimalfield('times_allowed_customer', $object->times_allowed_customer, 0, NULL, NULL, NULL, NULL, '80px'),
+            $naviforms->decimalfield('times_allowed_customer', $object->times_allowed_customer, 0, NULL, NULL, NULL, NULL, '100px'),
+            '<span class="navigate-form-row-info">0 => &infin;</span>'
         )
     );
 

@@ -690,7 +690,7 @@ function orders_form($object)
 
     $navibars->add_tab_content_row(array(
         '<label><big>'.t(706, 'Total').'</big></label>',
-        $naviforms->decimalfield('total', $object->total, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol, NULL, NULL, 'style="font-weight: bold;"')
+        $naviforms->decimalfield('total', $object->total, 2, $user->decimal_separator, $user->thousands_separator, '', $currency_symbol, NULL, NULL, 'style="font-weight: bold; width: 120px;"')
     ));
 
     $table = new naviorderedtable("order_taxes_breakout");
@@ -721,7 +721,7 @@ function orders_form($object)
     );
 
     $navibars->add_tab_content_row(array(
-        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(790, "Desglose de impuestos").'</label>',
+        '<label>&nbsp;&nbsp;<i class="fa fa-fw fa-angle-right"></i> '.t(790, "Taxes breakout").'</label>',
         '<div id="order_taxes_breakout" style="display: block;">'.$table->generate().'</div>'
     ));
 

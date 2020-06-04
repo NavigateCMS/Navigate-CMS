@@ -39,7 +39,9 @@ function run()
                     $shipping_method = new shipping_method();
 
                     if(!empty($shipping_method_id))
+                    {
                         $shipping_method->load($shipping_method_id);
+                    }
 
                     $country_id = $DB->query_single(
                         '`numeric`',
@@ -228,7 +230,9 @@ function shipping_methods_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=shipping_methods&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $navitable->setInitialURL("?fid=shipping_methods&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    }
 	
 	$navitable->setURL('?fid=shipping_methods&act=json');
 	$navitable->sortBy('id');
@@ -262,9 +266,13 @@ function shipping_methods_form($object)
     $layout->navigate_media_browser();
 	
 	if(empty($object->id))
-		$navibars->title(t(28, 'Shipping').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(28, 'Shipping').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(28, 'Shipping').' / '.t(170, 'Edit').' ['.$object->id.']');
+    {
+        $navibars->title(t(28, 'Shipping').' / '.t(170, 'Edit').' ['.$object->id.']');
+    }
 
     $navibars->add_actions(
         array(
@@ -464,7 +472,9 @@ function shipping_methods_form($object)
     $table->addHeaderColumn(t(35, 'Remove'), 60);
 
     if(empty($object->rates))
+    {
         $object->rates = array();
+    }
 
     $rates_order = array();
 
@@ -512,8 +522,8 @@ function shipping_methods_form($object)
                 array('content' => implode(", ", $rate_regions), 'align' => 'left', 'style' => 'vertical-align: top;'),
                 array('content' => $rate_weight, 'align' => 'left', 'style' => 'vertical-align: top;'),
                 array('content' => $rate_subtotal, 'align' => 'left', 'style' => 'vertical-align: top;'),
-                array('content' => $rate_cost, 'align' => 'center', 'style' => 'vertical-align: top;'),
-                array('content' => $rate_tax, 'align' => 'center', 'style' => 'vertical-align: top;'),
+                array('content' => $rate_cost, 'align' => 'right', 'style' => 'vertical-align: top;'),
+                array('content' => $rate_tax, 'align' => 'right', 'style' => 'vertical-align: top;'),
                 array('content' => ($rate->enabled=='1'? '<i class="fa fa-fw fa-lg fa-check"></i>' : '<i class="fa fa-fw fa-lg fa-eye-slash"></i>'), 'align' => 'center', 'style' => 'vertical-align: top;'),
                 array('content' => '<i class="fa fa-fw fa-lg fa-trash" data-action="remove"></i>
                                     <input type="hidden" name="rate_details['.$rate->id.']" value="'.$rate_details.'" />', 'align' => 'center', 'style' => 'vertical-align: top;')
@@ -618,7 +628,9 @@ function shipping_methods_form($object)
     // script will be bound to onload event at the end of this php function (after getScript is done)
     $onload_language = $_REQUEST['tab_language'];
     if(empty($onload_language))
+    {
         $onload_language = $website->languages_list[0];
+    }
 
     $layout->add_script('        
         $(document).on("keydown.ctrl_s", function (evt) { navigate_tabform_submit(1); return false; } );
@@ -634,7 +646,9 @@ function shipping_methods_form($object)
 	        complete: function()
 	        {
                 if(typeof navigate_shipping_methods_onload == "function")
+                {
 				    navigate_shipping_methods_onload("'.$onload_language.'");
+                }
 	        }
 	    });
     ');

@@ -127,7 +127,7 @@ class layout
 		$this->add_script_tag('js/plugins/jquery.ezCookie.js');
         $this->add_script_tag('js/plugins/jquery.longclick.js');
         $this->add_script_tag('js/plugins/uuid.js');
-        $this->add_script_tag('js/plugins/jquery.inputmask.js');
+        $this->add_script_tag('js/plugins/imask.js');
 
 		$this->add_style_tag('js/treetable/src/stylesheets/jquery.treeTable.css');
 		$this->add_script_tag('js/treetable/src/javascripts/jquery.treeTable.min.js');

@@ -1357,7 +1357,7 @@ label:hover:before
 	border-bottom:1px solid #FFFFFF;
 	border-top:1px solid transparent;
 	color:#666699;
-	padding:6px;
+	padding: 8px 6px;
 	position: relative;
 }
 

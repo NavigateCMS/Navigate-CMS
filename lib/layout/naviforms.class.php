@@ -206,7 +206,7 @@ class naviforms
 		return $out;	
 	}
 
-	public function decimalfield($name, $value="", $precision=2, $decimal_separator=NULL, $thousands_separator=NULL, $prefix="", $suffix="", $width="400px", $action="", $extra="")
+	public function decimalfield($name, $value="", $precision=2, $decimal_separator=NULL, $thousands_separator=NULL, $prefix="", $suffix="", $width="120px", $action="", $extra="")
 	{
 	    global $layout;
 	    global $user;
@@ -270,22 +270,33 @@ class naviforms
         }
 
         $layout->add_script('
-            $("#'.$name.'").inputmask(
-                { 
-                    alias: "decimal",
-                    rightAlign: false,
-                    digitsOptional: true,
-                    autoGroup: true,
-                    allowMinus: true,
-                    digits: '.$precision.',
-                    radixPoint: "'.$decimal_separator.'",
-                    groupSeparator: "'.$thousands_separator.'",                   
-                    prefix: "'.$prefix.'",
-                    suffix: "'.$suffix.'",
-                    unmaskAsNumber: true,
-                    autoUnmask: false
+            navigatecms.forms.imask["'.$name.'"] = IMask(
+                $("#'.$name.'")[0], 
+                {
+                    mask: 
+                    [
+                        { mask: "" },
+                        {
+                            mask: "'.$prefix.'nv_number'.$suffix.'",
+                            lazy: false,
+                            blocks:
+                            {
+                                nv_number: 
+                                {
+                                    mask: Number,                            
+                                    scale: '.$precision.',                    
+                                    thousandsSeparator: "'.$thousands_separator.'",
+                                    signed: true,
+                                    padFractionalZeros: false,  // if true, then pads zeros at end to the length of scale
+                                    normalizeZeros: true,  // appends or removes zeros at ends
+                                    radix: "'.$decimal_separator.'", 
+                                    mapToRadix: ["."]  // symbols to process as radix
+                                }
+                            }
+                        }
+                    ]            
                 }
-            );
+            );            
         ');
 
 		return $out;
