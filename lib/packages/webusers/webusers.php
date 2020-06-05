@@ -761,6 +761,21 @@ function webusers_form($item)
         )
     );
 
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(827, 'NIN').'</label>',
+		    $naviforms->textfield('webuser-nin', $item->nin),
+            '<span class="navigate-form-row-info">'.t(778, 'National identification number').'</span>'
+        )
+    );
+
+	$navibars->add_tab_content_row(
+        array(
+            '<label>'.t(592, 'Company').'</label>',
+		    $naviforms->textfield('webuser-company', $item->company),
+        )
+    );
+
 	$countries = property::countries();
     $country_names = array_values($countries);
     $country_codes = array_keys($countries);
@@ -771,6 +786,11 @@ function webusers_form($item)
 	$navibars->add_tab_content_row(array(
         '<label>'.t(224, 'Country').'</label>',
         $naviforms->selectfield("webuser-country", $country_codes, $country_names, strtoupper($item->country))
+    ));
+
+	$navibars->add_tab_content_row(array(
+        '<label>'.t(473, 'Region').'</label>',
+        $naviforms->countryregionfield("webuser-region", $item->region, 'webuser-country')
     ));
 										
 	$timezones = property::timezones();

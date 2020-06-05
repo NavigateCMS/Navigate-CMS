@@ -15,8 +15,11 @@ class webuser
 	public $birthdate;
 	public $language; // ISO 639-1 (2 chars) (en => English, es => Español)
 	public $country; // ISO-3166-1993 (US => United States of America, ES => Spain)
-	public $timezone; // PHP5 Timezone Code (, "Europe/Madrid")
-	public $address;
+    public $region;
+    public $timezone; // PHP5 Timezone Code (, "Europe/Madrid")
+    public $company;
+    public $nin; // national identification number
+    public $address;
 	public $zipcode;
 	public $location;
 	public $phone;
@@ -139,7 +142,10 @@ class webuser
 		$this->birthdate	= $main->birthdate;
 		$this->language		= $main->language;	
 		$this->country		= $main->country;
+		$this->region		= $main->region;
 		$this->timezone		= $main->timezone;
+		$this->company		= $main->company;
+		$this->nin		    = $main->nin;
 		$this->address		= $main->address;
 		$this->zipcode		= $main->zipcode;
 		$this->location		= $main->location;
@@ -193,7 +199,10 @@ class webuser
 
 
 		$this->country		= $_REQUEST['webuser-country'];
+		$this->region		= $_REQUEST['webuser-region'];
 		$this->timezone		= $_REQUEST['webuser-timezone'];
+		$this->company		= $_REQUEST['webuser-company'];
+		$this->nin  		= $_REQUEST['webuser-nin'];
 		$this->address		= $_REQUEST['webuser-address'];
 		$this->zipcode		= $_REQUEST['webuser-zipcode'];
 		$this->location		= $_REQUEST['webuser-location'];
@@ -279,15 +288,17 @@ class webuser
 
 		$ok = $DB->execute(' 
 		    INSERT INTO nv_webusers
-                (	id, website, username, password, email, groups, fullname, gender, avatar, birthdate,
-                    language, country, timezone, address, zipcode, location, phone, social_website,
+                (	id, website, username, password, email, `groups`, fullname, gender, avatar, birthdate,
+                    language, country, region, timezone, company, nin, 
+                    address, zipcode, location, phone, social_website,
                     joindate, lastseen, newsletter, private_comment, activation_key, cookie_hash, 
                     access, access_begin, access_end, email_verification_date
                 )
                 VALUES 
                 (
                     :id, :website, :username, :password, :email, :groups, :fullname, :gender, :avatar, :birthdate,
-                    :language, :country, :timezone, :address, :zipcode, :location, :phone, :social_website,
+                    :language, :country, :region, :timezone, :company, :nin, 
+                    :address, :zipcode, :location, :phone, :social_website,
                     :joindate, :lastseen, :newsletter, :private_comment, :activation_key, :cookie_hash, 
                     :access, :access_begin, :access_end, :email_verification_date
                 )',
@@ -304,7 +315,10 @@ class webuser
                 ":birthdate" => value_or_default($this->birthdate, 0),
                 ":language" => is_null($this->language)? '' : $this->language,
                 ":country" => is_null($this->country)? '' : $this->country,
+                ":region" => is_null($this->region)? '' : $this->region,
                 ":timezone" => is_null($this->timezone)? '' : $this->timezone,
+                ":company" => is_null($this->company)? '' : $this->company,
+                ":nin" => is_null($this->nin)? '' : $this->nin,
                 ":address" => is_null($this->address)? '' : $this->address,
                 ":zipcode" => is_null($this->zipcode)? '' : $this->zipcode,
                 ":location" => is_null($this->location)? '' : $this->location,
@@ -371,7 +385,7 @@ class webuser
                   username = :username,
                   password = :password,
                   email = :email,
-                  groups = :groups,
+                  `groups` = :groups,
                   fullname = :fullname,
                   gender = :gender,
                   avatar = :avatar,
@@ -379,7 +393,10 @@ class webuser
                   language = :language,
                   lastseen = :lastseen,
                   country = :country,
+                  region = :region,
                   timezone = :timezone,
+                  company = :company,
+                  nin = :nin,
                   address = :address,
                   zipcode = :zipcode,
                   location = :location,
@@ -408,8 +425,11 @@ class webuser
                 ':language' => value_or_default($this->language, ""),
                 ':lastseen' => $this->lastseen,
                 ':country' => $this->country,
+                ':region' => value_or_default($this->region, NULL),
                 ':timezone' => $this->timezone,
                 ':address' => $this->address,
+                ':company' => value_or_default($this->company, ''),
+                ':nin' => value_or_default($this->nin, ''),
                 ':zipcode' => $this->zipcode,
                 ':location' => $this->location,
                 ':phone'	=> $this->phone,
@@ -426,7 +446,10 @@ class webuser
             )
         );
 
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
         if($trigger_webuser_modified)
         {
@@ -1026,8 +1049,8 @@ class webuser
         $DB->query('
             SELECT id, website, username, email, groups, fullname, gender,
                 '/*avatar,*/.'
-                birthdate, language, country, timezone,
-                address, zipcode, location, phone, social_website,
+                birthdate, language, country, region, timezone,
+                company, nin, address, zipcode, location, phone, social_website,
                 joindate, lastseen, newsletter, private_comment, 
                 access, access_begin, access_end
             FROM nv_webusers
@@ -1045,7 +1068,10 @@ class webuser
             t(248, 'Birthdate'),
             t(46, 'Language'),
             t(224, 'Country'),
+            t(473, 'Region'),
             t(97, 'Timezone'),
+            t(592, 'Company'),
+            t(827, 'National identification number'),
             t(233, 'Address'),
             t(318, 'Zip code'),
             t(319, 'Location'),

@@ -3039,6 +3039,11 @@ div.jGrowl div.jGrowl-closer:hover
     z-index: 200;
 }
 
+.ui-widget.ui-widget-content
+{
+	border-color: #ddd;
+}
+
 
 /* jGrowl backcompat */
 div.jGrowl.center
