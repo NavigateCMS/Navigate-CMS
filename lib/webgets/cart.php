@@ -58,12 +58,14 @@ function nvweb_cart($vars=array())
             'coupon_amount'     => null,
             'coupon_code'       => "",
             'coupon_error'      => "",
+            'coupon_data'      => "",
             'shipping_price'    => 0,
             'discount_value'    => 0,
             'address_shipping'  => null,
             'address_billing'   => null,
             'shipping_method'   => null,
             'shipping_rate'     => null,
+            'shipping_method_data' => "",
             'customer_notes'    => "",
             'total'             => 0,
             'order_id'          => 0    // order ID, after has been inserted in database
@@ -507,6 +509,8 @@ function nvweb_cart_update($old_cart)
         $cart['shipping_tax_value'] = ($shipping_rate->cost->tax->class=='custom'? $shipping_rate->cost->tax->value : 0);
         $cart['shipping_tax_amount'] = $cart['shipping_price_without_taxes'] * ($cart['shipping_tax_value'] / 100);
         $cart['shipping_price'] = $cart['shipping_price_without_taxes'] + $cart['shipping_tax_amount'];
+
+        $cart['shipping_method_data'] = json_encode($sm);
     }
 
     // apply coupon, if any
@@ -921,10 +925,14 @@ function nvweb_cart_view_summary($cart)
     {
         $coupon = new coupon();
         $coupon->load($cart['coupon']);
-        if (!isset($coupon->dictionary[$current['lang']]['name']))
+        if(!isset($coupon->dictionary[$current['lang']]['name']))
+        {
             $coupon_info = '<span class="nv_cart_coupon_info">' . $cart['coupon_code'] . '</span>';
+        }
         else
+        {
             $coupon_info = '<span class="nv_cart_coupon_info">' . $coupon->code . '&nbsp;&nbsp;&nbsp;&nbsp;<em>' . $coupon->dictionary[$current['lang']]['name'] . '</em></span>';
+        }
 
         $coupon_amount = "-";
 
@@ -941,10 +949,10 @@ function nvweb_cart_view_summary($cart)
 
     $sm = new shipping_method();
     $sm->load($cart['shipping_method']);
-    $payment_method_title = core_special_chars($sm->dictionary[$current['lang']]['title']);
+    $shipping_method_title = core_special_chars($sm->dictionary[$current['lang']]['title']);
 
     $out[] = '            <tr class="nv_cart_shipping_method">';
-    $out[] = '                <td colspan="2" style="text-align: right;" class="nv_cart_shipping_method_information">'.t(720, "Shipping method").' <strong>'.$payment_method_title.'</strong></td>';
+    $out[] = '                <td colspan="2" style="text-align: right;" class="nv_cart_shipping_method_information">'.t(720, "Shipping method").' <strong>'.$shipping_method_title.'</strong></td>';
     $out[] = '                <td colspan="1" style="text-align: right;" class="nv_cart_shipping_method_price"><span>'.core_price2string($cart['shipping_price'], $website->currency).'</span></td>';
     $out[] = '            </tr>';
 
@@ -1369,19 +1377,21 @@ function nvweb_cart_address_page($cart)
         // right now, we default using the most recently used, if any
         $address_shipping = array(
             'name' => $webuser->fullname,
-            'nin' => '',
-            'company' => '',
+            'nin' => $webuser->nin,
+            'company' => $webuser->company,
             'address' => $webuser->address,
             'location' => $webuser->location,
             'zipcode' => $webuser->zipcode,
             'country' => $webuser->country,
-            'region' => '',
+            'region' => $webuser->region,
             'email' => $webuser->email,
             'phone' => $webuser->phone
         );
 
         if(!empty($addresses))
+        {
             $address_shipping = $addresses[0];
+        }
 
         $billing_same_as_shipping = true;
     }
@@ -1393,7 +1403,9 @@ function nvweb_cart_address_page($cart)
         $errors = '<div class="nv_cart_errors">'.implode("\n", $errors).'</div>';
     }
     else
+    {
         $errors = "";
+    }
 
     $out = array();
     $out[] = '<div class="nv_cart_address_form">';
@@ -1552,6 +1564,7 @@ function nvweb_cart_shipping_page($cart)
     global $website;
     global $webuser;
     global $session;
+    global $purifier;
 
     $cart_url = nvweb_source_url('theme', 'cart');
     $checkout_url = nvweb_source_url('theme', 'checkout');
@@ -1565,7 +1578,7 @@ function nvweb_cart_shipping_page($cart)
 
     if(!empty($_POST))
     {
-        $customer_notes = trim($_POST['order_notes']);
+        $customer_notes = $purifier->purify(trim($_POST['order_notes']));
         $cart['customer_notes']    = $customer_notes;
 
         list($order_shipping_method, $order_shipping_method_rate) = explode("/", $_POST['order_shipping_method']);
@@ -1828,7 +1841,9 @@ function nvweb_cart_summary_page($cart)
     {
         $out[] = '          '.$cart['address_billing']['name'].'<br />';
         if(!empty($cart['address_billing']['company']))
+        {
             $out[] = '[ '.$cart['address_billing']['company'].' ]<br />';
+        }
         $out[] = '          '.$cart['address_billing']['address'].'<br />';
         $out[] = '          '.$cart['address_billing']['zipcode'].' '.$cart['address_shipping']['location'].'<br />';
         if(!empty($cart['address_billing']['region']))

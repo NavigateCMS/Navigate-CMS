@@ -35,7 +35,7 @@ class order
 
     public $coupon;
     public $coupon_code;
-    public $coupon_data;
+    public $coupon_data; // backup of the original coupon definition
     public $coupon_amount;
 
     public $total;
@@ -340,7 +340,9 @@ class order
         $this->id = $DB->get_last_id();
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         // now we insert each order line
         for($l=0; $l < count($this->lines); $l++)
@@ -380,7 +382,9 @@ class order
 
 
             if(!$ok)
+            {
                 throw new Exception($DB->get_last_error());
+            }
         }
 
         return true;
@@ -396,7 +400,8 @@ class order
 			      date_updated = :date_updated, currency = :currency,
                   subtotal_amount = :subtotal_amount, subtotal_taxes_cost = :subtotal_taxes_cost, subtotal_invoiced = :subtotal_invoiced,
                   weight = :weight, weight_unit = :weight_unit, size_unit = :size_unit,
-                  shipping_method = :shipping_method, shipping_amount = :shipping_amount, shipping_tax = :shipping_tax, shipping_tax_amount = :shipping_tax_amount, shipping_invoiced = :shipping_invoiced, 
+                  shipping_method = :shipping_method, shipping_amount = :shipping_amount, 
+			      shipping_tax = :shipping_tax, shipping_tax_amount = :shipping_tax_amount, shipping_invoiced = :shipping_invoiced, 
                   shipping_data = :shipping_data, shipping_address = :shipping_address, billing_address = :billing_address,
                   coupon = :coupon, coupon_code = :coupon_code, coupon_amount = :coupon_amount, coupon_data = :coupon_data,
                   total = :total, payment_done = :payment_done, payment_method = :payment_method, payment_data = :payment_data,
@@ -527,6 +532,7 @@ class order
         $order->shipping_tax_amount = $cart['shipping_tax_amount'];
         $order->shipping_invoiced = $cart['shipping_price'];
         $order->shipping_data = array(
+            'method' => $cart['shipping_method_data'], // backup of the shipping method definition
             'carrier' => $cart['shipping_carrier'],
             'reference' => '',
             'tracking_url' => ''
