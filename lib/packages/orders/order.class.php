@@ -860,6 +860,13 @@ class order
             ';
         }
 
+        $coupon_info = "";
+        if(!empty($this->coupon_code))
+        {
+            $coupon_data = json_decode($this->coupon_data, true);
+            $coupon_info = $dictionary->t(726, 'Coupon').': '.$this->coupon_code.' ('.$coupon_data['dictionary'][$website->languages_list[0]]['name'].')'.'<br />';
+        }
+
         $html .= '
             <h4>'.$dictionary->t(25, "Products").' / '.$dictionary->t(178, "Services").'</h4>
             <hr />
@@ -884,7 +891,13 @@ class order
                     </tr>         
                     <tr>
                         <td></td>
-                        <td>'.$dictionary->t(720, 'Shipping method').': '.$shipping_method->dictionary[$website->languages_list[0]]["title"].'</td>
+                        <td colspan="6">'.$coupon_info.'</td>                    
+                    </tr>         
+                    <tr>
+                        <td></td>
+                        <td>
+                            '.$dictionary->t(720, 'Shipping method').': '.$shipping_method->dictionary[$website->languages_list[0]]["title"].'                            
+                        </td>
                         <td></td>
                         <td style="text-align: right;">'.core_decimal2string($this->shipping_amount).' '.$currencies[$this->currency].'</td>
                         <td style="text-align: right;">'.core_decimal2string($this->shipping_tax).' % <br/><small><em>'.core_decimal2string($this->shipping_tax_amount).' '.$currencies[$line->currency].'</em></small></td>
