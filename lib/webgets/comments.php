@@ -78,7 +78,9 @@ function nvweb_comments($vars=array())
 				$theme_translation = $theme->t($code);
 
 				if(!empty($theme_translation) && $theme_translation!=$code)
-					$webgets[$webget]['translations'][$code] = $theme_translation;
+                {
+                    $webgets[$webget]['translations'][$code] = $theme_translation;
+                }
 			}
 		}
 	}
@@ -90,15 +92,23 @@ function nvweb_comments($vars=array())
     // check callback attributes
     $callback = $vars['callback'];
     if(!empty($vars['alert_callback']))
+    {
         $callback = $vars['alert_callback'];
+    }
 	else if(!empty($vars['callback_alert']))
-		$callback = $vars['callback_alert'];
+    {
+        $callback = $vars['callback_alert'];
+    }
 
     $callback_error = $callback;
     if(!empty($vars['error_callback']))
+    {
         $callback_error = $vars['error_callback'];
+    }
 	else if(!empty($vars['callback_error']))
-		$callback_error = $vars['callback_error'];
+    {
+        $callback_error = $vars['callback_error'];
+    }
 
 
     $out = '';
@@ -168,9 +178,13 @@ function nvweb_comments($vars=array())
                     $response = $webgets[$webget]['translations']['unexpected_error'];
 
                     if($vars['notify']=='inline' || $callback_error=='inline')
+                    {
                         $out = '<div class="comment-error">'.$response.'</div>';
+                    }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                    {
                         nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                    }
                 }
 
                 $website->purge_pages_cache();
@@ -191,26 +205,38 @@ function nvweb_comments($vars=array())
                         $comment->delete();
                         $response = $webgets[$webget]['translations']['comment_deleted'];
                         if($vars['notify']=='inline' || $callback=='inline')
+                        {
                             $out = '<div class="comment-success">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback.'("'.$response.'");');
+                        }
                     }
                     else
                     {
                         $response = $webgets[$webget]['translations']['security_error'];
                         if($vars['notify']=='inline' || $callback_error=='inline')
+                        {
                             $out = '<div class="comment-error">'.$response.'</div>';
+                        }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                        {
                             nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        }
                     }
                 }
                 else
                 {
                     $response = $webgets[$webget]['translations']['unexpected_error'];
                     if($vars['notify']=='inline' || $callback_error=='inline')
+                    {
                         $out = '<div class="comment-error">'.$response.'</div>';
+                    }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                    {
                         nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                    }
                 }
 
                 $website->purge_pages_cache();
@@ -219,20 +245,24 @@ function nvweb_comments($vars=array())
 			if($_REQUEST['form-type']=='comment-reply' || isset($_POST[$vars['field-message']]))
 			{
 				// user wants to add a new comment
-				if(empty($vars['field-name']))      $vars['field-name'] = 'reply-name';
-				if(empty($vars['field-email']))     $vars['field-email'] = 'reply-email';
-				if(empty($vars['field-url']))       $vars['field-url'] = 'reply-url';
-				if(empty($vars['field-message']))   $vars['field-message'] = 'reply-message';
-				if(empty($vars['field-subscribe'])) $vars['field-subscribe'] = 'reply-subscribe';
-				if(empty($vars['field-reply_to']))  $vars['field-reply_to'] = 'reply-to-comment';
+                $vars['field-name'] = value_or_default($vars['field-name'], 'reply-name');
+                $vars['field-email'] = value_or_default($vars['field-email'], 'reply-email');
+                $vars['field-url'] = value_or_default($vars['field-url'], 'reply-url');
+                $vars['field-message'] = value_or_default($vars['field-message'], 'reply-message');
+                $vars['field-subscribe'] = value_or_default($vars['field-subscribe'], 'reply-subscribe');
+                $vars['field-reply_to'] = value_or_default($vars['field-reply_to'], 'reply-to-comment');
 
 				// the following is only used in direct PHP calls to nvweb_comments()
                 if(!empty($vars['object']) && $vars['object']!='nvweb')
+                {
                     $object = $vars['object'];
+                }
 
                 // deprecated
                 if(!empty($vars['element']))
+                {
                     $object = $vars['element'];
+                }
 
 				$comment_name = @$_REQUEST[$vars['field-name']];
 				$comment_email = @$_REQUEST[$vars['field-email']];
@@ -240,6 +270,23 @@ function nvweb_comments($vars=array())
 				$comment_message = @$_REQUEST[$vars['field-message']];
                 $comment_subscribe = (@in_array($_REQUEST[$vars['field-subscribe']], array('1', true, 'true')))? 1 : 0;
                 $comment_reply_to = @$_REQUEST[$vars['field-reply_to']];
+
+                if($session['comments_csrf'][$object->id] != $_REQUEST['_comment_csrf'])
+                {
+                    $response = $webgets[$webget]['translations']['security_error'];
+
+                    if($vars['notify']=='inline' || $callback_error=='inline')
+                    {
+                        $out = '<div class="comment-error">'.$response.'</div>';
+                    }
+                    else if(!isset($vars['notify']) || $vars['notify']=='callback')
+                    {
+                        nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                    }
+
+                    return $out;
+                }
+
 
 				if( ( (empty($comment_name)  ||  empty($comment_email)) && empty($webuser->id) )
                     ||
@@ -249,16 +296,24 @@ function nvweb_comments($vars=array())
                     $response = $webgets[$webget]['translations']['please_dont_leave_any_field_blank'];
 
                     if($vars['notify']=='inline' || $callback_error=='inline')
-	                    $out = '<div class="comment-error">'.$response.'</div>';
+                    {
+                        $out = '<div class="comment-error">'.$response.'</div>';
+                    }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
-	                    nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                    {
+                        nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                    }
+
 					return $out;
 				}
 
 				$status = -1; // new comment, not approved
 
 				if(empty($object->comments_moderator))
-                    $status = 0; // all comments auto-approved
+                {
+                    // all comments auto-approved
+                    $status = 0;
+                }
 
                 // remove any <nv /> or {{nv}} tag
                 $comment_name = core_remove_nvtags($comment_name);
@@ -292,7 +347,9 @@ function nvweb_comments($vars=array())
                     for($ep=0; $ep < count($e_properties); $ep++)
                     {
                         if(isset($_POST[$vars['field-properties-prefix'] . $e_properties[$ep]->id]))
+                        {
                             $properties[$e_properties[$ep]->id] = $_POST[$vars['field-properties-prefix'] . $e_properties[$ep]->id];
+                        }
                     }
                 }
 
@@ -465,6 +522,12 @@ function nvweb_comments($vars=array())
 			break;
 
 		case 'reply':
+            $comment_csrf = bin2hex(openssl_random_pseudo_bytes( 32 ));
+            if(!is_array($session['comments_csrf']))
+            {
+                $session['comments_csrf'] = array();
+            }
+            $session['comments_csrf'][$object->id] = $comment_csrf;
 			if($object->comments_enabled_to==2 && empty($webuser->id))
 			{
 				// Post a comment form (unsigned users)
@@ -475,6 +538,7 @@ function nvweb_comments($vars=array())
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
 							<input type="hidden" name="reply-to-comment" value="0" />
+							<input type="hidden" name="_comment_csrf" value="'.$comment_csrf.'" />
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['name'].'</label> <input type="text" name="reply-name" value="" /></div>
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['email'].' *</label> <input type="text" name="reply-email" value="" /></div>
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
@@ -532,6 +596,7 @@ function nvweb_comments($vars=array())
 						<form action="'.NVWEB_ABSOLUTE.'/'.$current['route'].'" method="post">
 							<input type="hidden" name="form-type" value="comment-reply" />
 							<input type="hidden" name="reply-to-comment" value="0" />
+							<input type="hidden" name="_comment_csrf" value="'.$comment_csrf.'" />
 							<div class="comments-reply-field"><label style="display: none;">&nbsp;</label> <img src="'.$avatar_url.'" width="'.$vars['avatar_size'].'" height="'.$vars['avatar_size'].'" align="absmiddle" /> <span class="comments-reply-username">'.$webuser->username.'</span><a class="comments-reply-signout" href="?webuser_signout">(x)</a></div>
 							<br />
 							<div class="comments-reply-field"><label>'.$webgets[$webget]['translations']['message'].'</label> <textarea name="reply-message"></textarea></div>
