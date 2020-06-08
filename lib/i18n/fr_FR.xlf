@@ -11,12 +11,12 @@
 
 			<trans-unit id="1" approved="yes">
 				<source>User</source>
-				<target>User</target>
+				<target>Utilisateur</target>
 			</trans-unit>
 
 			<trans-unit id="2" approved="yes">
 				<source>Password</source>
-				<target>Password</target>
+				<target>Mot de passe</target>
 			</trans-unit>
 
 			<trans-unit id="3" approved="yes">
@@ -4149,6 +4149,53 @@
 			   <source>The requested order does not exist or cannot be shown.</source>
 			   <target>The requested order does not exist or cannot be shown.</target>
 		   </trans-unit>
+
+			<trans-unit id="826">
+				<source>Track delivery</source>
+				<target>Track delivery</target>
+			</trans-unit>
+
+			<trans-unit id="827">
+				<source>NIN</source>
+				<target>NIN</target>
+				<note>Acronym for National Identification Number</note>
+			</trans-unit>
+
+			<trans-unit id="828">
+				<source>Account</source>
+				<target>Account</target>
+				<note>Web user account in a website</note>
+			</trans-unit>
+
+			<trans-unit id="829">
+				<source>Password change</source>
+				<target>Password change</target>
+			</trans-unit>
+
+			<trans-unit id="830">
+				<source>Current password</source>
+				<target>Current password</target>
+			</trans-unit>
+
+			<trans-unit id="831">
+				<source>New password</source>
+				<target>New password</target>
+			</trans-unit>
+
+			<trans-unit id="832">
+				<source>Confirm new password</source>
+				<target>Confirm new password</target>
+			</trans-unit>
+
+			<trans-unit id="833">
+				<source>Incorrect password</source>
+				<target>Incorrect password</target>
+			</trans-unit>
+
+			<trans-unit id="834">
+				<source>The password confirmation does not match</source>
+				<target>The password confirmation does not match</target>
+			</trans-unit>
 
 		</body>
 	</file>

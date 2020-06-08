@@ -4135,20 +4135,67 @@
 				<target>Sign out</target>
 			</trans-unit>
 
-			<trans-unit id="823">
+			<trans-unit id="823" approved="yes">
 			   <source>No order has been made yet.</source>
 			   <target>No order has been made yet.</target>
-		   </trans-unit>
+		   	</trans-unit>
 
-		   <trans-unit id="824">
-			   <source>View</source>
-			   <target>View</target>
-		   </trans-unit>
+		   	<trans-unit id="824" approved="yes">
+			   	<source>View</source>
+			   	<target>View</target>
+		   	</trans-unit>
 
-		   <trans-unit id="825">
-			   <source>The requested order does not exist or cannot be shown.</source>
-			   <target>The requested order does not exist or cannot be shown.</target>
-		   </trans-unit>
+		   	<trans-unit id="825" approved="yes">
+			   	<source>The requested order does not exist or cannot be shown.</source>
+			   	<target>The requested order does not exist or cannot be shown.</target>
+		   	</trans-unit>
+
+		   	<trans-unit id="826" approved="yes">
+			   	<source>Track delivery</source>
+			   	<target>Track delivery</target>
+		   	</trans-unit>
+
+			<trans-unit id="827" approved="yes">
+				<source>NIN</source>
+				<target>NIN</target>
+				<note>Acronym for National Identification Number</note>
+			</trans-unit>
+
+			<trans-unit id="828" approved="yes">
+				<source>Account</source>
+				<target>Account</target>
+				<note>Web user account in a website</note>
+			</trans-unit>
+
+			<trans-unit id="829" approved="yes">
+				<source>Password change</source>
+				<target>Password change</target>
+			</trans-unit>
+
+			<trans-unit id="830" approved="yes">
+				<source>Current password</source>
+				<target>Current password</target>
+			</trans-unit>
+
+			<trans-unit id="831" approved="yes">
+				<source>New password</source>
+				<target>New password</target>
+			</trans-unit>
+
+			<trans-unit id="832" approved="yes">
+				<source>Confirm new password</source>
+				<target>Confirm new password</target>
+			</trans-unit>
+
+			<trans-unit id="833" approved="yes">
+				<source>Incorrect password</source>
+				<target>Incorrect password</target>
+			</trans-unit>
+
+			<trans-unit id="834" approved="yes">
+				<source>The password confirmation does not match</source>
+				<target>The password confirmation does not match</target>
+			</trans-unit>
 
 		</body>
 	</file>

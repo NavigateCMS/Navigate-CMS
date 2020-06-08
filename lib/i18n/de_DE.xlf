@@ -4150,6 +4150,53 @@
 				<target>Die angeforderte Bestellung existiert nicht oder kann nicht angezeigt werden.</target>
 			</trans-unit>
 
+			<trans-unit id="826">
+				<source>Track delivery</source>
+				<target>Lieferung verfolgen</target>
+			</trans-unit>
+
+			<trans-unit id="827">
+				<source>NIN</source>
+				<target>NIN</target>
+				<note>Acronym for National Identification Number</note>
+			</trans-unit>
+
+			<trans-unit id="828">
+				<source>Account</source>
+				<target>Konto</target>
+				<note>Web user account in a website</note>
+			</trans-unit>
+
+			<trans-unit id="829">
+				<source>Password change</source>
+				<target>Passwortänderung</target>
+			</trans-unit>
+
+			<trans-unit id="830">
+				<source>Current password</source>
+				<target>Derzeitiges Passwort</target>
+			</trans-unit>
+
+			<trans-unit id="831">
+				<source>New password</source>
+				<target>Neues Kennwort</target>
+			</trans-unit>
+
+			<trans-unit id="832">
+				<source>Confirm new password</source>
+				<target>Bestätige neues Passwort</target>
+			</trans-unit>
+
+			<trans-unit id="833">
+				<source>Incorrect password</source>
+				<target>Falsches Passwort</target>
+			</trans-unit>
+
+			<trans-unit id="834">
+				<source>The password confirmation does not match</source>
+				<target>Die Passwortbestätigung stimmt nicht überein</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

@@ -16,7 +16,7 @@
             
 			<trans-unit id="2" approved="yes">
                 <source>Password</source>
-                <target>Contrassenya</target>
+                <target>Contrasenya</target>
             </trans-unit>
             
 			<trans-unit id="3" approved="yes">
@@ -2045,7 +2045,7 @@
             
 			<trans-unit id="407" approved="yes">
                 <source>Forgot password?</source>
-                <target>Ha oblidat la contrassenya?</target>
+                <target>Ha oblidat la contrasenya?</target>
             </trans-unit>
             
 			<trans-unit id="408" approved="yes">
@@ -2262,7 +2262,7 @@
             
 			<trans-unit id="450" approved="yes">
                 <source>Click on the link below to change your password</source>
-                <target>Fes clic en l'enllaç inferior per a canviar la seva contrassenya</target>
+                <target>Fes clic en l'enllaç inferior per a canviar la seva contrasenya</target>
             </trans-unit>
             
 			<trans-unit id="451" approved="yes">
@@ -2270,7 +2270,7 @@
                     e-mail by error just ignore it.
                 </source>
                 <target>Aquest és un correu automàtic enviat com a resultat d'un procés de petició de canvi de
-                    contrassenya. Si ha rebut aquest correu per error simplement ignori'l.
+                    contrasenya. Si ha rebut aquest correu per error simplement ignori'l.
                 </target>
             </trans-unit>
             
@@ -2291,7 +2291,7 @@
             
 			<trans-unit id="455" approved="yes">
                 <source>Your new password has been activated.</source>
-                <target>La seva nova contrassenya ha estat activada.</target>
+                <target>La seva nova contrasenya ha estat activada.</target>
             </trans-unit>
             
 			<trans-unit id="456" approved="yes">
@@ -3258,7 +3258,7 @@
             
 			<trans-unit id="648" approved="yes">
                 <source>An e-mail with a temporary password has been sent to your e-mail account.</source>
-                <target>S'ha enviat un correu electrònic amb una contrassenya temporal a la teva adreça.</target>
+                <target>S'ha enviat un correu electrònic amb una contrasenya temporal a la teva adreça.</target>
             </trans-unit>
             
 			<trans-unit id="649" approved="yes">
@@ -3855,7 +3855,7 @@
 
             <trans-unit id="765" approved="yes">
                 <source>There was an error with your Login/Password combination. Please try again.</source>
-                <target>S'ha produït un error amb aquesta combinació d'Usuari/Contrassenya. Si us plau torna a intentar-ho.</target>
+                <target>S'ha produït un error amb aquesta combinació d'Usuari/Contrasenya. Si us plau torna a intentar-ho.</target>
             </trans-unit>
 
             <trans-unit id="766" approved="yes">
@@ -3875,7 +3875,7 @@
 
             <trans-unit id="769" approved="yes">
                 <source>Password too weak</source>
-                <target>Contrassenya massa feble</target>
+                <target>Contrasenya massa feble</target>
             </trans-unit>
 
             <trans-unit id="770" approved="yes">
@@ -4161,6 +4161,53 @@
             <trans-unit id="825" approved="yes">
                 <source>The requested order does not exist or cannot be shown.</source>
                 <target>La comanda sol·licitada no existeix o no es pot mostrar.</target>
+            </trans-unit>
+
+            <trans-unit id="826" approved="yes">
+                <source>Track delivery</source>
+                <target>Seguiment de l'entrega</target>
+            </trans-unit>
+
+            <trans-unit id="827" approved="yes">
+                <source>NIN</source>
+                <target>NIN</target>
+                <note>Acronym for National Identification Number</note>
+            </trans-unit>
+
+            <trans-unit id="828" approved="yes">
+                <source>Account</source>
+                <target>Compte</target>
+                <note>Web user account in a website</note>
+            </trans-unit>
+
+            <trans-unit id="829" approved="yes">
+                <source>Password change</source>
+                <target>Canvi de contrasenya</target>
+            </trans-unit>
+
+            <trans-unit id="830" approved="yes">
+                <source>Current password</source>
+                <target>Contrasenya actual</target>
+            </trans-unit>
+
+            <trans-unit id="831" approved="yes">
+                <source>New password</source>
+                <target>Contrasenya nova</target>
+            </trans-unit>
+
+            <trans-unit id="832" approved="yes">
+                <source>Confirm new password</source>
+                <target>Confirmar nova contrasenya</target>
+            </trans-unit>
+
+            <trans-unit id="833" approved="yes">
+                <source>Incorrect password</source>
+                <target>Contrasenya incorrecta</target>
+            </trans-unit>
+
+            <trans-unit id="834" approved="yes">
+                <source>The password confirmation does not match</source>
+                <target>La confirmació de nova contrasenya no coincideix</target>
             </trans-unit>
 
         </body>

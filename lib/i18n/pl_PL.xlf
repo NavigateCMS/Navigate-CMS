@@ -4149,6 +4149,54 @@
                 <target>Żądane zamówienie nie istnieje lub nie można go wyświetlić.</target>
             </trans-unit>
 
+
+            <trans-unit id="826">
+                <source>Track delivery</source>
+                <target>Śledź dostawę</target>
+            </trans-unit>
+
+            <trans-unit id="827">
+                <source>NIN</source>
+                <target>NNI</target>
+                <note>Acronym for National Identification Number</note>
+            </trans-unit>
+
+            <trans-unit id="828">
+                <source>Account</source>
+                <target>Konto</target>
+                <note>Web user account in a website</note>
+            </trans-unit>
+
+            <trans-unit id="829">
+                <source>Password change</source>
+                <target>Zmiana hasła</target>
+            </trans-unit>
+
+            <trans-unit id="830">
+                <source>Current password</source>
+                <target>Aktualne hasło</target>
+            </trans-unit>
+
+            <trans-unit id="831">
+                <source>New password</source>
+                <target>Nowe hasło</target>
+            </trans-unit>
+
+            <trans-unit id="832">
+                <source>Confirm new password</source>
+                <target>Potwierdź nowe hasło</target>
+            </trans-unit>
+
+            <trans-unit id="833">
+                <source>Incorrect password</source>
+                <target>Niepoprawne hasło</target>
+            </trans-unit>
+
+            <trans-unit id="834">
+                <source>The password confirmation does not match</source>
+                <target>Potwierdzenie hasła nie pasuje</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

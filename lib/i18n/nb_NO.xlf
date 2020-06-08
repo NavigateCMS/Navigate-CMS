@@ -6,7 +6,7 @@
             <trans-unit id="0" approved="yes">
               <source>Navigate</source>
               <target>Navigate</target>
-              <note>application name, no need to be translated</note>
+              <note>application name, no need to be translated (nb_NO: Naviger)</note>
             </trans-unit>
 
             <trans-unit id="1" approved="yes">
@@ -1292,7 +1292,7 @@
 
             <trans-unit id="257" approved="yes">
               <source>To revise</source>
-              <target>To revise</target>
+              <target>Til gjennomsyn</target>
             </trans-unit>
 
             <trans-unit id="258" approved="yes">
@@ -2728,7 +2728,7 @@
 
             <trans-unit id="544" approved="yes">
               <source>Block groups</source>
-              <target>Block groups</target>
+              <target>Blokker grupper</target>
             </trans-unit>
 
             <trans-unit id="545" approved="yes">
@@ -2788,7 +2788,7 @@
 
             <trans-unit id="556" approved="yes">
               <source>Block from group</source>
-              <target>Block from group</target>
+              <target>Blokker fra gruppe</target>
             </trans-unit>
 
             <trans-unit id="557" approved="yes">
@@ -3208,7 +3208,7 @@
 
             <trans-unit id="640" approved="yes">
               <source>Default arrangement</source>
-              <target>Default arrangement</target>
+              <target>Forvalgt anordning</target>
             </trans-unit>
 
             <trans-unit id="641" approved="yes">
@@ -3374,7 +3374,7 @@
 
             <trans-unit id="673" approved="yes">
               <source>Related</source>
-              <target>Related</target>
+              <target>Relatert</target>
               <note from="developer" approved="yes">as in "related products"</note>
             </trans-unit>
 
@@ -3539,7 +3539,7 @@
 
             <trans-unit id="705" approved="yes">
               <source>Lines</source>
-              <target>Lines</target>
+              <target>Linjer</target>
               <note from="developer" approved="yes">Lines of an order</note>
             </trans-unit>
 
@@ -3635,7 +3635,7 @@
 
             <trans-unit id="724" approved="yes">
               <source>Quantity</source>
-              <target>Quantity</target>
+              <target>Mengde</target>
             </trans-unit>
 
             <trans-unit id="725" approved="yes">
@@ -4149,6 +4149,53 @@
             <trans-unit id="825">
                 <source>The requested order does not exist or cannot be shown.</source>
                 <target>Den forespurte ordren eksisterer ikke eller kan ikke vises.</target>
+            </trans-unit>
+
+            <trans-unit id="826">
+                <source>Track delivery</source>
+                <target>Spor levering</target>
+            </trans-unit>
+
+            <trans-unit id="827">
+                <source>NIN</source>
+                <target>NIN</target>
+                <note>Acronym for National Identification Number</note>
+            </trans-unit>
+
+            <trans-unit id="828">
+                <source>Account</source>
+                <target>Konto</target>
+                <note>Web user account in a website</note>
+            </trans-unit>
+
+            <trans-unit id="829">
+                <source>Password change</source>
+                <target>Endring av passord</target>
+            </trans-unit>
+
+            <trans-unit id="830">
+                <source>Current password</source>
+                <target>Nåværende passord</target>
+            </trans-unit>
+
+            <trans-unit id="831">
+                <source>New password</source>
+                <target>Nytt passord</target>
+            </trans-unit>
+
+            <trans-unit id="832">
+                <source>Confirm new password</source>
+                <target>Bekrefte nytt passord</target>
+            </trans-unit>
+
+            <trans-unit id="833">
+                <source>Incorrect password</source>
+                <target>Feil passord</target>
+            </trans-unit>
+
+            <trans-unit id="834">
+                <source>The password confirmation does not match</source>
+                <target>Passordbekreftelsen stemmer ikke</target>
             </trans-unit>
 
         </body>
