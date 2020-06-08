@@ -1895,6 +1895,7 @@ function nvweb_cart_payment_page($order, $order_exists=false)
 {
     global $html;
     global $current;
+    global $website;
 
     $out = array();
 
@@ -1925,9 +1926,13 @@ function nvweb_cart_payment_page($order, $order_exists=false)
     if($order->total == 0)
     {
         $out[] = '<p class="nv_cart_order_created_free">'.t(797, "As the order is FREE, we will begin to prepare it for delivery as soon as possible.").'</p>';
-        $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';
-        // TODO: fix link button
-        $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="?order='.$order->id.'">'.t(799, "View order").'</a></p>';
+
+        if(!empty($website->shop_customer_account_path))
+        {
+            $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';
+            $webuser_account_page = nvweb_prepare_link($website->shop_customer_account_path);
+            $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="'.$webuser_account_page.'?s=orders&oid='.$order->id.'">'.t(799, "View order").'</a></p>';
+        }
     }
     else
     {
@@ -2034,6 +2039,7 @@ function nvweb_cart_payment_done($order)
 {
     global $html;
     global $current;
+    global $website;
 
     $out = array();
 
@@ -2059,9 +2065,12 @@ function nvweb_cart_payment_done($order)
     $out[] = t(727, "Payment method").': '.$payment_method_title.'<br />';
     $out[] = '</blockquote>';
 
-    $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';
-    // TODO: fix link button
-    $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="?order='.$order->id.'">'.t(799, "View order").'</a></p>';
+    if(!empty($website->shop_customer_account_path))
+    {
+        $out[] = '<p class="nv_cart_order_created_check_status">'.t(798, "Remember you can always check the status of your order in your user account, or right now clicking the button below.").'</p>';
+        $webuser_account_page = nvweb_prepare_link($website->shop_customer_account_path);
+        $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="'.$webuser_account_page.'?s=orders&oid='.$order->id.'">'.t(799, "View order").'</a></p>';
+    }
 
     nvweb_after_body(
         'html',

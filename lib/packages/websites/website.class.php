@@ -53,6 +53,7 @@ class website
     public $shop_logo;
     public $shop_address;       // multilanguage
     public $shop_legal_info;    // multilanguage
+    public $shop_customer_account_path;
     public $shop_purchase_conditions_path;
 
 	public $theme;
@@ -135,6 +136,7 @@ class website
         $this->shop_address                     = json_decode($main->shop_address, true);
         $this->shop_legal_info                  = json_decode($main->shop_legal_info, true);
         $this->shop_purchase_conditions_path    = $main->shop_purchase_conditions_path;
+        $this->shop_customer_account_path       = $main->shop_customer_account_path;
 
 		$this->mail_mailer		            = $main->mail_mailer;
 		$this->mail_server		            = $main->mail_server;
@@ -379,6 +381,7 @@ class website
         // shop information
         $this->shop_logo            = $_REQUEST['website-shop_logo'];
         $this->shop_purchase_conditions_path = $_REQUEST['website-shop_purchase_conditions_path'];
+        $this->shop_customer_account_path = $_REQUEST['website-shop_customer_account_path'];
 
         $this->shop_address = array();
         $this->shop_legal_info = array();
@@ -524,7 +527,7 @@ class website
                 contact_emails, homepage, default_timezone, 
                 metatag_title_order, metatag_description, metatag_keywords, metatags,
                 favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit,
-                shop_logo, shop_address, shop_legal_info, shop_purchase_conditions_path,
+                shop_logo, shop_address, shop_legal_info, shop_purchase_conditions_path, shop_customer_account_path,
                 theme, theme_options, block_types
             )
             VALUES
@@ -578,6 +581,7 @@ class website
               :shop_address,
               :shop_legal_info,
               :shop_purchase_conditions_path,
+              :shop_customer_account_path,
               :theme,
               :theme_options,
               :block_types
@@ -632,6 +636,7 @@ class website
 				":shop_address" => json_encode(value_or_default($this->shop_address, "")),
 				":shop_legal_info" => json_encode(value_or_default($this->shop_legal_info, "")),
 				":shop_purchase_conditions_path" => value_or_default($this->shop_purchase_conditions_path, ""),
+				":shop_customer_account_path" => value_or_default($this->shop_customer_account_path, ""),
 				":theme" => value_or_default($this->theme, ''),
 				":theme_options" => json_encode($this->theme_options),
                 ":block_types" => ""
@@ -753,6 +758,7 @@ class website
                     shop_address = ?,
                     shop_legal_info = ?,
                     shop_purchase_conditions_path = ?,
+                    shop_customer_account_path = ?,
                     theme = ?,
                     theme_options = ?
                 WHERE id = '.$this->id,
@@ -806,6 +812,7 @@ class website
                 json_encode(value_or_default($this->shop_address, "")),
                 json_encode(value_or_default($this->shop_legal_info, "")),
                 value_or_default($this->shop_purchase_conditions_path, ""),
+                value_or_default($this->shop_customer_account_path, ""),
                 value_or_default($this->theme, ""),
                 json_encode($this->theme_options)
             )

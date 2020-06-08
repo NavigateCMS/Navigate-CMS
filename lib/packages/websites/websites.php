@@ -2079,7 +2079,15 @@ function websites_form($item)
                 );
             }
 
-            $navibars->add_tab_content_row(array(
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(817, 'Customer account').'</label>',
+                    $naviforms->pathfield('website-shop_customer_account_path', $item->shop_customer_account_path, null, null, null)
+                )
+            );
+
+            $navibars->add_tab_content_row(
+                array(
                     '<label>'.t(773, 'Purchase conditions').'</label>',
                     $naviforms->pathfield('website-shop_purchase_conditions_path', $item->shop_purchase_conditions_path, null, null, null)
                 )
