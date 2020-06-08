@@ -172,6 +172,7 @@ class webuser
 	
 	public function load_from_post()
 	{
+	    global $purifier;
 		//$this->website      = $_REQUEST['webuser-website'];
 		$this->username		= trim($_REQUEST['webuser-username']);
 		if(!empty($_REQUEST['webuser-password']))
@@ -180,7 +181,7 @@ class webuser
         }
    		$this->email	    = trim($_REQUEST['webuser-email']);
    		$this->groups	    = $_REQUEST['webuser-groups'];
-		$this->fullname		= $_REQUEST['webuser-fullname'];
+		$this->fullname		= trim($_REQUEST['webuser-fullname']);
 		$this->gender		= $_REQUEST['webuser-gender'][0];		
 		$this->avatar		= $_REQUEST['webuser-avatar'];		
 		if(!empty($_REQUEST['webuser-birthdate']))
@@ -269,6 +270,7 @@ class webuser
 		global $DB;	
 		global $website;
         global $events;
+        global $purifier;
 
         $groups = '';
         if(is_array($this->groups))
@@ -305,11 +307,11 @@ class webuser
             array(
                 ":id" => 0,
                 ":website" => $website->id,
-                ":username" => is_null($this->username)? '' : $this->username,
+                ":username" => is_null($this->username)? '' : $purifier->purify($this->username),
                 ":password" => is_null($this->password)? '' : $this->password,
                 ":email" => is_null($this->email)? '' : strtolower($this->email),
                 ":groups" => $groups,
-                ":fullname" => is_null($this->fullname)? '' : $this->fullname,
+                ":fullname" => is_null($this->fullname)? '' : $purifier->purify($this->fullname),
                 ":gender" => is_null($this->gender)? '' : $this->gender,
                 ":avatar" => is_null($this->avatar)? '' : $this->avatar,
                 ":birthdate" => value_or_default($this->birthdate, 0),
@@ -360,6 +362,7 @@ class webuser
 	public function update($trigger_webuser_modified=true)
 	{
 		global $DB;
+		global $purifier;
         global $events;
 
         $groups = '';
@@ -414,11 +417,11 @@ class webuser
             ',
             array(
                 ':website' => $this->website,
-                ':username' => $this->username,
+                ':username' => $purifier->purify($this->username),
                 ':password' => $this->password,
                 ':email' => $this->email,
                 ':groups' => $groups,
-                ':fullname' => $this->fullname,
+                ':fullname' => $purifier->purify($this->fullname),
                 ':gender' => value_or_default($this->gender, ""),
                 ':avatar' => $this->avatar,
                 ':birthdate' => value_or_default($this->birthdate, 0),
@@ -662,18 +665,19 @@ class webuser
 
 		if(!empty($rs->id))
 		{
+		    // email is confirmed through a newsletter subscribe request
 			$wu = new webuser();
 			$wu->load($rs->id);
 
 			// access is only enabled for blocked users (access==1) which don't have a password nor an email verification date
 			if($wu->access==1 && empty($wu->password) && empty($wu->email_verification_date))
 			{
-				// email is confirmed through a newsletter subscribe request
-				$wu->email_verification_date = time();
 				$wu->access = 0;
-				$wu->activation_key = "";
-				$status = $wu->save();
 			}
+
+            $wu->email_verification_date = time();
+            $wu->activation_key = "";
+            $status = $wu->save();
 		}
 
 		return $status;
@@ -710,21 +714,20 @@ class webuser
 
 		if(!empty($rs->id))
 		{
+            // account is confirmed!
+
 			$wu = new webuser();
 			$wu->load($rs->id);
 
 			// access is only enabled for blocked users (access==1) which already HAVE a password assigned
 			if($wu->access==1 && !empty($wu->password))
 			{
-				// account is confirmed!
-                if(empty($wu->email_verification_date)) // maybe the email was already verified by a previous newsletter subscription ;)
-                {
-                    $wu->email_verification_date = time();
-                }
 				$wu->access = 0;
-				$wu->activation_key = "";
-				$status = $wu->save();
 			}
+
+			$wu->email_verification_date = time();
+            $wu->activation_key = "";
+            $status = $wu->save();
 		}
 
 		if(!$status)
@@ -864,23 +867,49 @@ class webuser
 		// remove spaces and make username lowercase (only to compare case insensitive)
 		$username = trim($username);
 		$username = mb_strtolower($username);
-	
+
+		$DB->query(
+        'SELECT COUNT(*) as total
+               FROM nv_webusers 
+               WHERE website = :wid 
+                 AND LOWER(username) = :username',
+            'object',
+            array(
+                ':wid' => $website_id,
+                ':username' => $username
+            )
+        );
+
+		$data = $DB->result();
+
+		return (empty($data) || $data[0]->total < 1);
+	}
+
+	public static function email_available($email, $website_id)
+	{
+		global $DB;
+
+		// remove spaces and make username lowercase (only to compare case insensitive)
+        $email = trim($email);
+        $email = mb_strtolower($email);
+
 		$data = NULL;
 		if($DB->query(
 		    'SELECT COUNT(*) as total
                    FROM nv_webusers 
-                   WHERE LOWER(username) = :username
+                   WHERE LOWER(email) = :email
                      AND website = :wid',
+                'object',
                 array(
                     ':wid' => $website_id,
-                    ':username' => $username
+                    ':email' => $email
                 )
             )
         )
 		{
 			$data = $DB->first();
 		}
-		
+
 		return ($data->total <= 0);
 	}
 

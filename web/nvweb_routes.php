@@ -313,6 +313,7 @@ function nvweb_route_parse($route="")
                     $session['nv.webuser/verify:invalid_confirmation'] = time();
                 }
 			}
+
 			nvweb_clean_exit(NVWEB_ABSOLUTE.$website->homepage().'?_s='.time());
 			break;
 
@@ -1028,13 +1029,17 @@ function nvweb_clean_exit($url='')
 	global $website;
 
     if(!empty($website->id))
-	    $_SESSION['nvweb.'.$website->id] = $session;
+    {
+        $_SESSION['nvweb.'.$website->id] = $session;
+    }
 	
 	session_write_close();
 	$DB->disconnect();
 
     if(!empty($url))
+    {
         header('Location: '.$url);
+    }
 
     flush();
 	exit;

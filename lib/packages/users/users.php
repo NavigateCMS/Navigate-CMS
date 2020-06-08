@@ -279,7 +279,7 @@ function users_form($item)
 	$navibars->add_tab_content_row(
 		array(
 			'<label>'.t(2, 'Password').'</label>',
-			'<input type="password" name="user-password" value="" size="32" autocomplete="off" />',
+			'<input type="password" name="user-password" value="" size="32" autocomplete="new-password" />',
 			'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>'
 		)
 	);
@@ -287,7 +287,7 @@ function users_form($item)
 	$layout->add_script('
 		setTimeout(function() {
 			$("input[name=user-password]").val("");
-		}, 10);
+		}, 100);
 	');
 
 	$navibars->add_tab_content_row(

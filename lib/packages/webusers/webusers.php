@@ -6,7 +6,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/properties/property.layout.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	global $website;
@@ -156,6 +155,11 @@ function run()
 					$item->save();
                     property::save_properties_from_post('webuser', $item->id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+
+                    // reload object
+                    $item = null;
+                    $item = new webuser();
+                    $item->load($_REQUEST['id']);
 				}
 				catch(Exception $e)
 				{
@@ -606,14 +610,14 @@ function webusers_form($item)
 
 	$navibars->add_tab_content_row(array(
         '<label>'.t(2, 'Password').'</label>',
-		'<input type="password" name="webuser-password" autocomplete="off" value="" size="32" />',
+		'<input type="password" name="webuser-password" autocomplete="new-password" value="" size="32" />',
 		'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' )
     );
 	// force removing the browser saved password
 	$layout->add_script('
 		setTimeout(function() {
 			$("input[name=webuser-password]").val("");
-		}, 10);
+		}, 100);
 	');
 
 	$navibars->add_tab_content_row(
@@ -703,7 +707,7 @@ function webusers_form($item)
 		navigate_webusers_change_access();
 	');
 
-	// private_comment is deprecated in NV 2.0
+	// private_comment deprecated in NV 2.0
 	if(!empty($item->private_comment))
 	{
 	    $navibars->add_tab_content_row(array(

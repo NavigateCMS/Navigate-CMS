@@ -74,7 +74,9 @@ class user
 				$this->attempts++;
 				
 				if($this->attempts > 9)
-					$this->blocked = 1;
+                {
+                    $this->blocked = 1;
+                }
 
 				$this->update();
 				return false;

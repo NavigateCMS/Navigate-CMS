@@ -62,7 +62,9 @@ function nvweb_liveedit_render($vars)
 
     // add jQuery if has not already been loaded in the template
     if(strpos($vars['html'], 'jquery')===false)
+    {
         $out[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>';
+    }
 
     $out[] = '<script language="javascript" type="text/javascript" src="'.NAVIGATE_URL.'/js/navigate_liveedit.js"></script>';
     $out[] = '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/navigate_liveedit.css" />';
@@ -91,10 +93,12 @@ function nvweb_liveedit_render($vars)
     $out[] = '  <div id="navigate_liveedit_bar_hide_button" style=" float: right; " title="'.t(554, 'Hide').'">x</div>';
 
     if(!empty($url))
+    {
         $out []= '<a style="float: right;" href="'.$url.'" target="_blank">
                         <img src="'.NAVIGATE_URL.'/img/icons/silk/application_double.png" />
                         '.t(456, 'Edit in Navigate CMS').'
                       </a>';
+    }
 
     $out[] = '  <div id="navigate_liveedit_bar_information_button" style=" float: right; "><img src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(457, 'Information').'</div>';
 

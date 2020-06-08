@@ -1,0 +1,215 @@
+.nv_wu-sign_in_error_message
+{
+    clear: both;
+    display: none;
+    margin-bottom: 16px;
+    border: solid 1px #ccc;
+    padding: 8px;
+    background: #ffc9c9;
+}
+
+.nv_wu-sign_in_info_message
+{
+    clear: both;
+    display: none;
+    margin-bottom: 16px;
+    border: solid 1px #ccc;
+    padding: 8px;
+    background: #c9ffc9;
+}
+
+.nv_wu-sign_in_info_message,
+.nv_wu-sign_in_error_message
+{
+    margin-top: 42px;
+}
+
+.nv_wu-sign_in_error_message p,
+.nv_wu-sign_in_info_message p
+{
+    display: none;
+    font-size: 12px;
+    margin-bottom: 0;
+}
+
+.nv_wu-customer_account_wrapper
+{
+    vertical-align: top;
+}
+
+.nv_wu-customer_account_menu_wrapper
+{
+    width: 23%;
+    float: left;
+    margin-right: 2%;
+}
+
+.nv_wu-customer_account_menu
+{
+    list-style: none;
+    margin-left: 0;
+    border-top: solid 1px #ddd;
+}
+
+@media screen and (max-width: 979px)
+{
+    .nv_wu-customer_account_menu_wrapper
+    {
+        float: none;
+        width: 100%;
+    }
+}
+
+.nv_wu-customer_account_menu li
+{
+    border-bottom: solid 1px #ddd;
+    padding: 8px 16px;
+    color: #333;
+}
+
+.nv_wu-customer_account_menu li a
+{
+    display: block;
+}
+
+.nv_wu-customer_account_menu li a,
+.nv_wu-customer_account_menu li i
+{
+    color: #333;
+}
+
+.nv_wu-customer_account_menu li.selected,
+.nv_wu-customer_account_menu li.selected a,
+.nv_wu-customer_account_menu li.selected i
+{
+    color: #000;
+    font-weight: bold;
+}
+
+.nv_wu-customer_account_menu i
+{
+    float: left;
+    margin-top: 4px;
+    margin-right: 8px;
+}
+
+.nv_wu-customer_account_content
+{
+    vertical-align: top;
+    float: left;
+    width: 75%;
+}
+
+@media screen and (max-width: 979px)
+{
+    .nv_wu-customer_account_content
+    {
+        float: none;
+        width: 100%;
+    }
+}
+
+.nv_wu-customer_account_content table
+{
+    width: 100%;
+}
+
+.nv_wu-customer_account-orders
+{
+    width: 100%;
+}
+
+.nv_wu-customer_account-orders td a.button
+{
+    margin-bottom: 0;
+    display: inline-block;
+    vertical-align: center;
+}
+
+.nv_wu-customer_account-orders th[data-content=order_total],
+.nv_wu-customer_account-orders td[data-content=order_total]
+{
+    text-align: right;
+}
+
+.nv_wu-customer_account-order-wrapper
+{
+    border: solid 1px #ddd;
+    padding: 8px 16px;
+}
+
+.nv_webuser_customer_account-info_message
+{
+    clear: both;
+    display: none;
+    margin-bottom: 16px;
+    border: solid 1px #ccc;
+    padding: 8px;
+    background: #c9ffc9;
+}
+
+.nv_webuser_customer_account-info_message p
+{
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.nv_webuser_customer_account-form_row_helper
+{
+    font-size: 12px;
+    color: #777;
+    margin-bottom: 24px;
+    display: block;
+}
+
+.nv_wu-customer_account_content .nv_cart_errors
+{
+    margin-top: 0;
+}
+
+@media screen and (max-width: 639px)
+{
+    .nv_wu-customer_account-orders th[data-content=order_products],
+    .nv_wu-customer_account-orders td[data-content=order_products]
+    {
+        display: none;
+    }
+
+    .nv_wu-customer_account-orders th[data-content=order_total],
+    .nv_wu-customer_account-orders td[data-content=order_total]
+    {
+        text-align: left;
+    }
+
+    .nv_wu-customer_account-orders
+    {
+        border: none;
+    }
+
+    .nv_wu-customer_account-orders tr:first-child
+    {
+        display: none;
+    }
+
+    .nv_wu-customer_account-orders tr
+    {
+        display: inline-block;
+        width: calc(50% - 5px);
+        border: solid 1px #ccc;
+        margin-bottom: 12px;
+    }
+
+    .nv_wu-customer_account-orders tr:nth-of-type(2n)
+    {
+        background: none;
+        margin-right: 4px;
+    }
+
+
+    .nv_wu-customer_account-orders th,
+    .nv_wu-customer_account-orders td
+    {
+        display: block;
+    }
+
+}
