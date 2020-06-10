@@ -1014,9 +1014,13 @@ function websites_form($item)
         $("#permission").on("change", function()
         {
             if($(this).val() > 0)
+            {
                 $("#redirect_to").parent().show();
+            }
             else
+            {
                 $("#redirect_to").parent().hide();
+            }
         });
 
         $("#permission").trigger("change");
@@ -1147,34 +1151,52 @@ function websites_form($item)
         $(\'input[name="language-variant[]"]\').each(function(i, el)
         {
             if($(el).is(":checked"))
+            {
                 $(el).next().removeClass("ui-state-disabled");
+            }
             else
+            {
                 $(el).next().val("").addClass("ui-state-disabled");
+            }
         });
 
         $(\'input[name="language-variant-code[]"]\').on("click", function()
         {
             if(!$(this).prev().is(":checked"))
+            {
                 $(this).prev().trigger("click");
+            }
         });
 
-        $("#website_languages_table").on("change", \'select[name="language-id[]"]\', function()
-        {
+        $("#website_languages_table").on("change", \'select[name^="language-id"]\', function()
+        {        
             var input = $(this).parent().next().find("input");
             $(input).val($(this).val());
             $(input).effect("highlight", {}, 2000);
         });
+               
 
         $("#website_languages_table").on("change", \'input[name="language-variant[]"]\', function()
         {
             if($(this).is(":checked"))
+            {
                 $(this).next().removeClass("ui-state-disabled");
+            }
             else
+            {
                 $(this).next().val("").addClass("ui-state-disabled");
+            }
         });
 
         $("#websites-languages-add").on("click", function()
-        {
+        {            
+            $("#website_languages_table").find("tr").eq(1).find("select").each(
+                function() 
+                {
+                    $(this).select2("destroy");
+                }
+            );
+            
             var tr = $("#website_languages_table").find("tr").eq(1).clone();            
             var tsid = new Date().getTime();
             $(tr).attr("id", tsid);
@@ -1185,6 +1207,8 @@ function websites_form($item)
 		        {
 		            var new_name = ($(this).attr("id").split("["))[0];
 		            $(this).attr("id", new_name + "[" + tsid + "]");
+		            $(this).attr("name", new_name + "[" + tsid + "]");
+		            $(this).removeAttr("data-select2-id");
 		        }
 		
 		        if($(this).attr("for"))
@@ -1210,7 +1234,11 @@ function websites_form($item)
             navigate_selector_upgrade($(tr).find("td:first").find("select"));
 
             if($(tr).find("td").eq(3).find("select").length > 0)
+            {
                 navigate_selector_upgrade($(tr).find("td").eq(3).find("select"));
+            }
+            
+            $("#website_languages_table").find("tr").eq(1).find("select").each(function() {navigate_selector_upgrade($(this));});                       
 
             return false;
         });
