@@ -437,7 +437,12 @@ class database
 	 */				
     public function first()
 	{
-		return $this->lastResult[0];
+	    $first = NULL;
+	    if(isset($this->lastResult[0]))
+        {
+            $first = $this->lastResult[0];
+        }
+		return $first;
 	}
 	
 

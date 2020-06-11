@@ -426,7 +426,12 @@ function files_browser($parent, $search="")
 		}
 		else
 		{
-			$previous = $DB->query_single('parent', 'nv_files', ' id = '.intval($parent).' AND website = '.$website->id);
+			$previous = $DB->query_single(
+			    'parent',
+                'nv_files',
+                ' id = '.intval($parent).' AND 
+                        website = '.$website->id
+            );
 			$path = file::getFullPathTo($parent);
 		}
 	
@@ -1258,7 +1263,9 @@ function files_media_browser($limit = 50, $offset = 0)
 
         // check if the current user is allowed to access the website files
         if(!empty($user->websites) && !in_array($wid, $user->websites))
+        {
             $ws->share_files_media_browser = false;
+        }
     }
 
 	// check if the chosen website allows sharing its files (or it's the current website)
@@ -1295,15 +1302,22 @@ function files_media_browser($limit = 50, $offset = 0)
 
 		if($media=='folder')
 		{
-			$parent = 0;
-			$files = file::filesOnPath($_REQUEST['parent'], $wid, $order);
-			if($_REQUEST['parent'] > 0)	// add "back" special folder
+			$parent = intval($_REQUEST['parent']);
+			$files = file::filesOnPath($parent, $wid, $order);
+			if($parent > 0)	// add "back" special folder
 			{
 				$previous = $DB->query_single(
 	                'parent',
 	                'nv_files',
-	                ' id = '.$_REQUEST['parent'].' AND website = '.$wid
+	                ' id = :parent AND 
+	                        website = :website',
+                    '',
+                    array(
+                        ':parent' => $parent,
+                        ':website' => $wid
+                    )
 	            );
+
 				array_unshift(
 	                $files,
 	                json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}')
@@ -1318,7 +1332,12 @@ function files_media_browser($limit = 50, $offset = 0)
 
 	            // search by text in a folder
 	            if(!empty($text))
-	                if(stripos($files[$i]->name, $text)===false) continue;
+                {
+                    if(stripos($files[$i]->name, $text)===false)
+                    {
+                        continue;
+                    }
+                }
 
 	            $files_shown[] = $files[$i];
 	        }

@@ -189,11 +189,19 @@ function run()
                             $dataset[$i]['category'] = $DB->query_single(
                                 'text',
                                 'nv_webdictionary',
-                                ' 	node_type = "structure" AND
-                                    node_id = "'.$dataset[$i]['category'].'" AND
-                                    subtype = "title" AND
-                                    lang = "'.$website->languages_list[0].'"
-                                '
+                                ' 	
+                                    node_type = :node_type AND
+                                    node_id = :node_id AND
+                                    subtype = :subtype AND
+                                    lang = :lang
+                                ',
+                                '',
+                                array(
+                                    ':node_type' => "structure",
+                                    ':node_id' => $dataset[$i]['category'],
+                                    ':subtype' => "title",
+                                    ':lang' => $website->languages_list[0]
+                                )
                             );
                         }
 
@@ -2039,13 +2047,19 @@ function blocks_form($item)
 	for($i=0; $i < count($items_ids); $i++)
 	{
 		$item_title = $DB->query_single(
-            'text',
-            'nv_webdictionary',
-            '   node_type = "item" AND
-                website = "'.$website->id.'" AND
-                node_id = "'.$items_ids[$i].'" AND
-                subtype = "title" AND
-                lang = "'.$website->languages_published[0].'"'
+        'text',
+        'nv_webdictionary',
+        '
+            node_type = "item" AND
+            website = "'.$website->id.'" AND
+            node_id = :node_id AND
+            subtype = "title" AND
+            lang = :lang',
+        '',
+            array(
+                ':node_id' => $items_ids[$i],
+                ':lang' => $website->languages_published[0]
+            )
         );
 
 		$items_titles[$i] = $item_title;

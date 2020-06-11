@@ -604,7 +604,7 @@ class file
         // folders are always ordered alphabetically
 		$DB->query('  SELECT * FROM nv_files
 					   WHERE parent = '.intval($parent).'
-					     AND website = '.$wid.'
+					     AND website = '.intval($wid).'
 						 AND type = "folder"
 						ORDER BY '.$orderby.'
 					');
@@ -613,7 +613,7 @@ class file
 		
 		$DB->query('  SELECT * FROM nv_files
 					   WHERE parent = '.intval($parent).'
-					     AND website = '.$wid.'
+					     AND website = '.intval($wid).'
 						 AND type != "folder"
 						ORDER BY '.$orderby.'
 					');
