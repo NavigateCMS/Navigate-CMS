@@ -114,40 +114,51 @@ function run()
             if(!empty($url) && $user->permission("themes.install")=="true")
             {
                 $error = false;
+                $tmp_file = NULL;
+
                 parse_str(parse_url($url, PHP_URL_QUERY), $query);
 
-                $tmp_file = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $query['code'] . '.zip';
-                @core_file_curl($url, $tmp_file);
-                if(@filesize($tmp_file) == 0)
+                if(parse_url($url, PHP_URL_HOST) == 'www.navigatecms.com')
                 {
-                    @unlink($tmp_file);
-                    // core file curl failed, try using file_get_contents...
-                    $tmp = @file_get_contents($url);
-                    if(!empty($tmp))
-                    {
-                        @file_put_contents($tmp_file, $tmp);
-                    }
-                    unset($tmp);
+                    $tmp_file = sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip';
+                    @core_file_curl($url, $tmp_file);
                 }
 
-                if(@filesize($tmp_file) > 0)
+                if(!empty($tmp_file) && @filesize($tmp_file) > 0)
                 {
-                    // uncompress ZIP and copy it to the themes dir
-                    @mkdir(NAVIGATE_PATH.'/themes/'.$query['code']);
+                    $secure = theme::check_upload(
+                        array(
+                            'type' => mime_content_type($tmp_file),
+                            'name' => $query['code'].'.zip',
+                            'tmp_name' => $tmp_file
+                        ),
+                        $query['code']
+                    );
 
-                    $zip = new ZipArchive();
-                    $zip_open_status = $zip->open($tmp_file);
-                    if($zip_open_status === TRUE)
+                    if($secure !== true)
                     {
-                        $zip->extractTo(NAVIGATE_PATH.'/themes/'.$query['code']);
-                        $zip->close();
-
-                        $layout->navigate_notification(t(374, "Item installed successfully."), false);
-                    }
-                    else // zip extraction failed
-                    {
-                        $layout->navigate_notification('ERROR '.$zip_open_status, true, true);
+                        $layout->navigate_notification(t(344, 'Security error'), true, true);
                         $error = true;
+                    }
+                    else // everything seems fine, go ahead
+                    {
+                        // uncompress ZIP and copy it to the themes dir
+                        @mkdir(NAVIGATE_PATH.'/themes/'.$query['code']);
+
+                        $zip = new ZipArchive();
+                        $zip_open_status = $zip->open($tmp_file);
+                        if($zip_open_status === TRUE)
+                        {
+                            $zip->extractTo(NAVIGATE_PATH.'/themes/'.$query['code']);
+                            $zip->close();
+
+                            $layout->navigate_notification(t(374, "Item installed successfully."), false);
+                        }
+                        else // zip extraction failed
+                        {
+                            $layout->navigate_notification('ERROR '.$zip_open_status, true, true);
+                            $error = true;
+                        }
                     }
                 }
                 else
@@ -169,12 +180,21 @@ function run()
                     $layout->add_script('
                         $("#navigate_marketplace_install_from_hash_error").dialog({
                             modal: true,
-                            title: "'.t(56, "Unexpected error").'"
+                            title: "'.t(56, "Unexpected error").'",
+                            close: function()
+                            {
+                                window.location.replace("?fid=themes");
+                            }
                         });
                     ');
                 }
+                else
+                {
+                    // redirect to themes grid
+                    core_terminate('?fid=themes');
+                }
             }
-            // don't break, we want to show the themes grid right now (theme_upload by browser upload won't trigger)
+            break;
 
         case 'theme_upload':
             if(!naviforms::check_csrf_token())

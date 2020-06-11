@@ -551,7 +551,7 @@ class extension
         }
 
         // check every php file included
-        $files = core_recursive_file_search($tempdir,  '/.*\/*.php/');
+        $files = core_recursive_file_search($tempdir,  '/.*\/*.(php|phtml)/');
 
         $prohibited_functions = array(
             'eval(',
@@ -566,8 +566,12 @@ class extension
 
         foreach($files as $file)
         {
-            // remove all spaces
+            if(!file_exists($file))
+            {
+                continue;
+            }
             $file_content = file_get_contents($file);
+            // remove all spaces
             $file_content = str_replace(array(' ', "\t", "\r", "\n"), '', $file_content);
 
             foreach($prohibited_functions as $pf)
