@@ -600,10 +600,13 @@ class layout
 		global $website;
 		global $user;
 		global $DB;
+		global $purifier;
 
-		$fid = $_REQUEST['fid'];
+		$fid = $purifier->purify($_REQUEST['fid']);
 		if(empty($fid))
-			$fid = 'dashboard';
+        {
+            $fid = 'dashboard';
+        }
 
 		$user_profile_name = $DB->query_single(
 		    'name',

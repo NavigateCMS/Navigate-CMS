@@ -118,6 +118,7 @@ function pquotes($text)
 function core_run()
 {
     global $menu_layout;
+    global $purifier;
 
 	$content = "";
 	$fid = 'dashboard'; // default function
@@ -151,7 +152,7 @@ function core_run()
 	}
 	else
     {
-        $content = 'function '.$fid.': <strong>'.$f->codename.'</strong> has not been found!';
+        $content = 'function '.$purifier->purify($fid).': <strong>'.$purifier->purify($f->codename).'</strong> has not been found!';
     }
 		
 	return $content;	
@@ -239,6 +240,7 @@ function core_load_function($fid)
             }
             else
             {
+                $fid = core_string_clean($fid);
                 $where = 'codename = :codename';
                 $query_params = array(':codename' => $fid);
             }

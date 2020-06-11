@@ -2042,7 +2042,9 @@ function navigate_selector_upgrade(el)
 {
     // check if the element has already select2 applied
 	if($(el).hasClass("select2-container"))
-		return;
+    {
+        return;
+    }
 
     // if width was applied, prepare Select2 component to use it instead of its default width
     var width = $(el)[0].style.width;
