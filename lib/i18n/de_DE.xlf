@@ -4197,6 +4197,11 @@
 				<target>Die Passwortbestätigung stimmt nicht überein</target>
 			</trans-unit>
 
+			<trans-unit id="835">
+				<source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
+				<target>Eine E-Mail mit einem Bestätigungslink wurde an Ihr E-Mail-Konto gesendet, wenn Ihre Eingabe korrekt war.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

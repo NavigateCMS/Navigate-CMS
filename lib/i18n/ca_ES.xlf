@@ -1726,7 +1726,7 @@
             
 			<trans-unit id="344" approved="yes">
                 <source>Security error</source>
-                <target>Error de segurertat</target>
+                <target>Error de seguretat</target>
             </trans-unit>
             
 			<trans-unit id="345" approved="yes">
@@ -4208,6 +4208,11 @@
             <trans-unit id="834" approved="yes">
                 <source>The password confirmation does not match</source>
                 <target>La confirmació de nova contrasenya no coincideix</target>
+            </trans-unit>
+
+            <trans-unit id="835" approved="yes">
+                <source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
+                <target>Si la dada introduïda és correcta, s'haurà enviat un email amb un enllaç de confirmació.</target>
             </trans-unit>
 
         </body>

@@ -4196,6 +4196,11 @@
 				<target>La confirmación de nueva contraseña no coincide</target>
 			</trans-unit>
 
+			<trans-unit id="835" approved="yes">
+			   <source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
+			   <target>Si la dada introducida es correcta, se habrá enviado un email con un enlace de confirmación.</target>
+		   </trans-unit>
+
 		</body>
 	</file>
 </xliff>

@@ -143,7 +143,7 @@ $lang = new language();
 $lang->load($language_default);
 
 // is it a recover password request?
-if(isset($_REQUEST['action']) && $_REQUEST['action']=='forgot-password')
+if(isset($_REQUEST['action']) && $_REQUEST['action']=='forgot-password' && !empty($_REQUEST['value']))
 {
     $value = mb_strtolower(trim($_REQUEST['value']));
     // look for an existing username or e-mail in Navigate CMS users table
@@ -155,24 +155,20 @@ if(isset($_REQUEST['action']) && $_REQUEST['action']=='forgot-password')
         array(':value' => $value)
     );
 
-    if(!$found_id)
-    {
-        echo 'not_found';
-    }
-    else
+    // some delay included intentionally to make the response time also undetermined
+
+    if($found_id)
     {
         $user->load($found_id);
         $sent = $user->forgot_password();
-
-        if(!$sent)
-        {
-            echo 'not_sent';
-        }
-        else
-        {
-            echo 'sent';
-        }
+        usleep(rand(100000, 1000000));
     }
+    else
+    {
+        usleep(rand(300000, 2000000));
+    }
+
+    echo 'undetermined';
 
     core_terminate();
 }
@@ -301,18 +297,14 @@ $(document).ready(function()
             },
             function(data)
             {
-                if(data=='sent')
+                if(data=='undetermined')
                 {
                     //$('#navigate-lost-password-dialog').dialog('close');
                     $('#navigate-lost-password-dialog').html('');
                     $('#navigate-lost-password-dialog').append('<div style="text-align: center; margin: 16px; "><i class="fa fa-5x fa-envelope" style="color: #BBD6F5"></i><i style="position: absolute; margin-top: 28px; margin-left: -12px; color: #2E476E;" class="fa fa-2x fa-check"></i></div>');
-                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(454, "An e-mail with a confirmation link has been sent to your e-mail account.", false, true); ?></div>');
+                    $('#navigate-lost-password-dialog').append('<div style="text-align: center; font-weight: bold; padding: 10px; "><?php echo t(835, "An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.", false, true); ?></div>');
                 }
-                else if(data=='not_found')
-                {
-                    $('#forgot-password-problem').html("<?php echo t(453, "Couldn't find this username or e-mail address", false, true);?>");
-                }
-                else// if(data=='not_sent')
+                else
                 {
                     $('#forgot-password-problem').html("<?php echo t(452, "E-mail could not be sent; please contact the administrator", false, true);?>");
                 }
@@ -338,7 +330,7 @@ $(document).ready(function()
 
 <?php
     // are we on a password change process?
-    if(isset($_REQUEST['action']) && $_REQUEST['action']=='password-reset')
+    if(isset($_REQUEST['action']) && $_REQUEST['action']=='password-reset' && !empty($_REQUEST['value']))
     {
         $value = trim($_REQUEST['value']);
 

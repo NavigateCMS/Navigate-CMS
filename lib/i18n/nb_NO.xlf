@@ -4198,6 +4198,11 @@
                 <target>Passordbekreftelsen stemmer ikke</target>
             </trans-unit>
 
+            <trans-unit id="835">
+                <source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
+                <target>En e-post med en bekreftelseslink er blitt sendt til din e-postkonto hvis innspillet var riktig.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

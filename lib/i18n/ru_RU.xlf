@@ -4197,6 +4197,11 @@
 				<target>The password confirmation does not match</target>
 			</trans-unit>
 
+			<trans-unit id="835">
+				<source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
+				<target>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>
