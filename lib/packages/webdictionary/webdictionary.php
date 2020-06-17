@@ -4,6 +4,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php'
 function run()
 {
 	global $layout;
+	global $purifier;
 	global $website;
 	
 	$out = '';
@@ -97,7 +98,7 @@ function run()
 							1	=> $dataset[$i]['node_id'], // id of the word (Ex. word "3" in English -> test, word "3" in Spanish -> prueba)
 							2	=> $origin,
 							3 	=> language::name_by_code($dataset[$i]['lang']),
-							4	=> $dataset[$i]['text'],
+							4	=> htmlentities($dataset[$i]['text']),
 							5   => $dataset[$i]['source']
 						);
 					}
@@ -117,7 +118,7 @@ function run()
             }
 			else if(!empty($_REQUEST['id']))
             {
-                $wtext->load($_REQUEST['id']);
+                $wtext->load(intval($_REQUEST['id']));
             }
 
 			if(isset($_REQUEST['form-sent']))

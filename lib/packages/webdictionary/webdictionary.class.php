@@ -168,11 +168,13 @@ class webdictionary
 	
 	public function load_from_post()
 	{
+	    global $purifier;
+
 		// if node_id is empty, then is an insert
-		$this->node_type 	= $_REQUEST['node_type'];
-		$this->subtype 		= $_REQUEST['subtype'];
-		$this->theme 		= $_REQUEST['theme']; //(is_numeric($this->node_id)? '' : $theme->name);
-		$this->node_id		= $_REQUEST['node_id'];
+		$this->node_type 	= $purifier->purify($_REQUEST['node_type']);
+		$this->subtype 		= $purifier->purify($_REQUEST['subtype']);
+		$this->theme 		= $purifier->purify($_REQUEST['theme']); //(is_numeric($this->node_id)? '' : $theme->name);
+		$this->node_id		= $purifier->purify($_REQUEST['node_id']);
 		
 		$this->text = array();
 		foreach($_REQUEST as $key => $value)
