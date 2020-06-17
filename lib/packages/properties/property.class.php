@@ -1645,7 +1645,9 @@ class property
 
         $country_query = " 1=1 ";
         if(!empty($country_id))
+        {
             $country_query = ' AND r.country = '.intval($country_id);
+        }
 
 		$DB->query('
             SELECT r.`numeric` AS region_id, c.country_code, r.name
@@ -1689,7 +1691,9 @@ class property
         $out = array();
 
         foreach($languages_rs as $lang)
+        {
             $out[$lang->code] = $lang->name;
+        }
 
 		return $out;
 	}

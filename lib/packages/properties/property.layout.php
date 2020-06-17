@@ -83,7 +83,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
 	// object used for translations (theme or extension)
 	if(empty($object))
-		$object = $ws_theme;
+    {
+        $object = $ws_theme;
+    }
 
 	$naviforms = new naviforms();
 	$langs = $ws->languages_list;
@@ -91,32 +93,55 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	$field = array();
 
 	if(!isset($property->value))
+    {
         $property->value = $property->dvalue;
+    }
 
     if(!isset($property->multilanguage))
+    {
         $property->multilanguage = 'false';
+    }
 
 	$property_name = $property->name;
 	if(!empty($object))
-		$property_name = $object->t($property_name);
+    {
+        $property_name = $object->t($property_name);
+    }
 
 	if(in_array($property->type, array("text", "textarea", "rich_textarea", "link")) || $property->multilanguage=='true')
 	{
 		if(!isset($property->multilanguage) || $property->multilanguage !== false || $property->multilanguage == "false")
+        {
             $property->multilanguage = 'true';
+        }
 		else
-			$property->multilanguage = 'false';
+        {
+            $property->multilanguage = 'false';
+        }
 
         if(is_object($property->value))
+        {
             $property->value = (array)$property->value;
+        }
 
         if(!is_array($property->value))
+        {
             $property->value = array();
+        }
 
 		foreach($langs as $lang)
 		{
 			if(!isset($property->value[$lang]) && isset($property->dvalue))
-				$property->value[$lang] = $property->dvalue;
+            {
+                if(is_object($property->dvalue) || is_array($property->dvalue))
+                {
+                    $property->value[$lang] = array_values((array)$property->dvalue)[0];
+                }
+                else
+                {
+                    $property->value[$lang] = $property->dvalue;
+                }
+            }
 		}
 	}
 
@@ -128,7 +153,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
             foreach($conditional as $conditional_property => $conditional_values)
             {
                 if(!is_array($conditional_values))
+                {
                     $conditional_values = array($conditional_values);
+                }
 
                 $conditional_values = '["'.implode('", "', $conditional_values).'"]';
 
@@ -149,7 +176,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			{
 				$helper_text = $property->helper;
 				if(!empty($object))
-					$helper_text = $object->t($helper_text);
+                {
+                    $helper_text = $object->t($helper_text);
+                }
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -164,7 +193,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			{
 				$helper_text = $property->helper;
 				if(!empty($object))
-					$helper_text = $object->t($helper_text);
+                {
+                    $helper_text = $object->t($helper_text);
+                }
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';
@@ -176,7 +207,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
             {
                 $stars = $property->max;
                 if(!isset($property->value))
+                {
                     $property->value = $property->dvalue;
+                }
             }
             else // navigate cms < 2.2 compatability
             {
@@ -217,7 +250,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			{
 				$helper_text = $property->helper;
 				if(!empty($object))
-					$helper_text = $object->t($helper_text);
+                {
+                    $helper_text = $object->t($helper_text);
+                }
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';
@@ -227,15 +262,21 @@ function navigate_property_layout_field($property, $object="", $website_id="")
             $options = $property->options;
 
             if(is_string($options))
+            {
                 $options = mb_unserialize($options);
+            }
             else if(is_object($options))
+            {
                 $options = (array)$options;
+            }
 
             // translate each option text
             if(!empty($object) && !empty($options))
             {
                 foreach($options as $value => $text)
+                {
                     $options[$value] = $object->t($text);
+                }
             }
 
 			if(!isset($property->option_html))
@@ -247,7 +288,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	            {
 		            $helper_text = $property->helper;
 		            if(!empty($object))
-			            $helper_text = $object->t($helper_text);
+                    {
+                        $helper_text = $object->t($helper_text);
+                    }
 	                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
 				$field[] = '</div>';
@@ -259,7 +302,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				{
 					$custom_stylesheet = $property->stylesheet;
 					if(strpos($custom_stylesheet, 'http')===false)
+                    {
                         $custom_stylesheet = NAVIGATE_URL.'/themes/'.$ws->theme.'/'.$custom_stylesheet.'?bogus='.time();
+                    }
 
 					$layout->add_style_tag($custom_stylesheet, false);
 
@@ -278,7 +323,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 									$rule = str_replace(array('.', '#', ':before', ':after', ':focus', ':visited'), '', $rule);
 									$options[$rule] = $rule;
 									if(!empty($object))
-										$options[$rule] = $object->t($rule);
+                                    {
+                                        $options[$rule] = $object->t($rule);
+                                    }
 								}
 							}
 						}
@@ -325,12 +372,13 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				    );
 			    ');
 
-				
 	            if(!empty($property->helper))
 	            {
 		            $helper_text = $property->helper;
 		            if(!empty($object))
-			            $helper_text = $object->t($helper_text);
+                    {
+                        $helper_text = $object->t($helper_text);
+                    }
 	                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
 				$field[] = '</div>';
@@ -341,9 +389,13 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 		case 'moption':
             $options = $property->options;
             if(is_string($options))
+            {
                 $options = mb_unserialize($options);
+            }
             else if(is_object($options))
+            {
                 $options = (array)$options;
+            }
 
             // translate each option text
             if(!empty($object))
@@ -359,7 +411,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			{
 				$helper_text = $property->helper;
 				if(!empty($object))
-					$helper_text = $object->t($helper_text);
+                {
+                    $helper_text = $object->t($helper_text);
+                }
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -382,7 +436,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			{
 				$helper_text = $property->helper;
 				if(!empty($object))
-					$helper_text = $object->t($helper_text);
+                {
+                    $helper_text = $object->t($helper_text);
+                }
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';			
@@ -408,7 +464,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			{
 				$helper_text = $property->helper;
 				if(!empty($object))
-					$helper_text = $object->t($helper_text);
+                {
+                    $helper_text = $object->t($helper_text);
+                }
 				$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 			}
 			$field[] = '</div>';
@@ -544,7 +602,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 					$ovalue = $property->value;
 					$property->value = array();
 					foreach($langs as $lang_value)
-						$property->value[$lang_value] = $ovalue;
+                    {
+                        $property->value[$lang_value] = $ovalue;
+                    }
 				}
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
@@ -556,7 +616,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				{
 					$helper_text = $property->helper;
 					if(!empty($object))
-						$helper_text = $object->t($helper_text);
+                    {
+                        $helper_text = $object->t($helper_text);
+                    }
 					$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 				}
 				$field[] = '</div>';
@@ -571,16 +633,22 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 					$ovalue = $property->value;
 					$property->value = array();
 					foreach($langs as $lang_value)
-						$property->value[$lang_value] = $ovalue;
+                    {
+                        $property->value[$lang_value] = $ovalue;
+                    }
 				}
 
 				$style = "";
 				if(!empty($property->width))
-					$style = ' width: '.$property->width.'px; ';
+                {
+                    $style = ' width: '.$property->width.'px; ';
+                }
 
 				$language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 				if($property->multilanguage == 'false')
-					$language_info = '';
+                {
+                    $language_info = '';
+                }
 
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
 				$field[] = '<label>'.$property_name.' '.$language_info.'</label>';
@@ -590,13 +658,17 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 				{
 					$helper_text = $property->helper;
 					if(!empty($object))
-						$helper_text = $object->t($helper_text);
+                    {
+                        $helper_text = $object->t($helper_text);
+                    }
 					$field[] = '<div class="subcomment">'.$helper_text.'</div>';
 				}
 				$field[] = '</div>';
 
 				if($property->multilanguage == 'false')
-					break;
+                {
+                    break;
+                }
 			}		
 			break;
 
@@ -608,16 +680,22 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                     $ovalue = $property->value;
                     $property->value = array();
                     foreach($langs as $lang_value)
-                        $property->value[$lang_value] = $ovalue;
+                    {
+                        $property->value[$lang_value] = value_or_default($ovalue, '');
+                    }
                 }
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 	            if($property->multilanguage == 'false')
-		            $language_info = '';
+                {
+                    $language_info = '';
+                }
 
                 $width = NULL;
                 if(!empty($property->width))
+                {
                     $width = $property->width.'px';
+                }
 
                 $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
                 $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
@@ -626,7 +704,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	            {
 		            $helper_text = $property->helper;
 		            if(!empty($object))
-			            $helper_text = $object->t($helper_text);
+                    {
+                        $helper_text = $object->t($helper_text);
+                    }
 		            $field[] = '<div class="subcomment">'.$helper_text.'</div>';
 	            }
 
@@ -639,7 +719,10 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
                     foreach($translate_extensions as $te)
                     {
-                        if($te['enabled']=='0') continue;
+                        if($te['enabled']=='0')
+                        {
+                            continue;
+                        }
                         $translate_extensions_titles[] = $te['title'];
                         $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'property-'.$property->id.'-'.$lang.'\', \''.$lang.'\');';
                     }
@@ -665,7 +748,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                 $field[] = '</div>'; // divformrow
 
 	            if($property->multilanguage == 'false')
-		            break;
+                {
+                    break;
+                }
             }
             break;
 

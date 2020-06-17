@@ -1033,10 +1033,7 @@ class product
     {
         $is_new = false;
 
-        if(empty($since))
-        {
-            $since = 30;
-        }
+        $since = value_or_default($since, 30);
 
         if(!empty($this->date_to_display))
         {
