@@ -167,10 +167,6 @@ function core_run()
 function core_terminate($redirect_to="")
 {
 	global $DB;
-	global $website;
-	global $session;
-
-    @$_SESSION['nvweb.' . $website->id] = $session;
 
 	session_write_close();	
 	if($DB)
@@ -924,6 +920,7 @@ function core_price2string($price, $base_currency, $part=NULL)
 
         default:
             $currency = product::currencies($base_currency, false);
+
             if($currency['placement'] == 'after')
             {
                 $out = core_decimal2string($price, $currency['decimals']).' '.$currency['symbol'];

@@ -256,8 +256,13 @@ function nvweb_cart($vars=array())
                     }
 
                     $session['cart'] = $cart;
+
                     $checkout_url = nvweb_source_url('theme', 'checkout');
-                    core_terminate($checkout_url);
+                    nvweb_clean_exit($checkout_url);
+                    break;
+
+                default:
+                    // nothing to do
                     break;
             }
 
@@ -296,11 +301,12 @@ function nvweb_cart($vars=array())
             break;
 
         case 'checkout':
+
             switch($cart['checkout_step'])
             {
                 case 'cart':
                     $cart_url = nvweb_source_url('theme', 'cart');
-                    core_terminate($cart_url);
+                    nvweb_clean_exit($cart_url);
                     break;
 
                 case 'identification':
@@ -860,7 +866,9 @@ function nvweb_cart_view($cart, $mode='view')
             $out[] = '             <button type="submit" name="action" value="checkout">' . t(782, "Proceed to checkout") . '</button>';
         }
         else if($mode == 'review')
+        {
             $out[] = '             <a class="button" href="'.nvweb_cart(array('mode' => 'cart_url')).'">' . t(754, "Modify") . '</a>';
+        }
         $out[] = '            </p>';
         $out[] = '        </div>';
         $out[] = '    </div>';
@@ -1057,7 +1065,7 @@ function nvweb_cart_identification_page($cart)
         $cart['customer'] = $webuser->id;
         $session['cart'] = $cart;
         $checkout_url = nvweb_source_url('theme', 'checkout');
-        core_terminate($checkout_url);
+        nvweb_clean_exit($checkout_url);
     }
 
     // process form, if sent
@@ -1084,7 +1092,7 @@ function nvweb_cart_identification_page($cart)
                     $cart['checkout_step'] = 'address';
                     $session['cart'] = $cart;
                     $checkout_url = nvweb_source_url('theme', 'checkout');
-                    core_terminate($checkout_url);
+                    nvweb_clean_exit($checkout_url);
                 }
 
                 $sign_in_error = t(765, "There was an error with your Login/Password combination. Please try again.");
@@ -1141,7 +1149,7 @@ function nvweb_cart_identification_page($cart)
                 $cart['checkout_step'] = 'address';
                 $session['cart'] = $cart;
                 $checkout_url = nvweb_source_url('theme', 'checkout');
-                core_terminate($checkout_url);
+                nvweb_clean_exit($checkout_url);
                 break;
 
             default:
@@ -1266,7 +1274,7 @@ function nvweb_cart_address_page($cart)
 
     if(empty($cart['customer']))
     {
-        core_terminate($cart_url);
+        nvweb_clean_exit($cart_url);
     }
 
     $customer_username = $webuser->username;
@@ -1363,7 +1371,7 @@ function nvweb_cart_address_page($cart)
             $cart['checkout_step']     = 'shipping';
             $session['cart'] = $cart;
             $checkout_url = nvweb_source_url('theme', 'checkout');
-            core_terminate($checkout_url);
+            nvweb_clean_exit($checkout_url);
         }
     }
     else
@@ -1573,7 +1581,7 @@ function nvweb_cart_shipping_page($cart)
     {
         $cart['checkout_step'] = 'address';
         $session['cart'] = $cart;
-        core_terminate($checkout_url);
+        nvweb_clean_exit($checkout_url);
     }
 
     if(!empty($_POST))
@@ -1590,7 +1598,7 @@ function nvweb_cart_shipping_page($cart)
             $cart['checkout_step'] = 'summary';
             $session['cart'] = nvweb_cart_update($cart);
             $checkout_url = nvweb_source_url('theme', 'checkout');
-            core_terminate($checkout_url);
+            nvweb_clean_exit($checkout_url);
         }
     }
 
@@ -1599,7 +1607,7 @@ function nvweb_cart_shipping_page($cart)
 
     if(empty($cart['customer']))
     {
-        core_terminate($cart_url);
+        nvweb_clean_exit($cart_url);
     }
 
     $customer_username = $webuser->username;
@@ -1746,7 +1754,7 @@ function nvweb_cart_summary_page($cart)
 
     if(empty($cart['customer']))
     {
-        core_terminate($cart_url);
+        nvweb_clean_exit($cart_url);
     }
 
     if(!empty($_POST))
@@ -1756,7 +1764,7 @@ function nvweb_cart_summary_page($cart)
             $cart['payment_method'] = $_POST['payment_method'][0];
             $cart['checkout_step'] = 'payment';
             $session['cart'] = $cart;
-            core_terminate($checkout_url);
+            nvweb_clean_exit($checkout_url);
         }
     }
 
@@ -1974,7 +1982,7 @@ function nvweb_cart_payment_failed($order)
         $cart['payment_method'] = $_POST['payment_method_change'][0];
         $cart['checkout_step'] = 'payment';
         $session['cart'] = $cart;
-        core_terminate($checkout_url);
+        nvweb_clean_exit($checkout_url);
     }
 
     $fontawesome_available = ( strpos($html,'font-awesome.') || strpos($html,'<i class="fa ') );

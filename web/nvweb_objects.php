@@ -348,14 +348,8 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
             }
 			break;
 	}
-	
-	session_write_close();
 
-	if($DB)
-    {
-        $DB->disconnect();
-    }
-	exit;
+    nvweb_clean_exit();
 }
 
 ?>

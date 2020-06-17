@@ -3,7 +3,7 @@
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
 // | Copyright (c) Naviwebs 2010-2020. All rights reserved.                 |
-// | Last modified 2020-02-23                                               |
+// | Last modified 2020-06-17                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -57,7 +57,7 @@ if(@$_REQUEST['fid']=='keep_alive')
 	exit;
 }
 
-// is a extension run request? (special fid 'ext_extensionname')
+// is an extension run request? (special fid 'ext_extensionname')
 if(substr($_REQUEST['fid'], 0, '4')=='ext_')
 {
     $_REQUEST['act'] = 'run';
@@ -81,7 +81,7 @@ debugger::dispatch();
 // session checking
 if(ini_get("session.use_cookies") && !empty($_COOKIE['navigate-session-id']))
 {
-    if($_COOKIE['navigate-session-id']!=session_id())
+    if($_COOKIE['navigate-session-id'] != session_id())
     {
         unset($_SESSION);
         core_session_remove();
@@ -102,19 +102,17 @@ if(empty($_SESSION['APP_USER#'.APP_UNIQUE]) || isset($_GET['logout']))
         users_log::action(0, $user->id, 'logout', $user->username);
     }
 
+    // reset session
 	core_session_remove();
-	
 	session_start();
 	
-	if($_SERVER['QUERY_STRING']!='logout')
+	if($_SERVER['QUERY_STRING'] != 'logout')
     {
+        // save URL query to be applied once the user is logged in
         $_SESSION["login_request_uri"] = $_SERVER['QUERY_STRING'];
     }
-	
-	session_write_close();
-	
-	header('location: login.php');	
-	exit;
+
+	core_terminate('login.php');
 }
 else
 {
@@ -146,7 +144,7 @@ if(@$_COOKIE['navigate-language'] != $user->language)
     setcookie_samesite('navigate-language', $user->language, time() + 86400 * 30);
 }
 
-set_time_limit(0);
+@set_time_limit(0);
 
 $menu_layout = new menu_layout();
 $menu_layout->load();
@@ -160,11 +158,12 @@ if((@$_GET['act']=='0' || @$_GET['quickedit']=='true') && !empty($_GET['wid']))
 }
 else if(!empty($_SESSION['website_active']))
 {
-	$website->load($_SESSION['website_active']);
+    $ws_active = $_SESSION['website_active'];
+	$website->load($ws_active);
 }
 else	
 {
-	$url = nvweb_self_url();		
+	$url = nvweb_self_url();
 	$website = nvweb_load_website_by_url($url, false);
 	if(!$website)
 	{
@@ -172,6 +171,7 @@ else
 		$website->load();
 	}
 }
+
 
 // if there are no websites, auto-create the first one
 if(empty($website->id))
@@ -195,16 +195,14 @@ if(!empty($wa))
         {
             // NO website allowed AND can't create websites, so auto sign out
             core_session_remove();
-            session_start();
-            session_write_close();
-            header('location: login.php');
-            core_terminate();
+            core_terminate('login.php');
         }
     }
 }
 
 $_SESSION['website_active'] = $website->id;
 
+$events->load_extensions_installed();
 $events->extension_backend_bindings(null, false);
 $website->bind_events();
 
@@ -276,7 +274,6 @@ if(!isset($_GET['mute']))
     }
 }
 
-session_write_close();
-$DB->disconnect();
+core_terminate();
 
 ?>

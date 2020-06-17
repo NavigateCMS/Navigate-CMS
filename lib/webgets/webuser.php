@@ -869,7 +869,7 @@ function nvweb_webuser_customer_account()
                     {
                         // success, reload the current page (user profile)
                         $webuser->set_cookie();
-                        core_terminate(nvweb_self_url());
+                        nvweb_clean_exit(nvweb_self_url());
                     }
 
                     $sign_in_error = t(765, "There was an error with your Login/Password combination. Please try again.");

@@ -34,11 +34,14 @@ if(!$DB->connect())
 // session checking
 if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 {
+    session_write_close();
 	$DB->disconnect();
 	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "No user logged in."}, "id" : "id"}');
 }
 else if(!naviforms::check_csrf_token('_nv_csrf_token'))
 {
+    session_write_close();
+    $DB->disconnect();
     die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Security error."}, "id" : "id"}');
 }
 else
@@ -61,7 +64,9 @@ else
 // force loading user permissions before disconnecting from the database
 $user->permission("");
 
+// save session
 session_write_close();
+// disconnect from database (if needed, we will reconnect later)
 $DB->disconnect();
 
 if($user->permission("files.upload")=="true")
@@ -172,7 +177,6 @@ if($user->permission("files.upload")=="true")
                             $file = new file();
                             $file->load($file_id);
                             $file->refresh();
-                            $DB->disconnect();
 
                             core_terminate();
                         }
@@ -218,7 +222,6 @@ if($user->permission("files.upload")=="true")
                         $file = new file();
                         $file->load($file_id);
                         $file->refresh();
-                        $DB->disconnect();
                     }
                     else
                     {

@@ -85,10 +85,7 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
         // force regenerate csrf token
         unset($_SESSION['csrf_token']);
 
-		session_write_close();
-
-		header('location: '.NAVIGATE_MAIN.'?'.$login_request_uri);
-		exit;		
+        core_terminate(NAVIGATE_MAIN.'?'.$login_request_uri);
 	}
 }
 

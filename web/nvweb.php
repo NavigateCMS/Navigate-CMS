@@ -496,7 +496,7 @@ function nvweb_parse($request)
         <?php
     }
 
-    $DB->disconnect();
+    nvweb_clean_exit();
 }
 
 nvweb_parse($_REQUEST);
