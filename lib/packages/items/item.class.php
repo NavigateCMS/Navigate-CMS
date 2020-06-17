@@ -768,6 +768,20 @@ class item
                 $item->paths[$wlang] = $article['link'];
             }
 
+            $item->_created_from = 'rss';
+            // find all images in the content
+            $item->_rss_images = NULL;
+
+            $imgs = nvweb_tags_extract($article['description'], 'img');
+
+            if(!empty($imgs))
+            {
+                foreach($imgs as $img)
+                {
+                    $item->_rss_images[] = str_replace(array('http://', 'https://'), '//', $img['attributes']['src']);
+                }
+            }
+
             $items[] = $item;
         }
 
