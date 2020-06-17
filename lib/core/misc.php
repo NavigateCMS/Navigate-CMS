@@ -54,11 +54,12 @@ function mb_unserialize($var)
 
 /**
  * Cleans unwanted quotes from the superglobals GET, POST, COOKIE and REQUEST. If PHP has magic_quotes off, no cleaning is done.
+ * Not needed since PHP 5.4, as magic quotes function has been removed
  * @author Unknown
  */
 function disable_magic_quotes()
 {
-	if(function_exists("get_magic_quotes_gpc"))
+	if(function_exists("get_magic_quotes_gpc") && PHP_VERSION_ID < 50400)
 	{
 		if(get_magic_quotes_gpc())
 		{
@@ -833,7 +834,7 @@ function brasofilo_suSetHtmlElementById( &$oDoc, &$s, $sId, $sHtml, $bAppend = f
 
 function brasofilo_suIsValidString( &$s, &$iLen = null, $minLen = null, $maxLen = null )
 {
-	if( !is_string( $s ) || !isset( $s{0} ))
+	if( !is_string( $s ) || !isset( $s[0] ))
     {
 	    return false;
     }
@@ -844,8 +845,8 @@ function brasofilo_suIsValidString( &$s, &$iLen = null, $minLen = null, $maxLen 
     }
 
     return (
-        ( $minLen===null? true : ( $minLen > 0 && isset( $s{$minLen-1} ) ) ) &&
-        $maxLen===null? true : ( $maxLen >= $minLen && !isset( $s{$maxLen} ) )
+        ( $minLen===null? true : ( $minLen > 0 && isset( $s[$minLen-1] ) ) ) &&
+        $maxLen===null? true : ( $maxLen >= $minLen && !isset( $s[$maxLen] ) )
     );
 }
 
