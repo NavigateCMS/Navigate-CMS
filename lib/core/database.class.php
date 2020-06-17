@@ -122,7 +122,7 @@ class database
 
 		try
 		{
-		    if(empty($parameters))
+		    if(!is_array($parameters))
             {
 			    $statement = $this->db->query($sql);
             }

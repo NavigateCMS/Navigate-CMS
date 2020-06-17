@@ -41,11 +41,17 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
         $field_name = "wid".$website_id.".".$permissions_definitions[$i]['name'];
 
         if($permissions_definitions[$i]['scope']=='functions')
+        {
             $scope = t(240, 'Functions');
+        }
         else if($permissions_definitions[$i]['scope']=='settings')
+        {
             $scope = t(459, 'Settings');
+        }
         else if($permissions_definitions[$i]['scope']=='extensions')
+        {
             $scope = t(327, 'Extensions');
+        }
 
         switch($permissions_definitions[$i]['type'])
         {
@@ -91,14 +97,18 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                         $options = array();
                         $extensions = extension::list_installed(null, true);
                         foreach($extensions as $ext)
+                        {
                             $options[$ext['code']] = $ext['title'];
+                        }
                         break;
 
                     case "structure":
                         $options = array();
                         $categories = $permissions_values[$permissions_definitions[$i]['name']];
                         if(!is_array($categories))
+                        {
                             $categories = array();
+                        }
                         $categories = array_filter($categories);
                         $control = '<button data-permission-name="'.$permissions_definitions[$i]['name'].'" 
                                                     data-action="structure" data-value="'.json_encode($categories).'" 
@@ -112,6 +122,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
 
                 $type = t(200, 'Options');
                 if(empty($control))
+                {
                     $control = $naviforms->selectfield(
                         $field_name,
                         array_keys($options),
@@ -120,6 +131,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                         'navigate_permission_change_option(this);',
                         ($permissions_definitions[$i]['type']=='moption') // multiple?
                     );
+                }
                 break;
 
             case 'color':
@@ -158,7 +170,9 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
             );
 
             if(!$include)
+            {
                 continue;
+            }
         }
 
         $out[$iRow] = array(

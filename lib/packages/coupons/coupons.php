@@ -325,7 +325,7 @@ function coupons_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(237, 'Code').'</label>',
-            $naviforms->textfield('code', $object->code)
+            $naviforms->textfield('code', $object->code, NULL, NULL, 'maxlength="16"'),
         )
     );
 

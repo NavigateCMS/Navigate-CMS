@@ -57,12 +57,10 @@ if(!empty($_REQUEST['id']))
 if(!$item->id)
 {
 	echo 'Error: no item found with id '.$_REQUEST['id'].'.';
-	session_write_close();
-	$DB->disconnect(); 	// we don't need the database anymore (we'll see)
-	exit;
+	core_terminate();
 }
 
-$website = new Website();
+$website = new website();
 if(!empty($_GET['wid']))
 {
     $website->load(intval($_GET['wid']));

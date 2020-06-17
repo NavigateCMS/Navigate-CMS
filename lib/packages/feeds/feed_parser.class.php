@@ -42,7 +42,9 @@ class feed_parser
     public function set_cache($seconds=null)
     {
         if(!empty($seconds))
+        {
             $this->cache = $seconds;
+        }
     }
 
     // author: Stuart Herbert

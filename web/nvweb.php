@@ -49,7 +49,7 @@ function nvweb_parse($request)
         // which website do we have to load?
         $url = nvweb_self_url();
 
-        if (!empty($request['wid']))
+        if(!empty($request['wid']))
         {
             $website = new website();
             $website->load(intval($request['wid']));

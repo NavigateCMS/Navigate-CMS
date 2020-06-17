@@ -386,7 +386,7 @@ function nvweb_xmlrpc()
 			$file_name_tmp = uniqid('metaweblog-upload-');
 			file_put_contents(NAVIGATE_PRIVATE.'/'.$website_id.'/files/'.$file_name_tmp, $file_struct['bits']);
 			$file = file::register_upload($file_name_tmp, $file_struct['name'], 0, NULL, false);
-			@unlink(AVIGATE_PRIVATE.'/'.$website_id.'/files/'.$file_name_tmp); // if everything goes fine, file is renamed, so cannot be deleted here
+			@unlink(NAVIGATE_PRIVATE.'/'.$website_id.'/files/'.$file_name_tmp); // if everything goes fine, file is renamed, so cannot be deleted here
 
 			$out = array(
 				'id' => $file->id,
@@ -424,7 +424,7 @@ function nvweb_xmlrpc()
 		return $allowed;
 	}
 
-	// if we have a RSD request, don't run the XMLRPC server, just give an XML respnse
+	// if we have a RSD request, don't run the XMLRPC server, just give an XML response
 	// http://cyber.law.harvard.edu/blogs/gems/tech/rsd.html
 	if(isset($_GET['rsd']))
 	{

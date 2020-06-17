@@ -22,7 +22,7 @@ function run()
 
                 case 'feed':
                     $feed = new feed_parser();
-                    $feed->set_cache(4 * 3600); // once update each 4 hours
+                    $feed->set_cache(4 * 3600); // cache valid for 4 hours
                     $feed->load($_REQUEST['url']);
                     list($channel, $articles, $count) = $feed->parse(0, $_REQUEST['limit'], 'newest');
                     $items = item::convert_from_rss($articles);

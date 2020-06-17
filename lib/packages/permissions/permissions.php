@@ -3,8 +3,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php'
 
 function run()
 {
-    global $DB;
-
 	switch(@$_REQUEST['act'])
 	{
         case 'list':

@@ -80,9 +80,4 @@ if(!defined("APP_UNIQUE"))
 
 include_once(NAVIGATE_PATH.'/cfg/session.php');
 
-if(!defined('APP_UNIQUE'))
-{
-    define('APP_UNIQUE', 'nv_default');
-}
-
 ?>

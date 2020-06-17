@@ -251,14 +251,17 @@ function run()
                         }
                     }
                     if(!empty($item))
+                    {
                         echo json_encode($item);
+                    }
                     else
+                    {
                         echo false;
+                    }
                     break;
             }
-			session_write_close();
-			$DB->disconnect();
-			exit;
+
+			core_terminate();
 			break;
 
 			
@@ -1431,9 +1434,7 @@ function files_media_browser($limit = 50, $offset = 0)
 		echo implode("\n", $out);
 	}
 	
-	session_write_close();
-	$DB->disconnect();
-	exit;
+	core_terminate();
 }
 
 ?>
