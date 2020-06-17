@@ -468,8 +468,7 @@ function navigate_install_configuration()
 		
 		'NAVIGATECMS_STATS'	=> (empty($_REQUEST['NAVIGATECMS_STATS']))? 'false' : 'true',
 		'NAVIGATECMS_UPDATES'=>(empty($_REQUEST['NAVIGATECMS_UPDATES']))? 'false' : 'true',
-		
-		'JAVA_RUNTIME'		=> (empty($_REQUEST['JAVA_RUNTIME']))? 'java' : $_REQUEST['JAVA_RUNTIME'],		
+
 		'ADMIN_USERNAME'	=> (empty($_REQUEST['ADMIN_USERNAME']))? 'admin' : $_REQUEST['ADMIN_USERNAME'],	
 		'ADMIN_PASSWORD'	=> (empty($_REQUEST['ADMIN_PASSWORD']))? '' : $_REQUEST['ADMIN_PASSWORD'],
         'ADMIN_EMAIL'	    => (empty($_REQUEST['ADMIN_EMAIL']))? '' : $_REQUEST['ADMIN_EMAIL']

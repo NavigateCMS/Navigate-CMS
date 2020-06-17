@@ -29,9 +29,6 @@ define('NAVIGATE_DOWNLOAD', NAVIGATE_PARENT.NAVIGATE_FOLDER.'/navigate_download.
 define('NAVIGATECMS_STATS', {NAVIGATECMS_STATS});
 define('NAVIGATECMS_UPDATES', {NAVIGATECMS_UPDATES});
 
-/* Optional Utility Paths */
-define('JAVA_RUNTIME', '"{JAVA_RUNTIME}"');
-
 /* Database connection */
 define('PDO_HOSTNAME', "{PDO_HOSTNAME}");
 define('PDO_PORT',     "{PDO_PORT}");

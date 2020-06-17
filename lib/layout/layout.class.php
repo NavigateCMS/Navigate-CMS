@@ -361,18 +361,6 @@ class layout
                     file_put_contents('cache/scripts.js', $tmp);
                 }
 
-				/*
-				if(JAVA_RUNTIME!='')
-				{
-					// YUI COMPRESSOR (can't redistribute)
-                    exec(JAVA_RUNTIME." -jar cache/yuicompressor.jar cache/scripts.js -o cache/scripts.min.js --charset utf-8");
-				}
-				*/
-                // does not work as expected
-                //$packer = new JavaScriptPacker($tmp, 'None', true, true);
-                //$tmp = $packer->pack();
-                //file_put_contents('cache/scripts.min.js', $tmp);
-
                 // gzip compression
                 if(file_exists('cache/scripts.min.js'))
                 {
