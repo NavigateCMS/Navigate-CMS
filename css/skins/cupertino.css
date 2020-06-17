@@ -3099,6 +3099,20 @@ div.jGrowl div.jGrowl-notification
     z-index: 10001 !important;
 }
 
+.ui-checkboxradio-radio-label.ui-state-active.ui-checkboxradio-checked .ui-icon,
+.ui-checkboxradio-radio-label.ui-state-active.ui-checkboxradio-checked:hover .ui-icon
+{
+	width: 16px;
+	height: 16px;
+	border: none;
+	background-image: url("../cupertino/images/ui-icons_ffffff_256x240.png");
+}
+
+.ui-checkboxradio-radio-label
+{
+	height: auto !important;
+}
+
 
 /* CSS loader */
 .navigatecms_loader

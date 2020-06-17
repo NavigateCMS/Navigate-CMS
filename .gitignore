@@ -23,3 +23,4 @@ plugins/twitter_timeline
 plugins/webuser_login_box
 cache/*
 plugins
+private/cache/
