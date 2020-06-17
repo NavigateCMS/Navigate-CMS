@@ -99,7 +99,7 @@ function run()
 						  LEFT JOIN nv_webusers wu
 						  			 ON wu.id = o.webuser
 							  WHERE '.$where.'	
-						   GROUP BY o.id, o.reference, o.date_created, o.total, o.status, o.payment_done, o.currency						   
+						   GROUP BY o.id, o.reference, o.date_created, o.total, o.status, o.payment_done, o.currency, wu.fullname						   
 						   ORDER BY '.$orderby.' 
 							  LIMIT '.$max.'
 							 OFFSET '.$offset;
