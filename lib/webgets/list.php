@@ -6,6 +6,7 @@ require_once(NAVIGATE_PATH.'/lib/webgets/gallery.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/votes.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/blocks.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/product.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/list.conditionals.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed_parser.class.php');
 
@@ -336,7 +337,7 @@ function nvweb_list($vars=array())
     }
 
 	$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
-
+    
     // public access / webuser based / webuser groups based
     $access = 2;
     $access_extra = '';
@@ -368,6 +369,10 @@ function nvweb_list($vars=array())
     if(empty($order))
     {
         $order  = @$vars['order'];
+        if(@substr($vars['order'], 0, 1)=='$')
+        {
+            $order = @$_REQUEST[substr($vars['order'], 1)];
+        }
     }
     if(empty($order))   // default order: latest
     {
@@ -617,7 +622,7 @@ function nvweb_list($vars=array())
         }
 
         $columns_extra = '';
-        if($vars['order'] == 'comments')
+        if($order == 'comments')
         {
             // we need to retrieve the number of comments to apply the order by clause
             $columns_extra = ', ( SELECT COUNT(p.id) 
@@ -629,7 +634,7 @@ function nvweb_list($vars=array())
                                 ) AS comments_published';
         }
 
-        if($vars['order'] == 'sales')
+        if($order == 'sales')
         {
             // retrieve the number of sales to apply the order requested
             $columns_extra = ', (
@@ -637,7 +642,7 @@ function nvweb_list($vars=array())
                 ) AS sales';
         }
 
-        if($vars['order'] == 'price_asc' || $vars['order'] == 'price_desc')
+        if($order == 'price_asc' || $order == 'price_desc')
         {
             // we need to calculate the offer price and get the lowest price for the product
             $columns_extra = ', ( 
@@ -792,7 +797,9 @@ function nvweb_list($vars=array())
         {
             $order = 'priority'; // display images using the assigned priority
             if(!empty($vars['order']))
+            {
                 $order = $vars['order'];
+            }
 
             $rs = nvweb_gallery_reorder($rs, $order);
 
@@ -922,7 +929,7 @@ function nvweb_list($vars=array())
         }
 
         $columns_extra = '';
-        if($vars['order'] == 'comments')
+        if($order == 'comments')
         {
             // we need to retrieve the number of comments to apply the order by clause
             $columns_extra = ', (   SELECT COUNT(c.id) 
@@ -1099,6 +1106,11 @@ function nvweb_list($vars=array())
                 $item = new product();
                 $item->load($rs[$i]->id);
                 $item->_cart = $rs[$i];
+                break;
+
+            case 'order':
+                // we can't load the product, as it may not exist anymore
+                $item = $rs[$i];
                 break;
 
             case 'element':
@@ -1396,6 +1408,18 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					break;
 			}
 			break;
+
+        case 'rss':
+            switch($tag['attributes']['value'])
+            {
+                case 'image':
+                    if(isset($item->_rss_images) && !empty($item->_rss_images))
+                    {
+                        $out = $item->_rss_images[0];
+                    }
+                    break;
+            }
+            break;
 
 		// ITEM comments
 		case 'comment':
