@@ -128,9 +128,11 @@ class user
 	 *
 	 */	
 	public function load_from_post()
-	{		
-		$this->username 		 = $_REQUEST['user-username'];
-		$this->email			 = $_REQUEST['user-email'];
+	{
+	    global $purifier;
+
+		$this->username 		 = $purifier->purify($_REQUEST['user-username']);
+		$this->email			 = $purifier->purify($_REQUEST['user-email']);
 		$this->profile			 = intval($_REQUEST['user-profile']);
 		$this->language			 = $_REQUEST['user-language'];
 		$this->timezone			 = $_REQUEST['user-timezone'];			
@@ -141,12 +143,18 @@ class user
 		$this->blocked			 = ($_REQUEST['user-blocked']=='1'? '1' : '0');
 
 		if(@$_REQUEST['user-all-websites']=='1')
-			$this->websites			 = '';
+        {
+            $this->websites			 = '';
+        }
 		else
-			$this->websites			 = $_REQUEST['user-websites'];
+        {
+            $this->websites			 = $_REQUEST['user-websites'];
+        }
 
 		if(!empty($_REQUEST['user-password']))
-			$this->set_password($_REQUEST['user-password']);
+        {
+            $this->set_password($_REQUEST['user-password']);
+        }
 	}
 
 	/**

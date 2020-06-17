@@ -6,6 +6,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php'
 function run()
 {
 	global $layout;
+	global $purifier;
 	global $DB;
 	
 	$out = '';
@@ -89,8 +90,8 @@ function run()
 					{													
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> '<strong>'.$dataset[$i]['username'].'</strong>',
-							2	=> $dataset[$i]['email'],
+							1	=> '<strong>'.$purifier->purify($dataset[$i]['username']).'</strong>',
+							2	=> $purifier->purify($dataset[$i]['email']),
 							3 	=> $profiles[$dataset[$i]['profile']],
 							4	=> $languages[$dataset[$i]['language']],		
 							5	=> (($dataset[$i]['blocked']==1)? '<img src="img/icons/silk/cancel.png" />' : '')
