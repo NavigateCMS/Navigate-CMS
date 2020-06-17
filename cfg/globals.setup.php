@@ -23,6 +23,7 @@ define('NAVIGATE_FOLDER', "{NAVIGATE_FOLDER}"); // name of the navigate folder (
 define('NAVIGATE_PATH', "{NAVIGATE_PATH}"); // absolute system path to navigate folder
 
 define('NAVIGATE_PRIVATE', "{NAVIGATE_PRIVATE}");
+define('NAVIGATE_SESSIONS_PATH', {NAVIGATE_SESSIONS_PATH});
 define('NAVIGATE_MAIN', "{NAVIGATE_MAIN}");
 define('NAVIGATE_DOWNLOAD', NAVIGATE_PARENT.NAVIGATE_FOLDER.'/navigate_download.php');
 

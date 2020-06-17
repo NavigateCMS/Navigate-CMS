@@ -17,7 +17,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.9');
+	define('APP_VERSION', '2.9.1');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -65,7 +65,7 @@ global $config;
 global $layout;
 global $website;
 global $theme;
-global $events;
+global $events; // needed to install the included theme
 
 if(!empty($_REQUEST['process']))
 {
@@ -456,6 +456,7 @@ function navigate_install_configuration()
 		'NAVIGATE_PATH'		=> $navigate_parent_folder . $_SESSION['NAVIGATE_FOLDER'],
 		'NAVIGATE_FOLDER'	=> $_SESSION['NAVIGATE_FOLDER'],
 		'NAVIGATE_PRIVATE'	=> $navigate_parent_folder . $_SESSION['NAVIGATE_FOLDER'] . '/private',
+		'NAVIGATE_SESSIONS_PATH' => "NAVIGATE_PRIVATE.'/sessions'",
 		'NAVIGATE_MAIN'		=> 'navigate.php',
 		
 		'PDO_HOSTNAME'		=> (empty($_REQUEST['PDO_HOSTNAME']))? 'localhost' : $_REQUEST['PDO_HOSTNAME'],		
@@ -507,6 +508,7 @@ function navigate_install_configuration()
 			$globals = str_replace('{NAVIGATE_FOLDER}', 	$defaults['NAVIGATE_FOLDER'], $globals);			
 
 			$globals = str_replace('{NAVIGATE_PRIVATE}',	$defaults['NAVIGATE_PRIVATE'], $globals);				
+
 			$globals = str_replace('{NAVIGATE_MAIN}', 		$defaults['NAVIGATE_MAIN'], $globals);
 
 			$globals = str_replace('{NAVIGATECMS_STATS}', 	$defaults['NAVIGATECMS_STATS'], $globals);			
@@ -532,6 +534,19 @@ function navigate_install_configuration()
 			$globals = str_replace('{PDO_PASSWORD}', 		$defaults['PDO_PASSWORD'], $globals);										
 
 			$globals = str_replace('{APP_VERSION}', 		APP_VERSION, $globals);
+
+			// security checking for default private sessions folder
+            if(@file_get_contents($defaults['NAVIGATE_PARENT'].$defaults['NAVIGATE_FOLDER'].'/private/sessions/index.html') !== false || true)
+            {
+                // default sessions folder seems accessible!
+                // notify user and just use the default system folder for sessions
+                $globals = str_replace('{NAVIGATE_SESSIONS_PATH}',"''", $globals);
+            }
+            else
+            {
+                // we can use the private sessions folder
+                $globals = str_replace('{NAVIGATE_SESSIONS_PATH}', $defaults['NAVIGATE_SESSIONS_PATH'], $globals);
+            }
 
 			$ok = file_put_contents('.'.$defaults['NAVIGATE_FOLDER'].'/cfg/globals.php', $globals);
 
@@ -1276,8 +1291,8 @@ function process()
 {
 	global $DB;
     global $website;
-    global $events;
     global $theme;
+    global $events;
 	
 	set_time_limit(0);
 	setlocale(LC_ALL, $_SESSION['navigate_install_locale']);
@@ -1616,7 +1631,7 @@ function process()
 					$user = new user();
 					$user->load(1);
 
-                    $events = new events();
+					$events = new events();
 
 					$zip = new ZipArchive();
 					$zip_open_status = $zip->open(NAVIGATE_PATH.'/themes/theme_kit.zip');
@@ -1845,5 +1860,4 @@ function navigate_install_load_language()
 	return $lang;
 }
 
-//	$DB->disconnect();
 ?>

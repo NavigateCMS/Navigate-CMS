@@ -1,4 +1,10 @@
-RewriteEngine On
-RewriteBase /
-RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^/]+)/.*\ HTTP [NC]
-RewriteRule .* - [F,L]
+# Apache 2.2
+<IfModule !authz_core_module>
+	Order Deny,Allow
+	Deny from all
+</IfModule>
+
+# Apache 2.4+
+<IfModule authz_core_module>
+	Require all denied
+</IfModule>

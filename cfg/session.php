@@ -1,18 +1,6 @@
 <?php
 /* Navigate CMS session management */
 
-$session_name = 'NVSID_'.substr(md5(APP_UNIQUE), 0, 16);
-
-// retrieve session id via cookie except if a "session_id" parameter has been given when calling navigate_upload.php
-if(isset($_COOKIE[$session_name]) && empty($_REQUEST['session_id']))
-{
-    if(session_id() != $_COOKIE[$session_name])
-    {
-        session_write_close();
-        session_id($_COOKIE[$session_name]);
-    }
-}
-
 $session_cookie_domain = $_SERVER['SERVER_NAME'];
 
 if(!preg_match(
@@ -28,15 +16,14 @@ if(!preg_match(
         $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
     }
 
-
     // need to identify PHP version to know how to activate SameSite cookie parameter
     if(PHP_VERSION_ID < 70300)
     {
         $session_cookie_prefs = array(
             'lifetime' => 3600,
-            'path' => '/;SameSite=Strict',
+            'path' => '/;SameSite=Lax',
             'domain' => $session_cookie_domain,
-            'secure' => false,
+            'secure' => ($_SERVER['REQUEST_SCHEME']=='https'),
             'httponly' => true
         );
     }
@@ -46,7 +33,7 @@ if(!preg_match(
             'lifetime' => 3600,
             'path' => '/',
             'domain' => $session_cookie_domain,
-            'secure' => false,
+            'secure' => ($_SERVER['REQUEST_SCHEME']=='https'),
             'httponly' => true,
             'sameSite' => 'Lax'
         );
@@ -55,7 +42,30 @@ if(!preg_match(
     @session_set_cookie_params($session_cookie_prefs);
 }
 
-@session_save_path(NAVIGATE_PRIVATE.'/sessions');
+$session_name = 'NVSID_'.substr(md5(APP_UNIQUE), 0, 8).'_'.md5($session_cookie_domain);
+
+// retrieve session id via cookie except if a "session_id" parameter has been given when calling navigate_upload.php
+if(isset($_COOKIE[$session_name]) && empty($_REQUEST['session_id']))
+{
+    if(session_id() != $_COOKIE[$session_name])
+    {
+        session_write_close();
+        session_id($_COOKIE[$session_name]);
+    }
+}
+
+if(!defined("NAVIGATE_SESSIONS_PATH"))
+{
+    // app installation before 2.9.1
+    define("NAVIGATE_SESSIONS_PATH", NAVIGATE_PRIVATE.'/sessions');
+}
+
+if(!empty(NAVIGATE_SESSIONS_PATH))
+{
+    @session_save_path(NAVIGATE_SESSIONS_PATH);
+    @ini_set('session.gc_probability', 1);
+}
+
 @session_name($session_name);
 session_start();
 
