@@ -64,7 +64,6 @@ class website
 	public function load($id="")
 	{
 		global $DB;
-		global $events;
 
 		if(empty($id)) // we suppose we only have one website or we just want the first
 		{
@@ -88,7 +87,7 @@ class website
 	{
 		$main = $rs[0];
 
-		$this->id				= $main->id; 
+		$this->id				= intval($main->id);
 		$this->name				= $main->name;
 
 		// the fields below give an absoulte path to the website: protocol://subdomain.domain/folder
@@ -96,6 +95,7 @@ class website
 		$this->subdomain		= $main->subdomain;
 		$this->domain			= $main->domain;				
 		$this->folder			= $main->folder;
+
         $this->word_separator	= value_or_default($main->word_separator, '_');
 
 		$this->redirect_to		    = $main->redirect_to;
@@ -1241,7 +1241,7 @@ class website
             }
 
             // remove very old PHP session files (TODO: that should be executed once a day, not every minute)
-            core_remove_sessions(365); // 365 days
+            core_remove_sessions(30); // 30 days
 
             $events->trigger('website', 'cron', array());
 
