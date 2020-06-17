@@ -378,20 +378,23 @@ class extension
         $extensions = glob(NAVIGATE_PATH.'/plugins/*/*.plugin');
         $updates = @$_SESSION['extensions_updates'];
 
-        $DB->query('
-            SELECT extension, enabled
-              FROM nv_extensions
-             WHERE website = '.intval($website->id),
-            'array'
-        );
-
-        $rs = $DB->result();
-
-        foreach($rs as $row)
+        if(isset($website->id))
         {
-            $properties[$row['extension']] = array(
-                'enabled' => intval($row['enabled'])
+            $DB->query('
+                SELECT extension, enabled
+                  FROM nv_extensions
+                 WHERE website = '.$website->id,
+                'array'
             );
+
+            $rs = $DB->result();
+
+            foreach($rs as $row)
+            {
+                $properties[$row['extension']] = array(
+                    'enabled' => intval($row['enabled'])
+                );
+            }
         }
 
         $allowed_extensions = array();  // empty => all of them

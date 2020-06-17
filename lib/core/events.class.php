@@ -7,6 +7,11 @@ class events
     public function __construct()
     {
         $this->events = array();
+        $this->extensions = array();
+    }
+
+    public function load_extensions_installed()
+    {
         $this->extensions = extension::list_installed();
     }
 
@@ -60,7 +65,7 @@ class events
             }
 
             $event_out = call_user_func($trigger['function'], $parameter);
-            if(!empty($event_out))
+            if(!empty($event_out) && !empty($this->extensions))
             {
                 $extension_info = array('title' => '?');
                 foreach($this->extensions as $extension)

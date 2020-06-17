@@ -60,6 +60,7 @@ function nvweb_parse($request)
         }
 
         $events = new events();
+        $events->load_extensions_installed();
         $events->extension_preinit_bindings();
         // we can't start the debugger before the website object is loaded
         // (because an extension could be disabled for that website)
