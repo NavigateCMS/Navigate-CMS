@@ -137,7 +137,7 @@ function nvweb_parse($request)
         $force_language = "";
         if(isset($request['lang']))
         {
-            $force_language = htmlentities($request['lang']);
+            $force_language = core_special_chars($request['lang']);
         }
         else if(strpos($url, 'lang='))
         {
@@ -155,7 +155,7 @@ function nvweb_parse($request)
         }
         else if(isset($request['lang']))
         {
-            $session['lang'] = htmlentities($request['lang']);
+            $session['lang'] = core_special_chars($request['lang']);
         }
 
         // verify requested language is enabled for the current website,

@@ -136,7 +136,7 @@ class template
 	
 	public function load_from_post()
 	{
-		$this->title  		= $_REQUEST['title'];
+		$this->title = core_purify_string($_REQUEST['title']);
 		$path  = trim(str_replace(array('..', '\\', '/', '//', ' '), '', $_REQUEST['file']));
 		$path = basename($path);
 		$path = rtrim($path, ".\t\n\r\0\x0B");
@@ -162,10 +162,10 @@ class template
                 continue;
             }
 			$this->sections[] = array(
-			    'code' => $_REQUEST['template-sections-code'][$s],
-				'name' => $_REQUEST['template-sections-name'][$s],
-				'editor' => $_REQUEST['template-sections-editor'][$s],
-				'width' => $_REQUEST['template-sections-width'][$s]
+			    'code' => core_purify_string($_REQUEST['template-sections-code'][$s]),
+				'name' => core_purify_string($_REQUEST['template-sections-name'][$s]),
+				'editor' => core_purify_string($_REQUEST['template-sections-editor'][$s]),
+				'width' => core_purify_string($_REQUEST['template-sections-width'][$s])
             );
 		}
 		if(empty($this->sections))
@@ -259,7 +259,9 @@ class template
 		);
 			
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 		
@@ -293,7 +295,10 @@ class template
 			)
 		);
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}		
@@ -315,7 +320,9 @@ class template
 				
 		// merge theme templates with custom templates
 		if(is_array($out))
-			$data = array_merge($data, $out);
+        {
+            $data = array_merge($data, $out);
+        }
 		
 		if($DB->query('
 		    SELECT id, title
@@ -327,7 +334,9 @@ class template
 		}
 
 		if(is_array($out))
-			$data = array_merge($data, $out);
+        {
+            $data = array_merge($data, $out);
+        }
 
         // clean templates not for the given use
         // for example, don't display "blog_entry" template in the "structure" template selector
@@ -341,7 +350,9 @@ class template
                     $template_uses = explode(',', $data[$t]->uses);
                     $matches = array_intersect($template_uses, $uses);
                     if(empty($matches))
+                    {
                         $data[$t] = null;
+                    }
                 }
             }
         }
@@ -374,9 +385,13 @@ class template
 			case '#main#':
             case 'main':
                 if(isset($theme))
+                {
                     $out = $theme->t("main");
+                }
                 if(empty($out) || $out == 'main')
-				    $out = t(238, 'Main content');
+                {
+                    $out = t(238, 'Main content');
+                }
 				break;
 				
 			default:	
@@ -392,12 +407,14 @@ class template
         global $theme;
 
         // retrieve custom templates
-        $DB->queryLimit('id,title,NULL as theme,permission,enabled',
-                        'nv_templates',
-                        'website = '.$website->id,
-                        $orderby,
-                        0,
-                        PHP_INT_MAX);
+        $DB->queryLimit(
+            'id,title,NULL as theme,permission,enabled',
+            'nv_templates',
+            'website = '.$website->id,
+            $orderby,
+            0,
+            PHP_INT_MAX
+        );
 
         $dataset = $DB->result();
 
@@ -433,7 +450,9 @@ class template
         $column = array();
         list($order_column, $order_direction) = explode(' ', $orderby);
         for($d=0; $d < count($dataset); $d++)
+        {
             $column[] = $dataset[$d][$order_column];
+        }
 
         array_multisort($column, ($order_direction=='desc'? SORT_DESC : SORT_ASC), $dataset);
 
@@ -450,7 +469,9 @@ class template
         $DB->query('SELECT * FROM nv_templates WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }

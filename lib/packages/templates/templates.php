@@ -5,9 +5,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
-	global $DB;
 	global $website;
 	
 	$out = '';
@@ -76,7 +74,7 @@ function run()
 					{
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1 	=> $dataset[$i]['title'],
+							1 	=> core_special_chars($dataset[$i]['title']),
 							2 	=> $dataset[$i]['theme'],
 							3	=> $permissions[$dataset[$i]['permission']],
 							4	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />')
@@ -190,9 +188,13 @@ function run()
 			if(!empty($_REQUEST['id']))
             {
                 if(is_numeric($_REQUEST['id']))
-				    $property->load(intval($_REQUEST['id']));
+                {
+                    $property->load(intval($_REQUEST['id']));
+                }
                 else
+                {
                     $property->load_from_theme($_REQUEST['id'], null, 'template', $_REQUEST['template']);
+                }
             }
 
 			header('Content-type: text/json');
@@ -211,7 +213,9 @@ function run()
 			$property = new property();
 			
 			if(!empty($_REQUEST['property-id']))
-				$property->load(intval($_REQUEST['property-id']));
+            {
+                $property->load(intval($_REQUEST['property-id']));
+            }
 
 			$property->load_from_post();
 			$property->save();
@@ -232,7 +236,9 @@ function run()
 			$property = new property();
 			
 			if(!empty($_REQUEST['property-id']))
-				$property->load(intval($_REQUEST['property-id']));
+            {
+                $property->load(intval($_REQUEST['property-id']));
+            }
 
 			$property->delete();
 			
@@ -451,7 +457,7 @@ function templates_form($item)
 						   type: "POST",
 						   async: false,
 						   dateType: "text",
-						   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&id='.$item->id.'&act=save_template_file",
+						   url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.core_special_chars($_REQUEST['fid']).'&id='.$item->id.'&act=save_template_file",
 						   data: $("#templates-file-edit-area").serialize(),
 						   success: function(data)
 						   {			

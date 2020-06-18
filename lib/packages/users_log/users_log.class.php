@@ -78,47 +78,48 @@ class users_log
 		
 		$encoded_data = '';
 		if($action=='save' && function_exists('gzencode'))
-			$encoded_data = gzencode($data); 
+        {
+            $encoded_data = gzencode($data);
+        }
 			
 		// a blank (new) form requested
 		if($action=='load' && empty($item))
-			return true;
+        {
+            return true;
+        }
 
-        $wid = $website->id;
-        if(empty($wid))
-            $wid = 0;
-
-        $uid = $user->id;
-        if(empty($uid))
-            $uid = 0;
+        $wid = value_or_default($website->id, 0);
+        $uid = value_or_default($user->id, 0);
 
         if(!is_numeric($function))
         {
             $func = core_load_function($function);
             $function = $func->id;
         }
-		
+
 		// prepared statement			
 		$ok = $DB->execute(' 
  			INSERT INTO nv_users_log
 				(id, `date`, user, website, `function`, item, action, item_title, data)
 			VALUES 
-				( ?, ?, ?, ?, ?, ?, ?, ?, ?	)',
+				( :id, :date, :user, :website, :function, :item, :action, :item_title, :data )',
 			array(
-				0,
-				core_time(),
-				$uid,
-				$wid,
-				$function,
-				value_or_default($item, ""),
-				value_or_default($action, ""),
-				value_or_default((string)$item_title, ""),
-				value_or_default($encoded_data, "")
+				':id' => 0,
+				':date' => core_time(),
+				':user' => $uid,
+				':website' => $wid,
+				':function' => $function,
+				':item' => value_or_default($item, ""),
+				':action' => value_or_default($action, ""),
+				':item_title' => value_or_default((string)$item_title, ""),
+				':data' => value_or_default($encoded_data, "")
 			)
 		);
 			
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 				
 		return true;
 	}
