@@ -1572,7 +1572,6 @@ function nvweb_cart_shipping_page($cart)
     global $website;
     global $webuser;
     global $session;
-    global $purifier;
 
     $cart_url = nvweb_source_url('theme', 'cart');
     $checkout_url = nvweb_source_url('theme', 'checkout');
@@ -1586,7 +1585,7 @@ function nvweb_cart_shipping_page($cart)
 
     if(!empty($_POST))
     {
-        $customer_notes = $purifier->purify(trim($_POST['order_notes']));
+        $customer_notes = core_purify_string(trim($_POST['order_notes']));
         $cart['customer_notes']    = $customer_notes;
 
         list($order_shipping_method, $order_shipping_method_rate) = explode("/", $_POST['order_shipping_method']);

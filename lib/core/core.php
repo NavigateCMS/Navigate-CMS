@@ -118,7 +118,6 @@ function pquotes($text)
 function core_run()
 {
     global $menu_layout;
-    global $purifier;
 
 	$content = "";
 	$fid = 'dashboard'; // default function
@@ -152,7 +151,7 @@ function core_run()
 	}
 	else
     {
-        $content = 'function '.$purifier->purify($fid).': <strong>'.$purifier->purify($f->codename).'</strong> has not been found!';
+        $content = 'function '.core_purify_string($fid).': <strong>'.core_purify_string($f->codename).'</strong> has not been found!';
     }
 		
 	return $content;	
@@ -761,6 +760,18 @@ function core_special_chars($text)
 {
     $out = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
     return $out;
+}
+
+/**
+ * Purify user input from unwanted tags to prevent XSS
+ *
+ * @param string $text
+ * @return string
+ */
+function core_purify_string($input)
+{
+    global $purifier;
+    return trim($purifier->purify($input));
 }
 
 /**

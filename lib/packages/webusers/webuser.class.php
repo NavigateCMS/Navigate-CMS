@@ -172,16 +172,15 @@ class webuser
 	
 	public function load_from_post()
 	{
-	    global $purifier;
 		//$this->website      = $_REQUEST['webuser-website'];
-		$this->username		= trim($_REQUEST['webuser-username']);
+		$this->username		= core_purify_string($_REQUEST['webuser-username']);
 		if(!empty($_REQUEST['webuser-password']))
         {
             $this->set_password($_REQUEST['webuser-password']);
         }
-   		$this->email	    = trim($_REQUEST['webuser-email']);
+   		$this->email	    = core_purify_string($_REQUEST['webuser-email']);
    		$this->groups	    = $_REQUEST['webuser-groups'];
-		$this->fullname		= trim($_REQUEST['webuser-fullname']);
+		$this->fullname		= core_purify_string($_REQUEST['webuser-fullname']);
 		$this->gender		= $_REQUEST['webuser-gender'][0];		
 		$this->avatar		= $_REQUEST['webuser-avatar'];		
 		if(!empty($_REQUEST['webuser-birthdate']))
@@ -270,7 +269,6 @@ class webuser
 		global $DB;	
 		global $website;
         global $events;
-        global $purifier;
 
         $groups = '';
         if(is_array($this->groups))
@@ -307,11 +305,11 @@ class webuser
             array(
                 ":id" => 0,
                 ":website" => $website->id,
-                ":username" => is_null($this->username)? '' : $purifier->purify($this->username),
+                ":username" => is_null($this->username)? '' : $this->username,
                 ":password" => is_null($this->password)? '' : $this->password,
                 ":email" => is_null($this->email)? '' : strtolower($this->email),
                 ":groups" => $groups,
-                ":fullname" => is_null($this->fullname)? '' : $purifier->purify($this->fullname),
+                ":fullname" => is_null($this->fullname)? '' : $this->fullname,
                 ":gender" => is_null($this->gender)? '' : $this->gender,
                 ":avatar" => is_null($this->avatar)? '' : $this->avatar,
                 ":birthdate" => value_or_default($this->birthdate, 0),
@@ -362,7 +360,6 @@ class webuser
 	public function update($trigger_webuser_modified=true)
 	{
 		global $DB;
-		global $purifier;
         global $events;
 
         $groups = '';
@@ -417,11 +414,11 @@ class webuser
             ',
             array(
                 ':website' => $this->website,
-                ':username' => $purifier->purify($this->username),
+                ':username' => $this->username,
                 ':password' => $this->password,
                 ':email' => $this->email,
                 ':groups' => $groups,
-                ':fullname' => $purifier->purify($this->fullname),
+                ':fullname' => $this->fullname,
                 ':gender' => value_or_default($this->gender, ""),
                 ':avatar' => $this->avatar,
                 ':birthdate' => value_or_default($this->birthdate, 0),

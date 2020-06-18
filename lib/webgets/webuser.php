@@ -1679,7 +1679,6 @@ function nvweb_webuser_customer_account_settings()
 {
     global $webuser;
     global $website;
-    global $purifier;
     global $html;
     global $webgets;
 
@@ -1714,7 +1713,7 @@ function nvweb_webuser_customer_account_settings()
             $errors[] = t(833, "Incorrect password");
         }
 
-        $fullname = $purifier->purify(filter_input(INPUT_POST, 'wu_cusacc_settings_fullname', FILTER_SANITIZE_STRING));
+        $fullname = core_purify_string(filter_input(INPUT_POST, 'wu_cusacc_settings_fullname', FILTER_SANITIZE_STRING));
         if(empty($fullname))
         {
             $blank_fields = t(752, "Full name");
@@ -1724,7 +1723,7 @@ function nvweb_webuser_customer_account_settings()
             $webuser->fullname = $fullname;
         }
 
-        $username = $purifier->purify(filter_input(INPUT_POST, 'wu_cusacc_settings_username', FILTER_SANITIZE_STRING));
+        $username = core_purify_string(filter_input(INPUT_POST, 'wu_cusacc_settings_username', FILTER_SANITIZE_STRING));
         if(empty($username))
         {
             $blank_fields = t(1, "User");
@@ -1747,7 +1746,7 @@ function nvweb_webuser_customer_account_settings()
             }
         }
 
-        $email = $purifier->purify(trim($_POST['wu_cusacc_settings_email']));
+        $email = core_purify_string($_POST['wu_cusacc_settings_email']);
         if(empty($email))
         {
             $blank_fields = t(44, "E-Mail");

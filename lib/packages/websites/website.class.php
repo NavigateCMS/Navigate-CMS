@@ -170,7 +170,6 @@ class website
 	public function load_from_post()
 	{
         global $theme;
-        global $purifier;
 
 		$ws_theme = $theme;
 		if($this->theme != $theme->name)
@@ -179,7 +178,7 @@ class website
 			$ws_theme->load($this->theme);
 		}
 
-		$this->name				= $purifier->purify($_REQUEST['title']);
+		$this->name				= core_purify_string($_REQUEST['title']);
 		
 		$this->protocol			= $_REQUEST['protocol'];
 		$this->subdomain		= $_REQUEST['subdomain'];

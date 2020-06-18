@@ -52,8 +52,6 @@ class feed
 	
 	public function load_from_post()
 	{
-	    global $purifier;
-
 		$this->permission	= intval($_REQUEST['permission']);
 		$this->enabled		= intval($_REQUEST['enabled']);
 		$this->format  		= $_REQUEST['format'];
@@ -61,7 +59,6 @@ class feed
 		$this->content 		= $_REQUEST['content'];
 		$this->entries		= intval($_REQUEST['entries']);
 
-	
 		// language strings and options
 		$this->dictionary = array();
 		$this->paths = array();
@@ -78,13 +75,13 @@ class feed
 			{
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
                 {
-                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $purifier->purify($value);
+                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = core_purify_string($value);
                 }
 			}
 		
 			if(substr($key, 0, strlen('path-'))=='path-')
             {
-                $this->paths[substr($key, strlen('path-'))] = $purifier->purify($value);
+                $this->paths[substr($key, strlen('path-'))] = core_purify_string($value);
             }
 		}	
 		

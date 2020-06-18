@@ -588,9 +588,8 @@ class layout
 		global $website;
 		global $user;
 		global $DB;
-		global $purifier;
 
-		$fid = $purifier->purify($_REQUEST['fid']);
+		$fid = core_purify_string($_REQUEST['fid']);
 		if(empty($fid))
         {
             $fid = 'dashboard';
