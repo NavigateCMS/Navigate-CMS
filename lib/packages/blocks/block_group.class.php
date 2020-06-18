@@ -108,20 +108,26 @@ class block_group
 	
 	public function load_from_post()
 	{
-        $this->code  			= $_REQUEST['code'];
-        $this->title  			= $_REQUEST['title'];
-        $this->notes 			= $_REQUEST['notes'];
-        $this->blocks			= json_decode($_REQUEST['blocks_group_selection'], true); //explode(",", $_REQUEST['blocks_group_selection']);
+        $this->code	= core_purify_string($_REQUEST['code']);
+        $this->title = core_purify_string($_REQUEST['title']);
+        $this->notes = core_purify_string($_REQUEST['notes']);
+        $this->blocks = json_decode($_REQUEST['blocks_group_selection'], true); //explode(",", $_REQUEST['blocks_group_selection']);
         if(empty($this->blocks))
+        {
             $this->blocks = array();
+        }
 	}
 	
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -161,7 +167,10 @@ class block_group
             )
         );
 
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 
@@ -171,7 +180,6 @@ class block_group
 	public function update()
 	{
 		global $DB;
-		global $website;
 
         $ok = $DB->execute(
             'UPDATE nv_block_groups
@@ -193,7 +201,10 @@ class block_group
             )
         );
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		return true;
 	}
@@ -249,7 +260,9 @@ class block_group
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
@@ -262,7 +275,7 @@ class block_group
 
 		return $tmp;
 	}
-		
+
 }
 
 ?>

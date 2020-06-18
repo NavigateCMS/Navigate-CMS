@@ -43,15 +43,19 @@ function run()
             switch($_REQUEST['op'])
             {
                 case 'create_folder':
-                    file::create_folder($_REQUEST['name'], $_REQUEST['mime'], $_REQUEST['parent']);
+                    file::create_folder(
+                        core_purify_string($_REQUEST['name']),
+                        core_purify_string($_REQUEST['mime']),
+                        core_purify_string($_REQUEST['parent'])
+                    );
 				    echo json_encode(true);
                     break;
 
 			    case 'edit_folder':
                     $f = new file();
                     $f->load(intval($_REQUEST['id']));
-                    $f->name = $_REQUEST['name'];
-                    $f->mime = $_REQUEST['mime'];
+                    $f->name = core_purify_string($_REQUEST['name']);
+                    $f->mime = core_purify_string($_REQUEST['mime']);
                     $ok = $f->save();
                     echo json_encode($ok);
                     break;
@@ -59,7 +63,7 @@ function run()
                 case 'edit_file':
                     $f = new file();
                     $f->load(intval($_REQUEST['id']));
-                    $f->name = $_REQUEST['name'];
+                    $f->name = core_purify_string($_REQUEST['name']);
                     $ok = $f->save();
                     echo json_encode($ok);
                     break;
@@ -97,7 +101,7 @@ function run()
                             unset($item);
                             $item = new file();
                             $item->load($_REQUEST['item'][$i]);
-                            $item->parent = $_REQUEST['folder'];
+                            $item->parent = core_purify_string($_REQUEST['folder']);
                             $ok = $ok & $item->update();
                         }
                         echo json_encode(($ok? true : false));
@@ -105,7 +109,7 @@ function run()
                     else
                     {
                         $item->load($_REQUEST['item']);
-                        $item->parent = $_REQUEST['folder'];
+                        $item->parent = core_purify_string($_REQUEST['folder']);
                         echo json_encode($item->update());
                     }
                     break;
@@ -119,7 +123,7 @@ function run()
                     {
                         try
                         {
-                            $item->load($_REQUEST['id']);
+                            $item->load(intval($_REQUEST['id']));
                             $status = $item->delete();
                             echo json_encode($status);
                         }
@@ -131,7 +135,7 @@ function run()
                     break;
 
                 case 'permissions':
-                    $item->load($_REQUEST['id']);
+                    $item->load(intval($_REQUEST['id']));
 
                     if(!empty($_POST))
                     {
@@ -174,8 +178,8 @@ function run()
                                 break;
                             }
 
-                            $item->title[$lcode]	= $_REQUEST['titles'][$lcode];
-                            $item->description[$lcode]	= $_REQUEST['descriptions'][$lcode];
+                            $item->title[$lcode] = core_purify_string($_REQUEST['titles'][$lcode]);
+                            $item->description[$lcode]	= core_purify_string($_REQUEST['descriptions'][$lcode]);
                         }
 
                         $status = $item->save();
@@ -198,7 +202,7 @@ function run()
                     {
                         if(naviforms::check_csrf_token('header'))
                         {
-                            $item->focalpoint = $_REQUEST['top'].'#'.$_REQUEST['left'];
+                            $item->focalpoint = core_purify_string($_REQUEST['top']).'#'.core_purify_string($_REQUEST['left']);
                             $status = $item->save();
                             // remove cached thumbnails
                             file::thumbnails_remove($item->id);
@@ -230,11 +234,17 @@ function run()
                     else // uploaded video (file) (may also be provider="file")
                     {
                         if(!empty($_REQUEST['reference']) && is_numeric($_REQUEST['reference']))
+                        {
                             $item->load($_REQUEST['reference']);
+                        }
                         else if(is_numeric($_REQUEST['provider']))
-                            $item->load($_REQUEST['provider']); // needed in some case
+                        {
+                            $item->load($_REQUEST['provider']);
+                        } // needed in some case
                         else
+                        {
                             unset($item);
+                        }
 
                         if(!empty($item))
                         {
@@ -286,11 +296,11 @@ function run()
                             if(move_uploaded_file($_FILES['file-replace']['tmp_name'], $destination))
                             {
                                 $mime = file::getMime($_FILES['file-replace']['name'], $destination);
-                                $item->name = $_FILES['file-replace']['name'];
+                                $item->name = core_purify_string($_FILES['file-replace']['name']);
                                 $item->mime = $mime[0];
                                 $item->type = $mime[1];
                                 $item->date_added = core_time();
-                                $item->uploaded_by = (empty($user->id) ? '0' : $user->id);
+                                $item->uploaded_by = value_or_default($user->id, 0);
                                 $item->refresh(); // including save
 
                                 $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
@@ -335,7 +345,7 @@ function run()
 		
 		case 10:
 		case 'media_browser':
-			files_media_browser($_GET['limit'], $_GET['offset']);
+			files_media_browser(intval($_GET['limit']), intval($_GET['offset']));
 			break;
 			
         case 92: // pixlr (image editor) overlay remover
@@ -361,8 +371,17 @@ function run()
 		case 0: // list / search result
 		default:						
 			// show requested folder or search
-			$out = files_browser($_REQUEST['parent'], $_REQUEST['navigate-quicksearch']);
-            users_log::action($_REQUEST['fid'], intval($_REQUEST['parent']), 'list', '', json_encode($_REQUEST));
+			$out = files_browser(
+			    core_purify_string($_REQUEST['parent']),
+                core_purify_string($_REQUEST['navigate-quicksearch'])
+            );
+            users_log::action(
+                core_purify_string($_REQUEST['fid']),
+                intval($_REQUEST['parent']),
+                'list',
+                '',
+                json_encode($_REQUEST)
+            );
 			break;
 	}
 	
@@ -443,7 +462,7 @@ function files_browser($parent, $search="")
 	
 	$navibrowse->items($files);
 	$navibrowse->path($path, $parent, $previous);	
-	$navibrowse->setUrl('?fid='.$_REQUEST['fid'].'&parent=');
+	$navibrowse->setUrl('?fid='.core_purify_string($_REQUEST['fid']).'&parent=');
 	$navibrowse->onDblClick('navigate_files_dblclick');
 	$navibrowse->onRightClick('navigate_files_contextmenu');
 	$navibrowse->onMove('navigate_files_move');
@@ -694,7 +713,9 @@ function files_browser($parent, $search="")
 					{
 					    var op = "edit_folder";
 						if(!id)
+                        {
 						    op = "create_folder";
+                        }
 
 						$.ajax(
 						{
@@ -705,7 +726,7 @@ function files_browser($parent, $search="")
 								mime: $("#folder-mime").val(),
 								parent: "'.$parent.'"
 							},
-							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&id=" + id + "&op=" + op,
+							url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.core_purify_string($_REQUEST['fid']).'&act=json&id=" + id + "&op=" + op,
 							success: function(data)
 							{
 								$("#navigate-edit-folder").dialog("close");
@@ -734,7 +755,9 @@ function files_browser($parent, $search="")
 	        complete: function()
 	        {
                 if(typeof navigate_files_onload == "function")
+				{
 				    navigate_files_onload();
+                }
 	        }
 	    });
 	');
@@ -808,12 +831,12 @@ function files_item_properties($item)
                     $.ajax(
                     {
                         async: false,
-                        url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.$_REQUEST['fid'].'&act=json&op=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'",
+                        url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid='.core_purify_string($_REQUEST['fid']).'&act=json&op=delete&id='.$item->id.'&rtk='.$_SESSION['request_token'].'",
                         success: function(data)
                         {
                             if(data=="true" || data=="1")
                             {
-                                window.location.href = "?fid='.$_REQUEST['fid'].'&act=0&parent='.$item->parent.'";
+                                window.location.href = "?fid='.core_purify_string($_REQUEST['fid']).'&act=0&parent='.$item->parent.'";
                             }
                             else if(data!="")
                             {
@@ -945,9 +968,13 @@ function files_item_properties($item)
         function navigate_webuser_groups_visibility(access_value)
         {
             if(access_value==3)
+            {
                 $("#webuser-groups-field").show();
+            }
             else
+            {
                 $("#webuser-groups-field").hide();
+            }
         }
 
         navigate_webuser_groups_visibility('.$item->access.');
@@ -957,38 +984,41 @@ function files_item_properties($item)
             '<label>'.t(80, 'Permission').'</label>',
             $naviforms->selectfield('permission',
                 array(
-                        0 => 0,
-                        1 => 1,
-                        2 => 2
-                    ),
+                    0 => 0,
+                    1 => 1,
+                    2 => 2
+                ),
                 array(
-                        0 => t(69, 'Published'),
-                        1 => t(70, 'Private'),
-                        2 => t(81, 'Hidden')
-                    ),
+                    0 => t(69, 'Published'),
+                    1 => t(70, 'Private'),
+                    2 => t(81, 'Hidden')
+                ),
                 $item->permission
             )
         )
     );
 										
-	$navibars->add_tab_content_row(array(
-        '<label>'.t(65, 'Enabled').'</label>',
-		$naviforms->checkbox('enabled', $item->enabled),
+	$navibars->add_tab_content_row(
+	    array(
+            '<label>'.t(65, 'Enabled').'</label>',
+		    $naviforms->checkbox('enabled', $item->enabled),
         )
     );
 
 	$website_root = $website->absolute_path(true).'/object';
 	if(empty($website_root)) $website_root = NVWEB_OBJECT;
 
-	$navibars->add_tab_content_row(array(
-        '<label>'.t(153, 'Embed link').'</label>',
-		'<a href="'.$website_root.'?id='.$item->id.'&disposition=inline" target="_blank">'.$website_root.'?id='.$item->id.'&disposition=inline</a>'
+	$navibars->add_tab_content_row(
+	    array(
+            '<label>'.t(153, 'Embed link').'</label>',
+		    '<a href="'.$website_root.'?id='.$item->id.'&disposition=inline" target="_blank">'.$website_root.'?id='.$item->id.'&disposition=inline</a>'
         )
     );
 
-	$navibars->add_tab_content_row(array(
-        '<label>'.t(154, 'Download link').'</label>',
-        '<a href="'.$website_root.'?id='.$item->id.'&disposition=attachment">'.$website_root.'?id='.$item->id.'&disposition=attachment</a>'
+	$navibars->add_tab_content_row(
+	    array(
+            '<label>'.t(154, 'Download link').'</label>',
+            '<a href="'.$website_root.'?id='.$item->id.'&disposition=attachment">'.$website_root.'?id='.$item->id.'&disposition=attachment</a>'
         )
     );
 
@@ -1186,12 +1216,15 @@ function files_item_properties($item)
 		');				
 		*/	
 	
-		$navibars->add_tab_content_row(array(	'<label>'.t(272, 'Video').'</label>',
-												'<div id="video_'.$item->id.'" style="display:block;width:640px;height:360px;float:left;" class="video">
-													<a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a>
-												</div>',
-												'<script language="javascript" type="text/javascript" src="http://bitcast-b.bitgravity.com/player/6/functions.js"></script>'
-                                            ));
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(272, 'Video').'</label>',
+				'<div id="video_'.$item->id.'" style="display:block;width:640px;height:360px;float:left;" class="video">
+				    <a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a>
+				 </div>',
+				'<script language="javascript" type="text/javascript" src="http://bitcast-b.bitgravity.com/player/6/functions.js"></script>'
+            )
+        );
 	
 		$layout->add_script('         
 			var flashvars = {};
@@ -1210,13 +1243,16 @@ function files_item_properties($item)
 	{
 		$navibars->add_tab(t(31, "Audio"));
 
-		$navibars->add_tab_content_row(array(	'<label>'.t(31, 'Audio').'</label>',
-												'<div id="audio_'.$item->id.'" style="display:block;float:left;" class="audio">',
-												'<audio controls="controls">',
-												'	<source src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline" type="'.$item->mime.'" />',
-												'</audio>',
-												'</div>'
-                                            ));	
+		$navibars->add_tab_content_row(
+		    array(
+		        '<label>'.t(31, 'Audio').'</label>',
+				'<div id="audio_'.$item->id.'" style="display:block;float:left;" class="audio">',
+				'<audio controls="controls">',
+				'	<source src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline" type="'.$item->mime.'" />',
+				'</audio>',
+				'</div>'
+            )
+        );
 																						
 		$layout->add_script('         
 			$("#audio_'.$item->id.' audio").mediaelementplayer(
@@ -1253,7 +1289,7 @@ function files_media_browser($limit = 50, $offset = 0)
         2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" title="'.t(81, 'Hidden').'" />'
     );
 
-	$wid = $_REQUEST['website'];
+	$wid = intval($_REQUEST['website']);
     $ws = new website();
     if(empty($wid))
     {
@@ -1274,8 +1310,8 @@ function files_media_browser($limit = 50, $offset = 0)
 	// check if the chosen website allows sharing its files (or it's the current website)
 	if( $ws->id == $website->id || $ws->share_files_media_browser == '1' )
 	{
-		$media = (empty($_REQUEST['media'])? 'image' : $_REQUEST['media']);
-		$text = $_REQUEST['text'];
+		$media = (empty($_REQUEST['media'])? 'image' : core_purify_string($_REQUEST['media']));
+		$text = core_purify_string($_REQUEST['text']);
 
 		$out = array();
 

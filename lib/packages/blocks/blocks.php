@@ -207,8 +207,8 @@ function run()
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1 	=> $block_types_list[$dataset[$i]['type']],
-                            2 	=> '<div class="list-row" data-enabled="'.$dataset[$i]['enabled'].'">'.$dataset[$i]['title'].'</div>',
+							1 	=> core_special_chars($block_types_list[$dataset[$i]['type']]),
+                            2 	=> '<div class="list-row" data-enabled="'.$dataset[$i]['enabled'].'">'.core_special_chars($dataset[$i]['title']).'</div>',
 							3	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							4	=> $access[$dataset[$i]['access']],
 							5	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
@@ -258,11 +258,11 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
-				users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+				users_log::action('blocks', $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 			}
 			else
             {
-                users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+                users_log::action('blocks', $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
             }
 		
 			$out = blocks_form($item);
@@ -287,7 +287,7 @@ function run()
 					$layout->navigate_notification(t(56, 'Unexpected error.'), false);
 					$out = blocks_form($item);
 				}
-				users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title']);
+				users_log::action('blocks', $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title']);
 			}
 			break;
 
@@ -324,7 +324,7 @@ function run()
                     $out = blocks_form($item);
                 }
 
-                users_log::action($_REQUEST['fid'], $item->id, 'duplicate', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+                users_log::action('blocks', $item->id, 'duplicate', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
             }
             break;
 
@@ -408,11 +408,11 @@ function run()
                 {
                     $layout->navigate_notification($e->getMessage(), true, true);
                 }
-                users_log::action($_REQUEST['fid'], $item->id, 'save', $item->title, json_encode($_REQUEST));
+                users_log::action('blocks', $item->id, 'save', $item->title, json_encode($_REQUEST));
             }
             else if(!empty($_REQUEST['id']))
             {
-                users_log::action($_REQUEST['fid'], $item->id, 'edit', $item->title);
+                users_log::action('blocks', $item->id, 'edit', $item->title);
             }
 
 			$out = block_group_form($item);
@@ -437,7 +437,7 @@ function run()
                     $layout->navigate_notification(t(56, 'Unexpected error.'), false);
                     $out = block_group_form($item);
                 }
-                users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->title);
+                users_log::action('blocks', $item->id, 'remove', $item->title);
             }
 			break;
 
@@ -459,11 +459,11 @@ function run()
             {
                 $dataset[] = array(
                     'id' => $row['id'],
-                    'type' => $block_modes[$row['type']],
-                    'code' => $row['code'],
-                    'title' => $row['title'],
-                    'width' => $row['width'],
-                    'height' => $row['height']
+                    'type' => core_special_chars($block_modes[$row['type']]),
+                    'code' => core_special_chars($row['code']),
+                    'title' => core_special_chars($row['title']),
+                    'width' => core_special_chars($row['width']),
+                    'height' => core_special_chars($row['height'])
                 );
             }
 
@@ -496,7 +496,7 @@ function run()
 				}
 			}
 
-			if(empty($item))
+			if(empty($item) && !empty($_REQUEST['id']))
 			{
 				$layout->navigate_notification(t(599, "Sorry, can't display a theme block type info."));
 				$out = blocks_types_list();
@@ -510,14 +510,14 @@ function run()
                         $item = array('id' => $max_id + 1);
                     }
 
-					$item['type'] = $_REQUEST['type'];
-					$item['title'] = $_REQUEST['title'];
-	                $item['code'] = $_REQUEST['code'];
-					$item['width'] = $_REQUEST['width'];
-					$item['height'] = $_REQUEST['height'];
-					$item['order'] = $_REQUEST['order'];
-					$item['maximum'] = $_REQUEST['maximum'];
-					$item['notes'] = pquotes($_REQUEST['notes']);
+					$item['type'] = core_purify_string($_REQUEST['type']);
+					$item['title'] = core_purify_string($_REQUEST['title']);
+	                $item['code'] = core_purify_string($_REQUEST['code']);
+					$item['width'] = core_purify_string($_REQUEST['width']);
+					$item['height'] = core_purify_string($_REQUEST['height']);
+					$item['order'] = core_purify_string($_REQUEST['order']);
+					$item['maximum'] = core_purify_string($_REQUEST['maximum']);
+					$item['notes'] = core_purify_string($_REQUEST['notes']);
 
 					if(!is_null($position))
                     {
@@ -601,8 +601,7 @@ function run()
 
             echo json_encode($property);
 
-            session_write_close();
-            exit;
+            core_terminate();
             break;
 
         case 'block_property_save': // save property details
@@ -625,8 +624,7 @@ function run()
 
             echo json_encode($property);
 
-            session_write_close();
-            exit;
+            core_terminate();
             break;
 
         case 'block_property_remove': // remove property
@@ -669,10 +667,10 @@ function run()
 
         case 'block_group_extension_block_options':
             $status = null;
-            $block_group = $_REQUEST['block_group'];    // block_group type
-            $block_id = $_REQUEST['block_id'];          // extension block id (type)
-            $block_uid = $_REQUEST['block_uid'];        // extension block unique id
-            $block_extension = $_REQUEST['block_extension'];    // extension name
+            $block_group = core_purify_string($_REQUEST['block_group']);    // block_group type
+            $block_id = core_purify_string($_REQUEST['block_id']);          // extension block id (type)
+            $block_uid = core_purify_string($_REQUEST['block_uid']);        // extension block unique id
+            $block_extension = core_purify_string($_REQUEST['block_extension']);    // extension name
 
             if(isset($_REQUEST['form-sent']))
             {
@@ -1854,7 +1852,9 @@ function blocks_form($item)
                         $x = new stdClass();
                         $x->id = $v;
                         if(!empty($v))
+                        {
                             $x->text = substr($v, 3);
+                        }
                         return $x;
                     },
                     $fontawesome_classes
@@ -2150,7 +2150,7 @@ function blocks_form($item)
 		{
 			$table->addRow($block->id, array(
 				array('content' => $block->id, 'align' => 'left'),
-				array('content' => $block->title, 'align' => 'left'),
+				array('content' => core_special_chars($block->title), 'align' => 'left'),
                 array('content' => '<span class="checkbox-wrapper">
                                         <input type="checkbox" name="blocks-order-fixed['.$block->id.']" id="blocks-order-fixed['.$block->id.']" value="1" '.(($block->fixed=='1')? 'checked="checked"' : '').' />
                                         <label for="blocks-order-fixed['.$block->id.']" />
@@ -2176,8 +2176,6 @@ function blocks_form($item)
 function blocks_types_list()
 {
 	global $user;
-	global $DB;
-	global $website;
     global $events;
 	
 	$navibars = new navibars();
@@ -2243,8 +2241,6 @@ function blocks_types_list()
 function blocks_type_form($item)
 {
 	global $user;
-	global $DB;
-	global $website;
 	global $layout;
     global $events;
 	
@@ -2768,10 +2764,6 @@ function blocks_type_form($item)
 
 function block_groups_list()
 {
-    global $user;
-    global $DB;
-    global $website;
-
     $navibars = new navibars();
     $navitable = new navitable('block_groups_list');
 
@@ -2829,7 +2821,9 @@ function block_group_form($item)
     if(empty($item->id))
     {
         $navibars->add_actions(
-            array(	'<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'	)
+            array(
+                '<a href="#" onclick="navigate_tabform_submit(0);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/accept.png"> '.t(34, 'Save').'</a>'
+            )
         );
     }
     else
@@ -2905,7 +2899,7 @@ function block_group_form($item)
         }
 
         $navibars->add_tab_content($naviforms->hidden('blocks_group_selection', json_encode($item->blocks)));
-        $navibars->add_tab_content( $naviforms->hidden('blocks-order', "") );
+        $navibars->add_tab_content($naviforms->hidden('blocks-order', ""));
 
         $block_types = block::types();
         $lang = $website->languages_published[0];
@@ -3061,7 +3055,9 @@ function block_group_form($item)
         for($bg=0; $bg < count($theme->block_groups); $bg++)
         {
             if($theme->block_groups[$bg]->id == $item->code)
+            {
                 $block_group_blocks = $theme->block_groups[$bg]->blocks;
+            }
         }
 
         // blocks available in the accordion
@@ -3079,7 +3075,9 @@ function block_group_form($item)
 
                                 $classes = 'block_group_block ui-state-default';
                                 if(!empty($allowed_types) && !in_array($b->type, $allowed_types))
+                                {
                                     $classes .= ' ui-state-disabled hidden';
+                                }
 
                                 $html = '<div class="'.$classes.'" data-block-id="'.$b->id.'" data-block-type="block">'.
                                             '<div class="actions">
@@ -3468,7 +3466,6 @@ function block_group_extension_block_options($block_group, $block_extension, $bl
 {
     global $layout;
     global $website;
-    global $theme;
 
     if(empty($block_extension))
     {

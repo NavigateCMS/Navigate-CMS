@@ -32,9 +32,13 @@ class block
         foreach($this as $key => $val)
         {
             if(is_object($val))
+            {
                 $this->{$key} = clone $val;
+            }
             else if(is_array($val))
+            {
                 $this->{$key} = mb_unserialize(serialize($val));
+            }
         }
     }
 
@@ -98,13 +102,18 @@ class block
         // to get the array of groups first we remove the "g" character
         $groups = str_replace('g', '', $main->groups);
         $this->groups = explode(',', $groups);
-        if(!is_array($this->groups))  $this->groups = array($groups);
+        if(!is_array($this->groups))
+        {
+            $this->groups = array($groups);
+        }
 
         $block_classes = block::types();
         foreach($block_classes as $bc)
         {
             if($bc['code']==$this->type)
+            {
                 $this->class = $bc['type'];
+            }
         }
 	}
 
@@ -124,17 +133,19 @@ class block
 	{
 		global $website;
 
-		$this->type  			= $_REQUEST['type'];
+		$this->type  			= core_purify_string($_REQUEST['type']);
 		$this->date_published	= (empty($_REQUEST['date_published'])? '' : core_date2ts($_REQUEST['date_published']));	
 		$this->date_unpublish	= (empty($_REQUEST['date_unpublish'])? '' : core_date2ts($_REQUEST['date_unpublish']));	
 		$this->access			= intval($_REQUEST['access']);
 
         $this->groups	        = $_REQUEST['groups'];
         if($this->access < 3)
+        {
             $this->groups = array();
+        }
 
 		$this->enabled			= intval($_REQUEST['enabled']);	
-		$this->notes  			= pquotes($_REQUEST['notes']);
+		$this->notes  			= core_purify_string($_REQUEST['notes']);
 
         $this->categories 	= '';
         if(!empty($_REQUEST['categories']))
@@ -174,7 +185,7 @@ class block
             case 'poll':
                 foreach($website->languages_list as $lang)
                 {
-                    $this->dictionary[$lang]['title'] = $_REQUEST['title-'.$lang];
+                    $this->dictionary[$lang]['title'] = core_purify_string($_REQUEST['title-'.$lang]);
                     $this->trigger[$lang] = array();
 
                     $answers_order = explode("#", $_REQUEST['poll-answers-table-order-'.$lang]);
@@ -195,8 +206,8 @@ class block
                         }
 
                         $this->trigger[$lang][$pos] = array(
-                            'title' => $fval,
-                            'code' => $fcode,
+                            'title' => core_purify_string($fval),
+                            'code' => core_purify_string($fcode),
                             'votes' => intval($_REQUEST['poll-answers-table-votes-'.$lang][$fcode])
                         );
                     }
@@ -236,7 +247,9 @@ class block
                     foreach($fields_title as $field)
                     {
                         if(substr($key, 0, strlen($field.'-'))==$field.'-')
-                            $this->dictionary[substr($key, strlen($field.'-'))]['title'] = $value;
+                        {
+                            $this->dictionary[substr($key, strlen($field.'-'))]['title'] = core_purify_string($value);
+                        }
                     }
 
                     foreach($fields_trigger as $field)
@@ -260,11 +273,24 @@ class block
                                     $key_name = array_pop($key_parts);
 
                                     if(!is_array($value))
-										$value = array($value);
+                                    {
+                                        $value = array($value);
+                                    }
                                     $value = array_filter($value);
 
                                     if(empty($key_name))
+                                    {
                                         continue;
+                                    }
+
+                                    if($key_name=='title')
+                                    {
+                                        foreach($value as $vkey => $vval)
+                                        {
+                                            $vval = core_purify_string($vval);
+                                            $value[$vkey] = $vval;
+                                        }
+                                    }
 
                                     if($key_name=="link")
                                     {
@@ -281,7 +307,7 @@ class block
                                     break;
 
                                 default:
-                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = pquotes($value);
+                                    $this->trigger[$field][substr($key, strlen($field.'-'))] = core_purify_string($value);
                                     break;
                             }
                         }
@@ -290,7 +316,9 @@ class block
                     foreach($fields_action as $field)
                     {
                         if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                        {
                             $this->action[$field][substr($key, strlen($field.'-'))] = $value;
+                        }
                     }
                 }
             // end default case
@@ -306,7 +334,10 @@ class block
 							
 		for($i=0; $i < count($item); $i++)
 		{		
-			if(empty($item[$i])) continue;
+			if(empty($item[$i]))
+            {
+                continue;
+            }
 
             $block_is_fixed = ($fixed[$item[$i]]=='1'? '1' : '0');
 
@@ -318,7 +349,10 @@ class block
 				  AND website = '.$website->id
             );
 			
-			if(!$ok) return array("error" => $DB->get_last_error()); 
+			if(!$ok)
+            {
+                return array("error" => $DB->get_last_error());
+            }
 		}
 			
 		return true;	
@@ -328,9 +362,13 @@ class block
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -344,7 +382,9 @@ class block
 		if(!empty($user->id))
 		{
 			if($user->permission("blocks.delete") == 'false')
-				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            {
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 		}
 
 		if(!empty($this->id))
@@ -372,7 +412,6 @@ class block
                     )
                 );
             }
-
         }
 
 		return $affected_rows;
@@ -388,17 +427,25 @@ class block
 		if(!empty($user->id))
 		{
 			if( $user->permission("blocks.create") == 'false' )
-				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            {
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 		}
 
         if(empty($this->website))
+        {
             $this->website = $website->id;
+        }
 
         if(!is_array($this->categories))
+        {
             $this->categories = array();
+        }
 
         if(!is_array($this->exclusions))
+        {
             $this->exclusions = array();
+        }
 
         $groups = '';
         if(is_array($this->groups))
@@ -406,11 +453,15 @@ class block
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute(
             'INSERT INTO nv_blocks
@@ -485,15 +536,21 @@ class block
 		global $events;
 
         if(!is_array($this->categories))
+        {
             $this->categories = array();
+        }
 
         if(!is_array($this->exclusions))
+        {
             $this->exclusions = array();
+        }
 
 		if(!empty($user->id))
 		{
 			if($user->permission("blocks.edit") == 'false')
-				throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            {
+                throw new Exception(t(610, "Sorry, you are not allowed to execute this function."));
+            }
 		}
 
         $groups = '';
@@ -502,11 +559,15 @@ class block
             $this->groups = array_unique($this->groups); // remove duplicates
             $this->groups = array_filter($this->groups); // remove empty
             if(!empty($this->groups))
+            {
                 $groups = 'g'.implode(',g', $this->groups);
+            }
         }
 
         if($groups == 'g')
+        {
             $groups = '';
+        }
 
         $ok = $DB->execute(
             'UPDATE nv_blocks
@@ -551,7 +612,9 @@ class block
         );
 		
 		if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
 		webdictionary::save_element_strings('block', $this->id, $this->dictionary, $this->website);
 
@@ -610,7 +673,9 @@ class block
         $theme_blocks = json_decode(json_encode($theme->blocks), true);
 
         if(!is_array($theme_blocks))
+        {
             $theme_blocks = array();
+        }
         else
         {
             // retrieve more info for each block (title translation and block count)
@@ -639,13 +704,19 @@ class block
         for($d=0; $d < count($data); $d++)
         {
         	if(function_exists($theme->t))
-            	$data[$d]['title'] = $theme->t($data[$d]['title']);
+            {
+                $data[$d]['title'] = $theme->t($data[$d]['title']);
+            }
 
             if(empty($data[$d]['code']))
+            {
                 $data[$d]['code'] = $data[$d]['title'];
+            }
 
             if(empty($data[$d]['type']))
+            {
                 $data[$d]['type'] = 'block';
+            }
         }
 
 		// Obtain a list of columns
@@ -653,7 +724,9 @@ class block
 		$order = array();
 				
 		foreach($data as $key => $row)
-			$order[$key]  = $row[$orderby];
+        {
+            $order[$key]  = $row[$orderby];
+        }
 
 		// Sort the data with volume descending, edition ascending
 		// $data as the last parameter, to sort by the common key
@@ -697,7 +770,9 @@ class block
         );
 					
 		if(!$ok)
-			throw new Exception($DB->last_error());
+        {
+            throw new Exception($DB->last_error());
+        }
 							
 		return true;
 	}
@@ -722,9 +797,13 @@ class block
             if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
             {
                 if($raw)
+                {
                     $out = $this->properties[$p]->value;
+                }
                 else
+                {
                     $out = $this->properties[$p]->value;
+                }
 
                 break;
             }
@@ -790,7 +869,9 @@ class block
     {
         $rs = array();
         if(!is_array($block_links))
+        {
             $block_links = array();
+        }
 
         foreach($block_links as $link_key => $links_data)
         {
@@ -864,7 +945,9 @@ class block
             for($i=0; $i < count($bg->blocks); $i++)
             {
                 if(empty($bg->blocks[$i]->properties))
+                {
                     continue;
+                }
 
                 foreach($bg->blocks[$i]->properties as $bgbp)
                 {
@@ -876,10 +959,14 @@ class block
                     }
                 }
                 if(!empty($block))
+                {
                     break;
+                }
             }
             if(!empty($block))
+            {
                 break;
+            }
         }
 
         return $block;
@@ -901,7 +988,9 @@ class block
 
         // the block origin is not found, maybe was part of a missing extension
         if(empty($extension_blocks))
+        {
             return false;
+        }
 
         for($eb=0; $eb < count($extension_blocks); $eb++)
         {
@@ -940,7 +1029,9 @@ class block
 		$cols[] = 'b.notes' . $like;		
 
 		if(!empty($dict_ids))
-			$cols[] = 'b.id IN ('.implode(',', $dict_ids).')';
+        {
+            $cols[] = 'b.id IN ('.implode(',', $dict_ids).')';
+        }
 			
 		$where = ' AND ( ';	
 		$where.= implode( ' OR ', $cols); 
@@ -964,7 +1055,9 @@ class block
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
@@ -978,9 +1071,13 @@ class block
             $facss = array_map(function($k)
             {
                 if(strpos($k, '.')===0 && strpos($k, ':before')!==false)
+                {
                     return substr($k, 1, strpos($k, ':before')-1);
+                }
                 else
+                {
                     return NULL;
+                }
             }, $facss);
             $facss = array_filter($facss);
             $nv_fontawesome_classes = array_values($facss);
@@ -990,13 +1087,15 @@ class block
         return $nv_fontawesome_classes;
     }
 
-	// TODO: add other font icon libraries (ionicons, etc.)
+	// TODO: add more font icon libraries (ionicons, etc.)
 
     public static function __set_state(array $obj)
 	{
 		$tmp = new block();
 		foreach($obj as $key => $val)
-			$tmp->$key = $val;
+        {
+            $tmp->$key = $val;
+        }
 
 		return $tmp;
 	}

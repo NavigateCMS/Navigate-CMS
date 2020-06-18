@@ -120,15 +120,14 @@ function run()
 
 						$message = core_string_clean($dataset[$i]['message']);
 						$message = core_string_cut($message, 60, '&hellip;');
-												
-						
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> $object_types[$dataset[$i]['object_type']],
 							2	=> $title,
 							3	=> core_ts2date($dataset[$i]['date_created'], true),
-							4	=> (empty($dataset[$i]['user'])? $dataset[$i]['email'] : $webuser),
-							5 	=> strip_tags($message),
+							4	=> core_special_chars((empty($dataset[$i]['user'])? $dataset[$i]['email'] : $webuser)),
+							5 	=> core_special_chars($message),
 							6	=> $permissions[$dataset[$i]['status']]
 						);
 					}

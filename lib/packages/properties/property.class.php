@@ -184,7 +184,9 @@ class property
             else if($source=='template')
             {
                 if(empty($ws_theme->templates))
+                {
                     $ws_theme->templates = array();
+                }
 
                 foreach($ws_theme->templates as $tt)
                 {
@@ -209,7 +211,9 @@ class property
                 }
 
                 if(empty($theme_option->element) || $theme_option->element == 'element')
+                {
                     $theme_option->element = 'item';
+                }
             }
         }
 
@@ -1086,7 +1090,9 @@ class property
                 );
                 $object_id = $block_group_id;
                 if(empty($block_group_id))
+                {
                     $object_id = 0;
+                }
             }
 
             $object_type = "block_group-extension-block";
@@ -1227,7 +1233,12 @@ class property
                         $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
                     }
 
-                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$lang];
+                    if($property->type == 'text')
+                    {
+                        $property_value = core_purify_string($_REQUEST['property-'.$property->id.'-'.$lang]);
+                    }
+
+                    $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $property_value;
                 }
             }
             else if($property->type == 'link')
@@ -1282,10 +1293,11 @@ class property
    	{
    		global $DB;
    		global $website;
-        global $theme;
 
         if(empty($ws))
+        {
             $ws = $website;
+        }
 
    		$dictionary = array();
 
@@ -1808,7 +1820,7 @@ class property
               AND value = :value',
             'object',
             array(
-                ':proeprty_id' => $property,
+                ':property_id' => $property,
                 ':value' => $value
             )
         );

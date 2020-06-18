@@ -66,25 +66,29 @@ class comment
 	
 	public function load_from_post()
 	{
-		$this->object_type	= $_REQUEST['comment-object_type'];
-		$this->object_id	= $_REQUEST['comment-object_id'];
+		$this->object_type	= core_purify_string($_REQUEST['comment-object_type']);
+		$this->object_id	= intval($_REQUEST['comment-object_id']);
 		$this->user			= $_REQUEST['comment-user'];
-		$this->name			= $_REQUEST['comment-name'];
-		$this->email		= $_REQUEST['comment-email'];
-		$this->url		    = $_REQUEST['comment-url'];
+		$this->name			= core_purify_string($_REQUEST['comment-name']);
+		$this->email		= core_purify_string($_REQUEST['comment-email']);
+		$this->url		    = core_purify_string($_REQUEST['comment-url']);
 		$this->status		= intval($_REQUEST['comment-status']);
 		$this->message		= $_REQUEST['comment-message'];
-		$this->reply_to		= $_REQUEST['comment-reply_to'];
-		$this->subscribed	= $_REQUEST['comment-subscribed'];
+		$this->reply_to		= intval($_REQUEST['comment-reply_to']);
+		$this->subscribed	= intval($_REQUEST['comment-subscribed']);
 		$this->date_created	= core_date2ts($_REQUEST['comment-date_created']);
 	}
 	
 	public function save()
 	{
 		if(!empty($this->id))
-		  return $this->update();
+        {
+            return $this->update();
+        }
 		else
-		  return $this->insert();
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -132,13 +136,19 @@ class comment
 		$message = htmlentities($this->message, ENT_COMPAT, 'UTF-8', true);
 
         if(empty($this->date_created))
+        {
             $this->date_created = core_time();
+        }
 
         if(empty($this->ip))
+        {
             $this->ip = core_ip();
+        }
 
         if(empty($this->website))
+        {
             $this->website = $website->id;
+        }
 
         $ok = $DB->execute('
  			INSERT INTO nv_comments
@@ -156,9 +166,9 @@ class comment
 				":object_type" => value_or_default($this->object_type, "item"),
 				":object_id" => value_or_default($this->object_id, 0),
 				":user" => value_or_default($this->user, 0),
-				":name" => empty($this->name)? "" : $this->name,
-				":email" => empty($this->email)? "" : $this->email,
-				":url" => empty($this->url)? "" : $this->url,
+				":name" => value_or_default($this->name, ""),
+				":email" => value_or_default($this->email, ""),
+				":url" => value_or_default($this->url, ""),
 				":ip" => $this->ip,
 				":date_created" => $this->date_created,
 				":date_modified" => 0,
@@ -171,7 +181,9 @@ class comment
 		);
 
 		if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 
@@ -221,9 +233,9 @@ class comment
                 ":object_type" => value_or_default($this->object_type, "item"),
                 ":object_id" => value_or_default($this->object_id, 0),
 				":user" => value_or_default($this->user, 0),
-				":name" => empty($this->name)? "" : $this->name,
-				":email" => empty($this->email)? "" : $this->email,
-				":url" => empty($this->url)? "" : $this->url,
+				":name" => value_or_default($this->name, ""),
+				":email" => value_or_default($this->email, ""),
+				":url" => value_or_default($this->url, ""),
 				":date_created" => $this->date_created,
 				":date_modified" => core_time(),
 				":last_modified_by" => value_or_default($user->id, 0),
@@ -236,7 +248,9 @@ class comment
 		);
 		
 		if(!$ok)
-		    throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
         if(method_exists($events, 'trigger'))
         {
@@ -285,7 +299,9 @@ class comment
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
@@ -313,7 +329,8 @@ class comment
         $count = $DB->query_single(
 	        'count(*) as total',
 	        'nv_comments',
-	        'website = '.intval($website->id).' AND status = 3'
+	        'website = '.intval($website->id).' AND 
+	               status = 3'
         );
 
         $ok = $DB->execute('
@@ -323,7 +340,9 @@ class comment
         ');
 
         if($ok)
+        {
             return $count;
+        }
     }
 
     public function author_name()
@@ -335,7 +354,9 @@ class comment
             return $w->username;
         }
         else
+        {
             return $this->name;
+        }
     }
 
     public function author_avatar()
@@ -362,7 +383,9 @@ class comment
         $out = 0;
 
         if(!empty($this->depth)) // already calculated!
+        {
             return $this->depth;
+        }
 
         if(!empty($this->reply_to))
         {
@@ -411,7 +434,9 @@ class comment
                 if(!empty($replies))
                 {
                     foreach($replies as $reply)
+                    {
                         $out[] = $reply;
+                    }
                 }
             }
         }
@@ -432,9 +457,13 @@ class comment
         if(!empty($this->object_id))
         {
             if($this->object_type == "item")
+            {
                 $out = $DB->query_single('template', 'nv_items', 'id=' . $this->object_id);
+            }
             else if($this->object_type == "product")
+            {
                 $out = $DB->query_single('template', 'nv_products', 'id=' . $this->object_id);
+            }
         }
 
 
@@ -495,7 +524,9 @@ class comment
         for($p=0; $p < count($this->properties); $p++)
         {
             if($this->properties[$p]->name==$property_name || $this->properties[$p]->id==$property_name)
+            {
                 return true;
+            }
         }
         return false;
     }
@@ -511,9 +542,13 @@ class comment
             $lang = $website->languages_published[0];
 
             if($this->object_type == "item")
+            {
                 $item = new item();
+            }
             else
+            {
                 $item = new product();
+            }
 
             $item->load($this->object_id);
 
@@ -563,11 +598,15 @@ class comment
                         // compose and send email
                         $content_title = $item->dictionary[$swu->language]['title'];
                         if (empty($content_title))
+                        {
                             $content_title = $item->dictionary[$lang]['title'];
+                        }
 
                         $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $content_title . ']';
                         if($this->email == $swu->email)
+                        {
                             $subject = $website->name . ' | ' . $ulang->t(780, 'You comment has been published') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
+                        }
 
                         $content = '<a href="' . nvweb_source_url('item', $item->id, $swu->language) . '" target="_blank">' . $content_title . '</a>';
                         $comment_link = '<a href="' . nvweb_source_url('item', $item->id, $swu->language) . '#comment-'.$this->id.'" target="_blank">' . $ulang->t(779, "Read more") . '</a>';
@@ -616,7 +655,9 @@ class comment
                         // send email
                         $subject = $website->name . ' | ' . $ulang->t(387, 'New comment') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
                         if($this->email == $subscriber->email)
+                        {
                             $subject = $website->name . ' | ' . $ulang->t(780, 'You comment has been published') . ' [' . $item->dictionary[$ulang->code]['title'] . ']';
+                        }
 
                         $content = '<a href="' . nvweb_source_url('item', $item->id, $ulang->code) . '" target="_blank">' . $item->dictionary[$ulang->code]['title'] . '</a>';
                         $comment_link = '<a href="' . nvweb_source_url('item', $item->id, $website->languages_published[0]) . '#comment-'.$this->id.'" target="_blank">' . $ulang->t(779, "Read more") . '</a>';
@@ -718,7 +759,9 @@ class comment
 
         $out = $DB->result('total');
         if(is_array($out))
+        {
             $out = $out[0];
+        }
 
         return $out;
     }
@@ -727,7 +770,9 @@ class comment
 	{
 		$tmp = new comment();
 		foreach($obj as $key => $val)
-			$tmp->$key = $val;
+        {
+            $tmp->$key = $val;
+        }
 
 		return $tmp;
 	}

@@ -153,24 +153,23 @@ class file
 	
 	public function load_from_post()
 	{
-		global $DB;
         global $website;
 		
 		// ? ==> should be changed?
 	
 		//$this->parent		= $_REQUEST['parent'];
-		$this->name			= $_REQUEST['name'];
+		$this->name			= core_purify_string($_REQUEST['name']);
 		//$this->size			= $_REQUEST['size'];	// ?
-        $this->type			= $_REQUEST['type'];
-		$this->mime			= $_REQUEST['mime'];
+        $this->type			= core_purify_string($_REQUEST['type']);
+		$this->mime			= core_purify_string($_REQUEST['mime']);
 
         if(isset($_REQUEST['width']))
         {
-            $this->width		= $_REQUEST['width'];
+            $this->width		= core_purify_string($_REQUEST['width']);
         }
         if(isset($_REQUEST['height']))
         {
-            $this->height		= $_REQUEST['height'];
+            $this->height		= core_purify_string($_REQUEST['height']);
         }
 
 		$this->date_added	= core_time();
@@ -198,8 +197,8 @@ class file
                 break;
             }
 
-            $this->title[$lcode]	= $_REQUEST['title-'.$lcode];
-            $this->description[$lcode]	= $_REQUEST['description-'.$lcode];
+            $this->title[$lcode]	= core_purify_string($_REQUEST['title-'.$lcode]);
+            $this->description[$lcode]	= core_purify_string($_REQUEST['description-'.$lcode]);
         }
 	}
 
@@ -210,7 +209,7 @@ class file
         // check cache before trying to download oembed info
         if($cache)
         {
-            $cache = 30 * 24 * 60; // 30 days
+            $cache = 15 * 24 * 60; // 15 days
         }
         else
         {
@@ -270,7 +269,7 @@ class file
 
         if($cache)
         {
-            $cache = 30 * 24 * 60; // 30 days
+            $cache = 15 * 24 * 60; // 15 days
         }
         else
         {
@@ -442,7 +441,9 @@ class file
 						);
 
 			if($DB->get_affected_rows() == 1 && $this->type != 'folder')
-				@unlink(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$this->id);
+            {
+                @unlink(NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$this->id);
+            }
 		}
 		
 		return $DB->get_affected_rows();		

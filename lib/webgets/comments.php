@@ -4,10 +4,8 @@ require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
 function nvweb_comments($vars=array())
 {
 	global $website;
-	global $DB;
 	global $current;
 	global $webgets;
-	global $dictionary;
 	global $webuser;
 	global $theme;
     global $events;
