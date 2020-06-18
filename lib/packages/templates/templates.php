@@ -174,7 +174,7 @@ function run()
 				else
 				{
 					$layout->navigate_notification(t(56, 'Unexpected error.'), false);
-					$out = webdictionary_list();
+					$out = templates_list();
 				}
 				
 				users_log::action($_REQUEST['fid'], $item->id, $item->title, 'remove');
