@@ -821,7 +821,7 @@ class naviforms
 				
 				automatic_uploads: true,
 			    paste_data_images: true,
-				images_upload_url: "navigate_upload.php?engine=tinymce&session_id='.session_id().'",
+				images_upload_url: "navigate_upload.php?engine=tinymce&_nv_csrf_token='.$_SESSION['csrf_token'].'&session_id='.session_id().'",
 				
 				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px 42px 48px 56px 64px", 
                 
@@ -1587,7 +1587,7 @@ class naviforms
         return $out;
     }
 
-    public static function check_csrf_token($variable_name='_nv_csrf_token')
+    public static function check_csrf_token($variable_name='_nv_csrf_token', $throw_exception=true)
     {
         if($variable_name == 'header')
         {
@@ -1595,14 +1595,18 @@ class naviforms
         }
         else
         {
-            $token_sent = $_POST[$variable_name];
+            $token_sent = $_REQUEST[$variable_name];
         }
 
         $csfr_check = @hash_equals($_SESSION['csrf_token'], $token_sent);
 
         if(!$csfr_check)
         {
-            throw new Exception(t(344, "Security error"));
+            if($throw_exception)
+            {
+                throw new Exception(t(344, "Security error"));
+            }
+            return false;
         }
 
         return true;

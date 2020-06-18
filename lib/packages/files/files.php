@@ -24,6 +24,14 @@ function run()
                     $tmp_name = base64_encode($_REQUEST['name']);
                 }
 
+                $tmp_name = trim(str_replace(array('..', '\\', '/', '//', ' '), '', $tmp_name));
+                $tmp_name = rtrim($tmp_name, ".\t\n\r\0\x0B");
+                $tmp_name = ltrim($tmp_name, ".\t\n\r\0\x0B");
+                if(PHP_MAJOR_VERSION >= 7)
+                {
+                    $tmp_name = URLify::filter($tmp_name, 128, 'en', true, false, true, '-');
+                }
+
                 $file = file::register_upload(
                     $tmp_name,
                     $_REQUEST['name'],
@@ -102,7 +110,7 @@ function run()
                             $item = new file();
                             $item->load($_REQUEST['item'][$i]);
                             $item->parent = core_purify_string($_REQUEST['folder']);
-                            $ok = $ok & $item->update();
+                            $ok = $ok && $item->update();
                         }
                         echo json_encode(($ok? true : false));
                     }

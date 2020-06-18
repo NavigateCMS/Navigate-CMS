@@ -15,8 +15,6 @@ require_once('cfg/globals.php');
 require_once('cfg/common.php');
 require_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
 
-//file_put_contents(NAVIGATE_PATH . '/private/debug.txt', print_r($_REQUEST, true).print_r($_FILES, true));
-
 /* global variables */
 global $DB;
 global $user;
@@ -34,15 +32,13 @@ if(!$DB->connect())
 // session checking
 if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 {
-    session_write_close();
-	$DB->disconnect();
-	die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "No user logged in."}, "id" : "id"}');
+	echo '{"jsonrpc": "2.0", "error": {"code": 100, "message": "No user logged in."}, "id": "id"}';
+	core_terminate();
 }
-else if(!naviforms::check_csrf_token('_nv_csrf_token'))
+else if(!naviforms::check_csrf_token('_nv_csrf_token', false))
 {
-    session_write_close();
-    $DB->disconnect();
-    die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Security error."}, "id" : "id"}');
+    echo '{"jsonrpc": "2.0", "error": {"code": 100, "message": "Security error."}, "id": "id"}';
+    core_terminate();
 }
 else
 {
@@ -258,7 +254,6 @@ if($user->permission("files.upload")=="true")
                 echo json_encode(false);
             }
 
-            $DB->disconnect();
             core_terminate();
             break;
 
@@ -323,18 +318,20 @@ if($user->permission("files.upload")=="true")
                     }
                     else
                     {
-                        die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+                        echo '{"jsonrpc": "2.0", "error": {"code": 102, "message": "Failed to open output stream."}, "id": "id"}';
+                        core_terminate();
                     }
                 }
                 else
                 {
-                    die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
+                    echo '{"jsonrpc": "2.0", "error": {"code": 103, "message": "Failed to move uploaded file."}, "id": "id"}';
+                    core_terminate();
                 }
             }
             else
             {
                 // Open temp file
-                $out = fopen($targetDir.DIRECTORY_SEPARATOR.$fileName, $chunk == 0 ? "wb" : "ab");
+                $out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
                 if($out)
                 {
                     // Read binary input stream and append it to temp file
@@ -349,19 +346,22 @@ if($user->permission("files.upload")=="true")
                     }
                     else
                     {
-                        die('{"jsonrpc" : "2.0", "error" : {"code": 101, "message": "Failed to open input stream."}, "id" : "id"}');
+                        echo '{"jsonrpc": "2.0", "error": {"code": 101, "message": "Failed to open input stream."}, "id": "id"}';
+                        core_terminate();
                     }
 
                     fclose($out);
                 }
                 else
                 {
-                    die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
+                    echo '{"jsonrpc": "2.0", "error": {"code": 102, "message": "Failed to open output stream."}, "id": "id"}';
+                    core_terminate();
                 }
             }
 
             // Return JSON-RPC response
-            die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+            echo '{"jsonrpc" : "2.0", "result" : null, "id" : "id"}';
+            core_terminate();
             break;
     }
 }

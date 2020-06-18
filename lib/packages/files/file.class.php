@@ -1484,15 +1484,8 @@ class file
         }
 
         // is the filename already absolute?
-        // or the file is already uploaded into files folder?
-        if(file_exists($tmp_name))
-        {
-            $tmp_file_path = $tmp_name;
-        }
-        else
-        {
-            $tmp_file_path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name;
-        }
+        // is the file already uploaded into private files folder?
+        $tmp_file_path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$tmp_name;
 
         if(file_exists($tmp_file_path))
         {
@@ -1504,9 +1497,9 @@ class file
             $target_name = rawurldecode($target_name);
 
 	        // check if the parent folder given is valid in the current website
-	        if($parent > 0)
+	        if(!empty($parent) && intval($parent) > 0)
 	        {
-		        $DB->query('SELECT id FROM nv_files WHERE website = '.$website->id.' AND id = '.$parent);
+		        $DB->query('SELECT id FROM nv_files WHERE website = '.$website->id.' AND id = '.intval($parent));
 		        $rs = $DB->result('id');
 		        if(empty($rs) || $rs[0] != $parent) // parent folder invalid, put file in the root folder
                 {
