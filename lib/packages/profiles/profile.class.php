@@ -11,6 +11,7 @@ class profile
 	public function load($id)
 	{
 		global $DB;
+
 		if($DB->query('SELECT * FROM nv_profiles WHERE id = '.intval($id)))
 		{
 			$data = $DB->result();
@@ -20,21 +21,22 @@ class profile
 	
 	public function load_from_resultset($rs)
 	{
-		global $DB;
-		
 		$main = $rs[0];
 		
 		$this->id      		= $main->id;
 		$this->name		    = $main->name;
 		$this->description  = $main->description;
 		$this->menus		= json_decode($main->menus);
-		if(empty($this->menus))	$this->menus = array();
+		if(empty($this->menus))
+        {
+            $this->menus = array();
+        }
 	}
 	
 	public function load_from_post()
 	{
-		$this->name			= $_REQUEST['name'];
-		$this->description  = $_REQUEST['description'];
+		$this->name			= core_purify_string($_REQUEST['name']);
+		$this->description  = core_purify_string($_REQUEST['description']);
 
 		// carregar menús associats		
 		$menus = explode('#', $_REQUEST['profile-menu']);
@@ -42,7 +44,9 @@ class profile
 		foreach($menus as $menu)
 		{
 			if(!empty($menu))
-				$this->menus[] = $menu;
+            {
+                $this->menus[] = $menu;
+            }
 		}
 	}
 
@@ -51,9 +55,13 @@ class profile
 		global $DB;
 
 		if(!empty($this->id))
-		  return $this->update();
+        {
+            return $this->update();
+        }
 		else
-		  return $this->insert();
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -90,7 +98,9 @@ class profile
         );
 				
 		if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 
@@ -114,7 +124,9 @@ class profile
 		);
 
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 
 		return true;
 	}
@@ -142,7 +154,9 @@ class profile
 		$rs = $DB->result();
 		$profiles = array();
 		foreach($rs as $row)
-			$profiles[$row->id] = $row->name;	
+        {
+            $profiles[$row->id] = $row->name;
+        }
 			
 		return $profiles;
 	}
@@ -157,7 +171,9 @@ class profile
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }

@@ -77,16 +77,14 @@ function run()
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
 					
-					//echo $DB->get_last_error();
-					
 					$out = array();					
 											
 					for($i=0; $i < count($dataset); $i++)
 					{													
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> $dataset[$i]['codename'],
-							2	=> '<img src="'.NAVIGATE_URL.'/'.$dataset[$i]['icon'].'" />',		
+							1	=> core_special_chars($dataset[$i]['codename']),
+							2	=> '<img src="'.NAVIGATE_URL.'/'.value_or_default($dataset[$i]['icon'], 'img/transparent.gif').'" />',
 							3 	=> '['.$dataset[$i]['lid'].'] '.t($dataset[$i]['lid'], $dataset[$i]['lid']),							
 							4	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />')
 						);
@@ -277,14 +275,16 @@ function functions_form($item)
 	    array(
 	        '<label>'.t(242, 'Icon').'</label>',
 			$naviforms->textfield('icon', $item->icon),
-			'<img src="'.NAVIGATE_URL.'/'.$item->icon.'" align="absmiddle" />'
+			'<img src="'.NAVIGATE_URL.'/'.value_or_default($item->icon, 'img/transparent.gif').'" align="absmiddle" />'
         )
     );
+
+	debugger::bar_dump($item);
 
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>#'.t(67, 'Title').' (lid)</label>',
-			$naviforms->textfield('lid', $item->lid),
+			$naviforms->decimalfield('lid', $item->lid, 0),
 			(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.t($item->lid, $item->lid).'</strong></em>')
         )
     );
@@ -415,8 +415,14 @@ function functions_form($item)
 			var cat = $("#menus_functions_category_select").val();
 			$("#sortable_unassigned li").each(function()
 			{
-				if($(this).attr("category")==cat)	$(this).show();
-				else								$(this).hide();
+				if($(this).attr("category")==cat)	
+				{
+				    $(this).show();
+                }
+				else								
+				{
+				    $(this).hide();
+                }
 			});
 		}
 		

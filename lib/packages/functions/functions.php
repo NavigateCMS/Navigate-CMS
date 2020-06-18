@@ -85,9 +85,9 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> $dataset[$i]['category'],
-							2	=> $dataset[$i]['codename'],
-							3	=> '<img src="'.NAVIGATE_URL.'/'.$dataset[$i]['icon'].'" />',		
-							4 	=> '['.$dataset[$i]['lid'].'] '.t($dataset[$i]['lid'], $dataset[$i]['lid']),							
+							2	=> core_special_chars($dataset[$i]['codename']),
+							3	=> '<img src="'.NAVIGATE_URL.'/'.value_or_default($dataset[$i]['icon'], 'img/transparent.gif').'" />',
+							4 	=> '['.$dataset[$i]['lid'].'] '.core_special_chars(t($dataset[$i]['lid'], $dataset[$i]['lid'])),
 							5	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />')
 						);
 					}
@@ -280,15 +280,15 @@ function functions_form($item)
 	    array(
 	        '<label>'.t(242, 'Icon').'</label>',
 			$naviforms->textfield('icon', $item->icon),
-			'<img src="'.NAVIGATE_URL.'/'.$item->icon.'" align="absmiddle" />'
+			'<img src="'.NAVIGATE_URL.'/'.value_or_default($item->icon, 'img/transparent.gif').'" align="absmiddle" />'
         )
     );
 
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>#'.t(67, 'Title').' (lid)</label>',
-			$naviforms->textfield('lid', $item->lid),
-			(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.t($item->lid, $item->lid).'</strong></em>')
+			$naviforms->decimalfield('lid', $item->lid, 0),
+			(empty($item->lid)? '' : '<em>'.$item->lid.': <strong>'.core_special_chars(t($item->lid, $item->lid)).'</strong></em>')
         )
     );
 										

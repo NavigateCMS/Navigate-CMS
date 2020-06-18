@@ -15,15 +15,10 @@ function run()
 			{
                 naviforms::check_csrf_token();
 
-				// update user	
-				$user->language = $_REQUEST['user-language'];
-				$user->email = $_REQUEST['user-email'];
-				$user->decimal_separator = $_REQUEST['user-decimal_separator'];
-				$user->timezone = $_REQUEST['user-timezone'];
-				$user->date_format = $_REQUEST['user-date_format'];
-				if(!empty($_REQUEST['user-password']))
+                $user->load_from_settings_post();
+                if(!empty($_REQUEST['user-password']))
                 {
-                    $user->set_password($_REQUEST['user-password']);
+                    $this->set_password($_REQUEST['user-password']);
                 }
 				$user->update();
                 $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
@@ -146,6 +141,21 @@ function settings_form()
 	    array(
 	        '<label>'.t(49, 'Decimal separator').'</label>',
 			$select
+        )
+    );
+
+    // Thousands separator
+    $data = array(
+        0	=> json_decode('{"code": "", "name": "('.mb_strtolower(t(581, "None")).') ---> 1234567"}'),
+        1	=> json_decode('{"code": ",", "name": ", ---> 1,234,567"}'),
+        2	=> json_decode('{"code": ".", "name": ". ---> 1.234.567"}'),
+    );
+
+    $select = $naviforms->select_from_object_array('user-thousands_separator', $data, 'code', 'name', $item->thousands_separator);
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(644, 'Thousands separator').'</label>',
+            $select
         )
     );
 											

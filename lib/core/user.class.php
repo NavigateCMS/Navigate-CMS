@@ -156,6 +156,21 @@ class user
 	}
 
 	/**
+	 * Update the user settings with the values sent by a form.
+	 * It also updates the password only if a new one is sent.
+	 *
+	 */
+	public function load_from_settings_post()
+	{
+		$this->email			 = core_purify_string($_REQUEST['user-email']);
+		$this->language			 = $_REQUEST['user-language'];
+		$this->timezone			 = $_REQUEST['user-timezone'];
+		$this->decimal_separator    = $_REQUEST['user-decimal_separator'];
+		$this->thousands_separator  = $_REQUEST['user-thousands_separator'];
+		$this->date_format		 = $_REQUEST['user-date_format'];
+	}
+
+	/**
 	 * Set or update a 7-day cookie to let the user enter Navigate CMS without presenting the sign in form. 
 	 */
     public function set_cookie()

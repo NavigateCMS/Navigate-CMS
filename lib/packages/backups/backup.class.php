@@ -49,20 +49,20 @@ class backup
 	
 	public function load_from_post()
 	{
-		global $DB;
-		
-		$this->title  		= $_REQUEST['title'];
-		$this->notes 		= $_REQUEST['notes'];
+		$this->title  		= core_purify_string($_REQUEST['title']);
+		$this->notes 		= core_purify_string($_REQUEST['notes']);
 	}	
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -139,7 +139,9 @@ class backup
 		);
 							  
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}		
@@ -147,9 +149,6 @@ class backup
 	
 	public function quicksearch($text)
 	{
-		global $DB;
-		global $website;
-		
 		$like = ' LIKE '.protect('%'.$text.'%');
 				
 		// all columns to look for	
@@ -204,7 +203,9 @@ class backup
         );
 
         if(!empty($status[$code]))
+        {
             $code = $status[$code];
+        }
 
         return $code;
     }
@@ -216,11 +217,15 @@ class backup
 
         // protection against double process call
         if(!empty($this->status))
+        {
             core_terminate();
+        }
 
         // prepare temporary folder
         if(!file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/backups'))
+        {
             @mkdir(NAVIGATE_PRIVATE.'/'.$website->id.'/backups', 0744, true);
+        }
 
         $zip = new ZipArchive();
 
@@ -238,6 +243,7 @@ class backup
 
         // database
         //--> call the exporter (backup) of each object type
+        // TODO: add shopping related exporters!
         $objects = array(
             'block', // blocks
             'item',
@@ -378,7 +384,7 @@ class backup
 
     public function restore()
     {
-        
+        // TODO
     }
 }
 

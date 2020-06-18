@@ -50,10 +50,10 @@ class menu
 	
 	public function load_from_post()
 	{
-		$this->codename		= $_REQUEST['codename'];
-		$this->icon		    = $_REQUEST['icon'];
-   		$this->lid		    = $_REQUEST['lid']; 
-   		$this->notes	    = $_REQUEST['notes']; 		   
+		$this->codename		= core_purify_string($_REQUEST['codename']);
+		$this->icon		    = core_purify_string($_REQUEST['icon']);
+   		$this->lid		    = intval($_REQUEST['lid']);
+   		$this->notes	    = core_purify_string($_REQUEST['notes']);
 		$this->enabled		= ($_REQUEST['enabled']=='1'? '1' : '0');
 		
 		// load associated functions

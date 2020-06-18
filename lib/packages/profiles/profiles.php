@@ -5,7 +5,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php'
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	
@@ -77,16 +76,14 @@ function run()
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
-					
-					//echo $DB->get_last_error();
-					
+
 					$out = array();					
 											
 					for($i=0; $i < count($dataset); $i++)
 					{													
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> $dataset[$i]['name']
+							1	=> core_special_chars($dataset[$i]['name'])
 						);
 					}
 									
@@ -276,20 +273,29 @@ function profiles_form($item)
 	$sortable_unassigned[] = '<ul id="sortable_unassigned" class="connectedSortable">';	
 	
 	// already included menus on the profile
-	foreach($item->menus as $m)
-	{
-		foreach($menus as $menu)
-		{		
-			if($menu->id == $m)
-			{
-				if($menu->enabled=='1')
-					$sortable_profile[] = '<li class="ui-state-highlight" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
-				else
-					$sortable_profile[] = '<li class="ui-state-highlight ui-state-disabled" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
-			}			
-		}
-	}
-	
+    if(empty($item->menus))
+    {
+        $item->menus = array();
+    }
+
+    foreach($item->menus as $m)
+    {
+        foreach($menus as $menu)
+        {
+            if($menu->id == $m)
+            {
+                if($menu->enabled=='1')
+                {
+                    $sortable_profile[] = '<li class="ui-state-highlight" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
+                }
+                else
+                {
+                    $sortable_profile[] = '<li class="ui-state-highlight ui-state-disabled" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
+                }
+            }
+        }
+    }
+
 	// the other menus not included on the profile
     if(is_array($menus))
     {
@@ -298,9 +304,13 @@ function profiles_form($item)
             if(!in_array($menu->id, $item->menus))
             {
                 if($menu->enabled=='1')
+                {
                     $sortable_unassigned[] = '<li class="ui-state-default" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
+                }
                 else
+                {
                     $sortable_unassigned[] = '<li class="ui-state-default ui-state-disabled" value="'.$menu->id.'" title="'.$menu->notes.'"><img src="'.NAVIGATE_URL.'/'.$menu->icon.'" align="absmiddle" /> '.t($menu->lid, $menu->lid).'</li>';
+                }
             }
         }
     }

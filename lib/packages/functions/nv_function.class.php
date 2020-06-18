@@ -33,22 +33,24 @@ class nv_function
 	
 	public function load_from_post()
 	{
-		$this->category     = $_REQUEST['category'];
-		$this->codename		= $_REQUEST['codename'];
-		$this->icon		    = $_REQUEST['icon'];
-   		$this->lid		    = $_REQUEST['lid'];    
+		$this->category     = core_purify_string($_REQUEST['category']);
+		$this->codename		= core_purify_string($_REQUEST['codename']);
+		$this->icon		    = core_purify_string($_REQUEST['icon']);
+   		$this->lid		    = intval($_REQUEST['lid']);
 		$this->enabled		= ($_REQUEST['enabled']=='1'? '1' : '0');
 	}	
 	
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
-		  return $this->update();
+        {
+            return $this->update();
+        }
 		else
-		  return $this->insert();
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -88,7 +90,9 @@ class nv_function
 		);
 				
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 		
@@ -114,7 +118,10 @@ class nv_function
 			)
 		);
 		
-		if(!$ok) throw new Exception($DB->get_last_error());
+		if(!$ok)
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}

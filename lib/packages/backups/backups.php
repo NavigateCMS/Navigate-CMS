@@ -3,7 +3,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/backups/backup.class.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	global $website;
@@ -89,7 +88,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> core_ts2date($dataset[$i]['date_created'], true),
-							2 	=> $dataset[$i]['title'],
+							2 	=> core_special_chars($dataset[$i]['title']),
 							3 	=> core_bytes($dataset[$i]['size']),
 							4	=> backup::status($dataset[$i]['status'])
 						);
@@ -118,7 +117,6 @@ function run()
 				{
                     // update an existing backup
 					$item->save();
-
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)
@@ -250,9 +248,6 @@ function backups_list()
 
 function backups_form($item)
 {
-	global $user;
-	global $DB;
-	global $website;
 	global $layout;
 	
 	$navibars = new navibars();
@@ -260,14 +255,21 @@ function backups_form($item)
 	$layout->navigate_media_browser();	// we can use media browser in this function
 	
 	if(empty($item->id))
-		$navibars->title(t(329, 'Backups').' / '.t(38, 'Create'));	
+    {
+        $navibars->title(t(329, 'Backups').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(329, 'Backups').' / '.t(170, 'Edit').' ['.$item->id.']');		
+    {
+        $navibars->title(t(329, 'Backups').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	if(empty($item->id))
 	{
-		$navibars->add_actions(		array(	'<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_save.png"> '.t(410, 'Begin backup').'</a>'	)
-									);
+		$navibars->add_actions(
+		    array(
+		        '<a href="#" onclick="navigate_tabform_submit(1);"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_save.png"> '.t(410, 'Begin backup').'</a>'
+            )
+        );
 	}
 	else
 	{
