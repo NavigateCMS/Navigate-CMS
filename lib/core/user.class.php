@@ -129,10 +129,8 @@ class user
 	 */	
 	public function load_from_post()
 	{
-	    global $purifier;
-
-		$this->username 		 = $purifier->purify($_REQUEST['user-username']);
-		$this->email			 = $purifier->purify($_REQUEST['user-email']);
+		$this->username 		 = core_purify_string($_REQUEST['user-username']);
+		$this->email			 = core_purify_string($_REQUEST['user-email']);
 		$this->profile			 = intval($_REQUEST['user-profile']);
 		$this->language			 = $_REQUEST['user-language'];
 		$this->timezone			 = $_REQUEST['user-timezone'];			
