@@ -88,7 +88,9 @@ function run()
 							 OFFSET '.$offset;
 
                     if(!$DB->query($sql, 'array'))
+                    {
                         throw new Exception($DB->get_last_error());
+                    }
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
@@ -115,9 +117,9 @@ function run()
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-                            1	=> $dataset[$i]['codename'],
+                            1	=> core_special_chars($dataset[$i]['codename']),
                             2	=> $payment_method_image,
-                            3   => $dataset[$i]['title'],
+                            3   => core_special_chars($dataset[$i]['title']),
                             4	=> $extension_name,
                             5   => $permissions[$dataset[$i]['permission']],
                             6 	=> $dataset[$i]['_grid_notes_html']
@@ -250,9 +252,13 @@ function payment_methods_form($object)
     $layout->navigate_media_browser();
 	
 	if(empty($object->id))
-		$navibars->title(t(783, 'Payment methods').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(783, 'Payment methods').' / '.t(38, 'Create'));
+    }
 	else
-		$navibars->title(t(783, 'Payment methods').' / '.t(170, 'Edit').' ['.$object->id.']');
+    {
+        $navibars->title(t(783, 'Payment methods').' / '.t(170, 'Edit').' ['.$object->id.']');
+    }
 
     $navibars->add_actions(
         array(
@@ -328,7 +334,9 @@ function payment_methods_form($object)
     }
 
     if(!empty($object->id))
+    {
         $layout->navigate_notes_dialog('payment_method', $object->id);
+    }
 	
 	$navibars->add_actions(
 	    array(
@@ -441,8 +449,9 @@ function payment_methods_form($object)
     // script will be bound to onload event at the end of this php function (after getScript is done)
     $onload_language = $_REQUEST['tab_language'];
     if(empty($onload_language))
+    {
         $onload_language = $website->languages_list[0];
-
+    }
 
     $navibars->add_tab('<i class="fa fa-shopping-cart"></i> '.t(757, 'Payment'));
 
@@ -521,7 +530,7 @@ function payment_methods_form($object)
     {
         $table->addRow($pm->id, array(
             array('content' => $pm->id, 'align' => 'left'),
-            array('content' => $pm->title, 'align' => 'left')
+            array('content' => core_special_chars($pm->title), 'align' => 'left')
         ));
     }
 
@@ -547,7 +556,9 @@ function payment_methods_form($object)
 	        complete: function()
 	        {
                 if(typeof navigate_payment_methods_onload == "function")
+				{
 				    navigate_payment_methods_onload("'.$onload_language.'");
+                }
 	        }
 	    });
     ');

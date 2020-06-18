@@ -94,7 +94,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> $brand_image,
-							2	=> $dataset[$i]['name'],
+							2	=> core_special_chars($dataset[$i]['name']),
                             3 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}

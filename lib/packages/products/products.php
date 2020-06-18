@@ -17,7 +17,7 @@ function run()
 	global $website;
 	global $theme;
 	global $user;
-		
+
 	$out = '';
 	$item = new product();
 			
@@ -328,6 +328,7 @@ function run()
 						$social_comments = '<img src="img/icons/silk/comments.png" align="absmiddle" width="12px" height="12px" /> '.
 							'<span style="font-size: 90%;">'.$item_comments.'</span>';
 
+                        $dataset[$i]['title'] = core_special_chars($dataset[$i]['title']);
                         if(empty($dataset[$i]['title']))
                         {
                             // if title is empty for the default language,
@@ -347,7 +348,7 @@ function run()
                             {
                                 $dataset[$i]['title'] = '<img src="img/icons/silk/comment.png" align="absmiddle" />';
                                 $dataset[$i]['title'] .= '<small>'.$titles[0]->lang.'</small>&nbsp;&nbsp;';
-                                $dataset[$i]['title'] .= $titles[0]->text;
+                                $dataset[$i]['title'] .= core_special_chars($titles[0]->text);
                             }
                         }
 
@@ -355,7 +356,7 @@ function run()
 							0	=> $dataset[$i]['id'],
                             1	=> $item_image,
 							2 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.$dataset[$i]['title'].'</div>',
-							3	=> $dataset[$i]['category_path'],
+							3	=> core_special_chars($dataset[$i]['category_path']),
 							4	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							5	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
                             6 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
@@ -2675,7 +2676,7 @@ function products_form($item)
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(667, 'Stock available').'</label>',
-            $naviforms->textfield('product-stock_available', $item->stock_available, '100px')
+            $naviforms->decimalfield('product-stock_available', $item->stock_available, 2, $user->decimal_separator, $user->thousands_separator, "", "", '100px')
             //'<div class="subcomment">('.t(668, "including all product variants").')</div>'
         ),
         "",

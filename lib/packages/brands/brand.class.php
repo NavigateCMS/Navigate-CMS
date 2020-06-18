@@ -36,9 +36,9 @@ class brand
 
     public function load_from_post()
     {
-        $this->name  		= $_REQUEST['name'];
+        $this->name  		= core_purify_string($_REQUEST['name']);
         $this->image		= intval($_REQUEST['image']);
-        $this->url		    = $_REQUEST['url'];
+        $this->url		    = core_purify_string($_REQUEST['url']);
     }
 
 

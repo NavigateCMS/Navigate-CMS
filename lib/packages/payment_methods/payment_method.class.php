@@ -44,9 +44,9 @@ class payment_method
 
     public function load_from_post()
     {
-        $this->codename  	= $_REQUEST['codename'];
-        $this->extension  	= $_REQUEST['extension'];
-        $this->permission	= $_REQUEST['permission'];
+        $this->codename  	= core_purify_string($_REQUEST['codename']);
+        $this->extension  	= core_purify_string($_REQUEST['extension']);
+        $this->permission	= core_purify_string($_REQUEST['permission']);
         $this->image		= intval($_REQUEST['image']);
 
         $this->dictionary   = array();
@@ -61,7 +61,14 @@ class payment_method
             foreach($fields as $field)
             {
                 if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                {
+                    // we allow html code on other fields
+                    if($field=='title')
+                    {
+                        $value = core_purify_string($value);
+                    }
                     $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                }
             }
         }
     }

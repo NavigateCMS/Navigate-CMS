@@ -101,8 +101,8 @@ function run()
 					{
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> $dataset[$i]['code'],
-							2	=> $dataset[$i]['name'],
+							1	=> core_special_chars($dataset[$i]['code']),
+							2	=> core_special_chars($dataset[$i]['name']),
 							3	=> $types[$dataset[$i]['type']],
 							4	=> core_ts2date($dataset[$i]['date_begin']).' - '.core_ts2date($dataset[$i]['date_end']),
                             5 	=> $dataset[$i]['_grid_notes_html']

@@ -41,7 +41,7 @@ class shipping_method
 
     public function load_from_post()
     {
-        $this->codename  	= $_REQUEST['codename'];
+        $this->codename  	= core_purify_string($_REQUEST['codename']);
         $this->permission	= $_REQUEST['permission'];
         $this->image		= intval($_REQUEST['image']);
 
@@ -49,12 +49,22 @@ class shipping_method
         $fields = array('title', 'description');
         foreach($_REQUEST as $key => $value)
         {
-            if(empty($value)) continue;
+            if(empty($value))
+            {
+                continue;
+            }
 
             foreach($fields as $field)
             {
                 if(substr($key, 0, strlen($field.'-'))==$field.'-')
+                {
+                    // we allow HTML code in description
+                    if(!in_array($field, array('description')))
+                    {
+                        $value = core_purify_string($value);
+                    }
                     $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                }
             }
         }
 

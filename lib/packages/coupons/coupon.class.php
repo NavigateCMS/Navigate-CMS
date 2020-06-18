@@ -52,7 +52,7 @@ class coupon
 
     public function load_from_post()
     {
-        $this->code  		                = trim($_REQUEST['code']);
+        $this->code  		                = core_purify_string($_REQUEST['code']);
         $this->type  		                = trim($_REQUEST['type']);
         $this->date_begin	                = (empty($_REQUEST['date_begin'])? '' : core_date2ts($_REQUEST['date_begin']));
         $this->date_end		                = (empty($_REQUEST['date_end'])? '' : core_date2ts($_REQUEST['date_end']));
@@ -68,11 +68,11 @@ class coupon
                 break;
 
             case 'discount_amount':
-                $this->discount_value       		= core_string2decimal($_REQUEST['discount_amount']);
+                $this->discount_value = core_string2decimal($_REQUEST['discount_amount']);
                 break;
 
             case 'discount_percentage':
-                $this->discount_value       		= core_string2decimal($_REQUEST['discount_percentage']);
+                $this->discount_value = core_string2decimal($_REQUEST['discount_percentage']);
                 break;
         }
 
@@ -87,7 +87,9 @@ class coupon
             foreach($fields as $field)
             {
                 if(substr($key, 0, strlen($field.'-'))==$field.'-')
-                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
+                {
+                    $this->dictionary[substr($key, strlen($field.'-'))][$field] = core_purify_string($value);
+                }
             }
         }
     }
@@ -95,9 +97,13 @@ class coupon
     public function save()
     {
         if(!empty($this->id))
+        {
             return $this->update();
+        }
         else
+        {
             return $this->insert();
+        }
     }
 
     public function delete()
@@ -150,7 +156,9 @@ class coupon
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         $this->id = $DB->get_last_id();
 
@@ -186,7 +194,9 @@ class coupon
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         webdictionary::save_element_strings('coupon', $this->id, $this->dictionary, $this->website);
 
@@ -215,7 +225,9 @@ class coupon
         $out = $DB->result();
 
         if($type='json')
+        {
             $out = json_encode($out);
+        }
 
         return $out;
     }
@@ -229,25 +241,35 @@ class coupon
         $redeemable = true;
 
         if($this->website != $website->id)
+        {
             $redeemable = false;
+        }
 
         // 2/ coupon currency matches the current cart currency
         if($this->currency != $cart['currency'])
+        {
             $redeemable = false;
+        }
 
         // 3/ check dates
         $now = core_time();
 
         if( !empty($this->date_begin) && $now < $this->date_begin)
+        {
             $redeemable = false;
+        }
 
         if( !empty($this->date_end) && $now > $this->date_end)
+        {
             $redeemable = false;
+        }
 
         // 4/ minimum spend
         // TODO: check currencies?
         if( !empty($this->minimum_spend) && $cart['subtotal'] < $this->minimum_spend )
+        {
             $redeemable = false;
+        }
 
         // 5/ check webuser usage
         if( !empty($this->times_allowed_customer) )
@@ -262,7 +284,9 @@ class coupon
             );
 
             if($times_used_by_customer > $this->times_allowed_customer)
+            {
                 $redeemable = false;
+            }
         }
 
         // 6/ check global orders usage
@@ -277,7 +301,9 @@ class coupon
             );
 
             if($times_used_globally > $this->times_allowed_globally)
+            {
                 $redeemable = false;
+            }
         }
 
         return $redeemable;
@@ -314,5 +340,4 @@ class coupon
     }
 
 }
-
 ?>

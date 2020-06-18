@@ -246,6 +246,11 @@ class product
 			{				
 				if(substr($key, 0, strlen($field.'-'))==$field.'-')
                 {
+                    if(strpos($field, 'section')===false)
+                    {
+                        $value = core_purify_string($value);
+                    }
+
                     $this->dictionary[substr($key, strlen($field.'-'))][$field] = $value;
                 }
 			}
@@ -280,7 +285,7 @@ class product
 			
 			foreach($website->languages_list as $lang)
 			{
-				$gallery_items[0][$item][$lang] = $_REQUEST['products-gallery-item-'.$item.'-dictionary-'.$lang];
+				$gallery_items[0][$item][$lang] = core_purify_string($_REQUEST['products-gallery-item-'.$item.'-dictionary-'.$lang]);
 			}
 		}
 

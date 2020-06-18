@@ -118,7 +118,9 @@ function run()
 							 OFFSET '.$offset;
 
                     if(!$DB->query($sql, 'array'))
+                    {
                         throw new Exception($DB->get_last_error());
+                    }
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();
@@ -141,9 +143,9 @@ function run()
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-                            1	=> $dataset[$i]['codename'],
+                            1	=> core_special_chars($dataset[$i]['codename']),
                             2	=> $shipping_method_image,
-                            3   => $dataset[$i]['title'],
+                            3   => core_special_chars($dataset[$i]['title']),
                             4   => $permissions[$dataset[$i]['permission']],
                             5 	=> $dataset[$i]['_grid_notes_html']
 						);
