@@ -185,7 +185,7 @@ class webuser
 		$this->avatar		= $_REQUEST['webuser-avatar'];		
 		if(!empty($_REQUEST['webuser-birthdate']))
         {
-            $this->birthdate	= core_date2ts($_REQUEST['webuser-birthdate']);
+            $this->birthdate	= core_date2ts(core_purify_string($_REQUEST['webuser-birthdate']));
         }
 		else
         {
@@ -197,18 +197,17 @@ class webuser
 		$this->access_begin	= (empty($_REQUEST['webuser-access-begin'])? '' : core_date2ts($_REQUEST['webuser-access-begin']));
 		$this->access_end	= (empty($_REQUEST['webuser-access-end'])? '' : core_date2ts($_REQUEST['webuser-access-end']));
 
-
 		$this->country		= $_REQUEST['webuser-country'];
 		$this->region		= $_REQUEST['webuser-region'];
 		$this->timezone		= $_REQUEST['webuser-timezone'];
-		$this->company		= $_REQUEST['webuser-company'];
-		$this->nin  		= $_REQUEST['webuser-nin'];
-		$this->address		= $_REQUEST['webuser-address'];
-		$this->zipcode		= $_REQUEST['webuser-zipcode'];
-		$this->location		= $_REQUEST['webuser-location'];
-		$this->phone		= $_REQUEST['webuser-phone'];			
-		$this->social_website = $_REQUEST['webuser-social_website'];
-		$this->private_comment = $_REQUEST['webuser-private_comment'];
+		$this->company		= core_purify_string($_REQUEST['webuser-company']);
+		$this->nin  		= core_purify_string($_REQUEST['webuser-nin']);
+		$this->address		= core_purify_string($_REQUEST['webuser-address']);
+		$this->zipcode		= core_purify_string($_REQUEST['webuser-zipcode']);
+		$this->location		= core_purify_string($_REQUEST['webuser-location']);
+		$this->phone		= core_purify_string($_REQUEST['webuser-phone']);
+		$this->social_website = core_purify_string($_REQUEST['webuser-social_website']);
+		$this->private_comment = core_purify_string($_REQUEST['webuser-private_comment']);
 
         // social profiles is a navigate cms private field
 	}

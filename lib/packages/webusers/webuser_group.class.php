@@ -29,17 +29,21 @@ class webuser_group
 
     public function load_from_post()
     {
-        $this->name         = $_REQUEST['name'];
-        $this->code         = $_REQUEST['code'];
-        $this->description  = $_REQUEST['description'];
+        $this->name         = core_purify_string($_REQUEST['name']);
+        $this->code         = core_purify_string($_REQUEST['code']);
+        $this->description  = core_purify_string($_REQUEST['description']);
     }
 
     public function save()
     {
         if(!empty($this->id))
+        {
             return $this->update();
+        }
         else
+        {
             return $this->insert();
+        }
     }
 
     public function delete()
@@ -76,7 +80,9 @@ class webuser_group
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         $this->id = $DB->get_last_id();
 
@@ -101,7 +107,9 @@ class webuser_group
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         return true;
     }
@@ -131,7 +139,9 @@ class webuser_group
         $rs = $DB->result();
 
         foreach($rs as $row)
+        {
             $out[$row->id] = $row->name;
+        }
 
         return $out;
     }

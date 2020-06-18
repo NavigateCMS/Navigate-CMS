@@ -97,10 +97,13 @@ function run()
                         $wug = str_replace('g', '', $dataset[$i]['groups']);
                         $wug = explode(',', $wug);
                         $wug = array_map(
-                            function($in) {
+                            function($in)
+                            {
                                 global $webusers_groups_all;
                                 if(empty($in))
+                                {
                                     return;
+                                }
                                 return $webusers_groups_all[$in];
                             },
                             $wug
@@ -119,9 +122,9 @@ function run()
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.$dataset[$i]['username'].'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
-                            2 	=> '<div class="list-row" data-blocked="'.$blocked.'" title="'.$dataset[$i]['email'].'">'.$dataset[$i]['username'].'</div>',
-							3	=> $dataset[$i]['fullname'],
+							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.core_special_chars($dataset[$i]['username']).'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
+                            2 	=> '<div class="list-row" data-blocked="'.$blocked.'" title="'.core_special_chars($dataset[$i]['email']).'">'.core_special_chars($dataset[$i]['username']).'</div>',
+							3	=> core_special_chars($dataset[$i]['fullname']),
 							4	=> implode("<br />", $wug),
 							5 	=> core_ts2date($dataset[$i]['joindate'], true),
 							6	=> ($blocked==0? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
@@ -140,9 +143,10 @@ function run()
 		case 2: // edit/new form
         case 'create':
 		case 'edit':
+            $webuser_id = 0;
 			if(!empty($_REQUEST['id']))
 			{
-				$item->load(intval($_REQUEST['id']));	
+				$item->load(intval($_REQUEST['id']));
 			}
 		
 			if(isset($_REQUEST['form-sent']))
@@ -153,13 +157,14 @@ function run()
                     naviforms::check_csrf_token();
 
 					$item->save();
-                    property::save_properties_from_post('webuser', $item->id);
+                    $webuser_id = $item->id;
+					property::save_properties_from_post('webuser', $item->id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 
                     // reload object
                     $item = null;
                     $item = new webuser();
-                    $item->load($_REQUEST['id']);
+                    $item->load($webuser_id);
 				}
 				catch(Exception $e)
 				{
@@ -210,7 +215,9 @@ function run()
 			$timezones = property::timezones($_REQUEST['country']);			
 			
 			if(empty($timezones))
-				$timezones = property::timezones();				
+            {
+                $timezones = property::timezones();
+            }
 			
 			echo json_encode($timezones);			
 			core_terminate();
@@ -231,7 +238,10 @@ function run()
             $max	= intval($_REQUEST['rows']);
             $offset = ($page - 1) * $max;
 
-            $rs = webuser_group::all($_REQUEST['sidx'], $_REQUEST['sord']);
+            // unused
+            // $_REQUEST['sidx']
+            // $_REQUEST['sord']
+            $rs = webuser_group::all();
 
             $dataset = array();
 
@@ -239,8 +249,8 @@ function run()
             {
                 $dataset[] = array(
                     'id' => $row->id,
-                    'code' => $row->code,
-                    'name' => $row->name
+                    'code' => core_special_chars($row->code),
+                    'name' => core_special_chars($row->name)
                 );
             }
 
@@ -255,7 +265,9 @@ function run()
             $webuser_group = new webuser_group();
 
             if(!empty($_REQUEST['id']))
+            {
                 $webuser_group->load(intval($_REQUEST['id']));
+            }
 
             if(isset($_REQUEST['form-sent']))
             {
@@ -864,7 +876,7 @@ function webusers_form($item)
 	$navibars->add_tab_content_row(
         array(
             '<label>'.t(318, 'Zip code').'</label>',
-			$naviforms->textfield('webuser-zipcode', $item->zipcode)
+			$naviforms->textfield('webuser-zipcode', $item->zipcode, NULL, NULL, 'maxlength="64"')
         )
     );
 										
@@ -896,7 +908,9 @@ function webusers_form($item)
     }
 
 	if(!empty($item->id))
+    {
         $layout->navigate_notes_dialog('webuser', $item->id);
+    }
 
     $events->trigger(
         'webuser',
@@ -914,16 +928,16 @@ function webusers_form($item)
 
 function webuser_groups_list()
 {
-    global $user;
-    global $DB;
-    global $website;
-
     $navibars = new navibars();
     $navitable = new navitable('webuser_groups_list');
 
     $navibars->title(t(24, 'Web users').' / '.t(506, 'Groups'));
 
-    $navibars->add_actions(	array(	'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/user.png"> '.t(24, 'Web users').'</a>' ) );
+    $navibars->add_actions(
+        array(
+            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/user.png"> '.t(24, 'Web users').'</a>'
+        )
+    );
 
     $navibars->add_actions(
         array(
@@ -1033,4 +1047,5 @@ function webuser_groups_form($item)
 
     return $navibars->generate();
 }
+
 ?>
