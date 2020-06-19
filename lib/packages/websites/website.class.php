@@ -188,7 +188,7 @@ class website
 
         $this->redirect_to		    = $_REQUEST['redirect_to'];
         $this->wrong_path_action    = $_REQUEST['wrong_path_action'];
-        $this->wrong_path_redirect  = $_REQUEST['wrong_path_redirect'];
+        $this->wrong_path_redirect  = core_purify_string($_REQUEST['wrong_path_redirect']);
         $this->empty_path_action    = $_REQUEST['empty_path_action'];
 
         $this->date_format		= $_REQUEST['date_format'];

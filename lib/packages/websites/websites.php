@@ -889,7 +889,7 @@ function websites_form($item)
                 false
             ),
             '<a class="uibutton nv_website_wrong_path_trigger hidden"><i class="fa fa-sitemap"></i></a>',
-            '<span id="navigate-website-wrong-path-redirect" class="nv_website_wrong_path_info navigate-form-row-info">'.$item->wrong_path_redirect.'</span>',
+            '<span id="navigate-website-wrong-path-redirect" class="nv_website_wrong_path_info navigate-form-row-info">'.core_special_chars($item->wrong_path_redirect).'</span>',
             $naviforms->hidden('wrong_path_redirect', $item->wrong_path_redirect)
         )
     );
