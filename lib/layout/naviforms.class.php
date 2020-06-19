@@ -1593,14 +1593,25 @@ class naviforms
         {
             $token_sent = $_SERVER['HTTP_X_CSRF_TOKEN'];
         }
-        else
+        else if(!empty($variable_name))
         {
             $token_sent = $_REQUEST[$variable_name];
         }
+        else // default variable name
+        {
+            $token_sent = $_REQUEST['_nv_csrf_token'];
+        }
 
-        $csfr_check = @hash_equals($_SESSION['csrf_token'], $token_sent);
+        if(function_exists('hash_equals'))
+        {
+            $csrf_check = @hash_equals($_SESSION['csrf_token'], $token_sent);
+        }
+        else
+        {
+            $csrf_check = ($_SESSION['csrf_token'] === $token_sent);
+        }
 
-        if(!$csfr_check)
+        if(!$csrf_check)
         {
             if($throw_exception)
             {

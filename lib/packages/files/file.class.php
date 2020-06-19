@@ -1478,7 +1478,7 @@ class file
 
         if($move_uploaded_file)
         {
-            $uploaded_file_temp = uniqid('upload-');
+            $uploaded_file_temp = uniqid('upload-') . '.tmp';
             move_uploaded_file($tmp_name, NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$uploaded_file_temp);
             $tmp_name = $uploaded_file_temp;
         }

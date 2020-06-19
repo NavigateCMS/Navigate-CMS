@@ -2134,7 +2134,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
             // Dropzone.forElement(selector).destroy();
             $(selector).dropzone(
             {
-                url: NAVIGATE_URL + "/navigate_upload.php?session_id=" + navigate["session_id"] + "&engine=dropzone",
+                url: NAVIGATE_URL + "/navigate_upload.php?engine=dropzone&session_id=" + navigate["session_id"] + "&_nv_csrf_token=" + navigatecms.csrf_token,
                 paramName: "upload",
                 parallelUploads: 1,
                 autoProcessQueue: 1,
@@ -2255,7 +2255,7 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                         $.ajax(
                         {
                             async: false,
-                            url: NAVIGATE_APP + "?fid=files&act=1&op=upload&parent=" + $(selector).attr("data-filedrop-parent"),
+                            url: NAVIGATE_APP + "?fid=files&act=json&op=upload&parent=" + $(selector).attr("data-filedrop-parent"),
                             success: function(data)
                             {
                                 if(callbacks.afterOne)
@@ -2266,9 +2266,10 @@ function navigate_file_drop(selector, parent, callbacks, show_progress_in_title)
                             type: "post",
                             dataType: "json",
                             data: ({
-                                tmp_name: uploaded.temporal,
+                                tmp_name: uploaded.temporary,
                                 name: uploaded.filename,
-                                size: file.size
+                                size: file.size,
+                                _nv_csrf_token: navigatecms.csrf_token
                             })
                         });
                     }

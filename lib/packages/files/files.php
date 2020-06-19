@@ -6,7 +6,6 @@ function run()
 {
 	global $user;
 	global $layout;
-	global $DB;
 	global $website;
 	
 	$out = '';
@@ -18,8 +17,14 @@ function run()
         case 1: // json retrieval & operations
 			if($_REQUEST['op']=='upload')
 			{
+			    if(!naviforms::check_csrf_token(null, false))
+                {
+                    echo json_encode(false);
+                    core_terminate();
+                }
+
                 $tmp_name = $_REQUEST['tmp_name'];
-                if($tmp_name=="{{BASE64}}")
+                if($tmp_name == "{{BASE64}}")
                 {
                     $tmp_name = base64_encode($_REQUEST['name']);
                 }

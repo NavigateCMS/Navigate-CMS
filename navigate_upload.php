@@ -79,7 +79,7 @@ if($user->permission("files.upload")=="true")
 
     // Settings
     $targetDir = NAVIGATE_PRIVATE.'/'.$website->id.'/files';
-    $maxFileAge = 24 * 60 * 60; // Temp file age in seconds (1 day)
+    $maxFileAge = 24 * 60 * 60; // temporary file age in seconds (1 day)
 
     // no maximum uploading/execution time
     @set_time_limit(0);
@@ -88,21 +88,28 @@ if($user->permission("files.upload")=="true")
     switch($_REQUEST['engine'])
     {
         case 'dropzone':
-            $tmpfilename = tempnam($targetDir, "upload-");
+            $tmpfilename = tempnam($targetDir, "upload-") . '.tmp';
             $tmpfilename = basename($tmpfilename);
+            $tmpfilename = strtolower($tmpfilename);
 
             if(count($_FILES) > 0)
             {
                 if(!file_exists($_FILES['upload']['tmp_name']))
                 {
-                    die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Uploaded file missing."}, "id" : "id"}');
+                    die('{"jsonrpc": "2.0", "error": {"code": 100, "message": "Uploaded file missing."}, "id" : "id"}');
                 }
 
                 $original_filename = mb_convert_encoding($_FILES['upload']['name'], 'UTF-8', value_or_default($_SERVER['HTTP_ACCEPT_CHARSET'], 'UTF-8'));
 
                 if(move_uploaded_file($_FILES['upload']['tmp_name'], $targetDir.'/'.$tmpfilename))
                 {
-                    echo json_encode(array("filename" => $original_filename, 'temporal' => $tmpfilename));
+                    echo json_encode(
+                        array(
+                            "filename" => $original_filename,
+                            'temporary' => $tmpfilename,
+                            'size' => filesize($targetDir.'/'.$tmpfilename)
+                        )
+                    );
                 }
 
                 navigate_upload_remove_temporary($targetDir, $maxFileAge);
@@ -124,8 +131,15 @@ if($user->permission("files.upload")=="true")
 
                 if(file_put_contents($targetDir.'/'.$tmpfilename, $content))
                 {
-                    echo json_encode(array("filename" => $headers['UP-FILENAME'], 'temporal' => $tmpfilename));
+                    echo json_encode(
+                        array(
+                            "filename" => $headers['UP-FILENAME'],
+                            'temporary' => $tmpfilename,
+                            'size' => filesize($targetDir.'/'.$tmpfilename)
+                        )
+                    );
                 }
+
                 navigate_upload_remove_temporary($targetDir, $maxFileAge);
                 core_terminate();
             }

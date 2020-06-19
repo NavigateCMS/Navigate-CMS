@@ -36,7 +36,9 @@ function t($id, $default='', $replace=array(), $encodeChars=false)
 	$out = $lang->t($id, $default, $replace, $encodeChars);
 
 	if(empty($out))
-	    $out = $default;
+    {
+        $out = $default;
+    }
 
     return $out;
 }
@@ -716,7 +718,12 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
  * @return boolean
  */
 function is_not_empty($text) 
-{ 
+{
+    if(is_null($text))
+    {
+        return false;
+    }
+
 	$text = trim($text);
 	return !empty($text); 
 }
