@@ -1074,7 +1074,7 @@ function run()
             }
             else    // show ordered list
             {
-                echo items_order($_REQUEST['category']);
+                echo items_order(intval($_REQUEST['category']));
             }
 
             core_terminate();
@@ -2644,17 +2644,23 @@ function items_order($category)
     $naviforms = new naviforms();
 
     // order blocks of the same type (for lists with priority ordering)
-    $DB->query('SELECT i.id as id, d.text as title
-                  FROM nv_items i, nv_webdictionary d
-                 WHERE i.association = "category"
-                   AND i.category = "'.$category.'"
-                   AND d.node_type = "item"
-                   AND d.subtype = "title"
-                   AND d.lang = "'.$website->languages_list[0].'"
-                   AND d.node_id = i.id
-                   AND i.website = '.$website->id.'
-                   AND d.website = '.$website->id.'
-                ORDER BY i.position ASC');
+    $DB->query('
+            SELECT i.id as id, d.text as title
+              FROM nv_items i, nv_webdictionary d
+             WHERE i.association = "category"
+               AND i.category = :category
+               AND d.node_type = "item"
+               AND d.subtype = "title"
+               AND d.lang = "'.$website->languages_list[0].'"
+               AND d.node_id = i.id
+               AND i.website = '.$website->id.'
+               AND d.website = '.$website->id.'
+          ORDER BY i.position ASC',
+        'object',
+        array(
+            ':category' => intval($category)
+        )
+    );
 
     $item_ids = $DB->result('id');
     $items = $DB->result();

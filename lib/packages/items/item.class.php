@@ -797,12 +797,21 @@ class item
 
 		for($i=0; $i < count($items); $i++)
 		{
-			if(empty($items[$i])) continue;
+			if(empty($items[$i]))
+            {
+                continue;
+            }
 
-			$ok =	$DB->execute('UPDATE nv_items
-									 SET position = '.($i+1).'
-								   WHERE id = '.$items[$i].'
-						 		     AND website = '.$website->id);
+			$ok = $DB->execute('
+                UPDATE nv_items
+				   SET position = :position
+                 WHERE id = :id 
+				   AND website = :website',
+                array(
+                    ':position' => ($i+1),
+                    ':id' => intval($items[$i]),
+                    ':website' => $website->id
+                ));
 
 			if(!$ok)
             {

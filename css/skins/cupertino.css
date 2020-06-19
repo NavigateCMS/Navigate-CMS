@@ -604,6 +604,7 @@ a.navigate-content-actions-selected
 	float: left;
 	font-size: 11px;
     /*height: 26px;*/
+	margin-right: 8px;
 }
 
 .navigate-form-row .controlgroup span,
