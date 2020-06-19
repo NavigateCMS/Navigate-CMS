@@ -208,7 +208,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://iflyingangel.com/jautochecklist" target="_blank">jAutochecklist v1.3.1</a><br />'
+			'<a href="https://github.com/flyingangel/jAutochecklist" target="_blank">jAutochecklist v1.4.1</a><br />'
 		)
 	);
 
