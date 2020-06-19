@@ -297,10 +297,10 @@ class website
 
         foreach($_POST['website-aliases-alias'] as $key => $value)
         {
-            $value = trim($value);
+            $value = core_purify_string($value);
             if(!empty($value))
             {
-                $value_real = trim($_POST['website-aliases-real'][$key]);
+                $value_real = core_purify_string($_POST['website-aliases-real'][$key]);
                 if(!empty($value_real))
                 {
                     $this->aliases[$value] = $value_real;

@@ -1392,9 +1392,15 @@ function websites_form($item)
     ));
 
     if(!is_array($item->aliases))
+    {
         $item->aliases = array();
+    }
+
     foreach($item->aliases as $alias => $realurl)
     {
+        $alias = core_special_chars($alias);
+        $realurl = core_special_chars($realurl);
+
         $table->addRow($lang->code, array(
             array('content' => '<input type="text" name="website-aliases-alias[]" value="'.$alias.'" style="width: 300px;" />', 'align' => 'left'),
             array('content' => '&rarr;', 'align' => 'center'),
