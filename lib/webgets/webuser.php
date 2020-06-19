@@ -1534,47 +1534,47 @@ function nvweb_webuser_customer_account_addresses()
                     <div>
                         <div>
                             <label>'.t(752, "Full name").'</label>
-                            <input type="text" name="wu_cusacc_shipping_name" required value="'.$address_shipping['name'].'" />
+                            <input type="text" name="wu_cusacc_shipping_name" required value="'.core_special_chars($address_shipping['name']).'" />
                         </div>                        
                     </div>
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(778, "National identification number").'</label>
-                            <input type="text" name="wu_cusacc_shipping_nin" value="'.$address_shipping['nin'].'" />
+                            <input type="text" name="wu_cusacc_shipping_nin" value="'.core_special_chars($address_shipping['nin']).'" />
                         </div>
                         <div>
                             <label>'.t(592, "Company").'</label>
-                            <input type="text" name="wu_cusacc_shipping_company" value="'.$address_shipping['company'].'" />
+                            <input type="text" name="wu_cusacc_shipping_company" value="'.core_special_chars($address_shipping['company']).'" />
                         </div>
                     </div>
                     <div>
                         <label>'.t(233, "Address").'</label>
-                        <input type="text" name="wu_cusacc_shipping_address" required value="'.$address_shipping['address'].'" />
+                        <input type="text" name="wu_cusacc_shipping_address" required value="'.core_special_chars($address_shipping['address']).'" />
                     </div>
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(319, "Location").'</label>
-                            <input type="text" name="wu_cusacc_shipping_location" required value="'.$address_shipping['location'].'" />
+                            <input type="text" name="wu_cusacc_shipping_location" required value="'.core_special_chars($address_shipping['location']).'" />
                         </div>
                         <div>
                             <label>'.t(318, "Zip code").'</label>
-                            <input type="text" name="wu_cusacc_shipping_zipcode" value="'.$address_shipping['zipcode'].'" />
+                            <input type="text" name="wu_cusacc_shipping_zipcode" value="'.core_special_chars($address_shipping['zipcode']).'" />
                         </div>
                     </div>
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(224, "Country").'</label>
-                            <nv object="nvweb" name="forms" mode="country_field" required field_name="wu_cusacc_shipping_country" default="'.$address_shipping['country'].'" />
+                            <nv object="nvweb" name="forms" mode="country_field" required field_name="wu_cusacc_shipping_country" default="'.core_special_chars($address_shipping['country']).'" />
                         </div>
                         <div>
                             <label>'.t(473, "Region").'</label>
-                            <nv object="nvweb" name="forms" mode="country_region_field" field_name="wu_cusacc_shipping_region" country_field="wu_cusacc_shipping_country" default="'.$address_shipping['region'].'" />
+                            <nv object="nvweb" name="forms" mode="country_region_field" field_name="wu_cusacc_shipping_region" country_field="wu_cusacc_shipping_country" default="'.core_special_chars($address_shipping['region']).'" />
                         </div>
                     </div>
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(320, "Phone").'</label>
-                            <input type="text" name="wu_cusacc_shipping_phone" required value="'.$address_shipping['phone'].'" />
+                            <input type="text" name="wu_cusacc_shipping_phone" required value="'.core_special_chars($address_shipping['phone']).'" />
                         </div>
                     </div>
                 '.

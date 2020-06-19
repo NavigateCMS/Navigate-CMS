@@ -556,7 +556,7 @@ function templates_form($item)
 			$table->addRow(
                 $p,
                 array(
-                    array('content' => '<input type="text" name="template-sections-code[]" value="'.$item->sections[$p]['code'].'" style="width: 140px;" />', 'align' => 'left'),
+                    array('content' => '<input type="text" name="template-sections-code[]" value="'.core_special_chars($item->sections[$p]['code']).'" style="width: 140px;" />', 'align' => 'left'),
                     array('content' => '<input type="text" name="template-sections-name[]" value="'.template::section_name($item->sections[$p]['name']).'" style="width: 290px;" />', 'align' => 'left'),
                     array('content' => $select_editor, 'align' => 'left'),
                     array('content' => '<div style=" white-space: nowrap; "><input type="text" name="template-sections-width[]" value="'.template::section_name($item->sections[$p]['width']).'" style="width: 40px;" /> px</div>', 'align' => 'left'),

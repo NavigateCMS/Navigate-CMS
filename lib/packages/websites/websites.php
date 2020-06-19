@@ -547,7 +547,7 @@ function websites_form($item)
 		        <div id="navigate_replace_urls_dialog" style="display: none;">
 		            <div id="" class="navigate-form-row">
 						<label>'.t(604, "Old").'</label>
-						<input type="text" style=" width: 300px;" id="replace_urls_old" name="replace_urls_old" value="'.$old_url_guessed.'/" />
+						<input type="text" style=" width: 300px;" id="replace_urls_old" name="replace_urls_old" value="'.core_special_chars($old_url_guessed).'/" />
 					</div>
 					<div id="" class="navigate-form-row">
 						<label>'.t(605, "New").'</label>

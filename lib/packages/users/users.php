@@ -293,7 +293,7 @@ function users_form($item)
 	$navibars->add_tab_content_row(
 		array(
 			'<label>'.t(44, 'E-Mail').'</label>',
-			'<input type="text" name="user-email" value="'.$item->email.'" size="64" />'
+			'<input type="text" name="user-email" value="'.core_special_chars($item->email).'" size="64" />'
 		)
 	);
 				

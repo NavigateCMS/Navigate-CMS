@@ -726,7 +726,7 @@ function nvweb_blocks_render_poll($object)
         foreach($object->trigger[$current['lang']] as $answer)
         {
             $out .= '<div class="block-poll-answer">';
-            $out .= '   <input type="radio" id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'" name="'.$object->type.'-'.$object->id.'-answer" value="'.$answer['code'].'" />';
+            $out .= '   <input type="radio" id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'" name="'.$object->type.'-'.$object->id.'-answer" value="'.core_special_chars($answer['code']).'" />';
             $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.$answer['title'].'</label>';
             $out .= '</div>';
         }

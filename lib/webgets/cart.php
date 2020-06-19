@@ -1207,11 +1207,11 @@ function nvweb_cart_identification_page($cart)
                               <h3>'.$sign_up_symbol.t(759, "Sign up").'</h3>
                               <div>
                                   <label>'.t(44, "E-Mail").'</label>
-                                  <input type="text" name="nv_cart_wu_sign_up_email" value="'.$_POST['nv_cart_wu_sign_up_email'].'" />
+                                  <input type="text" name="nv_cart_wu_sign_up_email" value="'.core_special_chars($_POST['nv_cart_wu_sign_up_email']).'" />
                               </div>
                               <div>
                                   <label>'.t(1, "User").' ('.t(764, "optional").')</label>
-                                  <input type="text" name="nv_cart_wu_sign_up_username" value="'.$_POST['nv_cart_wu_sign_up_username'].'" />
+                                  <input type="text" name="nv_cart_wu_sign_up_username" value="'.core_special_chars($_POST['nv_cart_wu_sign_up_username']).'" />
                               </div>
                               <div>
                                   <label>'.t(2, "Password").'</label>
@@ -1424,31 +1424,31 @@ function nvweb_cart_address_page($cart)
                     <div>
                         <div>
                             <label>'.t(752, "Full name").'</label>
-                            <input type="text" name="order_shipping_name" required value="'.$address_shipping['name'].'" />
+                            <input type="text" name="order_shipping_name" required value="'.core_special_chars($address_shipping['name']).'" />
                         </div>                        
                     </div>
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(778, "National identification number").'</label>
-                            <input type="text" name="order_shipping_nin" value="'.$address_shipping['nin'].'" />
+                            <input type="text" name="order_shipping_nin" value="'.core_special_chars($address_shipping['nin']).'" />
                         </div>
                         <div>
                             <label>'.t(592, "Company").'</label>
-                            <input type="text" name="order_shipping_company" value="'.$address_shipping['company'].'" />
+                            <input type="text" name="order_shipping_company" value="'.core_special_chars($address_shipping['company']).'" />
                         </div>
                     </div>
                     <div>
                         <label>'.t(233, "Address").'</label>
-                        <input type="text" name="order_shipping_address" required value="'.$address_shipping['address'].'" />
+                        <input type="text" name="order_shipping_address" required value="'.core_special_chars($address_shipping['address']).'" />
                     </div>
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(319, "Location").'</label>
-                            <input type="text" name="order_shipping_location" required value="'.$address_shipping['location'].'" />
+                            <input type="text" name="order_shipping_location" required value="'.core_special_chars($address_shipping['location']).'" />
                         </div>
                         <div>
                             <label>'.t(318, "Zip code").'</label>
-                            <input type="text" name="order_shipping_zipcode" value="'.$address_shipping['zipcode'].'" />
+                            <input type="text" name="order_shipping_zipcode" value="'.core_special_chars($address_shipping['zipcode']).'" />
                         </div>
                     </div>
                     <div class="nv_cart-flex-sb">
@@ -1464,11 +1464,11 @@ function nvweb_cart_address_page($cart)
                     <div class="nv_cart-flex-sb">
                         <div>
                             <label>'.t(44, "E-Mail").'</label>
-                            <input type="text" name="order_shipping_email" required value="'.(empty($address_shipping['email'])? $webuser->email : $address_shipping['email']).'" />
+                            <input type="text" name="order_shipping_email" required value="'.(empty($address_shipping['email'])? core_special_chars($webuser->email) : core_special_chars($address_shipping['email'])).'" />
                         </div>
                         <div>
                             <label>'.t(320, "Phone").'</label>
-                            <input type="text" name="order_shipping_phone" required value="'.$address_shipping['phone'].'" />
+                            <input type="text" name="order_shipping_phone" required value="'.core_special_chars($address_shipping['phone']).'" />
                         </div>
                     </div>
                     
@@ -1484,51 +1484,51 @@ function nvweb_cart_address_page($cart)
                         <div>
                             <div>
                                 <label>'.t(752, "Full name").'</label>
-                                <input type="text" name="order_billing_name" value="'.$address_billing['name'].'" />
+                                <input type="text" name="order_billing_name" value="'.core_special_chars($address_billing['name']).'" />
                             </div>                            
                         </div>
                         <div class="nv_cart-flex-sb">
                             <div>
                                 <label>'.t(778, "National identification number").'</label>
-                                <input type="text" name="order_billing_nin" value="'.$address_billing['nin'].'" />
+                                <input type="text" name="order_billing_nin" value="'.core_special_chars($address_billing['nin']).'" />
                             </div>
                             <div>
                                 <label>'.t(592, "Company").'</label>
-                                <input type="text" name="order_billing_company" value="'.$address_billing['company'].'" />
+                                <input type="text" name="order_billing_company" value="'.core_special_chars($address_billing['company']).'" />
                             </div>
                         </div>
                         <div>
                             <label>'.t(233, "Address").'</label>
-                            <input type="text" name="order_billing_address" value="'.$address_billing['address'].'" />
+                            <input type="text" name="order_billing_address" value="'.core_special_chars($address_billing['address']).'" />
                         </div>
                         <div class="nv_cart-flex-sb">
                             <div>
                                 <label>'.t(319, "Location").'</label>
-                                <input type="text" name="order_billing_location" value="'.$address_billing['location'].'" />
+                                <input type="text" name="order_billing_location" value="'.core_special_chars($address_billing['location']).'" />
                             </div>
                             <div>
                                 <label>'.t(318, "Zip code").'</label>
-                                <input type="text" name="order_billing_zipcode" value="'.$address_billing['zipcode'].'" />
+                                <input type="text" name="order_billing_zipcode" value="'.core_special_chars($address_billing['zipcode']).'" />
                             </div>
                         </div>
                         <div class="nv_cart-flex-sb">
                             <div>
                                 <label>'.t(224, "Country").'</label>
-                                <nv object="nvweb" name="forms" mode="country_field" field_name="order_billing_country" default="'.$address_billing['country'].'" />
+                                <nv object="nvweb" name="forms" mode="country_field" field_name="order_billing_country" default="'.core_special_chars($address_billing['country']).'" />
                             </div>
                             <div>
                                 <label>'.t(473, "Region").'</label>
-                                <nv object="nvweb" name="forms" mode="country_region_field" field_name="order_billing_region" country_field="order_billing_country"  default="'.$address_billing['region'].'" />
+                                <nv object="nvweb" name="forms" mode="country_region_field" field_name="order_billing_region" country_field="order_billing_country"  default="'.core_special_chars($address_billing['region']).'" />
                             </div>
                         </div>
                         <div class="nv_cart-flex-sb">
                             <div>
                                 <label>'.t(44, "E-Mail").'</label>
-                                <input type="text" name="order_billing_email" value="'.$address_billing['email'].'" />
+                                <input type="text" name="order_billing_email" value="'.core_special_chars($address_billing['email']).'" />
                             </div>
                             <div>
                                 <label>'.t(320, "Phone").'</label>
-                                <input type="text" name="order_billing_phone" value="'.$address_billing['phone'].'" />
+                                <input type="text" name="order_billing_phone" value="'.core_special_chars($address_billing['phone']).'" />
                             </div>
                         </div>                        
                     </div>                                     
@@ -1718,7 +1718,7 @@ function nvweb_cart_shipping_page($cart)
 
     $out[] = '      <div>';
     $out[] = '        <h3>'.t(168, "Notes").'</h3>';
-    $out[] = '        <textarea rows="4" name="order_notes">'.$cart['customer_notes'].'</textarea>';
+    $out[] = '        <textarea rows="4" name="order_notes">'.core_special_chars($cart['customer_notes']).'</textarea>';
     $out[] = '      </div>';
 
     $out[] = '  </div>';

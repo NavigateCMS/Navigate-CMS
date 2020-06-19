@@ -1233,7 +1233,7 @@ function blocks_form($item)
                         $table->addRow(
                             "poll-answers-table-row-".$uid,
                             array(
-                                array('content' => '<input type="text" name="poll-answers-table-title-'.$lang.'['.$uid.']" value="'.$pa['title'].'" style="width: 200px;" />', 'align' => 'left'),
+                                array('content' => '<input type="text" name="poll-answers-table-title-'.$lang.'['.$uid.']" value="'.core_special_chars($pa['title']).'" style="width: 200px;" />', 'align' => 'left'),
                                 //array('content' => '<input type="text" name="poll-answers-table-code-'.$lang.'['.$uid.']" value="'.$pa['code'].'" style="width: 120px;" />', 'align' => 'left'),
                                 array('content' => '<input type="text" name="poll-answers-table-votes-'.$lang.'['.$uid.']" value="'.intval($pa['votes']).'" style="width: 80px;" />', 'align' => 'left'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_poll_answers_table_row_remove(this);" />', 'align' => 'center')
@@ -1456,8 +1456,8 @@ function blocks_form($item)
 	                                array('content' => '-', 'align' => 'center') :
 	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlinks['icon'][$key].'"  data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
                                 ),
-                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.$tlinks['title'][$key].'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
-                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.$tlinks['link'][$key].'" data-role="link" style="width: 260px;" />'.
+                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.core_special_chars($tlinks['title'][$key]).'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
+                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.core_special_chars($tlinks['link'][$key]).'" data-role="link" style="width: 260px;" />'.
                                                    '<a class="uibutton naviforms-pathfield-trigger"><i class="fa fa-sitemap"></i></a>',
                                       'align' => 'left',
                                       'style' => 'white-space: nowrap;'
@@ -1875,7 +1875,7 @@ function blocks_form($item)
 					{
 						$("#trigger-type-'.$alang.'").val("'.$item->trigger['trigger-type'][$alang].'");
 						$("#action-type-'.$alang.'").val("'.$item->action['action-type'][$alang].'");
-						navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.$item->trigger['trigger-type'][$alang].'\" />"));
+						navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.core_special_chars($item->trigger['trigger-type'][$alang]).'\" />"));
 
 						links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
 						if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)

@@ -731,8 +731,8 @@ function webdictionary_edit_language_form($code)
 			$table.= '
 				<tr>
 					<td>'.$otext['node_id'].'</textarea></td>
-					<td><textarea rows="2" cols="60" disabled="disabled">'.$otext['text'].'</textarea></td>
-					<td><textarea name="data['.$code.'.'.$otext['source'].']" rows="2" cols="60">'.$translation.'</textarea></td>
+					<td><textarea rows="2" cols="60" disabled="disabled">'.core_special_chars($otext['text']).'</textarea></td>
+					<td><textarea name="data['.$code.'.'.$otext['source'].']" rows="2" cols="60">'.core_special_chars($translation).'</textarea></td>
 				</tr>
 			';
 		}
@@ -746,14 +746,16 @@ function webdictionary_edit_language_form($code)
 			foreach($extensions_translations as $dtext)
 			{
 				if($otext['source'] == $dtext['source'] &&  $dtext['lang']==$code)
-					$translation = $dtext['text'];
+                {
+                    $translation = $dtext['text'];
+                }
 			}
 
 			$table.= '
 				<tr>
 					<td>'.$otext['source'].'</textarea></td>
-					<td><textarea rows="2" cols="60" disabled="disabled">'.$otext['text'].'</textarea></td>
-					<td><textarea name="data['.$code.'.'.$otext['source'].']" rows="2" cols="60">'.$translation.'</textarea></td>
+					<td><textarea rows="2" cols="60" disabled="disabled">'.core_special_chars($otext['text']).'</textarea></td>
+					<td><textarea name="data['.$code.'.'.$otext['source'].']" rows="2" cols="60">'.core_special_chars($translation).'</textarea></td>
 				</tr>
 			';
 		}
