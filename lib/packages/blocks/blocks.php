@@ -794,7 +794,7 @@ function blocks_list()
     // add types filter
     $block_types = block::types('title');
     $hierarchy = array_map(
-        function($bt) { return '<li data-value="'.$bt['id'].'">'.$bt['title'].'</li>';  },
+        function($bt) { return '<li data-value="'.$bt['id'].'">'.core_special_chars($bt['title']).'</li>';  },
         $block_types
     );
     //array_unshift($hierarchy, '<li data-value="">('.t(443, "All").')</li>');
@@ -806,6 +806,7 @@ function blocks_list()
             popup: false,
             absolutePosition: true,
             width: 0,
+            valueAsHTML: true,
             listWidth: 300,
             listMaxHeight: 400,
             onItemClick: function(nval, li, selected_before, selected_after)

@@ -104,7 +104,7 @@ function run()
                                 {
                                     return;
                                 }
-                                return $webusers_groups_all[$in];
+                                return core_special_chars($webusers_groups_all[$in]);
                             },
                             $wug
                         );
@@ -434,8 +434,8 @@ function webusers_list()
                 showLabel: false
             }).css({
                 "float": "right",
-                "margin-top": "0px",
-                "padding": "3px 0px"
+                "margin-top": "-2px",
+                "padding": "5px 10px 10px 0px"                
             }).on("click", webusers_list_choose_groups);
         }
     ');
@@ -444,7 +444,7 @@ function webusers_list()
     $groups_html = array_map(
         function($id, $name)
         {
-            return '<li class="level1" data-value="g'.$id.'">'.$name.'</li>';
+            return '<li class="level1" data-value="g'.$id.'">'.core_special_chars($name).'</li>';
         },
         array_keys($groups),
         array_values($groups)
@@ -464,6 +464,7 @@ function webusers_list()
             popup: false,
             absolutePosition: true,
             width: 0,
+            valueAsHTML: true,
             listWidth: 400,
             listMaxHeight: 400,
             onItemClick: function(nval, li, selected_before, selected_after)
@@ -493,7 +494,7 @@ function webusers_list()
 
     $layout->add_script('
         function webusers_list_choose_groups()
-        {
+        {            
             $("#navigate-quicksearch").parent().on("submit", function(){
                 $("#filter_groups_window ul").jAutochecklist("deselectAll");
             });
@@ -502,6 +503,7 @@ function webusers_list()
             $(".jAutochecklist_list").css({"position": "absolute"});
             $(".jAutochecklist_list").css($("#jqgh_webusers_list_groups button").offset());
             $(".jAutochecklist_dropdown_wrapper").hide();
+                        
             $(".jAutochecklist_list").css({
                 "border-radius": "8px",
                 "margin-left": "-373px",

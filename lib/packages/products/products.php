@@ -1271,6 +1271,7 @@ function products_list()
             popup: false,
             absolutePosition: true,
             width: 0,
+            valueAsHTML: true,
             listWidth: 400,
             listMaxHeight: 400,
             onItemClick: function(nval, li, selected_before, selected_after)
