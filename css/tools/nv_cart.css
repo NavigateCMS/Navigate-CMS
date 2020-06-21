@@ -36,9 +36,25 @@
     text-align: right;
 }
 
+.nv_cart_summary_actions
+{
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.nv_cart_summary_actions > *
+{
+    margin-left: 8px;
+}
+
 .nv_cart_shipping_method_information
 {
     font-weight: normal;
+}
+
+.nv_cart_shipping_order_total
+{
+    text-align: right;
 }
 
 

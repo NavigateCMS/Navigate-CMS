@@ -100,7 +100,9 @@ function nv_cart_identification_init()
 function nv_cart_shipping_options_init(decimal_separator)
 {
     if(decimal_separator)
+    {
         nv_cart_decimal_separator = decimal_separator;
+    }
 
     $(".nv_cart_shipping_method_option").on("click", function()
     {
@@ -114,6 +116,12 @@ function nv_cart_shipping_options_init(decimal_separator)
 
         $('.button.nv_cart_button_continue').prop("disabled", false);
     });
+
+    if($(".nv_cart_shipping_method_option").length == 1)
+    {
+        // auto select the only available shipping method
+        $(".nv_cart_shipping_method_option").click();
+    }
 
     nv_cart_keep_alive();
 }

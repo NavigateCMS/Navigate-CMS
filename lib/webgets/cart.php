@@ -2,6 +2,7 @@
 require_once(NAVIGATE_PATH.'/lib/webgets/product.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/properties.php');
 require_once(NAVIGATE_PATH.'/lib/webgets/webuser.php');
+require_once(NAVIGATE_PATH.'/lib/webgets/content.php');
 require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/coupons/coupon.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/orders/order.class.php');
@@ -1271,6 +1272,7 @@ function nvweb_cart_address_page($cart)
     global $session;
 
     $cart_url = nvweb_source_url('theme', 'cart');
+    $checkout_url = nvweb_source_url('theme', 'checkout');
 
     if(empty($cart['customer']))
     {
@@ -1370,7 +1372,6 @@ function nvweb_cart_address_page($cart)
             $cart['address_shipping']  = $address_billing;
             $cart['checkout_step']     = 'shipping';
             $session['cart'] = $cart;
-            $checkout_url = nvweb_source_url('theme', 'checkout');
             nvweb_clean_exit($checkout_url);
         }
     }
@@ -1624,6 +1625,8 @@ function nvweb_cart_shipping_page($cart)
     $out[] = '    <form action="?mode=shipping" method="post">';
     $out[] = '      <h3>'.t(720, "Shipping method").'</h3>';
 
+    $shipping_methods_available = 0;
+
     foreach($shipping_methods as $sm)
     {
         if(!nvweb_object_enabled($sm))
@@ -1642,6 +1645,8 @@ function nvweb_cart_shipping_page($cart)
         {
             continue;
         }
+
+        $shipping_methods_available++;
 
         $shipping_price = $shipping_rate->cost->value;
 
@@ -1689,41 +1694,51 @@ function nvweb_cart_shipping_page($cart)
         $out[] = '</div>';
     }
 
-    $country_name = property::country_name_by_code($cart['address_shipping']['country']);
-
-    $out[] = '    <div class="text-right nv_cart_shipping_order_total" data-order-subtotal="'.number_format($cart['subtotal'], 2, '.', '').'">'.t(706, "Total").': <span>'.core_decimal2string($cart['subtotal']).'</span> '.$cart['currency_symbol'].'</div>';
-    $out[] = '        <br />';
-
-    $out[] = '  <div class="nv_cart-flex-sb">';
-    $out[] = '      <div>';
-    $out[] = '         <h3>'.t(716, "Shipping address").'</h3>';
-    $out[] = '         <div class="nv_cart_shipping_address_information"><p>';
-    $out[] = '          '.$cart['address_shipping']['name'].'<br />';
-    if(!empty($cart['address_shipping']['company']))
+    if($shipping_methods_available > 0)
     {
-        $out[] = '[ '.$cart['address_shipping']['company'].' ]<br />';
+        $country_name = property::country_name_by_code($cart['address_shipping']['country']);
+
+        $out[] = '    <div class="nv_cart_shipping_order_total" data-order-subtotal="'.number_format($cart['subtotal'], 2, '.', '').'">'.t(706, "Total").': <span>'.core_decimal2string($cart['subtotal']).'</span> '.$cart['currency_symbol'].'</div>';
+        $out[] = '        <br />';
+
+        $out[] = '  <div class="nv_cart-flex-sb">';
+        $out[] = '      <div>';
+        $out[] = '         <h3>'.t(716, "Shipping address").'</h3>';
+        $out[] = '         <div class="nv_cart_shipping_address_information"><p>';
+        $out[] = '          '.$cart['address_shipping']['name'].'<br />';
+        if(!empty($cart['address_shipping']['company']))
+        {
+            $out[] = '[ '.$cart['address_shipping']['company'].' ]<br />';
+        }
+        $out[] = '          '.$cart['address_shipping']['address'].'<br />';
+        $out[] = '          '.$cart['address_shipping']['zipcode'].' '.$cart['address_shipping']['location'].'<br />';
+        if(!empty($cart['address_shipping']['region']))
+        {
+            $region_name = property::country_region_name_by_code($cart['address_shipping']['region']);
+            $out[] = '      ' . $region_name . ', ';
+        }
+        $out[] = $country_name;
+        $out[] = '        <br />';
+        $out[] = '        <a href="?modify_address"><small>(' . t(754, "Modify") . ')</small></a>';
+        $out[] = '        </div>';
+        $out[] = '      </div>';
+
+        $out[] = '      <div>';
+        $out[] = '        <h3>'.t(168, "Notes").'</h3>';
+        $out[] = '        <textarea rows="4" name="order_notes">'.core_special_chars($cart['customer_notes']).'</textarea>';
+        $out[] = '      </div>';
+
+        $out[] = '  </div>';
+
+        $out[] = '        <input type="submit" disabled class="button nv_cart_button_continue" value="'.t(755, "Continue").'" />';
     }
-    $out[] = '          '.$cart['address_shipping']['address'].'<br />';
-    $out[] = '          '.$cart['address_shipping']['zipcode'].' '.$cart['address_shipping']['location'].'<br />';
-    if(!empty($cart['address_shipping']['region']))
+    else
     {
-        $region_name = property::country_region_name_by_code($cart['address_shipping']['region']);
-        $out[] = '      ' . $region_name . ', ';
+        $cart['checkout_step'] = 'cart';
+        $session['cart'] = $cart;
+        $out[] = '<div class="nv_cart_errors">'.t(836, "Sorry, there are no shipping methods available for the address provided.").' '.t(837, "The order cannot be placed.").'</div>';
+        $out[] = '<a href="'.$cart_url.'" class="button nv_cart_button_cancel">'.t(58, "Cancel").'</a>';
     }
-    $out[] = $country_name;
-    $out[] = '        <br />';
-    $out[] = '        <a href="?modify_address"><small>(' . t(754, "Modify") . ')</small></a>';
-    $out[] = '        </div>';
-    $out[] = '      </div>';
-
-    $out[] = '      <div>';
-    $out[] = '        <h3>'.t(168, "Notes").'</h3>';
-    $out[] = '        <textarea rows="4" name="order_notes">'.core_special_chars($cart['customer_notes']).'</textarea>';
-    $out[] = '      </div>';
-
-    $out[] = '  </div>';
-
-    $out[] = '        <input type="submit" disabled class="button nv_cart_button_continue" value="'.t(755, "Continue").'" />';
 
     $out[] = '    </form>';
     $out[] = '</div>';
@@ -1884,9 +1899,9 @@ function nvweb_cart_summary_page($cart)
 
     $out[] = '  <br />';
 
-    $out[] = '  <div style="text-align: right;">';
-    $out[] = '    <a class="button secondary" href="'.nvweb_cart(array('mode' => 'cart_url')).'">' . t(754, "Modify") . '</a>';
+    $out[] = '  <div class="nv_cart_summary_actions">';
     $out[] = '    <button type="submit" name="action" value="confirmation">' . t(753, "Place order") . '</button>';
+    $out[] = '    <a class="button secondary" href="'.nvweb_cart(array('mode' => 'cart_url')).'">' . t(754, "Modify") . '</a>';
     $out[] = '  </div>';
 
     $out[] = '    </form>';
@@ -1918,6 +1933,8 @@ function nvweb_cart_payment_page($order, $order_exists=false)
         $order_created_symbol = '<i class="fa fa-fw fa-check-square-o"></i> ';
         $payment_symbol = '<i class="fa fa-fw fa-id-card"></i> ';
     }
+
+    $out[] = '<div class="nv_cart_order_created">';
 
     if(!$order_exists) // if the order has just been created, show thank you message
     {
@@ -1957,6 +1974,8 @@ function nvweb_cart_payment_page($order, $order_exists=false)
         $out[] = '<p class="nv_cart_order_created_payment_method_info">'.t(727, "Payment method").': <span>'.$payment_method_title.'</span></p>';
         $out[] = '<div class="nv_cart_order_created_payment_method_content">'.$payment_method->checkout($order).'</div>';
     }
+
+    $out[] = '</div>';
 
     nvweb_after_body(
         'html',
