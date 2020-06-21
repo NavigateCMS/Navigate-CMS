@@ -6,6 +6,7 @@ class payment_method
     public $codename;
     public $extension;
     public $image;
+    public $icon;
     public $permission;
     public $position;
     
@@ -37,6 +38,7 @@ class payment_method
         $this->codename		= $main->codename;
         $this->extension    = $main->extension;
         $this->image		= $main->image;
+        $this->icon 		= $main->icon;
         $this->permission	= $main->permission;
         $this->position 	= $main->position;
         $this->dictionary	= webdictionary::load_element_strings('payment_method', $this->id);
@@ -48,6 +50,7 @@ class payment_method
         $this->extension  	= core_purify_string($_REQUEST['extension']);
         $this->permission	= core_purify_string($_REQUEST['permission']);
         $this->image		= intval($_REQUEST['image']);
+        $this->icon 		= core_purify_string($_REQUEST['icon']);
 
         $this->dictionary   = array();
         $fields = array('title', 'description', 'payment-above', 'payment-below');
@@ -115,15 +118,16 @@ class payment_method
 
         $DB->execute(' 
  			INSERT INTO nv_payment_methods
-				(id, website, codename, extension, image, permission, position)
+				(id, website, codename, extension, image, icon, permission, position)
 			VALUES 
-				( 0, :website, :codename, :extension, :image, :permission, :position)
+				( 0, :website, :codename, :extension, :image, :icon, :permission, :position)
 			',
             array(
                 'website' => value_or_default($this->website, $website->id),
                 'codename' => value_or_default($this->codename, ""),
                 'extension' => value_or_default($this->extension, ""),
                 'image' => value_or_default($this->image, 0),
+                'icon' => value_or_default($this->icon, ""),
                 'permission' => value_or_default($this->permission, 0),
                 'position' => value_or_default($this->position, 0)
             )
@@ -142,7 +146,8 @@ class payment_method
 
         $ok = $DB->execute(' 
  			UPDATE nv_payment_methods
-			  SET codename = :codename, extension = :extension, image = :image, permission = :permission, position = :position
+			  SET codename = :codename, extension = :extension, image = :image, icon = :icon, 
+			      permission = :permission, position = :position
 			WHERE id = :id	AND	website = :website',
             array(
                 'id' => $this->id,
@@ -150,6 +155,7 @@ class payment_method
                 'codename' => value_or_default($this->codename, ""),
                 'extension' => value_or_default($this->extension, ""),
                 'image' => value_or_default($this->image, 0),
+                'icon' => value_or_default($this->icon, ""),
                 'permission' => value_or_default($this->permission, 0),
                 'position' => value_or_default($this->position, 0)
             )

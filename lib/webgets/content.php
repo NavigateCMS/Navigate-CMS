@@ -419,6 +419,27 @@ function nvweb_content_date_format($format="", $ts)
 	return $out;
 }
 
+function nvweb_content_icon($icon, $extra_classes="")
+{
+    global $html;
+
+    // parse and convert icon string to an HTML equivalent
+    $icon = explode('#', $icon);
+
+    if($icon[0] == 'fontawesome-4')
+    {
+        // include font awesome 4 if has not already been loaded in the template
+        if(strpos($html, 'font-awesome.')===false)
+        {
+            $out[] = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />';
+        }
+
+        $out = '<i class="fa '.$icon[1].' '.$extra_classes.'"></i>';
+    }
+
+    return $out;
+}
+
 function nvweb_content_items($categories=array(), $only_published=false, $max=NULL, $embedding=true, $order='date')
 {
     global $website;

@@ -1800,6 +1800,11 @@ function nvweb_cart_summary_page($cart)
 
         if(empty($pm->image))
         {
+            if(!empty($pm->icon))
+            {
+                $icon_html = nvweb_content_icon($pm->icon, "fa-lg fa-fw");
+                $payment_method_title = $icon_html.' '.$payment_method_title;
+            }
 
             $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
                 $payment_method_title .
@@ -2012,6 +2017,12 @@ function nvweb_cart_payment_failed($order)
 
         if(empty($pm->image))
         {
+            if(!empty($pm->icon))
+            {
+                $icon_html = nvweb_content_icon($pm->icon, "fa-lg fa-fw");
+                $payment_method_title = $icon_html.' '.$payment_method_title;
+            }
+
             $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
                  $payment_method_title .
                 '</label>';

@@ -384,6 +384,13 @@ function payment_methods_form($object)
         )
     );
 
+	$navibars->add_tab_content_row(
+	    array(
+	        '<label>'.t(242, 'Icon').'</label>',
+			$naviforms->iconfield('icon', $object->icon)
+        )
+    );
+
     $permission_options = array(
         0 => t(69, 'Published'),
         1 => t(70, 'Private'),
@@ -503,16 +510,22 @@ function payment_methods_form($object)
     $navibars->add_tab('<i class="fa fa-sort"></i> '.t(171, 'Order'));
 
     $DB->query('
-      SELECT pm.id as id, d.text as title
-	  FROM nv_payment_methods pm, nv_webdictionary d
-         WHERE d.node_type = "payment_method"
-           AND d.subtype = "title"
-           AND d.lang = "'.$website->languages_list[0].'"
-           AND d.node_id = pm.id
-           AND d.website = '.$website->id.'
-           AND pm.website = '.$website->id.'
-        ORDER BY pm.position ASC
-    ');
+          SELECT pm.id as id, d.text as title
+          FROM nv_payment_methods pm, nv_webdictionary d
+             WHERE d.node_type = "payment_method"
+               AND d.subtype = "title"
+               AND d.lang = :wlang
+               AND d.node_id = pm.id
+               AND d.website = :wid
+               AND pm.website = :wid
+            ORDER BY pm.position ASC
+        ',
+        'object',
+        array(
+            ':wlang' => $website->languages_list[0],
+            ':wid' => $website->id
+        )
+    );
 
     $payment_methods_ids = $DB->result('id');
     $payment_methods = $DB->result();
