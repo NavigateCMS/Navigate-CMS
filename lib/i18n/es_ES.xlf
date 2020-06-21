@@ -4201,6 +4201,16 @@
 			   <target>Si la dada introducida es correcta, se habrá enviado un email con un enlace de confirmación.</target>
 		   </trans-unit>
 
+			<trans-unit id="836" approved="yes">
+				<source>Sorry, there are no shipping methods available for the address provided.</source>
+				<target>Lo sentimos, no hay ningún método de envío disponible para la dirección indicada.</target>
+			</trans-unit>
+
+			<trans-unit id="837" approved="yes">
+				<source>The order cannot be placed.</source>
+				<target>El pedido no puede completarse.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

@@ -4202,6 +4202,16 @@
                 <target>Wiadomość e-mail z linkiem potwierdzającym została wysłana na Twoje konto e-mail, jeśli Twoje dane były prawidłowe.</target>
             </trans-unit>
 
+            <trans-unit id="836">
+                <source>Sorry, there are no shipping methods available for the address provided.</source>
+                <target>Przepraszamy, nie ma dostępnych metod wysyłki dla podanego adresu.</target>
+            </trans-unit>
+
+            <trans-unit id="837">
+                <source>The order cannot be placed.</source>
+                <target>Zamówienia nie można złożyć.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

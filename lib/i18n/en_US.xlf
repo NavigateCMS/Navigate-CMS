@@ -4202,6 +4202,16 @@
 				<target>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</target>
 			</trans-unit>
 
+			<trans-unit id="836" approved="yes">
+				<source>Sorry, there are no shipping methods available for the address provided.</source>
+				<target>Sorry, there are no shipping methods available for the address provided.</target>
+			</trans-unit>
+
+			<trans-unit id="837" approved="yes">
+				<source>The order cannot be placed.</source>
+				<target>The order cannot be placed.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

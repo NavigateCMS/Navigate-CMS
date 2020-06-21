@@ -4202,6 +4202,16 @@
 				<target>Eine E-Mail mit einem Bestätigungslink wurde an Ihr E-Mail-Konto gesendet, wenn Ihre Eingabe korrekt war.</target>
 			</trans-unit>
 
+			<trans-unit id="836">
+				<source>Sorry, there are no shipping methods available for the address provided.</source>
+				<target>Für die angegebene Adresse sind leider keine Versandmethoden verfügbar.</target>
+			</trans-unit>
+
+			<trans-unit id="837">
+				<source>The order cannot be placed.</source>
+				<target>Die Bestellung kann nicht aufgegeben werden.</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

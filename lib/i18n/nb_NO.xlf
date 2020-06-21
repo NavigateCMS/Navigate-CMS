@@ -4203,6 +4203,16 @@
                 <target>En e-post med en bekreftelseslink er blitt sendt til din e-postkonto hvis innspillet var riktig.</target>
             </trans-unit>
 
+            <trans-unit id="836">
+                <source>Sorry, there are no shipping methods available for the address provided.</source>
+                <target>Beklager, det er ingen leveringsmetoder tilgjengelig for den oppgitte adressen.</target>
+            </trans-unit>
+
+            <trans-unit id="837">
+                <source>The order cannot be placed.</source>
+                <target>Bestillingen kan ikke legges inn.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

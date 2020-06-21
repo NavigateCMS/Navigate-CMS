@@ -4215,6 +4215,16 @@
                 <target>Si la dada introduïda és correcta, s'haurà enviat un email amb un enllaç de confirmació.</target>
             </trans-unit>
 
+            <trans-unit id="836" approved="yes">
+                <source>Sorry, there are no shipping methods available for the address provided.</source>
+                <target>Ho sentim, no hi ha cap mètode d'enviament disponible per a l'adreça indicada.</target>
+            </trans-unit>
+
+            <trans-unit id="837" approved="yes">
+                <source>The order cannot be placed.</source>
+                <target>La comanda no es pot completar.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
