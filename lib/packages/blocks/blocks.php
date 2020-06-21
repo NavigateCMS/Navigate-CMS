@@ -1429,7 +1429,6 @@ function blocks_form($item)
                 $table->addHeaderColumn('<i class="fa fa-lg fa-fw fa-globe" title="'.t(364, 'Access').'"></i>', 20);
                 $table->addHeaderColumn(t(35, 'Remove'), 50);
 
-
 				if(empty($item->trigger['trigger-links'][$lang]['link']))
 				{
 					// create a default entry
@@ -1846,20 +1845,7 @@ function blocks_form($item)
             $fontawesome_classes = '';
             if($links_icons == 'fontawesome')
             {
-                $fontawesome_classes = block::fontawesome_list();
-                $fontawesome_classes = array_map(
-                    function($v)
-                    {
-                        $x = new stdClass();
-                        $x->id = $v;
-                        if(!empty($v))
-                        {
-                            $x->text = substr($v, 3);
-                        }
-                        return $x;
-                    },
-                    $fontawesome_classes
-                );
+                $fontawesome_classes = $layout->fontawesome_list();
             }
 
             $layout->add_script('
@@ -1879,7 +1865,9 @@ function blocks_form($item)
 
 						links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
 						if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
+						{
 							$("#trigger-links-table-row-model-'.$alang.'").hide();
+                        }
 
 						// prepare select2 to select icons
 						if('.($links_icons=='fontawesome'? 'true' : 'false').')
@@ -1888,11 +1876,15 @@ function blocks_form($item)
 							{
 								// do not apply select2 to head row
 								if(!$(tr).find("select"))
-									return;
+								{
+								    return;
+                                }
 
 								// do not apply select2 to model row
 								if($(tr).attr("id") && ($(this).attr("id")).indexOf("table-row-model") > 0)
+								{
 									return;
+                                }
 
 								navigate_blocks_trigger_links_table_icon_selector(tr);
 							});

@@ -45,7 +45,9 @@ class naviforms
 	{
         $class = '';
         if($control_replacement)
+        {
             $class = 'select2';
+        }
 
         $class.= ' '.$extra_classes;
 
@@ -678,6 +680,69 @@ class naviforms
         ');
 
         return $out;
+    }
+
+    public function iconfield($id, $value, $class="")
+    {
+        global $layout;
+
+        // right now, only fontawesome 4 icon set is supported
+        $fontawesome_classes = $layout->fontawesome_list();
+
+		$out = array();
+        $out[] = '<select class="'.$class.'" name="'.$id.'" id="'.$id.'" data-select2-value="'.core_special_chars($value).'">';
+
+		for($i=0; $i < count($fontawesome_classes); $i++)
+		{
+            $out[] = '<option value="fontawesome-4#'.$fontawesome_classes[$i]->class.'" title="'.$fontawesome_classes[$i]->class.'">'.$fontawesome_classes[$i]->text.'</option>';
+		}
+
+		$out[] = '</select>';
+
+		$layout->add_script('
+		    $("#'.$id.'").select2({
+		        placeholder: "",
+		        allowClear: true,
+		        escapeMarkup: function (markup)
+		        {
+		            return markup; // let our custom formatter work
+		        },
+		        templateSelection: function(row)
+		        {
+		            if(row.id)
+		            {
+		                return "<i class=\"fa fa-fw fa-2x "+row.title+"\" style=\"vertical-align: top;\"></i> " + row.text;
+		            }
+		            else
+		            {
+		                return "("  + navigate_t(581, "None") + ")";
+		            }
+		        },
+		        templateResult: function(data)
+		        {		        
+		            if(data.text)
+		            {
+		                return "<i class=\"fa fa-fw fa-2x "+data.title+"\" style=\"vertical-align: middle;\"></i> " + data.text;
+		            }
+		            else
+		            {
+		                return "("  + navigate_t(581, "None") + ")";
+		            }
+		        }
+		    });
+		
+		    // select default value
+		    $("#'.$id.'").val($("#'.$id.'").data("select2-value"));
+		    $("#'.$id.'").trigger("change");
+		    if($("#'.$id.'").data("select2-value")=="")
+		    {
+		        $("#'.$id.'").next().find(".select2-selection__clear").trigger("mousedown");
+		        $("#'.$id.'").select2("close");
+		    }
+		');
+
+		return implode("\n", $out);
+
     }
 
 	public function scriptarea($name, $value, $syntax="js", $style= " width: 75%; height: 250px; ")

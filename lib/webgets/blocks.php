@@ -425,7 +425,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
             $type  = $btype;
         }
 	}
-	
+
 	$lang = $current['lang'];
 	
 	$sizes = '';
@@ -557,14 +557,18 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
                 $new_window = '';
 
                 if(@$tl['access'][$key] > 0) // link is hidden!
+                {
                     continue;
+                }
 
                 $title = $tl['title'][$key];
 
                 $link = nvweb_prepare_link($link);
 
                 if($tl['new_window'][$key]=='1')
+                {
                     $new_window = ' target="_blank" ';
+                }
 
                 // icons, by the moment only compatible with Font Awesome
                 $icon = '';
@@ -579,6 +583,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
                 }
 
                 $title = core_special_chars($title);
+                $link = core_special_chars($link);
                 $trigger_html[] = $prefix.'<a href="'.$link.'"'.$new_window.'>'.$icon.$title.'</a>'.$suffix;
             }
             $glue = '';
@@ -727,7 +732,7 @@ function nvweb_blocks_render_poll($object)
         {
             $out .= '<div class="block-poll-answer">';
             $out .= '   <input type="radio" id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'" name="'.$object->type.'-'.$object->id.'-answer" value="'.core_special_chars($answer['code']).'" />';
-            $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.$answer['title'].'</label>';
+            $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.core_special_chars($answer['title']).'</label>';
             $out .= '</div>';
         }
 
@@ -823,7 +828,7 @@ function nvweb_blocks_render_poll_results($object)
         $percentage = $answer['votes'] / $votes_count * 100;
         $out .= '<div class="block-poll-result">';
         $out .= '   <span id="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'" data-percentage="'.round($percentage, 1).'" data-votes="'.$answer['votes'].'">'.round($percentage, 1).' %</span>';
-        $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.$answer['title'].'</label>';
+        $out .= '   <label for="'.$object->type.'-'.$object->id.'-answer-'.$answer['code'].'">'.core_special_chars($answer['title']).'</label>';
         $out .= '</div>';
     }
 

@@ -25,8 +25,6 @@ class block
     public $uid;
     public $properties;
 
-    static $nv_fontawesome_classes;
-
     public function __clone()
     {
         foreach($this as $key => $val)
@@ -1061,33 +1059,6 @@ class block
 
         return $out;
     }
-
-    public static function fontawesome_list()
-    {
-        if(empty($nv_fontawesome_classes))
-        {
-            $facss = file_get_contents(NAVIGATE_PATH.'/css/font-awesome/css/font-awesome.css');
-            $facss = explode("\n", $facss);
-            $facss = array_map(function($k)
-            {
-                if(strpos($k, '.')===0 && strpos($k, ':before')!==false)
-                {
-                    return substr($k, 1, strpos($k, ':before')-1);
-                }
-                else
-                {
-                    return NULL;
-                }
-            }, $facss);
-            $facss = array_filter($facss);
-            $nv_fontawesome_classes = array_values($facss);
-            sort($nv_fontawesome_classes);
-        }
-
-        return $nv_fontawesome_classes;
-    }
-
-	// TODO: add more font icon libraries (ionicons, etc.)
 
     public static function __set_state(array $obj)
 	{

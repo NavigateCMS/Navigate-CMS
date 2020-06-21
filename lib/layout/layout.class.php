@@ -10,6 +10,8 @@ class layout
 	public $buffer;
 
 	public $parts_added;
+
+    private $nv_fontawesome_classes;
 	
 	public function __construct($layout)	
 	{
@@ -1490,6 +1492,48 @@ class layout
             nv_link_dialog_source_change(); // auto-select structure on load
 		');
 	}
+
+    public function fontawesome_list()
+    {
+        // TODO: add more font icon libraries (ionicons, etc.)
+        if(empty($this->nv_fontawesome_classes))
+        {
+            $facss = file_get_contents(NAVIGATE_PATH.'/css/font-awesome/css/font-awesome.css');
+            $facss = explode("\n", $facss);
+            $facss = array_map(function($k)
+            {
+                if(strpos($k, '.')===0 && strpos($k, ':before')!==false)
+                {
+                    return substr($k, 1, strpos($k, ':before')-1);
+                }
+                else
+                {
+                    return NULL;
+                }
+            }, $facss);
+            $facss = array_filter($facss);
+            $fontawesome_classes = array_values($facss);
+            sort($fontawesome_classes);
+
+            $fontawesome_classes = array_map(
+                function($v)
+                {
+                    $x = new stdClass();
+                    $x->class = $v;
+                    if(!empty($v))
+                    {
+                        $x->text = substr($v, 3);
+                    }
+                    return $x;
+                },
+                $fontawesome_classes
+            );
+
+            $this->nv_fontawesome_classes = $fontawesome_classes;
+        }
+
+        return $this->nv_fontawesome_classes;
+    }
 	
 	public function silk_sprite($html)
 	{
