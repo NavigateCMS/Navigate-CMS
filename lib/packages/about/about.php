@@ -104,7 +104,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.11.2</a><br />'
+			'<a href="http://www.jqueryui.com" target="_blank">jQuery UI v1.12.1</a><br />'
 		)
 	);
 
@@ -241,7 +241,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.32.0</a><br />'
+			'<a href="http://codemirror.net" target="_blank">CodeMirror source code editor v5.55.0</a><br />'
 		)
 	);
 

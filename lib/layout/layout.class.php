@@ -227,6 +227,7 @@ class layout
 		
 		$this->add_script_tag('lib/external/codemirror/lib/codemirror.js');
         $this->add_script_tag('lib/external/codemirror/addon/hint/html-hint.js');
+        $this->add_script_tag('lib/external/codemirror/addon/hint/xml-hint.js');
         $this->add_script_tag('lib/external/codemirror/addon/hint/javascript-hint.js');
         $this->add_script_tag('lib/external/codemirror/addon/hint/show-hint.js');
         $this->add_script_tag('lib/external/codemirror/addon/edit/closebrackets.js');
