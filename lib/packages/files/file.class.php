@@ -907,6 +907,11 @@ class file
 	
 	public static function image_dimensions($path, $mime=null)
 	{
+	    if(!file_exists($path))
+        {
+            return false;
+        }
+
 	    if($mime=='image/svg+xml')
         {
             $svg = simplexml_load_file($path);

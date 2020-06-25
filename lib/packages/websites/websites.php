@@ -1070,7 +1070,7 @@ function websites_form($item)
 
     foreach($languages_rs as $lang)
     {
-        $languages[$lang->name] = $lang->code;
+        $languages[$lang->name] = core_special_chars($lang->code);
     }
 
     if(empty($item->languages))
@@ -1109,24 +1109,24 @@ function websites_form($item)
         $published = (array_search($lcode, $item->languages_published)!==false);
         $variant = !empty($ldef['variant']);
 
-        $select_language = $naviforms->select_from_object_array('language-id['.$p.']', $languages_rs, 'code', 'name', $ldef['language'], ' width: 150px; ');
+        $select_language = $naviforms->select_from_object_array('language-id['.$p.']', $languages_rs, 'code', 'name', core_special_chars($ldef['language']), ' width: 150px; ');
 
         if(empty($locales))
         {
-            $select_locale   = $naviforms->textfield('language-locale['.$p.']', $ldef['system_locale'], '300px');
+            $select_locale   = $naviforms->textfield('language-locale['.$p.']', core_special_chars($ldef['system_locale']), '300px');
         }
         else
         {
-            $select_locale   = $naviforms->selectfield('language-locale['.$p.']', array_keys($locales), array_values($locales), $ldef['system_locale'], '', false, array(), 'width: 300px;');
+            $select_locale   = $naviforms->selectfield('language-locale['.$p.']', array_keys($locales), array_values($locales), core_special_chars($ldef['system_locale']), '', false, array(), 'width: 300px;');
         }
 
 	    $uid = uniqid();
         $table->addRow($p, array(
             array('content' => $select_language, 'align' => 'left'),
-            array('content' => '<div style=" white-space: nowrap; "><input type="text" name="language-code[]" value="'.$ldef['language'].'" style="width: 30px;" /></div>', 'align' => 'left'),
-            array('content' => '<input type="checkbox" name="language-variant[]" id="language-variant['.$uid.']" value="1" '.($variant? 'checked="checked"': '').' style="float:left;" class="raw-checkbox" /> <input type="text" name="language-variant-code[]" value="'.$ldef['variant'].'" style="width: 75px;" />', 'align' => 'left'),
+            array('content' => '<div style=" white-space: nowrap; "><input type="text" name="language-code[]" value="'.core_special_chars($ldef['language']).'" style="width: 30px;" /></div>', 'align' => 'left'),
+            array('content' => '<input type="checkbox" name="language-variant[]" id="language-variant['.$uid.']" value="1" '.($variant? 'checked="checked"': '').' style="float:left;" class="raw-checkbox" /> <input type="text" name="language-variant-code[]" value="'.core_special_chars($ldef['variant']).'" style="width: 75px;" />', 'align' => 'left'),
             array('content' => $select_locale, 'align' => 'left'),
-            array('content' => '<input type="hidden" name="language-published[]" value="'.($published? '1' : '0').'" /><input type="checkbox" id="language-published['.$uid.']" value="'.$lcode.'" '.($published? 'checked="checked"': '').' onclick=" if($(this).is(\':checked\')) { $(this).prev().val(1); } else { $(this).prev().val(0); }; " /><label for="language-published['.$uid.']"></label>', 'align' => 'center'),
+            array('content' => '<input type="hidden" name="language-published[]" value="'.($published? '1' : '0').'" /><input type="checkbox" id="language-published['.$uid.']" value="'.core_special_chars($lcode).'" '.($published? 'checked="checked"': '').' onclick=" if($(this).is(\':checked\')) { $(this).prev().val(1); } else { $(this).prev().val(0); }; " /><label for="language-published['.$uid.']"></label>', 'align' => 'center'),
             array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" onclick="navigate_websites_language_remove(this);" />', 'align' => 'center')
         ));
     }
@@ -1566,7 +1566,7 @@ function websites_form($item)
 	{
         if($item->comments_default_moderator!='c_author')
         {
-            $moderator_username[] = $DB->query_single('username', 'nv_users', ' id = '.intval($item->comments_default_moderator));
+            $moderator_username[] = core_special_chars($DB->query_single('username', 'nv_users', ' id = '.intval($item->comments_default_moderator)));
 	        $moderator_id[] = $item->comments_default_moderator;
         }
 	}
@@ -1574,7 +1574,7 @@ function websites_form($item)
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(255, 'Moderator').'</label>',
-	        $naviforms->selectfield('comments_default_moderator', $moderator_id, $moderator_username, $item->comments_default_moderator, null, false, null, null, false),
+	        $naviforms->selectfield('comments_default_moderator', $moderator_id, $moderator_username, core_special_chars($item->comments_default_moderator), null, false, null, null, false),
             '<span style="display: none;" id="comments_default_moderator-helper">'.t(535, "Find user by name").'</span>',
             '<div class="subcomment"><img align="absmiddle" src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(256, 'Leave blank to accept all comments').'</div>'
         )
@@ -1660,7 +1660,7 @@ function websites_form($item)
                     'sendmail' => 'Sendmail',
                     'mail' => 'PHP mail'
                 ),
-                (empty($item->mail_mailer)? 'smtp' : $item->mail_mailer),
+                (empty($item->mail_mailer)? 'smtp' : core_special_chars($item->mail_mailer)),
                 "navigate_change_mail_transport(this);"
             )
         )
@@ -1671,9 +1671,13 @@ function websites_form($item)
         {
             var mail_mailer = "";
             if(el=="smtp" || el=="sendmail" || el=="mail")
+            {
                 mail_mailer = el;
+            }
             else
+            {
                 mail_mailer = $("input#" + $(el).attr("for")).val();
+            }
 
             $("#mail_server").parent().show();
             $("#mail_port").parent().show();
@@ -1690,7 +1694,7 @@ function websites_form($item)
             }
         }
 
-        navigate_change_mail_transport("'.(empty($item->mail_mailer)? 'smtp' : $item->mail_mailer).'");
+        navigate_change_mail_transport("'.(empty($item->mail_mailer)? 'smtp' : core_special_chars($item->mail_mailer)).'");
     ');
 
 	$navibars->add_tab_content_row(
@@ -1818,7 +1822,9 @@ function websites_form($item)
 			        navigate_status(navigate_lang_dictionary[42], "ready");
 			        var error_message = (data.responseText).split("<br />")[0];
 			        if(error_message!="")
+			        {
 			            error_message = ": " + error_message;
+                    }
 
 			        navigate_notification("'.t(56, "Unexpected error.").'" + error_message, true);
 			  },
@@ -1901,9 +1907,13 @@ function websites_form($item)
                     {
                         var tags = $(this).tagit("assignedTags");
                         if(tags.length > 0)
+                        {
                             tags = tags.join(",");
+                        }
                         else
+                        {
                             tags = "";
+                        }
                             
                         $("#metatag_keywords-'.$lang.'").val(tags);
                     }
