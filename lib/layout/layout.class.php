@@ -1358,7 +1358,8 @@ class layout
                             data: {
                                 tmp_name: "{{BASE64}}",
                                 name: File.name,
-                                parent: parent
+                                parent: parent,
+                                _nv_csrf_token: navigatecms.csrf_token
                             }
                         });
                     });

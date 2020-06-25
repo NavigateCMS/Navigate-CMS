@@ -593,8 +593,9 @@ function files_browser($parent, $search="")
 							dataType: "json",
 							data: {
 							    tmp_name: "{{BASE64}}",
-							    name: File.name,
-							    parent: '.$parent.'
+							    name: File.name,							    
+							    parent: '.$parent.',
+							    _nv_csrf_token: navigatecms.csrf_token
 							}
 						});
 					});

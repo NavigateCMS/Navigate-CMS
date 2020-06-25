@@ -279,7 +279,14 @@ if($user->permission("files.upload")=="true")
             $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
             // clean the fileName for security reasons
-            $fileName = base64_encode($fileName);
+            $tmp_name = strtolower(base64_encode($fileName));
+            $tmp_name = trim(str_replace(array('..', '\\', '/', '//', ' '), '', $tmp_name));
+            $tmp_name = rtrim($tmp_name, ".\t\n\r\0\x0B");
+            $tmp_name = ltrim($tmp_name, ".\t\n\r\0\x0B");
+            if(PHP_MAJOR_VERSION >= 7)
+            {
+                $tmp_name = URLify::filter($tmp_name, 128, 'en', true, false, true, '-');
+            }
 
             // remove old temp files
             if(is_dir($targetDir) && ($dir = opendir($targetDir)))
@@ -307,7 +314,7 @@ if($user->permission("files.upload")=="true")
                 if(isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']))
                 {
                     // Open temp file
-                    $out = fopen($targetDir.DIRECTORY_SEPARATOR.$fileName, ($chunk == 0 ? "wb" : "ab"));
+                    $out = fopen($targetDir.DIRECTORY_SEPARATOR.$tmp_name, ($chunk == 0 ? "wb" : "ab"));
                     if($out)
                     {
                         // Read binary input stream and append it to temp file
@@ -345,7 +352,7 @@ if($user->permission("files.upload")=="true")
             else
             {
                 // Open temp file
-                $out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
+                $out = fopen($targetDir . DIRECTORY_SEPARATOR . $tmp_name, $chunk == 0 ? "wb" : "ab");
                 if($out)
                 {
                     // Read binary input stream and append it to temp file
@@ -373,7 +380,7 @@ if($user->permission("files.upload")=="true")
                 }
             }
 
-            // Return JSON-RPC response
+            // Return JSON-RPC response, null => upload ok
             echo '{"jsonrpc" : "2.0", "result" : null, "id" : "id"}';
             core_terminate();
             break;
