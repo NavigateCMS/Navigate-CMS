@@ -1580,6 +1580,7 @@ class property
     public static function country_name_by_code($code, $language="")
     {
         global $DB;
+        global $website;
 
         $lang = core_get_language($language);
 
@@ -1596,6 +1597,26 @@ class property
         );
 
         $row = $DB->first();
+
+        if(empty($row))
+        {
+            // maybe language translation is not available for this country
+            // try to get it using the website default language
+            if(!empty($website->languages_published))
+            {
+                $name = property::country_name_by_code($code, $website->languages_published[0]);
+                if(!empty($name))
+                {
+                    return $name;
+                }
+            }
+        }
+
+        if(empty($row))
+        {
+            // can't find country name using translations, use English
+            return property::country_name_by_code($code, 'en');
+        }
 
         return $row->name;
     }
