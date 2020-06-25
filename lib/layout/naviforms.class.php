@@ -748,12 +748,12 @@ class naviforms
 	public function scriptarea($name, $value, $syntax="js", $style= " width: 75%; height: 250px; ")
 	{
 		global $layout;
-		
-		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" '.$style.' " rows="10">'.$value.'</textarea>';
+
+		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" '.$style.' " rows="10">'.base64_encode($value).'</textarea>';
 
 		$layout->add_script('
 			$(window).on("load", function()
-			{
+			{		
 				var cm = CodeMirror.fromTextArea(
 				    document.getElementById("'.$name.'"), 
                     {
@@ -766,6 +766,8 @@ class naviforms
                         extraKeys: {"Ctrl-Space": "autocomplete"}
                     }
                 );
+                
+                cm.doc.setValue($.base64.decode($("#'.$name.'").val()));
 
 		        CodeMirror.commands.autocomplete = function(cm) {
                     CodeMirror.showHint(cm, CodeMirror.htmlHint);

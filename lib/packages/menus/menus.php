@@ -279,8 +279,6 @@ function functions_form($item)
         )
     );
 
-	debugger::bar_dump($item);
-
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>#'.t(67, 'Title').' (lid)</label>',
