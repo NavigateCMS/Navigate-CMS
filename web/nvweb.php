@@ -58,7 +58,7 @@ function nvweb_parse($request)
         {
             $website = nvweb_load_website_by_url($url);
         }
-
+        
         $events = new events();
         $events->load_extensions_installed();
         $events->extension_preinit_bindings();
@@ -270,27 +270,6 @@ function nvweb_parse($request)
             nvweb_clean_exit();
         }
 
-        debugger::timer('nvweb-page-cache-check');
-
-        if($current['pagecache_enabled'])
-        {
-            $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
-
-            // the cache for this page has been created in the last hour?
-            if(file_exists($page_cache) && filemtime($page_cache) > (core_time() - 3600))
-            {
-                $html = file_get_contents($page_cache);
-                $_SESSION['nvweb.' . $website->id] = $session;
-                session_write_close();
-                $DB->disconnect();
-                echo $html;
-                echo '<!-- cached page time: '.(date("c", filemtime($page_cache))).' -->';
-                exit;
-            }
-            // else, generate the page and save it into the cache, if necessary
-        }
-
-        debugger::stop_timer('nvweb-page-cache-check');
         debugger::timer('nvweb-load-dictionary');
 
         // load dictionary, extensions and bind events (as soon as possible)
@@ -321,6 +300,28 @@ function nvweb_parse($request)
             nvweb_route_parse('***nv.not_allowed***');
             nvweb_clean_exit();
         }
+
+        debugger::timer('nvweb-page-cache-check');
+
+        if($current['pagecache_enabled'])
+        {
+            $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
+
+            // the cache for this page has been created in the last hour?
+            if(file_exists($page_cache) && filemtime($page_cache) > (core_time() - 3600))
+            {
+                $html = file_get_contents($page_cache);
+                $_SESSION['nvweb.' . $website->id] = $session;
+                session_write_close();
+                $DB->disconnect();
+                echo $html;
+                echo '<!-- cached page time: '.(date("c", filemtime($page_cache))).' -->';
+                exit;
+            }
+            // else, generate the page and save it into the cache, if necessary
+        }
+
+        debugger::stop_timer('nvweb-page-cache-check');
 
         $template = nvweb_template_load();
         $events->trigger('theme', 'template_load', array('template' => &$template));

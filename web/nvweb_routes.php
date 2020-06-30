@@ -2,9 +2,13 @@
 function nvweb_self_url()
 { 
 	if(!isset($_SERVER['REQUEST_URI']))
-		$serverrequri = $_SERVER['PHP_SELF']; 
+    {
+        $serverrequri = $_SERVER['PHP_SELF'];
+    }
 	else
-		$serverrequri = $_SERVER['REQUEST_URI'];
+    {
+        $serverrequri = $_SERVER['REQUEST_URI'];
+    }
 
 	$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""; 
 	$s1 = strtolower($_SERVER["SERVER_PROTOCOL"]);
@@ -22,11 +26,15 @@ function nvweb_self_url()
 
     // remove last '?' in url if exists
     if(substr($url, -1)=='?')
+    {
         $url = substr($url, 0, -1);
+    }
 
 	// remove last '/' in url if exists
     if(substr($url, -1)=='/')
+    {
         $url = substr($url, 0, -1);
+    }
 
 	return $url;
 }
@@ -41,7 +49,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 	$parsed = parse_url($url);
     $scheme = $parsed['scheme']; // http, https...
 	$host = $parsed['host']; // subdomain.domain.tld
-	$path = $parsed['path']; // [/folder]page
+	$path = value_or_default($parsed['path'], ""); // [/folder]page
 
     if(filter_var($host, FILTER_VALIDATE_IP) !== false)
     {
@@ -214,9 +222,16 @@ function nvweb_load_website_by_url($url, $exit=true)
             $path_segments = explode('/', $path);
             $folder_segments = explode('/', $web->folder);
 
+            if(empty($path_segments) && !empty($folder_segments))
+            {
+                break;
+            }
+
             $folder_coincidence = true;
             for($fs=0; $fs < count($folder_segments); $fs++)
+            {
                 $folder_coincidence = $folder_coincidence && ($folder_segments[$fs]==$path_segments[$fs]);
+            }
 
             if($folder_coincidence)
             {
@@ -228,7 +243,9 @@ function nvweb_load_website_by_url($url, $exit=true)
 
 	// website could not be identified, just load the first available
 	if(empty($website->id))
-		$website->load();
+    {
+        $website->load();
+    }
 
 	return $website;
 }
@@ -471,15 +488,19 @@ function nvweb_route_parse($route="")
 			}
 			// do NOT break this case, continue processing as wrong_path action
 
-        // no special route (or already processed), look for the path on navigate routing table
+        // no special core route (or already processed), look for the path on navigate routing table
+        // it can also belong to an extension
 		default:
 			$DB->query('
                 SELECT * FROM nv_paths 
 				WHERE path = :route AND 
-				      website = '.$website->id.'
+				      website = :wid
 				ORDER BY id DESC',
                 'object',
-                array(':route' => '/' . $route)
+                array(
+                    ':route' => '/' . $route,
+                    ':wid' => $website->id
+                )
             );
 			$rs = $DB->result();
 

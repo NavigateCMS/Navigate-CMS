@@ -214,7 +214,7 @@ function nvweb_template_parse($template)
 				$fname = 'nvweb_'.$tag['attributes']['name'];
 
 				$tag['attributes']['nvweb_html'] = $html;	// always pass the current buffered output to the webget
-				
+
 				if(function_exists($fname))
                 {
                     $content = $fname($tag['attributes']);
@@ -511,7 +511,10 @@ function nvweb_template_parse_special($html)
 	for($t=count($tags_pre); $t--; $t >= 0) // need to process the tags upwards, to keep the offsets found
 	{
 		$tag = $tags_pre[$t];
-		if(empty($tag)) continue;
+		if(empty($tag))
+        {
+            continue;
+        }
 		$tag_uid = uniqid('nv-tags-pre-');
 		$current['delayed_tags_pre'][$tag_uid] = $tag['full_tag'];
 		$html = substr_replace($html, '<!--#'.$tag_uid.'#-->', $tag['offset'], strlen($tag['full_tag']));
@@ -521,7 +524,10 @@ function nvweb_template_parse_special($html)
 	for($t=count($tags_code); $t--; $t >= 0) // need to process the tags upwards, to keep the offsets found
 	{
 		$tag = $tags_code[$t];
-		if(empty($tag)) continue;
+		if(empty($tag))
+        {
+            continue;
+        }
 		$tag_uid = uniqid('nv-tags-code-');
 		$current['delayed_tags_code'][$tag_uid] = $tag['full_tag'];
 		$html = substr_replace($html, '<!--#'.$tag_uid.'#-->', $tag['offset'], strlen($tag['full_tag']));
@@ -581,7 +587,9 @@ function nvweb_template_parse_special($html)
     }
 
     if($changed)
+    {
         return nvweb_template_parse_special($html);
+    }
 
     // parse includes (we must do it before parsing list or search)
     $tags = nvweb_tags_extract($html, 'nv', true, true, 'UTF-8');
@@ -698,7 +706,11 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 			case 'list':
                 $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
-				$list = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
+				$list = substr(
+				    $html,
+                    ($tag['offset'] + strlen($tag['full_tag'])),
+                    ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag']))
+                );
 
 				$vars = array_merge($tag['attributes'], array('template' => $list));
 

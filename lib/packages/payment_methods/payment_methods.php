@@ -130,12 +130,12 @@ function run()
 					break;
 			}
 			
-			session_write_close();
-			exit;
+			core_terminate();
 			break;
 
         case 'create':
 		case 'edit':
+
 			if(!empty($_REQUEST['id']))
             {
                 $object->load(intval($_REQUEST['id']));
@@ -144,12 +144,13 @@ function run()
 			if(isset($_REQUEST['form-sent']))
 			{
 				$object->load_from_post();
+
 				try
 				{
                     naviforms::check_csrf_token();
 
-					$object->save();
-                    property::save_properties_from_post('payment_method', $object->id);
+					//$object->save();
+					property::save_properties_from_post('payment_method', $object->id);
 
                     // set block order
                     if(!empty($_REQUEST['payment_methods-order']))
@@ -164,7 +165,7 @@ function run()
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
 			}
-		
+
 			$out = payment_methods_form($object);
 			break;
 					
@@ -250,7 +251,7 @@ function payment_methods_form($object)
 	$navibars = new navibars();
 	$naviforms = new naviforms();
     $layout->navigate_media_browser();
-	
+
 	if(empty($object->id))
     {
         $navibars->title(t(783, 'Payment methods').' / '.t(38, 'Create'));
