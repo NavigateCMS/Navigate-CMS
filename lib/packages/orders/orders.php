@@ -191,19 +191,20 @@ function run()
 
         case 'order_timeline_detail':
             $object->load(intval($_REQUEST['id']));
-            foreach($object->history as $event)
+            $event = $object->history[intval($_REQUEST['hid'])];
+            if($event[0] == $_REQUEST['time'])
             {
-                if($event[0] == $_REQUEST['time'])
-                {
-                    $out = @r($event[2]);
-                }
+                $out = @r($event[2]);
+                echo $out;
+                echo '
+                    <style>
+                        .ref [data-backtrace] { display: none; }
+                    </style>';
             }
-
-            echo $out;
-            echo '
-                <style>
-                    .ref [data-backtrace] { display: none; }
-                </style>';
+            else
+            {
+                echo t(56, "Unexpected error");
+            }
             core_terminate();
             break;
 
@@ -931,16 +932,20 @@ function orders_form($object)
         $navibars->add_tab(t(40, "History"), "", "fa fa-clock-o");
 
         $timeline_html = [];
-        foreach ($object->history as $event)
+        $history = array_reverse($object->history);
+        $hid = count($history) - 1;
+        foreach ($history as $event)
         {
             $time = $event[0];
             $title = $event[1];
 
             $timeline_html[] = '
-                <div class="timeline-item" date-is="' . core_ts2date($time, true) . '" data-timestamp="'.$time.'">
+                <div class="timeline-item" date-is="' . core_ts2date($time, true) . '" data-timestamp="'.$time.'" data-hid="'.$hid.'">
                     <a href="#" style="text-decoration: none;"><strong>' . $title . '</strong> <i class="fa fa-lg fa-plus-square-o"></i></a>
                 </div>
             ';
+
+            $hid--;
         }
 
         $navibars->add_tab_content_row(
@@ -960,7 +965,7 @@ function orders_form($object)
                 
                 var that = this;
                 
-                var timeline_info_dialog = $("<iframe src=\'?fid=orders&act=order_timeline_detail&id='.$object->id.'&time=" + $(that).data("timestamp") + "\'></iframe>").dialog(
+                var timeline_info_dialog = $("<iframe src=\'?fid=orders&act=order_timeline_detail&id='.$object->id.'&hid=" + $(that).data("hid") + "&time=" + $(that).data("timestamp") + "\'></iframe>").dialog(
                 {
                     modal: true,
                     height: 600,
