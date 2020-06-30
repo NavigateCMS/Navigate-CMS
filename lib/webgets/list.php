@@ -218,7 +218,7 @@ function nvweb_list($vars=array())
         }
     }
 
-    // search parameter (for now only ELEMENTS and PRODUCTS!)
+    // search parameter (for now only ELEMENTS[items] and PRODUCTS!)
     $search = '';
     if(!empty($vars['search']))
     {
@@ -752,7 +752,9 @@ function nvweb_list($vars=array())
 		        }
 
 		        if(empty($categories))
-		            $categories = array(0);
+                {
+                    $categories = array(0);
+                }
 
                 // default source for retrieving items (embedded or not)
                 $DB->query('
@@ -822,6 +824,28 @@ function nvweb_list($vars=array())
                 array_values($rs)
             );
         }
+    }
+    else if($vars['source']=='brand')
+    {
+        // TODO: add filters (search, filters, exclude, etc.)
+        $query = '
+            SELECT b.*, b.name AS title, b.id as pdate
+              FROM nv_brands b			          
+             WHERE b.website = :wid
+             '.$orderby.'
+             LIMIT '.$vars['items'].'
+            OFFSET '.$offset;
+
+        $DB->query(
+            $query,
+            'object',
+            array(
+                ':wid' => $website->id
+            )
+        );
+
+        $rs = $DB->result();
+        $total = $DB->foundRows();
     }
     else if($vars['source']=='rss')
     {
@@ -1116,6 +1140,11 @@ function nvweb_list($vars=array())
                 $item->_cart = $rs[$i];
                 break;
 
+            case 'brand':
+                $item = new brand();
+                $item->load_from_resultset(array($rs[$i]));
+                break;
+
             case 'order':
                 // we can't load the product, as it may not exist anymore
                 $item = $rs[$i];
@@ -1256,7 +1285,9 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 	$out = '';
 
-	switch($tag['attributes']['source'])
+	$nvlist_tag_source = value_or_default($tag['attributes']['source'], $source);
+
+	switch($nvlist_tag_source)
 	{
         // special condition, return direct query result values
 		case 'query':
@@ -2121,6 +2152,34 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
             }
             break;
 
+        case 'brand':
+            switch($tag['attributes']['value'])
+            {
+                case 'id':
+                    $out = $item->id;
+                    break;
+
+                case 'image':
+                    if(!empty($item->image))
+                    {
+                        $out = file::file_url($item->image);
+                    }
+                    break;
+
+                case 'url':
+                    if(!empty($item->url))
+                    {
+                        $out = nvweb_prepare_link($item->url);
+                    }
+                    break;
+
+                case 'name':
+                default:
+                    // brand name
+                    $out = core_special_chars($item->name);
+            }
+            break;
+
         case 'cart':
             switch($tag['attributes']['value'])
             {
@@ -2681,6 +2740,7 @@ function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null,
 
 function nvweb_list_get_from_twitter($username, $cache_time=3600, $offset, $items=10, $permission, $order)
 {
+    // DEPRECATED: the following process does not work anymore due Twitter API changes
     $url = 'https://api.twitter.com/1/statuses/user_timeline.rss?include_rts=true&contributor_details=false&screen_name='.$username.'&count='.$items;
 
     $feed = new feed_parser();
