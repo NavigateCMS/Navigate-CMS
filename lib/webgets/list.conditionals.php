@@ -631,6 +631,7 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
 function nvweb_list_parse_filters($raw, $object='item')
 {
     global $website;
+    global $DB;
     global $current;
 
     $alias = 'i';
@@ -893,6 +894,41 @@ function nvweb_list_parse_filters($raw, $object='item')
                     break;
 
                 // product specific values or filters
+                case 'brand':
+                    if(substr($value, 0, 1)=='$')
+                    {
+                        if(!isset($_REQUEST[substr($value, 1)]))
+                        {
+                            // ignore this filter
+                            continue;
+                        }
+
+                        $value = $_REQUEST[substr($value, 1)];
+                        if(empty($value)) // ignore empty values
+                        {
+                            continue;
+                        }
+                    }
+
+                    $brand_id = $DB->query_single(
+                        'id',
+                        'nv_brands',
+                        ' name = :name AND 
+                                website = '.$website->id,
+                        '',
+                        array(':name' => $value)
+                    );
+
+                    if(empty($brand_id))
+                    {
+                        // ignore this filter
+                        continue;
+                    }
+
+                    $filters[] = ' AND ( p.brand = '.$brand_id.' ) ';
+                    $direct_filter = false;
+                    break;
+
                 case 'offer':
                     if($value == 'true' || $value===true)
                     {
