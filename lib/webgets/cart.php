@@ -2015,6 +2015,8 @@ function nvweb_cart_payment_failed($order)
         $order_payment_failed_symbol = '<i class="fa fa-fw fa-exclamation-triangle"></i> ';
     }
 
+    $out[] = '<div class="nv_cart_order_payment_failed">';
+
     $out[] = '<div class="nv_cart_order_payment_failed_title"><h3>'.$order_payment_failed_symbol.t(805, "Order payment failed").'</h3></div>';
     $out[] = '<p class="nv_cart_order_payment_failed_message">'.t(806, "The payment process could not be completed.").'</p>';
     $out[] = '<p class="nv_cart_order_payment_try_again">'.t(807, "Please try again or choose an alternative payment method.").'</p>';
@@ -2057,6 +2059,8 @@ function nvweb_cart_payment_failed($order)
     $out[] = '        <button type="submit">'.t(152, "Continue").'</button>';
     $out[] = '    </form>';
 
+    $out[] = '</div>';
+
 
     nvweb_after_body(
         'html',
@@ -2091,6 +2095,8 @@ function nvweb_cart_payment_done($order)
     $payment_method->load($order->payment_method);
     $payment_method_title = core_special_chars($payment_method->dictionary[$current['lang']]['title']);
 
+    $out[] = '<div class="nv_cart_order_paid">';
+
     $out[] = '<div class="nv_cart_order_paid_title"><h3>'.$order_created_symbol.t(802, "Order paid").'</h3></div>';
     $out[] = '<p class="nv_cart_order_paid_thanks">'.t(803, "Thank you! Your payment has been received.").'</p>';
     $out[] = '<p class="nv_cart_order_begin_processing">'.t(804, "We will begin preparing your order for delivery as soon as possible.").'</p>';
@@ -2108,6 +2114,8 @@ function nvweb_cart_payment_done($order)
         $webuser_account_page = nvweb_prepare_link($website->shop_customer_account_path);
         $out[] = '<p class="nv_cart_order_created_view_order"><a class="button" href="'.$webuser_account_page.'?s=orders&oid='.$order->id.'">'.t(799, "View order").'</a></p>';
     }
+
+    $out[] = '</div>';
 
     nvweb_after_body(
         'html',
