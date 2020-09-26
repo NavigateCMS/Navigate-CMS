@@ -461,24 +461,9 @@ class structure
 
 		for($i=0; $i < count($result); $i++)
 		{
-			if(empty($result[$i]->date_published)) 
-            {
-                $result[$i]->date_published = '&infin;';
-            }
-			else
-            {
-                $result[$i]->date_published = core_ts2date($result[$i]->date_published, false);
-            }
-				
-			if(empty($result[$i]->date_unpublish)) 
-            {
-                $result[$i]->date_unpublish = '&infin;';
-            }
-			else
-            {
-                $result[$i]->date_unpublish = core_ts2date($result[$i]->date_unpublish, false);
-            }
-				
+			$result[$i]->date_published = core_ts2date($result[$i]->date_published, false, true);
+            $result[$i]->date_unpublish = core_ts2date($result[$i]->date_unpublish, false, true);
+
 			$result[$i]->dates = $result[$i]->date_published.' - '.$result[$i]->date_unpublish;
 		}
 		

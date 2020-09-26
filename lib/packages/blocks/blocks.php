@@ -166,24 +166,9 @@ function run()
                             3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
 						);						
 						
-						if(empty($dataset[$i]['date_published'])) 
-                        {
-                            $dataset[$i]['date_published'] = '&infin;';
-                        }
-						else
-                        {
-                            $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
-                        }
-							
-						if(empty($dataset[$i]['date_unpublish'])) 
-                        {
-                            $dataset[$i]['date_unpublish'] = '&infin;';
-                        }
-						else
-                        {
-                            $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
-                        }
-							
+						$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
+						$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
+
 						if($dataset[$i]['category'] > 0)
                         {
                             $dataset[$i]['category'] = $DB->query_single(

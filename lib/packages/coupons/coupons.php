@@ -95,16 +95,19 @@ function run()
                         'free_shipping' => t(699, "Free shipping")
                     );
 
-					$out = array();					
+					$out = array();
 											
 					for($i=0; $i < count($dataset); $i++)
 					{
+                        $date_begin = core_ts2date($dataset[$i]['date_begin'], false, true);
+                        $date_end = core_ts2date($dataset[$i]['date_end'], false, true);
+
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> core_special_chars($dataset[$i]['code']),
 							2	=> core_special_chars($dataset[$i]['name']),
 							3	=> $types[$dataset[$i]['type']],
-							4	=> core_ts2date($dataset[$i]['date_begin']).' - '.core_ts2date($dataset[$i]['date_end']),
+							4	=> $date_begin .' - '.$date_end,
                             5 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}

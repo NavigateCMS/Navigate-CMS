@@ -233,31 +233,17 @@ function run()
 
                         $permission = $permissions[$dataset[$i]['permission']];
 
-						if(empty($dataset[$i]['date_published'])) 
+                        if(intval($dataset[$i]['date_published']) >= core_time())
                         {
-                            $dataset[$i]['date_published'] = '&infin;';
+                            $permission = $permissions["published_later"];
                         }
-						else
+                        $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
+
+                        if(intval($dataset[$i]['date_unpublish']) < core_time())
                         {
-                            if($dataset[$i]['date_published'] >= core_time())
-                            {
-                                $permission = $permissions["published_later"];
-                            }
-                            $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
+                            $permission = $permissions["unpublished"];
                         }
-							
-						if(empty($dataset[$i]['date_unpublish'])) 
-                        {
-                            $dataset[$i]['date_unpublish'] = '&infin;';
-                        }
-						else
-                        {
-                            if($dataset[$i]['date_unpublish'] < core_time())
-                            {
-                                $permission = $permissions["unpublished"];
-                            }
-                            $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
-                        }
+                        $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
 
                         if(empty($dataset[$i]['date_to_display']))
                         {

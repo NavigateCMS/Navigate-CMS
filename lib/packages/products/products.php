@@ -248,23 +248,8 @@ function run()
                             continue;
                         }
 						
-						if(empty($dataset[$i]['date_published'])) 
-                        {
-                            $dataset[$i]['date_published'] = '&infin;';
-                        }
-						else
-                        {
-                            $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false);
-                        }
-							
-						if(empty($dataset[$i]['date_unpublish'])) 
-                        {
-                            $dataset[$i]['date_unpublish'] = '&infin;';
-                        }
-						else
-                        {
-                            $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false);
-                        }
+						$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
+                        $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
 
                         if(empty($dataset[$i]['date_to_display']))
                         {
@@ -1693,7 +1678,7 @@ function products_form($item)
             '<span id="order_info" class="ui-icon ui-icon-info"
  				   data-message="'.t(425, 'Order elements of a category (unless the template forces other sorting)', false, true).'"
 				   style="float: left; margin-left: 2px;">				   
-			</span>',
+			 </span>',
             '<div id="products_order_window" style="display: none;"></div>'
         ),
         'div_category_order'

@@ -336,10 +336,15 @@ function core_date2ts($date)
  * @param boolean $time Set true to add the time after the date
  * @return string
  */
-function core_ts2date($timestamp, $time=false)
+function core_ts2date($timestamp, $time=false, $infinite_if_empty=false)
 {
 	global $user;
-	
+
+	if(empty($timestamp) && $infinite_if_empty)
+    {
+        return '&infin;';
+    }
+
 	$format = $user->date_format;
 
     if(empty($format))
@@ -353,7 +358,6 @@ function core_ts2date($timestamp, $time=false)
     }
 
     $user_timezone = 'UTC';
-
     if(!empty($user->timezone))
     {
         $user_timezone = $user->timezone;
@@ -362,7 +366,7 @@ function core_ts2date($timestamp, $time=false)
 	$date = new DateTime();		
 	if(version_compare(PHP_VERSION, '5.3.0') < 0)
 	{
-		$datets = getdate( ( int ) $timestamp );
+		$datets = getdate( (int) $timestamp );
 		$date->setDate( $datets['year'] , $datets['mon'] , $datets['mday'] );
 		$date->setTime( $datets['hours'] , $datets['minutes'] , $datets['seconds'] );
 	}
