@@ -4212,6 +4212,21 @@
 				<target>La commande ne peut pas être passée.</target>
 			</trans-unit>
 
+			<trans-unit id="838">
+				<source>Close all</source>
+				<target>Ferme tout</target>
+			</trans-unit>
+
+			<trans-unit id="839">
+				<source>A new password must be set when changing the username. If not provided, a new random password will be assigned.</source>
+				<target>Un nouveau mot de passe doit être défini lors du changement de nom d'utilisateur. S'il n'est pas fourni, un nouveau mot de passe aléatoire sera attribué.</target>
+			</trans-unit>
+
+			<trans-unit id="840">
+				<source>Not available</source>
+				<target>Indisponible</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

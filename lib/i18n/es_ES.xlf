@@ -4211,6 +4211,21 @@
 				<target>El pedido no puede completarse.</target>
 			</trans-unit>
 
+			<trans-unit id="838" approved="yes">
+				<source>Close all</source>
+				<target>Cerrar todas</target>
+			</trans-unit>
+
+			<trans-unit id="839" approved="yes">
+				<source>A new password must be set when changing the username. If not provided, a new random password will be assigned.</source>
+				<target>Se debe establecer una nueva contraseña al cambiar el nombre de usuario. Si no se proporciona, se asignará una nueva contraseña aleatoria.</target>
+			</trans-unit>
+
+			<trans-unit id="840" approved="yes">
+				<source>Not available</source>
+				<target>No disponible</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

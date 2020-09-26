@@ -4212,6 +4212,21 @@
 				<target>Die Bestellung kann nicht aufgegeben werden.</target>
 			</trans-unit>
 
+			<trans-unit id="838">
+				<source>Close all</source>
+				<target>Alle schließen</target>
+			</trans-unit>
+
+			<trans-unit id="839">
+				<source>A new password must be set when changing the username. If not provided, a new random password will be assigned.</source>
+				<target>Beim Ändern des Benutzernamens muss ein neues Passwort festgelegt werden. Wenn nicht angegeben, wird ein neues zufälliges Passwort vergeben.</target>
+			</trans-unit>
+
+			<trans-unit id="840" approved="yes">
+				<source>Not available</source>
+				<target>Nicht verfügbar</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

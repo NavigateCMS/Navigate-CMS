@@ -4225,6 +4225,21 @@
                 <target>La comanda no es pot completar.</target>
             </trans-unit>
 
+            <trans-unit id="838" approved="yes">
+                <source>Close all</source>
+                <target>Tancar totes</target>
+            </trans-unit>
+
+            <trans-unit id="839" approved="yes">
+                <source>A new password must be set when changing the username. If not provided, a new random password will be assigned.</source>
+                <target>S'ha d'establir una nova contrasenya al canviar el nom d'usuari. Si no es proporciona, se n'assignarà una d'aleatòria.</target>
+            </trans-unit>
+
+            <trans-unit id="840" approved="yes">
+                <source>Not available</source>
+                <target>No disponible</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

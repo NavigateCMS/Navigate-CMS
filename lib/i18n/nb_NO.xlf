@@ -4213,6 +4213,21 @@
                 <target>Bestillingen kan ikke legges inn.</target>
             </trans-unit>
 
+            <trans-unit id="838">
+                <source>Close all</source>
+                <target>Lukk alle</target>
+            </trans-unit>
+
+            <trans-unit id="839">
+                <source>A new password must be set when changing the username. If not provided, a new random password will be assigned.</source>
+                <target>Det må settes et nytt passord når du endrer brukernavnet. Hvis ikke oppgitt, vil et nytt tilfeldig passord bli tildelt.</target>
+            </trans-unit>
+
+            <trans-unit id="840">
+                <source>Not available</source>
+                <target>Ikke tilgjengelig</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
