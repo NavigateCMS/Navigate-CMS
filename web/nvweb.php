@@ -160,7 +160,7 @@ function nvweb_parse($request)
 
         // verify requested language is enabled for the current website,
         // if not, just use the default language
-        if(!in_array($session['lang'], $website->languages()))
+        if(!in_array($session['lang'], array_keys($website->languages())))
         {
             $session['lang'] = $website->languages_published[0];
         }

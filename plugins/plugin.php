@@ -109,6 +109,13 @@ function nv_plugin_init()
             $session['lang'] = $_REQUEST['lang'];
         }
 
+        // verify requested language is enabled for the current website,
+        // if not, just use the default language
+        if(!in_array($session['lang'], array_keys($website->languages())))
+        {
+            $session['lang'] = $website->languages_published[0];
+        }
+
 		if(!empty($session['webuser']))
         {
             $webuser->load($session['webuser']);
