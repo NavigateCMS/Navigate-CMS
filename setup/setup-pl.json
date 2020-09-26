@@ -57,6 +57,7 @@
 	"copy_htaccess":"Skopiuj plik navigate/web/.htaccess do swojego katalogu root witryny (/www/.htaccess)",
 	"do_it_for_me":"Zrób to dla mnie!",
 	"htaccess_overwritten":"Jeśli plik .htaccess istnieje, to zostanie NADPISANY.",
+	"security_recommendation_tutorial": "Zalecamy następujący samouczek dotyczący bezpieczeństwa:",
 	"unknown_server": "Wykryto nieznany serwer WWW",
 	"check_navigate_website":"Proszę sprawdzić witrynę WWW Navigate CMS. Tam można uzyskać pomoc, jak przygotować serwer.",
 	"thank_you":"Dziękujemy za używanie Navigate CMS. Powodzenia!",

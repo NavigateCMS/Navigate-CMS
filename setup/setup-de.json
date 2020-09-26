@@ -57,6 +57,7 @@
     "copy_htaccess":"Kopiere die Datei navigate/web/.htaccess in das Root-Verzeichnis der Site (/www/.htaccess)",
     "do_it_for_me":"Erledige das für mich!",
     "htaccess_overwritten":"Wenn .htaccess existiert, wird die Datei ÜBERSCHRIEBEN.",
+    "security_recommendation_tutorial": "Wir empfehlen das folgende Sicherheits-Tutorial:",
     "unknown_server": "Unbekannter Web-Server vorgefunden",
     "check_navigate_website":"Bitte konsultiere die Navigate CMS Website um Hilfe zur Vorbereitung deines Severs zu finden.",
     "thank_you":"Danke, dass du dich für Navigate CMS entschieden hast. Viel Spaß!",

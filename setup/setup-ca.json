@@ -57,6 +57,7 @@
 	"copy_htaccess":"Copiï el fitxer navigate/web/.htaccess a la carpeta arrel del lloc web (/www/.htaccess)",
 	"do_it_for_me":"Fes-ho per mi!",
 	"htaccess_overwritten":"Si el fitxer .htaccess existeix serà SOBREESCRIT",
+	"security_recommendation_tutorial": "Recomanem el següent tutorial de seguretat:",
 	"nginx_other":"Nginx o altres servidors web",
 	"unknown_server":"Servidor web no identificat",
 	"check_navigate_website":"Si us plau accedeix al lloc web de Navigate CMS per ajudar-lo a configurar el seu servidor.",
