@@ -35,6 +35,8 @@ class webuser
 	public $access_end; // timestamp, 0 => infinite
 
     public $properties;
+
+    public $_new_password; // auto generated password when changing username and no new password is provided
   	
 	public function load($id)
 	{
@@ -101,7 +103,6 @@ class webuser
                 );
             }
 		}
-
 	}
 
     public function load_by_profile($network, $network_user_id)
@@ -173,11 +174,23 @@ class webuser
 	public function load_from_post()
 	{
 		//$this->website      = $_REQUEST['webuser-website'];
-		$this->username		= core_purify_string($_REQUEST['webuser-username']);
+
+		$username           = core_purify_string($_REQUEST['webuser-username']);
+		$username_changed = ($this->username != $username);
+        $this->username = $username;
+
 		if(!empty($_REQUEST['webuser-password']))
         {
             $this->set_password($_REQUEST['webuser-password']);
         }
+		else if($username_changed)
+        {
+            // username has been changed, but no new password is provided
+            // assign a random password to be displayed
+            $this->_new_password = generate_password(12);
+            $this->set_password($this->_new_password);
+        }
+
    		$this->email	    = core_purify_string($_REQUEST['webuser-email']);
    		$this->groups	    = $_REQUEST['webuser-groups'];
 		$this->fullname		= core_purify_string($_REQUEST['webuser-fullname']);

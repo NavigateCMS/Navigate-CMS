@@ -160,6 +160,10 @@ function run()
                     $webuser_id = $item->id;
 					property::save_properties_from_post('webuser', $item->id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+                    if(!empty($item->_new_password))
+                    {
+                        $layout->navigate_notification(t(831, "New password").': <strong>'.$item->_new_password.'</strong>', false, true, 'fa fa-password');
+                    }
 
                     // reload object
                     $item = null;
@@ -227,6 +231,13 @@ function run()
             // export web users list to a CSV file
 			users_log::action($_REQUEST['fid'], 0, 'export', "all", json_encode($_REQUEST));
 			webuser::export();
+            break;
+
+        case 'username_available':
+            $website_id = value_or_default(@$_POST['website_id'], $website->id);
+            $available = webuser::available($_REQUEST['username'], $website_id);
+            echo json_encode($available);
+            core_terminate();
             break;
 
         case 'webuser_groups_list':
@@ -527,6 +538,7 @@ function webusers_form($item)
     global $theme;
 	global $layout;
     global $events;
+    global $current_version;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -549,7 +561,7 @@ function webusers_form($item)
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'
+            '<a href="?fid=webusers&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'
         )
     );
 
@@ -584,7 +596,7 @@ function webusers_form($item)
             function navigate_delete_dialog()
             {
                 navigate_confirmation_dialog(
-                    function() { window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
+                    function() { window.location.href = "?fid=webusers&act=remove&id='.$item->id.'&rtk='.$_SESSION['request_token'].'"; }, 
                     null, null, "'.t(35, 'Delete').'"
                 );
             }
@@ -601,7 +613,7 @@ function webusers_form($item)
 
 	$navibars->form();
 
-	$navibars->add_tab(t(43, "Main"));
+	$navibars->add_tab('<i class="fa fa-user-circle-o"></i> '.t(43, "Main"));
 	
 	$navibars->add_tab_content($naviforms->hidden('form-sent', 'true'));
     $navibars->add_tab_content($naviforms->csrf_token());
@@ -619,7 +631,11 @@ function webusers_form($item)
 
 	$navibars->add_tab_content_row(array(
         '<label>'.t(1, 'User').'</label>',
-		$naviforms->textfield('webuser-username', $item->username, false, false, 'autocomplete="off"'),
+		$naviforms->textfield('webuser-username', $item->username, false, false, 'autocomplete="off" data-message-not-available="'.t(840, "Not available").'"'),
+        '<span id="webuser_username_info" class="ui-icon ui-icon-alert"
+               data-message="'.t(839, 'A new password must be set when changing the username. If not provided, a new random password will be assigned.', false, true).'"
+               style=" margin-left: 2px; display: none;">				   
+		</span>',
     ));
 
 	$navibars->add_tab_content_row(array(
@@ -627,12 +643,6 @@ function webusers_form($item)
 		'<input type="password" name="webuser-password" autocomplete="new-password" value="" size="32" />',
 		'<span class="navigate-form-row-info">'.t(48, "Leave blank to keep the current value").'</span>' )
     );
-	// force removing the browser saved password
-	$layout->add_script('
-		setTimeout(function() {
-			$("input[name=webuser-password]").val("");
-		}, 100);
-	');
 
 	$navibars->add_tab_content_row(
 		array(
@@ -706,21 +716,6 @@ function webusers_form($item)
         )
     );
 
-	$layout->add_script('
-		function navigate_webusers_change_access()
-		{
-			$("#webuser-access-begin").parent().hide();
-			$("#webuser-access-end").parent().hide();
-			
-			if($("#webuser-access").val() == "2")
-			{
-				$("#webuser-access-begin").parent().show();
-				$("#webuser-access-end").parent().show();
-			}
-		}
-		navigate_webusers_change_access();
-	');
-
 	// private_comment deprecated in NV 2.0
 	if(!empty($item->private_comment))
 	{
@@ -731,7 +726,7 @@ function webusers_form($item)
 	    );
 	}
 
-    $navibars->add_tab(t(506, "Groups"));
+    $navibars->add_tab('<i class="fa fa-group"></i> '.t(506, "Groups"));
 
     $webuser_groups = webuser_group::all_in_array();
 
@@ -747,7 +742,7 @@ function webusers_form($item)
         )
     );
 
-	$navibars->add_tab(t(308, "Personal"));
+	$navibars->add_tab('<i class="fa fa-user-secret"></i> '.t(308, "Personal"));
 											
 	$navibars->add_tab_content_row(
         array(
@@ -826,26 +821,7 @@ function webusers_form($item)
     );
 										
 	$layout->add_script('
-		var webuser_country = "'.$item->country.'";
-		$("#webuser-country").bind("change blur", function()
-		{
-			if($(this).val() != webuser_country)
-			{
-				webuser_country = $(this).val();
-				$.getJSON("?fid='.$_REQUEST['fid'].'", { country: $(this).val(), act: 90 }, function(data) 
-				{
-					$("#webuser-timezone").find("option").remove();
-					
-					$.each(data, function(value, text) 
-					{
-						$("<option />", {
-							value: value,
-							html: text
-						}).appendTo("#webuser-timezone");
-					});				
-				});				
-			}
-		});
+		var webuser_country = "'.$item->country.'";		
 	');											
 
 	// Language selector
@@ -859,7 +835,7 @@ function webusers_form($item)
         )
     );
 
-	$navibars->add_tab(t(233, "Address"));
+	$navibars->add_tab('<i class="fa fa-address-card"></i> '.t(233, "Address"));
 											
 	$navibars->add_tab_content_row(
         array(
@@ -889,7 +865,7 @@ function webusers_form($item)
         )
     );
 											
-	$navibars->add_tab(t(309, "Social"));
+	$navibars->add_tab('<i class="fa fa-share"></i> '.t(309, "Social"));
 											
 	$navibars->add_tab_content_row(
         array(
@@ -904,7 +880,7 @@ function webusers_form($item)
 
         if(!empty($properties_html))
         {
-            $navibars->add_tab(t(77, "Properties"));
+            $navibars->add_tab('<i class="fa fa-pencil-square-o"></i> '.t(77, "Properties"));
             $navibars->add_tab_content($properties_html);
         }
     }
@@ -913,6 +889,22 @@ function webusers_form($item)
     {
         $layout->navigate_notes_dialog('webuser', $item->id);
     }
+
+    $layout->add_script('    	
+	    $.ajax({
+	        type: "GET",
+	        dataType: "script",
+	        cache: true,
+	        url: "lib/packages/webusers/webusers.js?r='.$current_version->revision.'",
+	        complete: function( data, textStatus )
+	        {
+                if(typeof navigate_webusers_onload == "function")
+                {    
+                    navigate_webusers_onload();
+                }
+	        }
+	    });
+	');
 
     $events->trigger(
         'webuser',

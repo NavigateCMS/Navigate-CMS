@@ -282,7 +282,9 @@ class webuser_vote
 		
 		// now update the object score
 		if($status === true)
-			webuser_vote::update_object_score($object, $object_id);
+        {
+            webuser_vote::update_object_score($object, $object_id);
+        }
 
 		$events->trigger(
 			'webuser',
