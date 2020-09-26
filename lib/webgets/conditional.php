@@ -115,7 +115,7 @@ function nvweb_conditional($vars=array())
                    AND (s.access = 0 OR s.access = '.$access.$access_extra.')
                    AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
                    AND d.website = i.website
-                   AND d.node_type = "item"
+                   AND d.node_type = :node_type
                    AND d.subtype = "title"
                    AND d.node_id = i.id
                    AND d.lang = :lang
@@ -126,6 +126,7 @@ function nvweb_conditional($vars=array())
                 array(
                     ':wid' => $website->id,
                     ':lang' => $current['lang'],
+                    ':node_type' => $item_type,
                     //':categories' => implode(",", $categories),
                     ':time' => core_time()
                 )
@@ -156,7 +157,9 @@ function nvweb_conditional($vars=array())
             $property_value = NULL;
             $property_name = $vars['property_name'];
             if(empty($vars['property_name']))
+            {
                 $property_name = $vars['property_id'];
+            }
 
             if(in_array($vars['property_scope'], array("element", "product")))
             {
@@ -196,21 +199,29 @@ function nvweb_conditional($vars=array())
                     // structure
                     $property = nvweb_properties(array('mode' => 'structure', 'property' => $property_name, 'return' => 'object'));
                     if(!empty($property))
+                    {
                         $property_value = $property->value;
+                    }
                     else
                     {
                         // website
                         if(isset($website->theme_options->{$property_name}))
+                        {
                             $property_value = $website->theme_options->{$property_name};
+                        }
                         else
+                        {
                             $property_value = '';
+                        }
                     }
                 }
             }
 
             // if the property is multilanguage, get the value for the current language
             if(is_array($property_value))
+            {
                 $property_value = $property_value[$current['lang']];
+            }
 
             // check the given condition
             if(isset($vars['empty']) || isset($vars['property_empty']))
@@ -218,16 +229,24 @@ function nvweb_conditional($vars=array())
                 if(@$vars['empty']=='true' || @$vars['property_empty']=='true')
                 {
                     if(empty($property_value))
+                    {
                         $out = $item_html;
+                    }
                     else
+                    {
                         $out = '';
+                    }
                 }
                 else if(@$vars['empty']=='false' || @$vars['property_empty']=='false')
                 {
                     if(!empty($property_value))
+                    {
                         $out = $item_html;
+                    }
                     else
+                    {
                         $out = '';
+                    }
                 }
             }
             else if(isset($vars['property_value']))
@@ -273,9 +292,13 @@ function nvweb_conditional($vars=array())
                         if(is_numeric($property_value))
                         {
                             if($condition_value == 'true' || $condition_value===true)
+                            {
                                 $condition_value = '1';
+                            }
                             else if($condition_value == 'false' || $condition_value===false)
+                            {
                                 $condition_value = '0';
+                            }
                         }
 
                         $condition = ($property_value != $condition_value);
@@ -288,9 +311,13 @@ function nvweb_conditional($vars=array())
                         if(is_numeric($property_value))
                         {
                             if($condition_value == 'true' || $condition_value===true)
+                            {
                                 $condition_value = '1';
+                            }
                             else if($condition_value == 'false' || $condition_value===false)
+                            {
                                 $condition_value = '0';
+                            }
                         }
 
                         $condition = ($property_value == $condition_value);
@@ -308,14 +335,22 @@ function nvweb_conditional($vars=array())
         case 'templates':
             $templates = array();
             if(isset($vars['templates']))
+            {
                 $templates = explode(",", $vars['templates']);
+            }
             else if(isset($vars['template']))
+            {
                 $templates = array($vars['template']);
+            }
 
             if(in_array($item->template, $templates))
+            {
                 $out = $item_html;
+            }
             else
+            {
                 $out = '';
+            }
             break;
 
         case 'section':
@@ -344,7 +379,9 @@ function nvweb_conditional($vars=array())
                         $access = 0; // everybody
                         // only for a certain user?
                         if(isset($vars['user']) && $vars['user'] != $_SESSION['APP_USER#'.APP_UNIQUE])
+                        {
                             $access = -1;
+                        }
                     }
                     else
                     {
@@ -375,19 +412,29 @@ function nvweb_conditional($vars=array())
             }
 
             if($item->access == $access)
+            {
                 $out = $item_html;
+            }
             else
+            {
                 $out = '';
+            }
 
             break;
 
         case 'webuser':
             if($vars['signed_in']=='true' && !empty($webuser->id))
+            {
                 $out = $item_html;
+            }
             else if($vars['signed_in']=='false' && empty($webuser->id))
+            {
                 $out = $item_html;
+            }
             else
+            {
                 $out = '';
+            }
 
             break;
 
@@ -413,12 +460,16 @@ function nvweb_conditional($vars=array())
             if($vars['empty']=='true')
             {
                 if(empty($item->galleries[0]))
+                {
                     $out = $item_html;
+                }
             }
             else if($vars['empty']=='false')
             {
                 if(!empty($item->galleries[0]))
+                {
                     $out = $item_html;
+                }
             }
             else if(isset($vars['min']) && (count($item->galleries[0]) >= intval($vars['min'])))
             {
@@ -434,12 +485,16 @@ function nvweb_conditional($vars=array())
             if($vars['empty']=='true')
             {
                 if(empty($item->dictionary[$current['lang']]['tags']))
+                {
                     $out = $item_html;
+                }
             }
             else if($vars['empty']=='false')
             {
                 if(!empty($item->dictionary[$current['lang']]['tags']))
+                {
                     $out = $item_html;
+                }
             }
             break;
 
@@ -448,13 +503,14 @@ function nvweb_conditional($vars=array())
                 SELECT COUNT(*) as total
 				  FROM nv_comments
 				 WHERE website = :wid
-				   AND object_id = :item_id
-				   AND object_type = "item"
+				   AND object_type = :object_type
+				   AND object_id = :object_id
 				   AND status = 0',
                 'object',
                 array(
                     ':wid' => $website->id,
-                    ':item_id' => $item->id
+                    ':object_id' => $item->id,
+                    ':object_type' => $item_type
                 )
             );
             $rs = $DB->result();
@@ -467,14 +523,18 @@ function nvweb_conditional($vars=array())
                     // comments allowed to everybody (2) or to registered users only (1)
                     if( $item->comments_enabled_to == 2 ||
                         ( $item->comments_enabled_to == 1 && !empty($webuser->id)))
+                    {
                         $out = $item_html;
+                    }
                 }
                 else if($vars['allowed']=='false')
                 {
                     // comments not allowed for anyone or for webusers but there is no webuser active right now
                     if( $item->comments_enabled_to == 0 ||
                         ( $item->comments_enabled_to == 1 && empty($webuser->id)))
+                    {
                         $out = $item_html;
+                    }
                 }
             }
             else if(isset($vars['min']) && ($comments_count >= intval($vars['min'])))

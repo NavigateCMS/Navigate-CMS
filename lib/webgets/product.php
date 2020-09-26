@@ -252,8 +252,13 @@ function nvweb_product($vars=array())
                 case 'image':
                     if(!empty($brand->image))
                     {
-                        $out = file::file_url($brand->image);
+                        $image_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$brand->image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].'&amp;border='.$vars['border'].'&amp;opacity='.$vars['opacity'];
+                        $out = '<img src="'.$image_url.'" alt="'.$brand->name.'" title="'.$brand->name.'" />';
                     }
+                    break;
+
+                case 'image_url':
+                    $out = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$brand->image.'&amp;disposition=inline&amp;width='.$vars['width'].'&amp;height='.$vars['height'].'&amp;border='.$vars['border'].'&amp;opacity='.$vars['opacity'];
                     break;
 
                 case 'url':
@@ -337,15 +342,18 @@ function nvweb_product_comments_count($object_id = NULL)
 	global $current;
 
 	if(empty($object_id))
+    {
         $object_id = $current['object']->id;
+    }
 
-	$DB->query('SELECT COUNT(*) as total
-				  FROM nv_comments
-				 WHERE website = '.intval($website->id).'
-				   AND object_type = "product"
-				   AND object_id = '.intval($object_id).'
-				   AND status = 0'
-				);
+	$DB->query('
+        SELECT COUNT(*) as total
+        FROM nv_comments
+        WHERE website = '.intval($website->id).'
+          AND object_type = "product"
+          AND object_id = '.intval($object_id).'
+          AND status = 0'
+    );
 													
 	$out = $DB->result('total');
 	

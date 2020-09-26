@@ -827,11 +827,18 @@ function nvweb_list($vars=array())
     }
     else if($vars['source']=='brand')
     {
-        // TODO: add filters (search, filters, exclude, etc.)
+        // TODO: add filters (search, more filters, exclude, etc.)
+        $filters = '';
+        if(!empty($vars['filter']))
+        {
+            $filters = nvweb_list_parse_filters($vars['filter'], 'brand');
+        }
+
         $query = '
             SELECT b.*, b.name AS title, b.id as pdate
               FROM nv_brands b			          
              WHERE b.website = :wid
+             '.$filters.' 
              '.$orderby.'
              LIMIT '.$vars['items'].'
             OFFSET '.$offset;
@@ -2160,9 +2167,18 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
                 case 'image':
+                case 'image_url':
                     if(!empty($item->image))
                     {
-                        $out = file::file_url($item->image);
+                        $image_url = NVWEB_OBJECT.'?wid='.$website->id.'&id='.$item->image.'&amp;disposition=inline&amp;width='.$tag['attributes']['width'].'&amp;height='.$tag['attributes']['height'].'&amp;border='.$tag['attributes']['border'].'&amp;opacity='.$tag['attributes']['opacity'];
+                        if($tag['attributes']['value']=='image_url' || @$tag['attributes']['return']=='url')
+                        {
+                            $out = $image_url;
+                        }
+                        else
+                        {
+                            $out = '<img src="'.$image_url.'" alt="'.$item->name.'" title="'.$item->name.'" />';
+                        }
                     }
                     break;
 
@@ -2795,12 +2811,16 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
         $paginator_text_etc = $theme->t($params['paginator_etc']);
     }
 
-    // keep existing URL variables except "page" and "route" (route is an internal navigate variable)
+    // keep existing URL variables except "lang", "page" and "route" (route is an internal navigate variable)
     $url_suffix = '';
-    if(!is_array($_GET)) $_GET = array();
+    if(!is_array($_GET))
+    {
+        $_GET = array();
+    }
+
     foreach($_GET as $key => $val)
     {
-        if($key==$params['page_parameter'] || $key=='route')
+        if($key==$params['page_parameter'] || $key=='route' || $key=="lang")
         {
             continue;
         }

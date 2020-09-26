@@ -640,6 +640,11 @@ function nvweb_list_parse_filters($raw, $object='item')
         $alias = 'p';
     }
 
+    if($object=='brand')
+    {
+        $alias = 'b';
+    }
+
     $filters = array();
 
     if(!is_array($raw))
@@ -947,6 +952,12 @@ function nvweb_list_parse_filters($raw, $object='item')
                         )';
                     }
                     $direct_filter = false;
+                    break;
+
+                // brand object filters
+                case 'image':
+                    $field = $alias.'.image';
+                    $direct_filter = true;
                     break;
 
                 default:
