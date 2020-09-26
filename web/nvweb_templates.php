@@ -722,7 +722,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                     $current['delayed_nvlists'][$list_uid] = $vars;
                     $html = substr_replace($html, '<!--#'.$list_uid.'#-->', $tag['offset'], $tag['length']);
                     $changed = true;
-                    continue;
+                    continue 2; // next foreach iteration
                 }
 
                 debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
@@ -747,7 +747,7 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                     $current['delayed_nvsearches'][$search_uid] = $vars;
                     $html = substr_replace($html, '<!--#'.$search_uid.'#-->', $tag['offset'], $tag['length']);
                     $changed = true;
-                    continue;
+                    continue 2; // next foreach iteration
                 }
 
                 debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');

@@ -477,7 +477,7 @@ function nvweb_comments($vars=array())
                     ),
                     array(
                         'footer' =>
-                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid='.$fid.'&act=2&tab=5&id='.$object_id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
+                            '<a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid='.$fid.'&act=edit&tab=5&id='.$object_id.'"><strong>'.$webgets[$webget]['translations']['review_comments'].'</strong></a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
                             '<a style=" color: #008830" href="'.$base_url.'?nv_approve_comment&id='.$comment->id.'&hash='.$hash.'">'.t(258, "Publish").'</a>'.
                             '&nbsp;&nbsp;|&nbsp;&nbsp;'.
@@ -496,7 +496,7 @@ function nvweb_comments($vars=array())
                         {
                             "@type": "ViewAction",
                             "name": "'.$webgets[$webget]['translations']['review_comments'].'",
-                            "url": "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid='.$fid.'&act=2&tab=5&id='.$object_id.'"
+                            "url": "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?wid='.$website->id.'&fid='.$fid.'&act=edit&tab=5&id='.$object_id.'"
                         }
                     }
                     </script>

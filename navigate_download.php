@@ -31,16 +31,30 @@ if(empty($_SESSION['APP_USER#'.APP_UNIQUE]))
     exit;
 }
 
+$website = new website();
+if(!empty($_GET['wid']))
+{
+    $website->load(intval($_GET['wid']));
+}
+else if($item->website > 0)
+{
+    $website->load($item->website);
+}
+else
+{
+    $website->load();
+}
+
 $item = new file();
 
 $id = $_REQUEST['id'];
 if(!empty($_REQUEST['id']))
 {
-	if(is_int($id))
+    if(is_int($id))
     {
         $item->load($id);
     }
-	else
+    else
     {
         // sanitize "id" parameter to avoid XSS problems
         // note: if the "id" parameter is not numeric, then it could be an external URL request
@@ -56,22 +70,8 @@ if(!empty($_REQUEST['id']))
 
 if(!$item->id)
 {
-	echo 'Error: no item found with id '.$_REQUEST['id'].'.';
-	core_terminate();
-}
-
-$website = new website();
-if(!empty($_GET['wid']))
-{
-    $website->load(intval($_GET['wid']));
-}
-else if($item->website > 0)
-{
-    $website->load($item->website);
-}
-else
-{
-    $website->load();
+    echo 'Error: no item found with id '.$_REQUEST['id'].'.';
+    core_terminate();
 }
 
 $path = NAVIGATE_PRIVATE.'/'.$website->id.'/files/'.$item->id;

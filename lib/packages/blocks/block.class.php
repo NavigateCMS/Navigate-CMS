@@ -278,7 +278,7 @@ class block
 
                                     if(empty($key_name))
                                     {
-                                        continue;
+                                        continue 2; // next foreach iteration
                                     }
 
                                     if($key_name=='title')

@@ -1576,6 +1576,7 @@ function navigate_property_layout_scripts($website_id="")
         
 	    $.ajax({
 	        type: "GET",
+	        contentType: "text/javascript",
 	        dataType: "script",
 	        cache: true,
 	        url: "lib/packages/properties/properties.js?r='.$current_version->revision.'",

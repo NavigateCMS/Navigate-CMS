@@ -874,6 +874,7 @@ class layout
 
 		$this->add_script('
 		    $.jGrowl.defaults.position = "center";
+		    $.jGrowl.defaults.closerTemplate = "<div>[ '.t(838, "Close all").' ]</div>";
 		    $.jGrowl("'.$icon.$text.'", { 
 		        life: 4000,
                 sticky: '.$sticky.',
