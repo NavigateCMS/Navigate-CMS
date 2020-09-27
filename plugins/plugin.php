@@ -53,7 +53,7 @@ function nv_plugin_init()
 	// global exception catcher
 	try
 	{
-		$idn = new \Mso\IdnaConvert\IdnaConvert();
+        $idn = new \Algo26\IdnaConvert\ToIdn();
 
         // which website do we have to load?
         $url = nvweb_self_url();

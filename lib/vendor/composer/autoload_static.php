@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
 {
     public static $files = array (
+        'b45b351e6b6f7487d819961fef2fda77' => __DIR__ . '/..' . '/jakeasmith/http_build_url/src/http_build_url.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
     );
 
@@ -27,6 +28,10 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
         array (
             'DeepCopy\\' => 9,
         ),
+        'A' => 
+        array (
+            'Algo26\\IdnaConvert\\' => 19,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -46,6 +51,10 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Algo26\\IdnaConvert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/algo26-matthias/idna-convert/src',
         ),
     );
 

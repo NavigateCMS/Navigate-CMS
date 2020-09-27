@@ -465,7 +465,7 @@ function nvweb_template_parse($template)
                         $content = $website->absolute_path();
                         try
                         {
-                            $content = $idn->encodeUri($content);
+                            $content = $idn->convertUrl($content);
                         }
                         catch (\InvalidArgumentException $e)
                         {

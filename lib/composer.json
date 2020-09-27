@@ -2,6 +2,7 @@
     "name": "navigatecms/lib",
     "require": {
         "mpdf/mpdf": "^7.1",
-        "jbroadway/urlify": "^1.2"
+        "jbroadway/urlify": "^1.2",
+        "algo26-matthias/idna-convert": "^3.0"
     }
 }

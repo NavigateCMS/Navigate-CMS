@@ -53,12 +53,23 @@ function nvweb_load_website_by_url($url, $exit=true)
 
     if(filter_var($host, FILTER_VALIDATE_IP) !== false)
     {
-        // is an ip, do nothing
+        // it is an ip, do nothing
     }
     else
     {
-        // is not an ip
-        $host = $idn->decode($host);
+        // it is NOT an ip
+        // convert hostname to punycode, if necessary
+        if(!mb_check_encoding($host, 'ASCII'))
+        {
+            try
+            {
+                $host = $idn->convert($host);
+            }
+            catch (Exception $e)
+            {
+                // do nothing
+            }
+        }
     }
 
     // look for website aliases
@@ -69,18 +80,23 @@ function nvweb_load_website_by_url($url, $exit=true)
     foreach($ars as $ajson)
     {
         if(!is_array($aliases))
+        {
             $aliases = array();
+        }
 
         $ajson = json_decode($ajson, true);
         if(!is_array($ajson))
+        {
             continue;
+        }
 
         $aliases = array_merge($aliases, $ajson);
     }
 
     if(!is_array($aliases))
+    {
         $aliases = array();
-
+    }
 
     foreach($aliases as $alias => $real)
     {
@@ -89,7 +105,9 @@ function nvweb_load_website_by_url($url, $exit=true)
         if( $alias_parsed['host'] == $host )
         {
 			if(!isset($alias_parsed['path']))
-				$alias_parsed['path'] = "";
+            {
+                $alias_parsed['path'] = "";
+            }
 
             $rud_path = rawurldecode($alias_parsed['path']);
 
@@ -120,15 +138,22 @@ function nvweb_load_website_by_url($url, $exit=true)
 				$extra_path = explode('/', $extra);
 
 				if (!is_array($extra_path))
-					$extra_path = array();
+                {
+                    $extra_path = array();
+                }
 
 				$add_to_real = '';
-				foreach ($extra_path as $part) {
+				foreach ($extra_path as $part)
+				{
 					if ($part == 'nvweb.home')
-						continue;
+                    {
+                        continue;
+                    }
 
 					if (in_array($part, $real_path))
-						continue;
+                    {
+                        continue;
+                    }
 
 					$add_to_real .= '/' . $part;
 				}
@@ -137,8 +162,16 @@ function nvweb_load_website_by_url($url, $exit=true)
 				//        right now we only redirect to the real path
 				$url = $real . $add_to_real;
 
-				header('location: ' . $idn->encodeUri($url));
-				nvweb_clean_exit();
+				try
+                {
+                    $url = $idn->convertUrl($url);
+                }
+                catch(Exception $e)
+                {
+                    // URL already in punycode? do not convert
+                }
+
+				nvweb_clean_exit($url);
 			}
         }
     }
@@ -158,26 +191,53 @@ function nvweb_load_website_by_url($url, $exit=true)
 		$domain = $host;
 
 		if(empty($subdomain)) // may be NULL
-			$subdomain = "";
+        {
+            $subdomain = "";
+        }
 		else
-			$domain = substr($host, strlen($subdomain)+1);
+        {
+            $domain = substr($host, strlen($subdomain)+1);
+        }
 	}
+
+	$idn_domain = $domain;
+    $idn_domain_convert = $domain;
+    if(!mb_check_encoding($domain, 'ASCII'))
+    {
+        try
+        {
+            $idn_domain = $idn->convert($domain);
+        }
+        catch (Exception $e)
+        {
+            // already in punycode, do not convert
+        }
+    }
+    else
+    {
+        // domain ascii code equals domain detected
+        // but maybe it is already in punycode, try converting it
+        $idn2uni = new \Algo26\IdnaConvert\ToUnicode();
+        $idn_domain_convert = $idn2uni->convert($domain);
+    }
 
     $DB->query('
 		SELECT id, folder
 		  FROM nv_websites
 		 WHERE subdomain = :subdomain
-		   AND ( domain = :domain OR domain = :idn_domain ) 
+		   AND ( domain = :domain OR domain = :idn_domain OR domain = :idn_domain_convert ) 
 		 ORDER BY folder DESC
 	 ',
         'object',
         array(
             ':subdomain' => $subdomain,
             ':domain' => $domain,
-            ':idn_domain' => $idn->encode($domain)
-        ));
+            ':idn_domain' => $idn_domain,
+            ':idn_domain_convert' => $idn_domain_convert
+        )
+    );
 	$websites = $DB->result();
-
+	
 	if(empty($websites))
 	{
         // no 'real' website found using this address
@@ -191,8 +251,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 			$nvweb_absolute .= $website->domain.$website->folder;
             */
 			$nvweb_absolute = NAVIGATE_PARENT.NAVIGATE_FOLDER;
-			header('location: '.$nvweb_absolute);
-			nvweb_clean_exit();
+			nvweb_clean_exit($nvweb_absolute);
 		}
 		else
 		{		
@@ -1006,7 +1065,9 @@ function nvweb_ajax()
     $fname = 'nvweb_'.$theme->name.'_nvajax';
 
     if(function_exists($fname))
+    {
         $content = $fname();
+    }
 }
 
 // the following function checks if a request comes from a search bot

@@ -135,7 +135,7 @@ if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES
     $_SESSION['themes_updates'] = @theme::latest_available();
 }
 
-$idn = new \Mso\IdnaConvert\IdnaConvert();
+$idn = new \Algo26\IdnaConvert\ToIdn();
 $lang = new language();
 $lang->load($user->language);
 

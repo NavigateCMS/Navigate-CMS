@@ -29,16 +29,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
 
-// IDNA converter to allow unicode characters in URLs
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/UnicodeTranscoderInterface.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/UnicodeTranscoder.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/NamePrepDataInterface.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/NamePrepData.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/PunycodeInterface.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/Punycode.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/EncodingHelper.php');
-require_once(NAVIGATE_PATH.'/lib/external/idna_convert/src/IdnaConvert.php');
-
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/htmlpurifier-lite/library/HTMLPurifier.auto.php');

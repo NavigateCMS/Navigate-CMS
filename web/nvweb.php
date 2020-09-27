@@ -34,7 +34,7 @@ function nvweb_parse($request)
     global $idn;
     global $html;
 
-    $idn = new \Mso\IdnaConvert\IdnaConvert();
+    $idn = new \Algo26\IdnaConvert\ToIdn();
 
     // create database connection
     $DB = new database();
@@ -104,14 +104,6 @@ function nvweb_parse($request)
         }
 
         $nvweb_absolute = $website->absolute_path();
-        try
-        {
-            $nvweb_absolute = $idn->encodeUri($nvweb_absolute);
-        }
-        catch(\InvalidArgumentException $e)
-        {
-            // do nothing, the domain is already in punycode
-        }
 
         define('NVWEB_ABSOLUTE', $nvweb_absolute);
         define('NVWEB_OBJECT', $nvweb_absolute . '/object');
