@@ -309,7 +309,7 @@ function navigate_install_requirements()
 
 	$checks['diskspace'] = floor(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])) / (1024*1024)) > 50;
 	$checks['server'] = true; //(stripos($_SERVER['SERVER_SOFTWARE'], 'apache')!==false);
-	$checks['php5.4'] = (version_compare(PHP_VERSION, '5.4.0') >= 0);
+	$checks['php7.2'] = (version_compare(PHP_VERSION, '7.2.0') >= 0);
 	$checks['gd'] = extension_loaded('gd');
 	//$checks['imap'] = extension_loaded('imap');
 	$checks['json'] = extension_loaded('json');
@@ -362,7 +362,7 @@ function navigate_install_requirements()
                 </div>                 
                 <div>
                     <label>PHP &ge; 5.4</label>
-                    <input type="text" value="<?php echo ($checks['php5.4']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php5.4']? 'green' : 'red');?>" />
+                    <input type="text" value="<?php echo ($checks['php7.2']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php7.2']? 'green' : 'red');?>" />
                 </div>                    
                 <div>
                     <label>&raquo; GD</label>
