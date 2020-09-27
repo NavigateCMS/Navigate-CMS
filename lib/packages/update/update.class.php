@@ -266,7 +266,13 @@ class update
 		// chmod files (may fail, but not fatal error)
 		file_put_contents($ulog, "chmod update (may fail in Windows)... ", FILE_APPEND);		
 		$chmod_status = core_chmodr(NAVIGATE_PATH.'/updates/update', 0744);
-		file_put_contents($ulog, $chmod_status."\n", FILE_APPEND);		
+		file_put_contents($ulog, $chmod_status."\n", FILE_APPEND);
+
+		// pre update checks/changes
+        if(file_exists(NAVIGATE_PATH.'/updates/update/update-pre.php'))
+        {
+            include_once(NAVIGATE_PATH.'/updates/update/update-pre.php');
+        }
 		
 		// do file changes
 		file_put_contents($ulog, "parse file changes\n", FILE_APPEND);
