@@ -237,7 +237,7 @@ function nvweb_load_website_by_url($url, $exit=true)
         )
     );
 	$websites = $DB->result();
-	
+
 	if(empty($websites))
 	{
         // no 'real' website found using this address

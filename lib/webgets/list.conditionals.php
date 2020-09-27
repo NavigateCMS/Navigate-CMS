@@ -905,13 +905,13 @@ function nvweb_list_parse_filters($raw, $object='item')
                         if(!isset($_REQUEST[substr($value, 1)]))
                         {
                             // ignore this filter
-                            continue;
+                            continue 2;
                         }
 
                         $value = $_REQUEST[substr($value, 1)];
                         if(empty($value)) // ignore empty values
                         {
-                            continue;
+                            continue 2;
                         }
                     }
 
@@ -927,7 +927,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                     if(empty($brand_id))
                     {
                         // ignore this filter
-                        continue;
+                        continue 2;
                     }
 
                     $filters[] = ' AND ( p.brand = '.$brand_id.' ) ';
@@ -961,7 +961,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                     break;
 
                 default:
-                    continue;
+                    continue 2;
                     break;
             }
 

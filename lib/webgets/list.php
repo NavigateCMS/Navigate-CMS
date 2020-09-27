@@ -482,7 +482,7 @@ function nvweb_list($vars=array())
 
                         if(empty($bgbo) || empty($bgbo->type))
                         {
-                            continue;
+                            continue 2;
                         }
 
                         // check if we can display this block
@@ -501,7 +501,7 @@ function nvweb_list($vars=array())
                                 }
                                 if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
                                 {
-                                    continue;
+                                    continue 2;
                                 }
                             }
 
@@ -516,7 +516,7 @@ function nvweb_list($vars=array())
 
                                 if($bgbo_cat_found) // block excluded categories match the current list categories, skip this block
                                 {
-                                    continue;
+                                    continue 2;
                                 }
                             }
 
@@ -528,13 +528,13 @@ function nvweb_list($vars=array())
                                     if(isset($bgbo->elements['exclusions']) && in_array($current['id'], $bgbo->elements['exclusions']))
                                     {
                                         // do not include this block in this element's page!
-                                        continue;
+                                        continue 2;
                                     }
 
                                     if(isset($bgbo->elements['selection']) && !in_array($current['id'], $bgbo->elements['selection']))
                                     {
                                         // block not associated with the current item, ignore!
-                                        continue;
+                                        continue 2;
                                     }
                                 }
                             }
@@ -1106,7 +1106,7 @@ function nvweb_list($vars=array())
                     $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
                     if(empty($item)) // empty or inexistant block, ignore
                     {
-                        continue;
+                        continue 2;
                     }
                     $item->type = "extension";
                     $item->extension = $rs[$i]->extension;
