@@ -118,7 +118,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.13.3</a><br />'
+			'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.15.4</a><br />'
 		)
 	);
 

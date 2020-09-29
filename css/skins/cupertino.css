@@ -2140,8 +2140,14 @@ label.ui-state-active #navigate_media_browser_folder_path
 
 .ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr > td
 {
-    padding: 4px;
+    padding: 4px 4px;
 }
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr.jqgfirstrow > td
+{
+	padding: 1px; /* 0px on vertical makes an horizontal scrollbar appear */
+}
+
 
 .ui-jqgrid .ui-jqgrid-htable .ui-jqgrid-labels th div
 {
