@@ -785,7 +785,7 @@ class naviforms
 		return $out;
 	}
 	
-	public function editorfield($name, $value, $width="80%", $lang="es", $website_id=NULL)
+	public function editorfield($name, $value, $width="80%", $lang="en", $website_id=NULL)
 	{
 		global $layout;
 		global $website;
@@ -1016,6 +1016,38 @@ class naviforms
 
 		return $out;
 	}
+
+	public function composerfield($name, $value="", $width="80%", $lang="en", $website_id=NULL)
+    {
+        global $layout;
+        global $website;
+
+        $ws = $website;
+        if(!empty($website_id) && $website_id!=$website->id)
+        {
+            $ws = new website();
+            $ws->load($website_id);
+        }
+        $content_css = $ws->content_stylesheets('array', 'content');
+
+        $out = '
+            <div id="'.$name.'">
+                '.$value.'
+            </div>
+        ';
+
+        $layout->add_script('    
+            var composer_params = {
+                css_styles: ["'.implode('","', $content_css).'"],
+                width: "'.$width.'",
+                height: "500px",
+                lang: "'.$lang.'"
+            };
+            navigate_composer_init("'.$name.'", composer_params);                                
+        ');
+
+        return $out;
+    }
 	
 	public function dropbox($name, $value=0, $media="", $disabled=false, $default_value=null, $options=array(), $website_id=null)
 	{

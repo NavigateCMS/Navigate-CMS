@@ -1402,8 +1402,8 @@ function files_media_browser($limit = 50, $offset = 0)
 		else
 	    {
 			list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text, $order);
-	    }
-
+        }
+        
 		foreach($files_shown as $f)
 		{
 	        $website_root = $ws->absolute_path(true).'/object';
@@ -1428,7 +1428,8 @@ function files_media_browser($limit = 50, $offset = 0)
 				               image-title="'.base64_encode(json_encode($f->title, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               download-link="'.$download_link.'"
-				               data-file-id="'.$f->id.'"				               
+				               data-file-id="'.$f->id.'"	
+				               data-website-id="'.$f->website.'"			               
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 				               <div class="file-image-wrapper"><img src="'.$icon.'" title="'.$f->name.'" data-src-original="'.$original.'" /></div>
@@ -1445,6 +1446,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"
+				               data-website-id="'.$f->website.'"
 				               id="file-youtube#'.$f->id.'">
 				               <img src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
 				               <span>'.$f->title.'</span>
@@ -1455,7 +1457,9 @@ function files_media_browser($limit = 50, $offset = 0)
 				$icon = navibrowse::mimeIcon($f->mime, $f->type);
 
 				if($f->mime == 'application/pdf' && extension_loaded('imagick'))
-                    $icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&type=thumbnail&width=75&height=75';
+				{
+					$icon = NAVIGATE_DOWNLOAD.'?wid='.$wid.'&id='.$f->id.'&disposition=inline&type=thumbnail&width=75&height=75';
+				}
 
 				$navipath = file::getFullPathTo($f->id);
 				$out[] = '<div class="ui-corner-all draggable-'.$f->type.'"
@@ -1464,6 +1468,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               navipath="'.$navipath.'"
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"
+				               data-website-id="'.$f->website.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 				               <div class="file-icon-wrapper"><img src="'.$icon.'" width="50" height="50" title="'.$f->name.'" /></div>

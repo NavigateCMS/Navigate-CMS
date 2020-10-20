@@ -247,6 +247,17 @@ class layout
         $this->add_style_tag('lib/external/leaflet/leaflet.css');
         $this->add_script_tag('lib/external/leaflet/leaflet.js');
 
+        // grapesjs 0.16.22
+        $this->add_style_tag('lib/external/grapesjs/css/grapes.min.css');
+        $this->add_script_tag('lib/external/grapesjs/grapes.js');
+        // grapesjs plugins
+        $this->add_style_tag('lib/external/grapesjs/plugins/grapesjs-preset-webpage/grapesjs-preset-webpage.min.css');
+        $this->add_script_tag('lib/external/grapesjs/plugins/grapesjs-preset-webpage/grapesjs-preset-webpage.min.js');
+        $this->add_script_tag('lib/external/grapesjs/plugins/grapesjs-custom-code/grapesjs-custom-code.min.js');
+        $this->add_script_tag('lib/external/grapesjs/plugins/grapesjs-blocks-flexbox/grapesjs-blocks-flexbox.min.js');
+
+        //$this->add_script_tag('js/jquery.dragdrop.js');
+
 		$this->add_script_tag('lib/external/colorpicker/jquery.colorpicker.js');
 		$this->add_script_tag('lib/external/colorpicker/parts/jquery.ui.colorpicker-memory.narrow.js');
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-en.js');

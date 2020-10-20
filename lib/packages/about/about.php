@@ -118,9 +118,38 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.15.4</a><br />'
+			'<a href="https://github.com/free-jqgrid/jqGrid" target="_blank">free-jqGrid v4.15.5</a><br />'
 		)
 	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://grapesjs.com" target="_blank">GrapesJS v0.16.22</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/artf/grapesjs-preset-webpage" target="_blank">GrapesJS plugin - preset-webpage v0.1.11</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/artf/grapesjs-custom-code" target="_blank">GrapesJS plugin - custom-code v0.1.2</a><br />'
+		)
+	);
+
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/artf/grapesjs-blocks-flexbox" target="_blank">GrapesJS plugin - blocks-flexbox v0.1.1</a><br />'
+		)
+	);
+
 
 	$navibars->add_tab_content_row(
 		array(

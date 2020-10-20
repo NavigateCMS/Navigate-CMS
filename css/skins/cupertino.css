@@ -3456,3 +3456,118 @@ div.block_group_block .actions a:hover
 	border-image: -webkit-linear-gradient(top, transparent, rgba(0, 0, 0, 0.3) 60%) 1 100%;
 	border-image: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.3) 60%) 1 100%;
 }
+
+
+/* grapesjs */
+
+.gjs-editor
+{
+	font-family: Verdana, sans-serif;
+	font-size: 12px;
+
+}
+
+.gjs-editor-cont
+{
+	float: left;
+	min-width: 1024px;
+}
+
+.navigate-form-row .gjs-editor-cont select,
+.navigate-form-row .gjs-editor-cont input
+{
+	width: 100%;
+	border: none;
+	margin: 0;
+	height: auto;
+}
+
+.navigate-form-row .gjs-editor-cont label
+{
+	width: auto;
+	vertical-align: inherit;
+	text-align: inherit;
+	display: inline-block;
+	float: none;
+	line-height: inherit;
+	min-height: auto;
+}
+
+.navigate-form-row .gjs-editor-cont span
+{
+	line-height: inherit;
+	height: auto;
+}
+
+.navigate-form-row .gjs-editor-cont select
+{
+	background: transparent;
+	color: #333;
+}
+
+.gjs-pn-panel.gjs-pn-views,
+.gjs-pn-panel.gjs-pn-views-container
+{
+	width: 250px;
+}
+
+.gjs-pn-options
+{
+	right: 250px;
+}
+
+.gjs-pn-panel.gjs-pn-commands
+{
+	width: calc(100% - 250px);
+}
+
+.gjs-cv-canvas
+{
+	width: calc(100% - 250px);
+}
+
+/* Theming */
+.gjs-one-bg {
+	background-color: #E2EFFC; /* #F2F5F7 */
+}
+
+.gjs-two-color {
+	color: #333;
+}
+
+.gjs-three-bg {
+	background: linear-gradient(to bottom, rgba(252,252,252,1) 0%,rgba(222,222,222,1) 100%);
+	color: #333;
+}
+
+.gjs-four-color,
+.gjs-four-color-h:hover
+{
+	color: #333;
+}
+
+.gjs-block.gjs-one-bg
+{
+	background: #F2F5F7;
+}
+
+.gjs-block-label
+{
+	font-family: Verdana, sans-serif;
+	font-size: 9px;
+}
+
+.gjs-block.fa
+{
+	font-size: 2.5em;
+}
+
+.gjs-cm-editor-c .CodeMirror
+{
+	width: 100%;
+}
+
+.gjs-custom-code .CodeMirror
+{
+	width: 100%;
+}

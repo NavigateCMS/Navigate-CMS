@@ -1,7 +1,8 @@
 var navigatecms = {
     forms: {
-        datepicker:		{ },
-        imask: []
+        datepicker:	{ },
+        imask: [],
+        grapesjs: []
     },
     csrf_token: null,
     beforeunload: false,
@@ -44,8 +45,12 @@ $(window).on('load', function()
     if($.ui && $.ui.dialog && $.ui.dialog.prototype._allowInteraction)
     {
         var ui_dialog_interaction = $.ui.dialog.prototype._allowInteraction;
-        $.ui.dialog.prototype._allowInteraction = function(e) {
-            if ($(e.target).closest('.select2-dropdown').length) return true;
+        $.ui.dialog.prototype._allowInteraction = function(e)
+        {
+            if ($(e.target).closest('.select2-dropdown').length)
+            {
+                return true;
+            }
             return ui_dialog_interaction.apply(this, arguments);
         };
     }
@@ -72,6 +77,8 @@ $(window).on('load', function()
 	});
 
 	$('#navigate-menu').tabs('option', 'active', navigate_menu_current_tab);
+
+    navigate_editor_selector_init();
 
 	// MB EXTRUDER	
 	$("#navigate-website-selector-top").find(".flapLabel").prepend($("#navigate-website-main-link"));	
@@ -564,7 +571,9 @@ function navigate_window_resize()
     for(i in navigatecms.resize_callbacks)
     {
         if(typeof(navigatecms.resize_callbacks[i])=="function")
+        {
             navigatecms.resize_callbacks[i]();
+        }
     }
 }
 
@@ -740,6 +749,43 @@ function navigate_tinymce_add_content_event(editor_id, file_id, media, mime, web
     );
 
     return content_added;
+}
+
+function navigate_grapesjs_dropped_content(editor_id, language, object)
+{
+    var out = "";
+    var selection_content = navigatecms.forms.grapesjs[editor_id].getSelected();
+    if(!selection_content)
+    {
+        selection_content = object.id;
+    }
+
+    switch(object.mediatype)
+    {
+        case 'image':
+            out = '<img src="'+NAVIGATE_DOWNLOAD+'?wid=' + object.website + '&id=' + object.file_id + '" /> '; /* +
+                (!title?            '' : ' title="' + title + '" ') +
+                (!alt?              '' : ' alt="' + alt + '" ' ) +
+                (!max_width?        '' : ' width="' + max_width + '" ') +
+                (!scaled_height?    '' : ' height="' + scaled_height + '" ') +
+                '" ' + or_styles +
+                ' />';*/
+            break;
+
+        case 'video':
+            out = '<a rel="video" navigate="navigate" type="'+object.mimetype+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+object.website+'&id='+object.file_id+'&disposition=inline">'+selection_content+'</a>';
+            break;
+
+        case 'audio':
+            out = '<a rel="audio" navigate="navigate" type="'+object.mimetype+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+object.website+'&id='+object.file_id+'&disposition=inline">'+selection_content+'</a>';
+            break;
+
+        default:
+            out = '<a rel="file" type="'+object.mimetype+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+object.website+'&id='+object.file_id+'&disposition=inline">'+selection_content+'</a>';
+
+    }
+
+    return out;
 }
 
 function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, element, meta, do_not_trigger_event)
@@ -981,7 +1027,10 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             break;
 
         case 'video':
-            if(selection_content=='') selection_content = '[video]';
+            if(selection_content=='')
+            {
+                selection_content = '[video]';
+            }
             html = '<a rel="video" navigate="navigate" type="'+mime+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
             /*
             html = '<video controls="controls">';
@@ -1004,7 +1053,10 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             break;
 
         case 'audio':
-            if(selection_content=='') selection_content = '[audio]';
+            if(selection_content=='')
+            {
+                selection_content = '[audio]';
+            }
             html = '<a rel="audio" navigate="navigate" type="'+mime+'" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline">'+selection_content+'</a>';
             /*
             html = '<audio controls="controls">';
@@ -1016,10 +1068,14 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
 
         default:
             if(selection_content=='')
+            {
                 selection_content = '[' + navigate_t(82, "File") + ']';
+            }
 
             if($($.parseHTML(selection_content)).is("A"))
+            {
                 selection_content = $(selection_content).text();
+            }
 
             html = '<a rel="file" href="'+NAVIGATE_DOWNLOAD+'?wid='+web_id+'&id='+file_id+'&disposition=inline"> ' + selection_content + '</a>';
     }
@@ -1125,6 +1181,26 @@ function navigate_tinymce_set_cursor_position(editor_id, index)
 
     //return the bookmark just because
     return bookmark;
+}
+
+function navigate_editor_translate(element_id, dest_lang, extension)
+{
+    if($('.editor_selector[for="'+element_id+'"] i.active'))
+    {
+        if( $('.editor_selector[for="'+element_id+'"] i.active').data("action") == "composer" )
+        {
+            // first, copy composer contents to tinymce instance
+            navigate_editor_grapesjs_to_tinymce(element_id);
+        }
+    }
+
+    var fname = "navigate_tinymce_translate_" + extension;
+    eval(fname+"('"+element_id+"', '"+dest_lang+"');");
+}
+
+function navigate_editor_tinymce_changed(element_id)
+{
+    navigate_editor_tinymce_to_grapesjs(element_id);
 }
 
 
@@ -1308,6 +1384,153 @@ function navigate_hide_context_menus(e)
         });
 
     }, 50);
+}
+
+function navigate_editor_selector_init()
+{
+    if($('.editor_selector').length > 0)
+    {
+        $('.editor_selector').on('click', 'i', function ()
+        {
+            var that = this;
+            var previous_action = $(this).parent().find('.active').data('action');
+            var editor_selector_for = $(this).parent().attr("for");
+
+            switch ($(this).data("action"))
+            {
+                case 'tinymce':
+                    $(this).parent().find('.active').removeClass('active');
+                    $(this).addClass('active');
+                    $(this).parents('.navigate-form-row').find('.editor_wrapper_tinymce').show();
+                    $(this).parents('.navigate-form-row').find('.editor_wrapper_composer').hide();
+                    if(previous_action == "composer")
+                    {
+                        // copy contents from composer to tinymce
+                        navigate_editor_grapesjs_to_tinymce(editor_selector_for);
+                    }
+                    break;
+
+                case 'composer':
+                    $(this).parent().find('.active').removeClass('active');
+                    $(this).addClass('active');
+                    $(this).parents('.navigate-form-row').find('.editor_wrapper_tinymce').hide();
+                    $(this).parents('.navigate-form-row').find('.editor_wrapper_composer').show();
+                    if(previous_action == "tinymce")
+                    {
+                        navigate_editor_tinymce_to_grapesjs(editor_selector_for);
+                    }
+                    break;
+
+                case 'html':
+                    if(previous_action == "composer")
+                    {
+                        // copy contents from composer to tinymce
+                        navigate_editor_grapesjs_to_tinymce(editor_selector_for);
+                    }
+                    var container = tinyMCE.get($(this).parent().attr("for")).getContainer();
+                    $(container).find('i.mce-i-code').parent().click();
+
+                    $('#navigate-content').one("mouseenter", function()
+                    {
+                        if(previous_action == "composer")
+                        {
+                            navigate_editor_tinymce_to_grapesjs(editor_selector_for);
+                        }
+                    });
+
+                    break;
+
+                case 'clear':
+                    navigate_confirmation_dialog(
+                        function ()
+                        {
+                            var tinymce_editor = tinyMCE.get($(that).parent().attr("for"));
+                            tinymce_editor.setContent('');
+
+                            var grapesjs_editor = navigatecms.forms.grapesjs[$(that).parent().attr('for') + "-composer"];
+                            if(grapesjs_editor)
+                            {
+                                grapesjs_editor.runCommand("core:canvas-clear");
+                            }
+                        },
+                        navigate_t(497, "Do you really want to erase this data?"),
+                        null,
+                        navigate_t(627, 'Remove')
+                    );
+                    break;
+            }
+        });
+
+        // editor selector / GrapesJS functionality
+        $('.editor_selector').each(function()
+        {
+            // is composer enabled in this editor selector?
+            if($(this).find('i[data-action=composer]').length > 0)
+            {
+                // find if we have to activate tinymce or grapesjs when loading
+                //var editor_content = $('#' + $(this).attr('for') + "-composer" ).html();
+                var editor_content = navigatecms.forms.grapesjs[$(this).attr('for') + "-composer"].getHtml();
+                if(editor_content.match(/<!-- nv-styles -->/g))
+                {
+                    $(this).find('i[data-action=composer]').click();
+                }
+                else
+                {
+                    $(this).find('i[data-action=tinymce]').click();
+                }
+            }
+            else
+            {
+                // composer is not enabled, just activate tinymce
+                $(this).find('i[data-action=tinymce]').click();
+            }
+        });
+    }
+}
+
+function navigate_editor_grapesjs_to_tinymce(editor_selector_for)
+{
+    var grapesjs = navigatecms.forms.grapesjs[editor_selector_for + '-composer'];
+    var grapesjs_html = (grapesjs.getHtml()).replaceAll('<!-- nv-styles -->', '');
+    var grapesjs_css = (grapesjs.getCss()).replaceAll('}', "}\n");
+    grapesjs_html += '<!-- nv-styles -->';
+    grapesjs_html += "\n";
+    grapesjs_html += "<style>\n" + grapesjs_css + "</style>";
+    tinyMCE.get(editor_selector_for).setContent(grapesjs_html);
+}
+
+function navigate_editor_tinymce_to_grapesjs(editor_selector_for)
+{
+    var tinymce_html = tinyMCE.get(editor_selector_for).getContent();
+    var grapesjs = navigatecms.forms.grapesjs[editor_selector_for + '-composer'];
+    //editor.setStyle(Your remote style file)
+    grapesjs.setComponents(tinymce_html);
+}
+
+function navigate_editor_active(element_id)
+{
+    if($('.editor_selector[for="'+element_id+'"] i.active'))
+    {
+        return $('.editor_selector[for="'+element_id+'"] i.active').data("action");
+    }
+
+    return null;
+}
+
+function navigate_editor_selector_before_submit()
+{
+    $('.editor_selector').each(function()
+    {
+        var editor_selector_for = $(this).attr("for");
+
+        switch($(this).parent().find('i.active').data('action'))
+        {
+            case 'composer':
+                // copy grapesjs contents to the associated tinymce instance
+                navigate_editor_grapesjs_to_tinymce(editor_selector_for);
+                break;
+        }
+    });
 }
 
 function phpjs_function_exists(function_name)
@@ -1950,10 +2173,14 @@ function navigate_element_visible(elem)
 function navigate_tinymce_event(event, element, ignoreScroll)
 {
     if(!element)
+    {
         element = event.currentTarget;
+    }
 
     if(element.editorId)
+    {
         element = element.editorId;
+    }
 
     if(event.type=='blur')
     {
@@ -1970,9 +2197,13 @@ function navigate_tinymce_event(event, element, ignoreScroll)
             var spos = 0;
 
             if($('#id').length > 0 && $('#id').val() > 0)
+            {
                 eval("if(cookie.i" + $('#id').val() + ") { spos = cookie.i"+ $('#id').val() + "." + element.replace(/-/g, '_') + "; };");
+            }
             else
+            {
                 spos = cookie[element.replace(/-/g, '_')];
+            }
 
             if(spos > 0)
             {
@@ -2002,10 +2233,15 @@ function navigate_tinymce_scroll(event, element, reset)
 {
     var sTop = $(event.currentTarget).scrollTop();
     if(reset)
+    {
         sTop = 0;
+    }
+
     var cookie = $.cookie("navigate-tinymce-scroll");
     if(!cookie)
+    {
         cookie = {};
+    }
 
     element = element.replace(/-/g, '_');
 
@@ -2029,11 +2265,13 @@ $.fn.buttonsetv = function()
     $('label:first', this).removeClass('ui-corner-left').addClass('ui-corner-top');
     $('label:last', this).removeClass('ui-corner-right').addClass('ui-corner-bottom');
     mw = 0; // max witdh
-    $('label', this).each(function(index){
+    $('label', this).each(function(index)
+    {
         w = $(this).width();
         if (w > mw) mw = w;
     });
-    $('label', this).each(function(index){
+    $('label', this).each(function(index)
+    {
         $(this).width(mw);
     });
 };
@@ -2060,7 +2298,7 @@ function navigate_selector_upgrade(el)
     // autoclose select2 after clearing
     if($(el).attr("multiple")!="multiple")
     {
-        $(el).on("select2:unselecting", function (e)
+        $(el).on("select2:unselecting", function(e)
         {
             $(this).select2("val", "");
             $(this).val("");
@@ -2096,9 +2334,13 @@ function navigate_selector_upgrade(el)
                         {
                             $(el).append($('<option>', { value: new_value, text: new_value, selected: true }));
                             if($(el).attr('multiselect'))
+                            {
                                 $(el).val($(el).val().concat(new_value));
+                            }
                             else
+                            {
                                 $(el).val(new_value);
+                            }
                         }
                         $( this ).dialog( "close" );
                     }
@@ -2112,6 +2354,81 @@ function navigate_selector_upgrade(el)
                     }
                 }
             ]
+        });
+    });
+}
+
+function navigate_composer_init(element_id, params)
+{
+    navigatecms.forms.grapesjs[element_id] = grapesjs.init({
+        container: "#" + element_id,
+        fromElement: true,
+        height: params.height,
+        width: params.width,
+        noticeOnUnload: false,
+        storageManager: { type: null },
+        //listenToEl: [$("#" + element_id).parent().parent().parent().parent()[0]],
+        canvas: {
+            //scripts: ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"],
+            styles: params.css_styles
+        },
+        // Avoid any default panel
+        plugins: [
+            "gjs-preset-webpage",
+            "grapesjs-custom-code",
+            "grapesjs-blocks-flexbox"
+        ],
+        pluginsOpts:
+        {
+            "gjs-preset-webpage": {
+                // options
+            }
+        }
+    });
+
+    // prepare interface
+    navigatecms.forms.grapesjs[element_id].Panels.removeButton("options", "gjs-open-import-webpage");
+    navigatecms.forms.grapesjs[element_id].Panels.removeButton("options", "canvas-clear");
+
+    // navigate media browser drag and drop compatibility
+    navigatecms.forms.grapesjs[element_id].on("canvas:dragdata", function (dataTransfer, result)
+    {
+        // use dataTransfer.files if you need to read from droppped files
+        var object_info = dataTransfer.getData("nv_object_info");
+        if(object_info)
+        {
+            object_info = JSON.parse(object_info);
+            // result.content can also be any Component Definition, not only a string
+            result.content = navigate_grapesjs_dropped_content(element_id, params.lang, object_info);
+        }
+    });
+
+    $("#" + element_id).find(".gjs-cv-canvas").droppable(
+    {
+        drop: function(event, ui)
+        {
+            alert("Please push Ctrl before dragging something from the Media Browser to be able to drop an element in the composer.");
+        },
+        over: function(event, ui)
+        {
+            if(!$(ui.draggable).attr("id")) // not a file!
+            {
+                return;
+            }
+            $(ui.helper).css("cursor", "no-drop");
+        },
+        out: function(event, ui)
+        {
+
+        }
+    });
+
+    $(window).on("load", function()
+    {
+        navigatecms.forms.grapesjs[element_id].Panels.getButton("options", "sw-visibility").set("active", true);
+        $("#" + element_id).parent().parent().parent().parent().on("scroll", function()
+        {
+            navigatecms.forms.grapesjs[element_id].editor.refreshCanvas();
         });
     });
 }
@@ -2457,19 +2774,25 @@ function navigate_dropbox_clone_value(origin_field_id, destination_field_id)
 function navigate_string_cut(text, maxlen, morechar)
 {
     if(!morechar)
+    {
         morechar = '&hellip;';
+    }
 
     // truncate by plain text
     text = phpjs_strip_tags(text);
     var olen = text.length;
 
     if(olen < maxlen)
+    {
         return text;
+    }
 
     var pos = (text.substr(0 , maxlen)).lastIndexOf(' ');
     text = text.substr(0 , pos);
     if(olen > maxlen)
+    {
         text = text + morechar;
+    }
 
 	return text;
 }
@@ -2571,7 +2894,9 @@ function navigate_string_to_decimal(value)
     var regex = new RegExp('[^0-9\-\\' + navigate["decimal_separator"] + ']', "g");
 
     if(typeof(value)!="string")
+    {
         value = value.toString();
+    }
     value = value.replace(regex, "");
 
     // replace the user decimal character for the internal symbol: a dot .

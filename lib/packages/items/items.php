@@ -1764,7 +1764,9 @@ function items_form($item)
 
 			$open_live_site = '';												
 			if(!empty($item->paths[$lang]))
-				$open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
+            {
+                $open_live_site = ' <a target="_blank" href="'.$website->absolute_path(true).$item->paths[$lang].'"><img src="img/icons/silk/world_go.png" align="absmiddle" /></a>';
+            }
 												
 			$navibars->add_tab_content_row(
                 array(
@@ -1824,9 +1826,12 @@ function items_form($item)
 
                         foreach($translate_extensions as $te)
                         {
-                            if($te['enabled']=='0') continue;
+                            if($te['enabled']=='0')
+                            {
+                                continue;
+                            }
                             $translate_extensions_titles[] = $te['title'];
-                            $translate_extensions_actions[] = 'javascript: navigate_tinymce_translate_'.$te['code'].'(\'section-'.$section['id'].'-'.$lang.'\', \''.$lang.'\');';
+                            $translate_extensions_actions[] = "javascript: navigate_editor_translate('section-".$section['id']."-".$lang."', '".$lang."','".$te['code']."');";
                         }
 
                         if(!empty($translate_extensions_actions))
@@ -1845,13 +1850,18 @@ function items_form($item)
                             '<label>'.
                                 template::section_name($section['name']).
                                 '<span class="editor_selector" for="section-'.$section['id'].'-'.$lang.'">'.
-                                    //'<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
-                                    '<i class="fa fa-border fa-fw fa-lg fa-file-text-o active" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
+                                    '<i class="fa fa-border fa-fw fa-lg fa-file-text-o" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
+                                    '<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
                                     '<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i> '.
                                     '<i class="fa fa-border fa-fw fa-lg fa-eraser" data-action="clear" title="'.t(208, "Remove all content").'"></i>'.
                                 '</span>'.
                             '</label>',
-                            $naviforms->editorfield('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+48).'px', $lang),
+                            '<div class="editor_wrapper_composer" style="display: none;">'.
+                                $naviforms->composerfield('section-'.$section['id'].'-'.$lang.'-composer', @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+250).'px', $lang).
+                            '</div>',
+                            '<div class="editor_wrapper_tinymce" style="display: block;">'.
+                                $naviforms->editorfield('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+48).'px', $lang).
+                            '</div>',
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',
                             $translate_menu,

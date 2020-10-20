@@ -142,10 +142,75 @@ function navigate_media_browser()
 function navigate_media_browser_refresh()
 {
 	// drag & drop support
-	$("#navigate_media_browser_items > div")
-        .not("#file-more")
-        .not("div[mimetype='folder/back']")
-        .draggable(
+    var media_browser_items_draggable = $("#navigate_media_browser_items > div").not("#file-more").not("div[mimetype='folder/back']");
+
+    $(media_browser_items_draggable).each(function()
+    {
+        var that = this;
+
+        $(that).mousedown(function(event)
+        {
+            if(event.ctrlKey)
+            {
+                // use HTML5 draggable
+                that.setAttribute( 'draggable', true );
+                that.ondragstart = function( event )
+                {
+                    // create a json object with all info of the element
+                    var object_info = {
+                        mediatype: $(that).attr("mediatype"),
+                        mimetype: $(that).attr("mimetype"),
+                        image_width: $(that).attr("image-width"),
+                        image_height: $(that).attr("image-height"),
+                        image_title: $(that).attr("image-title"),
+                        image_description: $(that).attr("image-description"),
+                        download_link: $(that).attr("download-link"),
+                        file_id: $(that).data("file-id"),
+                        navipath: $(that).attr("navipath"),
+                        website: $(that).data("website-id"),
+                        id: $(that).attr("id")
+                    };
+
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('text/plain', object_info.id);
+                    event.dataTransfer.setData('nv_object_info', JSON.stringify(object_info));
+                }
+            }
+            else
+            {
+                // use jQuery UI draggable, if not already active
+                that.removeAttribute( 'draggable' );
+                if(!$(that).data("ui-draggable"))
+                {
+                    $(that).draggable(
+                        {
+                            revert: true,
+                            scroll: true,
+                            containment: "document",
+                            opacity: 0.7,
+                            helper: "clone",
+                            appendTo: "body",
+                            iframeFix: true,
+                            start: function (event, ui)
+                            {
+                                $(ui.helper).find('div.file-access-icons').hide();
+                                $(ui.helper).addClass("navigate_media_browser_clone");
+                            },
+                            stop: function (event, ui)
+                            {
+                                $(ui.helper).find('div.file-access-icons').show();
+                                $(that).draggable("destroy");
+                                navigate_media_browser_refresh_files_used();
+                            }
+                        }
+                    );
+                    $(that).trigger(event);
+                }
+            }
+        });
+    });
+/*
+    media_browser_items_draggable.draggable(
 	{ 
 		revert: true,  
 		scroll: true, 
@@ -165,6 +230,7 @@ function navigate_media_browser_refresh()
             navigate_media_browser_refresh_files_used();
         }
 	});
+	*/
 
     $("#navigate_media_browser_items").off("contextmenu");
 
@@ -186,7 +252,9 @@ function navigate_media_browser_refresh()
                 var ypos = e.clientY;
 
                 if(xpos + $('#contextmenu-mediabrowser').width() > $(window).width())
+                {
                     xpos -= $('#contextmenu-mediabrowser').width();
+                }
 
                 $('#contextmenu-mediabrowser').css({
                     "top": ypos,
@@ -477,7 +545,9 @@ function navigate_media_browser_refresh_files_used()
     for(i in files_used)
     {
         if(!files_used[i] || files_used[i]=="" || files_used[i]==0)
+        {
             continue;
+        }
 
 		// ignore default theme images including a slash
 		if(files_used[i].indexOf('/') < 0)
