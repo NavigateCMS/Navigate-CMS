@@ -10,7 +10,7 @@ function nvweb_self_url()
         $serverrequri = $_SERVER['REQUEST_URI'];
     }
 
-	$s = empty($_SERVER["HTTPS"]) ? '' : ($_SERVER["HTTPS"] == "on") ? "s" : ""; 
+	$s = (empty($_SERVER["HTTPS"]) ? '' : (($_SERVER["HTTPS"] == "on") ? "s" : ""));
 	$s1 = strtolower($_SERVER["SERVER_PROTOCOL"]);
 	
 	$protocol = substr($s1, 0, strpos($s1, "/")).$s; 

@@ -510,7 +510,9 @@ function files_browser($parent, $search="")
 		)
 	);
 	if(!empty($extra_contextmenu_actions))
-		array_unshift($extra_contextmenu_actions, '<hr />');
+    {
+        array_unshift($extra_contextmenu_actions, '<hr />');
+    }
 
     $navibars->add_content('
         <ul id="navigate-files-contextmenu" style="display: none;">
@@ -1020,7 +1022,10 @@ function files_item_properties($item)
     );
 
 	$website_root = $website->absolute_path(true).'/object';
-	if(empty($website_root)) $website_root = NVWEB_OBJECT;
+	if(empty($website_root))
+    {
+        $website_root = NVWEB_OBJECT;
+    }
 
 	$navibars->add_tab_content_row(
 	    array(
@@ -1432,7 +1437,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               data-website-id="'.$f->website.'"			               
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-				               <div class="file-image-wrapper"><img src="'.$icon.'" title="'.$f->name.'" data-src-original="'.$original.'" /></div>
+				               <div class="file-image-wrapper"><img loading="lazy" src="'.$icon.'" title="'.$f->name.'" data-src-original="'.$original.'" /></div>
 	                      </div>';
 			}
 	        else if($f->type == 'youtube')
@@ -1448,7 +1453,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               data-file-id="'.$f->id.'"
 				               data-website-id="'.$f->website.'"
 				               id="file-youtube#'.$f->id.'">
-				               <img src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
+				               <img loading="lazy" src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
 				               <span>'.$f->title.'</span>
 	                      </div>';
 	        }
@@ -1471,7 +1476,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               data-website-id="'.$f->website.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
-				               <div class="file-icon-wrapper"><img src="'.$icon.'" width="50" height="50" title="'.$f->name.'" /></div>
+				               <div class="file-icon-wrapper"><img loading="lazy" src="'.$icon.'" width="50" height="50" title="'.$f->name.'" /></div>
 	                           <span style="clear: both; display: block; height: 0px;"></span>'.
 	                           $f->name.'
 	                       </div>';

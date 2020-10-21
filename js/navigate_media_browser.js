@@ -110,7 +110,9 @@ function navigate_media_browser()
                 $("#file-more", "#navigate-media-browser").each(function()
                 {
                     if(navigate_element_visible(this))
+                    {
                         $(this).trigger("click");
+                    }
                 });
             });
 		}
@@ -903,9 +905,11 @@ function navigate_media_browser_reload()
 	navigate_status(navigate_lang_dictionary[185] + "...", "loader"); // Searching elements
 
     if(media=='folder')
+    {
         $('#media_browser_type-button').find('.ui-selectmenu-text').html(
             '<i class="ui-icon ui-icon-folder-collapsed" />' + $("#nvmb-folder").attr("prefix") + "&nbsp;&nbsp;" + navigate_media_browser_folderpath
         );
+    }
 
     $('#navigate_media_browser_website').button("enable");
     $('#navigate_media_browser_upload_button').button("enable");
@@ -914,7 +918,6 @@ function navigate_media_browser_reload()
         $('#navigate_media_browser_website').button("disable");
         $('#navigate_media_browser_upload_button').button("disable");
     }
-
 
     $("#navigate_media_browser_items").load(
 		"?fid=files&act=media_browser&website=" +
@@ -930,7 +933,10 @@ function navigate_media_browser_reload()
 			if(media == "folder")
 			{
 				var folder_id = $("#navigate_media_browser_folder_id").val();
-				if(folder_id==0) navigate_media_browser_set_folder(folder_id, "/"); 
+				if(folder_id==0)
+                {
+                    navigate_media_browser_set_folder(folder_id, "/");
+                }
 			}													
 			
 			// drag & drop support and contextmenu!

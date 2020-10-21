@@ -303,13 +303,15 @@ class navibrowse
 		{
 			$icon = $this->mimeIcon('folder/back');
 			$html[] = '<div class="navibrowse-folder navibrowse-back ui-corner-all" id="item-'.$this->previous.'">';
-			$html[] = '		<img src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';	
+			$html[] = '		<img loading="lazy" src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 			$html[] = '		<div class="navibrowse-item-name">'.t(139, 'Back').'</div>';				
 			$html[] = '</div>';				
 		}
 		
 		if(empty($this->items))
+        {
             $this->items = array();
+        }
 
 		foreach($this->items as $item)
 		{
@@ -318,15 +320,19 @@ class navibrowse
 			$thumbnail = '';
 
 			if($item->type == 'image')
-				$thumbnail = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
+            {
+                $thumbnail = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
+            }
 
             if($item->mime == 'application/pdf' && extension_loaded('imagick'))
+            {
                 $thumbnail = NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline&type=thumbnail&width='.intval($this->icon_size).'&height='.intval($this->icon_size);
+            }
 
 			if($item->type=='folder')
 			{
 				$html[] = '<div class="navibrowse-folder ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
-				$html[] = '		<img src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
+				$html[] = '		<img loading="lazy" src="'.$icon.'" width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
 				$html[] = '</div>';
 			}
@@ -334,7 +340,7 @@ class navibrowse
 			{
 				$html[] = '<div class="navibrowse-file ui-corner-all" mime="'.$item->mime.'" id="item-'.$item->id.'" data-file-type="'.$item->type.'" data-file-id="'.$item->id.'">';
                 $html[] = '     <div class="navibrowse-file-access-icons">'.$permissions[$item->permission].$access[$item->access].'</div>';
-				$html[] = '		<img src="'.$icon.'" data-src="'.$thumbnail.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
+				$html[] = '		<img loading="lazy" src="'.$icon.'" data-src="'.$thumbnail.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
 				$html[] = '</div>';
 			}
