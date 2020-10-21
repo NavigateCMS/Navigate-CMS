@@ -2895,7 +2895,7 @@ function block_group_form($item)
 
                     if(empty($block) || empty($block->type))
                     {
-                        continue;
+                        continue 2;
                     }
 
                     $blocks_selected[] = '

@@ -247,7 +247,10 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                         set_time_limit(0);
                         print(@fread($fp, 1024 * 1024)); // 1 MB
                         flush();
-                        ob_flush();
+                        if(ob_get_length()!==false)
+                        {
+                            ob_flush();
+                        }
                         // wait for 1 second (so 1 MB/s)
                         usleep(1000000);
                     }
@@ -339,7 +342,10 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                         set_time_limit(0);
                         print(@fread($fp, 1024 * 1024)); // 1 MB
                         flush();
-                        ob_flush();
+                        if(ob_get_length()!==false)
+                        {
+                            ob_flush();
+                        }
                         // wait for 1 second (so 1 MB/s)
                         usleep(1000000);
                     }

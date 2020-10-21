@@ -656,6 +656,11 @@ class block
         $data = $DB->query_single('block_types', 'nv_websites', ' id = '.$website->id);
         $data = mb_unserialize($data);
 
+        if(empty($data))
+        {
+            $data = array();
+        }
+
         return $data;
     }
 	

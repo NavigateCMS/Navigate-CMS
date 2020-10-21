@@ -163,8 +163,11 @@ function run()
                 echo $foo;
                 header('Connection: close');
 
-                ob_end_flush();
-                ob_flush();
+                if(ob_get_length()!==false)
+                {
+                    ob_end_flush();
+                    ob_flush();
+                }
                 flush();
                 session_write_close();
                 // now the process is running in the server, the client thinks the http request has finished
