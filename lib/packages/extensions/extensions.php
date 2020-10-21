@@ -458,7 +458,10 @@ function extensions_grid($list)
     $layout->add_script('
         function navigatecms_marketplace_install_from_hash(hash)
         {
-            window.location.replace("?fid=extensions&act=install_from_hash&hash="+hash);
+            if(hash!=null && hash!="")
+            {                
+                window.location.replace("?fid=extensions&act=install_from_hash&hash="+hash);
+            }
         }
 
         if(typeof(window.postMessage) != "undefined")
