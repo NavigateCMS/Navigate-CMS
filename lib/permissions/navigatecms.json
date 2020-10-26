@@ -12,5 +12,12 @@
         "description": "Display Navigate CMS version in status bar",
         "type": "boolean",
         "dvalue": "true"
+    },
+    {
+        "name": "navigatecms.beta",
+        "scope": "system",
+        "description": "Enable beta features for testing",
+        "type": "boolean",
+        "dvalue": "false"
     }
 ]

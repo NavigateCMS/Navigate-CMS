@@ -1843,13 +1843,20 @@ function products_form($item)
                             '<label>'.
                                 template::section_name($section['name']).
                                 '<span class="editor_selector" for="section-'.$section['id'].'-'.$lang.'">'.
-                                    //'<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> '.
-                                    '<i class="fa fa-border fa-fw fa-lg fa-file-text-o active" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
+                                    '<i class="fa fa-border fa-fw fa-lg fa-file-text-o" data-action="tinymce" title="'.t(614, "Edit with TinyMCE").'"></i> '.
+                                    ($user->permission("navigatecms.beta")=="true"? '<i class="fa fa-border fa-fw fa-lg fa-th-large" data-action="composer" title="'.t(616, "Edit with NV Composer").'"></i> ' : '').
                                     '<i class="fa fa-border fa-fw fa-lg fa-code" data-action="html" title="'.t(615, "Edit as source code").'"></i> '.
                                     '<i class="fa fa-border fa-fw fa-lg fa-eraser" data-action="clear" title="'.t(208, "Remove all content").'"></i>'.
                                 '</span>'.
                             '</label>',
-                            $naviforms->editorfield('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+48).'px', $lang),
+                            ($user->permission("navigatecms.beta")=="true"?
+                                '<div class="editor_wrapper_composer" style="display: none;">'.
+                                    $naviforms->composerfield('section-'.$section['id'].'-'.$lang.'-composer', @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+250).'px', $lang).
+                                '</div>' : ''
+                            ),
+                            '<div class="editor_wrapper_tinymce" style="display: block;">'.
+                                $naviforms->editorfield('section-'.$section['id'].'-'.$lang, @$item->dictionary[$lang]['section-'.$section['id']], ($section['width']+48).'px', $lang).
+                            '</div>',
                             '<div style="clear:both; margin-top:5px; float:left; margin-bottom: 10px;">',
                             '<label>&nbsp;</label>',
                             $translate_menu,

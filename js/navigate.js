@@ -1492,7 +1492,7 @@ function navigate_editor_grapesjs_to_tinymce(editor_selector_for)
 {
     var grapesjs = navigatecms.forms.grapesjs[editor_selector_for + '-composer'];
     var grapesjs_html = (grapesjs.getHtml()).replaceAll('<!-- nv-styles -->', '');
-    var grapesjs_css = (grapesjs.getCss()).replaceAll('}', "}\n");
+    var grapesjs_css = (grapesjs.getCss({ avoidProtected: true })).replaceAll('}', "}\n");
     grapesjs_html += '<!-- nv-styles -->';
     grapesjs_html += "\n";
     grapesjs_html += "<style>\n" + grapesjs_css + "</style>";
@@ -1501,6 +1501,10 @@ function navigate_editor_grapesjs_to_tinymce(editor_selector_for)
 
 function navigate_editor_tinymce_to_grapesjs(editor_selector_for)
 {
+    if(!navigatecms.forms.grapesjs[editor_selector_for + '-composer'])
+    {
+        return;
+    }
     var tinymce_html = tinyMCE.get(editor_selector_for).getContent();
     var grapesjs = navigatecms.forms.grapesjs[editor_selector_for + '-composer'];
     //editor.setStyle(Your remote style file)
@@ -2389,6 +2393,9 @@ function navigate_composer_init(element_id, params)
     // prepare interface
     navigatecms.forms.grapesjs[element_id].Panels.removeButton("options", "gjs-open-import-webpage");
     navigatecms.forms.grapesjs[element_id].Panels.removeButton("options", "canvas-clear");
+
+    navigatecms.forms.grapesjs[element_id].BlockManager.remove("h-navbar");
+    navigatecms.forms.grapesjs[element_id].BlockManager.remove("countdown");
 
     // navigate media browser drag and drop compatibility
     navigatecms.forms.grapesjs[element_id].on("canvas:dragdata", function (dataTransfer, result)
