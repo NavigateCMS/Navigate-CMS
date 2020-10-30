@@ -125,7 +125,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="https://grapesjs.com" target="_blank">GrapesJS v0.16.22</a><br />'
+			'<a href="https://grapesjs.com" target="_blank">GrapesJS v0.16.27</a><br />'
 		)
 	);
 

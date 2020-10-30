@@ -256,8 +256,6 @@ class layout
         $this->add_script_tag('lib/external/grapesjs/plugins/grapesjs-custom-code/grapesjs-custom-code.min.js');
         $this->add_script_tag('lib/external/grapesjs/plugins/grapesjs-blocks-flexbox/grapesjs-blocks-flexbox.min.js');
 
-        //$this->add_script_tag('js/jquery.dragdrop.js');
-
 		$this->add_script_tag('lib/external/colorpicker/jquery.colorpicker.js');
 		$this->add_script_tag('lib/external/colorpicker/parts/jquery.ui.colorpicker-memory.narrow.js');
 		$this->add_script_tag('lib/external/colorpicker/i18n/jquery.ui.colorpicker-en.js');

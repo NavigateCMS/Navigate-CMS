@@ -3527,15 +3527,18 @@ div.block_group_block .actions a:hover
 }
 
 /* Theming */
-.gjs-one-bg {
+.gjs-one-bg
+{
 	background-color: #E2EFFC; /* #F2F5F7 */
 }
 
-.gjs-two-color {
+.gjs-two-color
+{
 	color: #333;
 }
 
-.gjs-three-bg {
+.gjs-three-bg
+{
 	background: linear-gradient(to bottom, rgba(252,252,252,1) 0%,rgba(222,222,222,1) 100%);
 	color: #333;
 }
@@ -3570,4 +3573,95 @@ div.block_group_block .actions a:hover
 .gjs-custom-code .CodeMirror
 {
 	width: 100%;
+}
+
+.gjs-field
+{
+	background-color: rgba(255,255,255,0.5);
+}
+
+.gjs-radio-item input:checked + .gjs-radio-item-label
+{
+    background-color: rgb(255, 255, 255);
+    width: 83%;
+}
+
+.gjs-sm-label
+{
+	color: #111;
+}
+
+.gjs-field-arrow-u
+{
+	border-bottom-color: rgba(0,0,0,0.2);
+}
+
+.gjs-field-arrow-d,
+.gjs-d-s-arrow
+{
+	border-top-color: rgba(0,0,0,0.2);
+}
+
+.navigate-form-row .gjs-input-holder input,
+.navigate-form-row .gjs-field.gjs-select,
+.navigate-form-row div.gjs-field.gjs-field-text input,
+.navigate-form-row div.gjs-field.gjs-field input,
+.navigate-form-row .gjs-clm-tags #gjs-clm-new
+{
+	background-color: rgba(255,255,255,0.5);
+	background-image: none;
+	color: #333;
+}
+
+.navigate-form-row .gjs-field.gjs-select option
+{
+	background-color: #F1F7FE;
+	color: #333;
+}
+
+.gjs-sm-sector .gjs-sm-field input,
+.gjs-clm-tags .gjs-sm-field input,
+.gjs-sm-sector .gjs-clm-field input,
+.gjs-clm-tags .gjs-clm-field input,
+.gjs-sm-sector .gjs-clm-select input,
+.gjs-clm-tags .gjs-clm-select input,
+.gjs-sm-sector .gjs-sm-field select,
+.gjs-clm-tags .gjs-sm-field select,
+.gjs-sm-sector .gjs-clm-field select,
+.gjs-clm-tags .gjs-clm-field select,
+.gjs-sm-sector .gjs-clm-select select,
+.gjs-clm-tags .gjs-clm-select select
+{
+	color: inherit;
+}
+
+label:hover::before
+{
+	border: none;
+}
+
+.gjs-layer-caret
+{
+	top: 8px;
+}
+
+.gjs-layer-vis
+{
+	top: 6px;
+}
+
+.gjs-three-bg
+{
+	background: #ccc;
+}
+
+.gjs-cm-editor #gjs-cm-title
+{
+    background-color: #F7F7F7;
+}
+
+.gjs-cm-editor#gjs-cm-htmlmixed #gjs-cm-title,
+.gjs-cm-editor#gjs-cm-css #gjs-cm-title
+{
+    color: #333;
 }
