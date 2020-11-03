@@ -214,11 +214,19 @@ function about_layout()
 		)
 	);
 											
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://mediaelementjs.com/" target="_blank">MediaElement.js v2.11.2</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://mediaelementjs.com/" target="_blank">MediaElement.js v2.11.2</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/pisi/Longclick" target="_blank">jQuery Long Click v0.3.2 (22-Jun-2010)</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="https://github.com/pisi/Longclick" target="_blank">jQuery Long Click v0.3.2 (22-Jun-2010)</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(
 	    array(
@@ -255,17 +263,33 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/ludo/jquery-treetable" target="_blank">jQuery treeTable plugin v2.3.0</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/ludo/jquery-treetable" target="_blank">jQuery treeTable plugin v2.3.0</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7+ (2015/03/23)</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/isocra/TableDnD" target="_blank">jQuery Table DnD plugin v0.7+ (2015/03/23)</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="https://github.com/mathiasbynens/jquery-noselect" target="_blank">jQuery noSelect plugin v51bac1d397 (2012-01-11)</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+			'<a href="https://github.com/mathiasbynens/jquery-noselect" target="_blank">jQuery noSelect plugin v51bac1d397 (2012-01-11)</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="https://github.com/ROMB/jquery-dialogextend" target="_blank">jQuery Dialog Extend plugin v2.0.4</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="https://github.com/ROMB/jquery-dialogextend" target="_blank">jQuery Dialog Extend plugin v2.0.4</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(
 		array(
@@ -309,17 +333,33 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://aehlke.github.com/tag-it/" target="_blank">jQuery Tag It! v2.0</a><br />'));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://aehlke.github.com/tag-it/" target="_blank">jQuery Tag It! v2.0</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-											'<a href="http://code.google.com/p/cssmin/" target="_blank">CssMin v3.0.1</a><br />'));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://code.google.com/p/cssmin/" target="_blank">CssMin v3.0.1</a><br />'
+		)
+	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://www.verot.net/php_class_upload.htm" target="_blank">class.upload v2.09</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://www.verot.net/php_class_upload.htm" target="_blank">class.upload v2.09</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="http://www.framework2.com.ar/dzone/forceUTF8-es/" target="_blank">Encoding UTF8 Class (by Sebastián Grignoli)</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+            '<a href="http://www.framework2.com.ar/dzone/forceUTF8-es/" target="_blank">Encoding UTF8 Class (by Sebastián Grignoli)</a><br />'
+		)
+	);
 
 	$navibars->add_tab_content_row(
 		array(
@@ -328,17 +368,33 @@ function about_layout()
 		)
 	);
 
-	$navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',												
-											'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.6.1</a><br />' ));
+	$navibars->add_tab_content_row(
+		array(
+			'<label>&nbsp;</label>',
+			'<a href="http://trentrichardson.com/examples/timepicker/" target="_blank">jQuery Timepicker Addon v1.6.1</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="https://github.com/tzuryby/jquery.hotkeys" target="_blank">jQuery HotKeys v0.8+</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+            '<a href="https://github.com/tzuryby/jquery.hotkeys" target="_blank">jQuery HotKeys v0.8+</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="https://github.com/DrPheltRight/jquery-caret" target="_blank">jQuery Caret v20803a7a16 (Sep 23 2011)</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+            '<a href="https://github.com/DrPheltRight/jquery-caret" target="_blank">jQuery Caret v20803a7a16 (Sep 23 2011)</a><br />'
+		)
+	);
 
-    $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                                            '<a href="https://github.com/tbasse/jquery-truncate" target="_blank">jQuery Truncate Text Plugin v18fdc9195c (Apr 03 2013)</a><br />' ));
+    $navibars->add_tab_content_row(
+    	array(
+    		'<label>&nbsp;</label>',
+            '<a href="https://github.com/tbasse/jquery-truncate" target="_blank">jQuery Truncate Text Plugin v18fdc9195c (Apr 03 2013)</a><br />'
+		)
+	);
 
     $navibars->add_tab_content_row(
     	array(

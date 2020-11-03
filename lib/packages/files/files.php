@@ -472,9 +472,10 @@ function files_browser($parent, $search="")
 	
 		$files = file::filesOnPath($parent);
 	}
-	
+
 	$navibrowse->items($files);
-	$navibrowse->path($path, $parent, $previous);	
+	$navibrowse->default_view = $user->permission('files.browse_view');
+	$navibrowse->path($path, $parent, $previous);
 	$navibrowse->setUrl('?fid='.core_purify_string($_REQUEST['fid']).'&parent=');
 	$navibrowse->onDblClick('navigate_files_dblclick');
 	$navibrowse->onRightClick('navigate_files_contextmenu');

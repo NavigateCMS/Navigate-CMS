@@ -24,17 +24,20 @@ class permission
 
         $ws_query = '';
         if(!empty($website))
+        {
             $ws_query = ' AND website = '.intval($website);
+        }
 
         $status = $DB->query('
-            SELECT * FROM nv_permissions
-             WHERE name = :name 
-               AND profile = :profile_id 
-               AND user = :user_id',
-            $ws_query,
+            SELECT * 
+            FROM `nv_permissions` 
+            WHERE `name` = :permission_name AND 
+                  `profile` = :profile_id AND 
+                  `user` = :user_id
+            '.$ws_query,
             'object',
             array(
-                ':name' => $name,
+                ':permission_name' => $name,
                 ':profile_id' => intval($profile_id),
                 ':user_id' => intval($user_id)
             )
@@ -89,9 +92,13 @@ class permission
     public function save()
     {
         if(empty($this->id))
+        {
             return $this->insert();
+        }
         else
+        {
             return $this->update();
+        }
     }
 
     /**
@@ -134,7 +141,9 @@ class permission
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         $this->id = $DB->get_last_id();
 
@@ -156,9 +165,13 @@ class permission
 
         $value = @$this->value;
 	    if(!isset($this->value))
-		    $value = "";
+        {
+            $value = "";
+        }
 	    else
-		    $value = json_encode($this->value);
+        {
+            $value = json_encode($this->value);
+        }
 
         $ok =  $DB->execute('
             UPDATE nv_permissions
@@ -185,7 +198,9 @@ class permission
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         return true;
     }
@@ -268,7 +283,9 @@ class permission
         global $website;
 
         if(empty($ws))
+        {
             $ws = $website->id;
+        }
 
         // load all permission definitions: system, functions, extensions
         $scopes = array('system', 'functions', 'settings', 'extensions');
@@ -360,7 +377,9 @@ class permission
     public static function update_permissions($changes=array(), $profile_id=0, $user_id=0)
     {
         if(!is_array($changes))
+        {
             return;
+        }
 
         foreach($changes as $key => $value)
         {
@@ -374,7 +393,7 @@ class permission
 
             $permission = new permission();
             $permission->load($key, intval($profile_id), intval($user_id), $ws);
-            $permission->value = $value;
+            $permission->value = trim($value);
             $permission->save();
         }
     }
@@ -396,7 +415,9 @@ class permission
         $DB->query('SELECT * FROM nv_permissions', 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }

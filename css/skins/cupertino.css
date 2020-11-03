@@ -1573,6 +1573,11 @@ table.treeTable
 	background-color: #FFEF8F;
 }
 
+.navibrowse-items > div:hover
+{
+	border-color: #999;
+}
+
 #navibrowse-item-badge, #navigrid-item-badge
 {
 	position: absolute;
@@ -1587,6 +1592,108 @@ table.treeTable
 	margin-left: 0px;
 	background-image: url(../../img/skins/badge.png);
 	background-repeat: no-repeat;
+}
+
+.navibrowse-item-meta
+{
+	display: none;
+}
+
+.navibrowse-view-list > div
+{
+	display: block;
+	float: none;
+	width: auto;
+	text-align: left;
+	padding: 8px;
+	height: auto;
+	font-size: 11px;
+}
+
+.navibrowse-view-list .navibrowse-item-name
+{
+	margin-top: 3px;
+}
+
+.navibrowse-view-list > div img[loading=lazy]
+{
+	display: none;
+}
+
+.navibrowse-view-list > div.navibrowse-folder
+{
+	font-weight: bold;
+}
+
+.navibrowse-view-list > div.navibrowse-file
+{
+	clear: left;
+}
+
+.navibrowse-view-list > div.navibrowse-folder::before
+{
+	font-family: FontAwesome;
+	content: "\f114";
+	float: left;
+	margin-right: 8px;
+	font-size: 16px;
+}
+
+.navibrowse-view-list > div.navibrowse-file::before
+{
+	font-family: FontAwesome;
+	content: "\f016";
+	float: left;
+	margin-right: 8px;
+	font-size: 16px;
+}
+
+.navibrowse-view-list > div.navibrowse-file[data-file-type="image"]::before
+{
+	content: "\f1c5";
+}
+
+.navibrowse-view-list > div.navibrowse-file[data-file-type="video"]::before
+{
+	content: "\f1c8";
+}
+
+.navibrowse-view-list > div.navibrowse-file[data-file-type="audio"]::before
+{
+	content: "\f1c7";
+}
+
+.navibrowse-view-list > div.navibrowse-file[data-file-type="document"]::before
+{
+	content: "\f0f6";
+}
+
+.navibrowse-view-list .navibrowse-item-name
+{
+	display: inline-block;
+}
+
+.navibrowse-view-list .navibrowse-item-meta
+{
+	display: inline-block;
+	margin-top: 3px;
+	font-size: 9px;
+	color: #aaa;
+	margin-left: 32px;
+}
+
+.navibrowse-view-list .navibrowse-item-meta > span
+{
+	display: inline-block;
+	margin-right: 16px;
+}
+
+.navibrowse-view-list #navibrowse-item-badge
+{
+	margin-top: -31px;
+	margin-left: -16px;
+	text-align: center;
+	transform: scale(0.7);
 }
 
 
@@ -3617,6 +3724,16 @@ div.block_group_block .actions a:hover
 {
 	background-color: #F1F7FE;
 	color: #333;
+}
+
+.navigate-form-row .gjs-field.gjs-field-select
+{
+	padding: 4px 1px;
+}
+
+.gjs-field-checkbox input:checked+.gjs-chk-icon
+{
+	border-color: rgba(32,32,32,0);
 }
 
 .gjs-sm-sector .gjs-sm-field input,

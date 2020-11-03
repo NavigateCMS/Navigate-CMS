@@ -17,6 +17,8 @@ class navibrowse
 	public $onDblClick;
     public $onRightClick;
 
+    public $default_view;
+
 	public function __construct($id)	
 	{
 		$this->id = $id;
@@ -24,6 +26,7 @@ class navibrowse
 		$this->empty_folder = 'img/icons/ricebowl/filesystem/folder_grey.png';		
 		$this->icon_size = '64px';
 		$this->path = '/';
+		$this->default_view = 'grid';
 	}
 	
 	public function items($items)
@@ -145,6 +148,12 @@ class navibrowse
 		global $layout;
 		global $website;
 
+        $navibrowse_view = $this->default_view;
+        if(isset($_COOKIE['navigate-navibrowse-'.$this->id.'-view']))
+        {
+            $navibrowse_view = $_COOKIE['navigate-navibrowse-'.$this->id.'-view'];
+        }
+
 		$html = array();
 
         $access = array(
@@ -169,7 +178,9 @@ class navibrowse
 		$html[] = '	<a href="?fid='.$_REQUEST['fid'].'"><img src="img/icons/silk/folder_home.png" width="16px" height="16px" align="absbottom" /> '.t(18, 'Home').'</a>';
 
 		if($this->parent > 0)
-			$html[] = '	<a href="?fid='.$_REQUEST['fid'].'&parent='.$this->previous.'"><img src="img/icons/silk/folder_up.png" width="16px" height="16px" align="absbottom" /> '.t(139, 'Back').'</a>';
+        {
+            $html[] = '	<a href="?fid='.$_REQUEST['fid'].'&parent='.$this->previous.'"><img src="img/icons/silk/folder_up.png" width="16px" height="16px" align="absbottom" /> '.t(139, 'Back').'</a>';
+        }
 
 		// recent folders
 
@@ -231,6 +242,13 @@ class navibrowse
 
 		$html[] = '
 			<div style="float: right;">
+			    <div class="buttonset controlgroup" style="margin-right: 16px;">
+                    <input type="radio" id="navibrowse-view-grid" name="navibrowse-view[]" value="grid" '.(($navibrowse_view == 'grid')? 'checked="checked"' : '').' />
+                    <label title="'.t(179, 'Thumbnails').'" class="unselectable" for="navibrowse-view-grid"><i class="fa fa-fw fa-lg fa-th-large"></i></label>
+                    <input type="radio" id="navibrowse-view-list" name="navibrowse-view[]" value="list" '.(($navibrowse_view == 'list')? 'checked="checked"' : '').' />
+                    <label title="'.t(39, 'List').'" class="unselectable" for="navibrowse-view-list"><i class="fa fa-fw fa-lg fa-list"></i></label>			        
+			    </div>
+			
 				<i class="fa fa-filter"></i>
 	            <select id="navibrowse-filter-type" name="navibrowse-filter-type">
 					<option value="" selected="selected">('.t(443, "All").')</option>
@@ -243,7 +261,29 @@ class navibrowse
 			</div>
 		';
 
-		$layout->add_script('
+		$layout->add_script('		
+		    $("input[name=\'navibrowse-view[]\']").on("click", function()
+		    {
+		        jQuery(".navibrowse-items").removeClass("navibrowse-view-grid");
+		        jQuery(".navibrowse-items").removeClass("navibrowse-view-list");
+		    		    
+                var navibrowse_view = $("input[name=\'navibrowse-view[]\']:checked").val();
+                $.setCookie("navigate-navibrowse-'.$this->id.'-view", navibrowse_view, {expires: 365});	    
+		    		    
+		        switch(navibrowse_view)
+		        {
+		            case "grid":
+		                jQuery(".navibrowse-items").addClass("navibrowse-view-grid");
+                        navibrowse_'.$this->id.'_refresh();
+                        break;
+		                
+                    case "list":
+                        jQuery(".navibrowse-items").addClass("navibrowse-view-list");
+                        navibrowse_'.$this->id.'_refresh();
+                        break;
+		        }
+		    });
+		
 			$("#navibrowse-filter-type")
 				.select2(
 				{
@@ -287,9 +327,13 @@ class navibrowse
 					$(".navibrowse-items > div").each(function()
 					{
 						if($(this).data("file-type") == $("#navibrowse-filter-type").val())
-							$(this).show();
+                        {
+                            $(this).show();
+                        }
 						else
+						{
 							$(this).hide();
+                        }
 					});
 				}
 		    });
@@ -297,7 +341,7 @@ class navibrowse
 
 		$html[] = '</div>';
 
-		$html[] = '<div class="navibrowse-items">';		
+		$html[] = '<div class="navibrowse-items navibrowse-view-'.$navibrowse_view.'">';
 		
 		if($this->parent > 0) // we are on a subfolder, let's include the ".." directory
 		{
@@ -342,6 +386,9 @@ class navibrowse
                 $html[] = '     <div class="navibrowse-file-access-icons">'.$permissions[$item->permission].$access[$item->access].'</div>';
 				$html[] = '		<img loading="lazy" src="'.$icon.'" data-src="'.$thumbnail.'"  width="'.$this->icon_size.'" height="'.$this->icon_size.'" />';
 				$html[] = '		<div class="navibrowse-item-name">'.$item->name.'</div>';
+				$html[] = '		<div class="navibrowse-item-meta" title="'.core_ts2date($item->date_added, true).'">
+		                            <span class="navibrowse-item-meta-size" title="">'.core_bytes($item->size).'</span>
+                                </div>';
 				$html[] = '</div>';
 			}
 		}
@@ -370,16 +417,22 @@ class navibrowse
 
 		// replace placeholder images by real thumbnails after document is ready
 		$html[] = '
+		
+		    function navibrowse_'.$this->id.'_refresh()
+		    {
+		        new LazyLoad({
+                    threshold: 200,
+                    container: document.getElementById("navigate-content-safe"),
+                    elements_selector: ".navibrowse-file img",
+                    throttle: 40,
+                    data_src: "src",
+                    show_while_loading: true
+                });
+		    }
+		
 			$(window).on("load", function()
 			{
-				new LazyLoad({
-				    threshold: 200,
-				    container: document.getElementById("navigate-content-safe"),
-				    elements_selector: ".navibrowse-file img",
-				    throttle: 40,
-				    data_src: "src",
-				    show_while_loading: true
-				});
+				navibrowse_'.$this->id.'_refresh();
 			});
 		';
 
@@ -422,10 +475,12 @@ class navibrowse
 				   });';
 
         if(!empty($this->onDblClick))
-		    $html[] = '$(".navibrowse-file").on("dblclick", function()
+        {
+            $html[] = '$(".navibrowse-file").on("dblclick", function()
 			    	   {
 				    		'.$this->onDblClick.'(this);
 				    });';
+        }
 
 		$html[] = '$(".navibrowse-items").on("click", function()
 					{
@@ -433,6 +488,7 @@ class navibrowse
 					});';
 
         if(!empty($this->onRightClick))
+        {
             $html[] = '$(".navibrowse-items").children().on("contextmenu", function(e)
 			    		{
 			    		    if($(this).attr("id")=="item-0")
@@ -450,6 +506,7 @@ class navibrowse
 				    	        '.$this->onRightClick.'(trigger, ev);
                             }, 150);
 					    });';
+        }
 				   
 		$html[] = '$(".navibrowse-items").selectable(
 					{

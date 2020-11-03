@@ -87,6 +87,18 @@
         "type": "boolean",
         "dvalue": "true"
     },
+    {
+        "name": "files.browse_view",
+        "scope": "functions",
+        "function": "files",
+        "description": "Default view when browsing files",
+        "type": "option",
+        "options": {
+            "grid": "Grid",
+            "list": "List"
+        },
+        "dvalue": "grid"
+    },
 	{
         "name": "structure.categories.allowed",
         "scope": "functions",

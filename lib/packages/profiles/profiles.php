@@ -110,7 +110,11 @@ function run()
                     naviforms::check_csrf_token();
 
 					$item->save();
-                    permission::update_permissions(json_decode($_REQUEST['navigate_permissions_changes'], true), $item->id, 0);
+                    permission::update_permissions(
+                        json_decode($_REQUEST['navigate_permissions_changes'], true),
+                        $item->id,
+                        0
+                    );
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)

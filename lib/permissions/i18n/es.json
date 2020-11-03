@@ -1,6 +1,7 @@
 {
 	"navigatecms.privacy_mode": "Ocultar logotipo de Navigate CMS y su icono",
 	"navigatecms.display_version": "Mostrar número de versión de Navigate CMS en la barra de estado",
+    "navigatecms.beta": "Activar características beta para pruebas",
     "websites.edit": "Permitir crear y editar sitios web",
     "websites.delete": "Permitir eliminar sitios web",
     "items.create": "Permitir crear elementos",
@@ -12,6 +13,7 @@
     "blocks.delete": "Permitir eliminar bloques",
     "files.upload": "Permitir subir ficheros",
     "files.delete": "Permitir eliminar ficheros",
+    "files.browse_view": "Vista por defecto al navegar por ficheros",
     "structure.categories.allowed": "Categorías donde el usuario tiene permitido crear contenido (vacío indica todas)",
 	"structure.categories.excluded": "Categorías donde el usuario NO tiene permitido crear contenido (vacío indica ninguna)",
     "themes.install": "Permitir instalar temas",

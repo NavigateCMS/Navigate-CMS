@@ -1585,8 +1585,9 @@ function items_form($item)
             '<label>'.t(87, "Association").'</label>',
 			$naviforms->buttonset(
                 'association',
-                array(  'free' => t(100, 'Free'),
-                        'category' => t(78, 'Category')
+                array(
+                    'free' => t(100, 'Free'),
+                    'category' => t(78, 'Category')
                 ),
                 (empty($item->id)? 'category' : $item->association),
                 "navigate_change_association(this);"

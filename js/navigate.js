@@ -2364,13 +2364,21 @@ function navigate_selector_upgrade(el)
 
 function navigate_composer_init(element_id, params)
 {
-    navigatecms.forms.grapesjs[element_id] = grapesjs.init({
+    navigatecms.forms.grapesjs[element_id] = grapesjs.init(
+    {
         container: "#" + element_id,
         fromElement: true,
         height: params.height,
         width: params.width,
         noticeOnUnload: false,
         storageManager: { type: null },
+        styleManager: {},
+        /*i18n:
+        {
+            locale: "xx",
+            detectLocale: false
+        },
+        */
         //listenToEl: [$("#" + element_id).parent().parent().parent().parent()[0]],
         canvas: {
             //scripts: ["https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"],

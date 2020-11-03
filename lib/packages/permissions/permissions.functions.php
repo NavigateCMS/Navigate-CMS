@@ -90,7 +90,9 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                         $DB->query("SELECT id, name FROM nv_websites");
                         $websites = $DB->result();
                         foreach($websites as $ws)
+                        {
                             $options[$ws->id] = $ws->name;
+                        }
                         break;
 
                     case "extensions":
@@ -129,7 +131,13 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                         array_values($options),
                         $permissions_values[$permissions_definitions[$i]['name']],
                         'navigate_permission_change_option(this);',
-                        ($permissions_definitions[$i]['type']=='moption') // multiple?
+                        ($permissions_definitions[$i]['type']=='moption'), // multiple?
+                        NULL,
+                        NULL,
+                        false,
+                        false,
+                        "",
+                        ""
                     );
                 }
                 break;

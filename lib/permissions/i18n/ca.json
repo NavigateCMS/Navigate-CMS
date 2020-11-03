@@ -1,6 +1,7 @@
 {
 	"navigatecms.privacy_mode": "Amagar logotip de Navigate CMS i la seva icona",
 	"navigatecms.display_version": "Mostrar número de versió de Navigate CMS a la barra d'estat",
+    "navigatecms.beta": "Activar característiques beta per proves",
     "websites.edit": "Permetre crear i editar llocs web",
     "websites.delete": "Permetre eliminar llocs web",
     "items.create": "Permetre crear elements",
@@ -12,6 +13,7 @@
     "blocks.delete": "Permetre eliminar blocs",
     "files.upload": "Permetre pujar fitxers",
     "files.delete": "Permetre eliminar fitxers",
+    "files.browse_view": "Vista per defecte al navegar pels fitxers",
     "structure.categories.allowed": "Categories on l'usuari pot crear contingut (buit indica arreu)",
 	"structure.categories.excluded": "Categories on l'usuari NO té permís per crear-hi contingut (buit indica enlloc)",
     "theme.install": "Permetre instal·lar temes",
