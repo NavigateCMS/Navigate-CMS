@@ -187,15 +187,16 @@ function rglob($pattern = '*', $flags = 0, $path = '')
  */
 function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entire_tag = false, $charset = 'UTF-8')
 {
- 
-	if ( is_array($tag) ){
+	if (is_array($tag))
+	{
 		$tag = implode('|', $tag);
 	}
  
 	//If the user didn't specify if $tag is a self-closing tag we try to auto-detect it
 	//by checking against a list of known self-closing tags.
 	$selfclosing_tags = array( 'area', 'base', 'basefont', 'br', 'hr', 'input', 'img', 'link', 'meta', 'col', 'param' );
-	if ( is_null($selfclosing) ){
+	if(is_null($selfclosing))
+	{
 		$selfclosing = in_array( $tag, $selfclosing_tags );
 	}
  
@@ -229,7 +230,8 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 		@xsi';
  
 	//Find all tags 
-	if ( !preg_match_all($tag_pattern, $html, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ){
+	if ( !preg_match_all($tag_pattern, $html, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) )
+	{
 		//Return an empty array if we didn't find anything
 		return array();
 	}
@@ -239,16 +241,24 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 	{
 		//Parse tag attributes, if any
 		$attributes = array();
-		if ( !empty($match['attributes'][0]) ){ 
+		if( !empty($match['attributes'][0]) )
+		{
  
-			if ( preg_match_all( $attribute_pattern, $match['attributes'][0], $attribute_data, PREG_SET_ORDER ) ){
+			if(preg_match_all($attribute_pattern, $match['attributes'][0], $attribute_data, PREG_SET_ORDER))
+			{
 				//Turn the attribute data into a name->value array
-				foreach($attribute_data as $attr){
-					if( !empty($attr['value_quoted']) ){
+				foreach($attribute_data as $attr)
+				{
+					if(!empty($attr['value_quoted']))
+					{
 						$value = $attr['value_quoted'];
-					} else if( !empty($attr['value_unquoted']) ){
+					}
+					else if(!empty($attr['value_unquoted']))
+					{
 						$value = $attr['value_unquoted'];
-					} else {
+					}
+					else
+                    {
 						$value = '';
 					}
  
@@ -266,10 +276,12 @@ function nvweb_tags_extract( $html, $tag, $selfclosing = null, $return_the_entir
 		$tag = array(
 			'tag_name' => $match['tag'][0],
 			'offset' => $match[0][1], 
-			'contents' => !empty($match['contents'])?$match['contents'][0]:'', //empty for self-closing tags
+			'contents' => (!empty($match['contents'])? $match['contents'][0] : ''), //empty for self-closing tags
 			'attributes' => $attributes, 
 		);
-		if ( $return_the_entire_tag ){
+
+		if($return_the_entire_tag)
+		{
 			$tag['full_tag'] = $match[0][0]; 			
 		}
  
@@ -286,9 +298,17 @@ function stripos_array($haystack, $needles=array(), $offset=0)
     foreach($needles as $needle)
     {
         $res = stripos($haystack, $needle, $offset);
-        if ($res !== false) $chr[$needle] = $res;
+        if ($res !== false)
+        {
+            $chr[$needle] = $res;
+        }
     }
-    if(empty($chr)) return false;
+
+    if(empty($chr))
+    {
+        return false;
+    }
+
     return min($chr);
 }
 

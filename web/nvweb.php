@@ -170,6 +170,7 @@ function nvweb_parse($request)
             'plugins_called'     => '',
             'delayed_nvlists'    => array(),
             'delayed_nvsearches' => array(),
+            'delayed_tags_nvweb' => array(),
             'delayed_tags_pre'   => array(),
             'delayed_tags_code'  => array(),
             'navigate_session'   => !empty($_SESSION['APP_USER#' . APP_UNIQUE]),
@@ -326,10 +327,12 @@ function nvweb_parse($request)
         debugger::stop_timer('nvweb-parse-route');
         debugger::timer('nvweb-template-special-tags');
 
+        $html = $template->file_contents;
+
         // parse the special tag "include"
         // also convert curly brackets tags {{nv object=""}} to <nv object="" /> version
         // we do it now because new nv tags could be added before parsing the whole html
-        $html = nvweb_template_parse_special($template->file_contents);
+        $html = nvweb_template_parse_special($html);
 
         debugger::stop_timer('nvweb-template-special-tags');
         debugger::timer('nvweb-plugins-event-before_parse');
@@ -346,6 +349,7 @@ function nvweb_parse($request)
 
         // debugger timers controlled inside
         $html = nvweb_template_parse_lists($html);
+
         $html = nvweb_template_parse($html);
 
         debugger::timer('nvweb-template-process-new-nv-tags-delayed-lists');

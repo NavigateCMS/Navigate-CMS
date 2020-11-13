@@ -181,14 +181,7 @@ function nvweb_after_body($type="js", $code="")
  */
 function nvweb_template_parse($template)
 {
-	global $dictionary;
-	global $DB;
 	global $current;
-	global $website;
-    global $structure;
-    global $theme;
-    global $idn;
-	global $session;
 
 	$html = $template;
 
@@ -199,293 +192,338 @@ function nvweb_template_parse($template)
 	{
 		$content = '';
 
-		switch($tag['attributes']['object'])
-		{
-			// MAIN OBJECT TYPES
-			case 'nvweb':
-			case 'widget':
-			case 'webget':
-			case '':
-                debugger::timer('nvweb-templates-nvweb-'.$tag['attributes']['name']);
-
-				// webgets on lib/webgets have priority over private/webgets
-				nvweb_webget_load($tag['attributes']['name']);
-				
-				$fname = 'nvweb_'.$tag['attributes']['name'];
-
-				$tag['attributes']['nvweb_html'] = $html;	// always pass the current buffered output to the webget
-
-				if(function_exists($fname))
-                {
-                    $content = $fname($tag['attributes']);
-                }
-
-                debugger::stop_timer('nvweb-templates-webget-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]');
-				break;
-				
-			case 'root':
-				$content = NVWEB_ABSOLUTE;
-				break;
-
-            case 'nvajax':
-                $content = NVWEB_AJAX;
-                break;
-
-			case 'url':
-                $content = '';
-                if(!empty($tag['attributes']['lang']))
-                {
-                    $lang = $tag['attributes']['lang'];
-                }
-                else
-                {
-                    $lang = $current['lang'];
-                }
-
-				if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['id']))
-				{
-					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
-					if(!empty($url))
-                    {
-                        $content .= $url;
-                    }
-				}
-				else if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['property']))
-				{
-					$tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
-					$url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
-					if(!empty($url))
-                    {
-                        $content .= $url;
-                    }
-				}
-				else if(!empty($tag['attributes']['type']) && empty($tag['attributes']['id']))
-                {
-                    // get structure parent for this element and return its path
-                    if($current['type']=='structure')
-                    {
-                        $category = $current['object']->parent;
-                        if(empty($category))
-                        {
-                            $category = $current['object']->id;
-                        }
-                    }
-                    else
-                    {
-                        $category = $current['object']->category;
-                    }
-
-                    $url = nvweb_source_url($tag['attributes']['type'], $category, $lang);
-
-                    if(!empty($url))
-                    {
-                        $content .= $url;
-                    }
-                }
-				else
-				{
-					$content .= '/'.$current['route'];	
-				}
-
-                $content = nvweb_prepare_link($content);
-				break;
-
-            case 'd':
-			case 'dict':
-			case 'dictionary':
-                if(!empty($tag['attributes']['type']))
-                {
-                    if($tag['attributes']['type']=='structure' || $tag['attributes']['type']=='category')
-                    {
-                        // force loading dictionary for all elements in structure (for the current language)
-                        nvweb_menu_load_dictionary();
-	                    if(!is_numeric($tag['attributes']['id']))
-	                    {
-		                    // maybe it's a property name instead of a category id
-		                    $tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
-	                    }
-                        $content = $structure['dictionary'][$tag['attributes']['id']];
-                    }
-                    else if($tag['attributes']['type']=='item')
-                    {
-                        $tmp = webdictionary::load_element_strings('item', $tag['attributes']['id']);
-                        $content = $tmp[$current['lang']]['title'];
-                    }
-                }
-                else
-                    $content = $dictionary[$tag['attributes']['id']];
-
-                if(empty($content))
-                    $content = $tag['attributes']['label'];
-                if(empty($content))
-                    $content = $tag['attributes']['default'];
-				break;
-				
-			case 'request':
-                if(!empty($tag['attributes']['name']))
-                {
-                    $content = $_REQUEST[$tag['attributes']['name']];
-                }
-                else // deprecated: use "request" as attribute [will be removed on navigate cms 2.0]
-                {
-                    $content = $_REQUEST[$tag['attributes']['request']];
-                }
-
-                if(is_array($content))
-                {
-                    $content = implode(',', $content);
-                }
-
-                if(!isset($tag['attributes']['raw']) || $tag['attributes']['raw']!='true')
-                {
-                    // prepare string to be included in a webpage
-                    $content = core_special_chars($content);
-                }
-				break;				
-				
-			case 'constant':
-			case 'variable':
-				switch($tag['attributes']['name'])
-				{
-                    case "structure":
-					case "category":
-						// retrieve the category ID from current session
-						$tmp = NULL;
-						if($current['type']=='structure')
-                        {
-                            $tmp = $current['id'];
-                        }
-						else if(!empty($current['category']))
-                        {
-                            $tmp = $current['category'];
-                        }
-						else if(!empty($current['object']->category))
-                        {
-                            $tmp = $current['object']->category;
-                        }
-														
-						if(empty($tmp))
-                        {
-                            $content = '';
-                        }
-						else
-						{
-							$content = $DB->query_single(
-								'text',
-								'nv_webdictionary', '
-									   node_type = "structure"
-								   AND subtype = "title"
-								   AND node_id = '.$tmp.'
-								   AND lang = :lang
-								   AND website = '.$website->id,
-                                NULL,
-                                array(
-                                    ':lang' => $current['lang']
-                                )
-							);
-						}
-						break;
-						
-					case "year":
-						$content = date('Y');
-						break;
-
-                    case "template":
-                        $content = $current['template'];
-                        break;
-
-                    case "website_name":
-                        $content = $website->name;
-                        break;
-
-                    case "website_description":
-                        $content = $website->metatag_description[$current['lang']];
-                        break;
-						
-					case "lang_code":
-						$content = $current['lang'];
-						break;
-												
-					default:
-						break;
-				}
-				break;
-				
-			case 'php':
-                if(!empty($tag['attributes']['code']))
-                {
-                    eval('$content = '.$tag['attributes']['code'].';');
-                }
-				break;
-
-            case 'theme':
-				// compatibility with Navigate < 1.8.9
-				// deprecated! code will be removed in Navigate 3.0
-				if($tag['attributes']['name']=='url')
-				{
-					$tag['attributes']['mode'] = 'url';
-				}
-	            else if($tag['attributes']['name']=='style')
-	            {
-		            $tag['attributes']['name'] = $tag['attributes']['mode'];
-		            $tag['attributes']['mode'] = 'style';
-	            }
-
-				// new syntax ("mode" first)
-	            switch($tag['attributes']['mode'])
-	            {
-		            case "style":
-			            $content = $website->theme_options->style;
-
-						if(!empty($tag['attributes']['name']))
-						{
-				            switch($tag['attributes']['name'])
-				            {
-					            case 'name':
-						            $content = $website->theme_options->style;
-						            break;
-
-					            case 'color':
-					            default:
-						            // return theme definition file location for the requested substyle
-						            if(!empty($website->theme_options->style))
-							            $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['name']};
-						            if(empty($content))
-						            {
-							            // return first available
-							            $theme_styles = array_keys(get_object_vars($theme->styles));
-							            $content = $theme->styles->{$theme_styles[0]}->{$tag['attributes']['name']};
-						            }
-						            break;
-				            }
-						}
-			            break;
-
-		            case "url":
-                        $content = $website->absolute_path();
-                        try
-                        {
-                            $content = $idn->convertUrl($content);
-                        }
-                        catch (\InvalidArgumentException $e)
-                        {
-                            // do nothing, the domain is already in punycode
-                        }
-			            $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
-			            break;
-
-	            }
-				break;
-
-			default: 
-				//var_dump($tag['attributes']['object']);
-				break; 
-		}
+        if($tag['attributes']['delayed'] == 'true')
+        {
+            $tag_uid = uniqid('nv-tags-nvweb-');
+            $current['delayed_tags_nvweb'][$tag_uid] = $tag['full_tag'];
+            $content = '<!--#'.$tag_uid.'#-->';
+        }
+        else
+        {
+            $content = nvweb_process_nvweb_tag($tag, $html);
+        }
 
 		$html = str_replace($tag['full_tag'], $content, $html);
 	}
 
     return $html;
+}
+
+function nvweb_process_nvweb_tag($tag, $html)
+{
+    global $dictionary;
+   	global $DB;
+   	global $current;
+   	global $website;
+    global $structure;
+    global $theme;
+    global $idn;
+   	global $session;
+
+    $content = "";
+
+    if(!is_array($tag))
+    {
+        // parse tag as html code to get its content and attributes
+        $tags = nvweb_tags_extract($tag, 'nv', true, true, 'UTF-8');
+        if(empty($tags))
+        {
+            return;
+        }
+        $tag = $tags[0];
+    }
+
+    switch($tag['attributes']['object'])
+    {
+        // MAIN OBJECT TYPES
+        case 'nvweb':
+        case 'widget':
+        case 'webget':
+        case '':
+            debugger::timer('nvweb-templates-nvweb-'.$tag['attributes']['name']);
+
+            // webgets on lib/webgets have priority over private/webgets
+            nvweb_webget_load($tag['attributes']['name']);
+
+            $fname = 'nvweb_'.$tag['attributes']['name'];
+
+            $tag['attributes']['nvweb_html'] = $html;	// always pass the current buffered output to the webget
+
+            if(function_exists($fname))
+            {
+                $content = $fname($tag['attributes']);
+            }
+
+            debugger::stop_timer('nvweb-templates-webget-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]');
+            break;
+
+        case 'root':
+            $content = NVWEB_ABSOLUTE;
+            break;
+
+        case 'nvajax':
+            $content = NVWEB_AJAX;
+            break;
+
+        case 'url':
+            $content = '';
+            if(!empty($tag['attributes']['lang']))
+            {
+                $lang = $tag['attributes']['lang'];
+            }
+            else
+            {
+                $lang = $current['lang'];
+            }
+
+            if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['id']))
+            {
+                $url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
+                if(!empty($url))
+                {
+                    $content .= $url;
+                }
+            }
+            else if(!empty($tag['attributes']['type']) && !empty($tag['attributes']['property']))
+            {
+                $tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
+                $url = nvweb_source_url($tag['attributes']['type'], $tag['attributes']['id'], $lang);
+                if(!empty($url))
+                {
+                    $content .= $url;
+                }
+            }
+            else if(!empty($tag['attributes']['type']) && empty($tag['attributes']['id']))
+            {
+                // get structure parent for this element and return its path
+                if($current['type']=='structure')
+                {
+                    $category = $current['object']->parent;
+                    if(empty($category))
+                    {
+                        $category = $current['object']->id;
+                    }
+                }
+                else
+                {
+                    $category = $current['object']->category;
+                }
+
+                $url = nvweb_source_url($tag['attributes']['type'], $category, $lang);
+
+                if(!empty($url))
+                {
+                    $content .= $url;
+                }
+            }
+            else
+            {
+                $content .= '/'.$current['route'];
+            }
+
+            $content = nvweb_prepare_link($content);
+            break;
+
+        case 'd':
+        case 'dict':
+        case 'dictionary':
+            if(!empty($tag['attributes']['type']))
+            {
+                if($tag['attributes']['type']=='structure' || $tag['attributes']['type']=='category')
+                {
+                    // force loading dictionary for all elements in structure (for the current language)
+                    nvweb_menu_load_dictionary();
+                    if(!is_numeric($tag['attributes']['id']))
+                    {
+                        // maybe it's a property name instead of a category id
+                        $tag['attributes']['id'] = nvweb_properties(array('property' => $tag['attributes']['property']));
+                    }
+                    $content = $structure['dictionary'][$tag['attributes']['id']];
+                }
+                else if($tag['attributes']['type']=='item')
+                {
+                    $tmp = webdictionary::load_element_strings('item', $tag['attributes']['id']);
+                    $content = $tmp[$current['lang']]['title'];
+                }
+            }
+            else
+            {
+                $content = $dictionary[$tag['attributes']['id']];
+            }
+
+            if(empty($content))
+            {
+                $content = $tag['attributes']['label'];
+            }
+
+            if(empty($content))
+            {
+                $content = $tag['attributes']['default'];
+            }
+            break;
+
+        case 'request':
+            if(!empty($tag['attributes']['name']))
+            {
+                $content = $_REQUEST[$tag['attributes']['name']];
+            }
+            else // deprecated: use "request" as attribute [will be removed on navigate cms 2.0]
+            {
+                $content = $_REQUEST[$tag['attributes']['request']];
+            }
+
+            if(is_array($content))
+            {
+                $content = implode(',', $content);
+            }
+
+            if(!isset($tag['attributes']['raw']) || $tag['attributes']['raw']!='true')
+            {
+                // prepare string to be included in a webpage
+                $content = core_special_chars($content);
+            }
+            break;
+
+        case 'constant':
+        case 'variable':
+            switch($tag['attributes']['name'])
+            {
+                case "structure":
+                case "category":
+                    // retrieve the category ID from current session
+                    $tmp = NULL;
+                    if($current['type']=='structure')
+                    {
+                        $tmp = $current['id'];
+                    }
+                    else if(!empty($current['category']))
+                    {
+                        $tmp = $current['category'];
+                    }
+                    else if(!empty($current['object']->category))
+                    {
+                        $tmp = $current['object']->category;
+                    }
+
+                    if(empty($tmp))
+                    {
+                        $content = '';
+                    }
+                    else
+                    {
+                        $content = $DB->query_single(
+                            'text',
+                            'nv_webdictionary', '
+                                   node_type = "structure"
+                               AND subtype = "title"
+                               AND node_id = '.$tmp.'
+                               AND lang = :lang
+                               AND website = '.$website->id,
+                            NULL,
+                            array(
+                                ':lang' => $current['lang']
+                            )
+                        );
+                    }
+                    break;
+
+                case "year":
+                    $content = date('Y');
+                    break;
+
+                case "template":
+                    $content = $current['template'];
+                    break;
+
+                case "website_name":
+                    $content = $website->name;
+                    break;
+
+                case "website_description":
+                    $content = $website->metatag_description[$current['lang']];
+                    break;
+
+                case "lang_code":
+                    $content = $current['lang'];
+                    break;
+
+                default:
+                    break;
+            }
+            break;
+
+        case 'php':
+            if(!empty($tag['attributes']['code']))
+            {
+                eval('$content = '.$tag['attributes']['code'].';');
+            }
+            break;
+
+        case 'theme':
+            // compatibility with Navigate < 1.8.9
+            // deprecated! code will be removed in Navigate 3.0
+            if($tag['attributes']['name']=='url')
+            {
+                $tag['attributes']['mode'] = 'url';
+            }
+            else if($tag['attributes']['name']=='style')
+            {
+                $tag['attributes']['name'] = $tag['attributes']['mode'];
+                $tag['attributes']['mode'] = 'style';
+            }
+
+            // new syntax ("mode" first)
+            switch($tag['attributes']['mode'])
+            {
+                case "style":
+                    $content = $website->theme_options->style;
+
+                    if(!empty($tag['attributes']['name']))
+                    {
+                        switch($tag['attributes']['name'])
+                        {
+                            case 'name':
+                                $content = $website->theme_options->style;
+                                break;
+
+                            case 'color':
+                            default:
+                                // return theme definition file location for the requested substyle
+                                if(!empty($website->theme_options->style))
+                                    $content = $theme->styles->{$website->theme_options->style}->{$tag['attributes']['name']};
+                                if(empty($content))
+                                {
+                                    // return first available
+                                    $theme_styles = array_keys(get_object_vars($theme->styles));
+                                    $content = $theme->styles->{$theme_styles[0]}->{$tag['attributes']['name']};
+                                }
+                                break;
+                        }
+                    }
+                    break;
+
+                case "url":
+                    $content = $website->absolute_path();
+                    try
+                    {
+                        $content = $idn->convertUrl($content);
+                    }
+                    catch (\InvalidArgumentException $e)
+                    {
+                        // do nothing, the domain is already in punycode
+                    }
+                    $content.= NAVIGATE_FOLDER.'/themes/'.$theme->name.'/';
+                    break;
+
+            }
+            break;
+
+        default:
+            //var_dump($tag['attributes']['object']);
+            break;
+    }
+
+    return $content;
 }
 
 /**
@@ -650,6 +688,13 @@ function nvweb_template_restore_special($html)
 		$current['delayed_tags_pre'][$tag_uid] = NULL;
 	}
 
+    foreach($current['delayed_tags_nvweb'] as $tag_uid => $tag_code)
+    {
+        $processed_html = nvweb_process_nvweb_tag($tag_code, $html);
+        $html = str_replace('<!--#'.$tag_uid.'#-->', $processed_html, $html);
+        $current['delayed_tags_nvweb'][$tag_uid] = NULL;
+    }
+
 	return $html;
 }
 
@@ -704,8 +749,8 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 		switch($tag['attributes']['object'])
 		{
 			case 'list':
-                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
-				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
+                $template_end = nvweb_templates_find_closing_nv_tag($html, $tag['offset']);
+				$tag['length'] = $template_end  + strlen('</nv>') - $tag['offset'];
 				$list = substr(
 				    $html,
                     ($tag['offset'] + strlen($tag['full_tag'])),
@@ -722,19 +767,20 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                     $current['delayed_nvlists'][$list_uid] = $vars;
                     $html = substr_replace($html, '<!--#'.$list_uid.'#-->', $tag['offset'], $tag['length']);
                     $changed = true;
-                    continue 2; // next foreach iteration
                 }
+                else
+                {
+                    debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
+                    $content = nvweb_list($vars);
+                    debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
 
-                debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
-				$content = nvweb_list($vars);
-                debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
-				
-				$html = substr_replace($html, $content, $tag['offset'], $tag['length']);
-				$changed = true;
+                    $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
+                    $changed = true;
+                }
 				break;	
 
 			case 'search':
-                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
+                $template_end = nvweb_templates_find_closing_nv_tag($html, $tag['offset']);
 				$tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
 				$search = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
 								
@@ -747,21 +793,26 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                     $current['delayed_nvsearches'][$search_uid] = $vars;
                     $html = substr_replace($html, '<!--#'.$search_uid.'#-->', $tag['offset'], $tag['length']);
                     $changed = true;
-                    continue 2; // next foreach iteration
                 }
+                else
+                {
+                    debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
+                    $content = nvweb_search($vars);
+                    debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
 
-                debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
-                $content = nvweb_search($vars);
-                debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
-				
-				$html = substr_replace($html, $content, $tag['offset'], $tag['length']);
-				$changed = true;
+                    $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
+                    $changed = true;
+                }
 				break;
 
             case 'conditional':
-                $template_end = nvweb_templates_find_closing_list_tag($html, $tag['offset']);
-                $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
-                $conditional = substr($html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
+                $template_end = nvweb_templates_find_closing_nv_tag($html, $tag['offset']);
+                $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove closing tag characters
+                $conditional = substr(
+                    $html,
+                    ($tag['offset'] + strlen($tag['full_tag'])),
+                    ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag']))
+                );
 
                 @include_once(NAVIGATE_PATH.'/lib/webgets/conditional.php');
                 $vars = array_merge($tag['attributes'], array('_template' => $conditional));
@@ -786,21 +837,22 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
 	return $html;
 }
 
-function nvweb_templates_find_closing_list_tag($html, $offset)
+function nvweb_templates_find_closing_nv_tag($html, $offset)
 {
     $found = false;
     $level = 0;
     $closing_tag_position = 0;
     $loops = 0;
 
-    // find next nv object="" tag (opening or closing)
+    // find next special nv object="" tag (opening or closing)
     // if it is an opening tag --> level + 1
     // if it is a closing tag --> level - 1
     //      if level = 0, that's the closing tag we were looking for
     //      else repeat from current offset
-    while(!$found && $loops < 2000)
+    while(!$found && $loops < 5000)
     {
         // check if there is a special '<nv>' opening tag (list, search, conditional) before the next closing found tag
+        // the first loop should find the opening nv tag of interest, so level = 1
         $next_opening = stripos_array(
             $html,
             array(
@@ -814,14 +866,14 @@ function nvweb_templates_find_closing_list_tag($html, $offset)
         // find next '</nv>' occurrence from offset
         $next_closing = stripos($html, '</nv>', $offset);
 
-        if($next_opening!==false && $next_opening < $next_closing)
+        if($next_opening !== false && $next_opening < $next_closing)
         {
             // there is an opening tag before a closing tag, so there is an inner nvlist_conditional
             // move the offset to the opening tag found
             $offset = $next_opening + strlen('<nv object="');
             $level++;
         }
-        else
+        else if($next_closing !== false)
         {
             // found a closing tag without an inner nvlist_conditional opening tag
             $level--;
