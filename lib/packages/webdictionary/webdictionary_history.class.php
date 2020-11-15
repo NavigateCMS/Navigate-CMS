@@ -8,14 +8,21 @@ class webdictionary_history
 		global $website;
 
 		if(empty($website_id))
-			$website_id = $website->id;
+        {
+            $website_id = $website->id;
+        }
 
         $changed = false;
 
-	    if(empty($node_id)) throw new Exception('ERROR webdictionary: No ID!');
+	    if(empty($node_id))
+        {
+            throw new Exception('ERROR webdictionary: No ID!');
+        }
 
         if(!is_array($dictionary))
+        {
             $dictionary = array();
+        }
 
 		foreach($dictionary as $lang => $item)
 		{
@@ -23,7 +30,7 @@ class webdictionary_history
 			{	
 				if(strpos($subtype, 'section-')===0)
 				{			
-					if($litem=='<p><br _mce_bogus="1"></p>')
+					if(empty($litem) || ($litem=='<p><br _mce_bogus="1"></p>'))
                     {
                         // equals to tinymce empty content, so no need to save it
                         continue;

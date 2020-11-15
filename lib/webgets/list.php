@@ -2624,9 +2624,13 @@ function nvweb_list_isolate_lists($item_html)
         {
             case 'list':
             case 'search':
-                $template_end = nvweb_templates_find_closing_list_tag($item_html, $tag['offset']);
+                $template_end = nvweb_templates_find_closing_nv_tag($item_html, $tag['offset']);
                 $tag['length'] = $template_end - $tag['offset'] + strlen('</nv>'); // remove tag characters
-                $list_template = substr($item_html, ($tag['offset'] + strlen($tag['full_tag'])), ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag'])));
+                $list_template = substr(
+                    $item_html,
+                    ($tag['offset'] + strlen($tag['full_tag'])),
+                    ($tag['length'] - strlen('</nv>') - strlen($tag['full_tag']))
+                );
 
                 $nested_list_uid = uniqid('nvlist-');
                 $nested_lists_fragments[$nested_list_uid] = array_merge(
@@ -2634,7 +2638,12 @@ function nvweb_list_isolate_lists($item_html)
                     array('template' => $list_template)
                 );
 
-                $item_html = substr_replace($item_html, '<!--#'.$nested_list_uid.'#-->', $tag['offset'], $tag['length']);
+                $item_html = substr_replace(
+                    $item_html,
+                    '<!--#'.$nested_list_uid.'#-->',
+                    $tag['offset'],
+                    $tag['length']
+                );
                 $changed = true;
                 break;
         }
@@ -2671,7 +2680,9 @@ function nvweb_list_isolate_conditionals($item_html, $only_by=array())
 
         // if this conditional is NOT of one of the allowed "conditional by" types, then all its content must be cleared
         if(!empty($only_by) && !in_array($tag['attributes']['by'], $only_by))
+        {
             $conditional_template = '';
+        }
 
         // find inner conditionals before replacing the conditional found
         list($conditional_template, $nested_sub_conditionals_fragments) = nvweb_list_isolate_conditionals($conditional_template);

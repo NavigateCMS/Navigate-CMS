@@ -640,9 +640,13 @@ function nvweb_webuser($vars=array())
 
                     case 'inline':
                         if($ok)
+                        {
                             $out = '<div class="nvweb-newsletter-form-success">'.$message.'</div>';
+                        }
                         else
+                        {
                             $out = '<div class="nvweb-newsletter-form-error">'.$message.'</div>';
+                        }
                         break;
 
                     case 'boolean':
@@ -1041,8 +1045,10 @@ function nvweb_webuser_customer_account()
         }
         $customer_account_menu_html[] = '</ul>';
 
-
-        $out[] = '<h3>'.t(821, "Your account").'</h3>';
+        if($vars['display_title'] != 'false')
+        {
+            $out[] = '<h3>'.t(821, "Your account").'</h3>';
+        }
         $out[] = '<div class="nv_wu-customer_account_wrapper">';
         $out[] = '    <div class="nv_wu-customer_account_menu_wrapper">'.implode("\n", $customer_account_menu_html).'</div>';
         $out[] = '    <div class="nv_wu-customer_account_content">';
