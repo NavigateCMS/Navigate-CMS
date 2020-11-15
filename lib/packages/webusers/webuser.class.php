@@ -1063,18 +1063,22 @@ class webuser
         ');
 
         $rs = $DB->result('id');
+        $deleted = 0;
         if(!empty($rs))
         {
-            $ok = $DB->execute('
-                DELETE FROM nv_webusers wu 
-                WHERE wu.id IN ('.implode(",", $rs).')        
-            ');
+            foreach($rs as $wuid)
+            {
+                $tmp = new webuser();
+                $tmp->load($wuid);
+                $ok = $tmp->delete();
+                if($ok)
+                {
+                    $deleted++;
+                }
+            }
         }
 
-        if($ok)
-            return count($rs);
-        else
-            return 0;
+        return $deleted;
     }
 
     public static function export($type='csv')
