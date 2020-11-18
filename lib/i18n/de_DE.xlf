@@ -26,7 +26,7 @@
 
 			<trans-unit id="4" approved="yes">
 				<source>Login incorrect</source>
-				<target>Login-Daten nicht korrekt</target>
+				<target>Anmeldungsdaten nicht korrekt</target>
 			</trans-unit>
 
 			<trans-unit id="5" approved="yes">
@@ -96,7 +96,7 @@
 
 			<trans-unit id="18" approved="yes">
 				<source>Home</source>
-				<target>Home</target>
+				<target>Startseite</target>
 			</trans-unit>
 
 			<trans-unit id="19" approved="yes">
@@ -191,7 +191,7 @@
 
 			<trans-unit id="37" approved="yes">
 				<source>E-Mail confirmed</source>
-				<target>E-Mail bestätigen</target>
+				<target>E-Mail bestätigt</target>
 			</trans-unit>
 
 			<trans-unit id="38" approved="yes">
@@ -721,7 +721,7 @@
 
 			<trans-unit id="143" approved="yes">
 				<source>Add files to upload queue and push the button to start the process</source>
-				<target>Füge Dateien zur Warteschlange hinzu und klicke auf den Button um den Upload zu starten</target>
+				<target>Füge Dateien zur Warteschlange hinzu und klicke auf die Schaltfläche um das Hochladen zu starten</target>
 			</trans-unit>
 
 			<trans-unit id="144" approved="yes">
@@ -741,17 +741,17 @@
 
 			<trans-unit id="147" approved="yes">
 				<source>Start upload</source>
-				<target>Upload starten</target>
+				<target>Hochladen starten</target>
 			</trans-unit>
 
 			<trans-unit id="148" approved="yes">
 				<source>Stop current upload</source>
-				<target>Aktuellen Upload abbrechen</target>
+				<target>Aktuelles Hochladen abbrechen</target>
 			</trans-unit>
 
 			<trans-unit id="149" approved="yes">
 				<source>Start upload queue</source>
-				<target>Upload-Warteschlange starten</target>
+				<target>Hochladen-Warteschlange starten</target>
 			</trans-unit>
 
 			<trans-unit id="150" approved="yes">
@@ -1306,7 +1306,7 @@
 
 			<trans-unit id="260" approved="yes">
 				<source>Drag and drop files to upload them</source>
-				<target>Ziehe Dateien per Drag 'n' Drop um sie hochzuladen</target>
+				<target>Ziehe Dateien per Ziehen-und-Ablegen um sie hochzuladen</target>
 			</trans-unit>
 
 			<trans-unit id="261" approved="yes">
@@ -1741,7 +1741,7 @@
 
 			<trans-unit id="347" approved="yes">
 				<source>Stop upload</source>
-				<target>Upload stoppen</target>
+				<target>Hochladen stoppen</target>
 			</trans-unit>
 
 			<trans-unit id="348" approved="yes">
@@ -1836,17 +1836,17 @@
 
 			<trans-unit id="366" approved="yes">
 				<source>Log</source>
-				<target>Log</target>
+				<target>Protokoll</target>
 			</trans-unit>
 
 			<trans-unit id="367" approved="yes">
 				<source>Themes</source>
-				<target>Themes</target>
+				<target>Themen</target>
 			</trans-unit>
 
 			<trans-unit id="368" approved="yes">
 				<source>Theme</source>
-				<target>Theme</target>
+				<target>Thema</target>
 			</trans-unit>
 
 			<trans-unit id="369" approved="yes">
@@ -2091,7 +2091,7 @@
 
 			<trans-unit id="417" approved="yes">
 				<source>Copying uploads</source>
-				<target>Uploads werden kopiert</target>
+				<target>Hochladen-Prozesse werden kopiert</target>
 			</trans-unit>
 
 			<trans-unit id="418" approved="yes">
@@ -2266,7 +2266,7 @@
 
 			<trans-unit id="452" approved="yes">
 				<source>E-mail could not be sent; please contact the administrator</source>
-				<target>Die E-Mail konnte nicht versendet werden; Bitte kontaktiere den Administrator</target>
+				<target>Die E-Mail konnte nicht versendet werden; bitte kontaktiere den Administrator</target>
 			</trans-unit>
 
 			<trans-unit id="453" approved="yes">
@@ -3001,7 +3001,7 @@
 
 			<trans-unit id="599" approved="yes">
 				<source>Sorry, can't display a theme block type info.</source>
-				<target>Sorry, kann nicht ein Thema Bausteintyp Informationen angezeigt werden soll.</target>
+				<target>Entschuldigung, kann nicht ein Thema Bausteintyp Informationen angezeigt werden soll.</target>
 			</trans-unit>
 
 			<trans-unit id="600" approved="yes">
@@ -3016,12 +3016,12 @@
 
 			<trans-unit id="602" approved="yes">
 				<source>Edit language</source>
-				<target>Edit sprache</target>
+				<target>Sprache bearbeiten</target>
 			</trans-unit>
 
 			<trans-unit id="603" approved="yes">
 				<source>Replace URLs</source>
-				<target>Ersetzen URLs</target>
+				<target>URLs ersetzen</target>
 			</trans-unit>
 
 			<trans-unit id="604" approved="yes">
@@ -3644,7 +3644,7 @@
 
 			<trans-unit id="726">
 				<source>Coupon</source>
-				<target>Coupon</target>
+				<target>Gutschein</target>
 			</trans-unit>
 
 			<trans-unit id="727">
@@ -3818,7 +3818,7 @@
 
 			<trans-unit id="760">
 				<source>E-mail or username</source>
-				<target>E-Mail adresse oder Benutzername</target>
+				<target>E-Mail-Adresse oder Benutzername</target>
 			</trans-unit>
 
 			<trans-unit id="761">

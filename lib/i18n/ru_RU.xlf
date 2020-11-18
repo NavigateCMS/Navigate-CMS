@@ -2543,17 +2543,17 @@
 
 			<trans-unit id="507">
 				<source>Deselect all</source>
-				<target>Deselect all</target>
+				<target>Отменить выбор</target>
 			</trans-unit>
 
 			<trans-unit id="508">
 				<source>Collapse</source>
-				<target>Collapse</target>
+				<target>Свернуть</target>
 			</trans-unit>
 
 			<trans-unit id="509">
 				<source>Expand</source>
-				<target>Expand</target>
+				<target>Развернуть</target>
 			</trans-unit>
 
 			<trans-unit id="510">

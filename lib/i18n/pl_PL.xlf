@@ -191,7 +191,7 @@
 
             <trans-unit id="37" approved="yes">
                 <source>E-Mail confirmed</source>
-                <target>E-Mail potwierdzony</target>
+                <target>E-mail potwierdzony</target>
             </trans-unit>
 
             <trans-unit id="38" approved="yes">
@@ -1911,7 +1911,7 @@
 
             <trans-unit id="381" approved="yes">
                 <source>E-Mail will not be published</source>
-                <target>E-Mail nie będzie opublikowany</target>
+                <target>E-mail nie będzie opublikowany</target>
             </trans-unit>
 
             <trans-unit id="382" approved="yes">
@@ -3818,7 +3818,7 @@
 
             <trans-unit id="760">
                 <source>E-mail or username</source>
-                <target>Email lub nazwa użytkownika</target>
+                <target>E-mail lub nazwa użytkownika</target>
             </trans-unit>
 
             <trans-unit id="761">
@@ -3858,7 +3858,7 @@
 
             <trans-unit id="768">
                 <source>Invalid e-mail address</source>
-                <target>Niepoprawny adres email</target>
+                <target>Niepoprawny adres e-mail</target>
             </trans-unit>
 
             <trans-unit id="769">

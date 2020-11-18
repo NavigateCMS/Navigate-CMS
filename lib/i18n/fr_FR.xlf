@@ -21,22 +21,22 @@
 
 			<trans-unit id="3" approved="yes">
 				<source>Enter</source>
-				<target>Enter</target>
+				<target>Entrée</target>
 			</trans-unit>
 
 			<trans-unit id="4" approved="yes">
 				<source>Login incorrect.</source>
-				<target>Login incorrect.</target>
+				<target>Identifiant incorrect.</target>
 			</trans-unit>
 
 			<trans-unit id="5" approved="yes">
 				<source>Log out</source>
-				<target>Log out</target>
+				<target>Se déconnecter</target>
 			</trans-unit>
 
 			<trans-unit id="6" approved="yes">
 				<source>Loading</source>
-				<target>Loading</target>
+				<target>Chargement</target>
 			</trans-unit>
 
 			<trans-unit id="7" approved="yes">
@@ -56,32 +56,32 @@
 
 			<trans-unit id="10" approved="yes">
 				<source>Shop</source>
-				<target>Shop</target>
+				<target>Magasin</target>
 			</trans-unit>
 
 			<trans-unit id="11" approved="yes">
 				<source>Multimedia</source>
-				<target>Multimedia</target>
+				<target>Multimédia</target>
 			</trans-unit>
 
 			<trans-unit id="12" approved="yes">
 				<source>Tools</source>
-				<target>Tools</target>
+				<target>Outils</target>
 			</trans-unit>
 
 			<trans-unit id="13" approved="yes">
 				<source>Not found</source>
-				<target>Not found</target>
+				<target>Introuvable</target>
 			</trans-unit>
 
 			<trans-unit id="14" approved="yes">
 				<source>Preferences</source>
-				<target>Preferences</target>
+				<target>Préférences</target>
 			</trans-unit>
 
 			<trans-unit id="15" approved="yes">
 				<source>Users</source>
-				<target>Users</target>
+				<target>Utilisateurs</target>
 			</trans-unit>
 
 			<trans-unit id="16" approved="yes">
@@ -91,12 +91,12 @@
 
 			<trans-unit id="17" approved="yes">
 				<source>Permissions</source>
-				<target>Permissions</target>
+				<target>Autorisations</target>
 			</trans-unit>
 
 			<trans-unit id="18" approved="yes">
 				<source>Home</source>
-				<target>Home</target>
+				<target>Accueil</target>
 			</trans-unit>
 
 			<trans-unit id="19" approved="yes">
@@ -106,47 +106,47 @@
 
 			<trans-unit id="20" approved="yes">
 				<source>Templates</source>
-				<target>Templates</target>
+				<target>Modèles</target>
 			</trans-unit>
 
 			<trans-unit id="21" approved="yes">
 				<source>Dictionary</source>
-				<target>Dictionary</target>
+				<target>Dictionnaire</target>
 			</trans-unit>
 
 			<trans-unit id="22" approved="yes">
 				<source>Elements</source>
-				<target>Elements</target>
+				<target>Éléments</target>
 			</trans-unit>
 
 			<trans-unit id="23" approved="yes">
 				<source>Blocks</source>
-				<target>Blocks</target>
+				<target>Blocs</target>
 			</trans-unit>
 
 			<trans-unit id="24" approved="yes">
 				<source>Web users</source>
-				<target>Web users</target>
+				<target>Utilisateurs Web</target>
 			</trans-unit>
 
 			<trans-unit id="25" approved="yes">
 				<source>Products</source>
-				<target>Products</target>
+				<target>Produits</target>
 			</trans-unit>
 
 			<trans-unit id="26" approved="yes">
 				<source>Orders</source>
-				<target>Orders</target>
+				<target>Commandes</target>
 			</trans-unit>
 
 			<trans-unit id="27" approved="yes">
 				<source>Rates</source>
-				<target>Rates</target>
+				<target>Avis</target>
 			</trans-unit>
 
 			<trans-unit id="28" approved="yes">
 				<source>Shipping</source>
-				<target>Shipping</target>
+				<target>Livraison</target>
 			</trans-unit>
 
 			<trans-unit id="29" approved="yes">
@@ -156,7 +156,7 @@
 
 			<trans-unit id="30" approved="yes">
 				<source>Videos</source>
-				<target>Videos</target>
+				<target>Vidéos</target>
 			</trans-unit>
 
 			<trans-unit id="31" approved="yes">
@@ -171,12 +171,12 @@
 
 			<trans-unit id="33" approved="yes">
 				<source>Newsletters</source>
-				<target>Newsletters</target>
+				<target>Bulletins</target>
 			</trans-unit>
 
 			<trans-unit id="34" approved="yes">
 				<source>Save</source>
-				<target>Save</target>
+				<target>Enregistrer</target>
 			</trans-unit>
 
 			<trans-unit id="35" approved="yes">
@@ -191,112 +191,112 @@
 
 			<trans-unit id="37" approved="yes">
 				<source>E-Mail confirmed</source>
-				<target>E-Mail confirmed</target>
+				<target>Courriel confirmé</target>
 			</trans-unit>
 
 			<trans-unit id="38" approved="yes">
 				<source>Create</source>
-				<target>Create</target>
+				<target>Créer</target>
 			</trans-unit>
 
 			<trans-unit id="39" approved="yes">
 				<source>List</source>
-				<target>List</target>
+				<target>Liste</target>
 			</trans-unit>
 
 			<trans-unit id="40" approved="yes">
 				<source>History</source>
-				<target>History</target>
+				<target>Historique</target>
 			</trans-unit>
 
 			<trans-unit id="41" approved="yes">
 				<source>Search</source>
-				<target>Search</target>
+				<target>Rechercher</target>
 			</trans-unit>
 
 			<trans-unit id="42" approved="yes">
 				<source>Ready</source>
-				<target>Ready</target>
+				<target>Prêt</target>
 			</trans-unit>
 
 			<trans-unit id="43" approved="yes">
 				<source>Main</source>
-				<target>Main</target>
+				<target>Principal</target>
 			</trans-unit>
 
 			<trans-unit id="44" approved="yes">
 				<source>E-Mail</source>
-				<target>E-Mail</target>
+				<target>Courriel</target>
 			</trans-unit>
 
 			<trans-unit id="45" approved="yes">
 				<source>Profile</source>
-				<target>Profile</target>
+				<target>Profil</target>
 			</trans-unit>
 
 			<trans-unit id="46" approved="yes">
 				<source>Language</source>
-				<target>Language</target>
+				<target>Langue</target>
 			</trans-unit>
 
 			<trans-unit id="47" approved="yes">
 				<source>Blocked</source>
-				<target>Blocked</target>
+				<target>Bloqué</target>
 			</trans-unit>
 
 			<trans-unit id="48" approved="yes">
 				<source>Leave empty to keep current value</source>
-				<target>Leave empty to keep current value</target>
+				<target>Laisser vide pour conserver la valeur actuelle</target>
 			</trans-unit>
 
 			<trans-unit id="49" approved="yes">
 				<source>Decimal separator</source>
-				<target>Decimal separator</target>
+				<target>Séparateur décimal</target>
 			</trans-unit>
 
 			<trans-unit id="50" approved="yes">
 				<source>Date format</source>
-				<target>Date format</target>
+				<target>Format de date</target>
 			</trans-unit>
 
 			<trans-unit id="51" approved="yes">
 				<source>List</source>
-				<target>List</target>
+				<target>Liste</target>
 			</trans-unit>
 
 			<trans-unit id="52" approved="yes">
 				<source>(new)</source>
-				<target>(new)</target>
+				<target>(nouveau)</target>
 			</trans-unit>
 
 			<trans-unit id="53" approved="yes">
 				<source>Data successfully saved</source>
-				<target>Data successfully saved</target>
+				<target>Les données ont bien été enregistrées</target>
 			</trans-unit>
 
 			<trans-unit id="54" approved="yes">
 				<source>Text</source>
-				<target>Text</target>
+				<target>Texte</target>
 			</trans-unit>
 
 			<trans-unit id="55" approved="yes">
 				<source>Item successfully deleted</source>
-				<target>Item successfully deleted</target>
+				<target>L'élément a bien été supprimé</target>
 			</trans-unit>
 
 			<trans-unit id="56" approved="yes">
 				<source>Unexpected error</source>
-				<target>Unexpected error</target>
+				<target>Erreur inattendue</target>
 			</trans-unit>
 
 			<trans-unit id="57" approved="yes">
 				<source>Do you really want to delete the item?</source>
-				<target>Do you really want to delete the item?</target>
+				<target>Souhaitez-vous vraiment supprimer cet élément ?</target>
 			</trans-unit>
 
 			<trans-unit id="58" approved="yes">
 				<source>Cancel</source>
-				<target>Cancel</target>
+				<target>Annuler</target>
 			</trans-unit>
 
 			<trans-unit id="59" approved="yes">
@@ -306,82 +306,82 @@
 
 			<trans-unit id="60" approved="yes">
 				<source>Do you really want to delete the selected items?</source>
-				<target>Do you really want to delete the selected items?</target>
+				<target>Souhaitez-vous vraiment supprimer les éléments sélectionnés ?</target>
 			</trans-unit>
 
 			<trans-unit id="61" approved="yes">
 				<source>Tree</source>
-				<target>Tree</target>
+				<target>Arbre</target>
 			</trans-unit>
 
 			<trans-unit id="62" approved="yes">
 				<source>Statistics</source>
-				<target>Statistics</target>
+				<target>Statistiques</target>
 			</trans-unit>
 
 			<trans-unit id="63" approved="yes">
 				<source>Languages</source>
-				<target>Languages</target>
+				<target>Langues</target>
 			</trans-unit>
 
 			<trans-unit id="64" approved="yes">
 				<source>Published</source>
-				<target>Published</target>
+				<target>Publié</target>
 			</trans-unit>
 
 			<trans-unit id="65" approved="yes">
 				<source>Enabled</source>
-				<target>Enabled</target>
+				<target>Activé</target>
 			</trans-unit>
 
 			<trans-unit id="66" approved="yes">
 				<source>Priority</source>
-				<target>Priority</target>
+				<target>Priorité</target>
 			</trans-unit>
 
 			<trans-unit id="67" approved="yes">
 				<source>Title</source>
-				<target>Title</target>
+				<target>Titre</target>
 			</trans-unit>
 
 			<trans-unit id="68" approved="yes">
 				<source>Status</source>
-				<target>Status</target>
+				<target>Statut</target>
 			</trans-unit>
 
 			<trans-unit id="69" approved="yes">
 				<source>Published</source>
-				<target>Published</target>
+				<target>Publié</target>
 			</trans-unit>
 
 			<trans-unit id="70" approved="yes">
 				<source>Private</source>
-				<target>Private</target>
+				<target>Privé</target>
 			</trans-unit>
 
 			<trans-unit id="71" approved="yes">
 				<source>Closed</source>
-				<target>Closed</target>
+				<target>Fermé</target>
 			</trans-unit>
 
 			<trans-unit id="72" approved="yes">
 				<source>Drag the rows to assign priorities</source>
-				<target>Drag the rows to assign priorities</target>
+				<target>Glissez-déposez les lignes pour définir les priorités</target>
 			</trans-unit>
 
 			<trans-unit id="73" approved="yes">
 				<source>Children</source>
-				<target>Children</target>
+				<target>Enfants</target>
 			</trans-unit>
 
 			<trans-unit id="74" approved="yes">
 				<source>Paths</source>
-				<target>Paths</target>
+				<target>Chemins</target>
 			</trans-unit>
 
 			<trans-unit id="75" approved="yes">
 				<source>Path</source>
-				<target>Path</target>
+				<target>Chemin</target>
 			</trans-unit>
 
 			<trans-unit id="76" approved="yes">
@@ -391,37 +391,37 @@
 
 			<trans-unit id="77" approved="yes">
 				<source>Properties</source>
-				<target>Properties</target>
+				<target>Propriétés</target>
 			</trans-unit>
 
 			<trans-unit id="78" approved="yes">
 				<source>Category</source>
-				<target>Category</target>
+				<target>Catégorie</target>
 			</trans-unit>
 
 			<trans-unit id="79" approved="yes">
 				<source>Template</source>
-				<target>Template</target>
+				<target>Modèle</target>
 			</trans-unit>
 
 			<trans-unit id="80" approved="yes">
 				<source>Permission</source>
-				<target>Permission</target>
+				<target>Autorisation</target>
 			</trans-unit>
 
 			<trans-unit id="81" approved="yes">
 				<source>Hidden</source>
-				<target>Hidden</target>
+				<target>Masqué</target>
 			</trans-unit>
 
 			<trans-unit id="82" approved="yes">
 				<source>File</source>
-				<target>File</target>
+				<target>Fichier</target>
 			</trans-unit>
 
 			<trans-unit id="83" approved="yes">
 				<source>Leave blank to disable</source>
-				<target>Leave blank to disable</target>
+				<target>Laisser vide pour désactiver</target>
 			</trans-unit>
 
 			<trans-unit id="84" approved="yes">
@@ -431,7 +431,7 @@
 
 			<trans-unit id="85" approved="yes">
 				<source>Publish date</source>
-				<target>Publish date</target>
+				<target>Date de publication</target>
 			</trans-unit>
 
 			<trans-unit id="86" approved="yes">
@@ -446,32 +446,32 @@
 
 			<trans-unit id="88" approved="yes">
 				<source>Galleries</source>
-				<target>Galleries</target>
+				<target>Galeries</target>
 			</trans-unit>
 
 			<trans-unit id="89" approved="yes">
 				<source>Files</source>
-				<target>Files</target>
+				<target>Fichiers</target>
 			</trans-unit>
 
 			<trans-unit id="90" approved="yes">
 				<source>Unpublish date</source>
-				<target>Unpublish date</target>
+				<target>Date de dépublication</target>
 			</trans-unit>
 
 			<trans-unit id="91" approved="yes">
 				<source>Day of month</source>
-				<target>Day of month</target>
+				<target>Jour du mois</target>
 			</trans-unit>
 
 			<trans-unit id="92" approved="yes">
 				<source>Close</source>
-				<target>Close</target>
+				<target>Fermer</target>
 			</trans-unit>
 
 			<trans-unit id="93" approved="yes">
 				<source>Hour</source>
-				<target>Hour</target>
+				<target>Heure</target>
 			</trans-unit>
 
 			<trans-unit id="94" approved="yes">
@@ -481,92 +481,92 @@
 
 			<trans-unit id="95" approved="yes">
 				<source>Month</source>
-				<target>Month</target>
+				<target>Mois</target>
 			</trans-unit>
 
 			<trans-unit id="96" approved="yes">
 				<source>Second</source>
-				<target>Second</target>
+				<target>Seconde</target>
 			</trans-unit>
 
 			<trans-unit id="97" approved="yes">
 				<source>Timezone</source>
-				<target>Timezone</target>
+				<target>Fuseau horaire</target>
 			</trans-unit>
 
 			<trans-unit id="98" approved="yes">
 				<source>Select a date</source>
-				<target>Select a date</target>
+				<target>Sélectionner une date</target>
 			</trans-unit>
 
 			<trans-unit id="99" approved="yes">
 				<source>Year</source>
-				<target>Year</target>
+				<target>Année</target>
 			</trans-unit>
 
 			<trans-unit id="100" approved="yes">
 				<source>Free</source>
-				<target>Free</target>
+				<target>Libre</target>
 			</trans-unit>
 
 			<trans-unit id="101" approved="yes">
 				<source>January</source>
-				<target>January</target>
+				<target>Janvier</target>
 			</trans-unit>
 
 			<trans-unit id="102" approved="yes">
 				<source>February</source>
-				<target>February</target>
+				<target>Février</target>
 			</trans-unit>
 
 			<trans-unit id="103" approved="yes">
 				<source>March</source>
-				<target>March</target>
+				<target>Mars</target>
 			</trans-unit>
 
 			<trans-unit id="104" approved="yes">
 				<source>April</source>
-				<target>April</target>
+				<target>Avril</target>
 			</trans-unit>
 
 			<trans-unit id="105" approved="yes">
 				<source>May</source>
-				<target>May</target>
+				<target>Mai</target>
 			</trans-unit>
 
 			<trans-unit id="106" approved="yes">
 				<source>June</source>
-				<target>June</target>
+				<target>Juin</target>
 			</trans-unit>
 
 			<trans-unit id="107" approved="yes">
 				<source>July</source>
-				<target>July</target>
+				<target>Juillet</target>
 			</trans-unit>
 
 			<trans-unit id="108" approved="yes">
 				<source>August</source>
-				<target>August</target>
+				<target>Août</target>
 			</trans-unit>
 
 			<trans-unit id="109" approved="yes">
 				<source>September</source>
-				<target>September</target>
+				<target>Septembre</target>
 			</trans-unit>
 
 			<trans-unit id="110" approved="yes">
 				<source>October</source>
-				<target>October</target>
+				<target>Octobre</target>
 			</trans-unit>
 
 			<trans-unit id="111" approved="yes">
 				<source>November</source>
-				<target>November</target>
+				<target>Novembre</target>
 			</trans-unit>
 
 			<trans-unit id="112" approved="yes">
 				<source>December</source>
-				<target>December</target>
+				<target>Décembre</target>
 			</trans-unit>
 
 			<trans-unit id="113" approved="yes">
@@ -576,7 +576,7 @@
 
 			<trans-unit id="114" approved="yes">
 				<source>Feb</source>
-				<target>Feb</target>
+				<target>Fév</target>
 			</trans-unit>
 
 			<trans-unit id="115" approved="yes">
@@ -586,27 +586,27 @@
 
 			<trans-unit id="116" approved="yes">
 				<source>Apr</source>
-				<target>Apr</target>
+				<target>Avr</target>
 			</trans-unit>
 
 			<trans-unit id="117" approved="yes">
 				<source>May</source>
-				<target>May</target>
+				<target>Mai</target>
 			</trans-unit>
 
 			<trans-unit id="118" approved="yes">
 				<source>Jun</source>
-				<target>Jun</target>
+				<target>Jui</target>
 			</trans-unit>
 
 			<trans-unit id="119" approved="yes">
 				<source>Jul</source>
-				<target>Jul</target>
+				<target>Jll</target>
 			</trans-unit>
 
 			<trans-unit id="120" approved="yes">
 				<source>Aug</source>
-				<target>Aug</target>
+				<target>Aoû</target>
 			</trans-unit>
 
 			<trans-unit id="121" approved="yes">
@@ -626,167 +626,167 @@
 
 			<trans-unit id="124" approved="yes">
 				<source>Dec</source>
-				<target>Dec</target>
+				<target>Déc</target>
 			</trans-unit>
 
 			<trans-unit id="125" approved="yes">
 				<source>Monday</source>
-				<target>Monday</target>
+				<target>Lundi</target>
 			</trans-unit>
 
 			<trans-unit id="126" approved="yes">
 				<source>Tuesday</source>
-				<target>Tuesday</target>
+				<target>Mardi</target>
 			</trans-unit>
 
 			<trans-unit id="127" approved="yes">
 				<source>Wednesday</source>
-				<target>Wednesday</target>
+				<target>Mercredi</target>
 			</trans-unit>
 
 			<trans-unit id="128" approved="yes">
 				<source>Thursday</source>
-				<target>Thursday</target>
+				<target>Jeudi</target>
 			</trans-unit>
 
 			<trans-unit id="129" approved="yes">
 				<source>Friday</source>
-				<target>Friday</target>
+				<target>Vendredi</target>
 			</trans-unit>
 
 			<trans-unit id="130" approved="yes">
 				<source>Saturday</source>
-				<target>Saturday</target>
+				<target>Samedi</target>
 			</trans-unit>
 
 			<trans-unit id="131" approved="yes">
 				<source>Sunday</source>
-				<target>Sunday</target>
+				<target>Dimanche</target>
 			</trans-unit>
 
 			<trans-unit id="132" approved="yes">
 				<source>Mon</source>
-				<target>Mon</target>
+				<target>Lun</target>
 			</trans-unit>
 
 			<trans-unit id="133" approved="yes">
 				<source>Tue</source>
-				<target>Tue</target>
+				<target>Mar</target>
 			</trans-unit>
 
 			<trans-unit id="134" approved="yes">
 				<source>Wed</source>
-				<target>Wed</target>
+				<target>Mer</target>
 			</trans-unit>
 
 			<trans-unit id="135" approved="yes">
 				<source>Thu</source>
-				<target>Thu</target>
+				<target>Jeu</target>
 			</trans-unit>
 
 			<trans-unit id="136" approved="yes">
 				<source>Fri</source>
-				<target>Fri</target>
+				<target>Ven</target>
 			</trans-unit>
 
 			<trans-unit id="137" approved="yes">
 				<source>Sat</source>
-				<target>Sat</target>
+				<target>Sam</target>
 			</trans-unit>
 
 			<trans-unit id="138" approved="yes">
 				<source>Sun</source>
-				<target>Sun</target>
+				<target>Dim</target>
 			</trans-unit>
 
 			<trans-unit id="139" approved="yes">
 				<source>Back</source>
-				<target>Back</target>
+				<target>Retour</target>
 			</trans-unit>
 
 			<trans-unit id="140" approved="yes">
 				<source>Load</source>
-				<target>Load</target>
+				<target>Charger</target>
 			</trans-unit>
 
 			<trans-unit id="141" approved="yes">
 				<source>Folder</source>
-				<target>Folder</target>
+				<target>Dossier</target>
 			</trans-unit>
 
 			<trans-unit id="142" approved="yes">
 				<source>Select files</source>
-				<target>Select files</target>
+				<target>Sélectionner des fichier</target>
 			</trans-unit>
 
 			<trans-unit id="143" approved="yes">
 				<source>Add files to upload queue and push the button to start the process</source>
-				<target>Add files to upload queue and push the button to start the process</target>
+				<target>Ajoutez des fichiers à la file de téléversement et appuyez sur le bouton pour lancer le processus</target>
 			</trans-unit>
 
 			<trans-unit id="144" approved="yes">
 				<source>Filename</source>
-				<target>Filename</target>
+				<target>Nom du fichier</target>
 			</trans-unit>
 
 			<trans-unit id="145" approved="yes">
 				<source>Size</source>
-				<target>Size</target>
+				<target>Taille</target>
 			</trans-unit>
 
 			<trans-unit id="146" approved="yes">
 				<source>Select files</source>
-				<target>Select files</target>
+				<target>Sélectionner des fichier</target>
 			</trans-unit>
 
 			<trans-unit id="147" approved="yes">
 				<source>Start upload</source>
-				<target>Start upload</target>
+				<target>Démarrer le téléversement</target>
 			</trans-unit>
 
 			<trans-unit id="148" approved="yes">
 				<source>Stop current upload</source>
-				<target>Stop current upload</target>
+				<target>Arrêter le téléversement en cours</target>
 			</trans-unit>
 
 			<trans-unit id="149" approved="yes">
 				<source>Start upload queue</source>
-				<target>Start upload queue</target>
+				<target>Démarrer la file de téléversement</target>
 			</trans-unit>
 
 			<trans-unit id="150" approved="yes">
 				<source>Drag and drop files here</source>
-				<target>Drag and drop files here</target>
+				<target>Glissez-déposez des fichiers ici</target>
 			</trans-unit>
 
 			<trans-unit id="151" approved="yes">
 				<source>The selected items will be permanently deleted.</source>
-				<target>The selected items will be permanently deleted.</target>
+				<target>Les éléments sélectionnés seront définitivement supprimés.</target>
 			</trans-unit>
 
 			<trans-unit id="152" approved="yes">
 				<source>Continue</source>
-				<target>Continue</target>
+				<target>Continuer</target>
 			</trans-unit>
 
 			<trans-unit id="153" approved="yes">
 				<source>Embedding link</source>
-				<target>Embedding link</target>
+				<target>Lien d'intégration</target>
 			</trans-unit>
 
 			<trans-unit id="154" approved="yes">
 				<source>Download link</source>
-				<target>Download link</target>
+				<target>Lien de téléchargement</target>
 			</trans-unit>
 
 			<trans-unit id="155" approved="yes">
 				<source>Width</source>
-				<target>Width</target>
+				<target>Largeur</target>
 			</trans-unit>
 
 			<trans-unit id="156" approved="yes">
 				<source>Height</source>
-				<target>Height</target>
+				<target>Hauteur</target>
 			</trans-unit>
 
 			<trans-unit id="157" approved="yes">
@@ -796,12 +796,12 @@
 
 			<trans-unit id="158" approved="yes">
 				<source>Thumbnail</source>
-				<target>Thumbnail</target>
+				<target>Miniature</target>
 			</trans-unit>
 
 			<trans-unit id="159" approved="yes">
 				<source>Name</source>
-				<target>Name</target>
+				<target>Nom</target>
 			</trans-unit>
 
 			<trans-unit id="160" approved="yes">
@@ -811,32 +811,32 @@
 
 			<trans-unit id="161" approved="yes">
 				<source>Generic</source>
-				<target>Generic</target>
+				<target>Générique</target>
 			</trans-unit>
 
 			<trans-unit id="162" approved="yes">
 				<source>Embedding</source>
-				<target>Embedding</target>
+				<target>Intégration</target>
 			</trans-unit>
 
 			<trans-unit id="163" approved="yes">
 				<source>Embedded</source>
-				<target>Embedded</target>
+				<target>Intégré</target>
 			</trans-unit>
 
 			<trans-unit id="164" approved="yes">
 				<source>Own path</source>
-				<target>Own path</target>
+				<target>Chemin propre</target>
 			</trans-unit>
 
 			<trans-unit id="165" approved="yes">
 				<source>The full content is shown in category view. Ex. "Who we are"</source>
-				<target>The full content is shown in category view. Ex. "Who we are"</target>
+				<target>Le contenu complet est affiché dans la vue en catégorie. Par ex : « Qui nous sommes »</target>
 			</trans-unit>
 
 			<trans-unit id="166" approved="yes">
 				<source>Content is accessed via its own path. Ex. "News"</source>
-				<target>Content is accessed via its own path. Ex. "News"</target>
+				<target>Le contenu est accessible via son propre chemin. Par ex : « Actualités »</target>
 			</trans-unit>
 
 			<trans-unit id="167" approved="yes">
@@ -851,17 +851,17 @@
 
 			<trans-unit id="169" approved="yes">
 				<source>You can leave a field blank to keep the size free</source>
-				<target>You can leave a field blank to keep the size free</target>
+				<target>Vous pouvez laisser un champ vide pour laisser la taille libre</target>
 			</trans-unit>
 
 			<trans-unit id="170" approved="yes">
 				<source>Edit</source>
-				<target>Edit</target>
+				<target>Modifier</target>
 			</trans-unit>
 
 			<trans-unit id="171" approved="yes">
 				<source>Order</source>
-				<target>Order</target>
+				<target>Ordre</target>
 				<note>to sort, to set positions</note>
 			</trans-unit>
 
@@ -872,27 +872,27 @@
 
 			<trans-unit id="173" approved="yes">
 				<source>Follow URL</source>
-				<target>Follow URL</target>
+				<target>Suivre l'URL</target>
 			</trans-unit>
 
 			<trans-unit id="174" approved="yes">
 				<source>Open URL (new window)</source>
-				<target>Open URL (new window)</target>
+				<target>Ouvrir l'URL (nouvelle fenêtre)</target>
 			</trans-unit>
 
 			<trans-unit id="175" approved="yes">
 				<source>Download file</source>
-				<target>Download file</target>
+				<target>Télécharger le fichier</target>
 			</trans-unit>
 
 			<trans-unit id="176" approved="yes">
 				<source>Watch image</source>
-				<target>Watch image</target>
+				<target>Voir l'image</target>
 			</trans-unit>
 
 			<trans-unit id="177" approved="yes">
 				<source>Website</source>
-				<target>Website</target>
+				<target>Site Web</target>
 			</trans-unit>
 
 			<trans-unit id="178" approved="yes">
@@ -902,37 +902,37 @@
 
 			<trans-unit id="179" approved="yes">
 				<source>Thumbnails</source>
-				<target>Thumbnails</target>
+				<target>Miniatures</target>
 			</trans-unit>
 
 			<trans-unit id="180" approved="yes">
 				<source>Item</source>
-				<target>Item</target>
+				<target>Élément</target>
 			</trans-unit>
 
 			<trans-unit id="181" approved="yes">
 				<source>Hidden</source>
-				<target>Hidden</target>
+				<target>Masqué</target>
 			</trans-unit>
 
 			<trans-unit id="182" approved="yes">
 				<source>Rollover image</source>
-				<target>Rollover image</target>
+				<target>Survoler l'image</target>
 			</trans-unit>
 
 			<trans-unit id="183" approved="yes">
 				<source>Do nothing</source>
-				<target>Do nothing</target>
+				<target>Ne rien faire</target>
 			</trans-unit>
 
 			<trans-unit id="184" approved="yes">
 				<source>Web page</source>
-				<target>Web page</target>
+				<target>Page Web</target>
 			</trans-unit>
 
 			<trans-unit id="185" approved="yes">
 				<source>Searching items</source>
-				<target>Searching items</target>
+				<target>Recherche d'éléments</target>
 			</trans-unit>
 
 			<trans-unit id="186" approved="yes">
@@ -942,22 +942,22 @@
 
 			<trans-unit id="187" approved="yes">
 				<source>Home page</source>
-				<target>Home page</target>
+				<target>Page d'accueil</target>
 			</trans-unit>
 
 			<trans-unit id="188" approved="yes">
 				<source>Translate</source>
-				<target>Translate</target>
+				<target>Traduire</target>
 			</trans-unit>
 
 			<trans-unit id="189" approved="yes">
 				<source>Copy from</source>
-				<target>Copy from</target>
+				<target>Copier depuis</target>
 			</trans-unit>
 
 			<trans-unit id="190" approved="yes">
 				<source>Ok</source>
-				<target>Ok</target>
+				<target>OK</target>
 			</trans-unit>
 
 			<trans-unit id="191" approved="yes">
@@ -967,12 +967,12 @@
 
 			<trans-unit id="192" approved="yes">
 				<source>Double click on a row to edit it</source>
-				<target>Double click on a row to edit it</target>
+				<target>Double-cliquez sur une ligne pour la modifier</target>
 			</trans-unit>
 
 			<trans-unit id="193" approved="yes">
 				<source>Value</source>
-				<target>Value</target>
+				<target>Valeur</target>
 			</trans-unit>
 
 			<trans-unit id="194" approved="yes">
@@ -982,27 +982,27 @@
 
 			<trans-unit id="195" approved="yes">
 				<source>Text area</source>
-				<target>Text area</target>
+				<target>Zone de texte</target>
 			</trans-unit>
 
 			<trans-unit id="196" approved="yes">
 				<source>Date and time</source>
-				<target>Date and time</target>
+				<target>Date et heure</target>
 			</trans-unit>
 
 			<trans-unit id="197" approved="yes">
 				<source>Link</source>
-				<target>Link</target>
+				<target>Lien</target>
 			</trans-unit>
 
 			<trans-unit id="198" approved="yes">
 				<source>Product</source>
-				<target>Product</target>
+				<target>Produit</target>
 			</trans-unit>
 
 			<trans-unit id="199" approved="yes">
 				<source>Default value</source>
-				<target>Default value</target>
+				<target>Valeur par défaut</target>
 			</trans-unit>
 
 			<trans-unit id="200" approved="yes">
@@ -1012,42 +1012,42 @@
 
 			<trans-unit id="201" approved="yes">
 				<source>One line per option, following the format: value#title</source>
-				<target>One line per option, following the format: value#title</target>
+				<target>Une ligne par option, en suivant le format : valeur#titre</target>
 			</trans-unit>
 
 			<trans-unit id="202" approved="yes">
 				<source>Enter only the value</source>
-				<target>Enter only the value</target>
+				<target>Entrez la valeur seulement</target>
 			</trans-unit>
 
 			<trans-unit id="203" approved="yes">
 				<source>Same value for all languages</source>
-				<target>Same value for all languages</target>
+				<target>Valeur identique pour toutes les langues</target>
 			</trans-unit>
 
 			<trans-unit id="204" approved="yes">
 				<source>File ID</source>
-				<target>File ID</target>
+				<target>Identifiant du fichier</target>
 			</trans-unit>
 
 			<trans-unit id="205" approved="yes">
 				<source>Comment</source>
-				<target>Comment</target>
+				<target>Commentaire</target>
 			</trans-unit>
 
 			<trans-unit id="206" approved="yes">
 				<source>Boolean</source>
-				<target>Boolean</target>
+				<target>Booléen</target>
 			</trans-unit>
 
 			<trans-unit id="207" approved="yes">
 				<source>Default timezone</source>
-				<target>Default timezone</target>
+				<target>Fuseau horaire par défaut</target>
 			</trans-unit>
 
 			<trans-unit id="208" approved="yes">
 				<source>Remove all content</source>
-				<target>Remove all content</target>
+				<target>Supprimer tout le contenu</target>
 			</trans-unit>
 
 			<trans-unit id="209" approved="yes">
@@ -1057,47 +1057,47 @@
 
 			<trans-unit id="210" approved="yes">
 				<source>Gallery</source>
-				<target>Gallery</target>
+				<target>Galerie</target>
 			</trans-unit>
 
 			<trans-unit id="211" approved="yes">
 				<source>Multiple option</source>
-				<target>Multiple option</target>
+				<target>Options multiples</target>
 			</trans-unit>
 
 			<trans-unit id="212" approved="yes">
 				<source>Write values separated by commas</source>
-				<target>Write values separated by commas</target>
+				<target>Écrivez les valeurs séparées par des virgules</target>
 			</trans-unit>
 
 			<trans-unit id="213" approved="yes">
 				<source>Image caption</source>
-				<target>Image caption</target>
+				<target>Légende de l'image</target>
 			</trans-unit>
 
 			<trans-unit id="214" approved="yes">
 				<source>Product</source>
-				<target>Product</target>
+				<target>Produit</target>
 			</trans-unit>
 
 			<trans-unit id="215" approved="yes">
 				<source>Credits</source>
-				<target>Credits</target>
+				<target>Crédits</target>
 			</trans-unit>
 
 			<trans-unit id="216" approved="yes">
 				<source>Created by</source>
-				<target>Created by</target>
+				<target>Créé par</target>
 			</trans-unit>
 
 			<trans-unit id="217" approved="yes">
 				<source>Tested by</source>
-				<target>Tested by</target>
+				<target>Testé par</target>
 			</trans-unit>
 
 			<trans-unit id="218" approved="yes">
 				<source>External libraries</source>
-				<target>External libraries</target>
+				<target>Bibliothèques externes</target>
 			</trans-unit>
 
 			<trans-unit id="219" approved="yes">
@@ -1112,57 +1112,57 @@
 
 			<trans-unit id="221" approved="yes">
 				<source>Jump to</source>
-				<target>Jump to</target>
+				<target>Aller à</target>
 			</trans-unit>
 
 			<trans-unit id="222" approved="yes">
 				<source>Rating</source>
-				<target>Rating</target>
+				<target>Avis</target>
 			</trans-unit>
 
 			<trans-unit id="223" approved="yes">
 				<source>Default value 5 stars, if you want a different value: default_value#number_of_stars</source>
-				<target>Default value 5 stars, if you want a different value: default_value#number_of_stars</target>
+				<target>La valeur par défaut est de 5 étoiles, si vous souhaitez une valeur différente : valeur_par_défaut#nombre_étoiles</target>
 			</trans-unit>
 
 			<trans-unit id="224" approved="yes">
 				<source>Country</source>
-				<target>Country</target>
+				<target>Pays</target>
 			</trans-unit>
 
 			<trans-unit id="225" approved="yes">
 				<source>Alpha-2 country code</source>
-				<target>Alpha-2 country code</target>
+				<target>Code pays Alpha-2</target>
 			</trans-unit>
 
 			<trans-unit id="226" approved="yes">
 				<source>Creation date</source>
-				<target>Creation date</target>
+				<target>Date de création</target>
 			</trans-unit>
 
 			<trans-unit id="227" approved="yes">
 				<source>Modification date</source>
-				<target>Modification date</target>
+				<target>Date de modification</target>
 			</trans-unit>
 
 			<trans-unit id="228" approved="yes">
 				<source>Subdomain</source>
-				<target>Subdomain</target>
+				<target>Sous-domaine</target>
 			</trans-unit>
 
 			<trans-unit id="229" approved="yes">
 				<source>Domain</source>
-				<target>Domain</target>
+				<target>Domaine</target>
 			</trans-unit>
 
 			<trans-unit id="230" approved="yes">
 				<source>Ex.</source>
-				<target>Ex.</target>
+				<target>Par ex.</target>
 			</trans-unit>
 
 			<trans-unit id="231" approved="yes">
 				<source>Server</source>
-				<target>Server</target>
+				<target>Serveur</target>
 			</trans-unit>
 
 			<trans-unit id="232" approved="yes">
@@ -1172,17 +1172,17 @@
 
 			<trans-unit id="233" approved="yes">
 				<source>Address</source>
-				<target>Address</target>
+				<target>Addresse</target>
 			</trans-unit>
 
 			<trans-unit id="234" approved="yes">
 				<source>More elements</source>
-				<target>More elements</target>
+				<target>Plus d'éléments</target>
 			</trans-unit>
 
 			<trans-unit id="235" approved="yes">
 				<source>File saved successfully.</source>
-				<target>File saved successfully.</target>
+				<target>Le fichier a bien été enregistré.</target>
 			</trans-unit>
 
 			<trans-unit id="236" approved="yes">
@@ -1197,7 +1197,7 @@
 
 			<trans-unit id="238" approved="yes">
 				<source>Main content</source>
-				<target>Main content</target>
+				<target>Contenu principal</target>
 			</trans-unit>
 
 			<trans-unit id="239" approved="yes">
@@ -1207,22 +1207,22 @@
 
 			<trans-unit id="240" approved="yes">
 				<source>Functions</source>
-				<target>Functions</target>
+				<target>Fonctions</target>
 			</trans-unit>
 
 			<trans-unit id="241" approved="yes">
 				<source>Web sites</source>
-				<target>Web sites</target>
+				<target>Sites Web</target>
 			</trans-unit>
 
 			<trans-unit id="242" approved="yes">
 				<source>Icon</source>
-				<target>Icon</target>
+				<target>Icône</target>
 			</trans-unit>
 
 			<trans-unit id="243" approved="yes">
 				<source>Profiles</source>
-				<target>Profiles</target>
+				<target>Profils</target>
 			</trans-unit>
 
 			<trans-unit id="244" approved="yes">
@@ -1242,92 +1242,92 @@
 
 			<trans-unit id="247" approved="yes">
 				<source>Registration date</source>
-				<target>Registration date</target>
+				<target>Date d'inscription</target>
 			</trans-unit>
 
 			<trans-unit id="248" approved="yes">
 				<source>Birth date</source>
-				<target>Birth date</target>
+				<target>Date de naissance</target>
 			</trans-unit>
 
 			<trans-unit id="249" approved="yes">
 				<source>Newsletter</source>
-				<target>Newsletter</target>
+				<target>Lettre d'information</target>
 			</trans-unit>
 
 			<trans-unit id="250" approved="yes">
 				<source>Comments</source>
-				<target>Comments</target>
+				<target>Commentaires</target>
 			</trans-unit>
 
 			<trans-unit id="251" approved="yes">
 				<source>Private</source>
-				<target>Private</target>
+				<target>Privé</target>
 			</trans-unit>
 
 			<trans-unit id="252" approved="yes">
 				<source>Comments enabled for</source>
-				<target>Comments enabled for</target>
+				<target>Commentaires activés pour</target>
 			</trans-unit>
 
 			<trans-unit id="253" approved="yes">
 				<source>Nobody</source>
-				<target>Nobody</target>
+				<target>Personne</target>
 			</trans-unit>
 
 			<trans-unit id="254" approved="yes">
 				<source>Everybody</source>
-				<target>Everybody</target>
+				<target>Tout le monde</target>
 			</trans-unit>
 
 			<trans-unit id="255" approved="yes">
 				<source>Moderator</source>
-				<target>Moderator</target>
+				<target>Modérateur</target>
 			</trans-unit>
 
 			<trans-unit id="256" approved="yes">
 				<source>Leave blank to accept all comments</source>
-				<target>Leave blank to accept all comments</target>
+				<target>Laisser vide pour accepter tous les commentaires</target>
 			</trans-unit>
 
 			<trans-unit id="257" approved="yes">
 				<source>To revise</source>
-				<target>To revise</target>
+				<target>À réviser</target>
 			</trans-unit>
 
 			<trans-unit id="258" approved="yes">
 				<source>Publish</source>
-				<target>Publish</target>
+				<target>Publier</target>
 			</trans-unit>
 
 			<trans-unit id="259" approved="yes">
 				<source>Unpublish</source>
-				<target>Unpublish</target>
+				<target>Dépublier</target>
 			</trans-unit>
 
 			<trans-unit id="260" approved="yes">
 				<source>Drag and drop files to upload them</source>
-				<target>Drag and drop files to upload them</target>
+				<target>Glissez-déposez des fichiers pour les téléverser</target>
 			</trans-unit>
 
 			<trans-unit id="261" approved="yes">
 				<source>Uploading</source>
-				<target>Uploading</target>
+				<target>Téléversement</target>
 			</trans-unit>
 
 			<trans-unit id="262" approved="yes">
 				<source>Error uploading file</source>
-				<target>Error uploading file</target>
+				<target>Erreur lors du téléversement du fichier</target>
 			</trans-unit>
 
 			<trans-unit id="263" approved="yes">
 				<source>Contact e-mails</source>
-				<target>Contact e-mails</target>
+				<target>Courriels de contact</target>
 			</trans-unit>
 
 			<trans-unit id="264" approved="yes">
 				<source>One item per row</source>
-				<target>One item per row</target>
+				<target>Un élément par ligne</target>
 			</trans-unit>
 
 			<trans-unit id="265" approved="yes">
@@ -1347,7 +1347,7 @@
 
 			<trans-unit id="268" approved="yes">
 				<source>Raw</source>
-				<target>Raw</target>
+				<target>Brut</target>
 			</trans-unit>
 
 			<trans-unit id="269" approved="yes">
@@ -1357,12 +1357,12 @@
 
 			<trans-unit id="270" approved="yes">
 				<source>Auto save in progress</source>
-				<target>Auto save in progress</target>
+				<target>Enregistrement automatique en cours</target>
 			</trans-unit>
 
 			<trans-unit id="271" approved="yes">
 				<source>Auto save completed</source>
-				<target>Auto save completed</target>
+				<target>Enregistrement automatique teminé</target>
 			</trans-unit>
 
 			<trans-unit id="272" approved="yes">
@@ -1372,127 +1372,127 @@
 
 			<trans-unit id="273" approved="yes">
 				<source>Auto save</source>
-				<target>Auto save</target>
+				<target>Enregistrement automatique</target>
 			</trans-unit>
 
 			<trans-unit id="274" approved="yes">
 				<source>Preview</source>
-				<target>Preview</target>
+				<target>Aperçu</target>
 			</trans-unit>
 
 			<trans-unit id="275" approved="yes">
 				<source>Recent elements</source>
-				<target>Recent elements</target>
+				<target>Éléments récents</target>
 			</trans-unit>
 
 			<trans-unit id="276" approved="yes">
 				<source>Recent comments</source>
-				<target>Recent comments</target>
+				<target>Commentaires récents</target>
 			</trans-unit>
 
 			<trans-unit id="277" approved="yes">
 				<source>Most seen elements</source>
-				<target>Most seen elements</target>
+				<target>Éléments les plus vus</target>
 			</trans-unit>
 
 			<trans-unit id="278" approved="yes">
 				<source>Web summary</source>
-				<target>Web summary</target>
+				<target>Résumé Web</target>
 			</trans-unit>
 
 			<trans-unit id="279" approved="yes">
 				<source>Pages available</source>
-				<target>Pages available</target>
+				<target>Pages disponibles</target>
 			</trans-unit>
 
 			<trans-unit id="280" approved="yes">
 				<source>Page views</source>
-				<target>Page views</target>
+				<target>Vues des pages</target>
 			</trans-unit>
 
 			<trans-unit id="281" approved="yes">
 				<source>Comments to revise</source>
-				<target>Comments to revise</target>
+				<target>Commentaires a réviser</target>
 			</trans-unit>
 
 			<trans-unit id="282" approved="yes">
 				<source>Untitled</source>
-				<target>Untitled</target>
+				<target>Sans titre</target>
 			</trans-unit>
 
 			<trans-unit id="283" approved="yes">
 				<source>Show in menus</source>
-				<target>Show in menus</target>
+				<target>Afficher dans les menus</target>
 			</trans-unit>
 
 			<trans-unit id="284" approved="yes">
 				<source>Africa</source>
-				<target>Africa</target>
+				<target>Afrique</target>
 			</trans-unit>
 
 			<trans-unit id="285" approved="yes">
 				<source>Update</source>
-				<target>Update</target>
+				<target>Mettre à jour</target>
 			</trans-unit>
 
 			<trans-unit id="286" approved="yes">
 				<source>Drag to reorder. Double click to assign image captions.</source>
-				<target>Drag to reorder. Double click to assign image captions.</target>
+				<target>Glissez-déposez pour réorganiser. Double-cliquez pour définir une légende d'image.</target>
 			</trans-unit>
 
 			<trans-unit id="287" approved="yes">
 				<source>Protocol</source>
-				<target>Protocol</target>
+				<target>Protocole</target>
 			</trans-unit>
 
 			<trans-unit id="288" approved="yes">
 				<source>Secure site (requires certificate)</source>
-				<target>Secure site (requires certificate)</target>
+				<target>Site sécurisé (nécessite un certificat)</target>
 			</trans-unit>
 
 			<trans-unit id="289" approved="yes">
 				<source>Update Navigate</source>
-				<target>Update Navigate</target>
+				<target>Mettre à jour Navigate</target>
 			</trans-unit>
 
 			<trans-unit id="290" approved="yes">
 				<source>Current version</source>
-				<target>Current version</target>
+				<target>Version actuelle</target>
 			</trans-unit>
 
 			<trans-unit id="291" approved="yes">
 				<source>Latest version</source>
-				<target>Latest version</target>
+				<target>Dernière version</target>
 			</trans-unit>
 
 			<trans-unit id="292" approved="yes">
 				<source>Available updates</source>
-				<target>Available updates</target>
+				<target>Mises à jour disponibles</target>
 			</trans-unit>
 
 			<trans-unit id="293" approved="yes">
 				<source>Application successfully updated</source>
-				<target>Application successfully updated</target>
+				<target>L'application a bien été mise à jour</target>
 			</trans-unit>
 
 			<trans-unit id="294" approved="yes">
 				<source>Error updating.</source>
-				<target>Error updating.</target>
+				<target>Erreur lors de la mise à jour.</target>
 			</trans-unit>
 
 			<trans-unit id="295" approved="yes">
 				<source>Expand all</source>
-				<target>Expand all</target>
+				<target>Étendre tout</target>
 			</trans-unit>
 
 			<trans-unit id="296" approved="yes">
 				<source>Top pages</source>
-				<target>Top pages</target>
+				<target>Pages à la une</target>
 			</trans-unit>
 
 			<trans-unit id="297" approved="yes">
 				<source>Coordinates</source>
-				<target>Coordinates</target>
+				<target>Coordonnées</target>
 			</trans-unit>
 
 			<trans-unit id="298" approved="yes">
@@ -1507,47 +1507,47 @@
 
 			<trans-unit id="300" approved="yes">
 				<source>Map</source>
-				<target>Map</target>
+				<target>Carte</target>
 			</trans-unit>
 
 			<trans-unit id="301" approved="yes">
 				<source>Double click on a place to set the coordinates</source>
-				<target>Double click on a place to set the coordinates</target>
+				<target>Double-cliquez sur un lieu pour définir les coordonnées</target>
 			</trans-unit>
 
 			<trans-unit id="302" approved="yes">
 				<source>Help</source>
-				<target>Help</target>
+				<target>Aide</target>
 			</trans-unit>
 
 			<trans-unit id="303" approved="yes">
 				<source>Manual update</source>
-				<target>Manual update</target>
+				<target>Mise à jour manuelle</target>
 			</trans-unit>
 
 			<trans-unit id="304" approved="yes">
 				<source>Gender</source>
-				<target>Gender</target>
+				<target>Genre</target>
 			</trans-unit>
 
 			<trans-unit id="305" approved="yes">
 				<source>Male</source>
-				<target>Male</target>
+				<target>Homme</target>
 			</trans-unit>
 
 			<trans-unit id="306" approved="yes">
 				<source>Female</source>
-				<target>Female</target>
+				<target>Femme</target>
 			</trans-unit>
 
 			<trans-unit id="307" approved="yes">
 				<source>Unspecified</source>
-				<target>Unspecified</target>
+				<target>Autre</target>
 			</trans-unit>
 
 			<trans-unit id="308" approved="yes">
 				<source>Personal</source>
-				<target>Personal</target>
+				<target>Personnel</target>
 			</trans-unit>
 
 			<trans-unit id="309" approved="yes">
@@ -1557,27 +1557,27 @@
 
 			<trans-unit id="310" approved="yes">
 				<source>America</source>
-				<target>America</target>
+				<target>Amérique</target>
 			</trans-unit>
 
 			<trans-unit id="311" approved="yes">
 				<source>Antartica</source>
-				<target>Antartica</target>
+				<target>Antarctique</target>
 			</trans-unit>
 
 			<trans-unit id="312" approved="yes">
 				<source>Arctic</source>
-				<target>Arctic</target>
+				<target>Arctique</target>
 			</trans-unit>
 
 			<trans-unit id="313" approved="yes">
 				<source>Asia</source>
-				<target>Asia</target>
+				<target>Asie</target>
 			</trans-unit>
 
 			<trans-unit id="314" approved="yes">
 				<source>Atlantic</source>
-				<target>Atlantic</target>
+				<target>Atlantique</target>
 			</trans-unit>
 
 			<trans-unit id="315" approved="yes">
@@ -1587,57 +1587,57 @@
 
 			<trans-unit id="316" approved="yes">
 				<source>Indian</source>
-				<target>Indian</target>
+				<target>Indien</target>
 			</trans-unit>
 
 			<trans-unit id="317" approved="yes">
 				<source>Pacific</source>
-				<target>Pacific</target>
+				<target>Pacifique</target>
 			</trans-unit>
 
 			<trans-unit id="318" approved="yes">
 				<source>Zip code</source>
-				<target>Zip code</target>
+				<target>Code postal</target>
 			</trans-unit>
 
 			<trans-unit id="319" approved="yes">
 				<source>Location</source>
-				<target>Location</target>
+				<target>Emplacement</target>
 			</trans-unit>
 
 			<trans-unit id="320" approved="yes">
 				<source>Phone</source>
-				<target>Phone</target>
+				<target>Téléphone</target>
 			</trans-unit>
 
 			<trans-unit id="321" approved="yes">
 				<source>Allowed</source>
-				<target>Allowed</target>
+				<target>Autorisé</target>
 			</trans-unit>
 
 			<trans-unit id="322" approved="yes">
 				<source>Jump to another branch</source>
-				<target>Jump to another branch</target>
+				<target>Aller sur une autre branche</target>
 			</trans-unit>
 
 			<trans-unit id="323" approved="yes">
 				<source>Jump to an element</source>
-				<target>Jump to an element</target>
+				<target>Aller à un élément</target>
 			</trans-unit>
 
 			<trans-unit id="324" approved="yes">
 				<source>New window</source>
-				<target>New window</target>
+				<target>Nouvelle fenêtre</target>
 			</trans-unit>
 
 			<trans-unit id="325" approved="yes">
 				<source>Branch</source>
-				<target>Branch</target>
+				<target>Branche</target>
 			</trans-unit>
 
 			<trans-unit id="326" approved="yes">
 				<source>Web feeds</source>
-				<target>Web feeds</target>
+				<target>Flux Web</target>
 			</trans-unit>
 
 			<trans-unit id="327" approved="yes">
@@ -1652,12 +1652,12 @@
 
 			<trans-unit id="329" approved="yes">
 				<source>Backups</source>
-				<target>Backups</target>
+				<target>Sauvegardes</target>
 			</trans-unit>
 
 			<trans-unit id="330" approved="yes">
 				<source>Categories</source>
-				<target>Categories</target>
+				<target>Catégories</target>
 			</trans-unit>
 
 			<trans-unit id="331" approved="yes">
@@ -1667,12 +1667,12 @@
 
 			<trans-unit id="332" approved="yes">
 				<source>Views</source>
-				<target>Views</target>
+				<target>Vues</target>
 			</trans-unit>
 
 			<trans-unit id="333" approved="yes">
 				<source>Recommended</source>
-				<target>Recommended</target>
+				<target>Recommendé</target>
 			</trans-unit>
 
 			<trans-unit id="334" approved="yes">
@@ -1682,22 +1682,22 @@
 
 			<trans-unit id="335" approved="yes">
 				<source>Entries</source>
-				<target>Entries</target>
+				<target>Entrées</target>
 			</trans-unit>
 
 			<trans-unit id="336" approved="yes">
 				<source>Display</source>
-				<target>Display</target>
+				<target>Affichage</target>
 			</trans-unit>
 
 			<trans-unit id="337" approved="yes">
 				<source>Summary</source>
-				<target>Summary</target>
+				<target>Résumé</target>
 			</trans-unit>
 
 			<trans-unit id="338" approved="yes">
 				<source>Uploaded %d/%d files</source>
-				<target>Uploaded %d/%d files</target>
+				<target>%d/%d fichiers téléversés</target>
 			</trans-unit>
 
 			<trans-unit id="339" approved="yes">
@@ -1707,62 +1707,62 @@
 
 			<trans-unit id="340" approved="yes">
 				<source>File extension error</source>
-				<target>File extension error</target>
+				<target>Erreur d'extension de fichier</target>
 			</trans-unit>
 
 			<trans-unit id="341" approved="yes">
 				<source>File size error</source>
-				<target>File size error</target>
+				<target>Erreur de taille de fichier</target>
 			</trans-unit>
 
 			<trans-unit id="342" approved="yes">
 				<source>Init error</source>
-				<target>Init error</target>
+				<target>Erreur d'initialisation</target>
 			</trans-unit>
 
 			<trans-unit id="343" approved="yes">
 				<source>HTTP Error</source>
-				<target>HTTP Error</target>
+				<target>Erreur HTTP</target>
 			</trans-unit>
 
 			<trans-unit id="344" approved="yes">
 				<source>Security error</source>
-				<target>Security error</target>
+				<target>Erreur de sécurité</target>
 			</trans-unit>
 
 			<trans-unit id="345" approved="yes">
 				<source>Generic error</source>
-				<target>Generic error</target>
+				<target>Erreur générique</target>
 			</trans-unit>
 
 			<trans-unit id="346" approved="yes">
 				<source>IO error</source>
-				<target>IO error</target>
+				<target>Erreur d'entrée/sortie</target>
 			</trans-unit>
 
 			<trans-unit id="347" approved="yes">
 				<source>Stop upload</source>
-				<target>Stop upload</target>
+				<target>Arrêter le téléversement</target>
 			</trans-unit>
 
 			<trans-unit id="348" approved="yes">
 				<source>Add files</source>
-				<target>Add files</target>
+				<target>Ajouter des fichiers</target>
 			</trans-unit>
 
 			<trans-unit id="349" approved="yes">
 				<source>Start upload</source>
-				<target>Start upload</target>
+				<target>Démarrer le téléversement</target>
 			</trans-unit>
 
 			<trans-unit id="350" approved="yes">
 				<source>%d files queued</source>
-				<target>%d files queued</target>
+				<target>%d fichiers mis en attente</target>
 			</trans-unit>
 
 			<trans-unit id="351" approved="yes">
 				<source>New update available!</source>
-				<target>New update available!</target>
+				<target>Nouvelle mise à jour disponible !</target>
 			</trans-unit>
 
 			<trans-unit id="352" approved="yes">
@@ -1777,107 +1777,107 @@
 
 			<trans-unit id="354" approved="yes">
 				<source>Reset</source>
-				<target>Reset</target>
+				<target>Réinitialiser</target>
 			</trans-unit>
 
 			<trans-unit id="355" approved="yes">
 				<source>Votes reset</source>
-				<target>Votes reset</target>
+				<target>Réinitialiser les votes</target>
 			</trans-unit>
 
 			<trans-unit id="356" approved="yes">
 				<source>last 90 days</source>
-				<target>last 90 days</target>
+				<target>les 90 derniers jours</target>
 			</trans-unit>
 
 			<trans-unit id="357" approved="yes">
 				<source>User votes</source>
-				<target>User votes</target>
+				<target>Votes utilisateur</target>
 			</trans-unit>
 
 			<trans-unit id="358" approved="yes">
 				<source>Hidden to everybody</source>
-				<target>Hidden to everybody</target>
+				<target>Masqués pour tout le monde</target>
 			</trans-unit>
 
 			<trans-unit id="359" approved="yes">
 				<source>Visible only to Navigate CMS users</source>
-				<target>Visible only to Navigate CMS users</target>
+				<target>Visible uniquement aux utilisateurs de Navigate CMS</target>
 			</trans-unit>
 
 			<trans-unit id="360" approved="yes">
 				<source>Visible to everybody</source>
-				<target>Visible to everybody</target>
+				<target>Visible pour tout le monde</target>
 			</trans-unit>
 
 			<trans-unit id="361" approved="yes">
 				<source>Web users only</source>
-				<target>Web users only</target>
+				<target>Utilisateurs Web uniquement</target>
 			</trans-unit>
 
 			<trans-unit id="362" approved="yes">
 				<source>Not signed in</source>
-				<target>Not signed in</target>
+				<target>Non inscrits</target>
 			</trans-unit>
 
 			<trans-unit id="363" approved="yes">
 				<source>Users who have not yet signed up or signed in</source>
-				<target>Users who have not yet signed up or signed in</target>
+				<target>Utilisateurs qui ne se sont jamais inscrit ou connecté</target>
 			</trans-unit>
 
 			<trans-unit id="364" approved="yes">
 				<source>Access</source>
-				<target>Access</target>
+				<target>Accès</target>
 			</trans-unit>
 
 			<trans-unit id="365" approved="yes">
 				<source>Install</source>
-				<target>Install</target>
+				<target>Installer</target>
 			</trans-unit>
 
 			<trans-unit id="366" approved="yes">
 				<source>Log</source>
-				<target>Log</target>
+				<target>Journal</target>
 			</trans-unit>
 
 			<trans-unit id="367" approved="yes">
 				<source>Themes</source>
-				<target>Themes</target>
+				<target>Thèmes</target>
 			</trans-unit>
 
 			<trans-unit id="368" approved="yes">
 				<source>Theme</source>
-				<target>Theme</target>
+				<target>Thème</target>
 			</trans-unit>
 
 			<trans-unit id="369" approved="yes">
 				<source>More on</source>
-				<target>More on</target>
+				<target>En savoir plus</target>
 			</trans-unit>
 
 			<trans-unit id="370" approved="yes">
 				<source>Demo</source>
-				<target>Demo</target>
+				<target>Démo</target>
 			</trans-unit>
 
 			<trans-unit id="371" approved="yes">
 				<source>Installing a new theme removes the settings of the old one.</source>
-				<target>Installing a new theme removes the settings of the old one.</target>
+				<target>L'installation d'un nouveau thème supprime les paramètres du thème précédent.</target>
 			</trans-unit>
 
 			<trans-unit id="372" approved="yes">
 				<source>The list of available block types may change and also the properties assigned to items could be lost.</source>
-				<target>The list of available block types may change and also the properties assigned to items could be lost.</target>
+				<target>La liste des types de bloc disponibles pourrait être modifiée et les propriétés associées aux éléments pourraient être perdues.</target>
 			</trans-unit>
 
 			<trans-unit id="373" approved="yes">
 				<source>Are you sure you want to continue?</source>
-				<target>Are you sure you want to continue?</target>
+				<target>Êtes-vous sûr·e de vouloir continuer ?</target>
 			</trans-unit>
 
 			<trans-unit id="374" approved="yes">
 				<source>Item installed successfully.</source>
-				<target>Item installed successfully.</target>
+				<target>L'élément a bien été installé.</target>
 			</trans-unit>
 
 			<trans-unit id="375" approved="yes">
@@ -1887,7 +1887,7 @@
 
 			<trans-unit id="376" approved="yes">
 				<source>Blog entry</source>
-				<target>Blog entry</target>
+				<target>Entrée de blog</target>
 			</trans-unit>
 
 			<trans-unit id="377" approved="yes">
@@ -1897,12 +1897,12 @@
 
 			<trans-unit id="378" approved="yes">
 				<source>License</source>
-				<target>License</target>
+				<target>Licence</target>
 			</trans-unit>
 
 			<trans-unit id="379" approved="yes">
 				<source>Post a comment</source>
-				<target>Post a comment</target>
+				<target>Publier un commentaire</target>
 			</trans-unit>
 
 			<trans-unit id="380" approved="yes">
@@ -1912,82 +1912,82 @@
 
 			<trans-unit id="381" approved="yes">
 				<source>E-Mail will not be published</source>
-				<target>E-Mail will not be published</target>
+				<target>Le courriel ne sera pas publié</target>
 			</trans-unit>
 
 			<trans-unit id="382" approved="yes">
 				<source>Submit</source>
-				<target>Submit</target>
+				<target>Envoyer</target>
 			</trans-unit>
 
 			<trans-unit id="383" approved="yes">
 				<source>Sign in or Sign up to post a comment</source>
-				<target>Sign in or Sign up to post a comment</target>
+				<target>Connectez-vous ou inscrivez-vous pour publier un commentaire</target>
 			</trans-unit>
 
 			<trans-unit id="384" approved="yes">
 				<source>Comments on this entry are closed</source>
-				<target>Comments on this entry are closed</target>
+				<target>Les commentaires sur cette entrée sont fermés</target>
 			</trans-unit>
 
 			<trans-unit id="385" approved="yes">
 				<source>Please don't leave any field blank</source>
-				<target>Please don't leave any field blank</target>
+				<target>Veuillez ne laisser aucun champ vide</target>
 			</trans-unit>
 
 			<trans-unit id="386" approved="yes">
 				<source>Your comment has been received and will be published shortly</source>
-				<target>Your comment has been received and will be published shortly</target>
+				<target>Votre commentaire a bien été reçu et sera publié sous peu</target>
 			</trans-unit>
 
 			<trans-unit id="387" approved="yes">
 				<source>New comment</source>
-				<target>New comment</target>
+				<target>Nouveau commentaire</target>
 			</trans-unit>
 
 			<trans-unit id="388" approved="yes">
 				<source>Review comments</source>
-				<target>Review comments</target>
+				<target>Vérifier les commentaires</target>
 			</trans-unit>
 
 			<trans-unit id="389" approved="yes">
 				<source>Backspace key protection</source>
-				<target>Backspace key protection</target>
+				<target>Protection contre le touche effacer</target>
 			</trans-unit>
 
 			<trans-unit id="390" approved="yes">
 				<source>Test</source>
-				<target>Test</target>
+				<target>Effectuer un test</target>
 			</trans-unit>
 
 			<trans-unit id="391" approved="yes">
 				<source>Trying to send a test e-mail…</source>
-				<target>Trying to send a test e-mail…</target>
+				<target>Tentative d'envoi d'un courriel de test…</target>
 			</trans-unit>
 
 			<trans-unit id="392" approved="yes">
 				<source>E-Mail sent</source>
-				<target>E-Mail sent</target>
+				<target>Courriel envoyé</target>
 			</trans-unit>
 
 			<trans-unit id="393" approved="yes">
 				<source>Standard banner sizes</source>
-				<target>Standard banner sizes</target>
+				<target>Tailles de bannière standard</target>
 			</trans-unit>
 
 			<trans-unit id="394" approved="yes">
 				<source>Fixed</source>
-				<target>Fixed</target>
+				<target>Fixe</target>
 			</trans-unit>
 
 			<trans-unit id="395" approved="yes">
 				<source>"Fixed" assigns a static position when the order is random</source>
-				<target>"Fixed" assigns a static position when the order is random</target>
+				<target>« Fixe » définit une position statique lorsque l'ordre est aléatoire</target>
 			</trans-unit>
 
 			<trans-unit id="396" approved="yes">
 				<source>All categories</source>
-				<target>All categories</target>
+				<target>Toutes les catégories</target>
 			</trans-unit>
 
 			<trans-unit id="397" approved="yes">
@@ -2002,162 +2002,162 @@
 
 			<trans-unit id="399" approved="yes">
 				<source>Random</source>
-				<target>Random</target>
+				<target>Aléatoire</target>
 			</trans-unit>
 
 			<trans-unit id="400" approved="yes">
 				<source>Enter 0 to display all</source>
-				<target>Enter 0 to display all</target>
+				<target>Saisissez 0 pour tout afficher</target>
 			</trans-unit>
 
 			<trans-unit id="401" approved="yes">
 				<source>Your browser does not support HTML5</source>
-				<target>Your browser does not support HTML5</target>
+				<target>Votre navigateur ne prend pas en charge HTML5</target>
 			</trans-unit>
 
 			<trans-unit id="402" approved="yes">
 				<source>Please select fewer files</source>
-				<target>Please select fewer files</target>
+				<target>Veuillez sélectionnez moins de fichiers</target>
 			</trans-unit>
 
 			<trans-unit id="403" approved="yes">
 				<source>File too large</source>
-				<target>File too large</target>
+				<target>Fichier trop lourd</target>
 			</trans-unit>
 
 			<trans-unit id="404" approved="yes">
 				<source>Order by</source>
-				<target>Order by</target>
+				<target>Trier par</target>
 			</trans-unit>
 
 			<trans-unit id="405" approved="yes">
 				<source>Selection</source>
-				<target>Selection</target>
+				<target>Sélection</target>
 			</trans-unit>
 
 			<trans-unit id="406" approved="yes">
 				<source>Remember me</source>
-				<target>Remember me</target>
+				<target>Se souvenir de moi</target>
 			</trans-unit>
 
 			<trans-unit id="407" approved="yes">
 				<source>Forgot password?</source>
-				<target>Forgot password?</target>
+				<target>Mot de passe oublié ?</target>
 			</trans-unit>
 
 			<trans-unit id="408" approved="yes">
 				<source>Order is only used on lists ordered by priority</source>
-				<target>Order is only used on lists ordered by priority</target>
+				<target>L'ordre est utilisé uniquement sur les listes triées par ordre de priorité</target>
 			</trans-unit>
 
 			<trans-unit id="409" approved="yes">
 				<source>Size</source>
-				<target>Size</target>
+				<target>Taille</target>
 			</trans-unit>
 
 			<trans-unit id="410" approved="yes">
 				<source>Begin backup</source>
-				<target>Begin backup</target>
+				<target>Démarrer la sauvegarder</target>
 			</trans-unit>
 
 			<trans-unit id="411" approved="yes">
 				<source>Task progress</source>
-				<target>Task progress</target>
+				<target>Progrès des tâches</target>
 			</trans-unit>
 
 			<trans-unit id="412" approved="yes">
 				<source>Restore</source>
-				<target>Restore</target>
+				<target>Restaurer</target>
 			</trans-unit>
 
 			<trans-unit id="413" approved="yes">
 				<source>Waiting to begin</source>
-				<target>Waiting to begin</target>
+				<target>En attente du démarrage</target>
 			</trans-unit>
 
 			<trans-unit id="414" approved="yes">
 				<source>Exporting database</source>
-				<target>Exporting database</target>
+				<target>Export de la base de données en cours</target>
 			</trans-unit>
 
 			<trans-unit id="415" approved="yes">
 				<source>Copying themes and templates</source>
-				<target>Copying themes and templates</target>
+				<target>Copie des thèmes et des modèles</target>
 			</trans-unit>
 
 			<trans-unit id="416" approved="yes">
 				<source>Copying extensions</source>
-				<target>Copying extensions</target>
+				<target>Copie des extensions</target>
 			</trans-unit>
 
 			<trans-unit id="417" approved="yes">
 				<source>Copying uploads</source>
-				<target>Copying uploads</target>
+				<target>Copie des téléversements</target>
 			</trans-unit>
 
 			<trans-unit id="418" approved="yes">
 				<source>Creating archive</source>
-				<target>Creating archive</target>
+				<target>Création de l'archive</target>
 			</trans-unit>
 
 			<trans-unit id="419" approved="yes">
 				<source>Process complete</source>
-				<target>Process complete</target>
+				<target>Processus terminé</target>
 			</trans-unit>
 
 			<trans-unit id="420" approved="yes">
 				<source>Estimated size</source>
-				<target>Estimated size</target>
+				<target>Taille estimée</target>
 			</trans-unit>
 
 			<trans-unit id="421" approved="yes">
 				<source>Created on</source>
-				<target>Created on</target>
+				<target>Créé le</target>
 			</trans-unit>
 
 			<trans-unit id="422" approved="yes">
 				<source>Uploading to server</source>
-				<target>Uploading to server</target>
+				<target>Téléversement vers le serveur</target>
 			</trans-unit>
 
 			<trans-unit id="423" approved="yes">
 				<source>Refresh</source>
-				<target>Refresh</target>
+				<target>Actualiser</target>
 			</trans-unit>
 
 			<trans-unit id="424" approved="yes">
 				<source>Preparing process</source>
-				<target>Preparing process</target>
+				<target>Préparation du processus</target>
 			</trans-unit>
 
 			<trans-unit id="425" approved="yes">
 				<source>Order the elements of a category (unless the template forces other sorting)</source>
-				<target>Order the elements of a category (unless the template forces other sorting)</target>
+				<target>Trie les éléments d'une catégorie (à moins que le modèle ne force un autre type de tri)</target>
 			</trans-unit>
 
 			<trans-unit id="426" approved="yes">
 				<source>Enter "1" for true, "0" for false</source>
-				<target>Enter "1" for true, "0" for false</target>
+				<target>Saisissez « 1 » pour vrai, « 0 » pour faux</target>
 			</trans-unit>
 
 			<trans-unit id="427" approved="yes">
 				<source>Security protocol</source>
-				<target>Security protocol</target>
+				<target>Protocole de sécurité</target>
 			</trans-unit>
 
 			<trans-unit id="428" approved="yes">
 				<source>(no category)</source>
-				<target>(no category)</target>
+				<target>(sans catégorie)</target>
 			</trans-unit>
 
 			<trans-unit id="429" approved="yes">
 				<source>Reset statistics</source>
-				<target>Reset statistics</target>
+				<target>Réinitialiser les statistiques</target>
 			</trans-unit>
 
 			<trans-unit id="430" approved="yes">
 				<source>Do you really want to remove all statistics of this website?</source>
-				<target>Do you really want to remove all statistics of this website?</target>
+				<target>Souhaitez-vous vraiment supprimer toutes les statistiques de ce site Web ?</target>
 			</trans-unit>
 
 			<trans-unit id="431" approved="yes">
@@ -2167,78 +2167,78 @@
 
 			<trans-unit id="432" approved="yes">
 				<source>Read only mode</source>
-				<target>Read only mode</target>
+				<target>Mode lecture seule</target>
 			</trans-unit>
 
 			<trans-unit id="433" approved="yes">
 				<source>Resize uploaded images</source>
-				<target>Resize uploaded images</target>
+				<target>Redimensionner les images téléversées</target>
 			</trans-unit>
 
 			<trans-unit id="434" approved="yes">
 				<source>Keep original file</source>
-				<target>Keep original file</target>
+				<target>Conserver le fichier original</target>
 			</trans-unit>
 
 			<trans-unit id="435" approved="yes">
 				<source>Maximum width or height</source>
-				<target>Maximum width or height</target>
+				<target>Largeur ou hauteur maximum</target>
 			</trans-unit>
 
 			<trans-unit id="436" approved="yes">
 				<source>Used as a class in HTML elements</source>
-				<target>Used as a class in HTML elements</target>
+				<target>Utilisé comme classe dans les éléments HTML</target>
 			</trans-unit>
 
 			<trans-unit id="437" approved="yes">
 				<source>Block</source>
-				<target>Block</target>
+				<target>Bloc</target>
 			</trans-unit>
 
 			<trans-unit id="438" approved="yes">
 				<source>Order</source>
-				<target>Order</target>
+				<target>Commande</target>
 				<note>ordination, sort</note>
 			</trans-unit>
 
 			<trans-unit id="439" approved="yes">
 				<source>Error loading theme</source>
-				<target>Error loading theme</target>
+				<target>Erreur lors du chargement du thème</target>
 			</trans-unit>
 
 			<trans-unit id="440" approved="yes">
 				<source>Error saving the data, please do an external backup of your changes to prevent data loss</source>
-				<target>Error saving the data, please do an external backup of your changes to prevent data loss</target>
+				<target>Erreur lors de l'enregistrement des données, veuillez effectuer une sauvegarde externe de vos modifications pour éviter des pertes de données</target>
 			</trans-unit>
 
 			<trans-unit id="441" approved="yes">
 				<source>Color</source>
-				<target>Color</target>
+				<target>Couleur</target>
 			</trans-unit>
 
 			<trans-unit id="442" approved="yes">
 				<source>Hexadecimal color code</source>
-				<target>Hexadecimal color code</target>
+				<target>Code couleur hexadécimal</target>
 			</trans-unit>
 
 			<trans-unit id="443" approved="yes">
 				<source>All</source>
-				<target>All</target>
+				<target>Tout</target>
 			</trans-unit>
 
 			<trans-unit id="444" approved="yes">
 				<source>You left some required fields blank.</source>
-				<target>You left some required fields blank.</target>
+				<target>Vous avez laissé certains champs requis vides.</target>
 			</trans-unit>
 
 			<trans-unit id="445" approved="yes">
 				<source>Your contact request has been sent. We will contact you shortly.</source>
-				<target>Your contact request has been sent. We will contact you shortly.</target>
+				<target>Votre demande de contact a été envoyée. Nous vous recontacterons prochainement.</target>
 			</trans-unit>
 
 			<trans-unit id="446" approved="yes">
 				<source>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</source>
-				<target>We're sorry. Your contact request could not be sent. Please try again or find another way to contact us.</target>
+				<target>Nous sommes désolés. Votre demande de contact n'a pas pu être envoyée. Veuillez réessayer ou trouver un autre moyen de nous contacter.</target>
 			</trans-unit>
 
 			<trans-unit id="447" approved="yes">
@@ -2248,92 +2248,92 @@
 
 			<trans-unit id="448" approved="yes">
 				<source>Portfolio item</source>
-				<target>Portfolio item</target>
+				<target>Élément de portfolio</target>
 			</trans-unit>
 
 			<trans-unit id="449" approved="yes">
 				<source>Enter your Navigate CMS username or e-mail address</source>
-				<target>Enter your Navigate CMS username or e-mail address</target>
+				<target>Entrez votre nom d'utilisateur Navigate CMS ou votre adresse électronique</target>
 			</trans-unit>
 
 			<trans-unit id="450" approved="yes">
 				<source>Click on the link below to change your password</source>
-				<target>Click on the link below to change your password</target>
+				<target>Cliquez sur le lien ci-dessous pour modifier votre mot de passe</target>
 			</trans-unit>
 
 			<trans-unit id="451" approved="yes">
 				<source>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</source>
-				<target>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</target>
+				<target>Ceci est un courriel automatique envoyé suite à une demande de réinitialisation de mot de passe. Si vous avez reçu ce courriel par erreur veuillez simplement l'ignorer.</target>
 			</trans-unit>
 
 			<trans-unit id="452" approved="yes">
 				<source>E-mail could not be sent; please contact the administrator</source>
-				<target>E-mail could not be sent; please contact the administrator</target>
+				<target>Le courriel n'a pas pu être envoyé, veuillez contacter l'administrateur</target>
 			</trans-unit>
 
 			<trans-unit id="453" approved="yes">
 				<source>Couldn't find this username or e-mail address</source>
-				<target>Couldn't find this username or e-mail address</target>
+				<target>Impossible de trouver ce nom d'utilisateur ou adresse électronique</target>
 			</trans-unit>
 
 			<trans-unit id="454" approved="yes">
 				<source>An e-mail with a confirmation link has been sent to your e-mail account.</source>
-				<target>An e-mail with a confirmation link has been sent to your e-mail account.</target>
+				<target>Un courriel avec un lien de confirmation a été envoyé dans votre boîte de messagerie.</target>
 			</trans-unit>
 
 			<trans-unit id="455" approved="yes">
 				<source>Your new password has been activated.</source>
-				<target>Your new password has been activated.</target>
+				<target>Votre nouveau mot de passe a été activé.</target>
 			</trans-unit>
 
 			<trans-unit id="456" approved="yes">
 				<source>Edit in Navigate CMS</source>
-				<target>Edit in Navigate CMS</target>
+				<target>Modifier dans Navigate CMS</target>
 			</trans-unit>
 
 			<trans-unit id="457" approved="yes">
 				<source>Information</source>
-				<target>Information</target>
+				<target>Informations</target>
 			</trans-unit>
 
 			<trans-unit id="458" approved="yes">
 				<source>Edit in place</source>
-				<target>Edit in place</target>
+				<target>Modifier dans l'emplacement</target>
 			</trans-unit>
 
 			<trans-unit id="459" approved="yes">
 				<source>Settings</source>
-				<target>Settings</target>
+				<target>Paramètres</target>
 			</trans-unit>
 
 			<trans-unit id="460" approved="yes">
 				<source>Disable</source>
-				<target>Disable</target>
+				<target>Désactiver</target>
 			</trans-unit>
 
 			<trans-unit id="461" approved="yes">
 				<source>Install from file</source>
-				<target>Install from file</target>
+				<target>Installer depuis un fichier</target>
 			</trans-unit>
 
 			<trans-unit id="462" approved="yes">
 				<source>Enable</source>
-				<target>Enable</target>
+				<target>Activer</target>
 			</trans-unit>
 
 			<trans-unit id="463" approved="yes">
 				<source>Update available</source>
-				<target>Update available</target>
+				<target>Mise à jour disponible</target>
 			</trans-unit>
 
 			<trans-unit id="464" approved="yes">
 				<source>Favorite</source>
-				<target>Favorite</target>
+				<target>Favori</target>
 			</trans-unit>
 
 			<trans-unit id="465" approved="yes">
 				<source>Favorites</source>
-				<target>Favorites</target>
+				<target>Favoris</target>
 			</trans-unit>
 
 			<trans-unit id="466" approved="yes">
@@ -2343,97 +2343,97 @@
 
 			<trans-unit id="467" approved="yes">
 				<source>Scope</source>
-				<target>Scope</target>
+				<target>Portée</target>
 			</trans-unit>
 
 			<trans-unit id="468" approved="yes">
 				<source>Integer</source>
-				<target>Integer</target>
+				<target>Entier</target>
 			</trans-unit>
 
 			<trans-unit id="469" approved="yes">
 				<source>String</source>
-				<target>String</target>
+				<target>Chaîne de caractères</target>
 			</trans-unit>
 
 			<trans-unit id="470" approved="yes">
 				<source>System</source>
-				<target>System</target>
+				<target>Système</target>
 			</trans-unit>
 
 			<trans-unit id="471" approved="yes">
 				<source>Variant</source>
-				<target>Variant</target>
+				<target>Variante</target>
 			</trans-unit>
 
 			<trans-unit id="472" approved="yes">
 				<source>Add</source>
-				<target>Add</target>
+				<target>Ajouter</target>
 			</trans-unit>
 
 			<trans-unit id="473" approved="yes">
 				<source>Region</source>
-				<target>Region</target>
+				<target>Région</target>
 			</trans-unit>
 
 			<trans-unit id="474" approved="yes">
 				<source>Server locale</source>
-				<target>Server locale</target>
+				<target>Langue du serveur</target>
 			</trans-unit>
 
 			<trans-unit id="475" approved="yes">
 				<source>Export</source>
-				<target>Export</target>
+				<target>Exporter</target>
 			</trans-unit>
 
 			<trans-unit id="476" approved="yes">
 				<source>Copy to clipboard</source>
-				<target>Copy to clipboard</target>
+				<target>Copier dans le presse-papiers</target>
 			</trans-unit>
 
 			<trans-unit id="477" approved="yes">
 				<source>Duplicate</source>
-				<target>Duplicate</target>
+				<target>Dupliquer</target>
 			</trans-unit>
 
 			<trans-unit id="478" approved="yes">
 				<source>Item duplicated successfully.</source>
-				<target>Item duplicated successfully.</target>
+				<target>L'élément a bien été dupliqué.</target>
 			</trans-unit>
 
 			<trans-unit id="479" approved="yes">
 				<source>Structure entry</source>
-				<target>Structure entry</target>
+				<target>Structurer l'entrée</target>
 			</trans-unit>
 
 			<trans-unit id="480" approved="yes">
 				<source>Export sample content</source>
-				<target>Export sample content</target>
+				<target>Exporter le contenu de base</target>
 			</trans-unit>
 
 			<trans-unit id="481" approved="yes">
 				<source>Select all</source>
-				<target>Select all</target>
+				<target>Tout sélectionner</target>
 			</trans-unit>
 
 			<trans-unit id="482" approved="yes">
 				<source>All sample files should be placed in a folder. Navigate CMS will also add files used in contents.</source>
-				<target>All sample files should be placed in a folder. Navigate CMS will also add files used in contents.</target>
+				<target>Tous les fichiers de base devraient être placés dans un dossier. Navigate CMS va également ajouter les fichiers utilisés dans les contenus.</target>
 			</trans-unit>
 
 			<trans-unit id="483" approved="yes">
 				<source>Do you really want to import the default website for the selected theme?</source>
-				<target>Do you really want to import the default website for the selected theme?</target>
+				<target>Souhaitez-vous vraiment importer le site Web par défaut pour le thème sélectionné ?</target>
 			</trans-unit>
 
 			<trans-unit id="484" approved="yes">
 				<source>Demo website</source>
-				<target>Demo website</target>
+				<target>Site Web de démonstration</target>
 			</trans-unit>
 
 			<trans-unit id="485" approved="yes">
 				<source>Aliases</source>
-				<target>Aliases</target>
+				<target>Alias</target>
 			</trans-unit>
 
 			<trans-unit id="486" approved="yes">
@@ -2443,262 +2443,262 @@
 
 			<trans-unit id="487" approved="yes">
 				<source>Real URL</source>
-				<target>Real URL</target>
+				<target>URL réel</target>
 			</trans-unit>
 
 			<trans-unit id="488" approved="yes">
 				<source>Rich textarea</source>
-				<target>Rich textarea</target>
+				<target>Zone de texte riche</target>
 			</trans-unit>
 
 			<trans-unit id="489" approved="yes">
 				<source>Source code</source>
-				<target>Source code</target>
+				<target>Code source</target>
 			</trans-unit>
 
 			<trans-unit id="490" approved="yes">
 				<source>ID of the file or public video URL</source>
-				<target>ID of the file or public video URL</target>
+				<target>Identifiant du fichier ou URL vers une vidéo publique</target>
 			</trans-unit>
 
 			<trans-unit id="491" approved="yes">
 				<source>Class</source>
-				<target>Class</target>
+				<target>Classe</target>
 			</trans-unit>
 
 			<trans-unit id="492" approved="yes">
 				<source>No matches found</source>
-				<target>No matches found</target>
+				<target>Aucun résultat trouvé</target>
 			</trans-unit>
 
 			<trans-unit id="493" approved="yes">
 				<source>Loading more results…</source>
-				<target>Loading more results…</target>
+				<target>Chargement des résultats supplémentaires…</target>
 			</trans-unit>
 
 			<trans-unit id="494" approved="yes">
 				<source>Searching…</source>
-				<target>Searching…</target>
+				<target>Recherche en cours…</target>
 			</trans-unit>
 
 			<trans-unit id="495" approved="yes">
 				<source>Please enter at least {number} characters</source>
-				<target>Please enter at least {number} characters</target>
+				<target>Veuillez saisir au moins {number} caractères</target>
 			</trans-unit>
 
 			<trans-unit id="496" approved="yes">
 				<source>You can only select {number} items</source>
-				<target>You can only select {number} items</target>
+				<target>Vous ne pouvez sélectionner que {number} éléments</target>
 			</trans-unit>
 
 			<trans-unit id="497" approved="yes">
 				<source>Do you really want to erase this data?</source>
-				<target>Do you really want to erase this data?</target>
+				<target>Souhaitez-vous vraiment effacer ces données ?</target>
 			</trans-unit>
 
 			<trans-unit id="498" approved="yes">
 				<source>Additional scripts</source>
-				<target>Additional scripts</target>
+				<target>Scripts supplémentaires</target>
 			</trans-unit>
 
 			<trans-unit id="499" approved="yes">
 				<source>Open</source>
-				<target>Open</target>
+				<target>Ouvrir</target>
 			</trans-unit>
 
 			<trans-unit id="500" approved="yes">
 				<source>Rename</source>
-				<target>Rename</target>
+				<target>Renommer</target>
 			</trans-unit>
 
 			<trans-unit id="501" approved="yes">
 				<source>Previous</source>
-				<target>Previous</target>
+				<target>Précédent</target>
 			</trans-unit>
 
 			<trans-unit id="502" approved="yes">
 				<source>Next</source>
-				<target>Next</target>
+				<target>Suivant</target>
 			</trans-unit>
 
 			<trans-unit id="503" approved="yes">
 				<source>Now</source>
-				<target>Now</target>
+				<target>Maintenant</target>
 			</trans-unit>
 
 			<trans-unit id="504" approved="yes">
 				<source>Time</source>
-				<target>Time</target>
+				<target>Heure</target>
 			</trans-unit>
 
 			<trans-unit id="505" approved="yes">
 				<source>Redirect to</source>
-				<target>Redirect to</target>
+				<target>Rediriger vers</target>
 			</trans-unit>
 
 			<trans-unit id="506" approved="yes">
 				<source>Groups</source>
-				<target>Groups</target>
+				<target>Groupes</target>
 			</trans-unit>
 
 			<trans-unit id="507" approved="yes">
 				<source>Deselect all</source>
-				<target>Deselect all</target>
+				<target>Tout désélectionner</target>
 			</trans-unit>
 
 			<trans-unit id="508" approved="yes">
 				<source>Collapse</source>
-				<target>Collapse</target>
+				<target>Replier</target>
 			</trans-unit>
 
 			<trans-unit id="509" approved="yes">
 				<source>Expand</source>
-				<target>Expand</target>
+				<target>Étendre</target>
 			</trans-unit>
 
 			<trans-unit id="510" approved="yes">
 				<source>Selected items</source>
-				<target>Selected items</target>
+				<target>Éléments sélectionnés</target>
 			</trans-unit>
 
 			<trans-unit id="511" approved="yes">
 				<source>Available items</source>
-				<target>Available items</target>
+				<target>Éléments disponibles</target>
 			</trans-unit>
 
 			<trans-unit id="512" approved="yes">
 				<source>Selected web user groups</source>
-				<target>Selected web user groups</target>
+				<target>Groupes d'utilisateurs Web sélectionnés</target>
 			</trans-unit>
 
 			<trans-unit id="513" approved="yes">
 				<source>Metatags</source>
-				<target>Metatags</target>
+				<target>Balises méta</target>
 			</trans-unit>
 
 			<trans-unit id="514" approved="yes">
 				<source>Additional headers</source>
-				<target>Additional headers</target>
+				<target>En-têtes supplémentaires</target>
 			</trans-unit>
 
 			<trans-unit id="515" approved="yes">
 				<source>Not found paths</source>
-				<target>Not found paths</target>
+				<target>Aucun chemin trouvé</target>
 			</trans-unit>
 
 			<trans-unit id="516" approved="yes">
 				<source>Show a blank page</source>
-				<target>Show a blank page</target>
+				<target>Afficher une page vierge</target>
 			</trans-unit>
 
 			<trans-unit id="517" approved="yes">
 				<source>Redirect to home page</source>
-				<target>Redirect to home page</target>
+				<target>Rediriger vers la page d'accueil</target>
 			</trans-unit>
 
 			<trans-unit id="518" approved="yes">
 				<source>Use the 404 template of a theme (if exists)</source>
-				<target>Use the 404 template of a theme (if exists)</target>
+				<target>Utiliser le modèle de page 404 d'un thème (s'il existe)</target>
 			</trans-unit>
 
 			<trans-unit id="519" approved="yes">
 				<source>Send a 404 HTTP error header</source>
-				<target>Send a 404 HTTP error header</target>
+				<target>Envoyer un en-tête HTTP d'erreur 404</target>
 			</trans-unit>
 
 			<trans-unit id="520" approved="yes">
 				<source>No website found; a default one has been created.</source>
-				<target>No website found; a default one has been created.</target>
+				<target>Aucun site Web trouvé, un site par défaut a été créé.</target>
 			</trans-unit>
 
 			<trans-unit id="521" approved="yes">
 				<source>Extra</source>
-				<target>Extra</target>
+				<target>Paramètres supplémentaires</target>
 			</trans-unit>
 
 			<trans-unit id="522" approved="yes">
 				<source>Remove Spam</source>
-				<target>Remove Spam</target>
+				<target>Supprimer le spam</target>
 			</trans-unit>
 
 			<trans-unit id="523" approved="yes">
 				<source>This action can NOT be undone</source>
-				<target>This action can NOT be undone</target>
+				<target>Cette action ne peut PAS être annulée</target>
 			</trans-unit>
 
 			<trans-unit id="524" approved="yes">
 				<source>Items removed successfully</source>
-				<target>Items removed successfully</target>
+				<target>Les éléments ont bien été supprimés</target>
 			</trans-unit>
 
 			<trans-unit id="525" approved="yes">
 				<source>Remove comment (without confirmation)</source>
-				<target>Remove comment (without confirmation)</target>
+				<target>Supprimer le commentaire (pas de confirmation)</target>
 			</trans-unit>
 
 			<trans-unit id="526" approved="yes">
 				<source>Translations</source>
-				<target>Translations</target>
+				<target>Traductions</target>
 			</trans-unit>
 
 			<trans-unit id="527" approved="yes">
 				<source>Marketplace</source>
-				<target>Marketplace</target>
+				<target>Magasin</target>
 			</trans-unit>
 
 			<trans-unit id="528" approved="yes">
 				<source>Available</source>
-				<target>Available</target>
+				<target>Disponible</target>
 			</trans-unit>
 
 			<trans-unit id="529" approved="yes">
 				<source>It has not been possible to download the item from the marketplace.</source>
-				<target>It has not been possible to download the item from the marketplace.</target>
+				<target>Impossible de télécharger l'élément depuis le magasin.</target>
 			</trans-unit>
 
 			<trans-unit id="530" approved="yes">
 				<source>You have to visit your Marketplace Dashboard and download the file, then use the <![CDATA[<strong>Install from file</strong>]]> button you'll find in the actions bar on the right.</source>
-				<target>You have to visit your Marketplace Dashboard and download the file, then use the <![CDATA[<strong>Install from file</strong>]]> button you'll find in the actions bar on the right.</target>
+				<target>Vous devez visiter le tableau de bord de votre magasin et télécharger le fichier, ensuite utilisez le bouton <![CDATA[<strong>Installer depuis un fichier</strong>]]> que vous trouverez dans la barre d'action sur la droite.</target>
 			</trans-unit>
 
 			<trans-unit id="531" approved="yes">
 				<source>Sorry for the inconvenience.</source>
-				<target>Sorry for the inconvenience.</target>
+				<target>Nous nous excusons pour le désagrément.</target>
 			</trans-unit>
 
 			<trans-unit id="532" approved="yes">
 				<source>Navigate CMS Marketplace</source>
-				<target>Navigate CMS Marketplace</target>
+				<target>Magasin de Navigate CMS</target>
 			</trans-unit>
 
 			<trans-unit id="533" approved="yes">
 				<source>Find element by title</source>
-				<target>Find element by title</target>
+				<target>Rechercher un élément par titre</target>
 			</trans-unit>
 
 			<trans-unit id="534" approved="yes">
 				<source>You can only select elements which have their own path (no category embedded elements)</source>
-				<target>You can only select elements which have their own path (no category embedded elements)</target>
+				<target>Vous ne pouvez sélectionner que les éléments qui ont le propre chemin (par d'élément à catégorie imbriquée)</target>
 			</trans-unit>
 
 			<trans-unit id="535" approved="yes">
 				<source>Find user by name</source>
-				<target>Find user by name</target>
+				<target>Rechercher un utilisateur par nom</target>
 			</trans-unit>
 
 			<trans-unit id="536" approved="yes">
 				<source>Keywords</source>
-				<target>Keywords</target>
+				<target>Mots-clés</target>
 			</trans-unit>
 
 			<trans-unit id="537" approved="yes">
 				<source>Can't remove the theme because it is currently being used by another website.</source>
-				<target>Can't remove the theme because it is currently being used by another website.</target>
+				<target>Impossible de supprimer le thème car il est actuellement utilisé par un autre site Web.</target>
 			</trans-unit>
 
 			<trans-unit id="538" approved="yes">
 				<source>Private comment</source>
-				<target>Private comment</target>
+				<target>Commentaire privé</target>
 			</trans-unit>
 
 			<trans-unit id="539" approved="yes">
@@ -2708,32 +2708,32 @@
 
 			<trans-unit id="540" approved="yes">
 				<source>Focal point</source>
-				<target>Focal point</target>
+				<target>Point de focale</target>
 			</trans-unit>
 
 			<trans-unit id="541" approved="yes">
 				<source>Your email has been successfully subscribed to the newsletter</source>
-				<target>Your email has been successfully subscribed to the newsletter</target>
+				<target>Vous vous êtes bien inscrit·e à la lettre d'information</target>
 			</trans-unit>
 
 			<trans-unit id="542" approved="yes">
 				<source>There was a problem subscribing your email to the newsletter</source>
-				<target>There was a problem subscribing your email to the newsletter</target>
+				<target>Une erreur s'est produite lors de votre inscription à la lettre d'information</target>
 			</trans-unit>
 
 			<trans-unit id="543" approved="yes">
 				<source>Block type</source>
-				<target>Block type</target>
+				<target>Type de bloc</target>
 			</trans-unit>
 
 			<trans-unit id="544" approved="yes">
 				<source>Block groups</source>
-				<target>Block groups</target>
+				<target>Groupes de bloc</target>
 			</trans-unit>
 
 			<trans-unit id="545" approved="yes">
 				<source>Content author</source>
-				<target>Content author</target>
+				<target>Auteur du contenu</target>
 			</trans-unit>
 
 			<trans-unit id="546" approved="yes">
@@ -2743,27 +2743,27 @@
 
 			<trans-unit id="547" approved="yes">
 				<source>Multi language</source>
-				<target>Multi language</target>
+				<target>Multilingue</target>
 			</trans-unit>
 
 			<trans-unit id="548" approved="yes">
 				<source>Method</source>
-				<target>Method</target>
+				<target>Méthode</target>
 			</trans-unit>
 
 			<trans-unit id="549" approved="yes">
 				<source>Links</source>
-				<target>Links</target>
+				<target>Liens</target>
 			</trans-unit>
 
 			<trans-unit id="550" approved="yes">
 				<source>Help text</source>
-				<target>Help text</target>
+				<target>Texte d'aide</target>
 			</trans-unit>
 
 			<trans-unit id="551" approved="yes">
 				<source>Date to display</source>
-				<target>Date to display</target>
+				<target>Date à afficher</target>
 			</trans-unit>
 
 			<trans-unit id="552" approved="yes">
@@ -2778,22 +2778,22 @@
 
 			<trans-unit id="554" approved="yes">
 				<source>Hide</source>
-				<target>Hide</target>
+				<target>Masquer</target>
 			</trans-unit>
 
 			<trans-unit id="555" approved="yes">
 				<source>Item has been successfully published</source>
-				<target>Item has been successfully published</target>
+				<target>L'élément a bien été publié</target>
 			</trans-unit>
 
 			<trans-unit id="556" approved="yes">
 				<source>Block from group</source>
-				<target>Block from group</target>
+				<target>Bloc du groupe</target>
 			</trans-unit>
 
 			<trans-unit id="557" approved="yes">
 				<source>Poll</source>
-				<target>Poll</target>
+				<target>Sondage</target>
 			</trans-unit>
 
 			<trans-unit id="558" approved="yes">
@@ -2803,7 +2803,7 @@
 
 			<trans-unit id="559" approved="yes">
 				<source>Answers</source>
-				<target>Answers</target>
+				<target>Réponses</target>
 			</trans-unit>
 
 			<trans-unit id="560" approved="yes">
@@ -2813,282 +2813,282 @@
 
 			<trans-unit id="561" approved="yes">
 				<source>Create a new folder</source>
-				<target>Create a new folder</target>
+				<target>Créer un nouveau dossier</target>
 			</trans-unit>
 
 			<trans-unit id="562" approved="yes">
 				<source>Results</source>
-				<target>Results</target>
+				<target>Resultats</target>
 			</trans-unit>
 
 			<trans-unit id="563" approved="yes">
 				<source>Last seen</source>
-				<target>Last seen</target>
+				<target>Vu pour la dernière fois</target>
 			</trans-unit>
 
 			<trans-unit id="564" approved="yes">
 				<source>%s seconds ago</source>
-				<target>%s seconds ago</target>
+				<target>il y a %s secondes</target>
 			</trans-unit>
 
 			<trans-unit id="565" approved="yes">
 				<source>one minute ago</source>
-				<target>one minute ago</target>
+				<target>il y a une minute</target>
 			</trans-unit>
 
 			<trans-unit id="566" approved="yes">
 				<source>%m minutes ago</source>
-				<target>%m minutes ago</target>
+				<target>il y a %m minutes</target>
 			</trans-unit>
 
 			<trans-unit id="567" approved="yes">
 				<source>an hour ago</source>
-				<target>an hour ago</target>
+				<target>il y a une heure</target>
 			</trans-unit>
 
 			<trans-unit id="568" approved="yes">
 				<source>%h hours ago</source>
-				<target>%h hours ago</target>
+				<target>il y a %h heures</target>
 			</trans-unit>
 
 			<trans-unit id="569" approved="yes">
 				<source>yesterday</source>
-				<target>yesterday</target>
+				<target>hier</target>
 			</trans-unit>
 
 			<trans-unit id="570" approved="yes">
 				<source>%d days ago</source>
-				<target>%d days ago</target>
+				<target>il y a %d jours</target>
 			</trans-unit>
 
 			<trans-unit id="571" approved="yes">
 				<source>a week ago</source>
-				<target>a week ago</target>
+				<target>il y a une semaine</target>
 			</trans-unit>
 
 			<trans-unit id="572" approved="yes">
 				<source>%w weeks ago</source>
-				<target>%w weeks ago</target>
+				<target>il y a %w semaines</target>
 			</trans-unit>
 
 			<trans-unit id="573" approved="yes">
 				<source>a month ago</source>
-				<target>a month ago</target>
+				<target>il y a un mois</target>
 			</trans-unit>
 
 			<trans-unit id="574" approved="yes">
 				<source>%m months ago</source>
-				<target>%m months ago</target>
+				<target>il y a %m mois</target>
 			</trans-unit>
 
 			<trans-unit id="575" approved="yes">
 				<source>one year ago</source>
-				<target>one year ago</target>
+				<target>il y a un an</target>
 			</trans-unit>
 
 			<trans-unit id="576" approved="yes">
 				<source>%y years ago</source>
-				<target>%y years ago</target>
+				<target>il y %y ans</target>
 			</trans-unit>
 
 			<trans-unit id="577" approved="yes">
 				<source>Latest modifications</source>
-				<target>Latest modifications</target>
+				<target>Dernières modifications</target>
 			</trans-unit>
 
 			<trans-unit id="578" approved="yes">
 				<source>Could not connect to check updates</source>
-				<target>Could not connect to check updates</target>
+				<target>Impossible de se connecter pour vérifier les mises à jour</target>
 			</trans-unit>
 
 			<trans-unit id="579" approved="yes">
 				<source>Latest searches</source>
-				<target>Latest searches</target>
+				<target>Dernières recherches</target>
 			</trans-unit>
 
 			<trans-unit id="580" approved="yes">
 				<source>Used in this page</source>
-				<target>Used in this page</target>
+				<target>Utilisé dans cette page</target>
 			</trans-unit>
 
 			<trans-unit id="581" approved="yes">
 				<source>None</source>
-				<target>None</target>
+				<target>Aucun</target>
 			</trans-unit>
 
 			<trans-unit id="582" approved="yes">
 				<source>default</source>
-				<target>default</target>
+				<target>par défaut</target>
 			</trans-unit>
 
 			<trans-unit id="583" approved="yes">
 				<source>Same width</source>
-				<target>Same width</target>
+				<target>Même largeur</target>
 			</trans-unit>
 
 			<trans-unit id="584" approved="yes">
 				<source>Same height</source>
-				<target>Same height</target>
+				<target>Même hauteur</target>
 			</trans-unit>
 
 			<trans-unit id="585" approved="yes">
 				<source>Same width &amp; height (scaled)</source>
-				<target>Same width &amp; height (scaled)</target>
+				<target>Même largeur et hauteur (mis à l'échelle)</target>
 			</trans-unit>
 
 			<trans-unit id="586" approved="yes">
 				<source>Same width &amp; height (cropped)</source>
-				<target>Same width &amp; height (cropped)</target>
+				<target>Même largeur et hauteur (coupé)</target>
 			</trans-unit>
 
 			<trans-unit id="587" approved="yes">
 				<source>Full available width</source>
-				<target>Full available width</target>
+				<target>Toute la largeur disponible</target>
 			</trans-unit>
 
 			<trans-unit id="588" approved="yes">
 				<source>Replace image</source>
-				<target>Replace image</target>
+				<target>Remplacer l'image</target>
 			</trans-unit>
 
 			<trans-unit id="589" approved="yes">
 				<source>North America</source>
-				<target>North America</target>
+				<target>Amérique du Nord</target>
 			</trans-unit>
 
 			<trans-unit id="590" approved="yes">
 				<source>South America</source>
-				<target>South America</target>
+				<target>Amérique du Sud</target>
 			</trans-unit>
 
 			<trans-unit id="591" approved="yes">
 				<source>Oceania</source>
-				<target>Oceania</target>
+				<target>Océanie</target>
 			</trans-unit>
 
 			<trans-unit id="592" approved="yes">
 				<source>Company</source>
-				<target>Company</target>
+				<target>Entreprise</target>
 			</trans-unit>
 
 			<trans-unit id="593" approved="yes">
 				<source>Add new child</source>
-				<target>Add new child</target>
+				<target>Ajouter un nouvel enfant</target>
 			</trans-unit>
 
 			<trans-unit id="594" approved="yes">
 				<source>Set as homepage</source>
-				<target>Set as homepage</target>
+				<target>Définir comme page d'accueil</target>
 			</trans-unit>
 
 			<trans-unit id="595" approved="yes">
 				<source>Right now the homepage is set from a structure element which allows multi language redirect.</source>
-				<target>Right now the homepage is set from a structure element which allows multi language redirect.</target>
+				<target>Pour l'instant la page d'accueil est définie depuis un élément de structure qui permet une redirection multilingue.</target>
 			</trans-unit>
 
 			<trans-unit id="596" approved="yes">
 				<source>Do you want to enter a fixed path for the homepage?</source>
-				<target>Do you want to enter a fixed path for the homepage?</target>
+				<target>Souhaitez-vous saisir un chemin fixe pour la page d'accueil ?</target>
 			</trans-unit>
 
 			<trans-unit id="597" approved="yes">
 				<source>Share files in Media browser</source>
-				<target>Share files in Media browser</target>
+				<target>Partagez des fichiers dans le navigateur de médias</target>
 			</trans-unit>
 
 			<trans-unit id="598" approved="yes">
 				<source>Only between websites of the current Navigate CMS installation</source>
-				<target>Only between websites of the current Navigate CMS installation</target>
+				<target>Uniquement entre les sites Web de l'installation actuelle de Navigate CMS</target>
 			</trans-unit>
 
 			<trans-unit id="599" approved="yes">
 				<source>Sorry, can't display a theme block type info</source>
-				<target>Sorry, can't display a theme block type info</target>
+				<target>Désolé, impossible d'afficher les informations sur les types de blocs du thème</target>
 			</trans-unit>
 
 			<trans-unit id="600" approved="yes">
 				<source>Share</source>
-				<target>Share</target>
+				<target>Partager</target>
 			</trans-unit>
 
 			<trans-unit id="601" approved="yes">
 				<source>Import</source>
-				<target>Import</target>
+				<target>Importer</target>
 			</trans-unit>
 
 			<trans-unit id="602" approved="yes">
 				<source>Edit language</source>
-				<target>Edit language</target>
+				<target>Modifier la langue</target>
 			</trans-unit>
 
 			<trans-unit id="603" approved="yes">
 				<source>Replace URLs</source>
-				<target>Replace URLs</target>
+				<target>Remplacer les URL</target>
 			</trans-unit>
 
 			<trans-unit id="604" approved="yes">
 				<source>Old</source>
-				<target>Old</target>
+				<target>Ancien</target>
 			</trans-unit>
 
 			<trans-unit id="605" approved="yes">
 				<source>New</source>
-				<target>New</target>
+				<target>Nouveau</target>
 			</trans-unit>
 
 			<trans-unit id="606" approved="yes">
 				<source>Double quotes not allowed, use single quotes only</source>
-				<target>Double quotes not allowed, use single quotes only</target>
+				<target>Les guillemets ne sont pas autorisés, utilisez uniquement des apostrophes</target>
 			</trans-unit>
 
 			<trans-unit id="607" approved="yes">
 				<source>Click on the link below to confirm your account</source>
-				<target>Click on the link below to confirm your account</target>
+				<target>Cliquez sur le lien ci-dessous pour confirmer votre compte</target>
 			</trans-unit>
 
 			<trans-unit id="608" approved="yes">
 				<source>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</source>
-				<target>This is an automated e-mail sent as a result of a newsletter subscription request. If you received this e-mail by error just ignore it.</target>
+				<target>Ceci est un courriel automatique envoyé suite à l'inscription à une lettre d'information. Si vous avez reçu ce courriel par erreur veuillez simplement l'ignorer.</target>
 			</trans-unit>
 
 			<trans-unit id="609" approved="yes">
 				<source>Click a day of the month selected to update the value</source>
-				<target>Click a day of the month selected to update the value</target>
+				<target>Cliquez sur un jour du mois sélectionné pour mettre à jour la valeur</target>
 			</trans-unit>
 
 			<trans-unit id="610" approved="yes">
 				<source>Sorry, you are not allowed to execute the requested function</source>
-				<target>Sorry, you are not allowed to execute the requested function</target>
+				<target>Désolé, vous n'êtes pas autorisé à exécuter la fonction demandée</target>
 			</trans-unit>
 
 			<trans-unit id="611" approved="yes">
 				<source>Choose</source>
-				<target>Choose</target>
+				<target>Sélectionner</target>
 			</trans-unit>
 
 			<trans-unit id="612" approved="yes">
 				<source>Manages all websites</source>
-				<target>Manages all websites</target>
+				<target>Gère tous les sites</target>
 			</trans-unit>
 
 			<trans-unit id="613" approved="yes">
 				<source>Most used</source>
-				<target>Most used</target>
+				<target>Le plus utilisé</target>
 			</trans-unit>
 
 			<trans-unit id="614" approved="yes">
 				<source>Edit with TinyMCE</source>
-				<target>Edit with TinyMCE</target>
+				<target>Modifier avec TinyMCE</target>
 			</trans-unit>
 
 			<trans-unit id="615" approved="yes">
 				<source>Edit as source code</source>
-				<target>Edit as source code</target>
+				<target>Modifier le code source</target>
 			</trans-unit>
 
 			<trans-unit id="616" approved="yes">
 				<source>Edit with NV Composer</source>
-				<target>Edit with NV Composer</target>
+				<target>Modifier avec NV Composer</target>
 			</trans-unit>
 
 			<trans-unit id="617" approved="yes">
@@ -3098,325 +3098,325 @@
 
 			<trans-unit id="618" approved="yes">
 				<source>Change the status to Published to be able to see the item on the future publication date currently assigned</source>
-				<target>Change the status to Published to be able to see the item on the future publication date currently assigned</target>
+				<target>Modifiez le statut vers Publié pour être en mesure de voir l'élément à la date de publication future définie actuellement</target>
 			</trans-unit>
 
 			<trans-unit id="619" approved="yes">
 				<source>Template changed, please Save now to see the changes in the next tabs</source>
-				<target>Template changed, please Save now to see the changes in the next tabs</target>
+				<target>Modèle mis à jour, veuillez enregistrer maintenant pour visualiser les modifications dans les prochains onglets</target>
 			</trans-unit>
 
 			<trans-unit id="620" approved="yes">
 				<source>Insert</source>
-				<target>Insert</target>
+				<target>Insérer</target>
 			</trans-unit>
 
 			<trans-unit id="621" approved="yes">
 				<source>Append</source>
-				<target>Append</target>
+				<target>Ajouter</target>
 			</trans-unit>
 
 			<trans-unit id="622" approved="yes">
 				<source>Date range</source>
-				<target>Date range</target>
+				<target>Plage de dates</target>
 			</trans-unit>
 
 			<trans-unit id="623" approved="yes">
 				<source>Begin</source>
-				<target>Begin</target>
+				<target>Début</target>
 			</trans-unit>
 
 			<trans-unit id="624" approved="yes">
 				<source>End</source>
-				<target>End</target>
+				<target>Fin</target>
 			</trans-unit>
 
 			<trans-unit id="625" approved="yes">
 				<source>Empty paths</source>
-				<target>Empty paths</target>
+				<target>Chemins vides</target>
 			</trans-unit>
 
 			<trans-unit id="626" approved="yes">
 				<source>Display the home page, without changing the route</source>
-				<target>Display the home page, without changing the route</target>
+				<target>Afficher la page d'accueil, sans modifier la route</target>
 			</trans-unit>
 
 			<trans-unit id="627" approved="yes">
 				<source>Remove</source>
-				<target>Remove</target>
+				<target>Supprimer</target>
 			</trans-unit>
 
 			<trans-unit id="628" approved="yes">
 				<source>Move to the beginning</source>
-				<target>Move to the beginning</target>
+				<target>Déplacer au début</target>
 			</trans-unit>
 
 			<trans-unit id="629" approved="yes">
 				<source>Move to the end</source>
-				<target>Move to the end</target>
+				<target>Déplacer à la fin</target>
 			</trans-unit>
 
 			<trans-unit id="630" approved="yes">
 				<source>Element</source>
-				<target>Element</target>
+				<target>Élément</target>
 			</trans-unit>
 
 			<trans-unit id="631" approved="yes">
 				<source>Dynamic URL</source>
-				<target>Dynamic URL</target>
+				<target>URL dynamique</target>
 			</trans-unit>
 
 			<trans-unit id="632" approved="yes">
 				<source>Replace text</source>
-				<target>Replace text</target>
+				<target>Remplacer le texte</target>
 			</trans-unit>
 
 			<trans-unit id="633" approved="yes">
 				<source>Word separator in paths</source>
-				<target>Word separator in paths</target>
+				<target>Séparateur de mots dans les chemins</target>
 			</trans-unit>
 
 			<trans-unit id="634" approved="yes">
 				<source>Hyphen</source>
-				<target>Hyphen</target>
+				<target>Tiret</target>
 			</trans-unit>
 
 			<trans-unit id="635" approved="yes">
 				<source>Underscore</source>
-				<target>Underscore</target>
+				<target>Tiret bas</target>
 			</trans-unit>
 
 			<trans-unit id="636" approved="yes">
 				<source>Existing paths will not be modified</source>
-				<target>Existing paths will not be modified</target>
+				<target>Les chemins existants ne seront pas modifiés</target>
 			</trans-unit>
 
 			<trans-unit id="637" approved="yes">
 				<source>Website notes</source>
-				<target>Website notes</target>
+				<target>Notes du site Web</target>
 			</trans-unit>
 
 			<trans-unit id="638" approved="yes">
 				<source>Disabled blocks are not compatible with the current block group type</source>
-				<target>Disabled blocks are not compatible with the current block group type</target>
+				<target>Les blocs désactivés ne sont pas compatibles avec le type de groupe de blocs actuel</target>
 			</trans-unit>
 
 			<trans-unit id="639" approved="yes">
 				<source>Restore panel</source>
-				<target>Restore panel</target>
+				<target>Restaurer le panneau</target>
 			</trans-unit>
 
 			<trans-unit id="640" approved="yes">
 				<source>Default arrangement</source>
-				<target>Default arrangement</target>
+				<target>Disposition par défaut</target>
 			</trans-unit>
 
 			<trans-unit id="641" approved="yes">
 				<source>It will only be shown if the template supports it</source>
-				<target>It will only be shown if the template supports it</target>
+				<target>Cela sera affiché uniquement si le modèle le prend en charge</target>
 			</trans-unit>
 
 			<trans-unit id="642" approved="yes">
 				<source>Redirect to a website page</source>
-				<target>Redirect to a website page</target>
+				<target>Rediriger vers une page de site Web</target>
 			</trans-unit>
 
 			<trans-unit id="643" approved="yes">
 				<source>Decimal</source>
-				<target>Decimal</target>
+				<target>Décimale</target>
 			</trans-unit>
 
 			<trans-unit id="644" approved="yes">
 				<source>Thousands separator</source>
-				<target>Thousands separator</target>
+				<target>Séparateur des milliers</target>
 			</trans-unit>
 
 			<trans-unit id="645" approved="yes">
 				<source>No results found</source>
-				<target>No results found</target>
+				<target>Aucun résultat</target>
 			</trans-unit>
 
 			<trans-unit id="646" approved="yes">
 				<source>Show all unselectable blocks</source>
-				<target>Show all unselectable blocks</target>
+				<target>Afficher tous les blocs non sélectionnables</target>
 			</trans-unit>
 
 			<trans-unit id="647" approved="yes">
 				<source>Web user</source>
-				<target>Web user</target>
+				<target>Utilisateur Web</target>
 			</trans-unit>
 
 			<trans-unit id="648" approved="yes">
 				<source>An e-mail with a temporary password has been sent to your e-mail account.</source>
-				<target>An e-mail with a temporary password has been sent to your e-mail account.</target>
+				<target>Un courriel avec un mot de passe temporaire a été envoyé sur votre boîte de messagerie.</target>
 			</trans-unit>
 
 			<trans-unit id="649" approved="yes">
 				<source>In reply to</source>
-				<target>In reply to</target>
+				<target>En réponse à</target>
 				<note>used in comments to define which is the parent comment in a hierarchy</note>
 			</trans-unit>
 
 			<trans-unit id="650" approved="yes">
 				<source>Receipt confirmation</source>
-				<target>Receipt confirmation</target>
+				<target>Confirmation de reçu</target>
 			</trans-unit>
 
 			<trans-unit id="651" approved="yes">
 				<source>Disable SSL peer validation</source>
-				<target>Disable SSL peer validation</target>
+				<target>Désactiver la validation SSL par les pairs</target>
 			</trans-unit>
 
 			<trans-unit id="652" approved="yes">
 				<source>Subscribed</source>
-				<target>Subscribed</target>
+				<target>Abonné</target>
 			</trans-unit>
 
 			<trans-unit id="653" approved="yes">
 				<source>Unsubscribe from comments notifications related to this content</source>
-				<target>Unsubscribe from comments notifications related to this content</target>
+				<target>Se désabonner des notifications de commentaires liés à ce contenu</target>
 			</trans-unit>
 
 			<trans-unit id="654" approved="yes">
 				<source>Cancelled subscription</source>
-				<target>Cancelled subscription</target>
+				<target>Abonnement annulé</target>
 			</trans-unit>
 
 			<trans-unit id="655" approved="yes">
 				<source>Subscribe to comments on this entry</source>
-				<target>Subscribe to comments on this entry</target>
+				<target>S'abonner aux commentaires de cette entrée</target>
 			</trans-unit>
 
 			<trans-unit id="656" approved="yes">
 				<source>Additional styles</source>
-				<target>Additional styles</target>
+				<target>Styles supplémentaires</target>
 			</trans-unit>
 
 			<trans-unit id="657" approved="yes">
 				<source>Tracking scripts</source>
-				<target>Tracking scripts</target>
+				<target>Scripts de suivi</target>
 			</trans-unit>
 
 			<trans-unit id="658" approved="yes">
 				<source>disabled for Navigate CMS users</source>
-				<target>disabled for Navigate CMS users</target>
+				<target>désactivé pour les utilisateurs de Navigate CMS</target>
 			</trans-unit>
 
 			<trans-unit id="659" approved="yes">
 				<source>Replace file</source>
-				<target>Replace file</target>
+				<target>Remplacer le fichier</target>
 			</trans-unit>
 
 			<trans-unit id="660" approved="yes">
 				<source>Clear cache</source>
-				<target>Clear cache</target>
+				<target>Effacer le cache</target>
 			</trans-unit>
 
 			<trans-unit id="661" approved="yes">
 				<source>New web user registration</source>
-				<target>New web user registration</target>
+				<target>Inscription d'un nouvel utilisateur Web</target>
 			</trans-unit>
 
 			<trans-unit id="662" approved="yes">
 				<source>Brand</source>
-				<target>Brand</target>
+				<target>Marque</target>
 			</trans-unit>
 
 			<trans-unit id="663" approved="yes">
 				<source>Inventory</source>
-				<target>Inventory</target>
+				<target>Inventaire</target>
 			</trans-unit>
 
 			<trans-unit id="664" approved="yes">
 				<source>SKU (Stock-keeping unit)</source>
-				<target>SKU (Stock-keeping unit)</target>
+				<target>SKU (Unité de gestion des stocks)</target>
 			</trans-unit>
 
 			<trans-unit id="665" approved="yes">
 				<source>Barcode</source>
-				<target>Barcode</target>
+				<target>Code barre</target>
 			</trans-unit>
 
 			<trans-unit id="666" approved="yes">
 				<source>Track inventory</source>
-				<target>Track inventory</target>
+				<target>Suivre l'inventaire</target>
 			</trans-unit>
 
 			<trans-unit id="667" approved="yes">
 				<source>Stock available</source>
-				<target>Stock available</target>
+				<target>Stock disponible</target>
 			</trans-unit>
 
 			<trans-unit id="668" approved="yes">
 				<source>including all product variants</source>
-				<target>including all product variants</target>
+				<target>incluant toutes les variantes de produit</target>
 			</trans-unit>
 
 			<trans-unit id="669" approved="yes">
 				<source>Depth</source>
-				<target>Depth</target>
+				<target>Profondeur</target>
 			</trans-unit>
 
 			<trans-unit id="670" approved="yes">
 				<source>Weight</source>
-				<target>Weight</target>
+				<target>Poids</target>
 			</trans-unit>
 
 			<trans-unit id="671" approved="yes">
 				<source>Pricing</source>
-				<target>Pricing</target>
+				<target>Prix</target>
 			</trans-unit>
 
 			<trans-unit id="672" approved="yes">
 				<source>Variants</source>
-				<target>Variants</target>
+				<target>Variantes</target>
 			</trans-unit>
 
 			<trans-unit id="673" approved="yes">
 				<source>Related</source>
-				<target>Related</target>
+				<target>Associé</target>
 				<note>as in "related products"</note>
 			</trans-unit>
 
 			<trans-unit id="674" approved="yes">
 				<source>Shippable</source>
-				<target>Shippable</target>
+				<target>Livrable</target>
 			</trans-unit>
 
 			<trans-unit id="675" approved="yes">
 				<source>Downloadable</source>
-				<target>Downloadable</target>
+				<target>Téléchargeable</target>
 			</trans-unit>
 
 			<trans-unit id="676" approved="yes">
 				<source>Base price</source>
-				<target>Base price</target>
+				<target>Prix de base</target>
 			</trans-unit>
 
 			<trans-unit id="677" approved="yes">
 				<source>Tax</source>
-				<target>Tax</target>
+				<target>Taxe</target>
 			</trans-unit>
 
 			<trans-unit id="678" approved="yes">
 				<source>Cost</source>
-				<target>Cost</target>
+				<target>Coût</target>
 			</trans-unit>
 
 			<trans-unit id="679" approved="yes">
 				<source>Included</source>
-				<target>Included</target>
+				<target>Inclus</target>
 			</trans-unit>
 
 			<trans-unit id="680" approved="yes">
 				<source>Custom</source>
-				<target>Custom</target>
+				<target>Personnalisé</target>
 				<note>used to enter a specific value instead of a predefined one</note>
 			</trans-unit>
 
 			<trans-unit id="681" approved="yes">
 				<source>Brands</source>
-				<target>Brands</target>
+				<target>Marques</target>
 			</trans-unit>
 
 			<trans-unit id="682" approved="yes">
@@ -3426,18 +3426,18 @@
 
 			<trans-unit id="683" approved="yes">
 				<source>Countries</source>
-				<target>Countries</target>
+				<target>Pays</target>
 			</trans-unit>
 
 			<trans-unit id="684" approved="yes">
 				<source>Regions</source>
-				<target>Regions</target>
+				<target>Régions</target>
 				<note>a generic word to refer to states, provinces and other similar zones in a country</note>
 			</trans-unit>
 
 			<trans-unit id="685" approved="yes">
 				<source>Subtotal</source>
-				<target>Subtotal</target>
+				<target>Sous-total</target>
 			</trans-unit>
 
 			<trans-unit id="686" approved="yes">
@@ -3454,62 +3454,62 @@
 
 			<trans-unit id="688" approved="yes">
 				<source>Masked redirect</source>
-				<target>Masked redirect</target>
+				<target>Redirection masquée</target>
 			</trans-unit>
 
 			<trans-unit id="689" approved="yes">
 				<source>Load the content of an internal path without changing the browser URL</source>
-				<target>Load the content of an internal path without changing the browser URL</target>
+				<target>Charger le contenu d'un chemin interne sans modifier l'URL du navigateur</target>
 			</trans-unit>
 
 			<trans-unit id="690" approved="yes">
 				<source>Currency</source>
-				<target>Currency</target>
+				<target>Devise</target>
 			</trans-unit>
 
 			<trans-unit id="691" approved="yes">
 				<source>Size unit</source>
-				<target>Size unit</target>
+				<target>Unité de taille</target>
 			</trans-unit>
 
 			<trans-unit id="692" approved="yes">
 				<source>Weight unit</source>
-				<target>Weight unit</target>
+				<target>Unité de poids</target>
 			</trans-unit>
 
 			<trans-unit id="693" approved="yes">
 				<source>Default values</source>
-				<target>Default values</target>
+				<target>Valeurs par défaut</target>
 			</trans-unit>
 
 			<trans-unit id="694" approved="yes">
 				<source>Times allowed per customer</source>
-				<target>Times allowed per customer</target>
+				<target>Temps autorisé par client</target>
 			</trans-unit>
 
 			<trans-unit id="695" approved="yes">
 				<source>Times allowed globally</source>
-				<target>Times allowed globally</target>
+				<target>Temps autorisé global</target>
 			</trans-unit>
 
 			<trans-unit id="696" approved="yes">
 				<source>Minimum spend</source>
-				<target>Minimum spend</target>
+				<target>Dépenses minimum</target>
 			</trans-unit>
 
 			<trans-unit id="697" approved="yes">
 				<source>Discount amount</source>
-				<target>Discount amount</target>
+				<target>Montant de réduction</target>
 			</trans-unit>
 
 			<trans-unit id="698" approved="yes">
 				<source>Discount percentage</source>
-				<target>Discount percentage</target>
+				<target>Pourcentage de réduction</target>
 			</trans-unit>
 
 			<trans-unit id="699" approved="yes">
 				<source>Free shipping</source>
-				<target>Free shipping</target>
+				<target>Livraison gratuite</target>
 			</trans-unit>
 
 			<trans-unit id="700" approved="yes">
@@ -3519,27 +3519,27 @@
 
 			<trans-unit id="701" approved="yes">
 				<source>Discount</source>
-				<target>Discount</target>
+				<target>Réduction</target>
 			</trans-unit>
 
 			<trans-unit id="702" approved="yes">
 				<source>Date begin</source>
-				<target>Date begin</target>
+				<target>Date de début</target>
 			</trans-unit>
 
 			<trans-unit id="703" approved="yes">
 				<source>Date end</source>
-				<target>Date end</target>
+				<target>Date de fin</target>
 			</trans-unit>
 
 			<trans-unit id="704" approved="yes">
 				<source>Customer</source>
-				<target>Customer</target>
+				<target>Client</target>
 			</trans-unit>
 
 			<trans-unit id="705" approved="yes">
 				<source>Lines</source>
-				<target>Lines</target>
+				<target>Lignes</target>
 				<note>Lines of an order</note>
 			</trans-unit>
 
@@ -3550,97 +3550,97 @@
 
 			<trans-unit id="707" approved="yes">
 				<source>Reference</source>
-				<target>Reference</target>
+				<target>Référence</target>
 			</trans-unit>
 
 			<trans-unit id="708" approved="yes">
 				<source>Paid</source>
-				<target>Paid</target>
+				<target>Payé</target>
 			</trans-unit>
 
 			<trans-unit id="709" approved="yes">
 				<source>Pending payment</source>
-				<target>Pending payment</target>
+				<target>Paiement en attente</target>
 			</trans-unit>
 
 			<trans-unit id="710" approved="yes">
 				<source>Pending</source>
-				<target>Pending</target>
+				<target>En attente</target>
 			</trans-unit>
 
 			<trans-unit id="711" approved="yes">
 				<source>Processing</source>
-				<target>Processing</target>
+				<target>En cours</target>
 			</trans-unit>
 
 			<trans-unit id="712" approved="yes">
 				<source>Sent</source>
-				<target>Sent</target>
+				<target>Envoyé</target>
 			</trans-unit>
 
 			<trans-unit id="713" approved="yes">
 				<source>Completed</source>
-				<target>Completed</target>
+				<target>Terminé</target>
 			</trans-unit>
 
 			<trans-unit id="714" approved="yes">
 				<source>Cancelled</source>
-				<target>Cancelled</target>
+				<target>Annulé</target>
 			</trans-unit>
 
 			<trans-unit id="715" approved="yes">
 				<source>Contact us</source>
-				<target>Contact us</target>
+				<target>Nous contacter</target>
 			</trans-unit>
 
 			<trans-unit id="716" approved="yes">
 				<source>Shipping address</source>
-				<target>Shipping address</target>
+				<target>Adresse de livraison</target>
 			</trans-unit>
 
 			<trans-unit id="717" approved="yes">
 				<source>Billing address</source>
-				<target>Billing address</target>
+				<target>Adresse de facturation</target>
 			</trans-unit>
 
 			<trans-unit id="718" approved="yes">
 				<source>Notify customer</source>
-				<target>Notify customer</target>
+				<target>Notifier le client</target>
 			</trans-unit>
 
 			<trans-unit id="719" approved="yes">
 				<source>Guest</source>
-				<target>Guest</target>
+				<target>Invité</target>
 			</trans-unit>
 
 			<trans-unit id="720" approved="yes">
 				<source>Shipping method</source>
-				<target>Shipping method</target>
+				<target>Mode de livraison</target>
 			</trans-unit>
 
 			<trans-unit id="721" approved="yes">
 				<source>Shipment reference</source>
-				<target>Shipment reference</target>
+				<target>Référence de livraison</target>
 			</trans-unit>
 
 			<trans-unit id="722" approved="yes">
 				<source>Tracking URL</source>
-				<target>Tracking URL</target>
+				<target>URL de suivi</target>
 			</trans-unit>
 
 			<trans-unit id="723" approved="yes">
 				<source>Refunded</source>
-				<target>Refunded</target>
+				<target>Remboursé</target>
 			</trans-unit>
 
 			<trans-unit id="724" approved="yes">
 				<source>Quantity</source>
-				<target>Quantity</target>
+				<target>Quantité</target>
 			</trans-unit>
 
 			<trans-unit id="725" approved="yes">
 				<source>Amount</source>
-				<target>Amount</target>
+				<target>Montant</target>
 			</trans-unit>
 
 			<trans-unit id="726" approved="yes">
@@ -3650,151 +3650,151 @@
 
 			<trans-unit id="727" approved="yes">
 				<source>Payment method</source>
-				<target>Payment method</target>
+				<target>Mode de paiement</target>
 			</trans-unit>
 
 			<trans-unit id="728" approved="yes">
 				<source>Payment information</source>
-				<target>Payment information</target>
+				<target>Informations de paiement</target>
 			</trans-unit>
 
 			<trans-unit id="729" approved="yes">
 				<source>Timeline</source>
-				<target>Timeline</target>
+				<target>Chronologie</target>
 			</trans-unit>
 
 			<trans-unit id="730" approved="yes">
 				<source>Internationalization</source>
-				<target>Internationalization</target>
+				<target>Internationalisation</target>
 			</trans-unit>
 
 			<trans-unit id="731" approved="yes">
 				<source>Offer</source>
-				<target>Offer</target>
+				<target>Offre</target>
 			</trans-unit>
 
 			<trans-unit id="732" approved="yes">
 				<source>Offer price</source>
-				<target>Offer price</target>
+				<target>Prix de l'offre</target>
 			</trans-unit>
 
 			<trans-unit id="733" approved="yes">
 				<source>Selling price</source>
-				<target>Selling price</target>
+				<target>Prix de vente</target>
 			</trans-unit>
 
 			<trans-unit id="734" approved="yes">
 				<source>Order</source>
-				<target>Order</target>
+				<target>Commande</target>
 				<note>a customer purchase</note>
 			</trans-unit>
 
 			<trans-unit id="735" approved="yes">
 				<source>For any complaint or inquiry, please contact us.</source>
-				<target>For any complaint or inquiry, please contact us.</target>
+				<target>Pour toute réclamation ou demande de renseignements, veuillez nous contacter.</target>
 			</trans-unit>
 
 			<trans-unit id="736" approved="yes">
 				<source>Cart</source>
-				<target>Cart</target>
+				<target>Panier</target>
 				<note>list of products before the purchase</note>
 			</trans-unit>
 
 			<trans-unit id="737" approved="yes">
 				<source>Product list</source>
-				<target>Product list</target>
+				<target>Liste des produits</target>
 			</trans-unit>
 
 			<trans-unit id="738" approved="yes">
 				<source>Checkout</source>
-				<target>Checkout</target>
+				<target>Paiement</target>
 			</trans-unit>
 
 			<trans-unit id="739" approved="yes">
 				<source>Download</source>
-				<target>Download</target>
+				<target>Télécharger</target>
 			</trans-unit>
 
 			<trans-unit id="740" approved="yes">
 				<source>Error</source>
-				<target>Error</target>
+				<target>Erreur</target>
 			</trans-unit>
 
 			<trans-unit id="741" approved="yes">
 				<source>Price</source>
-				<target>Price</target>
+				<target>Prix</target>
 			</trans-unit>
 
 			<trans-unit id="742" approved="yes">
 				<source>Your shopping cart is empty</source>
-				<target>Your shopping cart is empty</target>
+				<target>Votre panier est vide</target>
 			</trans-unit>
 
 			<trans-unit id="743" approved="yes">
 				<source>The amount excludes shipping, which is applied at checkout.</source>
-				<target>The amount excludes shipping, which is applied at checkout.</target>
+				<target>Le montant ne prend pas en considération les frais de livraison, qui seront appliqués au moment du paiement.</target>
 			</trans-unit>
 
 			<trans-unit id="744" approved="yes">
 				<source>Apply</source>
-				<target>Apply</target>
+				<target>Appliquer</target>
 			</trans-unit>
 
 			<trans-unit id="745" approved="yes">
 				<source>Invalid or nonexistent coupon</source>
-				<target>Invalid or nonexistent coupon</target>
+				<target>Coupon invalide ou inexistant</target>
 			</trans-unit>
 
 			<trans-unit id="746" approved="yes">
 				<source>Non-redeemable coupon</source>
-				<target>Non-redeemable coupon</target>
+				<target>Coupon non remboursable</target>
 			</trans-unit>
 
 			<trans-unit id="747" approved="yes">
 				<source>Reply</source>
-				<target>Reply</target>
+				<target>Répondre</target>
 			</trans-unit>
 
 			<trans-unit id="748" approved="yes">
 				<source>Time</source>
-				<target>Time</target>
+				<target>Heure</target>
 				<note>time spent doing something</note>
 			</trans-unit>
 
 			<trans-unit id="749" approved="yes">
 				<source>Queries</source>
-				<target>Queries</target>
+				<target>Requêtes</target>
 				<note>referred to internal SQL queries</note>
 			</trans-unit>
 
 			<trans-unit id="750" approved="yes">
 				<source>Page cache</source>
-				<target>Page cache</target>
+				<target>Cache de la page</target>
 			</trans-unit>
 
 			<trans-unit id="751" approved="yes">
 				<source>Same as shipping address</source>
-				<target>Same as shipping address</target>
+				<target>Identique à l'adresse de livraison</target>
 			</trans-unit>
 
 			<trans-unit id="752" approved="yes">
 				<source>Full name</source>
-				<target>Full name</target>
+				<target>Nom complet</target>
 			</trans-unit>
 
 			<trans-unit id="753" approved="yes">
 				<source>Place order</source>
-				<target>Place order</target>
+				<target>Passer commande</target>
 			</trans-unit>
 
 			<trans-unit id="754" approved="yes">
 				<source>Modify</source>
-				<target>Modify</target>
+				<target>Modifier</target>
 			</trans-unit>
 
 			<trans-unit id="755" approved="yes">
 				<source>Continue</source>
-				<target>Continue</target>
+				<target>Continuer</target>
 			</trans-unit>
 
 			<trans-unit id="756" approved="yes">
@@ -3804,138 +3804,138 @@
 
 			<trans-unit id="757" approved="yes">
 				<source>Payment</source>
-				<target>Payment</target>
+				<target>Paiement</target>
 			</trans-unit>
 
 			<trans-unit id="758" approved="yes">
 				<source>Sign in</source>
-				<target>Sign in</target>
+				<target>Connexion</target>
 			</trans-unit>
 
 			<trans-unit id="759" approved="yes">
 				<source>Sign up</source>
-				<target>Sign up</target>
+				<target>Inscription</target>
 			</trans-unit>
 
 			<trans-unit id="760" approved="yes">
 				<source>E-mail or username</source>
-				<target>E-mail or username</target>
+				<target>Courriel ou nom d'utilisateur</target>
 			</trans-unit>
 
 			<trans-unit id="761" approved="yes">
 				<source>Purchase without account</source>
-				<target>Purchase without account</target>
+				<target>Acheter sans compte</target>
 			</trans-unit>
 
 			<trans-unit id="762" approved="yes">
 				<source>If you don't want to keep your own user account on our website, you can place your order as a guest.</source>
-				<target>If you don't want to keep your own user account on our website, you can place your order as a guest.</target>
+				<target>Si vous ne souhaitez pas conserver de compte utilisateur sur notre site Web, vous pouvez passer commande en tant qu'invité.</target>
 			</trans-unit>
 
 			<trans-unit id="763" approved="yes">
 				<source>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></source>
-				<target>I acknowledge and accept the <![CDATA[<a href="{link}" target="_blank">purchase conditions</a>]]></target>
+				<target>Je reconnais avoir pris connaissance et accepte les <![CDATA[a href="{link}" target="_blank">conditions de vente</a>]]></target>
 			</trans-unit>
 
 			<trans-unit id="764" approved="yes">
 				<source>optional</source>
-				<target>optional</target>
+				<target>facultatif</target>
 			</trans-unit>
 
 			<trans-unit id="765" approved="yes">
 				<source>There was an error with your Login/Password combination. Please try again.</source>
-				<target>There was an error with your Login/Password combination. Please try again.</target>
+				<target>Il y a eu une erreur avec votre identifiant/mot de passe. Veuillez réessayer.</target>
 			</trans-unit>
 
 			<trans-unit id="766" approved="yes">
 				<source>Please enter your e-mail address in the username field and try again.</source>
-				<target>Please enter your e-mail address in the username field and try again.</target>
+				<target>Veuillez saisir votre adresse électronique dans le champ de nom d'utilisateur et réessayez.</target>
 			</trans-unit>
 
 			<trans-unit id="767" approved="yes">
 				<source>An e-mail with a confirmation has been sent to your address.</source>
-				<target>An e-mail with a confirmation has been sent to your address.</target>
+				<target>Un courriel de confirmation vous a été envoyé.</target>
 			</trans-unit>
 
 			<trans-unit id="768" approved="yes">
 				<source>Invalid e-mail address</source>
-				<target>Invalid e-mail address</target>
+				<target>Adresse électronique invalide</target>
 			</trans-unit>
 
 			<trans-unit id="769" approved="yes">
 				<source>Password too weak</source>
-				<target>Password too weak</target>
+				<target>Mot de passe trop faible</target>
 			</trans-unit>
 
 			<trans-unit id="770" approved="yes">
 				<source>You must accept the terms</source>
-				<target>You must accept the terms</target>
+				<target>Vous devez accepter les conditions</target>
 			</trans-unit>
 
 			<trans-unit id="771" approved="yes">
 				<source>The specified username (or email address) is already being used on our website</source>
-				<target>The specified username (or email address) is already being used on our website</target>
+				<target>Le nom d'utilisateur (ou adresse électronique) spécifié est déjà utilisé sur note site Web</target>
 			</trans-unit>
 
 			<trans-unit id="772" approved="yes">
 				<source>Invalid username</source>
-				<target>Invalid username</target>
+				<target>Nom d'utilisateur invalide</target>
 			</trans-unit>
 
 			<trans-unit id="773" approved="yes">
 				<source>Purchase conditions</source>
-				<target>Purchase conditions</target>
+				<target>Conditions de vente</target>
 			</trans-unit>
 
 			<trans-unit id="774" approved="yes">
 				<source>Confirm your account</source>
-				<target>Confirm your account</target>
+				<target>Confirmez votre compte</target>
 			</trans-unit>
 
 			<trans-unit id="775" approved="yes">
 				<source>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</source>
-				<target>This is an automated e-mail sent as a result of an account creation request. If you received this e-mail by error just ignore it.</target>
+				<target>Ceci est un courriel automatique envoyé suite à la création d'un compte. Si vous avez reçu ce courriel par erreur veuillez simplement l'ignorer.</target>
 			</trans-unit>
 
 			<trans-unit id="776" approved="yes">
 				<source>Remove old unconfirmed accounts</source>
-				<target>Remove old unconfirmed accounts</target>
+				<target>Supprimer les anciens comptes non confirmés</target>
 			</trans-unit>
 
 			<trans-unit id="777" approved="yes">
 				<source>Sorry, confirmation link is invalid or has expired.</source>
-				<target>Sorry, confirmation link is invalid or has expired.</target>
+				<target>Désolé, le lien de confirmation est invalide ou a expiré.</target>
 			</trans-unit>
 
 			<trans-unit id="778" approved="yes">
 				<source>National identification number</source>
-				<target>National identification number</target>
+				<target>Numéro d'identification national</target>
 				<note>https://en.wikipedia.org/wiki/National_identification_number</note>
 			</trans-unit>
 
 			<trans-unit id="779" approved="yes">
 				<source>Read more</source>
-				<target>Read more</target>
+				<target>En savoir plus</target>
 			</trans-unit>
 
 			<trans-unit id="780" approved="yes">
 				<source>Your comment has been published</source>
-				<target>Your comment has been published</target>
+				<target>Votre commentaire a été publié</target>
 			</trans-unit>
 
 			<trans-unit id="781" approved="yes">
 				<source>Continue shopping</source>
-				<target>Continue shopping</target>
+				<target>Continuer mon shopping</target>
 			</trans-unit>
 
 			<trans-unit id="782" approved="yes">
 				<source>Proceed to checkout</source>
-				<target>Proceed to checkout</target>
+				<target>Procéder au paiement</target>
 			</trans-unit>
 
 			<trans-unit id="783" approved="yes">
 				<source>Payment methods</source>
-				<target>Payment methods</target>
+				<target>Modes de paiement</target>
 			</trans-unit>
 
 			<trans-unit id="784" approved="yes">
@@ -3945,138 +3945,138 @@
 
 			<trans-unit id="785" approved="yes">
 				<source>excluding taxes</source>
-				<target>excluding taxes</target>
+				<target>taxes exclues</target>
 			</trans-unit>
 
 			<trans-unit id="786" approved="yes">
 				<source>including taxes</source>
-				<target>including taxes</target>
+				<target>taxes incluses</target>
 			</trans-unit>
 
 			<trans-unit id="787" approved="yes">
 				<source>Discounts</source>
-				<target>Discounts</target>
+				<target>Réductions</target>
 			</trans-unit>
 
 			<trans-unit id="788" approved="yes">
 				<source>Discounts applied</source>
-				<target>Discounts applied</target>
+				<target>Réductions appliquées</target>
 			</trans-unit>
 
 			<trans-unit id="789" approved="yes">
 				<source>Customer notes</source>
-				<target>Customer notes</target>
+				<target>Notes du client</target>
 			</trans-unit>
 
 			<trans-unit id="790" approved="yes">
 				<source>Taxes breakout</source>
-				<target>Taxes breakout</target>
+				<target>Taxes</target>
 			</trans-unit>
 
 			<trans-unit id="791" approved="yes">
 				<source>Without shipping</source>
-				<target>Without shipping</target>
+				<target>Sans livraison</target>
 			</trans-unit>
 
 			<trans-unit id="792" approved="yes">
 				<source>Order created</source>
-				<target>Order created</target>
+				<target>Commande créée</target>
 			</trans-unit>
 
 			<trans-unit id="793" approved="yes">
 				<source>Thank you! Your order has been received.</source>
-				<target>Thank you! Your order has been received.</target>
+				<target>Merci ! Votre commande a bien été reçue.</target>
 			</trans-unit>
 
 			<trans-unit id="794" approved="yes">
 				<source>Order reference</source>
-				<target>Order reference</target>
+				<target>Référence de commande</target>
 			</trans-unit>
 
 			<trans-unit id="795" approved="yes">
 				<source>Order date</source>
-				<target>Order date</target>
+				<target>Date de commande</target>
 			</trans-unit>
 
 			<trans-unit id="796" approved="yes">
 				<source>Order total</source>
-				<target>Order total</target>
+				<target>Total de la commande</target>
 			</trans-unit>
 
 			<trans-unit id="797" approved="yes">
 				<source>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</source>
-				<target>As the order is FREE, we will begin to prepare it for delivery as soon as possible.</target>
+				<target>Comme la commande est GRATUITE, nous allons commencer à la préparer pour la livraison au plus vite.</target>
 			</trans-unit>
 
 			<trans-unit id="798" approved="yes">
 				<source>Remember you can always check the status of your order in your user account, or right now clicking the button below.</source>
-				<target>Remember you can always check the status of your order in your user account, or right now clicking the button below.</target>
+				<target>Rappelez-vous, vous pouvez toujours suivre le statut de votre commande depuis votre compte utilisateur, ou maintenant en cliquant sur le bouton ci-dessous.</target>
 			</trans-unit>
 
 			<trans-unit id="799" approved="yes">
 				<source>View order</source>
-				<target>View order</target>
+				<target>Voir la commande</target>
 			</trans-unit>
 
 			<trans-unit id="800" approved="yes">
 				<source>Above</source>
-				<target>Above</target>
+				<target>Au dessus</target>
 			</trans-unit>
 
 			<trans-unit id="801" approved="yes">
 				<source>Below</source>
-				<target>Below</target>
+				<target>En dessous</target>
 			</trans-unit>
 
 			<trans-unit id="802" approved="yes">
 				<source>Order paid</source>
-				<target>Order paid</target>
+				<target>Commande payée</target>
 			</trans-unit>
 
 			<trans-unit id="803" approved="yes">
 				<source>Thank you! Your payment has been successfully received.</source>
-				<target>Thank you! Your payment has been successfully received.</target>
+				<target>Merci ! Nous avons bien reçu votre paiement.</target>
 			</trans-unit>
 
 			<trans-unit id="804" approved="yes">
 				<source>We will begin preparing your order for delivery as soon as possible.</source>
-				<target>We will begin preparing your order for delivery as soon as possible.</target>
+				<target>Nous allons commencer la préparation de votre commande au plus vite.</target>
 			</trans-unit>
 
 			<trans-unit id="805" approved="yes">
 				<source>Order payment failed</source>
-				<target>Order payment failed</target>
+				<target>Échec du paiement de la commande</target>
 			</trans-unit>
 
 			<trans-unit id="806" approved="yes">
 				<source>The payment process could not be completed.</source>
-				<target>The payment process could not be completed.</target>
+				<target>Le processus de paiement n'a pas pu être terminé.</target>
 			</trans-unit>
 
 			<trans-unit id="807" approved="yes">
 				<source>Please try again or choose an alternative payment method.</source>
-				<target>Please try again or choose an alternative payment method.</target>
+				<target>Veuillez réessayer ou sélectionner un mode de paiement alternatif.</target>
 			</trans-unit>
 
 			<trans-unit id="808" approved="yes">
 				<source>Find product by title</source>
-				<target>Find product by title</target>
+				<target>Rechercher un produit par titre</target>
 			</trans-unit>
 
 			<trans-unit id="809" approved="yes">
 				<source>Order summary</source>
-				<target>Order summary</target>
+				<target>Résumé de la commande</target>
 			</trans-unit>
 
 			<trans-unit id="810" approved="yes">
 				<source>Qty.</source>
-				<target>Qty.</target>
+				<target>Qté.</target>
 				<note>Quantity abbreviation</note>
 			</trans-unit>
 
 			<trans-unit id="811" approved="yes">
 				<source>Dis.</source>
-				<target>Dis.</target>
+				<target>Remise</target>
 				<note>Discount abbreviation</note>
 			</trans-unit>
 
@@ -4087,142 +4087,142 @@
 
 			<trans-unit id="813" approved="yes">
 				<source>(for emails and documents)</source>
-				<target>(for emails and documents)</target>
+				<target>(pour les courriels et documents)</target>
 			</trans-unit>
 
 			<trans-unit id="814" approved="yes">
 				<source>Shop address information</source>
-				<target>Shop address information</target>
+				<target>Adresse du magasin</target>
 			</trans-unit>
 
 			<trans-unit id="815" approved="yes">
 				<source>Legal information</source>
-				<target>Legal information</target>
+				<target>Informations légales</target>
 			</trans-unit>
 
 			<trans-unit id="816" approved="yes">
 				<source>Shop information</source>
-				<target>Shop information</target>
+				<target>Informations sur le magasin</target>
 			</trans-unit>
 
 			<trans-unit id="817" approved="yes">
 				<source>Customer account</source>
-				<target>Customer account</target>
+				<target>Compte client</target>
 			</trans-unit>
 
 			<trans-unit id="818" approved="yes">
 				<source>Overview</source>
-				<target>Overview</target>
+				<target>Aperçu</target>
 			</trans-unit>
 
 			<trans-unit id="819" approved="yes">
 				<source>Addresses</source>
-				<target>Addresses</target>
+				<target>Adresses</target>
 			</trans-unit>
 
 			<trans-unit id="820" approved="yes">
 				<source>Downloads</source>
-				<target>Downloads</target>
+				<target>Téléchargements</target>
 			</trans-unit>
 
 			<trans-unit id="821" approved="yes">
 				<source>Your account</source>
-				<target>Your account</target>
+				<target>Votre compte</target>
 			</trans-unit>
 
 			<trans-unit id="822" approved="yes">
 				<source>Sign out</source>
-				<target>Sign out</target>
+				<target>Se déconnecter</target>
 			</trans-unit>
 
-			<trans-unit id="823">
+			<trans-unit id="823" approved="yes">
 			   <source>No order has been made yet.</source>
-			   <target>No order has been made yet.</target>
+			   <target>Vous n'avez encore passé aucune commande.</target>
 		   </trans-unit>
 
-		   <trans-unit id="824">
+		   <trans-unit id="824" approved="yes">
 			   <source>View</source>
-			   <target>View</target>
+			   <target>Voir</target>
 		   </trans-unit>
 
-		   <trans-unit id="825">
+		   <trans-unit id="825" approved="yes">
 			   <source>The requested order does not exist or cannot be shown.</source>
-			   <target>The requested order does not exist or cannot be shown.</target>
+			   <target>La commande demandée n'existe pas ou ne peut pas être affichée.</target>
 		   </trans-unit>
 
-			<trans-unit id="826">
+			<trans-unit id="826" approved="yes">
 				<source>Track delivery</source>
-				<target>Track delivery</target>
+				<target>Suivre la livraison</target>
 			</trans-unit>
 
-			<trans-unit id="827">
+			<trans-unit id="827" approved="yes">
 				<source>NIN</source>
 				<target>NIN</target>
 				<note>Acronym for National Identification Number</note>
 			</trans-unit>
 
-			<trans-unit id="828">
+			<trans-unit id="828" approved="yes">
 				<source>Account</source>
-				<target>Account</target>
+				<target>Compte</target>
 				<note>Web user account in a website</note>
 			</trans-unit>
 
-			<trans-unit id="829">
+			<trans-unit id="829" approved="yes">
 				<source>Password change</source>
-				<target>Password change</target>
+				<target>Changement de mot de passe</target>
 			</trans-unit>
 
-			<trans-unit id="830">
+			<trans-unit id="830" approved="yes">
 				<source>Current password</source>
-				<target>Current password</target>
+				<target>Mot de passe actuel</target>
 			</trans-unit>
 
-			<trans-unit id="831">
+			<trans-unit id="831" approved="yes">
 				<source>New password</source>
-				<target>New password</target>
+				<target>Nouveau mot de passe</target>
 			</trans-unit>
 
-			<trans-unit id="832">
+			<trans-unit id="832" approved="yes">
 				<source>Confirm new password</source>
-				<target>Confirm new password</target>
+				<target>Confirmer le nouveau mot de passe</target>
 			</trans-unit>
 
-			<trans-unit id="833">
+			<trans-unit id="833" approved="yes">
 				<source>Incorrect password</source>
-				<target>Incorrect password</target>
+				<target>Mot de passe incorrect</target>
 			</trans-unit>
 
-			<trans-unit id="834">
+			<trans-unit id="834" approved="yes">
 				<source>The password confirmation does not match</source>
-				<target>The password confirmation does not match</target>
+				<target>La confirmation du mot de passe ne correspond pas</target>
 			</trans-unit>
 
-			<trans-unit id="835">
+			<trans-unit id="835" approved="yes">
 				<source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
 				<target>Un e-mail avec un lien de confirmation a été envoyé à votre compte e-mail si votre saisie était correcte.</target>
 			</trans-unit>
 
-			<trans-unit id="836">
+			<trans-unit id="836" approved="yes">
 				<source>Sorry, there are no shipping methods available for the address provided.</source>
 				<target>Désolé, aucune méthode d'expédition n'est disponible pour l'adresse fournie.</target>
 			</trans-unit>
 
-			<trans-unit id="837">
+			<trans-unit id="837" approved="yes">
 				<source>The order cannot be placed.</source>
 				<target>La commande ne peut pas être passée.</target>
 			</trans-unit>
 
-			<trans-unit id="838">
+			<trans-unit id="838" approved="yes">
 				<source>Close all</source>
 				<target>Ferme tout</target>
 			</trans-unit>
 
-			<trans-unit id="839">
+			<trans-unit id="839" approved="yes">
 				<source>A new password must be set when changing the username. If not provided, a new random password will be assigned.</source>
 				<target>Un nouveau mot de passe doit être défini lors du changement de nom d'utilisateur. S'il n'est pas fourni, un nouveau mot de passe aléatoire sera attribué.</target>
 			</trans-unit>
 
-			<trans-unit id="840">
+			<trans-unit id="840" approved="yes">
 				<source>Not available</source>
 				<target>Indisponible</target>
 			</trans-unit>

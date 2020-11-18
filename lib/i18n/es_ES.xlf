@@ -1321,7 +1321,7 @@
 
 			<trans-unit id="263" approved="yes">
 				<source>Contact e-mails</source>
-				<target>E-Mails de contacto</target>
+				<target>Correos electrónicos de contacto</target>
 			</trans-unit>
 
 			<trans-unit id="264" approved="yes">
@@ -1961,7 +1961,7 @@
 
 			<trans-unit id="391" approved="yes">
 				<source>Trying to send a test e-mail…</source>
-				<target>Intentando enviar un correo de prueba…</target>
+				<target>Intentando enviar un correo electrónico de prueba…</target>
 			</trans-unit>
 
 			<trans-unit id="392" approved="yes">
@@ -2261,7 +2261,7 @@
 
 			<trans-unit id="451" approved="yes">
 				<source>This is an automated e-mail sent as a result of a password request process. If you received this e-mail by error just ignore it.</source>
-				<target>Este es un correo automático enviado como resultado de un proceso de petición de cambio de contraseña. Si ha recibido este correo por error simplemente ignórelo.</target>
+				<target>Este es un correo electrónico automático enviado como resultado de un proceso de petición de cambio de contraseña. Si ha recibido este correo electrónico por error simplemente ignórelo.</target>
 			</trans-unit>
 
 			<trans-unit id="452" approved="yes">
@@ -3818,7 +3818,7 @@
 
 			<trans-unit id="760" approved="yes">
 				<source>E-mail or username</source>
-				<target>E-mail o usuario</target>
+				<target>Correo electrónico o usuario</target>
 			</trans-unit>
 
 			<trans-unit id="761" approved="yes">
@@ -3853,12 +3853,12 @@
 
 			<trans-unit id="767" approved="yes">
 				<source>An e-mail with a confirmation has been sent to your address.</source>
-				<target>Se ha enviado a tu dirección de correo un e-mail con una confirmación.</target>
+				<target>Se ha enviado a tu dirección de correo electrónico un mensaje con una confirmación.</target>
 			</trans-unit>
 
 			<trans-unit id="768" approved="yes">
 				<source>Invalid e-mail address</source>
-				<target>Dirección de correo no válida</target>
+				<target>Dirección de correo electrónico no válida</target>
 			</trans-unit>
 
 			<trans-unit id="769" approved="yes">
@@ -4086,7 +4086,7 @@
 
 			<trans-unit id="813" approved="yes">
 				<source>(for emails and documents)</source>
-				<target>(para e-mails y documentos)</target>
+				<target>(para correos electrónicos y documentos)</target>
 			</trans-unit>
 
 			<trans-unit id="814" approved="yes">
@@ -4198,7 +4198,7 @@
 
 			<trans-unit id="835" approved="yes">
 			   <source>An e-mail with a confirmation link has been sent to your e-mail account if your input was correct.</source>
-			   <target>Si la dada introducida es correcta, se habrá enviado un email con un enlace de confirmación.</target>
+			   <target>Si el dato introducido es correcto, se habrá enviado un correo electrónico con un enlace de confirmación.</target>
 		   </trans-unit>
 
 			<trans-unit id="836" approved="yes">
