@@ -38,12 +38,14 @@ class webuser_vote
 	
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
-			return $this->update();
+        {
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+        {
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -86,7 +88,9 @@ class webuser_vote
 		);
 			
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		$this->id = $DB->get_last_id();
 				
@@ -116,7 +120,9 @@ class webuser_vote
 		);
 		
 		if(!$ok)
-			throw new Exception($DB->get_last_error());
+        {
+            throw new Exception($DB->get_last_error());
+        }
 		
 		return true;
 	}			
@@ -172,7 +178,34 @@ class webuser_vote
         );
 					 				 
 		return array($DB->result(), $DB->foundRows());
-	}	
+	}
+
+	public static function object_vote_by_webuser($object, $object_id, $webuser_id)
+	{
+		global $DB;
+		global $website;
+
+		$DB->queryLimit(
+		    'wuv.*',
+			'nv_webuser_votes wuv',
+			'	 
+			    wuv.website = :wid 
+			    AND wuv.object  = :object 
+ 				AND wuv.object_id = :object_id
+				AND wuv.webuser = :webuser_id',
+            NULL,
+            0,
+            PHP_INT_MAX,
+            array(
+                ':wid' => $website->id,
+                ':object' => $object,
+                ':object_id' => $object_id,
+                ':webuser_id' => $webuser_id
+            )
+        );
+
+		return $DB->result();
+	}
 	
 	public static function object_votes_by_date($object, $object_id, $since=0)
 	{
@@ -259,9 +292,13 @@ class webuser_vote
 			);
 			
 			if(!$ok)
-				throw new Exception($DB->get_last_error());
+            {
+                throw new Exception($DB->get_last_error());
+            }
 			else
-				$status = true;
+            {
+                $status = true;
+            }
 		}
 		else if($voted)
 		{
@@ -363,7 +400,9 @@ class webuser_vote
 		global $DB;
 
 		if(empty($object) || empty($object_id))
-			return;
+        {
+            return;
+        }
 		
 		$DB->execute('
 			DELETE FROM nv_webuser_votes
@@ -383,7 +422,9 @@ class webuser_vote
 		);
 
 		if(empty($table[$object]))
-			return;
+        {
+            return;
+        }
 
 		$DB->execute('
 			UPDATE '.$table[$object].' 
@@ -407,7 +448,9 @@ class webuser_vote
         $DB->query('SELECT * FROM nv_webuser_votes WHERE website = '.intval($website->id), 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }

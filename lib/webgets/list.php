@@ -1671,6 +1671,21 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     $out = $item->reply_to;
                     break;
 
+                case 'vote':
+                    // retrieve the vote assigned by the user to this object
+                    $webuser_vote = webuser_vote::object_vote_by_webuser($item->object_type, $item->object_id, $item->user);
+
+                    if(empty($webuser_vote))
+                    {
+                        $out = '';
+                    }
+                    else
+                    {
+                        $webuser_vote = $webuser_vote[0];
+                        $out  = $webuser_vote['value'];
+                    }
+                    break;
+
                 case 'depth':
                     $c = new comment();
                     $c->load_from_resultset(array($item));
