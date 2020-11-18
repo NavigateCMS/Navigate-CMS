@@ -7,6 +7,7 @@ function nvweb_webuser($vars=array())
 	global $website;
 	global $theme;
 	global $current;
+	global $events;
 	global $webgets;
     global $webuser;
     global $DB;
@@ -535,96 +536,124 @@ function nvweb_webuser($vars=array())
             if(!empty($vars['email_field']) && !empty($email))
             {
                 $ok = false;
+                $event_errors = array();
 
                 if(filter_var($email, FILTER_VALIDATE_EMAIL)!==FALSE)
                 {
-                    $wu_id = $DB->query_single(
-                        'id',
-                        'nv_webusers',
-                        ' email = :email
-                          AND website = :wid',
-                        null,
+                    $event_messages = $events->trigger(
+                        'webuser',
+                        'newsletter_subscribe',
                         array(
-                            ':wid' => $website->id,
-                            ':email' => $email
+                            'email' => $email
                         )
                     );
 
-                    $wu = new webuser();
-
-                    if(!empty($wu_id))
+                    $event_errors = array();
+                    if(!empty($event_messages))
                     {
-                        // webuser is already signed up!
-                        $wu->load($wu_id);
-
-                        // check if the webuser is not currently blocked
-                        // and is not an expired account
-                        if( $wu->access == 0 ||
-                            ( $wu->access == 2 &&
-                                ($wu->access_begin==0 || time() > $wu->access_begin) &&
-                                ($wu->access_end==0 || time() < $wu->access_end)
-                            )
-                        )
+                        foreach($event_messages as $module => $result)
                         {
-                            // all fine, resubscribe
+                            if(isset($result['out']['error']) && !empty($result['out']['error']))
+                            {
+                                $event_errors[] = $result['out']['error'];
+                            }
+                        }
+                    }
+
+                    if(!empty($event_errors))
+                    {
+                        $message = implode("\n", $event_errors);
+                    }
+                    else
+                    {
+                        $wu_id = $DB->query_single(
+                            'id',
+                            'nv_webusers',
+                            ' email = :email
+                              AND website = :wid',
+                            null,
+                            array(
+                                ':wid' => $website->id,
+                                ':email' => $email
+                            )
+                        );
+
+                        $wu = new webuser();
+
+                        if(!empty($wu_id))
+                        {
+                            // webuser is already signed up!
+                            $wu->load($wu_id);
+
+                            // check if the webuser is not currently blocked
+                            // and is not an expired account
+                            if( $wu->access == 0 ||
+                                ( $wu->access == 2 &&
+                                    ($wu->access_begin==0 || time() > $wu->access_begin) &&
+                                    ($wu->access_end==0 || time() < $wu->access_end)
+                                )
+                            )
+                            {
+                                // all fine, resubscribe
+                                $wu->newsletter = 1;
+                                $ok = $wu->save();
+                            }
+
+                            // a webuser exists, but the account is awating to be validated
+                            if($wu->access==1 && !empty($wu->activation_key))
+                            {
+                                // do nothing
+                            }
+                        }
+
+                        // no webuser found using this email address
+                        if(empty($wu_id))
+                        {
+                            // create a new webuser account with that email
+                            $username = nvweb_webuser_generate_username($email);
+
+                            // finally create a new webuser account
+                            $wu->id = 0;
+                            $wu->website = $website->id;
+                            $wu->email = $email;
                             $wu->newsletter = 1;
+                            $wu->language = $current['lang']; // infer the webuser language by the active website language
+                            $wu->username = $username;
+                            $wu->access = 1;    // user is blocked until the server recieves an email confirmation
+                            $wu->activation_key = bin2hex(openssl_random_pseudo_bytes( 32 ));
                             $ok = $wu->save();
+
+                            // send a message to verify the new user's email
+                            $email_confirmation_link = $website->absolute_path().'/nv.webuser/verify?email='.$wu->email.'&hash='.$wu->activation_key;
+                            $message = navigate_compose_email(array(
+                                array(
+                                    'title' => $website->name,
+                                    'content' => $webgets[$webget]['translations']['click_to_confirm_account'].
+                                                '<br />'.
+                                                '<a href="'.$email_confirmation_link.'">'.$email_confirmation_link.'</a>'
+                                ),
+                                array(
+                                    'footer' =>
+                                        $webgets[$webget]['translations']['email_confirmation_notice'].
+                                        '<br />'.
+                                        '<a href="'.$website->absolute_path().$website->homepage().'">'.$website->name.'</a>'
+                                )
+                            ));
+
+                            nvweb_send_email($website->name, $message, $wu->email);
+                            $pending_confirmation = true;
                         }
 
-                        // a webuser exists, but the account is awating to be validated
-                        if($wu->access==1 && !empty($wu->activation_key))
+                        $message = $webgets[$webget]['translations']['subscribe_error'];
+                        if($pending_confirmation)
                         {
-                            // do nothing
+                            $message = $webgets[$webget]['translations']['email_confirmation'];
+                        }
+                        else if($ok)
+                        {
+                            $message = $webgets[$webget]['translations']['subscribed_ok'];
                         }
                     }
-
-                    // no webuser found using this email address
-                    if(empty($wu_id))
-                    {
-                        // create a new webuser account with that email
-                        $username = nvweb_webuser_generate_username($email);
-
-                        // finally create a new webuser account
-                        $wu->id = 0;
-                        $wu->website = $website->id;
-                        $wu->email = $email;
-                        $wu->newsletter = 1;
-                        $wu->language = $current['lang']; // infer the webuser language by the active website language
-                        $wu->username = $username;
-                        $wu->access = 1;    // user is blocked until the server recieves an email confirmation
-                        $wu->activation_key = bin2hex(openssl_random_pseudo_bytes( 32 ));
-                        $ok = $wu->save();
-
-                        // send a message to verify the new user's email
-                        $email_confirmation_link = $website->absolute_path().'/nv.webuser/verify?email='.$wu->email.'&hash='.$wu->activation_key;
-                        $message = navigate_compose_email(array(
-                            array(
-                                'title' => $website->name,
-                                'content' => $webgets[$webget]['translations']['click_to_confirm_account'].
-                                            '<br />'.
-                                            '<a href="'.$email_confirmation_link.'">'.$email_confirmation_link.'</a>'
-                            ),
-                            array(
-                                'footer' =>
-                                    $webgets[$webget]['translations']['email_confirmation_notice'].
-                                    '<br />'.
-                                    '<a href="'.$website->absolute_path().$website->homepage().'">'.$website->name.'</a>'
-                            )
-                        ));
-
-                        nvweb_send_email($website->name, $message, $wu->email);
-                        $pending_confirmation = true;
-                    }
-                }
-
-                $message = $webgets[$webget]['translations']['subscribe_error'];
-                if($pending_confirmation)
-                {
-                    $message = $webgets[$webget]['translations']['email_confirmation'];
-                }
-                else if($ok)
-                {
-                    $message = $webgets[$webget]['translations']['subscribed_ok'];
                 }
 
                 if(empty($vars['notify']))
@@ -660,7 +689,9 @@ function nvweb_webuser($vars=array())
                     case 'callback':
                     default:
                         if($ok)
+                        {
                             nvweb_after_body('js', $vars['callback'].'("'.$message.'");');
+                        }
                         else
                         {
                             if(!empty($vars['error_callback']))
