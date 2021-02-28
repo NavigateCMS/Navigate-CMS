@@ -4227,6 +4227,11 @@
 				<target>Indisponible</target>
 			</trans-unit>
 
+			<trans-unit id="841" approved="yes">
+				<source>PHP version {value} or higher is required</source>
+				<target>La version PHP {value} ou supérieure est requise</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

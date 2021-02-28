@@ -4228,6 +4228,11 @@
                 <target>Ikke tilgjengelig</target>
             </trans-unit>
 
+            <trans-unit id="841">
+                <source>PHP version {value} or higher is required</source>
+                <target>PHP-versjon {verdi} eller nyere kreves</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
