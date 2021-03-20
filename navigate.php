@@ -222,7 +222,7 @@ if(!empty($website->subdomain))
 $nvweb_absolute .= $website->domain.$website->folder;
 
 define('NVWEB_ABSOLUTE', $nvweb_absolute);
-define('NVWEB_OBJECT', $nvweb_absolute.'/object');	
+define('NVWEB_OBJECT', $nvweb_absolute.'/object');
 
 // prepare layout
 $layout = new layout('navigate');

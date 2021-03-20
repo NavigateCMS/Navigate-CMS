@@ -256,15 +256,21 @@ function run()
                     $nst = array_keys($nst);
 
                     if(!isset($website->theme_options) || empty($website->theme_options))
+                    {
                         $website->theme_options = json_decode('{"style": ""}');
+                    }
                     $website->theme_options->style = array_shift($nst);
                 }
                 else
                 {
                     if(!isset($website->theme_options) || empty($website->theme_options))
+                    {
                         $website->theme_options = json_decode('{"style": ""}');
+                    }
                     else
+                    {
                         $website->theme_options->style = "";
+                    }
                 }
 
                 try
@@ -385,9 +391,13 @@ function themes_grid($list)
 
             $update_ver = $_SESSION['themes_updates'][$list[$t]['code']];
             if(version_compare($update_ver, $list[$t]['version'], '<='))
+            {
                 $update_ver = '';
+            }
             else
+            {
                 $update_ver = $list[$t]['version'].' &raquo; '.$update_ver;
+            }
 
             $themes[] = array(
                 'id'	=>  $list[$t]['code'],
@@ -479,21 +489,30 @@ function themes_grid($list)
     $layout->add_script('
         function navigatecms_marketplace_install_from_hash(hash)
         {
-            window.location.replace("?fid=themes&act=install_from_hash&hash="+hash);
-        }
+            if(typeof(hash) != "undefined")
+            {
+                window.location.replace("?fid=themes&act=install_from_hash&hash="+hash);
+            }
+        }               
 
         if(typeof(window.postMessage) != "undefined")
         {
            if(typeof(window.addEventListener) != "undefined")
             {
                 window.addEventListener("message", function(event) {
-                    navigatecms_marketplace_install_from_hash(event.data);
+                    if(event.data != "")
+                    {
+                        navigatecms_marketplace_install_from_hash(event.data);
+                    }
                 }, false);
             }
             else
             {
                 window.attachEvent("onmessage", function(e) {
-                    navigatecms_marketplace_install_from_hash(e.data);
+                    if(event.data != "")
+                    {
+                        navigatecms_marketplace_install_from_hash(e.data);
+                    }
                 });
             }
         }
