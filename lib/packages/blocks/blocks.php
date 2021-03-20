@@ -1259,7 +1259,9 @@ function blocks_form($item)
                     {
                         poll_answers_table_row_models["'.$alang.'"] = $("#poll-answers-table-row-model-'.$alang.'").html();
                         if($("#poll_answers_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
+                        {
                             $("#poll-answers-table-row-model-'.$alang.'").hide();
+                        }
                         navigate_naviorderedtable_poll_answers_table_'.$alang.'_reorder();
                     });
                 ');
@@ -1344,7 +1346,8 @@ function blocks_form($item)
 		            }
 	            }
 
-                $navibars->add_tab_content_row(array(
+                $navibars->add_tab_content_row(
+                    array(
                         '<label>'.t(160, 'Type').'</label>',
                         $naviforms->selectfield('trigger-type-'.$lang,
                             array_keys($block_trigger_types),
@@ -2325,7 +2328,7 @@ function blocks_type_form($item)
         )
     );
 
-    // TODO: in Navigate CMS 2.0+ add several block types (p.e. Ad (Google adsense, ...), Map (Bing, Yahoo, Google, ...))
+    // TODO: in Navigate CMS 3.x add several block types (p.e. Ad (Google adsense, ...), Map (Bing, Yahoo, Google, ...))
     $block_modes = block::modes();
     $navibars->add_tab_content_row(
         array(
@@ -2479,15 +2482,23 @@ function blocks_type_form($item)
         }
         else
         {
-            $navibars->add_tab_content_row(array(	'<label>'.t(77, 'Properties').'</label>',
-                '<div>'.$table->generate().'</div>',
-                '<div class="subcomment">
-                    <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'.
-                     '.t(192, 'Double click any row to edit').'
-                </div>' ));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(77, 'Properties').'</label>',
+                    '<div>'.$table->generate().'</div>',
+                    '<div class="subcomment">
+                        <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(72, 'Drag any row to assign priorities').'.
+                        '.t(192, 'Double click any row to edit').'
+                    </div>'
+                )
+            );
 
-            $navibars->add_tab_content_row(array(	'<label>&nbsp;</label>',
-                '<button id="block-properties-create"><img src="img/icons/silk/add.png" align="absmiddle" /> '.t(38, 'Create').'</button>'));
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>&nbsp;</label>',
+                    '<button id="block-properties-create"><img src="img/icons/silk/add.png" align="absmiddle" /> '.t(38, 'Create').'</button>'
+                )
+            );
         }
 
         $navibars->add_content('
@@ -2543,7 +2554,7 @@ function blocks_type_form($item)
 		</form>');
 
         $layout->add_script('
-			$("#block-properties-create").bind("click", function()
+			$("#block-properties-create").on("click", function()
 			{
 				navigate_block_edit_property();
 				return false;
@@ -2581,9 +2592,13 @@ function blocks_type_form($item)
 						   $("#property-options").val(data.options);
 						   $("#property-dvalue").val(data.dvalue);
 						   if(data.enabled=="1")
+						   {
 							   $("#property-enabled").attr("checked", "checked");
-							else
+                           }
+						   else
+						   {
 							   $("#property-enabled").removeAttr("checked");
+                           }
 
 						   var options = "";
 						   for(var o in data.options)
