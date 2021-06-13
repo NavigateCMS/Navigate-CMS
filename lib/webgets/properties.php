@@ -279,6 +279,22 @@ function nvweb_properties($vars=array())
             break;
 
         case 'product':
+            if(empty($vars['id']))
+            {
+                if($current['type'] == "product")
+                {
+                    $vars['id'] = $current['object']->id;
+                }
+            }
+
+            if(empty($vars['template']))
+            {
+                if($current['type'] == "product")
+                {
+                    $vars['template'] = $current['object']->template;
+                }
+            }
+
             if(!isset($properties['product-'.$vars['id']]))
             {
                 $properties['product-'.$vars['id']] = property::load_properties("product", $vars['template'], 'product', $vars['id']);
