@@ -202,11 +202,85 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                     $out = '';
                 }
             }
+
+            if(isset($tag['attributes']['stock']))
+            {
+                switch($tag['attributes']['stock'])
+                {
+                    case 'true':
+                    case 'yes':
+                        if($item->stock_available > 0)
+                        {
+                            $out = $item_html;
+                        }
+                        else
+                        {
+                            $out = "";
+                        }
+                        break;
+
+                    case 'false':
+                    case 'no':
+                        if($item->stock_available == 0)
+                        {
+                            $out = $item_html;
+                        }
+                        else
+                        {
+                            $out = "";
+                        }
+                        break;
+
+                    default:
+                        $value = $tag['attributes']['stock'];
+                        if(is_numeric($value))
+                        {
+                            // exact value
+                            if($item->stock_available == $value)
+                            {
+                                $out = $item_html;
+                            }
+                            else
+                            {
+                                $out = "";
+                            }
+                        }
+                        else if(strpos($value, "-")!==false)
+                        {
+                            // range min-max
+                            // Examples: 1-5
+                            list($value_min, $value_max) = explode("-", $value);
+                            $value_min = trim($value_min);
+                            $value_max = trim($value_max);
+
+                            if( $item->stock_available >= $value_min    &&
+                                $item->stock_available <= $value_max
+                            )
+                            {
+                                $out = $item_html;
+                            }
+                            else
+                            {
+                                $out = "";
+                            }
+                        }
+                        else
+                        {
+                            // undefined condition
+                            $out = "";
+                        }
+                        break;
+                }
+            }
             break;
 
         case 'template':
         case 'templates':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                // can't parse values of empty objects
+                return '';
+            }
 
             $templates = array();
             if(isset($tag['attributes']['templates']))
