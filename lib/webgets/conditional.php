@@ -598,6 +598,76 @@ function nvweb_conditional($vars=array())
                     $out = '';
                 }
             }
+
+            if(isset($vars['stock']))
+            {
+                switch($vars['stock'])
+                {
+                    case 'true':
+                    case 'yes':
+                        if($item->stock_available > 0)
+                        {
+                            $out = $item_html;
+                        }
+                        else
+                        {
+                            $out = "";
+                        }
+                        break;
+
+                    case 'false':
+                    case 'no':
+                        if($item->stock_available == 0)
+                        {
+                            $out = $item_html;
+                        }
+                        else
+                        {
+                            $out = "";
+                        }
+                        break;
+
+                    default:
+                        $value = $vars['stock'];
+                        if(is_numeric($value))
+                        {
+                            // exact value
+                            if($item->stock_available == $value)
+                            {
+                                $out = $item_html;
+                            }
+                            else
+                            {
+                                $out = "";
+                            }
+                        }
+                        else if(strpos($value, "-")!==false)
+                        {
+                            // range min-max
+                            // Examples: 1-5
+                            list($value_min, $value_max) = explode("-", $value);
+                            $value_min = trim($value_min);
+                            $value_max = trim($value_max);
+
+                            if( $item->stock_available >= $value_min    &&
+                                $item->stock_available <= $value_max
+                            )
+                            {
+                                $out = $item_html;
+                            }
+                            else
+                            {
+                                $out = "";
+                            }
+                        }
+                        else
+                        {
+                            // undefined condition
+                            $out = "";
+                        }
+                        break;
+                }
+            }
             break;
 
         default:
