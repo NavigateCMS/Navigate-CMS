@@ -157,7 +157,7 @@ class layout
 		$this->add_script_tag('lib/external/jautochecklist/js/jAutochecklist.js');
 		
 		$this->add_script_tag('lib/external/flot/jquery.flot.js');
-		$this->add_script_tag('lib/external/flot/jquery.flot.pie.js');		
+		$this->add_script_tag('lib/external/flot/jquery.flot.pie.js');
 		$this->add_script_tag('lib/external/flot/jquery.flot.time.js');
 		$this->add_script_tag('lib/external/flot/jquery.flot.navigate.js');
 
@@ -1064,7 +1064,13 @@ class layout
         $html[] = '         </select>';
 
 		// search box
-		$html[] = '		    <div id="media_browser_search"><input type="text" value="" placeholder="'.t(41, 'Search').'…" name="media_browser_search" id="media_browser_search" style="width: 100px;"><img src="img/icons/silk/zoom.png" align="right" sprite="false" class="ui-corner-tr ui-corner-br" /></div>';
+		$html[] = '		    <div id="media_browser_search">
+		                        <input type="text" value="" placeholder="'.t(41, 'Search').'…" name="media_browser_search" id="media_browser_search" style="width: 100px;">
+		                        <div>
+		                            <img src="img/icons/silk/delete.png" align="right" sprite="false" class="media_browser_search_cancel" />
+                                    <img src="img/icons/silk/zoom.png" align="right" sprite="false" class="media_browser_search_find ui-corner-tr ui-corner-br" />
+                                </div>
+                            </div>';
 		$html[] = 		'</div>';
 		
 		$html[] = '		<div id="navigate_media_browser_items"></div>';
@@ -1258,6 +1264,11 @@ class layout
 
         $website_languages_selector = $website->languages();
         $website_languages_selector = array_merge(array('' => '('.t(443, 'All').')'), $website_languages_selector);
+
+        $description_dialog[] = '<div class="navigate-form-row">';
+        $description_dialog[] = '<label>ID</label>';
+        $description_dialog[] = '<strong id="contextmenu-description-dialog-id"></strong>';
+        $description_dialog[] = '</div>';
 
         $description_dialog[] = '<div class="navigate-form-row">';
         $description_dialog[] = '<label>'.t(63, 'Languages').'</label>';

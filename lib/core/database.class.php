@@ -119,7 +119,7 @@ class database
 				$fetch = PDO::FETCH_OBJ;		
 				break;	
 		}
-		
+
 		try
 		{
 		    if(is_array($parameters) && !empty($parameters))

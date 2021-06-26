@@ -127,15 +127,31 @@ function navigate_media_browser()
 		if(arguments[0].keyCode==13)
 		{
             navigate_media_browser_offset = 0;
-			navigate_media_browser_reload(this);	
+            if($("#media_browser_search input").val().length > 0)
+            {
+                $("#media_browser_search img.media_browser_search_find").click();
+            }
+            else
+            {
+                $("#media_browser_search img.media_browser_search_cancel").click();
+            }
 			return false;	
 		}
 	});
 
-	$("#media_browser_search img").on("click", function()
+	$("#media_browser_search img.media_browser_search_find").on("click", function()
 	{
+        $("#media_browser_search img.media_browser_search_cancel").show();
         navigate_media_browser_offset = 0;
-		navigate_media_browser_reload(); 
+		navigate_media_browser_reload();
+	});
+
+	$("#media_browser_search img.media_browser_search_cancel").on("click", function()
+	{
+        $("#media_browser_search img.media_browser_search_cancel").hide();
+        $("#media_browser_search input").val("");
+        navigate_media_browser_offset = 0;
+		navigate_media_browser_reload();
 	});
 
 	navigate_website_selector_setup();
@@ -763,15 +779,21 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
         }
     }
 
+    $('#contextmenu-description-dialog-id').html(file_id);
+
     // empty current values
     $('[id^=contextmenu-description-dialog-title-]').val('');
     $('[id^=contextmenu-description-dialog-description-]').val('');
 
     for(attr_lang in title)
+    {
         $('#contextmenu-description-dialog-title-' + attr_lang).val(title[attr_lang]);
+    }
 
     for(attr_lang in alt)
+    {
         $('#contextmenu-description-dialog-description-' + attr_lang).val(alt[attr_lang]);
+    }
 
     $('#contextmenu-description-dialog').dialog(
         {
@@ -801,7 +823,7 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
                         });
 
                         $.ajax(
-                            {
+                    {
                                 method: 'post',
                                 async: false,
                                 data: {
@@ -818,7 +840,8 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
                                         $('#contextmenu-description-dialog').dialog("close");
                                     }
                                 }
-                            });
+                           }
+                       );
                     }
                 },
                 {

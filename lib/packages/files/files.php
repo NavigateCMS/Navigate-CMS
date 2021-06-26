@@ -1389,10 +1389,12 @@ function files_media_browser($limit = 50, $offset = 0)
 	        {
 	            if(empty($files[$i])) break;
 
-	            // search by text in a folder
+	            // search by text in a folder (file name or file_id)
 	            if(!empty($text))
                 {
-                    if(stripos($files[$i]->name, $text)===false)
+                    if( stripos($files[$i]->name, $text)===false &&
+                        $files[$i]->id != $text
+                    )
                     {
                         continue;
                     }
@@ -1400,6 +1402,8 @@ function files_media_browser($limit = 50, $offset = 0)
 
 	            $files_shown[] = $files[$i];
 	        }
+
+	        $total = count($files_shown);
 		}
 	    else if($media=='youtube')
 	    {
