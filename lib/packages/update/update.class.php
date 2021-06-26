@@ -271,7 +271,16 @@ class update
 		// pre update checks/changes
         if(file_exists(NAVIGATE_PATH.'/updates/update/update-pre.php'))
         {
+            file_put_contents($ulog, "run update-pre.php"."\n", FILE_APPEND);
             include_once(NAVIGATE_PATH.'/updates/update/update-pre.php');
+            if(function_exists("navigate_cms_update_pre"))
+            {
+                $update_pre_check = navigate_cms_update_pre($ulog);
+                if(!$update_pre_check)
+                {
+                    return false;
+                }
+            }
         }
 		
 		// do file changes
@@ -479,5 +488,4 @@ class update
         }
     }
 }
-
 ?>
