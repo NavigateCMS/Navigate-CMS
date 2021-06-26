@@ -2,7 +2,12 @@
 require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
-core_define_navigate_url('login.php');
+core_define_navigate_url('login.php', !APP_FAILSAFE); // in APP_FAILSAFE mode, omit HTTPS check
+if(nvweb_self_url() != NAVIGATE_URL.'/login.php')
+{
+    // redirect in case of HTTPS available
+    core_terminate(NAVIGATE_URL.'/login.php');
+}
 
 // create database connection
 $DB = new database();

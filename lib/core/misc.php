@@ -1029,7 +1029,7 @@ function generate_password($length = 8, $add_dashes = false, $available_sets = '
  * @param [type] $httponly
  * @return void
  */
-function setcookie_samesite($name, $value=NULL, $expire=0, $path='/', $domain='none', $secure=false, $httponly=true, $samesite='Lax')
+function setcookie_samesite($name, $value=NULL, $expire=0, $path='/', $domain='none', $secure=null, $httponly=true, $samesite='Lax')
 {
     global $session_cookie_domain;
     if($domain == 'none')
@@ -1037,7 +1037,16 @@ function setcookie_samesite($name, $value=NULL, $expire=0, $path='/', $domain='n
         $domain = $session_cookie_domain;
     }
 
-    if(PHP_VERSION_ID < 70300)
+    if(is_null($secure))
+    {
+        $secure = false;
+        if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on')
+        {
+            $secure = true;
+        }
+    }
+
+    if(version_compare(phpversion(), '7.3', '<'))
     {
         setcookie($name, $value, $expire, "$path; samesite=".$samesite, $domain, $secure, $httponly);
     }

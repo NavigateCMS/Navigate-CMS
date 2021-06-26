@@ -50,7 +50,7 @@ function t($id, $default='', $replace=array(), $encodeChars=false)
  * @param string $file The name of the currently executing file (just the filename, not the absolute path)
  * @return void
  */
-function core_define_navigate_url($file)
+function core_define_navigate_url($file, $https_check=false)
 {
     $navigate_url = "";
 
@@ -77,7 +77,32 @@ function core_define_navigate_url($file)
         $navigate_url = substr($navigate_url, 0, -1);
     }
 
+    // if not in https, find if we can auto enable it
+    if(strpos($navigate_url, 'https://')===false && $https_check)
+    {
+        $navigate_url_https = str_replace('http://', 'https://', $navigate_url);
+        $tmp_fs = core_filesize_curl($navigate_url_https.'/img/navigate.png');
+        $https_available = !empty($tmp_fs);
+        if($https_available)
+        {
+            $navigate_url = $navigate_url_https;
+        }
+    }
+
+    // prevent URL XSS attacks
+    $navigate_url = strip_tags($navigate_url);
+    if(!filter_var($navigate_url, FILTER_VALIDATE_URL))
+    {
+        http_response_code(500);
+        core_terminate();
+    }
+    $navigate_url = filter_var($navigate_url, FILTER_SANITIZE_URL);
+
     define('NAVIGATE_URL', $navigate_url);
+    if(!defined('NAVIGATE_DOWNLOAD'))
+    {
+        define('NAVIGATE_DOWNLOAD', $navigate_url.'/navigate_download.php');
+    }
 }
 
 /**
@@ -254,6 +279,7 @@ function core_load_function($fid)
             {
                 $func = false;
             }
+            break;
     }
 
     return $func;
@@ -1423,7 +1449,9 @@ function debug_json_error($prepend='')
     }
 
     if(!empty($error) && (APP_DEBUG || isset($_REQUEST['debug'])))
+    {
         debugger::console($prepend.$error);
+    }
 }
 
 /*
