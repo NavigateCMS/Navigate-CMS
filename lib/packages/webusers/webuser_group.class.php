@@ -3,6 +3,7 @@ class webuser_group
 {
     public $id;
     public $website;
+    public $code;
     public $name;
     public $description;
 
@@ -52,9 +53,10 @@ class webuser_group
 
         if(!empty($this->id))
         {
-            $DB->execute(' DELETE FROM nv_webuser_groups
-							WHERE id = '.intval($this->id).'
-              				LIMIT 1 '
+            $DB->execute(' 
+                DELETE FROM nv_webuser_groups
+				WHERE id = '.intval($this->id).'
+              	LIMIT 1 '
             );
         }
 
@@ -126,21 +128,30 @@ class webuser_group
         return $DB->result();
     }
 
-    public static function all_in_array()
+    public static function all_in_array($value="name")
     {
         global $DB;
         global $website;
         $out = array();
 
-        $DB->query('SELECT *
-                    FROM nv_webuser_groups
-                    WHERE website = '.intval($website->id));
-
+        $DB->query('
+            SELECT *
+            FROM nv_webuser_groups
+            WHERE website = '.intval($website->id)
+        );
         $rs = $DB->result();
 
         foreach($rs as $row)
         {
-            $out[$row->id] = $row->name;
+            if($value == 'code')
+            {
+                $code = value_or_default($row->code, slug($row->name));
+                $out[$row->id] = $code;
+            }
+            else
+            {
+                $out[$row->id] = $row->name;
+            }
         }
 
         return $out;
@@ -150,8 +161,6 @@ class webuser_group
     {
         global $DB;
         global $website;
-
-        $out = array();
 
         $DB->query('SELECT *
                     FROM nv_webuser_groups
