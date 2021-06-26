@@ -601,7 +601,7 @@ class layout
 		global $user;
 		global $DB;
 
-		$fid = core_purify_string($_REQUEST['fid']);
+		$fid = core_purify_string($_REQUEST['fid'], true);
 		if(empty($fid))
         {
             $fid = 'dashboard';
