@@ -129,12 +129,14 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> empty($dataset[$i]['avatar'])? '' : '<img title="'.core_special_chars($dataset[$i]['username']).'" src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.urlencode($dataset[$i]['avatar']).'&amp;disposition=inline&amp;width=32&amp;height=32" />',
-                            2 	=> '<div class="list-row" data-blocked="'.$blocked.'" title="'.core_special_chars($dataset[$i]['email']).'">'.core_special_chars($dataset[$i]['username']).'</div>',
-							3	=> core_special_chars($dataset[$i]['fullname']),
-							4	=> implode("<br />", $wug),
-							5 	=> core_ts2date($dataset[$i]['joindate'], true),
-							6	=> ($blocked==0? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
-                            7 	=> $dataset[$i]['_grid_notes_html']
+                            2 	=> '<div class="list-row" data-blocked="'.$blocked.'">'.core_special_chars($dataset[$i]['username']).'</div>',
+                            3 	=> '<div class="list-row" data-blocked="'.$blocked.'" title="'.core_special_chars($dataset[$i]['email']).'">'.core_special_chars($dataset[$i]['email']).'</div>',
+                            4	=> core_special_chars($dataset[$i]['fullname']),
+							5	=> implode("<br />", $wug),
+							6 	=> core_ts2date($dataset[$i]['joindate'], true),
+                            7	=> ($dataset[$i]['newsletter']==1? '<img src="img/icons/silk/email_star.png" />' : '<img src="img/icons/silk/cancel.png" />'),
+                            8	=> ($blocked==0? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),
+                            9 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
 									
@@ -837,6 +839,12 @@ function webusers_form($item)
 
 	// Language selector
 	$data = language::language_names(false);
+
+	if(empty($item->id))
+    {
+        // default value for new accounts
+        $item->language = 'en';
+    }
 		
 	$select = $naviforms->selectfield('webuser-language', array_keys($data), array_values($data), $item->language);
 	$navibars->add_tab_content_row(
@@ -1052,5 +1060,4 @@ function webuser_groups_form($item)
 
     return $navibars->generate();
 }
-
 ?>
