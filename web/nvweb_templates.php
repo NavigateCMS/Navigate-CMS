@@ -735,6 +735,14 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
             debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
         }
 
+        foreach($current['delayed_nvconditionals'] as $uid => $vars)
+        {
+            debugger::timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+            $content = nvweb_conditional($vars);
+            $html = str_replace('<!--#'.$uid.'#-->', $content, $html);
+            debugger::stop_timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+        }
+
         return $html;
     }
 
@@ -817,10 +825,22 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                 @include_once(NAVIGATE_PATH.'/lib/webgets/conditional.php');
                 $vars = array_merge($tag['attributes'], array('_template' => $conditional));
 
-                $content = nvweb_conditional($vars);
+                if($tag['attributes']['delayed']=='true')
+                {
+                    $conditional_uid = uniqid('nvconditional-');
+                    $current['delayed_nvconditionals'][$conditional_uid] = $vars;
+                    $html = substr_replace($html, '<!--#'.$conditional_uid.'#-->', $tag['offset'], $tag['length']);
+                    $changed = true;
+                }
+                else
+                {
+                    debugger::timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+                    $content = nvweb_conditional($vars);
+                    debugger::stop_timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
 
-                $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
-                $changed = true;
+                    $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
+                    $changed = true;
+                }
                 break;
 		}
 		

@@ -58,7 +58,18 @@ function nvweb_parse($request)
         {
             $website = nvweb_load_website_by_url($url);
         }
-        
+
+        // protocol check
+        if(parse_url($url, PHP_URL_SCHEME) == 'http' && $website->protocol == 'https://')
+        {
+            // auto redirect to https, unless it is a POST request
+            if(empty($_POST))
+            {
+                $url = str_replace('http://', 'https://', $url);
+                nvweb_clean_exit($url);
+            }
+        }
+
         $events = new events();
         $events->load_extensions_installed();
         $events->extension_preinit_bindings();
@@ -109,6 +120,7 @@ function nvweb_parse($request)
         define('NVWEB_OBJECT', $nvweb_absolute . '/object');
         define('NVWEB_AJAX', $nvweb_absolute . '/nvajax');
         define('NAVIGATE_URL', NAVIGATE_PARENT . NAVIGATE_FOLDER);
+        define('NAVIGATE_DOWNLOAD', NAVIGATE_URL . '/navigate_download.php');
         define('NVWEB_THEME', NAVIGATE_URL . '/themes/' . $theme->name);
 
         if(!isset($_SESSION['nvweb.' . $website->id]))
@@ -170,6 +182,7 @@ function nvweb_parse($request)
             'plugins_called'     => '',
             'delayed_nvlists'    => array(),
             'delayed_nvsearches' => array(),
+            'delayed_nvconditionals' => array(),
             'delayed_tags_nvweb' => array(),
             'delayed_tags_pre'   => array(),
             'delayed_tags_code'  => array(),
@@ -367,7 +380,10 @@ function nvweb_parse($request)
         }
 
         // if we have a delayed nv list we need to parse it now
-        if(!empty($current['delayed_nvlists']) || !empty($current['delayed_nvsearches']))
+        if( !empty($current['delayed_nvlists']) ||
+            !empty($current['delayed_nvsearches']) ||
+            !empty($current['delayed_nvconditionals'])
+        )
         {
             $html = nvweb_template_parse_lists($html, true);
 
