@@ -16,28 +16,14 @@ if(!preg_match(
         $session_cookie_domain = substr($_SERVER['SERVER_NAME'], strpos($_SERVER['SERVER_NAME'], "."));
     }
 
-    // need to identify PHP version to know how to activate SameSite cookie parameter
-    if(PHP_VERSION_ID < 70300)
-    {
-        $session_cookie_prefs = array(
-            'lifetime' => 3600,
-            'path' => '/;SameSite=Lax',
-            'domain' => $session_cookie_domain,
-            'secure' => ($_SERVER['REQUEST_SCHEME']=='https'),
-            'httponly' => true
-        );
-    }
-    else
-    {
-        $session_cookie_prefs = array(
-            'lifetime' => 3600,
-            'path' => '/',
-            'domain' => $session_cookie_domain,
-            'secure' => ($_SERVER['REQUEST_SCHEME']=='https'),
-            'httponly' => true,
-            'sameSite' => 'Lax'
-        );
-    }
+    $session_cookie_prefs = array(
+        'lifetime' => 3600,
+        'path' => '/',
+        'domain' => $session_cookie_domain,
+        'secure' => ($_SERVER['REQUEST_SCHEME']=='https'),
+        'httponly' => true,
+        'sameSite' => 'Lax'
+    );
 
     @session_set_cookie_params($session_cookie_prefs);
 }
