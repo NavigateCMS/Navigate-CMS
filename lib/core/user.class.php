@@ -468,6 +468,11 @@ class user
 	 */
 	public function quicksearch($text)
 	{
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
+
 		$like = ' LIKE '.protect('%'.$text.'%');
 		
 		$cols[] = 'id' . $like;
@@ -478,7 +483,7 @@ class user
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}	
 
 	/**

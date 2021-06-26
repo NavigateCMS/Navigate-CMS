@@ -230,7 +230,10 @@ class block_group
 	
 	public function quicksearch($text)
 	{
-		$like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 
 		// all columns to look for	
 		$cols[] = 'b.id' . $like;
@@ -241,7 +244,7 @@ class block_group
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}
 
     public function backup($type='json')

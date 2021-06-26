@@ -156,7 +156,10 @@ class menu
 	
 	public function quicksearch($text)
 	{
-		$like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 		
 		$cols[] = 'id' . $like;
 		$cols[] = 'codename' . $like;
@@ -167,7 +170,7 @@ class menu
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}	
 	
 	public static function load_all_menus()

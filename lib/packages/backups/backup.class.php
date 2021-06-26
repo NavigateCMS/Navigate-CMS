@@ -149,7 +149,10 @@ class backup
 	
 	public function quicksearch($text)
 	{
-		$like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 				
 		// all columns to look for	
 		$cols[] = 'i.id' . $like;
@@ -160,7 +163,7 @@ class backup
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}	
 
     public static function estimated_size()

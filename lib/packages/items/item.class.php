@@ -828,43 +828,54 @@ class item
 		global $website;
 
 		$where = '';
+		$parameters = array();
+        $cols = array();
+        $cols_and = array();
+
 		$search = explode(" ", $text);
 		$search = array_filter($search);
 		sort($search);
-		foreach($search as $text)
+		for($i=0; $i < count($search); $i++)
 		{
-			$like = ' LIKE '.protect('%'.$text.'%');
+		    $text = $search[$i];
+
+            $like = ' LIKE CONCAT("%", :qs_text_'.$i.', "%") ';
+            $parameters[':qs_text_'.$i] = $text;
 
 			// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
-			$DB->query('SELECT DISTINCT (nvw.node_id)
-						 FROM nv_webdictionary nvw
-						 WHERE nvw.node_type = "item"
-						   AND nvw.website = '.$website->id.'
-						   AND nvw.text '.$like, 'array');
+			$DB->query(
+			    'SELECT DISTINCT (nvw.node_id)
+					   FROM nv_webdictionary nvw
+					  WHERE nvw.node_type = "item"
+					    AND nvw.website = '.$website->id.'
+					    AND nvw.text LIKE CONCAT("%", :text, "%")',
+                'array',
+                array(
+                    ':text' => $text
+                )
+            );
 
 			$dict_ids = $DB->result("node_id");
 
 			// all columns to look for
 			$cols[] = 'i.id' . $like;
 
-			/* INEFFICIENT WAY
-			$cols[] = 'i.id IN ( SELECT nvw.node_id
-								 FROM nv_webdictionary nvw
-								 WHERE nvw.node_type = "item" AND
-									   nvw.text '.$like.'
-								)' ;
-			*/
 			if(!empty($dict_ids))
             {
-                $cols[] = 'i.id IN ('.implode(',', $dict_ids).')';
+                $cols_and[] = 'i.id IN ('.implode(',', $dict_ids).')';
             }
-
-			$where .= ' AND ( ';
-			$where .= implode( ' OR ', $cols);
-			$where .= ')';
 		}
-		
-		return $where;
+
+        if(!empty($cols_and))
+        {
+            $cols[] = '( '.implode( ' AND ', $cols_and).' )';
+        }
+
+        $where .= ' AND ( ';
+        $where .= implode( ' OR ', $cols);
+        $where .= ')';
+
+		return array($where, $parameters);
 	}
 
     public function backup($type='json')

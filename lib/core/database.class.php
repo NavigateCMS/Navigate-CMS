@@ -103,7 +103,7 @@ class database
      * @param array $parameters SQL query parameters associative array
 	 * @return boolean True if the query was executed without errors
 	 */	
-	public function query($sql, $fetch_mode='object', $parameters=array())
+	public function query($sql, $fetch_mode='object', $parameters=null)
 	{
 		$this->lastError = '';
 		$this->lastResult = '';
@@ -122,14 +122,14 @@ class database
 
 		try
 		{
-		    if(!is_array($parameters))
-            {
-			    $statement = $this->db->query($sql);
-            }
-            else
+		    if(is_array($parameters) && !empty($parameters))
             {
                 $statement = $this->db->prepare($sql);
                 $statement->execute($parameters);
+            }
+            else
+            {
+                $statement = $this->db->query($sql);
             }
 			$this->queries_count++;
 
@@ -409,18 +409,21 @@ class database
 		if(!empty($column))
 		{
 			$result = array();
-			$total = count($this->lastResult);
-			for($i=0; $i < $total; $i++)
-			{
-				if(is_array($this->lastResult[$i]))
+			if(is_array($this->lastResult))
+            {
+                $total = count($this->lastResult);
+                for($i=0; $i < $total; $i++)
                 {
-                    array_push($result, $this->lastResult[$i][$column]);
+                    if(is_array($this->lastResult[$i]))
+                    {
+                        array_push($result, $this->lastResult[$i][$column]);
+                    }
+                    else if(is_object($this->lastResult[$i]))
+                    {
+                        array_push($result, $this->lastResult[$i]->$column);
+                    }
                 }
-				else if(is_object($this->lastResult[$i]))
-                {
-                    array_push($result, $this->lastResult[$i]->$column);
-                }
-			}
+            }
 			return $result;			
 		}
 		else

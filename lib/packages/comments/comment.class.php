@@ -270,18 +270,21 @@ class comment
 	
 	public function quicksearch($text)
 	{
-		$like = ' LIKE '.protect('%'.$text.'%');
-		
-		$cols[] = 'id' . $like;
-		$cols[] = 'message' . $like;
-		$cols[] = 'name' . $like;
-		$cols[] = 'email' . $like;
+	    $parameters = array();
+
+		$like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
+
+        $cols[] = 'id' . $like;
+        $cols[] = 'message' . $like;
+        $cols[] = 'name' . $like;
+        $cols[] = 'email' . $like;
 
 		$where = ' AND ( ';	
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
-		
-		return $where;
+
+		return array($where, $parameters);
 	}	
 
     public function backup($type='json')

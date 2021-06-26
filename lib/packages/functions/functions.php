@@ -39,12 +39,15 @@ function run()
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
 					$where = " 1=1 ";
+					$parameters = array();
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
@@ -66,12 +69,15 @@ function run()
                     $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
 				
-					$DB->queryLimit('id,lid,category,codename,icon,enabled', 
-									'nv_functions', 
-									$where, 
-									$orderby, 
-									$offset, 
-									$max);
+					$DB->queryLimit(
+					    'id,lid,category,codename,icon,enabled',
+                        'nv_functions',
+                        $where,
+						$orderby,
+						$offset,
+						$max,
+                        $parameters
+                    );
 									
 					$dataset = $DB->result();
 					$total = $DB->foundRows();

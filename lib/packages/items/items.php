@@ -118,12 +118,15 @@ function run()
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
 					$where = ' i.website = '.$website->id;
+					$parameters = array();
 					
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
                         else if(isset($_REQUEST['filters']))
 						{
@@ -170,7 +173,6 @@ function run()
                         }
 					}
 
-
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS
 					                i.*, d.text as title, d.lang as language,
                                     u.username as author_username,
@@ -195,7 +197,7 @@ function run()
 							  LIMIT '.$max.'
 							 OFFSET '.$offset;
 
-					if(!$DB->query($sql, 'array'))
+					if(!$DB->query($sql, 'array', $parameters))
                     {
                         throw new Exception($DB->get_last_error());
                     }
@@ -233,16 +235,17 @@ function run()
 
                         $permission = $permissions[$dataset[$i]['permission']];
 
-                        if(intval($dataset[$i]['date_published']) >= core_time())
+                        if(!empty($dataset[$i]['date_published']) && intval($dataset[$i]['date_published']) >= core_time())
                         {
                             $permission = $permissions["published_later"];
                         }
-                        $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
 
-                        if(intval($dataset[$i]['date_unpublish']) < core_time())
+                        if(!empty($dataset[$i]['date_unpublish']) && intval($dataset[$i]['date_unpublish']) < core_time())
                         {
                             $permission = $permissions["unpublished"];
                         }
+
+                        $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
                         $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
 
                         if(empty($dataset[$i]['date_to_display']))
@@ -253,7 +256,7 @@ function run()
                         {
                             $dataset[$i]['date_to_display'] = core_ts2date($dataset[$i]['date_to_display'], false);
                         }
-						
+
 						if($dataset[$i]['category'] > 0)
                         {
                             $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
@@ -848,7 +851,10 @@ function run()
             }
 
             $limit = intval($_REQUEST['page_limit']);
-            if(empty($limit)) $limit = null;
+            if(empty($limit))
+            {
+                $limit = null;
+            }
             $limit = value_or_default($limit, 1000);
 
             $sql = '
@@ -875,6 +881,7 @@ function run()
 			for($i=0; $i < count($rows); $i++)
             {
                 $rows[$i]['path'] = nvweb_source_url('element', $rows[$i]['id']);
+                $rows[$i]['text'] = core_purify_string($rows[$i]['text'], true);
             }
 
 			if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
@@ -2191,7 +2198,9 @@ function items_form($item)
             );
 
             if(!is_array($item->galleries[0])) 
-	            $item->galleries[0] = array();
+            {
+                $item->galleries[0] = array();
+            }
 			$gallery_elements_order = implode('#', array_keys($item->galleries[0]));
 			
 			$navibars->add_tab_content(
@@ -2596,9 +2605,13 @@ function items_form($item)
 				var active_language = $("input[name=\'language_selector[]\']:checked").val();
 
 				if($("#template").parent().css("display")=="block")
+				{
 					url = url + "node/'.$item->id.'&lang=" + active_language + "&template=" + $("#template").val();
+                }
 			    else // category URL
+			    {
 			        url = url + item_category_path[active_language].slice(1);
+                }
 
 				setTimeout(function() { window.open(url); }, 1000);
 			}
@@ -2624,7 +2637,9 @@ function items_form($item)
 	        complete: function()
 	        {
                 if(typeof navigate_items_onload == "function")
+                {
 				    navigate_items_onload();
+                }
 	        }
 	    });
 	');

@@ -1174,15 +1174,20 @@ class order
 
     public function quicksearch($text)
     {
-        $like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 
         $cols[] = 'reference '.$like;
+        $cols[] = 'coupon_code '.$like;
+        $cols[] = 'customer_data '.$like;
 
         $where = ' AND ( ';
         $where.= implode( ' OR ', $cols);
         $where .= ')';
 
-        return $where;
+        return array($where, $parameters);
     }
 
     public function backup($type='json')

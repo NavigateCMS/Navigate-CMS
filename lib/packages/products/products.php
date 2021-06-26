@@ -130,12 +130,15 @@ function run()
 					$max	    =   intval($_REQUEST['rows']);
 					$offset     =   ($page - 1) * $max;
 					$where      =   ' p.website = :wid';
+					$parameters =   array();
 
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
                         else if(isset($_REQUEST['filters']))
 						{
@@ -182,10 +185,8 @@ function run()
                         }
 					}
 
-                    $query_params = array(
-                        ':wid' => $website->id,
-                        ':lang' => $website->languages_list[0]
-                    );
+                    $parameters[':wid'] = $website->id;
+                    $parameters[':lang'] = $website->languages_list[0];
 
 					$ok = $DB->query(
 					    'SELECT SQL_CALC_FOUND_ROWS
@@ -211,7 +212,7 @@ function run()
                           LIMIT '.$max.'
                          OFFSET '.$offset,
                         'array',
-                        $query_params
+                        $parameters
                     );
 
 					if(!$ok)

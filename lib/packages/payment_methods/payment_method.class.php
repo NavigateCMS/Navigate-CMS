@@ -314,7 +314,10 @@ class payment_method
         global $DB;
         global $website;
 
-        $like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 
         // we search for the IDs at the dictionary NOW (to avoid inefficient requests)
 
@@ -324,13 +327,15 @@ class payment_method
              WHERE nvw.node_type = "payment_method" AND
                    nvw.text '.$like.' AND
                    nvw.website = '.$website->id,
-            'array'
+            'array',
+            $parameters
         );
 
         $dict_ids = $DB->result("node_id");
 
         // all columns to look for
         $cols[] = 'pm.id' . $like;
+        $cols[] = 'pm.codename' . $like;
 
         if(!empty($dict_ids))
         {
@@ -341,7 +346,7 @@ class payment_method
         $where.= implode( ' OR ', $cols);
         $where .= ')';
 
-        return $where;
+        return array($where, $parameters);
     }
 
     public function backup($type='json')

@@ -14,7 +14,7 @@ class webdictionary
 	public $text;
 	
 	public $extension_name;
-	
+
 	// load a certain word from the dictionary with its translations
 	public function load($id)
 	{
@@ -339,7 +339,10 @@ class webdictionary
 	
 	public function quicksearch($text)
 	{
-		$like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+	    $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 		
 		$cols[] = 'node_id' . $like;
 		$cols[] = 'lang' . $like;
@@ -350,7 +353,7 @@ class webdictionary
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}
 
     public static function load_element_strings($node_type, $node_id, $node_uid=null)

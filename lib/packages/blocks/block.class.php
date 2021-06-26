@@ -1012,7 +1012,10 @@ class block
 		global $DB;
 		global $website;
 		
-		$like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+        $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 		
 		// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
 		$DB->query('
@@ -1021,7 +1024,8 @@ class block
              WHERE nvw.node_type = "block" AND
                    nvw.text '.$like.' AND
                    nvw.website = '.$website->id,
-            'array'
+            'array',
+            $parameters
         );
 						   
 		$dict_ids = $DB->result("node_id");
@@ -1040,7 +1044,7 @@ class block
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}
 
     public function backup($type='json')

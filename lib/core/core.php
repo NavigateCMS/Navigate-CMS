@@ -774,15 +774,21 @@ function core_special_chars($text)
 }
 
 /**
- * Purify user input from unwanted tags to prevent XSS
+ * Purify user input from unwanted tags (and optionally, quotes) to prevent XSS
  *
  * @param string $text
+ * @param boolean $remove_quotes
  * @return string
  */
-function core_purify_string($input)
+function core_purify_string($input, $remove_quotes=false)
 {
     global $purifier;
-    return trim($purifier->purify($input));
+    $output = trim($purifier->purify($input));
+    if($remove_quotes)
+    {
+        $output = str_replace(array('"', "'"), "", $output);
+    }
+    return $output;
 }
 
 /**

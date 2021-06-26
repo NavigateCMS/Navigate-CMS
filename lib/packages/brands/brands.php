@@ -36,13 +36,16 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
-					$where = " website = ".intval($website->id)." ";
-										
+                    $parameters = array();
+                    $where = " website = ".intval($website->id)." ";
+
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $object->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $object->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
@@ -69,7 +72,8 @@ function run()
                         $where,
                         $orderby,
                         $offset,
-                        $max
+                        $max,
+                        $parameters
                     );
 									
 					$dataset = $DB->result();

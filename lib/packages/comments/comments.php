@@ -41,6 +41,7 @@ function run()
 					$page = intval($_REQUEST['page']);
 					$max	= intval($_REQUEST['rows']);
 					$offset = max(0, ($page - 1) * $max);
+					$parameters = array();
 
 					$where = ' website = '.$website->id;
 
@@ -48,7 +49,9 @@ function run()
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
@@ -75,7 +78,8 @@ function run()
                         $where,
                         $orderby,
                         $offset,
-                        $max
+                        $max,
+                        $parameters
                     );
 								
 					$dataset = $DB->result();
@@ -506,9 +510,13 @@ function comments_form($item)
 	if($item->object_id > 0)
 	{
 	    if($item->object_type == "product")
-		    $content = new product();
+        {
+            $content = new product();
+        }
 	    else
+        {
             $content = new item();
+        }
 
 		$content->load($item->object_id);
 		$title = $content->dictionary[$website->languages_list[0]]['title'];
@@ -652,7 +660,9 @@ function comments_form($item)
     ));
 
     if(empty($item->date_created))
+    {
         $item->date_created = time();
+    }
 
     $layout->add_script('
         $("#comment-reply_to").select2(                                                         
@@ -743,9 +753,10 @@ function comments_form($item)
     ));
 
 
-	
 	if(empty($item->date_created))
-	    $item->date_created = time();
+    {
+        $item->date_created = time();
+    }
 
     $navibars->add_tab_content_row(
         array(

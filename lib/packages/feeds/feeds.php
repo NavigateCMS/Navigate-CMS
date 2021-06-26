@@ -40,12 +40,15 @@ function run()
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
 					$where = " f.website = ".$website->id;
+					$parameters = array();
 										
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
@@ -79,7 +82,7 @@ function run()
 							  LIMIT '.$max.'
 							 OFFSET '.$offset;	
 				
-					if(!$DB->query($sql, 'array'))
+					if(!$DB->query($sql, 'array', $parameters))
 					{
 						throw new Exception($DB->get_last_error());	
 					}
@@ -180,7 +183,7 @@ function run()
                        AND website = :wid',
                 'object',
                 array(
-                    ':wid' => $this->website,
+                    ':wid' => $website->id,
                     'path' => $_REQUEST['path']
                 )
             );

@@ -325,7 +325,7 @@ class webuser
                 ":gender" => is_null($this->gender)? '' : $this->gender,
                 ":avatar" => is_null($this->avatar)? '' : $this->avatar,
                 ":birthdate" => value_or_default($this->birthdate, 0),
-                ":language" => is_null($this->language)? '' : $this->language,
+                ":language" => value_or_default($this->language, 'en'),
                 ":country" => is_null($this->country)? '' : $this->country,
                 ":region" => value_or_default($this->region, 0),
                 ":timezone" => is_null($this->timezone)? '' : $this->timezone,
@@ -498,6 +498,9 @@ class webuser
 	{
 		global $DB;
         global $events;
+        global $current;
+        global $session;
+        global $webuser;
 		
 		$username = trim($username);
 		$username = mb_strtolower($username);
@@ -533,9 +536,13 @@ class webuser
 
 			if(!empty($data))
 			{
-				if($data[0]->password==$A1)
+				if($data[0]->password == $A1)
 				{
 					$this->load_from_resultset($data);
+
+                    $session['webuser'] = $this->id;
+                    $current['webuser'] = $this->id;
+                    $webuser = $this;
 
 	                // maybe this function is called without initializing $events
 	                if(method_exists($events, 'trigger'))
@@ -751,7 +758,10 @@ class webuser
 
 	public function quicksearch($text)
 	{
-		$like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+	    $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 		
 		$cols[] = 'id' . $like;
 		$cols[] = 'LOWER(username)' . mb_strtolower($like);
@@ -762,7 +772,7 @@ class webuser
 		$where.= implode( ' OR ', $cols); 
 		$where .= ')';
 		
-		return $where;
+		return array($where, $parameters);
 	}	
 
     public static function social_network_profile_update($network, $network_user_id, $extra='', $data=array())

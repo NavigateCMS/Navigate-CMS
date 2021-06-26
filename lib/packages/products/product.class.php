@@ -868,39 +868,53 @@ class product
 		global $website;
 
 		$where = '';
+		$parameters = array();
+        $cols = array();
+        $cols_and = array();
+
 		$search = explode(" ", $text);
 		$search = array_filter($search);
 		sort($search);
-		foreach($search as $text)
-		{
+        for($i=0; $i < count($search); $i++)
+        {
+            $text = $search[$i];
+            $like = ' LIKE CONCAT("%", :qs_text_'.$i.', "%") ';
+            $parameters[':qs_text_'.$i] = $text;
+
 			// we search for the IDs at the dictionary NOW (to avoid inefficient requests)
 			$DB->query(
 			    'SELECT DISTINCT (nvw.node_id)
                      FROM nv_webdictionary nvw
                      WHERE nvw.node_type = "product"
                        AND nvw.website = '.$website->id.'
-                       AND nvw.text LIKE :text',
+                       AND nvw.text LIKE CONCAT("%", :text, "%")',
                 'array',
                 array(
-                    ':text' => '%'.$text.'%'
+                    ':text' => $text
                 )
             );
 
 			$dict_ids = $DB->result("node_id");
 
-			// all columns to look for
-			$cols[] = 'p.id LIKE ' .  protect('%'.$text.'%').' ';
-			if(!empty($dict_ids))
-            {
-                $cols[] = 'p.id IN ('.implode(',', $dict_ids).')';
-            }
+            // all columns to look for
+            $cols[] = 'p.id' . $like;
 
-			$where .= ' AND ( ';
-			$where .= implode( ' OR ', $cols);
-			$where .= ')';
-		}
-		
-		return $where;
+            if(!empty($dict_ids))
+             {
+                 $cols_and[] = 'p.id IN ('.implode(',', $dict_ids).')';
+             }
+        }
+
+        if(!empty($cols_and))
+        {
+            $cols[] = '( '.implode( ' AND ', $cols_and).' )';
+        }
+
+        $where .= ' AND ( ';
+        $where .= implode( ' OR ', $cols);
+        $where .= ')';
+
+		return array($where, $parameters);
 	}
 
     public function backup($type='json')

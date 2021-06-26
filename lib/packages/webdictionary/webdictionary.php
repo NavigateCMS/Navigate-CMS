@@ -5,7 +5,7 @@ function run()
 {
 	global $layout;
 	global $website;
-	
+
 	$out = '';
 	$wtext = new webdictionary();
 			
@@ -37,12 +37,15 @@ function run()
 					$max	= intval($_REQUEST['rows']);
 					$offset = ($page - 1) * $max;
 					$where = ' website = '.$website->id;
+					$parameters = array();
 															
 					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
 					{
 						if(isset($_REQUEST['quicksearch']))
                         {
-                            $where .= $wtext->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $wtext->quicksearch($_REQUEST['quicksearch']);
+                            $where .= $qs_where;
+                            $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
@@ -62,7 +65,7 @@ function run()
                     }
                     $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
-					list($dataset, $total) = webdictionary_search($where, $orderby, $offset, $max);
+					list($dataset, $total) = webdictionary_search($where, $orderby, $offset, $max, $parameters);
 
 					for($i=0; $i < count($dataset); $i++)
 					{
@@ -399,25 +402,25 @@ function webdictionary_form($item)
 	return $navibars->generate();
 }
 
-function webdictionary_search($where, $orderby, $offset, $max)
+function webdictionary_search($where, $orderby, $offset, $max, $parameters)
 {
 	global $DB;
 	global $website;
 	global $theme;
 
 	$theme_translations = array();
+    // $where example = 'website = 1 AND ( node_id LIKE "%design%" OR lang LIKE "%design%" OR text LIKE "%design%")'
+
+    // extract the pattern
+    //$qsearch = substr($where, strpos($where, ' LIKE "%') + 8);
+    //$qsearch = mb_strtolower(substr($qsearch, 0, strpos($qsearch, '%" OR')));
+    //$qsearch = trim($qsearch);
+    $qsearch = $parameters[':qs_text'];
 
 	if(!empty($theme))
 	{
+        // search filters for theme strings (ONLY ENABLED FOR QUICKSEARCH)
 		$theme_translations = $theme->get_translations(); // force load theme dictionary in all languages available
-
-		// search filters for theme strings (ONLY ENABLED FOR QUICKSEARCH)
-		// $where example = 'website = 1 AND ( node_id LIKE "%design%" OR lang LIKE "%design%" OR text LIKE "%design%")'
-		
-		// extract the pattern		
-		$qsearch = substr($where, strpos($where, ' LIKE "%') + 8); 
-		$qsearch = mb_strtolower(substr($qsearch, 0, strpos($qsearch, '%" OR')));
-		$qsearch = trim($qsearch);
 
 		// remove theme strings that do not match the search query
 		if(!empty($qsearch))
@@ -488,7 +491,6 @@ function webdictionary_search($where, $orderby, $offset, $max)
 		}
 	}
 
-
 	$DB->query('
 		SELECT id, theme, node_id, node_type, lang, `text`, CONCAT_WS(".", node_type, "" , subtype) AS source
 		  FROM nv_webdictionary
@@ -501,7 +503,8 @@ function webdictionary_search($where, $orderby, $offset, $max)
 		  FROM nv_webdictionary
 		 WHERE '.$where.'
 		   AND node_type = "theme"',
-		 'array'
+		 'array',
+        $parameters
 	);
 	$resultset = $DB->result();
 
@@ -528,7 +531,8 @@ function webdictionary_search($where, $orderby, $offset, $max)
 		  FROM nv_webdictionary
 		 WHERE '.$where.'
 		   AND node_type = "extension"',
-		 'array'
+		 'array',
+        $parameters
 	);
 	$resultset = $DB->result();
 

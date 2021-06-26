@@ -1912,7 +1912,10 @@ class website
 
     public function quicksearch($text)
     {
-        $like = ' LIKE '.protect('%'.$text.'%');
+        $parameters = array();
+
+	    $like = ' LIKE CONCAT("%", :qs_text, "%") ';
+        $parameters[':qs_text'] = $text;
 
         $cols[] = 'id' . $like;
         $cols[] = 'name' . $like;
@@ -1923,7 +1926,7 @@ class website
         $where.= implode( ' OR ', $cols);
         $where .= ')';
 
-        return $where;
+        return array($where, $parameters);
     }
 }
 
