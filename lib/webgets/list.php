@@ -58,10 +58,12 @@ function nvweb_list($vars=array())
         }
         else if(!is_numeric($vars['categories']))
         {
-            // if "categories" attribute has a comma, then we suppose it is a list of comma separated values
-            // if not, then maybe we want to get the categories from a request parameter or from a specific property of the current page
+            // if "categories" attribute has a comma, then we suppose it is a list of COMMA SEPARATED VALUES
+            // if not, then maybe we want to get the categories from a REQUEST PARAMETER (when prefixed with a dollar sign)
+            // or from a specific PROPERTY of the current page
             if(strpos($vars['categories'], '$')===0)
             {
+                // $request_parameter_name (which may be formatted as a list of comma separated values)
                 $categories = explode(",", $_REQUEST[substr($vars['categories'], 1)]);
 
                 // if categories parameter is empty, then default to the root category
@@ -70,25 +72,34 @@ function nvweb_list($vars=array())
                     $categories = array(0);
                 }
             }
-            else if(strpos($vars['categories'], ',')===false)
+            else if(strpos($vars['categories'], ',') === false)
             {
+                // no comma found, so may be a property of the current PAGE TYPE
                 $categories = nvweb_properties(array(
                     'property'	=> 	$vars['categories']
                 ));
-            }
-            else if(strpos($vars['categories'], ',')!==false)
-            {
-                $categories = explode(",", $vars['categories']);
-            }
 
-            if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+                if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+                {
+                    // if no categories found AND the current list is NESTED from a BLOCK_GROUP list
+                    // then try to get the property from the BLOCK
+                    $categories = nvweb_properties(array(
+                        'mode'     => 'block_group_block',
+                        'property' => $vars['categories'],
+                        'id'       => $vars['nvlist_parent_item']->id,
+                        'uid'      => $vars['nvlist_parent_item']->uid
+                    ));
+                }
+
+                if(!empty($categories) && !is_array($categories))
+                {
+                    $categories = array($categories);
+                }
+            }
+            else if(strpos($vars['categories'], ',') !== false)
             {
-                $categories = nvweb_properties(array(
-                    'mode'     => 'block_group_block',
-                    'property' => $vars['categories'],
-                    'id'       => $vars['nvlist_parent_item']->id,
-                    'uid'      => $vars['nvlist_parent_item']->uid
-                ));
+                // comma found, it is a list of comma separated values
+                $categories = explode(",", $vars['categories']);
             }
 
             if(!is_array($categories))
@@ -2339,7 +2350,6 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
         case 'element': // useful also for source="structure" (but some are nonsense: title, comments, etc)
         case 'item':
-		default:
 			switch($tag['attributes']['value'])
 			{
                 case 'id':
@@ -2549,6 +2559,32 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     // maybe a special tag not related to a source? (unimplemented)
 			}
 			break;
+
+        case 'theme':
+        case 'extension':
+        case 'plugin':
+            $function = @$tag['attributes']['function'];
+            if(!empty($function) && function_exists($function))
+            {
+                $out = call_user_func(
+                    $function,
+                    array(
+                        'object' => $item,
+                        'source' => $source,
+                        'relative_position' => $item_relative_position,
+                        'absolute_position' => $item_absolute_position,
+                        'total' => $total,
+                        'vars' => $tag['attributes']
+                    )
+                );
+            }
+            break;
+
+        default:
+            // source not recognized, just resolve to navigate 2.0 default: item/element
+            $tag['attributes']['source'] = 'element';
+            $out = nvweb_list_parse_tag($tag, $item, $source, $item_relative_position, $item_absolute_position, $total);
+            break;
 	}
 
 	return $out;
