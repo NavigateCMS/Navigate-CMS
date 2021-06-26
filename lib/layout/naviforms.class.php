@@ -814,6 +814,13 @@ class naviforms
 
 		$tinymce_language = $user->language;
 
+		// workaround for TinyMCE 4 where internal URLs have port assigned
+        if(strpos($content_css_selectable, ":")!==false) // some URLs have ports, which may be incompatible with TinyMCE import css
+        {
+            $tinymce_server_port = ':'.$_SERVER["SERVER_PORT"];
+            $content_css_selectable = $content_css_selectable . ',' . str_replace($tinymce_server_port, '', $content_css_selectable);
+        }
+
         $layout->add_script('    
             tinyMCE.baseURL = "'.NAVIGATE_URL.'/lib/external/tinymce4";
             $("#'.$name.'").tinymce(
@@ -924,8 +931,8 @@ class naviforms
                 
                 // https://www.tinymce.com/docs/configure/content-filtering/
                 valid_elements: "*[*],+a[*],+p[*],#i",
-                custom_elements: "nv,code,pre,nvlist,nvlist_conditional,figure,article,header,footer,post,nav",
-                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+nvlist_conditional[*],+figure[*],+article[*],+nav[*],+i[*],+span[*],+em[*],+b[*],*[*]",
+                custom_elements: "nv,code,pre,nvlist,nvlist_conditional,figure,figcaption,article,header,footer,post,nav",
+                extended_valid_elements: "+nv[*],+pre[*],+code[*],+nvlist[*],+nvlist_conditional[*],+figure[*],+figcaption[*],+article[*],+nav[*],+i[*],+span[*],+em[*],+b[*],*[*]",
                 valid_children: "+a[div|p|li],+body[style|script|nv|nvlist|nvlist_conditional],+code[nv|nvlist|nvlist_conditional]",
                 
                 paste_as_text: true,
