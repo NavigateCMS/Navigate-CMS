@@ -119,7 +119,7 @@ class database
 				$fetch = PDO::FETCH_OBJ;		
 				break;	
 		}
-
+		
 		try
 		{
 		    if(is_array($parameters) && !empty($parameters))
@@ -446,6 +446,22 @@ class database
             $first = $this->lastResult[0];
         }
 		return $first;
+	}
+
+	/**
+	 * Return the first column of the first row of the last query sent to database
+	 *
+	 * @return mixed
+	 */
+    public function first_value()
+	{
+	    $value = NULL;
+	    if(isset($this->lastResult[0]))
+        {
+            $row = (array)$this->lastResult[0];
+            $value = $row[array_keys($row)[0]];
+        }
+		return $value;
 	}
 	
 
