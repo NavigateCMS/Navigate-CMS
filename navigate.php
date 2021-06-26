@@ -2,7 +2,7 @@
 // +------------------------------------------------------------------------+
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Naviwebs 2010-2020. All rights reserved.                 |
+// | Copyright (c) Naviwebs 2010-2021. All rights reserved.                 |
 // | Last modified 2020-06-17                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
