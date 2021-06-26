@@ -935,6 +935,17 @@ function nvweb_properties_render($property, $vars)
 	        }
             break;
 
+        case 'webuser':
+            $return = @$vars['return'];
+            switch($return)
+            {
+                case 'id':
+                default:
+                    $out = $property->value;
+                    break;
+            }
+            break;
+
         case 'elements':
             $out = $property->value;
             break;

@@ -1489,6 +1489,26 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
             break;
 
+        case 'webuser':
+            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" nv_property_type="webuser">';
+            $field[] = '<label>'.$property_name.'</label>';
+
+            $property_webuser_id = $property->value;
+            if(!empty($property_webuser_id))
+            {
+                $property_webuser_name = $DB->query_single('username', 'nv_webusers', ' id = '.$property_webuser_id);
+                if(!empty($property_webuser_name))
+                {
+                    $property_webuser_name = array($property_webuser_name);
+                    $property_webuser_id = array($property_webuser_id);
+                }
+            }
+
+            $field[] = $naviforms->selectfield("property-".$property->id, $property_webuser_id, $property_webuser_name, null, null, false, null, null, false);
+            $field[] = '<span style="display: none;" id="property-'.$property->id.'-helper">'.t(535, "Find user by name").'</span>';
+            $field[] = '</div>';
+            break;
+
         case 'webuser_groups':
             $webuser_groups = webuser_group::all_in_array();
 
@@ -1630,5 +1650,4 @@ function navigate_property_layout_scripts($website_id="")
 	    });  
 	');
 }
-
 ?>
