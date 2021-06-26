@@ -1799,11 +1799,38 @@ table.treeTable
     margin-top: -2px;
 }
 
-#media_browser_search img
+#navigate_media_browser_buttons .ui-controlgroup .ui-button
+{
+    /*margin-right: -5px;*/
+}
+
+#media_browser_search > div
+{
+	float: right;
+}
+
+#media_browser_search > div > *
+{
+	float: none;
+}
+
+#media_browser_search img.media_browser_search_cancel
 {
     border-left: 0 none;
     cursor: pointer;
-    margin-left: 0;
+    margin-left: 0px;
+	margin-right: -3px;
+    margin-top: 4px;
+    padding: 2px 3px;
+	display: none;
+}
+
+#media_browser_search img.media_browser_search_find
+{
+    border-left: 0 none;
+    cursor: pointer;
+    margin-left: 0px;
+	margin-right: 0;
     margin-top: 4px;
     padding: 2px 3px;
 }
@@ -2221,11 +2248,6 @@ label.ui-state-active #navigate_media_browser_folder_path
 {
 	padding-top: 3px;
 	padding-bottom: 3px;
-}
-
-#navigate_media_browser_buttons .ui-controlgroup .ui-button
-{
-    margin-right: -5px;
 }
 
 #navigrid-extension-information
