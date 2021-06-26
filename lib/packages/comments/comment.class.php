@@ -362,6 +362,20 @@ class comment
         }
     }
 
+    public function author_fullname()
+    {
+        if(!empty($this->user))
+        {
+            $w = new webuser();
+            $w->load($this->user);
+            return $w->fullname;
+        }
+        else
+        {
+            return $this->name;
+        }
+    }
+
     public function author_avatar()
     {
         if(!empty($this->avatar))

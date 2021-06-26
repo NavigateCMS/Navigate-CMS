@@ -1595,7 +1595,15 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 					break;
 
 				case 'username':
-					$out = $item->author_name();
+                case 'fullname':
+                    if($tag['attributes']['value'] == 'username')
+                    {
+                        $out = $item->author_name();
+                    }
+                    else
+                    {
+                        $out = $item->author_fullname();
+                    }
                     $out = core_special_chars($out);
 					if($tag['attributes']['linked']=='true' && !empty($out))
 					{
