@@ -1152,7 +1152,11 @@ function nvweb_template_tweaks($html)
 	$tags = nvweb_tags_extract($html, 'script', NULL, true, 'UTF-8');
 	foreach($tags as $tag)
 	{
-		if(!isset($tag['attributes']['src'])) continue;
+		if(!isset($tag['attributes']['src']))
+        {
+            continue;
+        }
+
 		if(substr($tag['attributes']['src'], 0, 7)!='http://' && 
 		   substr($tag['attributes']['src'], 0, 8)!='https://')
 		{
@@ -1196,6 +1200,7 @@ function nvweb_template_tweaks($html)
         {
             continue;
         }
+
 		if(substr($tag['attributes']['poster'], 0, 7)!='http://' &&
 		   substr($tag['attributes']['poster'], 0, 8)!='https://')
 		{

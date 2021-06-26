@@ -39,17 +39,17 @@ function nvweb_list($vars=array())
 
 	if(isset($vars['categories']))
 	{
-        if($vars['categories']=='all')
+        if($vars['categories'] == 'all')
         {
             $categories = array(0);
             $vars['children'] = 'true';
         }
-        else if($vars['categories']=='parent')
+        else if($vars['categories'] == 'parent')
         {
             $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
             $categories = array($parent);
         }
-        else if($vars['categories']=='nvlist_parent')
+        else if($vars['categories'] == 'nvlist_parent')
         {
             if($vars['nvlist_parent_type'] === 'structure')
             {
@@ -104,13 +104,13 @@ function nvweb_list($vars=array())
         }
 	}
 
-	if($vars['children']=='true')
+	if($vars['children'] == 'true')
     {
         $categories = nvweb_menu_get_children($categories);
     }
 
     // if we have categories="x" children="true" [to get the children of a category, but not itself]
-    if($vars['children']=='only')
+    if($vars['children'] == 'only')
     {
         $children = nvweb_menu_get_children($categories);
         for($c=0; $c < count($categories); $c++)
@@ -511,7 +511,9 @@ function nvweb_list($vars=array())
                                 foreach($categories as $list_cat)
                                 {
                                     if(in_array($list_cat, $bgbo->exclusions))
+                                    {
                                         $bgbo_cat_found = true;
+                                    }
                                 }
 
                                 if($bgbo_cat_found) // block excluded categories match the current list categories, skip this block
@@ -583,7 +585,9 @@ function nvweb_list($vars=array())
             $total = count($rs);
         }
         else    // block group block empty, just return without content
+        {
             return "";
+        }
     }
     else if($vars['source']=='product')
     {
@@ -1276,6 +1280,7 @@ function nvweb_list($vars=array())
 
 	if(isset($vars['paginator']) && $vars['paginator']!='false')
     {
+        $vars['paginator'] = trim($vars['paginator']);
         $out[] = nvweb_list_paginator($vars['paginator'], $page, $total, $vars['items'], $vars);
     }
 
@@ -1371,7 +1376,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     {
                         $id = $item->category;
                     }
-
+                    
                     $nvweb_properties_parameters = array_replace(
                         $tag['attributes'],
                         array(

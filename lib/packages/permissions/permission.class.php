@@ -223,7 +223,10 @@ class permission
             {
                 foreach($extensions[$e]['permissions'] as $permission)
                 {
-                    $definitions['extensions'][] = (array)$permission;
+                    if(!empty($permission))
+                    {
+                        $definitions['extensions'][] = (array)$permission;
+                    }
                 }
             }
         }
@@ -236,15 +239,25 @@ class permission
         {
             $translations = @file_get_contents(NAVIGATE_PATH.'/lib/permissions/i18n/'.$user->language.'.json');
             if(!empty($translations))
+            {
                 $translations = json_decode($translations, true);
+            }
         }
 
         foreach($definitions as $type => $list)
         {
             for($i=0; $i < count($list); $i++)
             {
+                // ignore empty permission definitions
+                if(empty($list[$i]))
+                {
+                    continue;
+                }
+
                 if(!empty($translations[$list[$i]['name']]))
+                {
                     $definitions[$type][$i]['description'] = $translations[$list[$i]['name']];
+                }
             }
         }
 
@@ -346,6 +359,12 @@ class permission
         {
             for($i=0; $i < count($definitions[$scope]); $i++)
             {
+                // ignore empty permission definitions
+                if(empty($definitions[$scope][$i]))
+                {
+                    continue;
+                }
+
                 $def = $definitions[$scope][$i];
                 $permissions[$def['name']] = (isset($def['dvalue'])? $def['dvalue'] : "");
 

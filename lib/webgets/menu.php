@@ -327,7 +327,9 @@ function nvweb_menu_generate($mode='ul', $levels=0, $parent=0, $level=0, $option
 
                     // hide menu items without a title
                     if(empty($structure['dictionary'][$mid]))
+                    {
                         continue;
+                    }
 
                     $aclass = '';
 					if(in_array($mid, $current['hierarchy']))

@@ -54,17 +54,15 @@ class extension
             $this->enabled = $row->enabled;
             $this->settings = json_decode($row->settings, true);
         }
-        else
+
+        // get from definition the default values for settings without a value, if any
+        if(isset($this->definition->options))
         {
-            // get from definition the default values for settings, if any
-            if(isset($this->definition->options))
+            foreach ($this->definition->options as $option)
             {
-                foreach ($this->definition->options as $option)
+                if(!isset($this->settings[$option->id]) && isset($option->dvalue))
                 {
-                    if (isset($option->dvalue))
-                    {
-                        $this->settings[$option->id] = $option->dvalue;
-                    }
+                    $this->settings[$option->id] = $option->dvalue;
                 }
             }
         }

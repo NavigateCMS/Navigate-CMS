@@ -9,7 +9,11 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
     switch($tag['attributes']['by'])
     {
         case 'property':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                // can't parse values of empty objects
+                return '';
+            }
 
             $property_name = $tag['attributes']['property_id'];
             if(empty($property_name))
@@ -30,7 +34,9 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             if(in_array($property_definition->type, array('image', "file")))
             {
                 if($property_value == '0')
+                {
                     $property_value = "";
+                }
             }
 
             // process special comparing values
@@ -53,7 +59,6 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                     {
                         $property_value = $property_definition->dvalue;
                     }
-
                     break;
             }
 
@@ -114,9 +119,13 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                         if(is_numeric($property_value))
                         {
                             if($condition_value == 'true' || $condition_value===true)
+                            {
                                 $condition_value = '1';
+                            }
                             else if($condition_value == 'false' || $condition_value===false)
+                            {
                                 $condition_value = '0';
+                            }
                         }
 
                         $condition = ($property_value != $condition_value);
@@ -129,9 +138,13 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                         if(is_numeric($property_value))
                         {
                             if($condition_value == 'true' || $condition_value===true)
+                            {
                                 $condition_value = '1';
+                            }
                             else if($condition_value == 'false' || $condition_value===false)
+                            {
                                 $condition_value = '0';
+                            }
                         }
 
                         $condition = ($property_value == $condition_value);
@@ -149,6 +162,7 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 // remove this conditional html code on this round
                 $out = '';
             }
+
             break;
 
         case 'product':
@@ -314,10 +328,15 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 // remove this conditional html code on this round
                 $out = '';
             }
+
             break;
 
         case 'position':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                // can't parse values of empty objects
+                return '';
+            }
 
             if(isset($tag['attributes']['each']))
             {
@@ -411,7 +430,11 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             break;
 
         case 'block':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                // can't parse values of empty objects
+                return '';
+            }
 
             // $item may be a block object or a block group block type
             $output_condition = true;
@@ -497,7 +520,11 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             break;
 
         case 'access':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                // can't parse values of empty objects
+                return '';
+            }
 
             $access = 0;
             switch($tag['attributes']['access'])
@@ -546,7 +573,10 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             break;
 
         case 'gallery':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                return ''; // can't parse values of empty objects
+            }
 
             if($tag['attributes']['empty']=='true')
             {
@@ -565,7 +595,11 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             break;
 
         case 'tags':
-            if(empty($item)) return ''; // can't parse values of empty objects
+            if(empty($item))
+            {
+                // can't parse values of empty objects
+                return '';
+            }
 
             if($tag['attributes']['empty']=='true')
             {

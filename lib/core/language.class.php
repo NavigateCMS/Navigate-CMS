@@ -26,7 +26,9 @@ class language
 		$data = $DB->first();
 
 		if(empty($data->id))
-		    return;
+        {
+            return;
+        }
 
 		$this->id 	= $data->id;
 		$this->code = $data->code;
@@ -37,7 +39,9 @@ class language
 		$xliff = simplexml_load_file(NAVIGATE_PATH.'/'.$this->file);
 
 		if(empty($xliff))   // just use the default language (English)
-			return;
+        {
+            return;
+        }
 
 		foreach($xliff->file[0]->body[0]->{"trans-unit"} as $unit)
 		{
@@ -57,13 +61,21 @@ class language
 	 */			
 	public function t($id, $default="", $replace=array(), $encodeChars=false)
 	{
-		if(empty($this->lang[$id])) $out = $default;
-		else						$out = $this->lang[$id];
+		if(empty($this->lang[$id]))
+        {
+            $out = $default;
+        }
+		else
+        {
+            $out = $this->lang[$id];
+        }
 
         if(!empty($replace))
         {
             foreach($replace as $key => $val)
+            {
                 $out = str_replace($key, $val, $out);
+            }
         }
 
         if($encodeChars)
@@ -86,17 +98,26 @@ class language
 		global $DB;
 		
 		if($with_dictionary)
-			$DB->query('SELECT code, name FROM nv_languages WHERE nv_dictionary != ""');		
+        {
+            $DB->query('SELECT code, name FROM nv_languages WHERE nv_dictionary != ""');
+        }
 		else
-			$DB->query('SELECT code, name FROM nv_languages');		
-		$data = $DB->result();	
+        {
+            $DB->query('SELECT code, name FROM nv_languages');
+        }
+
+		$data = $DB->result();
 		$languages = array();
 
         if($return_as_object)
+        {
             return $data;
+        }
 		
 		foreach($data as $row)
-			$languages[$row->code] = $row->name;
+        {
+            $languages[$row->code] = $row->name;
+        }
 		
 		return $languages;
 	}
@@ -112,7 +133,9 @@ class language
         global $world_languages;
 
         if(empty($world_languages))
+        {
             $world_languages = language::language_names(false);
+        }
 
         if(strpos($code, '_') > 0)
         {
@@ -121,7 +144,9 @@ class language
             $name.= ' ('.$code[1].')';
         }
         else
+        {
             $name = $world_languages[$code];
+        }
 
         return $name;
     }

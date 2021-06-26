@@ -138,7 +138,7 @@ function run()
 
 					for($i=0; $i < count($dataset); $i++)
 					{
-						$homepage = 'http://';
+						$homepage = $dataset[$i]['protocol'];
 						$homepage_relative_url = $dataset[$i]['homepage'];
 						if(is_numeric($homepage_relative_url))
 						{

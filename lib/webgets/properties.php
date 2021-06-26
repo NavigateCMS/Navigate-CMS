@@ -977,7 +977,6 @@ function nvweb_properties_render($property, $vars)
                     $params['mode'] = 'item';
                     $params['id'] = $property->value;
                     $out = nvweb_properties($params);
-
                     break;
 
                 case 'id':

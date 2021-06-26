@@ -195,6 +195,11 @@ class navitable
 		$obj = new stdClass();
 		$obj->rows = array();
 
+		if(empty($dataset))
+        {
+            $dataset = array();
+        }
+
 		for($i=0; $i < count($dataset); $i++)
 		{		
 			$data = $dataset[$i];

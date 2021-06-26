@@ -1121,7 +1121,10 @@ class property
             $property_value = $_REQUEST['property-'.$property->id];
 
             // multilanguage property?
-            if(in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+            if( in_array($property->type, array('text', 'textarea', 'link', 'rich_textarea')) ||
+                @$property->multilanguage=='true' ||
+                @$property->multilanguage===true
+            )
             {
                 $property_value = '[dictionary]';
             }
@@ -1224,7 +1227,9 @@ class property
                 $default_language = $website->languages_list[0];
             }
 
-            if(in_array($property->type, array('text', 'textarea', 'rich_textarea')) || @$property->multilanguage=='true' || @$property->multilanguage===true)
+            if( in_array($property->type, array('text', 'textarea', 'rich_textarea')) ||
+                @$property->multilanguage=='true' || @$property->multilanguage===true
+            )
             {
                 foreach($website->languages_list as $lang)
                 {
@@ -1233,9 +1238,10 @@ class property
                         $_REQUEST['property-'.$property->id.'-'.$lang] = $_REQUEST['property-'.$property->id.'-'.$default_language];
                     }
 
+                    $property_value = $_REQUEST['property-'.$property->id.'-'.$lang];
                     if($property->type == 'text')
                     {
-                        $property_value = core_purify_string($_REQUEST['property-'.$property->id.'-'.$lang]);
+                        $property_value = core_purify_string($property_value);
                     }
 
                     $dictionary[$lang]['property-'.$property->id.'-'.$lang] = $property_value;

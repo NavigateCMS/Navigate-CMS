@@ -187,11 +187,6 @@ function nvweb_parse($request)
         );
 
         debugger::stop_timer('nvweb-page-init');
-        debugger::timer('nvweb-website-cron');
-
-        $website->cron();
-
-        debugger::stop_timer('nvweb-website-cron');
 
         debugger::timer('nvweb-load-webuser');
 
@@ -277,6 +272,15 @@ function nvweb_parse($request)
         $events->extension_backend_bindings(null, true);
 
         debugger::stop_timer('nvweb-load-plugins');
+
+
+        debugger::timer('nvweb-website-cron');
+
+        $website->cron();
+
+        debugger::stop_timer('nvweb-website-cron');
+
+
         debugger::timer('nvweb-parse-route');
 
         // parse route

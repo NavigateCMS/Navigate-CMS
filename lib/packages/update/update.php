@@ -1,7 +1,6 @@
 <?php
 function run()
 {
-	global $website;
 	global $layout;
 
 	// force no cache on this page. Thanks to: http://james.cridland.net/code/caching.html
@@ -15,6 +14,7 @@ function run()
 	{
 		case 'manual_update':
 			$ok = update::install_from_repository(intval($_POST['update_manual_file']));
+
 			if($ok)
             {
 				$layout->navigate_notification(t(293, "Application successfully updated"), false);
