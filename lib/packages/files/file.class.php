@@ -315,6 +315,70 @@ class file
         );
     }
 
+    public function load_from_custom_url($reference, $cache=true)
+    {
+        global $website;
+
+        if($cache)
+        {
+            $cache = 15 * 24 * 60; // 15 days
+        }
+        else
+        {
+            $cache = 0;
+        }
+
+        $mime = '';
+        $sources = '';
+        $name = '';
+
+        if(is_string($reference))
+        {
+            $reference = json_decode($reference);
+        }
+
+        if(!empty($reference->mp4))
+        {
+            $name = basename($reference->mp4);
+            $sources .= '<source src="'.$reference->mp4.'" type="video/mp4">';
+            $mime = 'video/mp4';
+        }
+
+        if(!empty($reference->webm))
+        {
+            $name = basename($reference->webm);
+            $sources .= '<source src="'.$reference->webm.'" type="video/webm">';
+            $mime = 'video/webm';
+        }
+
+        $this->id			= 'direct#'.md5($sources);
+        $this->type			= 'video';
+        $this->name			= $name;
+        $this->size			= NULL;
+        $this->mime			= $mime;
+        $this->width		= NULL;
+        $this->height		= NULL;
+
+        $this->uploaded_by	= NULL;
+
+        $this->access		= 0;
+        $this->permission	= 0;
+        $this->enabled		= 1;
+
+        //$thumbnail = $this->video_thumbnail_retrieve('img/icons/ricebowl/mimetypes/video.png', "direct", $reference);
+
+        $this->extra        = array(
+            'reference'  =>  $reference,
+            'link'      =>  $reference,
+            'thumbnail_url' => 'img/icons/ricebowl/mimetypes/video.png?',
+            'thumbnail_big' => 'img/icons/ricebowl/mimetypes/video.png?',
+            'thumbnail_cache' => 'img/icons/ricebowl/mimetypes/video.png?',
+            'thumbnail_cache_absolute' => 'img/icons/ricebowl/mimetypes/video.png?',
+            'duration' => '',
+            'embed_code'  => '<video controls="controls" width="100%" height="360">'.$sources.'</video>'
+        );
+    }
+
     public function video_thumbnail_retrieve($image_url, $provider, $reference)
     {
         global $website;
@@ -590,7 +654,7 @@ class file
 		return true;
 	}		
 	
-	public static function filesOnPath($parent, $wid=NULL, $orderby="date_added DESC, name ASC")
+	public static function filesOnPath($parent, $wid=NULL, $orderby="date_added DESC, name ASC", $recursive=false)
 	{
 		global $DB;
 		global $website;
@@ -599,30 +663,62 @@ class file
         {
             $wid = $website->id;
         }
-		
-		$files = array();
+
+		$results = array();
 
         // folders are always ordered alphabetically
-		$DB->query('  SELECT * FROM nv_files
-					   WHERE parent = '.intval($parent).'
-					     AND website = '.intval($wid).'
-						 AND type = "folder"
-						ORDER BY '.$orderby.'
-					');
-					
-		$files = $DB->result();		
+        $folders = file::foldersIn($parent, $wid, $recursive);
+        $folders_ids = array_map(function($v){ return $v->id;}, $folders);
+        array_push($folders_ids, $parent);
+
+		$DB->query('  
+            SELECT * 
+              FROM nv_files
+             WHERE parent IN ('.implode(',', $folders_ids).')
+               AND website = '.intval($wid).'
+               AND type != "folder"
+            ORDER BY '.$orderby.'
+        ');
+		$files = $DB->result();
 		
-		$DB->query('  SELECT * FROM nv_files
-					   WHERE parent = '.intval($parent).'
-					     AND website = '.intval($wid).'
-						 AND type != "folder"
-						ORDER BY '.$orderby.'
-					');
-					
-		$files = array_merge($files, $DB->result());		
-		
-		return $files;	
-	}	
+		return array_merge($folders, $files);
+	}
+
+	public static function foldersIn($parent, $wid=NULL, $recursive=false)
+    {
+        global $DB;
+        global $website;
+
+        $results = array();
+
+        if(empty($wid))
+        {
+            $wid = $website->id;
+        }
+
+        $DB->query('  
+             SELECT * 
+               FROM nv_files
+              WHERE parent = '.intval($parent).'
+                AND website = '.intval($wid).'
+                AND type = "folder"
+           ORDER BY name ASC
+        ');
+
+        $folders = $DB->result();
+        $results = $folders;
+
+        if($recursive)
+        {
+            foreach($folders as $folder)
+            {
+                $folders_in = file::foldersIn($folder->id, $wid, true);
+                $results = array_merge($results, $folders_in);
+            }
+        }
+
+        return $results;
+    }
 	
 	public static function filesBySearch($text, $wid=NULL, $orderby="name ASC")
 	{
@@ -645,8 +741,8 @@ class file
                 ':text' => '%' . $text . '%'
             )
         );
-					
-		return $DB->result();		
+
+		return $DB->result();
 	}
 	
 	public static function filesByMedia($media, $offset=0, $limit=-1, $wid=NULL, $text="", $orderby="date_added DESC, name ASC")
@@ -672,12 +768,13 @@ class file
 		$text_search = "";
         if(!empty($text))
         {
-            $text_search = ' AND name LIKE :text';
+            $text_search = ' AND (name LIKE :text OR id LIKE :text)';
             $query_params[':text'] = '%' . $text . '%';
         }
 		
 		$DB->query(
-		    'SELECT SQL_CALC_FOUND_ROWS * FROM nv_files
+		    'SELECT SQL_CALC_FOUND_ROWS * 
+                FROM nv_files
 			  WHERE type = :type
                  AND enabled = 1
                  AND website = :wid 

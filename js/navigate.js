@@ -2585,12 +2585,18 @@ function navigate_file_video_info(provider, reference, callback)
         }
     }
 
-    $.get(
-        NAVIGATE_APP + '?fid=files&act=json&op=video_info&provider=' + provider + '&reference=' + ref,
+    $.post(
+        NAVIGATE_APP + '?fid=files&act=json&op=video_info',
+        {
+            "provider": provider,
+            "reference": ref
+        },
         function(data)
         {
             if(typeof(callback)=='function')
+            {
                 callback($.parseJSON(data));
+            }
         }
     );
 }
@@ -2771,7 +2777,6 @@ function navigate_naviforms_pathfield_refresh()
                             {
                                 $(div_info).find('img[data-type=structure]').removeClass("hidden");
                             }
-
 
                             $('#nv_link_dialog').dialog("close");
                         }

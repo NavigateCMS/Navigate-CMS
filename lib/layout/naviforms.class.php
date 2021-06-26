@@ -1079,7 +1079,7 @@ class naviforms
             else if($media=='video')
             {
                 $layout->add_script('
-                    $(window).load(function() { navigate_dropbox_load_video("'.$name.'", "'.$value.'"); });
+                    $(window).load(function() { navigate_dropbox_load_video("'.$name.'", "'.addslashes($value).'"); });
                 ');
 
                 $out[] = '<figure class="navigatecms_loader"></figure>';
@@ -1287,6 +1287,7 @@ class naviforms
                             <li action="default" value="'.$default_value.'"><a href="#"><span class="fa fa-lg fa-eraser"></span> '.t(199, "Default value").'</a></li>
                             <li action="youtube_url"><a href="#"><span class="fa fa-lg fa-youtube-square fa-align-center"></span> Youtube URL</a></li>
                             <li action="vimeo_url"><a href="#"><span class="fa fa-lg fa-vimeo-square fa-align-center"></span> Vimeo URL</a></li>
+                            <li action="direct_url"><a href="#"><span class="fa fa-lg fa-file-video-o fa-align-center"></span> Direct URL</a></li>
                         </ul>
                     </div>
                 ';
@@ -1349,6 +1350,26 @@ class naviforms
                                                     $("#'.$name.'-droppable").html(\'<figure class="navigatecms_loader"></figure>\');
                                                     navigate_dropbox_load_video("'.$name.'", "vimeo#" + reference);
                                                 }
+                                                $(this).dialog("close");
+                                            },
+                                            "'.t(58, "Cancel").'": function() { $(this).dialog("close"); }
+                                        }
+                                    });
+                                    break;
+                                    
+                                case "direct_url":
+                                    $("<div><form action=\"#\" onsubmit=\"return false;\"><strong>webm</strong><br /><input type=\"text\" name=\"webm\" value=\"\" style=\"width: 100%;\" /><br /><br /><strong>mp4</strong><br /><input type=\"text\" name=\"mp4\" value=\"\" style=\"width: 100%;\" /></form></div>").dialog({
+                                        "title": "Direct URL",
+                                        "modal": true,
+                                        "width": 500,
+                                        "height": 180,
+                                        "buttons": {
+                                            "'.t(190, "Ok").'": function(e, ui)
+                                            {
+                                                var url_webm = $(this).find("input[name=webm]").val();
+                                                var url_mp4 = $(this).find("input[name=mp4]").val();
+                                                var reference = {"mp4": url_mp4, "webm": url_webm};
+                                                navigate_dropbox_load_video("'.$name.'", "direct#" + JSON.stringify(reference));                                                
                                                 $(this).dialog("close");
                                             },
                                             "'.t(58, "Cancel").'": function() { $(this).dialog("close"); }

@@ -811,6 +811,11 @@ function nvweb_properties_render($property, $vars)
                     $file->load_from_vimeo($reference);
                 }
             }
+            else if($provider == 'direct')
+            {
+                $file->load_from_custom_url($reference);
+                $embed = $file->extra['embed_code'];
+            }
 
             switch(@$vars['return'])
             {

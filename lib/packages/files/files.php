@@ -244,6 +244,11 @@ function run()
                     {
                         $item->load_from_vimeo($_REQUEST['reference'], false); // force cache reload
                     }
+                    else if($_REQUEST['provider']=='direct')
+                    {
+                        $reference = json_decode($_REQUEST['reference']);
+                        $item->load_from_custom_url($reference);
+                    }
                     else // uploaded video (file) (may also be provider="file")
                     {
                         if(!empty($_REQUEST['reference']) && is_numeric($_REQUEST['reference']))
@@ -1363,6 +1368,7 @@ function files_media_browser($limit = 50, $offset = 0)
 		{
 			$parent = intval($_REQUEST['parent']);
 			$files = file::filesOnPath($parent, $wid, $order);
+
 			if($parent > 0)	// add "back" special folder
 			{
 				$previous = $DB->query_single(
