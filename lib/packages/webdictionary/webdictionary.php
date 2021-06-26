@@ -196,6 +196,8 @@ function webdictionary_list()
 	global $events;
 	global $website;
 
+    $fid = core_purify_string($_REQUEST['fid'], true);
+
 	$navibars = new navibars();
 	$navitable = new navitable("webdictionary_list");
 	
@@ -205,7 +207,7 @@ function webdictionary_list()
 	{
 		foreach($website->languages as $wslg_code => $wslg)
         {
-            $wslg_links[] = '<a href="?fid='.$_REQUEST['fid'].'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.language::name_by_code($wslg_code).'</a>';
+            $wslg_links[] = '<a href="?fid='.$fid.'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.language::name_by_code($wslg_code).'</a>';
         }
 
 		$events->add_actions(
@@ -221,22 +223,23 @@ function webdictionary_list()
 
 	$navibars->add_actions(
 		array(
-			'<a href="?fid='.$_REQUEST['fid'].'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+			'<a href="?fid='.$fid.'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$fid.'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
 		)
 	);
 
-	$navitable->setQuickSearchURL('?fid='.$_REQUEST['fid'].'&act=json&_search=true&quicksearch=');
+	$navitable->setQuickSearchURL('?fid='.$fid.'&act=json&_search=true&quicksearch=');
 	if($_REQUEST['quicksearch']=='true')
     {
-        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
+	$navitable->setURL('?fid='.$fid.'&act=json');
 	$navitable->sortBy('node_id');
 	$navitable->setDataIndex('node_id');
-	$navitable->setEditUrl('node_id', '?fid='.$_REQUEST['fid'].'&act=edit&id=', 'path');
+	$navitable->setEditUrl('node_id', '?fid='.$fid.'&act=edit&id=', 'path');
 	$navitable->max_rows = 500;
 
 	$navitable->addCol("#id#", 'id', "40", "true", "left", NULL, "true");   // ghost (unique) ID
@@ -250,7 +253,6 @@ function webdictionary_list()
 	$navibars->add_content($navitable->generate());	
 	
 	return $navibars->generate();
-	
 }
 
 function webdictionary_form($item)

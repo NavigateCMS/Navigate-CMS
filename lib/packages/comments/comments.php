@@ -337,6 +337,8 @@ function comments_list()
 {
     global $layout;
 
+    $fid = core_purify_string($_REQUEST['fid'], true);
+
 	$navibars = new navibars();
 	$navitable = new navitable("comments_list");
 	
@@ -353,7 +355,7 @@ function comments_list()
            navigate_confirmation_dialog(
                function() 
                {
-                    window.location.href = "?fid='.$_REQUEST['fid'].'&act=remove_spam&rtk='.$_SESSION['request_token'].'";
+                    window.location.href = "?fid='.$fid.'&act=remove_spam&rtk='.$_SESSION['request_token'].'";
                }, 
                "'.t(60, 'Do you really want to delete the selected items?').
                 "<br /><br />".
@@ -366,20 +368,21 @@ function comments_list()
    ');
 
 	$navibars->add_actions(	array(
-        '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-		'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+        '<a href="?fid='.$fid.'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+		'<a href="?fid='.$fid.'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 		'search_form' )
     );
 	
 	if($_REQUEST['quicksearch']=='true')
     {
-        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
+	$navitable->setURL('?fid='.$fid.'&act=json');
 	$navitable->sortBy('date_created', 'desc');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
+	$navitable->setEditUrl('id', '?fid='.$fid.'&act=edit&id=');
 	$navitable->enableDelete();	
 	
 	$navitable->addCol("ID", 'id', "50", "true", "left");

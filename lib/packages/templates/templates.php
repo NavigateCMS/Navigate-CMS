@@ -258,6 +258,8 @@ function run()
 
 function templates_list()
 {
+    $fid = core_purify_string($_REQUEST['fid'], true);
+
 	$navibars = new navibars();
 	$navitable = new navitable("templates_list");
 	
@@ -265,21 +267,22 @@ function templates_list()
 
 	$navibars->add_actions(
 	    array(
-	        '<a href="?fid='.$_REQUEST['fid'].'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-			'<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+	        '<a href="?fid='.$fid.'&act=2"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+			'<a href="?fid='.$fid.'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 			'search_form'
         )
     );
 	
 	if($_REQUEST['quicksearch']=='true')
     {
-        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
+	$navitable->setURL('?fid='.$fid.'&act=json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=load&id=');
+	$navitable->setEditUrl('id', '?fid='.$fid.'&act=load&id=');
     $navitable->disableSelect();
 	
 	$navitable->addCol("ID", 'id', "60", "true", "left");	

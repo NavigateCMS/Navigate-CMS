@@ -233,7 +233,8 @@ function backups_list()
 	
 	if($_REQUEST['quicksearch']=='true')
     {
-        $navitable->setInitialURL("?fid=backups&act=1&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=backups&act=1&_search=true&quicksearch=".$nv_qs_text);
     }
 	
 	$navitable->setURL('?fid=backups&act=json');

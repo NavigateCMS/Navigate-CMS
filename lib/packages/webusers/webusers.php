@@ -377,13 +377,15 @@ function webusers_list()
     global $events;
     global $layout;
 
+    $fid = core_purify_string($_REQUEST['fid'], true);
+
     $navibars = new navibars();
 	$navitable = new navitable("webusers_list");
 	
 	$navibars->title(t(24, 'Web users'));
 
     $extra_actions = array(
-        '<a href="?fid='.$_REQUEST['fid'].'&act=export"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_save.png"> '.t(475, 'Export').'</a>',
+        '<a href="?fid='.$fid.'&act=export"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_save.png"> '.t(475, 'Export').'</a>',
         '<a href="#" onclick="navigate_webusers_remove_old_unconfirmed();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/bin.png"> '.t(776, 'Remove old unconfirmed accounts').'</a>'
     );
 
@@ -408,37 +410,40 @@ function webusers_list()
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'
+            '<a href="?fid='.$fid.'&act=webuser_groups_list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/group.png"> '.t(506, 'Groups').'</a>'
         )
     );
 
     $navibars->add_actions(
         array(
-            '<a href="?fid='.$_REQUEST['fid'].'&act=create"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
-            '<a href="?fid='.$_REQUEST['fid'].'&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+            '<a href="?fid='.$fid.'&act=create"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>',
+            '<a href="?fid='.$fid.'&act=list"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
             'search_form'
         )
     );
 	
 	if($_REQUEST['quicksearch']=='true')
     {
-        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=1&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=".$fid.'&act=1&_search=true&quicksearch='.$nv_qs_text);
     }
 	
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=1');
+	$navitable->setURL('?fid='.$fid.'&act=1');
     $navitable->sortBy('id', 'DESC');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=2&id=');
+	$navitable->setEditUrl('id', '?fid='.$fid.'&act=2&id=');
     $navitable->enableDelete();
 	$navitable->setGridNotesObjectName("webuser");
 	
-	$navitable->addCol("ID", 'id', "40", "true", "left");
-	$navitable->addCol(t(246, 'Avatar'), 'avatar', "60", "true", "center");
-	$navitable->addCol(t(1, 'User'), 'username', "100", "true", "left");		
+	$navitable->addCol("ID", 'id', "32", "true", "left");
+	$navitable->addCol(t(246, 'Avatar'), 'avatar', "32", "true", "center");
+	$navitable->addCol(t(1, 'User'), 'username', "80", "true", "left");
+	$navitable->addCol(t(44, 'E-Mail'), 'email', "100", "true", "left");
 	$navitable->addCol(t(159, 'Name'), 'fullname', "150", "true", "left");
 	$navitable->addCol(t(506, 'Groups'), 'groups', "120", "true", "left");
 	$navitable->addCol(t(247, 'Date joined'), 'joindate', "60", "true", "left");
-	$navitable->addCol(t(321, 'Allowed'), 'access', "80", "true", "center");
+    $navitable->addCol(t(652, 'Subscribed'), 'newsletter', "32", "true", "center");
+    $navitable->addCol(t(321, 'Allowed'), 'access', "32", "true", "center");
     $navitable->addCol(t(168, 'Notes'), 'note', "32", "false", "center");
 
     // webuser groups filter

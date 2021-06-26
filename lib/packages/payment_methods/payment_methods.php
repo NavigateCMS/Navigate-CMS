@@ -221,7 +221,10 @@ function payment_methods_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=payment_methods&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=payment_methods&act=json&_search=true&quicksearch=".$nv_qs_text);
+    }
 	
 	$navitable->setURL('?fid=payment_methods&act=json');
 	$navitable->sortBy('id');

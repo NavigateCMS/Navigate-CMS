@@ -432,6 +432,8 @@ function websites_list()
 {
     global $user;
 
+    $fid = core_purify_string($_REQUEST['fid'], true);
+
 	$navibars = new navibars();
 	$navitable = new navitable("websites_list");
 
@@ -439,21 +441,22 @@ function websites_list()
 
 	$navibars->add_actions(
         array(
-            (($user->permission('websites.edit')=='true')? '<a href="?fid='.$_REQUEST['fid'].'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
-            '<a href="?fid='.$_REQUEST['fid'].'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
+            (($user->permission('websites.edit')=='true')? '<a href="?fid='.$fid.'&act=edit"><img height="16" align="absmiddle" width="16" src="img/icons/silk/add.png"> '.t(38, 'Create').'</a>' : ''),
+            '<a href="?fid='.$fid.'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
             'search_form'
         )
     );
 
 	if(@$_REQUEST['quicksearch']=='true')
     {
-        $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$_REQUEST['navigate-quicksearch']);
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 
-	$navitable->setURL('?fid='.$_REQUEST['fid'].'&act=json');
+	$navitable->setURL('?fid='.$fid.'&act=json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
-	$navitable->setEditUrl('id', '?fid='.$_REQUEST['fid'].'&act=edit&id=');
+	$navitable->setEditUrl('id', '?fid='.$fid.'&act=edit&id=');
 
 	$navitable->addCol("ID", 'id', "80", "true", "left");
     $navitable->addCol(t(328, 'Favicon'), 'favicon', "32", "true", "center");
@@ -464,7 +467,6 @@ function websites_list()
 	$navibars->add_content($navitable->generate());
 
 	return $navibars->generate();
-
 }
 
 function websites_form($item)

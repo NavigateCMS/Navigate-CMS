@@ -182,7 +182,10 @@ function brands_list()
     );
 	
 	if($_REQUEST['quicksearch']=='true')
-		$navitable->setInitialURL("?fid=brands&act=json&_search=true&quicksearch=".$_REQUEST['navigate-quicksearch']);
+    {
+        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $navitable->setInitialURL("?fid=brands&act=json&_search=true&quicksearch=".$nv_qs_text);
+    }
 	
 	$navitable->setURL('?fid=brands&act=json');
 	$navitable->sortBy('id');
