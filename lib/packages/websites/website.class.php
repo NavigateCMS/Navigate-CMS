@@ -1208,27 +1208,86 @@ class website
         global $current;
         global $events;
 
+        if(APP_DEBUG)
+        {
+            $events->trigger('website', 'cron', array('period' => 'ping'));
+        }
+
         $website_cron_path = NAVIGATE_PRIVATE . '/'.$this->id.'/cache/website.cron';
+        $website_cron_lock_path = NAVIGATE_PRIVATE . '/'.$this->id.'/cache/website.cron.lock';
 
         $last_cron = null;
+        $website_cron_info = null;
         if(file_exists($website_cron_path))
         {
             $last_cron = file_get_contents($website_cron_path);
+            $website_cron_info = json_decode($last_cron, true);
+            if(is_array($website_cron_info))
+            {
+                $last_cron = intval($website_cron_info['last']);
+            }
+        }
+
+        // if there is a cron running AND it is running for less than an hour
+        if(file_exists($website_cron_lock_path) && (filemtime($website_cron_lock_path) + 3600 > time()))
+        {
+            // if the previous running process has completed, it should have removed the lock
+            return;
         }
 
         // we only run the following checks once a minute (on the next visit)
         // when was the last cron execution?
-        if(is_null($last_cron))
+        if(is_null($website_cron_info) || !is_array($website_cron_info))
         {
-            file_put_contents($website_cron_path, core_time());
+            $website_cron_info = array(
+                'last' => core_time(),
+                '5m' => core_time(),
+                '10m' => core_time(),
+                '15m' => core_time(),
+                '20m' => core_time(),
+                '30m' => core_time(),
+                '1h' => core_time(),
+                '2h' => core_time(),
+                '4h' => core_time(),
+                '8h' => core_time(),
+                '1d' => core_time(),
+                '2d' => core_time(),
+                '3d' => core_time(),
+                '7d' => core_time(),
+                '15d' => core_time(),
+                '30d' => core_time()
+            );
+            file_put_contents($website_cron_path, json_encode($website_cron_info));
         }
-        else if(($last_cron + 60 < core_time()))
+        else if(core_time() > ($last_cron + 60))
         {
-            // if cache is enabled and there was a programmed publication (item, structure, block, product) since the last visit or cron execution
-            // then purge the cache
+            // create cron lock file
+            file_put_contents($website_cron_lock_path, core_time());
+
+            $periods = array(
+                '5m' => 5*60,
+                '10m' => 10*60,
+                '15m' => 15*60,
+                '20m' => 20*60,
+                '30m' => 30*60,
+                '1h' => 3600,
+                '2h' => 2*3600,
+                '4h' => 4*3600,
+                '8h' => 8*3600,
+                '1d' => 86400,
+                '2d' => 2*86400,
+                '3d' => 3*86400,
+                '7d' => 7*86400,
+                '15d' => 15*86400,
+                '30d' => 30*86400
+            );
+
+            // if cache is enabled AND there was a programmed publication (item, structure, block, product)
+            // since the last visit or cron execution then purge the cache
             if($current['pagecache_enabled'])
             {
                 $next_change = $this->find_next_publication_event_time($last_cron);
+
                 if(!empty($next_change))
                 {
                     if($next_change < core_time()) // the change had to happen since the last cron execution?
@@ -1239,12 +1298,35 @@ class website
                 }
             }
 
-            // remove very old PHP session files (TODO: that should be executed once a day, not every minute)
-            core_remove_sessions(30); // 30 days
+            // execute cron tasks taking the last execution time in the period
+            foreach($website_cron_info as $period => $last_execution_time)
+            {
+                if($period == 'last')
+                {
+                   continue;
+                }
 
-            $events->trigger('website', 'cron', array());
+                if(core_time() > ($website_cron_info[$period] + $periods[$period]))
+                {
+                    debugger::timer('nvweb-website-cron-'.$period);
 
-            file_put_contents($website_cron_path, core_time());
+                    if($period == '1d')
+                    {
+                        // remove very old PHP session files (once a day)
+                        core_remove_sessions(30); // 30 days
+                    }
+
+                    $events->trigger('website', 'cron', array('period' => $period));
+
+                    $website_cron_info[$period] = core_time();
+                    debugger::stop_timer('nvweb-website-cron-'.$period);
+                }
+            }
+
+            $website_cron_info['last'] = core_time();
+
+            file_put_contents($website_cron_path, json_encode($website_cron_info));
+            @unlink($website_cron_lock_path);
         }
     }
 
@@ -1929,5 +2011,4 @@ class website
         return array($where, $parameters);
     }
 }
-
 ?>
