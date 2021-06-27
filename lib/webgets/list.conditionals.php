@@ -733,6 +733,9 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             $out = '';
     }
 
+    // check if there is a NOT attribute
+    $out = nvweb_list_parse_conditional_not($tag, $out, $item_html);
+
     return $out;
 }
 
@@ -1222,6 +1225,29 @@ function nvweb_list_parse_filters($raw, $object='item')
     $filters = implode("\n", $filters);
 
     return $filters;
+}
+
+function nvweb_list_parse_conditional_not($tag, $out, $item_html)
+{
+    // find "not" attribute (which, because it has no value, can't be detected by the current html parser)
+
+    $str = preg_replace("/\"(.*?)\"/i", "", $tag['full_tag']);
+    $str = trim($str, '<>');
+    $str = explode(" ", strtolower($str));
+
+    if(in_array("not", $str))
+    {
+        if(empty($out))
+        {
+            $out = $item_html;
+        }
+        else
+        {
+            $out = "";
+        }
+    }
+
+    return $out;
 }
 
 ?>
