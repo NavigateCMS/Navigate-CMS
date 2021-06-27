@@ -711,7 +711,7 @@ function nvweb_webuser($vars=array())
             break;
 
         case 'customer_account':
-            $out = nvweb_webuser_customer_account();
+            $out = nvweb_webuser_customer_account($vars);
             break;
     }
 
@@ -848,7 +848,7 @@ function nvweb_webuser_generate_username($email)
     return $username;
 }
 
-function nvweb_webuser_customer_account()
+function nvweb_webuser_customer_account($vars=array())
 {
     global $website;
     global $session;
