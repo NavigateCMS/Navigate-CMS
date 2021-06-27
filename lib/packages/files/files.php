@@ -365,26 +365,6 @@ function run()
 		case 'media_browser':
 			files_media_browser(intval($_GET['limit']), intval($_GET['offset']));
 			break;
-			
-        case 92: // pixlr (image editor) overlay remover
-        case 'pixlr_exit':
-			ob_clean();
-            file::thumbnails_remove(intval($_GET['id']));
-
-			echo '
-			<html>
-			<head></head>
-			<body>
-			<script language="javascript" type="text/javascript">
-				window.parent.eval(\'$("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());\');
-				window.parent.eval("pixlr.overlay.hide();");
-			</script>
-			</body>
-			</html>	
-			';
-			
-			core_terminate();
-			break;
 		
 		case 0: // list / search result
 		default:						
@@ -1095,92 +1075,61 @@ function files_item_properties($item)
         }
         $photopea_upload = str_replace('http:', 'https:', $photopea_upload);
 
-        $navibars->add_tab_content_row(array(
-            '<label>'.t(170, 'Edit').'</label>',
-            '<script language="javascript" type="text/javascript">
-				function navigate_pixlr_edit()
-				{				    				    
-					pixlr.overlay.show({
-						service: "editor",
-						loc: "'.$user->language.'",
-						image: "'.$original_image_link.'",
-						title: "'.$item->name.'",
-						target: "'.NAVIGATE_URL.'/navigate_upload.php?wid='.$website->id.'&engine=pixlr&id='.$item->id.'&session_id='.session_id().'&seed=" + + new Date().getTime(),
-						exit: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=pixlr_exit&id='.$item->id.'&ts=" + + new Date().getTime(),
-						credentials: true,
-						method: "GET",
-						referrer: "Navigate CMS",
-						icon: "'.NAVIGATE_URL.'/img/navigate-isotype-16x16.png",
-						locktitle: true,
-						locktype: "png",
-						redirect: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=files&act=pixlr_exit&id='.$item->id.'&ts=" + + new Date().getTime()
-					});
-
-					// add a close button
-					var close_button = $(\'<a href="#"><span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-close fa-stack-1x fa-inverse"></i></span></a>\');
-					close_button.css({
-					    "position": "absolute",
-					    "right": "-20px",
-					    "top": "-20px",
-					    "font-size": "20px",
-					    "color": "#222"
-					});
-					close_button.on("click", function()
-					{
-				        pixlr.overlay.hide();
-				        $("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());
-					});
-					$("div:last").prepend(close_button);
-				}
-				
-				function navigate_photopea_edit()
-				{
-				    var photopea_edit_json = 
-				    {
-                        "files": 
-                        [
-                            "'.str_replace('http:', 'https:', $original_image_link).'"
-                        ],
-                        "server" : 
+        $editors_enabled = false;
+        if($editors_enabled)
+        {
+            $navibars->add_tab_content_row(array(
+                '<label>'.t(170, 'Edit').'</label>',
+                '<script language="javascript" type="text/javascript">								
+                    function navigate_photopea_edit()
+                    {
+                        var photopea_edit_json = 
                         {
-		                    "url" : "'.$photopea_upload.'" + new Date().getTime(),
-		                    "formats" : [ "png" ]
-	                    },
-	                    "environment" : 
-	                    {
-		                    "rulers"  : true, 
-		                    "compact" : false,        
-		                    "theme"  : 2,              
-		                    "lang"   : "'.$user->language.'",   		
-		                    "localsave" : true,     
-		                    "autosave"  : false,         
-		                    "showbranding": true		                    
-	                    }
-				    };
-				    
-				    $("<iframe id=\"files-photopea-wrapper\" src=\"https:\/\/www.photopea.com?p=" + encodeURI(JSON.stringify(photopea_edit_json)) + "\"><\/iframe>").
-				        dialog({
-				            title: "Photopea",
-				            modal: true,
-				            width: "95%",
-				            height: $(window).height() - 64,
-				            open: function(event, ui)
-				            {
-				                $("#files-photopea-wrapper").css("width", "99%");
-				            },
-				            close: function()
-				            {
-				                $("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());
-				                $("#files-photopea-wrapper").remove();
-				                $(this).remove();
-				            }
-				        });
-
-				}
-			</script>
-			<a href="#" class="button" onclick="navigate_pixlr_edit();"><img src="'.NAVIGATE_URL.'/img/logos/pixlr.png" width="100px" height="42px" /></a> '.
-            (($website->protocol == 'https://' && false)? '<a href="#" class="button" onclick="navigate_photopea_edit();"><img src="'.NAVIGATE_URL.'/img/logos/photopea.png" width="100px" height="42px" /></a>' : '')
-        ));
+                            "files": 
+                            [
+                                "'.str_replace('http:', 'https:', $original_image_link).'"
+                            ],
+                            "server" : 
+                            {
+                                "url" : "'.$photopea_upload.'" + new Date().getTime(),
+                                "formats" : [ "png" ]
+                            },
+                            "environment" : 
+                            {
+                                "rulers"  : true, 
+                                "compact" : false,        
+                                "theme"  : 2,              
+                                "lang"   : "'.$user->language.'",   		
+                                "localsave" : true,     
+                                "autosave"  : false,         
+                                "showbranding": true		                    
+                            }
+                        };
+                        
+                        $("<iframe id=\"files-photopea-wrapper\" src=\"https:\/\/www.photopea.com?p=" + encodeURI(JSON.stringify(photopea_edit_json)) + "\"><\/iframe>").
+                            dialog({
+                                title: "Photopea",
+                                modal: true,
+                                width: "95%",
+                                height: $(window).height() - 64,
+                                open: function(event, ui)
+                                {
+                                    $("#files-photopea-wrapper").css("width", "99%");
+                                },
+                                close: function()
+                                {
+                                    $("#image-preview").attr("src", $("#image-preview").attr("src") + "&refresh=" + new Date().getTime());
+                                    $("#files-photopea-wrapper").remove();
+                                    $(this).remove();
+                                }
+                            });
+    
+                    }
+                </script>
+                '.
+                (($website->protocol == 'https://')? '<a href="#" class="button" onclick="navigate_photopea_edit();"><img src="'.NAVIGATE_URL.'/img/logos/photopea.png" width="100px" height="42px" /></a>' : '')
+            ));
+        }
 
         $navibars->add_tab(t(334, 'Description'));
 

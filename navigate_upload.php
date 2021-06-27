@@ -145,58 +145,6 @@ if($user->permission("files.upload")=="true")
             }
             break;
 
-        case 'pixlr':
-            $file_id = intval($_REQUEST['id']);
-            if(!empty($file_id) && file_exists($targetDir.'/'.$file_id))
-            {
-                if(!empty($_REQUEST['image']))
-                {
-                    //file_put_contents( $targetDir.'/'.$_REQUEST['id'], $_REQUEST['image'] );
-                    //copy( $_REQUEST['image'], $targetDir.'/'.$_REQUEST['id'].'.pixlr' );
-
-                    // download the file even if the user loads a different page
-                    @ignore_user_abort(true);
-
-                    $size = core_filesize_curl($_REQUEST['image']);
-
-                    $content = str_pad('', 512, 'navigate_upload from '.$_REQUEST['image'].' ('.$size.') ');
-                    header("HTTP/1.1 200 OK");
-                    header("Content-Length: ".strlen($content));
-                    echo $content; // output content
-                    header('Connection: close');
-
-                    //$image = core_http_request($_REQUEST['image']);
-                    $image = file_get_contents($_REQUEST['image']);
-                    file_put_contents($targetDir.'/'.$file_id.'.pixlr', $image);
-
-                    if(file_exists($targetDir.'/'.$file_id.'.pixlr'))
-                    {
-                        if(filesize($targetDir.'/'.$file_id.'.pixlr')!=$size)
-                        {
-                            @unlink($targetDir.'/'.$file_id.'.pixlr');
-                        }
-                        else
-                        {
-                            unlink($targetDir.'/'.$file_id);
-                            rename($targetDir.'/'.$file_id.'.pixlr', $targetDir.'/'.$file_id);
-                            // update file info and remove old thumbnails
-
-                            $DB = new database();
-                            $DB->connect();
-
-                            $file = new file();
-                            $file->load($file_id);
-                            $file->refresh();
-
-                            core_terminate();
-                        }
-                    }
-                }
-            }
-            echo false;
-            core_terminate();
-            break;
-
         case 'photopea':
             $file_id = intval($_REQUEST['id']);
             if(!empty($file_id) && file_exists($targetDir.'/'.$file_id))
