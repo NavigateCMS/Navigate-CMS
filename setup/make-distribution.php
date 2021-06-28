@@ -245,6 +245,7 @@ $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/.htaccess'), '.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/.htaccess'), 'private/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/plugins/.htaccess'), 'plugins/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/sessions/.htaccess'), 'private/sessions/.htaccess');
+$zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/sessions/index.html'), 'private/sessions/index.html');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/private/oembed/.htaccess'), 'private/oembed/.htaccess');
 $zipfile->addFile(file_get_contents(NAVIGATE_PATH.'/web/.htaccess.example'), 'web/.htaccess.example');
 $zipfile->addFile('', 'cache/empty.txt');
