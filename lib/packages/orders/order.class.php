@@ -928,7 +928,7 @@ class order
 
         $filename = $dictionary->t(734, "Order").' '.$this->reference.'.pdf';
 
-        $mpdf = new \Mpdf\Mpdf(
+        $mpdf = @new \Mpdf\Mpdf(
             array(
                 'default_font_size' => 9,
                 'default_font' => 'dejavusanscondensed'
