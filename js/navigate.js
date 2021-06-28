@@ -146,16 +146,23 @@ $(window).on('load', function()
     // actions bar submenus
     $('#navigate-content-actions a.content-actions-submenu-trigger').on('mouseenter click', function(ev)
     {
-        // hide all visible menus in action bar
-        $('#navigate-content-actions a.content-actions-submenu-trigger').next().hide();
-
-        if(!$(this).next().is(':visible'))
+        if(ev.type == "mouseenter" || (ev.type == "click" && $(this).attr("href")=="#"))
         {
-            $(this).next().menu().show();
-            $(this).next().addClass('navi-ui-widget-shadow');
-        }
+            // hide all visible menus in action bar
+            $('#navigate-content-actions a.content-actions-submenu-trigger').next().hide();
 
-        return false;
+            if(!$(this).next().is(':visible'))
+            {
+                $(this).next().menu().show();
+                $(this).next().addClass('navi-ui-widget-shadow');
+            }
+
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     });
 
     $('#navigate-content-actions a.content-actions-submenu-trigger').on('dblclick', function(ev)
