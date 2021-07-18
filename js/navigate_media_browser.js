@@ -661,7 +661,7 @@ function navigate_files_edit_folder(id, name, mime)
     $('#navigate-edit-folder').dialog({
         modal: true,
         width: 620,
-        height: 160,
+        height: 200,
         title: navigate_lang_dictionary[141], // Folder
         resizable: false,
         buttons:
@@ -1195,6 +1195,7 @@ function navigate_media_browser_select_order(event, ui)
     navigate_media_browser_order = $('select#media_browser_order').val();
     $('select[name="media_browser_order"]').imageselectmenu( "updateIcon" );
 
+    $("#navigate_media_browser_items").clean();
     navigate_media_browser_reload();
     navigate_media_browser_save_position();
 }

@@ -1530,6 +1530,11 @@ table.treeTable
     height: 24px;
 }
 
+.navibrowse-view-list .navibrowse-file-access-icons
+{
+	right: 8px;
+}
+
 .navibrowse-file-access-icons img
 {
     float: right;
