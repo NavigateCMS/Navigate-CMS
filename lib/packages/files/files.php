@@ -373,6 +373,7 @@ function run()
 			    core_purify_string($_REQUEST['parent']),
                 core_purify_string($_REQUEST['navigate-quicksearch'])
             );
+
             users_log::action(
                 core_purify_string($_REQUEST['fid']),
                 intval($_REQUEST['parent']),
@@ -428,7 +429,7 @@ function files_browser($parent, $search="")
 			'search_form'
         )
     );
-	
+
 	if(!empty($search))
 	{
 		$path = '/'.t(41, 'Search').': '.$search;
@@ -671,7 +672,7 @@ function files_browser($parent, $search="")
                                 1 => 'folder/images',
                                 2 => 'folder/audio',
                                 3 => 'folder/video',
-                                4 => 'folder/flash',
+                                //4 => 'folder/flash',
                                 5 => 'folder/documents'
                             ),
                         array(
@@ -679,7 +680,7 @@ function files_browser($parent, $search="")
                                 1 => t(29, 'Images'),
                                 2 => t(31, 'Audio'),
                                 3 => t(30, 'Video'),
-                                4 => t(186, 'Adobe Flash'),
+                                //4 => t(186, 'Adobe Flash'),
                                 5 => t(32, 'Documents')
                             ),
                         'folder/generic'
@@ -1358,7 +1359,7 @@ function files_media_browser($limit = 50, $offset = 0)
 	            $files_shown[] = $files[$i];
 	        }
 
-	        $total = count($files_shown);
+	        //$total = count($files_shown);
 		}
 	    else if($media=='youtube')
 	    {

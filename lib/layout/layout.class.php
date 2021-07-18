@@ -1048,7 +1048,7 @@ class layout
         $html[] = '             <option value="image" selected="selected" data-class="ui-icon-image" id="nvmb-image">'.t(29, 'Images').'</option>';
         $html[] = '             <option value="audio" data-class="ui-icon-volume-off" id="nvmb-audio">'.t(31, 'Audio').'</option>';
         $html[] = '             <option value="video" data-class="ui-icon-video" id="nvmb-film">'.t(30, 'Video').'</option>';
-        $html[] = '             <option value="flash" data-class="ui-icon-script" id="nvmb-flash">'.t(186, 'Adobe Flash').'</option>';
+//        $html[] = '             <option value="flash" data-class="ui-icon-script" id="nvmb-flash">'.t(186, 'Adobe Flash').'</option>';
         $html[] = '             <option value="document" data-class="ui-icon-document" id="nvmb-doc">'.t(32, 'Documents').'</option>';
         $html[] = '             <option value="folder" data-class="ui-icon-folder-collapsed" id="nvmb-folder" prefix="'.t(75, 'Path').'">'.t(75, 'Path').'</option>';
 //        $html[] = '             <option value="youtube" data-class="fa fa-youtube fa-align-center" id="nvmb-youtube">Youtube</option>';
@@ -1134,7 +1134,7 @@ class layout
                                 1 => 'folder/images',
                                 2 => 'folder/audio',
                                 3 => 'folder/video',
-                                4 => 'folder/flash',
+                                //4 => 'folder/flash',
                                 5 => 'folder/documents'
                             ),
                             array(
@@ -1142,7 +1142,7 @@ class layout
                                 1 => t(29, 'Images'),
                                 2 => t(31, 'Audio'),
                                 3 => t(30, 'Video'),
-                                4 => t(186, 'Adobe Flash'),
+                                //4 => t(186, 'Adobe Flash'),
                                 5 => t(32, 'Documents')
                             ),
                             'folder/generic'

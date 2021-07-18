@@ -664,11 +664,13 @@ class file
             $wid = $website->id;
         }
 
-		$results = array();
-
         // folders are always ordered alphabetically
         $folders = file::foldersIn($parent, $wid, $recursive);
-        $folders_ids = array_map(function($v){ return $v->id;}, $folders);
+        $folders_ids = array();
+		if($recursive)
+        {
+            $folders_ids = array_map(function($v){ return $v->id;}, $folders);
+        }
         array_push($folders_ids, $parent);
 
 		$DB->query('  
