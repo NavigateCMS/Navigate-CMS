@@ -338,12 +338,18 @@ class block
             }
 
             $block_is_fixed = ($fixed[$item[$i]]=='1'? '1' : '0');
+			$block_id = intval($item[$i]);
+
+			if(empty($block_id) || $block_id == 0)
+            {
+                continue;
+            }
 
 			$ok = $DB->execute('
                 UPDATE nv_blocks
 				SET position = '.($i+1).',
 				    fixed = '.$block_is_fixed.'
-                WHERE id = '.$item[$i].'
+                WHERE id = '.$block_id.'
 				  AND website = '.$website->id
             );
 			
@@ -920,18 +926,25 @@ class block
                 // if we don't have a block_group, find the first block_group block with the code requested
                 if($bg->id == $block_group || empty($block_group))
                 {
-                    for($i=0; $i < count($bg->blocks); $i++)
+                    // maybe we have a block_group, but it has no blocks
+                    if(isset($bg->blocks) && !empty($bg->blocks))
                     {
-                        if($bg->blocks[$i]->id == $block_code)
+                        for($i=0; $i < count($bg->blocks); $i++)
                         {
-                            $block = $bg->blocks[$i];
-                            $block->_block_group_id = $bg->id;
-                            break;
+                            if($bg->blocks[$i]->id == $block_code)
+                            {
+                                $block = $bg->blocks[$i];
+                                $block->_block_group_id = $bg->id;
+                                break;
+                            }
                         }
                     }
                 }
+
                 if(!empty($block))
+                {
                     break;
+                }
             }
         }
 

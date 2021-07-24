@@ -32,7 +32,7 @@ function run()
                         $ids = $_REQUEST['ids'];
                         foreach($ids as $id)
                         {
-                            $item->load($id);
+                            $item->load(intval($id));
                             $item->delete();
                         }
                         echo json_encode(true);
@@ -907,6 +907,8 @@ function run()
 				echo "false"; 
 				core_terminate();
 			}
+
+			$comment_id = intval($_REQUEST['id']);
 			
 			switch($_REQUEST['opt'])
 			{
@@ -915,7 +917,7 @@ function run()
 						UPDATE nv_comments
 						   SET status = 0
 						 WHERE website = '.$website->id.' AND
-						       id = '.$_REQUEST['id']);
+						       id = '.$comment_id);
 					break;
 					
 				case 'unpublish':
@@ -923,14 +925,14 @@ function run()
 						UPDATE nv_comments
 						   SET status = 1
 						 WHERE website = '.$website->id.' AND
-						       id = '.$_REQUEST['id']);
+						       id = '.$comment_id);
 					break;
 					
 				case 'delete':
 					$DB->execute('
 						DELETE FROM nv_comments
 						 WHERE website = '.$website->id.' AND
-							   id = '.$_REQUEST['id']);
+							   id = '.$comment_id);
 					break;
 			}
 		

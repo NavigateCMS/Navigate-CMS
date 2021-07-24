@@ -846,10 +846,17 @@ class product
                 continue;
             }
 
+            $product_id = intval($items[$i]);
+
+            if(empty($product_id) || $product_id == 0)
+            {
+                continue;
+            }
+
 			$ok = $DB->execute('
               UPDATE nv_products
 				 SET position = '.($i+1).'
-			   WHERE id = '.$items[$i].' AND 
+			   WHERE id = '.$product_id.' AND 
 			         website = '.$website->id
             );
 

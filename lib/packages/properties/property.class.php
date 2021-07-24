@@ -740,7 +740,10 @@ class property
 							
 		for($i=0; $i < count($item); $i++)
 		{		
-			if(empty($item[$i])) continue;
+			if(empty($item[$i]))
+            {
+                continue;
+            }
 
 			$enabled = '';			
 			if(is_array($enableds))
@@ -748,14 +751,23 @@ class property
 				$enabled = ', enabled = 0 ';
 				for($e=0; $e < count($enableds); $e++)
 				{
-					if($enableds[$e]==$item[$i]) $enabled = ', enabled = 1 ';
+					if($enableds[$e]==$item[$i])
+                    {
+                        $enabled = ', enabled = 1 ';
+                    }
 				}
 			}
+
+            $item_id = intval($item[$i]);
+			if(empty($item_id) || $item_id == 0)
+            {
+                continue;
+            }
 			
-			$ok =	$DB->execute('
+			$ok = $DB->execute('
                 UPDATE nv_properties
 				   SET position = '.($i+1).' '.$enabled.' 
-				 WHERE id = '.$item[$i].'
+				 WHERE id = '.$item_id.'
 				   AND website = '.$website->id
             );
 			

@@ -491,7 +491,7 @@ class structure
 		
 		$tree = array();
 		
-		if($id_parent==-1)
+		if($id_parent == -1)
 		{
             // create the virtual root structure entry (the website)
 			$obj = new structure();
@@ -518,7 +518,7 @@ class structure
             {
 				$tree[$i]->dictionary = webdictionary::load_element_strings('structure', $tree[$i]->id);
                 $tree[$i]->paths	  = path::loadElementPaths('structure', $tree[$i]->id, $ws_id);
-                $tree[$i]->label = $tree[$i]->dictionary[$ws->languages_list[0]]['title'];
+                $tree[$i]->label      = $tree[$i]->dictionary[$ws->languages_list[0]]['title'];
 
                 $tree[$i]->template_title = $tree[$i]->template;
 
@@ -780,11 +780,19 @@ class structure
                 continue;
             }
 
-			$ok =	$DB->execute('UPDATE nv_structure 
-									 SET position = '.($i+1).'
-								   WHERE id = '.$children[$i].' 
-									 AND parent = '.intval($parent).'
-									 AND website = '.$website->id);
+			$child = intval($children[$i]);
+			if(empty($child) || $child == 0)
+            {
+                continue;
+            }
+
+			$ok =	$DB->execute('
+                UPDATE nv_structure 
+                 SET position = '.($i+1).'
+               WHERE id = '.$child.' 
+                 AND parent = '.intval($parent).'
+                 AND website = '.$website->id
+            );
 							 
 			if(!$ok)
             {
