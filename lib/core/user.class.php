@@ -473,8 +473,6 @@ class user
         $like = ' LIKE CONCAT("%", :qs_text, "%") ';
         $parameters[':qs_text'] = $text;
 
-		$like = ' LIKE '.protect('%'.$text.'%');
-		
 		$cols[] = 'id' . $like;
 		$cols[] = 'username' . $like;
 		$cols[] = 'email' . $like;
@@ -494,7 +492,6 @@ class user
 	 */	
 	public static function email_of($user_id)
 	{
-		global $DB;
 		global $DB;
 		$email = $DB->query_single('email', 'nv_users', ' id = '.intval($user_id));
 		
@@ -587,7 +584,9 @@ class user
         $DB->query('SELECT * FROM nv_users', 'object');
 
         if($type='json')
+        {
             $out = json_encode($DB->result());
+        }
 
         return $out;
     }
