@@ -902,7 +902,9 @@ function nvweb_object_enabled($object)
                 {
                     $groups = array_intersect($webuser->groups, $groups);
                     if(count($groups) > 0)
+                    {
                         $access = true;
+                    }
                 }
                 break;
 
@@ -1021,7 +1023,9 @@ function nvweb_source_url($type, $id, $lang='')
         // TODO: try to find custom extension paths
 
         if(empty($id))
+        {
             return "";
+        }
     }
 
     if($type=='element')
@@ -1060,7 +1064,6 @@ function nvweb_source_url($type, $id, $lang='')
 
 function nvweb_ajax()
 {
-    global $website;
     global $theme;
 
     nvweb_webget_load($theme->name);

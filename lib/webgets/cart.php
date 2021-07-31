@@ -1253,7 +1253,9 @@ function nvweb_cart_identification_page($cart)
 
     // add jQuery if has not already been loaded in the template
     if(strpos($html, 'jquery')===false)
+    {
         $out[] = '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>';
+    }
 
     nvweb_after_body(
         'html',

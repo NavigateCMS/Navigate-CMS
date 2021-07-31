@@ -26,7 +26,9 @@ function nvweb_menu($vars=array())
             'property' => $vars['parent']
         ));
         if(!empty($parent_property))
+        {
             $parent = $parent_property;
+        }
     }
 
 	if($of > 0)
@@ -113,13 +115,19 @@ function nvweb_menu($vars=array())
                 {
                     var option = $(this).find("option[value=" + $(this).val() + "]");
                     if($(option).attr("target") == "_blank")
+                    {
                         window.open($(option).attr("href"));
+                    }
                     else
                     {
                         if($(option).attr("href")=="#")
+                        {
                             window.location.replace($(option).attr("href") + "sid_" + $(option).attr("value"));
+                        }
                         else
+                        {
                             window.location.replace($(option).attr("href"));
+                        }
                     }
                 });
             ');
