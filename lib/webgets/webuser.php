@@ -860,6 +860,7 @@ function nvweb_webuser_customer_account($vars=array())
 
     $sign_in_info = "";
     $sign_in_error = "";
+    $sign_up_error = "";
 
     // add jQuery if has not already been loaded in the template
     if(strpos($html, 'jquery')===false)
@@ -871,6 +872,7 @@ function nvweb_webuser_customer_account($vars=array())
     nvweb_after_body(
         'html',
         '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_webuser.css" />'.
+        '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_cart.css" />'.
         '<script src="'.NAVIGATE_URL.'/js/tools/nv_webuser.js"></script>'
     );
 
@@ -927,6 +929,38 @@ function nvweb_webuser_customer_account($vars=array())
                     }
                     break;
 
+                case 'sign_up':
+                    // check if this request really comes from the website and not from a spambot
+
+                    debugger::bar_dump('pre_check');
+
+                    if( parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->subdomain.'.'.$website->domain &&
+                        parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST) != $website->domain )
+                    {
+                        return;
+                    }
+
+                    $error = nvweb_webuser(array(
+                        "mode" => "sign_up",
+                        "email_field" => "nv_wu_sign_up_email",
+                        "username_field" => "nv_wu_sign_up_username",
+                        "password_field" => "nv_wu_sign_up_password",
+                        "conditions_field" => "nv_wu_sign_up_conditions"
+                    ));
+
+                    debugger::bar_dump($error);
+
+                    if(empty($error))
+                    {
+                        $sign_up_info = t(767, "An e-mail with a confirmation has been sent to your address.");
+                    }
+                    else
+                    {
+                        $sign_up_error = $error;
+                    }
+
+                    break;
+
                 default:
                     break;
             }
@@ -947,8 +981,9 @@ function nvweb_webuser_customer_account($vars=array())
         $out = array();
         $out[] = '<div class="nv_wu_identification_form">';
         $out[] = '    <form action="?mode=identification" id="nv_wu_identification_form" method="post">';
-        $out[] = '        <div class="nv_cart-flex-sb">
-                              <div>
+        $out[] = '        <div class="nv_cart-flex-sb">';
+        // sign in form
+        $out[] = '            <div>
                                   <h3>'.$sign_in_symbol.t(758, "Sign in").'</h3>
                                   <input type="hidden" name="nv_wu_submit" value="" />
                                   <div>
@@ -972,8 +1007,45 @@ function nvweb_webuser_customer_account($vars=array())
                                   <div>
                                       <button class="nv_wu_submit_btn" data-action="sign_in">'.t(3, "Enter" ).'</button>
                                   </div>
-                              </div>                              
-                          </div>                          
+                              </div>';
+        // sign up form
+        if($vars['sign_up']=='true')
+        {
+            $out[] = '            <div>
+                                  <h3>'.$sign_up_symbol.t(759, "Sign up").'</h3>
+                                  <div>
+                                      <label>'.t(44, "E-Mail").'</label>
+                                      <input type="text" name="nv_wu_sign_up_email" value="'.core_special_chars($_POST['nv_cart_wu_sign_up_email']).'" />
+                                  </div>
+                                  <div>
+                                      <label>'.t(1, "User").' ('.t(764, "optional").')</label>
+                                      <input type="text" name="nv_wu_sign_up_username" value="'.core_special_chars($_POST['nv_cart_wu_sign_up_username']).'" />
+                                  </div>
+                                  <div>
+                                      <label>'.t(2, "Password").'</label>
+                                      <input type="password" name="nv_wu_sign_up_password" value="" />
+                                  </div>                              
+                                  <div>                                  
+                                      <input type="checkbox" name="nv_wu_sign_up_conditions" id="nv_cart_wu_sign_up_conditions" value="1" />
+                                      <label for="nv_wu_sign_up_conditions">'.
+                                            t(763,
+                                              'I acknowledge and accept the <a href="{link}" target="_blank">purchase conditions</a>',
+                                                array('{link}' => $purchase_conditions_link)
+                                            ).
+                                     '</label>
+                                  </div>
+                                  <div class="nv_cart-sign_up_info_message">                                   
+                                       <p class="custom_message">'.$sign_up_info.'</p>
+                                  </div>
+                                  <div class="nv_cart-sign_up_error_message">
+                                       <p class="custom_message">'.$sign_up_error.'</p>
+                                  </div>
+                                  <div>
+                                      <button class="nv_wu_submit_btn" data-action="sign_up">'.t(759, "Sign up").'</button>
+                                  </div>
+                              </div>';
+        }
+        $out[] = '        </div>                          
                       </form>
                   </div>
         ';
@@ -1938,11 +2010,7 @@ function nvweb_webuser_customer_account_settings()
     $out[] = '</div>';
 
     $out = implode("\n", $out);
-
-    nvweb_after_body('js', '
-
-    ');
-
+    
     nvweb_after_body(
         'html',
         '<link rel="stylesheet" type="text/css" href="'.NAVIGATE_URL.'/css/tools/nv_cart.css" />'
