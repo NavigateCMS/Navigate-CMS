@@ -694,7 +694,7 @@ function nvweb_comments($vars=array())
 	return $out;
 }
 
-function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='oldest')
+function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='oldest', $vars=array())
 {
 	global $DB;
 	global $website;
@@ -712,8 +712,8 @@ function nvweb_comments_list($offset=0, $limit=NULL, $permission=NULL, $order='o
     }
 
     $object = $current['object'];
-    $object_id = $current['id'];
-    $object_type = $current['type'];
+    $object_type = value_or_default($vars['filter']['object_type'], $current['type']);
+    $object_id = value_or_default($vars['filter']['object_id'], $current['id']);
 
     if($object_type == 'structure')
     {
