@@ -879,11 +879,13 @@ function nvweb_object_enabled($object)
 	}
 
 	// the following check is mainly used for blocks
-	if(property_exists($object, 'enabled') && $enabled)
+	if($enabled && property_exists($object, 'enabled'))
+    {
         $enabled = ($object->enabled=='1');
+    }
 
-	$enabled = $enabled && (empty($object->date_published) || ($object->date_published < core_time()));
-	$enabled = $enabled && (empty($object->date_unpublish) || ($object->date_unpublish > core_time()));
+	$enabled = $enabled && (empty($object->date_published) || ($object->date_published=="&infin;") || ($object->date_published < core_time()));
+	$enabled = $enabled && (empty($object->date_unpublish) || ($object->date_unpublish=="&infin;") || ($object->date_unpublish > core_time()));
 
 	// check access
 	if(isset($object->access))
