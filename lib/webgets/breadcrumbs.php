@@ -4,15 +4,13 @@ require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 
 function nvweb_breadcrumbs($vars=array())
 {
-	global $website;
 	global $current;
-	global $DB;
 	global $structure;
     global $events;
 
 	$out = '';
 
-	if(empty($vars['separator']))
+	if(!isset($vars['separator']))
     {
         $vars['separator'] = '&nbsp;&gt;&nbsp;';
     }
@@ -75,11 +73,33 @@ function nvweb_breadcrumbs($vars=array())
 
             if($vars['links']=='false')
             {
-                $out .= $text;
+                $breadcrumb_item = $text;
             }
             else
             {
-                $out .= '<a '.nvweb_menu_action($breadcrumbs[$i]).'>'.$text.'</a>';
+                $breadcrumb_item = '<a '.nvweb_menu_action($breadcrumbs[$i]).'>'.$text.'</a>';
+            }
+
+            if(isset($vars['wrapper']))
+            {
+                switch($vars['wrapper'])
+                {
+                    case 'li':
+                        $breadcrumb_item = '<li>'.$breadcrumb_item.'</li>';
+                        break;
+
+                    case 'div':
+                        $breadcrumb_item = '<div>'.$breadcrumb_item.'</div>';
+                        break;
+
+                    default:
+                }
+
+                $out .= $breadcrumb_item;
+            }
+            else
+            {
+                $out .= $breadcrumb_item;
             }
 
 			if($i + 1 < count($breadcrumbs))
