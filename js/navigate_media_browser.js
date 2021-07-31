@@ -679,7 +679,9 @@ function navigate_files_edit_folder(id, name, mime)
                 {
                     var op = "edit_folder";
                     if(!name)
+                    {
                         op = "create_folder";
+                    }
 
                     $.ajax(
                         {
@@ -690,10 +692,19 @@ function navigate_files_edit_folder(id, name, mime)
                                 mime: $("#folder-mime").val(),
                                 parent: navigate_media_browser_parent
                             },
+                            dataType: "json",
                             url: "?fid=files&act=json&id=" + id + "&op=" + op,
                             success: function(data)
                             {
-                                navigate_media_browser_reload();
+                                if(op == 'create_folder')
+                                {
+                                    var priority = [parseInt(data)];
+                                    navigate_media_browser_reload(priority);
+                                }
+                                else
+                                {
+                                    navigate_media_browser_reload();
+                                }
                                 $("#navigate-edit-folder").dialog("close");
                             }
                         }
@@ -904,17 +915,26 @@ function navigate_media_browser_delete(element)
             success: function(data)
             {
                 if(data=='1' || data=='true')
+                {
                     $(element).fadeOut();
+                }
 				else if(data != "" && data != '""')
-					navigate_notification(data);
+                {
+                    navigate_notification(data);
+                }
             }
         }
     );
 }
 
-function navigate_media_browser_reload()
+// priority: optional array of priority items
+function navigate_media_browser_reload(priority)
 {
 	var media = $("select[name=media_browser_type]").val();
+	if(!priority)
+    {
+        priority = [];
+    }
 
     // update icon on media_browser_type button
     var icon = $('select#media_browser_type option[value="'+$('select#media_browser_type').val()+'"]').attr('data-class');
@@ -930,7 +950,10 @@ function navigate_media_browser_reload()
     if(media=='folder')
     {
         $('#media_browser_type-button').find('.ui-selectmenu-text').html(
-            '<i class="ui-icon ui-icon-folder-collapsed" />' + $("#nvmb-folder").attr("prefix") + "&nbsp;&nbsp;" + navigate_media_browser_folderpath
+            '<i class="ui-icon ui-icon-folder-collapsed" />' +
+            $("#nvmb-folder").attr("prefix") +
+            "&nbsp;&nbsp;" +
+            navigate_media_browser_folderpath
         );
     }
 
@@ -943,14 +966,17 @@ function navigate_media_browser_reload()
     }
 
     $("#navigate_media_browser_items").load(
-		"?fid=files&act=media_browser&website=" +
-            navigate_media_browser_website +
-            "&media=" + media +
-            "&offset=" + navigate_media_browser_offset +
-            "&limit=" + navigate_media_browser_limit +
-            "&parent=" + navigate_media_browser_parent +
-            "&order=" + navigate_media_browser_order +
-            "&text=" + text,
+		"?fid=files&act=media_browser",
+        {
+            'website': navigate_media_browser_website,
+            "media": media,
+            "offset": navigate_media_browser_offset,
+            "limit": navigate_media_browser_limit,
+            "parent": navigate_media_browser_parent,
+            "order": navigate_media_browser_order,
+            "priority": priority.join(","),
+            "text": text
+        },
 		function() 
 		{ 
 			if(media == "folder")
@@ -1195,7 +1221,7 @@ function navigate_media_browser_select_order(event, ui)
     navigate_media_browser_order = $('select#media_browser_order').val();
     $('select[name="media_browser_order"]').imageselectmenu( "updateIcon" );
 
-    $("#navigate_media_browser_items").clean();
+    $("#navigate_media_browser_items").empty();
     navigate_media_browser_reload();
     navigate_media_browser_save_position();
 }

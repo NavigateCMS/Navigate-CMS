@@ -56,12 +56,12 @@ function run()
             switch($_REQUEST['op'])
             {
                 case 'create_folder':
-                    file::create_folder(
+                    $folder = file::create_folder(
                         core_purify_string($_REQUEST['name']),
                         core_purify_string($_REQUEST['mime']),
                         core_purify_string($_REQUEST['parent'])
                     );
-				    echo json_encode(true);
+				    echo json_encode($folder);
                     break;
 
 			    case 'edit_folder':
@@ -363,7 +363,7 @@ function run()
 		
 		case 10:
 		case 'media_browser':
-			files_media_browser(intval($_GET['limit']), intval($_GET['offset']));
+			files_media_browser(intval($_REQUEST['limit']), intval($_REQUEST['offset']));
 			break;
 		
 		case 0: // list / search result
@@ -1314,6 +1314,7 @@ function files_media_browser($limit = 50, $offset = 0)
 	            $order = ' date_added DESC';
 	    }
 
+	    $go_back = null;
 		if($media=='folder')
 		{
 			$parent = intval($_REQUEST['parent']);
@@ -1333,10 +1334,7 @@ function files_media_browser($limit = 50, $offset = 0)
                     )
 	            );
 
-				array_unshift(
-	                $files,
-	                json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}')
-	            );
+				$go_back = json_decode('{"id":"'.$previous.'","type":"folder","name":"'.t(139, 'Back').'","mime":"folder\/back","navipath":"/foo"}');
 			}
 
 	        $total = count($files);
@@ -1369,9 +1367,43 @@ function files_media_browser($limit = 50, $offset = 0)
 	    {
 			list($files_shown, $total) = file::filesByMedia($media, $offset, $limit, $wid, $text, $order);
         }
-        
+
+        $priority = array();
+		if(!empty($_REQUEST['priority']))
+        {
+            $priority = explode(",", $_REQUEST['priority']);
+            $priority = array_reverse($priority);
+            foreach($priority as $prio_f)
+            {
+                $prio_f = intval($prio_f);
+
+                $obj = new file();
+                $obj->load($prio_f);
+                $obj->_media_browser_prioritary = true;
+
+                if(!empty($obj))
+                {
+                    array_unshift($files_shown, $obj);
+                }
+            }
+        }
+
+		if(!empty($go_back))
+        {
+            array_unshift(
+                $files_shown,
+                $go_back
+            );
+        }
+
 		foreach($files_shown as $f)
 		{
+		    // see if the current file is already shown as prioritary
+		    if(in_array($f->id, $priority) && !isset($f->_media_browser_prioritary))
+            {
+                continue;
+            }
+
 	        $website_root = $ws->absolute_path(true).'/object';
 	        if(empty($website_root))
             {
@@ -1395,7 +1427,8 @@ function files_media_browser($limit = 50, $offset = 0)
 				               image-description="'.base64_encode(json_encode($f->description, JSON_HEX_QUOT | JSON_HEX_APOS)).'"
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"	
-				               data-website-id="'.$f->website.'"			               
+				               data-website-id="'.$f->website.'"	
+				               data-prioritary="'.(isset($f->_media_browser_prioritary)? 'true' : 'false').'"		               
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 				               <div class="file-image-wrapper"><img loading="lazy" src="'.$icon.'" title="'.$f->name.'" data-src-original="'.$original.'" /></div>
@@ -1413,6 +1446,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"
 				               data-website-id="'.$f->website.'"
+				               data-prioritary="'.(isset($f->_media_browser_prioritary)? 'true' : 'false').'"
 				               id="file-youtube#'.$f->id.'">
 				               <img loading="lazy" src="'.$f->thumbnail->url.'" title="'.$f->title.'" width="75" height="53" />
 				               <span>'.$f->title.'</span>
@@ -1435,6 +1469,7 @@ function files_media_browser($limit = 50, $offset = 0)
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"
 				               data-website-id="'.$f->website.'"
+				               data-prioritary="'.(isset($f->_media_browser_prioritary)? 'true' : 'false').'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 				               <div class="file-icon-wrapper"><img loading="lazy" src="'.$icon.'" width="50" height="50" title="'.$f->name.'" /></div>

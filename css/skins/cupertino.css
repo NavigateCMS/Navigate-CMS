@@ -1898,6 +1898,12 @@ table.treeTable
     margin: 1px;
 }
 
+#navigate_media_browser_items > div[data-prioritary=true]
+{
+	border-color: #f9dd34;
+	/*background-color: #fff1a1;*/
+}
+
 
 #navigate_media_browser_folder_path
 {

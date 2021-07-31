@@ -1071,7 +1071,7 @@ class layout
                             </div>';
 		$html[] = 		'</div>';
 		
-		$html[] = '		<div id="navigate_media_browser_items"></div>';
+		$html[] = '		<div id="navigate_media_browser_items" class="unselectable"></div>';
 		
 		$html[] = '		<input type="hidden" id="navigate_media_browser_folder_id" value="0" />';		
 		
