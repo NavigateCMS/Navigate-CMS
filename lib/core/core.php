@@ -1082,7 +1082,7 @@ function core_http_request($url, $timeout = 12)
  * @param string $filepath absolute path of the file (only used in PUT requests)
  * @return string Body of the response
  */
-function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $method="post", $filepath=NULL)
+function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $method="post", $filepath=NULL, $referrer=NULL)
 {
 	$s = curl_init();
 	// initialize curl handler 
@@ -1092,6 +1092,11 @@ function core_curl_post($url, $postdata = NULL, $header = NULL, $timeout = 60, $
 	if($header)
     {
         curl_setopt($s, CURLOPT_HTTPHEADER, $header);
+    }
+	
+    if(!empty($referrer))
+    {
+        curl_setopt($s, CURLOPT_REFERER, $referrer);
     }
 		
 	//set headers if presents
