@@ -362,6 +362,27 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                     $out = '';
                 }
             }
+            else if(isset($tag['attributes']['positions']))
+            {
+                $positions = explode(',', $tag['attributes']['positions']);
+                $condition_satisfied = false;
+                foreach($positions as $p)
+                {
+                    if(($position+1) == $p)
+                    {
+                        $condition_satisfied = true;
+                    }
+                }
+
+                if($condition_satisfied)
+                {
+                    $out = $item_html;
+                }
+                else
+                {
+                    $out = '';
+                }
+            }
             else if(isset($tag['attributes']['position']))
             {
                 switch($tag['attributes']['position'])
