@@ -278,8 +278,35 @@ function nvweb_product($vars=array())
         case 'add_to_cart':
             // TODO: 2 modes: AJAX callback or Redirect to cart (default)
             // TODO: decide how to capture and include the parameters quantity and option
-            $link = nvweb_source_url('theme', 'cart');
-            $link = $link . '?action=add_product&product='.$product->id.'&quantity=1';
+            $cart_url = nvweb_source_url('theme', 'cart');
+
+            if(isset($vars['quantity_tag_id']))
+            {
+                // prepare a javascript function to capture the number of units specified by the user
+                $trigger = uniqid('add_to_cart_');
+                $link = '#'.$trigger;
+                nvweb_after_body('js', '
+                    $(\'a[href="'.$link.'"]\').attr("nv-action-id", "'.$trigger.'");
+                    $("#'.$vars['quantity_tag_id'].'").on("input change blur keyup mouseup touchend touchcancel", function()
+                    {
+                        var add_product_url = "'.$cart_url.'?action=add_product&product='.$product->id.'&quantity=";
+                        var quantity = $("#'.$vars['quantity_tag_id'].'").val();
+                        if(!quantity || quantity=="" || quantity <= 0)
+                        {
+                            quantity = 1;
+                        } 
+                        $(\'a[nv-action-id="'.$trigger.'"]\').attr("href", add_product_url + quantity);
+                    });                    
+                    $("#'.$vars['quantity_tag_id'].'").trigger("change");                    
+                ');
+            }
+            else
+            {
+                // a simple link to add 1 unit
+                $link = $cart_url . '?action=add_product&product='.$product->id.'&quantity=1';
+            }
+
+
             $out = $link;
             break;
 
