@@ -1230,12 +1230,7 @@ function nvweb_list_parse_filters($raw, $object='item')
 function nvweb_list_parse_conditional_not($tag, $out, $item_html)
 {
     // find "not" attribute (which, because it has no value, can't be detected by the current html parser)
-
-    $str = preg_replace("/\"(.*?)\"/i", "", $tag['full_tag']);
-    $str = trim($str, '<>');
-    $str = explode(" ", strtolower($str));
-
-    if(in_array("not", $str))
+    if(html_tag_has_attribute($tag['full_tag'], 'not'))
     {
         if(empty($out))
         {

@@ -670,9 +670,23 @@ function nvweb_conditional($vars=array())
             }
             break;
 
+        
+
         default:
             // unknown nvlist_conditional, discard
             $out = '';
+    }
+
+    if(isset($vars['not']))
+    {
+        if(empty($out))
+        {
+            $out = $item_html;
+        }
+        else
+        {
+            $out = "";
+        }
     }
 
     // return the new html code after applying the condition

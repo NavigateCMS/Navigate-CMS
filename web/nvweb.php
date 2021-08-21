@@ -387,11 +387,15 @@ function nvweb_parse($request)
         {
             $html = nvweb_template_parse_lists($html, true);
 
-            if (strpos($html, '{{nv ') !== false || strpos($html, '<nv '))
+            $html_pre = ""; // protection against infinite loops
+            while((strpos($html, '{{nv ') !== false || strpos($html, '<nv ')) && ($html_pre!=$html))
             {
+                $html_pre = $html;
+
                 $html = nvweb_template_parse_special($html);
                 $html = nvweb_template_parse_lists($html);
                 $html = nvweb_template_parse($html);
+                $html = nvweb_template_parse_lists($html, true);
             }
         }
 

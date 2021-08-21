@@ -825,6 +825,12 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                 @include_once(NAVIGATE_PATH.'/lib/webgets/conditional.php');
                 $vars = array_merge($tag['attributes'], array('_template' => $conditional));
 
+                // detect if the nv conditional tag has the "not" attribute
+                if(html_tag_has_attribute($tag['full_tag'], 'not'))
+                {
+                    $vars['not'] = true;
+                }
+
                 if($tag['attributes']['delayed']=='true')
                 {
                     $conditional_uid = uniqid('nvconditional-');

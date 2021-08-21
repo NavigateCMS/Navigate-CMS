@@ -1067,5 +1067,22 @@ function setcookie_samesite($name, $value=NULL, $expire=0, $path='/', $domain='n
     }
 }
 
+function html_tag_has_attribute($full_tag, $attribute)
+{
+    // attributes without a value are not detected by the html parser function
+    // for example: <nv object="conditional" by="cart" value="empty" not></nv> ("not" attribute is not parsed in $vars)
+
+    $str = preg_replace("/\"(.*?)\"/i", "", $full_tag);
+    $str = trim($str, '<>');
+    $str = explode(" ", strtolower($str));
+
+    if(in_array(strtolower($attribute), $str))
+    {
+        return true;
+    }
+
+    return false;
+}
+
 
 ?>
