@@ -293,7 +293,9 @@ function brands_form($object)
     }
 
     if(!empty($object->id))
+    {
         $layout->navigate_notes_dialog('brand', $object->id);
+    }
 	
 	$navibars->add_actions(
 	    array(

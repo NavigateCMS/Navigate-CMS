@@ -2435,7 +2435,9 @@ function blocks_type_form($item)
         function navigate_blocks_code_generate(el)
         {
             if($("#code").val()!="")
+            {
                 return;
+            }
             var title = $("#title").val();
 			title = title.replace(/([\'"“”«»?:\+\&!¿#\\\\])/g, "");
 			title = title.replace(/[.\s]+/g, navigate["word_separator"]);
@@ -2445,7 +2447,9 @@ function blocks_type_form($item)
         $("#code").on("focus", function()
         {
             if($(this).val() == "")
+            {
                 navigate_blocks_code_generate();
+            }
         });
         '
     );
@@ -3107,7 +3111,9 @@ function block_group_form($item)
                             {
                                 $classes = 'block_group_block ui-state-default';
                                 if(!empty($allowed_types) && !in_array($b['id'], $allowed_types))
+                                {
                                     $classes .= ' ui-state-disabled';
+                                }
 
                                 $html = '<div class="'.$classes.'" data-block-id="'.$b['id'].'" data-block-type="block_type">'.
                                     '<div class="actions">

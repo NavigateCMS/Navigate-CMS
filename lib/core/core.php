@@ -1496,25 +1496,14 @@ function navigate_compose_email($data, $style=array())
         $text_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.text_color" AND website = ' . intval($website->id), 'id DESC');
         $title_color_db = $DB->query_single('value', 'nv_permissions', 'name = "nvweb.comments.titles_color" AND website = ' . intval($website->id), 'id DESC');
 
-        if(!empty($background_color_db))
-        {
-            $background_color = str_replace('"', '', $background_color_db);
-        }
-
-        if(!empty($text_color_db))
-        {
-            $text_color = str_replace('"', '', $text_color_db);
-        }
-
-        if(!empty($title_color_db))
-        {
-            $title_color = str_replace('"', '', $title_color_db);
-        }
+        $background_color_db = str_replace('"', '', $background_color_db);
+        $text_color_db = str_replace('"', '', $text_color_db);
+        $title_color_db = str_replace('"', '', $title_color_db);
 
         $style = array(
-            'background' => $background_color,
-            'title-color' => $title_color,
-            'content-color' => $text_color
+            'background' => value_or_default($background_color_db, $background_color),
+            'title-color' => value_or_default($title_color_db, $title_color),
+            'content-color' => value_or_default($text_color_db, $text_color)
         );
     }
 

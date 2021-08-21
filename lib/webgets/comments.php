@@ -823,9 +823,13 @@ function nvweb_website_comments_list($offset=0, $limit=2147483647, $permission=N
     global $current;
 
     if($order=='newest')
+    {
         $orderby = "nvc.date_created DESC";
+    }
     else
+    {
         $orderby = "nvc.date_created ASC";
+    }
 
     $DB->query('SELECT SQL_CALC_FOUND_ROWS nvc.*, nvwu.username, nvwu.avatar, nvwd.text as item_title
 				  FROM nv_comments nvc
