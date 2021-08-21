@@ -574,7 +574,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
                 $icon = '';
                 if(!empty($tl['icon'][$key]))
                 {
-                    $icon = '<i class="fa '.$tl['icon'][$key].'"></i>';
+                    $icon = '<i class="fa '.$vars['icon_classes'].' '.$tl['icon'][$key].'"></i>';
                 }
 
                 if(!empty($title) && !empty($icon))
@@ -586,6 +586,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
                 $link = core_special_chars($link);
                 $trigger_html[] = $prefix.'<a href="'.$link.'"'.$new_window.'>'.$icon.$title.'</a>'.$suffix;
             }
+
             $glue = '';
             if(!empty($vars['separator']))
             {
