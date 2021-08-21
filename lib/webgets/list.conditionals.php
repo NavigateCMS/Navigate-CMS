@@ -791,6 +791,7 @@ function nvweb_list_parse_filters($raw, $object='item')
 
     if(APP_DEBUG && json_last_error() > 0)
     {
+        debugger::bar_dump($raw, json_last_error_msg());
         debugger::console($raw, json_last_error_msg());
     }
 
@@ -827,7 +828,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                     }   // ignore this filter
 
                     $value = $_REQUEST[substr($value, 1)];
-                    if(empty($value)) // ignore empty values
+                    if(empty($value) && $value!='0') // ignore empty values
                     {
                         continue;
                     }
@@ -1031,7 +1032,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                     break;
 
                 // product specific values or filters
-                case 'brand':
+                case 'brand': // a specific brand (only one)
                     if(substr($value, 0, 1)=='$')
                     {
                         if(!isset($_REQUEST[substr($value, 1)]))
@@ -1063,6 +1064,97 @@ function nvweb_list_parse_filters($raw, $object='item')
                     }
 
                     $filters[] = ' AND ( p.brand = '.$brand_id.' ) ';
+                    $direct_filter = false;
+                    break;
+
+                case 'brands':
+                    $brands = array();
+
+                    // array of brands
+                    // comparator can only be in or nin (not in)
+                    if(is_string($value))
+                    {
+                        $brands = explode(",", $value);
+                        $comparator = "in";
+                    }
+                    else // object (comparator => value)
+                    {
+                        $comparator = array_keys($value)[0];
+                        $value = array_values($value)[0];
+
+                        if(substr($value, 0, 1)=='$')
+                        {
+                            if(!isset($_REQUEST[substr($value, 1)]))
+                            {
+                                // ignore this filter
+                                continue 2;
+                            }
+                            $value = $_REQUEST[substr($value, 1)];
+                        }
+
+                        if(is_array($value))
+                        {
+                            $brands = $value;
+                        }
+                        else if(!empty($value))
+                        {
+                            $brands = explode(",", $value);
+                        }
+
+                        // filter array, only integers
+                        $brands = array_map(function($v) { if(is_numeric($v)) {return intval($v);}; return null;}, $brands);
+                        $brands = array_filter($brands);
+                    }
+
+                    if(!empty($brands))
+                    {
+                        if($comparator == 'in')
+                        {
+                            $filters[] = ' AND p.brand IN ('.implode(",", $brands).') ';
+                        }
+
+                        if($comparator == 'nin')
+                        {
+                            $filters[] = ' AND p.brand NOT IN ('.implode(",", $brands).') ';
+                        }
+                    }
+
+                    $direct_filter = false;
+
+                    break;
+
+                case 'price':
+                    if(!is_numeric($value))
+                    {
+                        $key = array_keys($value)[0];
+                        $value = array_values($value)[0];
+
+                        if(substr($value, 0, 1)=='$')
+                        {
+                            if(!isset($_REQUEST[substr($value, 1)]))
+                            {
+                                // ignore this filter
+                                continue 2;
+                            }
+                            $value = $_REQUEST[substr($value, 1)];
+                        }
+
+                        if(!empty($value))
+                        {
+                            // TODO: improve product price calculation in SQL to be able to compare easily
+                            $filters[] = ' AND ( p.base_price '.$comparators[$key].' '.floatval($value).' OR
+                                                 (  p.offer_price '.$comparators[$key].' '.floatval($value).' AND
+                                                    p.offer_price > 0
+                                                 )
+                                           ) ';
+                        }
+                    }
+                    else
+                    {
+                        // TODO: improve product price calculation in SQL to be able to compare easily
+                        $filters[] = ' AND ( p.base_price = '.floatval($value).' OR p.offer_price = '.floatval($value).') ';
+                    }
+
                     $direct_filter = false;
                     break;
 
