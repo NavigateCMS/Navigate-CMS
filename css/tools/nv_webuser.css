@@ -1,4 +1,41 @@
-.nv_wu-sign_in_error_message
+.nv_wu-flex-sb
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+.nv_wu-flex-sb > div:first-child
+{
+    width: 49%;
+}
+
+.nv_wu-flex-sb > div:last-child
+{
+    width: 48%;
+}
+
+@media screen and (max-width: 639px)
+{
+    .nv_wu-flex-sb:not(.nv_wu-flex-sb-nested)
+    {
+        display: block;
+    }
+
+    .nv_wu-flex-sb:not(.nv_wu-flex-sb-nested) > div:first-child,
+    .nv_wu-flex-sb:not(.nv_wu-flex-sb-nested) > div:last-child
+    {
+        width: 100%;
+    }
+
+}
+
+.nv_wu_summary_form .nv_wu-flex-sb-nested > div:last-child
+{
+    text-align: right;
+}
+
+.nv_wu-sign_in_error_message,
+.nv_wu-sign_up_error_message
 {
     clear: both;
     display: none;
@@ -8,7 +45,8 @@
     background: #ffc9c9;
 }
 
-.nv_wu-sign_in_info_message
+.nv_wu-sign_in_info_message,
+.nv_wu-sign_up_info_message
 {
     clear: both;
     display: none;
@@ -24,8 +62,17 @@
     margin-top: 42px;
 }
 
+.nv_wu-sign_up_info_message,
+.nv_wu-sign_up_error_message
+{
+    margin-top: 0px;
+}
+
+
 .nv_wu-sign_in_error_message p,
-.nv_wu-sign_in_info_message p
+.nv_wu-sign_in_info_message p,
+.nv_wu-sign_up_error_message p,
+.nv_wu-sign_up_info_message p
 {
     display: none;
     font-size: 12px;
@@ -162,7 +209,7 @@
     display: block;
 }
 
-.nv_wu-customer_account_content .nv_cart_errors
+.nv_wu-customer_account_content .nv_wu_errors
 {
     margin-top: 0;
 }

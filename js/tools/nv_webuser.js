@@ -1,4 +1,4 @@
-function nv_cart_identification_init()
+function nv_wu_identification_init()
 {
     var jqi = jQuery('#nv_wu_identification_form');
 
@@ -18,6 +18,18 @@ function nv_cart_identification_init()
     });
 
     jqi.find('div.nv_wu-sign_in_error_message p.custom_message').not(":empty").each(function()
+    {
+        jQuery(this).css('display', 'block');
+        jQuery(this).parent().css('display', 'block');
+    });
+
+    jqi.find('div.nv_wu-sign_up_info_message p.custom_message').not(":empty").each(function()
+    {
+        jQuery(this).css('display', 'block');
+        jQuery(this).parent().css('display', 'block');
+    });
+
+    jqi.find('div.nv_wu-sign_up_error_message p.custom_message').not(":empty").each(function()
     {
         jQuery(this).css('display', 'block');
         jQuery(this).parent().css('display', 'block');
