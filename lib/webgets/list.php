@@ -25,440 +25,38 @@ function nvweb_list($vars=array())
 	$out = array();
 
 	$webget = 'list';
-    $categories = array();
-    $exclude = '';
 
-    if(in_array($current['type'], array('item', 'product')))
-    {
-        $categories = array($current['object']->category);
-    }
-    else if($current['type'] == 'structure')
-    {
-        $categories = array($current['object']->id);
-    }
+    $categories = nvweb_list_process_categories($vars);
+    $items = nvweb_list_process_items($vars);
+    $exclude = nvweb_list_process_exclude($vars);
+    $search = nvweb_list_process_search($vars);
+    list($page, $offset, $vars) = nvweb_list_process_offset($vars, $items);
+    list($permission, $access, $access_extra) = nvweb_list_process_access();
+    list($order, $orderby) = nvweb_list_process_order($vars);
 
-	if(isset($vars['categories']))
-	{
-        if($vars['categories'] == 'all')
-        {
-            $categories = array(0);
-            $vars['children'] = 'true';
-        }
-        else if($vars['categories'] == 'parent')
-        {
-            $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
-            $categories = array($parent);
-        }
-        else if($vars['categories'] == 'nvlist_parent')
-        {
-            if($vars['nvlist_parent_type'] === 'structure')
-            {
-                $categories = array($vars['nvlist_parent_item']->id);
-            }
-        }
-        else if(!is_numeric($vars['categories']))
-        {
-            // if "categories" attribute has a comma, then we suppose it is a list of COMMA SEPARATED VALUES
-            // if not, then maybe we want to get the categories from a REQUEST PARAMETER (when prefixed with a dollar sign)
-            // or from a specific PROPERTY of the current page
-            if(strpos($vars['categories'], '$')===0)
-            {
-                // $request_parameter_name (which may be formatted as a list of comma separated values)
-                $categories = explode(",", $_REQUEST[substr($vars['categories'], 1)]);
-
-                // if categories parameter is empty, then default to the root category
-                if(empty($categories) || empty($categories[0]))
-                {
-                    $categories = array(0);
-                }
-            }
-            else if(strpos($vars['categories'], ',') === false)
-            {
-                // no comma found, so may be a property of the current PAGE TYPE
-                $categories = nvweb_properties(array(
-                    'property'	=> 	$vars['categories']
-                ));
-
-                if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
-                {
-                    // if no categories found AND the current list is NESTED from a BLOCK_GROUP list
-                    // then try to get the property from the BLOCK
-                    $categories = nvweb_properties(array(
-                        'mode'     => 'block_group_block',
-                        'property' => $vars['categories'],
-                        'id'       => $vars['nvlist_parent_item']->id,
-                        'uid'      => $vars['nvlist_parent_item']->uid
-                    ));
-                }
-
-                if(!empty($categories) && !is_array($categories))
-                {
-                    $categories = array($categories);
-                }
-            }
-            else if(strpos($vars['categories'], ',') !== false)
-            {
-                // comma found, it is a list of comma separated values
-                $categories = explode(",", $vars['categories']);
-            }
-
-            if(!is_array($categories))
-            {
-                $categories = explode(',', $categories);
-                $categories = array_filter($categories); // remove empty elements
-            }
-        }
-        else
-        {
-            $categories = explode(',', $vars['categories']);
-            $categories = array_filter($categories); // remove empty elements
-        }
-	}
-
-	if($vars['children'] == 'true')
-    {
-        $categories = nvweb_menu_get_children($categories);
-    }
-
-    // if we have categories="x" children="true" [to get the children of a category, but not itself]
-    if($vars['children'] == 'only')
-    {
-        $children = nvweb_menu_get_children($categories);
-        for($c=0; $c < count($categories); $c++)
-        {
-            array_shift($children);
-        }
-        $categories = $children;
-    }
-
-    if(!empty($vars['children']) && intval($vars['children']) > 0)
-    {
-        $children = nvweb_menu_get_children($categories, intval($vars['children']));
-
-        for($c=0; $c < count($categories); $c++)
-        {
-            array_shift($children);
-        }
-        $categories = $children;
-    }
-
-    // apply a filter on categories, if given
-    // example: request_categories="c" ... in the url &q=text&c=23,35
-    if(!empty($vars['request_categories']))
-    {
-        $categories_filter = explode(",", $_REQUEST[$vars['request_categories']]);
-        if(empty($categories))
-        {
-            // note: categories may be empty by the rules applies on categories + children;
-            // in this case we give preference to the request_categories filter
-            $categories = array_values($categories_filter);
-        }
-        else
-        {
-            for($cf=0; $cf < count($categories_filter); $cf++)
-            {
-                if(!in_array($categories_filter[$cf], $categories))
-                {
-                    unset($categories_filter[$cf]);
-                }
-                $categories_filter = array_filter($categories_filter);
-            }
-            $categories = $categories_filter;
-        }
-    }
-
-	if(empty($vars['items']) || $vars['items']=='0')
-	{
-        $vars['items'] = 5000; //2147483647; // maximum integer
-        // NOTE: having >5000 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
-    }
-    else if(!is_numeric($vars['items']))
-    {
-        $max_items = "";
-
-        // the number of items is defined by a property
-        $max_items = nvweb_properties(array(
-            'property'	=> 	$vars['items']
-        ));
-
-        if(empty($max_items) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
-        {
-            $max_items = nvweb_properties(array(
-                'mode'	    =>	'block_group_block',
-                'property'  => $vars['items'],
-                'id'        =>	$vars['nvlist_parent_item']->id,
-                'uid'       => $vars['nvlist_parent_item']->uid
-            ));
-        }
-
-        if(!empty($max_items))
-        {
-            $vars['items'] = $max_items;
-        }
-        else
-        {
-            // default maximum
-            $vars['items'] = 500;
-        }
-    }
-
-    if(!empty($vars['exclude']))
-    {
-        $exclude = str_replace('current', $current['object']->id, $vars['exclude']);
-        $exclude = explode(',', $exclude);
-        $exclude = array_filter($exclude);
-
-        if(!empty($exclude))
-        {
-            if($vars['source']=='structure' || $vars['source']=='category')
-            {
-                $exclude = 'AND s.id NOT IN('.implode(',', $exclude).')';
-            }
-            else if($vars['source']=='product')
-            {
-                $exclude = 'AND p.id NOT IN('.implode(',', $exclude).')';
-            }
-            else // item
-            {
-                $exclude = 'AND i.id NOT IN('.implode(',', $exclude).')';
-            }
-        }
-        else
-        {
-            $exclude = '';
-        }
-    }
-
-    // search parameter (for now only ELEMENTS[items] and PRODUCTS!)
-    $search = '';
-    if(!empty($vars['search']))
-    {
-        // prepare and execute the search
-        $search_what = $vars['search'];
-
-        if(substr($vars['search'], 0, 1)=='$')
-        {
-            $search_what = $_REQUEST[substr($vars['search'], 1)];
-        }
-
-        if(!empty($search_what) && !isset($_SESSION['APP_USER#'.APP_UNIQUE]))
-        {
-            // ignore searches requested by a navigate cms user or explicitly ignored by the template
-            if(@!($vars['log']=='false'))
-            {
-                $DB->execute('
-                    INSERT INTO nv_search_log
-                      (id, website, date, webuser, origin, text, request)
-                    VALUES
-                      (0, :website, :date, :webuser, :origin, :text, :request)
-                  ',
-                    array(
-                        'website' => $website->id,
-                        'date'    => time(),
-                        'webuser' => value_or_default($webuser->id, 0),
-                        'origin'  => (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']),
-                        'text'    => $search_what,
-                        'request' => json_encode(array_merge($_GET, $_POST))
-                    )
-                );
-            }
-        }
-
-        $search_what = explode(' ', $search_what);
-        $search_what = array_filter($search_what);
-
-        if(empty($search_what))
-        {
-            $search_what = array();
-        }
-
-        $search = array();
-        $search[] = ' 1=1 ';
-
-        $object_alias = "i";
-        $object_type = "item";
-
-        if($vars['source'] == "product")
-        {
-            $object_alias = "p";
-            $object_type = "product";
-        }
-
-        foreach ($search_what as $what)
-        {
-            if (substr($what, 0, 1) == '-')
-            {
-                $search[] = '(
-                                '.$object_alias.'.id NOT IN (
-                                    SELECT search_nwdi.node_id
-                                    FROM nv_webdictionary search_nwdi
-                                    WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
-                                          search_nwdi.website = ' . intval($website->id) . ' AND
-                                          search_nwdi.text LIKE ' . protect('%' . substr($what, 1) . '%') .
-                            '    ) 
-                                 AND '.$object_alias.'.id NOT IN( 
-                                    SELECT search_npi.node_id
-                                     FROM   nv_properties_items search_npi 
-                                     WHERE  search_npi.element = "'.$object_type.'" AND 
-                                            search_npi.website = ' . intval($website->id) . ' AND
-                                            search_npi.value LIKE ' . protect('%' . substr($what, 1) . '%') . '
-                                 )
-                            )';
-            }
-            else
-            {
-                $search[] = '(
-                                '.$object_alias.'.id IN (
-                                    SELECT search_nwdi.node_id
-                                    FROM nv_webdictionary search_nwdi
-                                    WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
-                                          search_nwdi.website = ' . intval($website->id) . ' AND
-                                          search_nwdi.text LIKE ' . protect('%' . $what . '%') .
-                            '    )
-                                 OR '.$object_alias.'.id IN( 
-                                    SELECT  search_npi.node_id
-                                     FROM   nv_properties_items search_npi
-                                     WHERE  search_npi.element = "'.$object_type.'" AND 
-                                            search_npi.website = ' . intval($website->id) . ' AND
-                                            search_npi.value LIKE ' . protect('%' . $what . '%') . '
-                                )
-                            )';
-            }
-        }
-
-        $search = ' AND ( ' . implode(' AND ', $search) . ' ) ';
-    }
-
-	// RETRIEVE OBJECTS
-
-    // calculate the offset of the first element to retrieve
-    // what is the name of the "page" parameter in the url
-    if(empty($vars['page_parameter']))
-    {
-        $vars['page_parameter'] = 'page';
-    }
-    $page = value_or_default($_REQUEST[$vars['page_parameter']], 1);
-
-	$offset = intval($page - 1) * $vars['items'];
-
-    // this list does not use paginator, so offset must be always zero
-    if(!isset($vars['paginator']) || $vars['paginator']=='false')
-    {
-        $offset = 0;
-    }
-
-	$permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
-
-    // public access / webuser based / webuser groups based
-    $access = 2;
-    $access_extra = '';
-    if(!empty($current['webuser']))
-    {
-        $access = 1;
-        if(!empty($webuser->groups))
-        {
-            $access_groups = array();
-            foreach($webuser->groups as $wg)
-            {
-                if(empty($wg))
-                {
-                    continue;
-                }
-
-                $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
-            }
-
-            if(!empty($access_groups))
-            {
-                $access_extra = ' OR (s.access = 3 AND ('.implode(' OR ', $access_groups).'))';
-            }
-        }
-    }
-
-    // get order type: REQUEST PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
-    $order = @$_REQUEST['order'];
-    if(empty($order))
-    {
-        $order  = @$vars['order'];
-        if(@substr($vars['order'], 0, 1)=='$')
-        {
-            $order = @$_REQUEST[substr($vars['order'], 1)];
-        }
-    }
-    if(empty($order))   // default order: latest
-    {
-        $order = 'latest';
-    }
-
-    $orderby = nvweb_list_get_orderby($order);
+    // RETRIEVE OBJECTS
 
     $rs = NULL;
+    $params = array(
+        'items' => $items,
+        'access' => $access,
+        'access_extra' => $access_extra,
+        'permission' => $permission,
+        'exclude' => $exclude,
+        'offset' => $offset,
+        'order' => $order,
+        'orderby' => $orderby,
+    );
 
     if(($vars['source']=='structure' || $vars['source']=='category') && !empty($categories))
 	{
-        $orderby = str_replace(array('i.', 'p.'), 's.', $orderby);
-
-        $visible = '';
-        if($vars['filter']=='menu')
-        {
-            $visible = ' AND s.visible = 1 ';
-        }
-
-		$templates = "";
-        if(!empty($vars['templates']))
-        {
-            if(strpos($vars['templates'], '$')===0)
-            {
-                $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
-            }
-            else
-            {
-                $templates = explode(",", $vars['templates']);
-            }
-
-	        $templates = array_filter($templates);
-			$templates = ' AND s.template IN ("'.implode('","', $templates).'")';
-        }
-
-		$DB->query('
-			SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
-			            s.date_published, s.date_unpublish, s.date_published as pdate,
-			            d.text as title, s.position as position
-			  FROM nv_structure s, nv_webdictionary d
-			 WHERE s.id IN('.implode(",", $categories).')
-			   AND s.website = :wid
-			   AND s.permission <= '.$permission.'
-			   AND (s.date_published = 0 OR s.date_published < :time)
-			   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
-			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
-			   AND d.website = s.website
-			   AND d.node_type = "structure"
-			   AND d.subtype = "title"
-			   AND d.node_id = s.id
-			   AND d.lang = :lang
-		     '.$templates.'
-			 '.$visible.'
-			 '.$exclude.'
-			 '.$orderby.'
-			 LIMIT '.$vars['items'].'
-			OFFSET '.$offset,
-            'object',
-            array(
-                ':wid' => $website->id,
-                ':lang' => $current['lang'],
-                ':time' => core_time(),
-                //':categories' => implode(",", $categories)
-            )
-		);
-
-		$rs = $DB->result();
-		$total = $DB->foundRows();
+	    list($rs, $total) = nvweb_list_source_structure($vars, $params);
 	}
     else if($vars['source']=='block')
     {
         list($rs, $total) = nvweb_blocks(array(
             'type' => $vars['type'],
-            'number' => $vars['items'],
+            'number' => $items,
             'mode' => ($order=='random'? 'random' : 'ordered'), // blocks webget has two sorting methods only
             'zone' => 'object'
         ));
@@ -536,7 +134,7 @@ function nvweb_list($vars=array())
                             // inclusion/exclusion by specific elements
                             if(!empty($bgbo->elements))
                             {
-                                if($current['type']=='item')
+                                if($current['type']=='item') // also 'product' ?
                                 {
                                     if(isset($bgbo->elements['exclusions']) && in_array($current['id'], $bgbo->elements['exclusions']))
                                     {
@@ -699,7 +297,7 @@ function nvweb_list($vars=array())
 		     '.$templates.'
 			 '.$exclude.'
 			 '.$orderby.'
-			 LIMIT '.$vars['items'].'
+			 LIMIT '.$items.'
 			OFFSET '.$offset;
 
         $DB->query(
@@ -735,7 +333,9 @@ function nvweb_list($vars=array())
         if(!isset($vars['nvlist_parent_type']))
         {
             // get gallery of the current item
-            if($current['type']=='item')
+            if( $current['type']=='item' ||
+                $current['type']=='product'
+            )
             {
                 $galleries = $current['object']->galleries;
                 if(!is_array($galleries))
@@ -855,7 +455,7 @@ function nvweb_list($vars=array())
              WHERE b.website = :wid
              '.$filters.' 
              '.$orderby.'
-             LIMIT '.$vars['items'].'
+             LIMIT '.$items.'
             OFFSET '.$offset;
 
         $DB->query(
@@ -879,11 +479,11 @@ function nvweb_list($vars=array())
                 'property'	=> 	$vars['url']
             ));
         }
-        list($rs, $total) = nvweb_list_get_from_rss($rss_url, @$vars['cache'], $offset, $vars['items'], $permission, $order);
+        list($rs, $total) = nvweb_list_get_from_rss($rss_url, @$vars['cache'], $offset, $items, $permission, $order);
     }
     else if($vars['source']=='twitter')
     {
-        list($rs, $total) = nvweb_list_get_from_twitter($vars['username'], @$vars['cache'], $offset, $vars['items'], $permission, $order);
+        list($rs, $total) = nvweb_list_get_from_twitter($vars['username'], @$vars['cache'], $offset, $items, $permission, $order);
     }
 	else if(!empty($vars['source']) && !in_array($vars['source'], array('item', 'element')))
 	{
@@ -904,7 +504,7 @@ function nvweb_list($vars=array())
 
 		if(function_exists($fname))
         {
-            @list($rs, $total, $processed_html) = $fname($offset, $vars['items'], $permission, $order, $vars);
+            @list($rs, $total, $processed_html) = $fname($offset, $items, $permission, $order, $vars);
             // check if the custom source has already parsed the template, so we don't need to do anything else
             if(!empty($processed_html))
             {
@@ -1023,7 +623,7 @@ function nvweb_list($vars=array())
 		     '.$templates.'
 			 '.$exclude.'
 			 '.$orderby.'
-			 LIMIT '.$vars['items'].'
+			 LIMIT '.$items.'
 			OFFSET '.$offset;
 
 		$DB->query(
@@ -1292,10 +892,675 @@ function nvweb_list($vars=array())
 	if(isset($vars['paginator']) && $vars['paginator']!='false')
     {
         $vars['paginator'] = trim($vars['paginator']);
-        $out[] = nvweb_list_paginator($vars['paginator'], $page, $total, $vars['items'], $vars);
+        $out[] = nvweb_list_paginator($vars['paginator'], $page, $total, $items, $vars);
+    }
+
+    if(isset($vars['current_page_objects_count_tag_id']))
+    {
+        $count = count($rs);
+        $current_page_objects_count_func = function() use ($vars, $count)
+        {
+            global $html;
+            $html = nvweb_replace_tag_contents(
+                $vars['current_page_objects_count_tag_id'],
+                $count,
+                $html
+            );
+        };
+
+        nvweb_after_body('php', $current_page_objects_count_func);
+    }
+
+    if(isset($vars['results_found_tag_id']))
+    {
+        $results_found_func = function() use ($vars, $total)
+        {
+            global $html;
+            $html = nvweb_replace_tag_contents(
+                $vars['results_found_tag_id'],
+                $total,
+                $html
+            );
+        };
+
+        nvweb_after_body('php', $results_found_func);
     }
 
 	return implode("\n", $out);
+}
+
+function nvweb_list_process_categories($vars = array())
+{
+    global $DB;
+    global $current;
+
+    $categories = array();
+
+    if(in_array($current['type'], array('item', 'product')))
+    {
+        $categories = array($current['object']->category);
+    }
+    else if($current['type'] == 'structure')
+    {
+        $categories = array($current['object']->id);
+    }
+
+	if(isset($vars['categories']))
+	{
+        if($vars['categories'] == 'current')
+        {
+            // already processed
+        }
+        else if($vars['categories'] == 'all')
+        {
+            $categories = array(0);
+            $vars['children'] = 'true';
+        }
+        else if($vars['categories'] == 'parent')
+        {
+            $parent = $DB->query_single('parent', 'nv_structure', 'id = '.intval($categories[0]));
+            $categories = array($parent);
+        }
+        else if($vars['categories'] == 'nvlist_parent')
+        {
+            if($vars['nvlist_parent_type'] === 'structure')
+            {
+                $categories = array($vars['nvlist_parent_item']->id);
+            }
+        }
+        else if(!is_numeric($vars['categories']))
+        {
+            // if "categories" attribute has a comma, then we suppose it is a list of COMMA SEPARATED VALUES
+            // if not, then maybe we want to get the categories from a REQUEST PARAMETER (when prefixed with a dollar sign)
+            // or from a specific PROPERTY of the current page
+            if(strpos($vars['categories'], '$')===0)
+            {
+                // optional: a default value can be provided using the "|" character; example: categories="$param|current"
+                $default = array(0);
+                $request_parameter = $vars['categories'];
+                if(strpos($vars['categories'], '|')!==false)
+                {
+                    list($request_parameter, $default) = explode("|", $vars['categories']);
+                }
+
+                // $request_parameter_name (which may be formatted as a list of comma separated values)
+                $categories = explode(",", $_REQUEST[substr($request_parameter, 1)]);
+
+                // if categories parameter is empty, then default to the root category
+                if($categories=="" || $categories[0]=="")
+                {
+                    if(is_array($default))
+                    {
+                        $categories = $default;
+                    }
+                    else
+                    {
+                        $vars_sub = array_merge($vars, array('categories' => $default));
+                        $categories = nvweb_list_process_categories($vars_sub);
+                    }
+                }
+            }
+            else if(strpos($vars['categories'], ',') === false)
+            {
+                // no comma found, so may be a property of the current PAGE TYPE
+                $categories = nvweb_properties(array(
+                    'property'	=> 	$vars['categories']
+                ));
+
+                if(empty($categories) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+                {
+                    // if no categories found AND the current list is NESTED from a BLOCK_GROUP list
+                    // then try to get the property from the BLOCK
+                    $categories = nvweb_properties(array(
+                        'mode'     => 'block_group_block',
+                        'property' => $vars['categories'],
+                        'id'       => $vars['nvlist_parent_item']->id,
+                        'uid'      => $vars['nvlist_parent_item']->uid
+                    ));
+                }
+
+                if(!empty($categories) && !is_array($categories))
+                {
+                    $categories = array($categories);
+                }
+            }
+            else if(strpos($vars['categories'], ',') !== false)
+            {
+                // comma found, it is a list of comma separated values
+                $categories = explode(",", $vars['categories']);
+            }
+
+            if(!is_array($categories))
+            {
+                $categories = explode(',', $categories);
+                $categories = array_filter($categories); // remove empty elements
+            }
+        }
+        else
+        {
+            $categories = explode(',', $vars['categories']);
+            $categories = array_filter($categories); // remove empty elements
+        }
+	}
+
+	if($vars['children'] == 'true')
+    {
+        $categories = nvweb_menu_get_children($categories);
+    }
+
+    // if we have categories="x" children="true" [to get the children of a category, but not itself]
+    if($vars['children'] == 'only')
+    {
+        $children = nvweb_menu_get_children($categories);
+        for($c=0; $c < count($categories); $c++)
+        {
+            array_shift($children);
+        }
+        $categories = $children;
+    }
+
+    if(!empty($vars['children']) && intval($vars['children']) > 0)
+    {
+        $children = nvweb_menu_get_children($categories, intval($vars['children']));
+
+        for($c=0; $c < count($categories); $c++)
+        {
+            array_shift($children);
+        }
+        $categories = $children;
+    }
+
+    // apply a filter on categories, if given
+    // example: request_categories="c" ... in the url &q=text&c=23,35
+    if(!empty($vars['request_categories']))
+    {
+        $categories_filter = explode(",", $_REQUEST[$vars['request_categories']]);
+        if(empty($categories))
+        {
+            // note: categories may be empty by the rules applies on categories + children;
+            // in this case we give preference to the request_categories filter
+            $categories = array_values($categories_filter);
+        }
+        else
+        {
+            for($cf=0; $cf < count($categories_filter); $cf++)
+            {
+                if(!in_array($categories_filter[$cf], $categories))
+                {
+                    unset($categories_filter[$cf]);
+                }
+                $categories_filter = array_filter($categories_filter);
+            }
+            $categories = $categories_filter;
+        }
+    }
+
+    return $categories;
+}
+
+function nvweb_list_process_items($vars = array())
+{
+    $items = PHP_INT_MAX; // no limit by default
+
+	if(empty($vars['items']) || $vars['items']=='0')
+	{
+        $items = 5000;
+        // NOTE: having >5000 items on a page without a paginator is probably a bad idea... disagree? Contact Navigate CMS team!
+    }
+    else if(!is_numeric($vars['items']))
+    {
+        // the number of items is defined by a property (x) or a url variable ($x)
+        // and may have defined min, max values, for example: $page_items,12,60 (url variable "page_items", min: 12, max: 60)
+
+        if(strpos($vars['items'],",")!==false)
+        {
+            list($items_source, $min, $max) = explode(',', $vars['items']);
+        }
+
+        if(strpos($items_source, '$')===0)
+        {
+            // url variable
+            $items_source = ltrim($items_source, '$');
+            $items = intval($_REQUEST[$items_source]);
+        }
+        else
+        {
+            // property
+            $max_items = nvweb_properties(
+                array(
+                    'property'	=> 	$vars['items']
+                )
+            );
+
+            if(empty($max_items) && (@$vars['nvlist_parent_vars']['source'] == 'block_group'))
+            {
+                $max_items = nvweb_properties(
+                    array(
+                        'mode'	    =>	'block_group_block',
+                        'property'  => $vars['items'],
+                        'id'        =>	$vars['nvlist_parent_item']->id,
+                        'uid'       => $vars['nvlist_parent_item']->uid
+                    )
+                );
+            }
+
+            if(!empty($max_items))
+            {
+                $items = $max_items;
+            }
+            else
+            {
+                // default maximum
+                $items = 500;
+            }
+        }
+
+        if((isset($min) && !empty($min)))
+        {
+            if(empty($items) || $items < $min)
+            {
+                $items = $min;
+            }
+        }
+
+        if(isset($max) && !empty($max))
+        {
+            if($items > $max)
+            {
+                $items = $max;
+            }
+        }
+
+
+    }
+    else
+    {
+        $items = $vars['items'];
+    }
+
+    return $items;
+}
+
+function nvweb_list_process_exclude($vars = array())
+{
+    global $current;
+
+    if(!empty($vars['exclude']))
+    {
+        $exclude = str_replace('current', $current['object']->id, $vars['exclude']);
+        $exclude = explode(',', $exclude);
+        $exclude = array_filter($exclude);
+
+        if(!empty($exclude))
+        {
+            switch($vars['source'])
+            {
+                case 'structure':
+                case 'category':
+                    $exclude = 'AND s.id NOT IN('.implode(',', $exclude).')';
+                    break;
+
+                case 'product':
+                    $exclude = 'AND p.id NOT IN('.implode(',', $exclude).')';
+                    break;
+
+                case 'element':
+                case 'item':
+                default:
+                    $exclude = 'AND i.id NOT IN('.implode(',', $exclude).')';
+            }
+        }
+        else
+        {
+            $exclude = '';
+        }
+    }
+
+    return $exclude;
+}
+
+function nvweb_list_process_search($vars = array())
+{
+    global $DB;
+    global $website;
+    global $webuser;
+
+    // search parameter (for now only ELEMENTS[items] and PRODUCTS!)
+    $search = '';
+
+    if(!empty($vars['search']))
+    {
+        // prepare and execute the search
+        $search_what = $vars['search'];
+
+        if(substr($vars['search'], 0, 1)=='$')
+        {
+            $search_what = $_REQUEST[substr($vars['search'], 1)];
+        }
+
+        if(!empty($search_what) && !isset($_SESSION['APP_USER#'.APP_UNIQUE]))
+        {
+            // ignore searches requested by a navigate cms user or explicitly ignored by the template
+            if(@!($vars['log']=='false'))
+            {
+                $DB->execute('
+                    INSERT INTO nv_search_log
+                      (id, website, date, webuser, origin, text, request)
+                    VALUES
+                      (0, :website, :date, :webuser, :origin, :text, :request)
+                  ',
+                    array(
+                        'website' => $website->id,
+                        'date'    => time(),
+                        'webuser' => value_or_default($webuser->id, 0),
+                        'origin'  => (empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER']),
+                        'text'    => $search_what,
+                        'request' => json_encode(array_merge($_GET, $_POST))
+                    )
+                );
+            }
+        }
+
+        $search_what = explode(' ', $search_what);
+        $search_what = array_filter($search_what);
+
+        if(empty($search_what))
+        {
+            $search_what = array();
+        }
+
+        $search = array();
+        $search[] = ' 1=1 ';
+
+        $object_alias = "i";
+        $object_type = "item";
+
+        if($vars['source'] == "product")
+        {
+            $object_alias = "p";
+            $object_type = "product";
+        }
+
+        foreach($search_what as $what)
+        {
+            if(substr($what, 0, 1) == '-')
+            {
+                $search[] = '(
+                                '.$object_alias.'.id NOT IN (
+                                    SELECT search_nwdi.node_id
+                                    FROM nv_webdictionary search_nwdi
+                                    WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
+                                          search_nwdi.website = ' . intval($website->id) . ' AND
+                                          search_nwdi.text LIKE ' . protect('%' . substr($what, 1) . '%') .
+                            '    ) 
+                                 AND '.$object_alias.'.id NOT IN( 
+                                    SELECT search_npi.node_id
+                                     FROM   nv_properties_items search_npi 
+                                     WHERE  search_npi.element = "'.$object_type.'" AND 
+                                            search_npi.website = ' . intval($website->id) . ' AND
+                                            search_npi.value LIKE ' . protect('%' . substr($what, 1) . '%') . '
+                                 )
+                            )';
+            }
+            else
+            {
+                $search[] = '(
+                                '.$object_alias.'.id IN (
+                                    SELECT search_nwdi.node_id
+                                    FROM nv_webdictionary search_nwdi
+                                    WHERE search_nwdi.node_type IN ("'.$object_type.'", "property-'.$object_type.'") AND
+                                          search_nwdi.website = ' . intval($website->id) . ' AND
+                                          search_nwdi.text LIKE ' . protect('%' . $what . '%') .
+                            '    )
+                                 OR '.$object_alias.'.id IN( 
+                                    SELECT  search_npi.node_id
+                                     FROM   nv_properties_items search_npi
+                                     WHERE  search_npi.element = "'.$object_type.'" AND 
+                                            search_npi.website = ' . intval($website->id) . ' AND
+                                            search_npi.value LIKE ' . protect('%' . $what . '%') . '
+                                )
+                            )';
+            }
+        }
+
+        $search = ' AND ( ' . implode(' AND ', $search) . ' ) ';
+    }
+
+    return $search;
+}
+
+function nvweb_list_process_offset($vars = array(), $items)
+{
+    // calculate the offset of the first element to retrieve
+    // what is the name of the "page" parameter in the url
+    if(empty($vars['page_parameter']))
+    {
+        $vars['page_parameter'] = 'page';
+    }
+    $page = value_or_default($_REQUEST[$vars['page_parameter']], 1);
+
+    $offset = intval($page - 1) * $items;
+
+    // this list does not use paginator, so offset must be always zero
+    if(!isset($vars['paginator']) || $vars['paginator']=='false')
+    {
+        $offset = 0;
+    }
+
+    return array($page, $offset, $vars);
+}
+
+function nvweb_list_process_access()
+{
+    global $webuser;
+
+    $permission = (!empty($_SESSION['APP_USER#'.APP_UNIQUE])? 1 : 0);
+
+    // public access / webuser based / webuser groups based
+    $access = 2;
+    $access_extra = '';
+    if(!empty($current['webuser']))
+    {
+        $access = 1;
+        if(!empty($webuser->groups))
+        {
+            $access_groups = array();
+            foreach($webuser->groups as $wg)
+            {
+                if(empty($wg))
+                {
+                    continue;
+                }
+
+                $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
+            }
+
+            if(!empty($access_groups))
+            {
+                $access_extra = ' OR (s.access = 3 AND ('.implode(' OR ', $access_groups).'))';
+            }
+        }
+    }
+
+    return array($permission, $access, $access_extra);
+}
+
+function nvweb_list_process_order($vars=array())
+{
+    // get order type: REQUEST PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
+    $order_by_default = "latest";
+
+    $order = @$_REQUEST['order'];
+
+    if(empty($order))
+    {
+        $order  = @$vars['order'];
+
+        if(strpos($order, ",")!==false)
+        {
+            list($order, $order_by_default) = explode(',', $vars['order']);
+        }
+
+        if(strpos($order, '$')===0)
+        {
+            // url variable
+            $order = ltrim($order, '$');
+            $order = trim($_REQUEST[$order]);
+        }
+    }
+
+    if(empty($order))   // default order: latest
+    {
+        $order = $order_by_default;
+    }
+
+    $orderby = nvweb_list_convert_orderby($order);
+
+    return array($order, $orderby);
+}
+
+function nvweb_list_convert_orderby($order)
+{
+    global $website;
+
+    // convert order type to "order by" clause
+    switch($order)
+    {
+        case 'random':
+            $orderby = 'ORDER BY RAND()';
+            break;
+
+        case 'oldest':
+            $orderby = 'ORDER BY pdate ASC';
+            break;
+
+        case 'alphabetical':
+        case 'abc':
+            $orderby = 'ORDER BY title ASC';
+            break;
+
+        case 'reverse_alphabetical':
+        case 'zyx':
+            $orderby = 'ORDER BY title DESC';
+            break;
+
+        case 'future':
+        case 'from_today':
+            $orderby = ' AND i.date_to_display > '.gmmktime(0,0,0,gmdate('m',$website->current_time()),gmdate('d',$website->current_time()),gmdate('Y',$website->current_time())).'
+                         ORDER BY pdate ASC ';
+            break;
+
+        case 'priority':
+            $orderby = ' ORDER BY IFNULL(i.position, 0) ASC, IFNULL(s.position, 0) ASC ';
+            break;
+
+        case 'rating':
+            $orderby = ' ORDER BY i.score DESC ';
+            break;
+
+        case 'votes':
+            $orderby = ' ORDER BY i.votes DESC ';
+            break;
+
+        case 'comments':
+            $orderby = ' ORDER BY IFNULL(comments_published, 0) DESC ';
+            break;
+
+        case 'views':
+            $orderby = ' ORDER BY i.views DESC ';
+            break;
+
+        case 'newest':
+        case 'latest':
+            $orderby = ' ORDER BY pdate DESC';
+            break;
+
+        // product special order types
+        case 'sales':
+            $orderby = ' ORDER BY sales DESC';
+            break;
+
+        case 'price_asc':
+            $orderby = ' ORDER BY sale_price ASC';
+            break;
+
+        case 'price_desc':
+            $orderby = ' ORDER BY sale_price DESC';
+            break;
+
+
+        default:
+
+    }
+
+    return $orderby;
+}
+
+function nvweb_list_source_structure($vars, $params = array())
+{
+    global $DB;
+    global $website;
+    global $current;
+
+    $orderby = str_replace(array('i.', 'p.'), 's.', $params['orderby']);
+
+    $visible = '';
+    if($vars['filter']=='menu')
+    {
+        $visible = ' AND s.visible = 1 ';
+    }
+
+    $templates = "";
+    if(!empty($vars['templates']))
+    {
+        if(strpos($vars['templates'], '$')===0)
+        {
+            $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+        }
+        else
+        {
+            $templates = explode(",", $vars['templates']);
+        }
+
+        $templates = array_filter($templates);
+        $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+    }
+
+    $DB->query('
+        SELECT SQL_CALC_FOUND_ROWS s.id, s.permission,
+                    s.date_published, s.date_unpublish, s.date_published as pdate,
+                    d.text as title, s.position as position
+          FROM nv_structure s, nv_webdictionary d
+         WHERE s.id IN('.implode(",", $params['categories']).')
+           AND s.website = :wid
+           AND s.permission <= '.$params['permission'].'
+           AND (s.date_published = 0 OR s.date_published < :time)
+           AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
+           AND (s.access = 0 OR s.access = '.$params['access'].$params['access_extra'].')
+           AND d.website = s.website
+           AND d.node_type = "structure"
+           AND d.subtype = "title"
+           AND d.node_id = s.id
+           AND d.lang = :lang
+         '.$templates.'
+         '.$visible.'
+         '.$params['exclude'].'
+         '.$orderby.'
+         LIMIT '.$params['items'].'
+        OFFSET '.$params['offset'],
+        'object',
+        array(
+            ':wid' => $website->id,
+            ':lang' => $current['lang'],
+            ':time' => core_time(),
+            //':categories' => implode(",", $categories)
+        )
+    );
+
+    $rs = $DB->result();
+    $total = $DB->foundRows();
+
+    return array($rs, $total);
 }
 
 function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_position, $item_absolute_position, $total)
@@ -2088,7 +2353,8 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
                 case 'image':
                 case 'photo':
-                    $photo = @array_shift(array_keys($item->galleries[0]));
+                    $item_gallery_ids = array_keys($item->galleries[0]);
+                    $photo = @array_shift($item_gallery_ids);
                     if(empty($photo))
                     {
                         $out = NVWEB_OBJECT . '?type=transparent';
@@ -2199,6 +2465,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
             break;
 
         case 'brand':
+            if($source == 'product')
+            {
+                $brand = new brand();
+                $brand->load($item->brand);
+                $item = $brand;
+            }
+
             switch($tag['attributes']['value'])
             {
                 case 'id':
@@ -2472,7 +2745,8 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 				case 'image':
 				case 'photo':
-					$photo = @array_shift(array_keys($item->galleries[0]));
+				    $item_gallery_ids = array_keys($item->galleries[0]);
+					$photo = @array_shift($item_gallery_ids);
 					if(empty($photo))
                     {
                         $out = NVWEB_OBJECT . '?type=transparent';
@@ -2596,83 +2870,6 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 	}
 
 	return $out;
-}
-
-function nvweb_list_get_orderby($order)
-{
-    global $website;
-
-    // convert order type to "order by" clause
-    switch($order)
-    {
-        case 'random':
-            $orderby = 'ORDER BY RAND()';
-            break;
-
-        case 'oldest':
-            $orderby = 'ORDER BY pdate ASC';
-            break;
-
-        case 'alphabetical':
-        case 'abc':
-            $orderby = 'ORDER BY title ASC';
-            break;
-
-        case 'reverse_alphabetical':
-        case 'zyx':
-            $orderby = 'ORDER BY title DESC';
-            break;
-
-        case 'future':
-        case 'from_today':
-            $orderby = ' AND i.date_to_display > '.gmmktime(0,0,0,gmdate('m',$website->current_time()),gmdate('d',$website->current_time()),gmdate('Y',$website->current_time())).'
-                         ORDER BY pdate ASC ';
-            break;
-
-        case 'priority':
-            $orderby = ' ORDER BY IFNULL(i.position, 0) ASC, IFNULL(s.position, 0) ASC ';
-            break;
-
-        case 'rating':
-            $orderby = ' ORDER BY i.score DESC ';
-            break;
-
-        case 'votes':
-            $orderby = ' ORDER BY i.votes DESC ';
-            break;
-
-        case 'comments':
-            $orderby = ' ORDER BY IFNULL(comments_published, 0) DESC ';
-            break;
-
-        case 'views':
-            $orderby = ' ORDER BY i.views DESC ';
-            break;
-
-        case 'newest':
-        case 'latest':
-            $orderby = ' ORDER BY pdate DESC';
-            break;
-
-        // product special order types
-        case 'sales':
-            $orderby = ' ORDER BY sales DESC';
-            break;
-
-        case 'price_asc':
-            $orderby = ' ORDER BY sale_price ASC';
-            break;
-
-        case 'price_desc':
-            $orderby = ' ORDER BY sale_price DESC';
-            break;
-
-
-        default:
-
-    }
-
-    return $orderby;
 }
 
 function nvweb_list_isolate_lists($item_html)
@@ -2921,10 +3118,14 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 				$out[] = '<div class="paginator">';
 
 		        if($page > 1)
+                {
 			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page - 1).$url_suffix.'" rel="prev">'.$paginator_text_prev.'</a>'; // <
+                }
 
 			    if($page < $pages)
+                {
 			        $out[] = '<a href="?'.$params['page_parameter'].'='.($page + 1).$url_suffix.'" rel="next">'.$paginator_text_next.'</a>'; // ❭
+                }
 
 		        $out[] = '<div style=" clear: both; "></div>';
 

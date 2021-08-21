@@ -865,7 +865,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
                     $title = @$link[1];
                     $link = $link[0];
                     if(empty($title))
+                    {
                         $title = $link;
+                    }
                 }
                 else
                 {
@@ -876,7 +878,9 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
                 $language_info = '<span class="navigate-form-row-language-info" title="'.language::name_by_code($lang).'"><img src="img/icons/silk/comment.png" align="absmiddle" />'.$lang.'</span>';
 				if($property->multilanguage == 'false')
-					$language_info = '';
+                {
+                    $language_info = '';
+                }
 
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'" style="margin-bottom: 0px;">';
 				$field[] = '<label>'.$property_name.' '.$language_info.'</label>';
