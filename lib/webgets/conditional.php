@@ -18,6 +18,7 @@ function nvweb_conditional($vars=array())
 	global $structure;
 	global $webgets;
     global $webuser;
+    global $session;
 
 	$out = array();
 
@@ -670,7 +671,21 @@ function nvweb_conditional($vars=array())
             }
             break;
 
-        
+        case 'cart':
+            switch($vars['value'])
+            {
+                case 'empty':
+                    if(empty($session['cart']['lines']))
+                    {
+                        $out = $item_html;
+                    }
+                    else
+                    {
+                        $out = "";
+                    }
+                    break;
+            }
+            break;
 
         default:
             // unknown nvlist_conditional, discard
