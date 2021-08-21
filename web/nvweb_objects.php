@@ -174,14 +174,15 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                 {
                     $border = (@$_REQUEST['border'] == 'false' ? false : true);
                     $opacity = value_or_default(@$_REQUEST['opacity'], NULL);
+                    $scale_up_force = value_or_default(@$_REQUEST['force_scale'], NULL);
 
-                    $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, NULL, $opacity);
+                    $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, $scale_up_force, $opacity);
                     if(empty($path))
                     {
                         die();
                     }
 
-                    $etag_add = '-' . $width . '-' . $height . '-' . $border . '-' . $quality;
+                    $etag_add = '-'.$width.'-'.$height.'-'.$border.'-'.$quality.'-'.$scale_up_force.'-'.$opacity;
                     $item->name = $width . 'x' . $height . '-' . $item->name;
                     $item->size = filesize($path);
                     $item->mime = 'image/png';

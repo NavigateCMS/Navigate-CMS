@@ -1132,14 +1132,16 @@ function navigate_media_browser_focalpoint(file_id)
         function(focalpoint)
         {
             if(!focalpoint || focalpoint=="")
-                focalpoint = "50#50"; // default image center
+            {
+                focalpoint = "50#50"; // default: image center
+            }
 
             focalpoint = focalpoint.split('#');
 
             var focalpoint_top = parseFloat(focalpoint[0]);
             var focalpoint_left = parseFloat(focalpoint[1]);
 
-            var image_url = NAVIGATE_DOWNLOAD + '?id=' + file_id + '&disposition=inline&width=700';
+            var image_url = NAVIGATE_DOWNLOAD + '?id=' + file_id + '&disposition=inline&width=700&force_scale=true';
             var html = '<div><div class="focalpoint_select"></div><img src="'+image_url+'" width="100%" /></div>';
             $(html).dialog(
                 {
@@ -1150,51 +1152,81 @@ function navigate_media_browser_focalpoint(file_id)
                     resizable: false
                 }
             );
+            $(".focalpoint_select").css('visibility', 'hidden');
 
             var img = $(".focalpoint_select").parent().find("img");
 
-            focalpoint_top = ((focalpoint_top/100) * $(img).height()) - ($(".focalpoint_select").height() / 2);
-            focalpoint_left = ((focalpoint_left/100) * $(img).width()) - ($(".focalpoint_select").width() / 2);
-
-            if(focalpoint_top < 0)
+            img.on("load", function()
             {
-                focalpoint_top = ($(img).height() / 2) - ($(".focalpoint_select").height() / 2);
-            }
+                focalpoint_top = ((focalpoint_top/100) * $(img)[0].height) - ($(".focalpoint_select").height() / 2);
+                focalpoint_left = ((focalpoint_left/100) * $(img)[0].width) - ($(".focalpoint_select").width() / 2);
 
-            if(focalpoint_left < 0)
-            {
-                focalpoint_left = ($(img).width() / 2) - ($(".focalpoint_select").width() / 2);
-            }
-
-            $(".focalpoint_select")
-                .css({
-                    top: focalpoint_top,
-                    left: focalpoint_left
-                })
-                .draggable(
+                if(focalpoint_top < 0)
                 {
-                    containment: img,
-                    stop: function(event, ui)
-                    {
-                        var percentage_top = ((ui.position.top + ($(ui.helper).height() / 2)) / $(img).height()) * 100;
-                        var percentage_left = ((ui.position.left + ($(ui.helper).width() / 2)) / $(img).width()) * 100;
+                    focalpoint_top = ($(img).height() / 2) - ($(".focalpoint_select").height() / 2);
+                }
 
-                        $.post(
-                            NAVIGATE_APP + '?fid=files&act=json&op=focalpoint&id=' + file_id,
+                if(focalpoint_left < 0)
+                {
+                    focalpoint_left = ($(img).width() / 2) - ($(".focalpoint_select").width() / 2);
+                }
+
+                $(".focalpoint_select")
+                    .css({
+                        top: focalpoint_top,
+                        left: focalpoint_left,
+                        visibility: 'visible'
+                    })
+                    .draggable(
+                    {
+                        containment: img,
+                        stop: function(event, ui)
+                        {
+                            var percentage_top = ((ui.position.top + ($(ui.helper).height() / 2)) / $(img).height()) * 100;
+                            var percentage_left = ((ui.position.left + ($(ui.helper).width() / 2)) / $(img).width()) * 100;
+
+                            if(Math.ceil($(ui.helper).width()/2) == ui.position.left)
                             {
-                                top: percentage_top,
-                                left: percentage_left
-                            },
-                            function(result)
-                            {
-                                if(result=='true')
-                                {
-                                    $(ui.helper).effect("highlight", 'slow');
-                                }
+                                // focal point is touching the left side
+                                percentage_left = 0;
                             }
-                        );
-                    }
-                });
+
+                            if(Math.ceil($(ui.helper).height()/2) == ui.position.top * 2)
+                            {
+                                // focal point is touching the top side
+                                percentage_top = 0;
+                            }
+
+                            if(Math.ceil(ui.position.left + $(ui.helper).width()) >= $(img).width())
+                            {
+                                // focal point is touching the right side
+                                percentage_left = 100;
+                            }
+
+                            if(Math.ceil(ui.position.top + $(ui.helper).height()) >= $(img).height())
+                            {
+                                // focal point is touching the bottom side
+                                percentage_top = 100;
+                            }
+
+                            $.post(
+                                NAVIGATE_APP + '?fid=files&act=json&op=focalpoint&id=' + file_id,
+                                {
+                                    top: percentage_top,
+                                    left: percentage_left
+                                },
+                                function(result)
+                                {
+                                    if(result=='true')
+                                    {
+                                        $(ui.helper).effect("highlight", 'slow');
+                                    }
+                                }
+                            );
+                        }
+                    });
+            });
+
         }
     );
 }

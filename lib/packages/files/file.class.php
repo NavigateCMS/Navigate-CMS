@@ -1297,9 +1297,9 @@ class file
                 $handle->image_border = false;
                 $handle->image_ratio_no_zoom_in = false;
 
-                if(!empty($item->focalpoint) && $handle->image_src_x > 0)
+                if(!empty($item->focalpoint) && $handle->image_src_x > 0 && !$scale_up_force)
                 {
-                    $focalpoint = explode('#', $item->focalpoint);
+                    list($focalpoint_y, $focalpoint_x) = explode('#', $item->focalpoint);
 
                     $crop = array( 'top' => 0, 'right' => 0, 'bottom' => 0, 'left' => 0 );
 
@@ -1309,16 +1309,22 @@ class file
                         // Y is ok, now crop extra space on X
                         $ratio = $handle->image_y / $handle->image_src_y;
                         $image_scaled_x = intval($handle->image_src_x*($ratio));
-                        $crop['left'] = max(0, round(($image_scaled_x * ($focalpoint[1]/100) - ($handle->image_x / 2)) / $ratio));
-                        $crop['right'] = max(0, round(($image_scaled_x * ((100-$focalpoint[1])/100) - ($handle->image_x / 2)) / $ratio));
+
+                        $crop_x = $image_scaled_x - $width;
+
+                        $crop['left'] = $focalpoint_x/100 * $crop_x;
+                        $crop['right'] = $crop_x - $crop['left'];
                     }
                     else
                     {
                         // X is ok, now crop extra space on Y
                         $ratio = $handle->image_x / $handle->image_src_x;
                         $image_scaled_y = intval($handle->image_src_y*($ratio));
-                        $crop['top'] = max(0, round(($image_scaled_y * ($focalpoint[0]/100) - ($handle->image_y / 2)) / $ratio));
-                        $crop['bottom'] = max(0, round(($image_scaled_y * ((100-$focalpoint[0])/100) - ($handle->image_y / 2)) / $ratio));
+
+                        $crop_y = $image_scaled_y - $height; // pixels that have to be cropped from the source image
+
+                        $crop['top'] = $focalpoint_y/100 * $crop_y;
+                        $crop['bottom'] = $crop_y - $crop['top'];
                     }
 
                     $handle->image_precrop = array($crop['top'], $crop['right'], $crop['bottom'], $crop['left']);
