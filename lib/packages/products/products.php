@@ -113,7 +113,7 @@ function run()
 
                     // filter orderby vars
                     if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'dates', 'title', 'category', 'date_modified', 'permission', 'comments'))
+                        !in_array($_REQUEST['sidx'], array('id', 'dates', 'title', 'category', 'date_modified', 'permission', 'brand', 'comments'))
                     )
                     {
                         return false;
@@ -192,6 +192,7 @@ function run()
 					    'SELECT SQL_CALC_FOUND_ROWS
                                 p.*, d.text as title, d.lang as language,
                                 u.username as author_username,
+                                b.name as brand_name,
                                 (   SELECT COUNT(*)
                                     FROM nv_comments cm
                                     WHERE cm.object_type = "product"
@@ -199,14 +200,16 @@ function run()
                                       AND cm.website = :wid
                                 ) as comments
                            FROM nv_products p
-                      LEFT JOIN nv_webdictionary d
+                        LEFT JOIN nv_webdictionary d
                                  ON p.id = d.node_id
                                 AND d.node_type = "product"
                                 AND d.subtype = "title"
                                 AND d.lang = :lang
                                 AND d.website = :wid
-                      LEFT JOIN nv_users u
+                        LEFT JOIN nv_users u
                                  ON u.id = p.author
+                        LEFT JOIN nv_brands b
+                                 ON b.id = p.brand
                           WHERE '.$where.'							   
                        ORDER BY '.$orderby.' 
                           LIMIT '.$max.'
@@ -342,11 +345,12 @@ function run()
 							0	=> $dataset[$i]['id'],
                             1	=> $item_image,
 							2 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.$dataset[$i]['title'].'</div>',
-							3	=> core_special_chars($dataset[$i]['category_path']),
-							4	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
-							5	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
-                            6 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
-							7 	=> $dataset[$i]['_grid_notes_html']
+							3   => empty($dataset[$i]['brand_name'])? '' : '<span data-brand-id="'.$dataset[$i]['brand'].'">'.$dataset[$i]['brand_name'].'</span>',
+							4	=> core_special_chars($dataset[$i]['category_path']),
+							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
+							6	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
+                            7 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
+							8 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
 
@@ -1203,6 +1207,7 @@ function products_list()
 	$navitable->addCol("ID", 'id', "40", "true", "left");
     $navitable->addCol(t(157, 'Image'), 'thumbnail', "64", "false", "center");
 	$navitable->addCol(t(67, 'Title'), 'title', "320", "true", "left");
+	$navitable->addCol(t(662, 'Brand'), 'brand', "100", "true", "left");
 	$navitable->addCol(t(78, 'Category'), 'category', "200", "true", "left");
 	$navitable->addCol(t(85, 'Date published'), 'dates', "100", "true", "center");
 	$navitable->addCol(t(68, 'Status'), 'permission', "80", "true", "center");
