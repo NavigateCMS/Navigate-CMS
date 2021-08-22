@@ -46,6 +46,8 @@ function nvweb_list($vars=array())
         'offset' => $offset,
         'order' => $order,
         'orderby' => $orderby,
+        'categories' => $categories,
+        'search' => $search
     );
 
     if(($vars['source']=='structure' || $vars['source']=='category') && !empty($categories))
@@ -70,253 +72,15 @@ function nvweb_list($vars=array())
     }
     else if($vars['source']=='block_group')
     {
-        $bg = new block_group();
-        if(!empty($vars['type']))
-        {
-            $bg->load_by_code($vars['type']);
-        }
-
-        if(!empty($bg) && !empty($bg->blocks))
-        {
-            $rs = array();
-            foreach($bg->blocks as $bgb)
-            {
-                unset($bgbo);
-
-                switch($bgb['type'])
-                {
-                    case 'block':
-                        $bgbo = new block();
-                        $bgbo->load($bgb['id']);
-
-                        if(empty($bgbo) || empty($bgbo->type))
-                        {
-                            continue 2;
-                        }
-
-                        // check if we can display this block
-                        if(nvweb_object_enabled($bgbo))
-                        {
-                            // check categories / exclusions
-                            if(!empty($bgbo->categories))
-                            {
-                                $bgbo_cat_found = false;
-                                foreach($categories as $list_cat)
-                                {
-                                    if(in_array($list_cat, $bgbo->categories))
-                                    {
-                                        $bgbo_cat_found = true;
-                                    }
-                                }
-                                if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
-                                {
-                                    continue 2;
-                                }
-                            }
-
-                            if(!empty($bgbo->exclusions))
-                            {
-                                $bgbo_cat_found = false;
-                                foreach($categories as $list_cat)
-                                {
-                                    if(in_array($list_cat, $bgbo->exclusions))
-                                    {
-                                        $bgbo_cat_found = true;
-                                    }
-                                }
-
-                                if($bgbo_cat_found) // block excluded categories match the current list categories, skip this block
-                                {
-                                    continue 2;
-                                }
-                            }
-
-                            // inclusion/exclusion by specific elements
-                            if(!empty($bgbo->elements))
-                            {
-                                if($current['type']=='item') // also 'product' ?
-                                {
-                                    if(isset($bgbo->elements['exclusions']) && in_array($current['id'], $bgbo->elements['exclusions']))
-                                    {
-                                        // do not include this block in this element's page!
-                                        continue 2;
-                                    }
-
-                                    if(isset($bgbo->elements['selection']) && !in_array($current['id'], $bgbo->elements['selection']))
-                                    {
-                                        // block not associated with the current item, ignore!
-                                        continue 2;
-                                    }
-                                }
-                            }
-                            $rs[] = $bgbo;
-                        }
-                        break;
-
-                    case 'block_group_block':
-                        $bgba = $theme->block_group_blocks($vars['type']);
-
-                        if(!empty($bgba[$bgb['id']])) // get the definition for that "block group block" type
-                        {
-                            $bgbo = clone $bgba[$bgb['id']];
-                            $bgbo->uid = $bgb['uid'];
-                            $rs[] = clone $bgbo;
-                        }
-                        break;
-
-                    case 'block_type':
-                        // a collection of blocks of the same type
-                        list($bgbos, $foo) = nvweb_blocks(array(
-                            'type' => $bgb['id'],
-                            'mode' => ($order=='random'? 'random' : 'ordered'),
-                            'zone' => 'object'
-                        ));
-
-                        // add the block type definition, with its title
-                        if(count($bgbos) > 0 && isset($bgb['title']) && !empty($bgb['title']))
-                        {
-                            $bgb['_object_type'] = 'block_group_block_type';
-                            $rs[] = (object)$bgb;
-                        }
-
-                        for($i=0; $i < count($bgbos); $i++)
-                        {
-                            $rs[] = $bgbos[$i];
-                        }
-
-                        break;
-
-                    case 'extension':
-                        $rs[] = (object)($bgb);
-                        break;
-                }
-            }
-            $total = count($rs);
-        }
-        else    // block group block empty, just return without content
-        {
-            return "";
-        }
+        list($rs, $total) = nvweb_list_source_block_group($vars, $params);
     }
     else if($vars['source']=='product')
     {
-        $filters = '';
-        if(!empty($vars['filter']))
-        {
-            $filters = nvweb_list_parse_filters($vars['filter'], 'product');
-        }
-
-        // reuse structure.access permission
-        $access_extra_items = str_replace('s.', 'p.', $access_extra);
-
-        $embedded = ($vars['embedded']=='true'? '1' : '0');
-
-        $templates = "";
-        if(!empty($vars['templates']))
-        {
-            if(strpos($vars['templates'], '$')===0)
-            {
-                $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
-            }
-            else
-            {
-                $templates = explode(",", $vars['templates']);
-            }
-
-            $templates = array_filter($templates);
-            if($embedded=='1')
-            {
-                $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
-            }
-            else
-            {
-                $templates = ' AND p.template IN ("'.implode('","', $templates).'")';
-            }
-        }
-
-        $columns_extra = '';
-        if($order == 'comments')
-        {
-            // we need to retrieve the number of comments to apply the order by clause
-            $columns_extra = ', ( SELECT COUNT(p.id) 
-                                    FROM nv_comments c 
-                                    WHERE   c.object_type = "product" AND 
-                                            p.id = c.object_id AND 
-                                            c.website = p.website AND 
-                                            c.status = 0
-                                ) AS comments_published';
-        }
-
-        if($order == 'sales')
-        {
-            // retrieve the number of sales to apply the order requested
-            $columns_extra = ', (
-                    SELECT COUNT(*) FROM nv_orders_lines WHERE website = p.website AND product = p.id
-                ) AS sales';
-        }
-
-        if($order == 'price_asc' || $order == 'price_desc')
-        {
-            // we need to calculate the offer price and get the lowest price for the product
-            $columns_extra = ', ( 
-                    IF( 
-                        (   p.offer_price > 0 
-                            AND (p.offer_begin_date = 0 OR '.core_time().' >= p.offer_begin_date)
-                            AND (p.offer_end_date = 0 OR '.core_time().' <= p.offer_end_date)
-                        ), 
-                        p.offer_price, 
-                        p.base_price
-                    ) 
-                ) AS sale_price';
-        }
-
-        // default source for retrieving items
-        $query = '
-			SELECT SQL_CALC_FOUND_ROWS p.id, p.permission, p.date_published, p.date_unpublish,
-                    p.date_to_display, COALESCE(NULLIF(p.date_to_display, 0), p.date_created) as pdate,
-                    d.text as title, p.position as position, s.position '.$columns_extra.'
-			  FROM nv_products p, nv_structure s, nv_webdictionary d			          
-			 WHERE p.category IN('.implode(",", $categories).')
-			   AND p.website = :wid
-			   AND p.permission <= '.$permission.'
-			   AND (p.date_published = 0 OR p.date_published < '.core_time().')
-			   AND (p.date_unpublish = 0 OR p.date_unpublish > '.core_time().')
-			   AND s.id = p.category
-			   AND (s.date_published = 0 OR s.date_published < :time)
-			   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
-			   AND s.permission <= '.$permission.'
-			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
-			   AND (p.access = 0 OR p.access = '.$access.$access_extra_items.')
-               AND d.website = p.website
-			   AND d.node_type = "product"
-			   AND d.subtype = "title"
-			   AND d.node_id = p.id
-			   AND d.lang = :lang
-             '.$filters.'
-             '.$search.'
-		     '.$templates.'
-			 '.$exclude.'
-			 '.$orderby.'
-			 LIMIT '.$items.'
-			OFFSET '.$offset;
-
-        $DB->query(
-            $query,
-            'object',
-            array(
-                ':wid' => $website->id,
-                ':lang' => $current['lang'],
-                ':time' => core_time(),
-                //':categories' => implode(",", $categories)
-            )
-        );
-
-        $rs = $DB->result();
-        $total = $DB->foundRows();
+        list($rs, $total) = nvweb_list_source_product($vars, $params);
     }
     else if($vars['source']=='cart')
     {
-        $cart = json_decode(json_encode($session['cart']));
+        $cart = json_decode(json_encode($session['cart'])); // convert array to object
         $rs = $cart->lines;
         $total = count($cart->lines);
     }
@@ -330,144 +94,11 @@ function nvweb_list($vars=array())
     }
     else if($vars['source']=='gallery')
     {
-        if(!isset($vars['nvlist_parent_type']))
-        {
-            // get gallery of the current item
-            if( $current['type']=='item' ||
-                $current['type']=='product'
-            )
-            {
-                $galleries = $current['object']->galleries;
-                if(!is_array($galleries))
-                {
-                    $galleries = mb_unserialize($galleries);
-                }
-                $rs = $galleries[0];
-                $total = count($rs);
-            }
-            else if($current['type']=='structure')
-            {
-                // we need the first item assigned to the structure
-                $access_extra_items = str_replace('s.', 'i.', $access_extra);
-
-	            $templates = "";
-		        if(!empty($vars['templates']))
-		        {
-                    if(strpos($vars['templates'], '$')===0)
-                    {
-                        $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
-                    }
-                    else
-                    {
-                        $templates = explode(",", $vars['templates']);
-                    }
-
-			        $templates = array_filter($templates);
-					$templates = ' AND i.template IN ("'.implode('","', $templates).'")';
-		        }
-
-		        if(empty($categories))
-                {
-                    $categories = array(0);
-                }
-
-                // default source for retrieving items (embedded or not)
-                $DB->query('
-                    SELECT SQL_CALC_FOUND_ROWS i.id
-                      FROM nv_items i, nv_structure s, nv_webdictionary d
-                     WHERE i.category IN('.implode(",", $categories).')
-                       AND i.website = :wid
-                       AND i.permission <= '.$permission.'
-                       AND (i.date_published = 0 OR i.date_published < :time)
-                       AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
-                       AND s.id = i.category
-                       AND (s.date_published = 0 OR s.date_published < :time)
-                       AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
-                       AND s.permission <= '.$permission.'
-                       AND (s.access = 0 OR s.access = '.$access.$access_extra.')
-                       AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
-                       AND d.website = i.website
-                       AND d.node_type = "item"
-                       AND d.subtype = "title"
-                       AND d.node_id = i.id
-                       AND d.lang = :lang                       
-                     '.$templates.'
-                     '.$exclude.'
-                     ORDER BY i.position ASC
-                     LIMIT 1',
-                    'object',
-                    array(
-                        ':wid' => $website->id,
-                        ':lang' => $current['lang'],
-                        ':time' => core_time(),
-                        //':categories' => implode(",", $categories)
-                    ));
-
-                $rs = $DB->result();
-                $tmp = new item();
-                $tmp->load($rs[0]->id);
-
-                $rs = $tmp->galleries[0];
-                $total = count($rs);
-            }
-        }
-        else if($vars['nvlist_parent_type'] == 'item')
-        {
-            $pitem = $vars['nvlist_parent_item'];
-            $rs = $pitem->galleries[0];
-            $total = count($rs);
-        }
-
-        if($total > 0)
-        {
-            $order = 'priority'; // display images using the assigned priority
-            if(!empty($vars['order']))
-            {
-                $order = $vars['order'];
-            }
-
-            $rs = nvweb_gallery_reorder($rs, $order);
-
-            // prepare format to be parsed by nv list iterator
-            $rs = array_map(
-                function($k, $v)
-                {
-                    $v['file'] = $k;
-                    return $v;
-                },
-                array_keys($rs),
-                array_values($rs)
-            );
-        }
+        list($rs, $total) = nvweb_list_source_gallery($vars, $params);
     }
     else if($vars['source']=='brand')
     {
-        // TODO: add filters (search, more filters, exclude, etc.)
-        $filters = '';
-        if(!empty($vars['filter']))
-        {
-            $filters = nvweb_list_parse_filters($vars['filter'], 'brand');
-        }
-
-        $query = '
-            SELECT b.*, b.name AS title, b.id as pdate
-              FROM nv_brands b			          
-             WHERE b.website = :wid
-             '.$filters.' 
-             '.$orderby.'
-             LIMIT '.$items.'
-            OFFSET '.$offset;
-
-        $DB->query(
-            $query,
-            'object',
-            array(
-                ':wid' => $website->id
-            )
-        );
-
-        $rs = $DB->result();
-        $total = $DB->foundRows();
+        list($rs, $total) = nvweb_list_source_brand($vars, $params);
     }
     else if($vars['source']=='rss')
     {
@@ -483,33 +114,17 @@ function nvweb_list($vars=array())
     }
     else if($vars['source']=='twitter')
     {
+        // TODO: stopped working
         list($rs, $total) = nvweb_list_get_from_twitter($vars['username'], @$vars['cache'], $offset, $items, $permission, $order);
     }
 	else if(!empty($vars['source']) && !in_array($vars['source'], array('item', 'element')))
 	{
-		// CUSTOM data source
-        if($vars['source']=='comment')
+        list($rs, $total, $processed_html) = nvweb_list_source_custom($vars, $params);
+
+        // check if the custom source has already parsed the template, so we don't need to do anything else
+        if(!empty($processed_html))
         {
-            $vars['source'] = 'comments';
-        }
-
-		$fname = 'nvweb_'.$vars['source'].'_list';
-
-        if($vars['source']=='website_comments')
-        {
-            $vars['source'] = 'comments';
-        }
-
-		@nvweb_webget_load($vars['source']);
-
-		if(function_exists($fname))
-        {
-            @list($rs, $total, $processed_html) = $fname($offset, $items, $permission, $order, $vars);
-            // check if the custom source has already parsed the template, so we don't need to do anything else
-            if(!empty($processed_html))
-            {
-                return $processed_html;
-            }
+            return $processed_html;
         }
     }
     else if(!in_array($vars['source'], array('item', 'element')))
@@ -519,126 +134,10 @@ function nvweb_list($vars=array())
 
     $categories = array_filter($categories);
 
-	// DATA SOURCE not given or ERROR ===> items
+	// DATA SOURCE not given or ERROR ===> default: elements (items)
 	if((empty($vars['source']) || !is_numeric($total)) && !empty($categories))
     {
-        /*
-         * TO DO: design decision ... lists should show items from published categories which has unpublished parent?
-         * Navigate CMS 1.6.7: NO
-
-        // we have to check all website UNPUBLISHED categories to keep the list query efficient
-        // there are some cases:
-        //  a) Permission is beyond user's level [0=>public, 1=>private, 2=>hidden]
-        //  b) Date published is set and the value is before the current time (not yet published)
-        //  c) Date unpublish is set and the value is before the current time (no more published)
-        //  d) User account level not allowed [0=>everyone, 1=>signed in users, 2=>users NOT signed in]
-        $DB->query('
-            SELECT id
-              FROM nv_structure
-             WHERE website = '.intval($website->id).'
-               AND (    permission > '.$permission.'
-                     OR (date_published > 0 AND '.$website->current_time().' > date_published)
-                     OR (date_unpublish > 0 AND '.$website->current_time().' > date_unpublish)
-                     OR (access <> 0 AND access <> '.$access.')
-               )
-        ');
-
-        $hidden_categories = $DB->result('id');
-
-        // now we would have to mark the children categories also as unpublished
-
-        */
-        $filters = '';
-        if(!empty($vars['filter']))
-        {
-            $filters = nvweb_list_parse_filters($vars['filter'], 'item');
-        }
-
-        // reuse structure.access permission
-        $access_extra_items = str_replace('s.', 'i.', $access_extra);
-
-        $embedded = ($vars['embedded']=='true'? '1' : '0');
-
-		$templates = "";
-        if(!empty($vars['templates']))
-        {
-            if(strpos($vars['templates'], '$')===0)
-            {
-                $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
-            }
-            else
-            {
-                $templates = explode(",", $vars['templates']);
-            }
-
-	        $templates = array_filter($templates);
-	        if($embedded=='1')
-            {
-                $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
-            }
-			else
-            {
-                $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
-            }
-        }
-
-        $columns_extra = '';
-        if($order == 'comments')
-        {
-            // we need to retrieve the number of comments to apply the order by clause
-            $columns_extra = ', (   SELECT COUNT(c.id) 
-                                    FROM nv_comments c 
-                                    WHERE c.object_type = "item" AND 
-                                          i.id = c.object_id AND 
-                                          c.website = i.website AND 
-                                          c.status = 0
-                                 ) AS comments_published';
-        }
-
-		// default source for retrieving items
-        $query = '
-			SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
-                    i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
-                    d.text as title, i.position as position, s.position '.$columns_extra.'
-			  FROM nv_items i, nv_structure s, nv_webdictionary d			          
-			 WHERE i.category IN ('.implode(",", $categories).')
-			   AND i.website = :wid
-			   AND i.permission <= '.$permission.'
-			   AND i.embedding = '.$embedded.'
-			   AND (i.date_published = 0 OR i.date_published < :time)
-			   AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
-			   AND s.id = i.category
-			   AND (s.date_published = 0 OR s.date_published < :time)
-			   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
-			   AND s.permission <= '.$permission.'
-			   AND (s.access = 0 OR s.access = '.$access.$access_extra.')
-			   AND (i.access = 0 OR i.access = '.$access.$access_extra_items.')
-               AND d.website = i.website
-			   AND d.node_type = "item"
-			   AND d.subtype = "title"
-			   AND d.node_id = i.id
-			   AND d.lang = :lang
-             '.$filters.'
-             '.$search.'
-		     '.$templates.'
-			 '.$exclude.'
-			 '.$orderby.'
-			 LIMIT '.$items.'
-			OFFSET '.$offset;
-
-		$DB->query(
-		    $query,
-            'object',
-            array(
-                ':wid' => $website->id,
-                ':lang' => $current['lang'],
-                ':time' => core_time(),
-                //':categories' => implode(",", $categories)
-            )
-        );
-
-		$rs = $DB->result();
-		$total = $DB->foundRows();
+        list($rs, $total) = nvweb_list_source_elements($vars, $params);
 	}
 
 	// preprocess list html template, conditionals and nested lists
@@ -668,128 +167,10 @@ function nvweb_list($vars=array())
 
 	for($i = 0; $i < count($rs); $i++)
 	{
-        // ignore empty objects, except in custom_source or cart modes
-        if( (!isset($vars['custom_source']) || $vars['custom_source']!='true') )
+	    $item = nvweb_list_prepare_object($rs[$i], $vars);
+	    if(empty($item))
         {
-            if(
-                ($vars['source']!='gallery' && empty($rs[$i]->id))  ||
-                ($vars['source']=='gallery' && empty($rs[$i]['file']))
-            )
-            {
-                continue;
-            }
-        }
-
-        // prepare a standard-object called  $item  with the current element
-		switch($vars['source'])
-        {
-            case 'comment':
-            case 'comments':
-                $item = new comment();
-                $item->load_from_resultset(array($rs[$i]));
-                break;
-
-            case 'structure':
-            case 'category':
-                $item = new structure();
-                $item->load($rs[$i]->id);
-                $item->date_to_display = $rs[$i]->pdate;
-                break;
-
-            case 'rss':
-            case 'twitter':
-            case 'block_link':
-                // item is virtually created
-                $item = $rs[$i];
-                break;
-
-            case 'block':
-            case 'block_group':
-                if(get_class($rs[$i])=='block')
-                {
-                    // standard block
-                    $item = $rs[$i];
-                }
-                else if(isset($rs[$i]->_object_type) && ($rs[$i]->_object_type == "block_group_block_type"))
-                {
-                    // block type definition (mainly used to add a title before a list of blocks of the same type)
-                    $item = $rs[$i];
-                }
-                else if(isset($rs[$i]->extension))
-                {
-                    // extension block
-                    $item = block::extension_block($rs[$i]->extension, $rs[$i]->id);
-                    if(empty($item)) // empty or inexistant block, ignore
-                    {
-                        continue 2;
-                    }
-                    $item->type = "extension";
-                    $item->extension = $rs[$i]->extension;
-                    $item->uid = $rs[$i]->uid;
-                }
-                else
-                {
-                    // block from block group
-                    $item = new block();
-                    $item->load_from_block_group($vars['type'], $rs[$i]->id, $rs[$i]->uid);
-                }
-                break;
-
-            case 'gallery':
-                $item = $rs[$i];
-                break;
-
-            case 'product':
-                $item = new product();
-                if(!empty($rs[$i]->id)) // custom_source mode may return empty IDs
-                {
-                    $item->load($rs[$i]->id);
-                    // if the product comes from a custom source, save the original query result
-                    // this allows getting a special field without extra work ;)
-                    $item->_query = $rs[$i];
-                }
-                else
-                {
-                    // for custom_source mode without product->id information,
-                    // just return the whole object returned (to be used with "query" source, for example)
-                    $item = $rs[$i];
-                }
-                break;
-
-            case 'cart':
-                $item = new product();
-                $item->load($rs[$i]->id);
-                $item->_cart = $rs[$i];
-                break;
-
-            case 'brand':
-                $item = new brand();
-                $item->load_from_resultset(array($rs[$i]));
-                break;
-
-            case 'order':
-                // we can't load the product, as it may not exist anymore
-                $item = $rs[$i];
-                break;
-
-            case 'element':
-            case 'item':
-            default:
-                $item = new item();
-                if(!empty($rs[$i]->id)) // custom_source mode may return empty IDs
-                {
-                    $item->load($rs[$i]->id);
-                    // if the item comes from a custom source, save the original query result
-                    // this allows getting a special field without extra work ;)
-                    $item->_query = $rs[$i];
-                }
-                else
-                {
-                    // for custom_source mode without element->id information,
-                    // just return the whole object returned (to be used with "query" source, for example)
-                    $item = $rs[$i];
-                }
-                break;
+            continue;
         }
 
         // get the preprocessed template
@@ -858,35 +239,11 @@ function nvweb_list($vars=array())
         }
 
 		$out[] = $item_html;
-
 	}
 
     if(count($rs)==0)
     {
-        // special case, no results found
-        // get the nv list template and parse only the following conditional: <nvlist_conditional by="count" value="empty"> (or value=0)
-        $item_html = $vars['template'];
-
-        // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
-        unset($nested_condition_fragments);
-        list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html, array('count'));
-
-        // if we can't find a suitable conditional, let's assume the list content will be empty
-        $item_html = "";
-
-        // check every nvlist_conditional found, looking for count = [0 or empty]
-        // we only process the first found!
-        foreach($nested_conditional_fragments as $ncf)
-        {
-            if( $ncf['attributes']['value'] == '0' ||
-                $ncf['attributes']['value'] == 'empty')
-            {
-                $item_html = $ncf['nvlist_conditional_template'];
-                break;
-            }
-        }
-
-        $out[] = $item_html;
+        $out[] = nvweb_list_no_results($vars);
     }
 
 	if(isset($vars['paginator']) && $vars['paginator']!='false')
@@ -895,36 +252,7 @@ function nvweb_list($vars=array())
         $out[] = nvweb_list_paginator($vars['paginator'], $page, $total, $items, $vars);
     }
 
-    if(isset($vars['current_page_objects_count_tag_id']))
-    {
-        $count = count($rs);
-        $current_page_objects_count_func = function() use ($vars, $count)
-        {
-            global $html;
-            $html = nvweb_replace_tag_contents(
-                $vars['current_page_objects_count_tag_id'],
-                $count,
-                $html
-            );
-        };
-
-        nvweb_after_body('php', $current_page_objects_count_func);
-    }
-
-    if(isset($vars['results_found_tag_id']))
-    {
-        $results_found_func = function() use ($vars, $total)
-        {
-            global $html;
-            $html = nvweb_replace_tag_contents(
-                $vars['results_found_tag_id'],
-                $total,
-                $html
-            );
-        };
-
-        nvweb_after_body('php', $results_found_func);
-    }
+	nvweb_list_process_special_tags($vars, $rs, $total);
 
 	return implode("\n", $out);
 }
@@ -1496,6 +824,132 @@ function nvweb_list_convert_orderby($order)
     return $orderby;
 }
 
+function nvweb_list_source_elements($vars, $params)
+{
+    global $DB;
+    global $current;
+    global $website;
+
+    /*
+     * TO DO: design decision ... lists should show items from published categories which has unpublished parent?
+     * Navigate CMS 1.6.7: NO
+
+    // we have to check all website UNPUBLISHED categories to keep the list query efficient
+    // there are some cases:
+    //  a) Permission is beyond user's level [0=>public, 1=>private, 2=>hidden]
+    //  b) Date published is set and the value is before the current time (not yet published)
+    //  c) Date unpublish is set and the value is before the current time (no more published)
+    //  d) User account level not allowed [0=>everyone, 1=>signed in users, 2=>users NOT signed in]
+    $DB->query('
+        SELECT id
+          FROM nv_structure
+         WHERE website = '.intval($website->id).'
+           AND (    permission > '.$permission.'
+                 OR (date_published > 0 AND '.$website->current_time().' > date_published)
+                 OR (date_unpublish > 0 AND '.$website->current_time().' > date_unpublish)
+                 OR (access <> 0 AND access <> '.$access.')
+           )
+    ');
+
+    $hidden_categories = $DB->result('id');
+
+    // now we would have to mark the children categories also as unpublished
+
+    */
+    $filters = '';
+    if(!empty($vars['filter']))
+    {
+        $filters = nvweb_list_parse_filters($vars['filter'], 'item');
+    }
+
+    // reuse structure.access permission
+    $access_extra_items = str_replace('s.', 'i.', $params['access_extra']);
+
+    $embedded = ($vars['embedded']=='true'? '1' : '0');
+
+    $templates = "";
+    if(!empty($vars['templates']))
+    {
+        if(strpos($vars['templates'], '$')===0)
+        {
+            $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+        }
+        else
+        {
+            $templates = explode(",", $vars['templates']);
+        }
+
+        $templates = array_filter($templates);
+        if($embedded=='1')
+        {
+            $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+        }
+        else
+        {
+            $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
+        }
+    }
+
+    $columns_extra = '';
+    if($params['order'] == 'comments')
+    {
+        // we need to retrieve the number of comments to apply the order by clause
+        $columns_extra = ', (   SELECT COUNT(c.id) 
+                                FROM nv_comments c 
+                                WHERE c.object_type = "item" AND 
+                                      i.id = c.object_id AND 
+                                      c.website = i.website AND 
+                                      c.status = 0
+                             ) AS comments_published';
+    }
+
+    // default source for retrieving items
+    $query = '
+        SELECT SQL_CALC_FOUND_ROWS i.id, i.permission, i.date_published, i.date_unpublish,
+                i.date_to_display, COALESCE(NULLIF(i.date_to_display, 0), i.date_created) as pdate,
+                d.text as title, i.position as position, s.position '.$columns_extra.'
+          FROM nv_items i, nv_structure s, nv_webdictionary d			          
+         WHERE i.category IN ('.implode(",", $params['categories']).')
+           AND i.website = :wid
+           AND i.permission <= '.$params['permission'].'
+           AND i.embedding = '.$embedded.'
+           AND (i.date_published = 0 OR i.date_published < :time)
+           AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
+           AND s.id = i.category
+           AND (s.date_published = 0 OR s.date_published < :time)
+           AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
+           AND s.permission <= '.$params['permission'].'
+           AND (s.access = 0 OR s.access = '.$params['access'].$params['access_extra'].')
+           AND (i.access = 0 OR i.access = '.$params['access'].$params['access_extra_items'].')
+           AND d.website = i.website
+           AND d.node_type = "item"
+           AND d.subtype = "title"
+           AND d.node_id = i.id
+           AND d.lang = :lang
+         '.$filters.'
+         '.$params['search'].'
+         '.$templates.'
+         '.$params['exclude'].'
+         '.$params['orderby'].'
+         LIMIT '.$params['items'].'
+        OFFSET '.$params['offset'];
+
+    $DB->query(
+        $query,
+        'object',
+        array(
+            ':wid' => $website->id,
+            ':lang' => $current['lang'],
+            ':time' => core_time()
+        )
+    );
+
+    $rs = $DB->result();
+    $total = $DB->foundRows();
+
+    return array($rs, $total);
+}
+
 function nvweb_list_source_structure($vars, $params = array())
 {
     global $DB;
@@ -1561,6 +1015,570 @@ function nvweb_list_source_structure($vars, $params = array())
     $total = $DB->foundRows();
 
     return array($rs, $total);
+}
+
+function nvweb_list_source_block_group($vars, $params)
+{
+    global $current;
+    global $theme;
+
+    $bg = new block_group();
+    if(!empty($vars['type']))
+    {
+        $bg->load_by_code($vars['type']);
+    }
+
+    if(!empty($bg) && !empty($bg->blocks))
+    {
+        $rs = array();
+        foreach($bg->blocks as $bgb)
+        {
+            unset($bgbo);
+
+            switch($bgb['type'])
+            {
+                case 'block':
+                    $bgbo = new block();
+                    $bgbo->load($bgb['id']);
+
+                    if(empty($bgbo) || empty($bgbo->type))
+                    {
+                        continue 2;
+                    }
+
+                    // check if we can display this block
+                    if(nvweb_object_enabled($bgbo))
+                    {
+                        // check categories / exclusions
+                        if(!empty($bgbo->categories))
+                        {
+                            $bgbo_cat_found = false;
+                            foreach($params['categories'] as $list_cat)
+                            {
+                                if(in_array($list_cat, $bgbo->categories))
+                                {
+                                    $bgbo_cat_found = true;
+                                }
+                            }
+                            if(!$bgbo_cat_found) // block categories don't match the current list categories, skip this block
+                            {
+                                continue 2;
+                            }
+                        }
+
+                        if(!empty($bgbo->exclusions))
+                        {
+                            $bgbo_cat_found = false;
+                            foreach($params['categories'] as $list_cat)
+                            {
+                                if(in_array($list_cat, $bgbo->exclusions))
+                                {
+                                    $bgbo_cat_found = true;
+                                }
+                            }
+
+                            if($bgbo_cat_found) // block excluded categories match the current list categories, skip this block
+                            {
+                                continue 2;
+                            }
+                        }
+
+                        // inclusion/exclusion by specific elements
+                        if(!empty($bgbo->elements))
+                        {
+                            if($current['type']=='item') // also 'product' ?
+                            {
+                                if(isset($bgbo->elements['exclusions']) && in_array($current['id'], $bgbo->elements['exclusions']))
+                                {
+                                    // do not include this block in this element's page!
+                                    continue 2;
+                                }
+
+                                if(isset($bgbo->elements['selection']) && !in_array($current['id'], $bgbo->elements['selection']))
+                                {
+                                    // block not associated with the current item, ignore!
+                                    continue 2;
+                                }
+                            }
+                        }
+                        $rs[] = $bgbo;
+                    }
+                    break;
+
+                case 'block_group_block':
+                    $bgba = $theme->block_group_blocks($vars['type']);
+
+                    if(!empty($bgba[$bgb['id']])) // get the definition for that "block group block" type
+                    {
+                        $bgbo = clone $bgba[$bgb['id']];
+                        $bgbo->uid = $bgb['uid'];
+                        $rs[] = clone $bgbo;
+                    }
+                    break;
+
+                case 'block_type':
+                    // a collection of blocks of the same type
+                    list($bgbos, $foo) = nvweb_blocks(array(
+                        'type' => $bgb['id'],
+                        'mode' => ($params['order']=='random'? 'random' : 'ordered'),
+                        'zone' => 'object'
+                    ));
+
+                    // add the block type definition, with its title
+                    if(count($bgbos) > 0 && isset($bgb['title']) && !empty($bgb['title']))
+                    {
+                        $bgb['_object_type'] = 'block_group_block_type';
+                        $rs[] = (object)$bgb;
+                    }
+
+                    for($i=0; $i < count($bgbos); $i++)
+                    {
+                        $rs[] = $bgbos[$i];
+                    }
+
+                    break;
+
+                case 'extension':
+                    $rs[] = (object)($bgb);
+                    break;
+            }
+        }
+        $total = count($rs);
+    }
+    else    // block group block empty, just return without content
+    {
+        return array(array(), 0);
+    }
+
+    return array($rs, $total);
+}
+
+function nvweb_list_source_product($vars, $params)
+{
+    global $DB;
+    global $website;
+    global $current;
+
+    $filters = '';
+    if(!empty($vars['filter']))
+    {
+        $filters = nvweb_list_parse_filters($vars['filter'], 'product');
+    }
+
+    // reuse structure.access permission
+    $access_extra_items = str_replace('s.', 'p.', $params['access_extra']);
+
+    $embedded = ($vars['embedded']=='true'? '1' : '0');
+
+    $templates = "";
+    if(!empty($vars['templates']))
+    {
+        if(strpos($vars['templates'], '$')===0)
+        {
+            $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+        }
+        else
+        {
+            $templates = explode(",", $vars['templates']);
+        }
+
+        $templates = array_filter($templates);
+        if($embedded=='1')
+        {
+            $templates = ' AND s.template IN ("'.implode('","', $templates).'")';
+        }
+        else
+        {
+            $templates = ' AND p.template IN ("'.implode('","', $templates).'")';
+        }
+    }
+
+    $columns_extra = '';
+    if($params['order'] == 'comments')
+    {
+        // we need to retrieve the number of comments to apply the order by clause
+        $columns_extra = ', ( SELECT COUNT(p.id) 
+                                FROM nv_comments c 
+                                WHERE   c.object_type = "product" AND 
+                                        p.id = c.object_id AND 
+                                        c.website = p.website AND 
+                                        c.status = 0
+                            ) AS comments_published';
+    }
+
+    if($params['order'] == 'sales')
+    {
+        // retrieve the number of sales to apply the order requested
+        $columns_extra = ', (
+                SELECT COUNT(*) FROM nv_orders_lines WHERE website = p.website AND product = p.id
+            ) AS sales';
+    }
+
+    if($params['order'] == 'price_asc' || $params['order'] == 'price_desc')
+    {
+        // we need to calculate the offer price and get the lowest price for the product
+        $columns_extra = ', ( 
+                IF( 
+                    (   p.offer_price > 0 
+                        AND (p.offer_begin_date = 0 OR '.core_time().' >= p.offer_begin_date)
+                        AND (p.offer_end_date = 0 OR '.core_time().' <= p.offer_end_date)
+                    ), 
+                    p.offer_price, 
+                    p.base_price
+                ) 
+            ) AS sale_price';
+    }
+
+    // default source for retrieving items
+    $query = '
+        SELECT SQL_CALC_FOUND_ROWS p.id, p.permission, p.date_published, p.date_unpublish,
+                p.date_to_display, COALESCE(NULLIF(p.date_to_display, 0), p.date_created) as pdate,
+                d.text as title, p.position as position, s.position '.$columns_extra.'
+          FROM nv_products p, nv_structure s, nv_webdictionary d			          
+         WHERE p.category IN('.implode(",", $params['categories']).')
+           AND p.website = :wid
+           AND p.permission <= '.$params['permission'].'
+           AND (p.date_published = 0 OR p.date_published < '.core_time().')
+           AND (p.date_unpublish = 0 OR p.date_unpublish > '.core_time().')
+           AND s.id = p.category
+           AND (s.date_published = 0 OR s.date_published < :time)
+           AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
+           AND s.permission <= '.$params['permission'].'
+           AND (s.access = 0 OR s.access = '.$params['access'].$params['access_extra'].')
+           AND (p.access = 0 OR p.access = '.$params['access'].$params['access_extra_items'].')
+           AND d.website = p.website
+           AND d.node_type = "product"
+           AND d.subtype = "title"
+           AND d.node_id = p.id
+           AND d.lang = :lang
+         '.$filters.'
+         '.$params['search'].'
+         '.$templates.'
+         '.$params['exclude'].'
+         '.$params['orderby'].'
+         LIMIT '.$params['items'].'
+        OFFSET '.$params['offset'];
+
+    $DB->query(
+        $query,
+        'object',
+        array(
+            ':wid' => $website->id,
+            ':lang' => $current['lang'],
+            ':time' => core_time()
+        )
+    );
+
+    $rs = $DB->result();
+    $total = $DB->foundRows();
+
+    return array($rs, $total);
+}
+
+function nvweb_list_source_gallery($vars, $params)
+{
+    global $DB;
+    global $current;
+    global $website;
+
+    if(!isset($vars['nvlist_parent_type']))
+    {
+        // get gallery of the current item
+        if( $current['type']=='item' ||
+            $current['type']=='product'
+        )
+        {
+            $galleries = $current['object']->galleries;
+            if(!is_array($galleries))
+            {
+                $galleries = mb_unserialize($galleries);
+            }
+            $rs = $galleries[0];
+            $total = count($rs);
+        }
+        else if($current['type']=='structure')
+        {
+            // we need the first item assigned to the structure
+            $access_extra_items = str_replace('s.', 'i.', $params['access_extra']);
+
+            $templates = "";
+            if(!empty($vars['templates']))
+            {
+                if(strpos($vars['templates'], '$')===0)
+                {
+                    $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+                }
+                else
+                {
+                    $templates = explode(",", $vars['templates']);
+                }
+
+                $templates = array_filter($templates);
+                $templates = ' AND i.template IN ("'.implode('","', $templates).'")';
+            }
+
+            if(empty($categories))
+            {
+                $categories = array(0);
+            }
+
+            // default source for retrieving items (embedded or not)
+            $DB->query('
+                SELECT SQL_CALC_FOUND_ROWS i.id
+                  FROM nv_items i, nv_structure s, nv_webdictionary d
+                 WHERE i.category IN('.implode(",", $categories).')
+                   AND i.website = :wid
+                   AND i.permission <= '.$params['permission'].'
+                   AND (i.date_published = 0 OR i.date_published < :time)
+                   AND (i.date_unpublish = 0 OR i.date_unpublish > :time)
+                   AND s.id = i.category
+                   AND (s.date_published = 0 OR s.date_published < :time)
+                   AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
+                   AND s.permission <= '.$params['permission'].'
+                   AND (s.access = 0 OR s.access = '.$params['access'].$params['access_extra'].')
+                   AND (i.access = 0 OR i.access = '.$params['access'].$params['access_extra_items'].')
+                   AND d.website = i.website
+                   AND d.node_type = "item"
+                   AND d.subtype = "title"
+                   AND d.node_id = i.id
+                   AND d.lang = :lang                       
+                 '.$templates.'
+                 '.$params['exclude'].'
+                 ORDER BY i.position ASC
+                 LIMIT 1',
+                'object',
+                array(
+                    ':wid' => $website->id,
+                    ':lang' => $current['lang'],
+                    ':time' => core_time()
+                ));
+
+            $rs = $DB->result();
+            $tmp = new item();
+            $tmp->load($rs[0]->id);
+
+            $rs = $tmp->galleries[0];
+            $total = count($rs);
+        }
+    }
+    else if($vars['nvlist_parent_type'] == 'item')
+    {
+        $pitem = $vars['nvlist_parent_item'];
+        $rs = $pitem->galleries[0];
+        $total = count($rs);
+    }
+
+    if($total > 0)
+    {
+        $order = 'priority'; // display images using the assigned priority
+        if(!empty($vars['order']))
+        {
+            $order = $vars['order'];
+        }
+
+        $rs = nvweb_gallery_reorder($rs, $order);
+
+        // prepare format to be parsed by nv list iterator
+        $rs = array_map(
+            function($k, $v)
+            {
+                $v['file'] = $k;
+                return $v;
+            },
+            array_keys($rs),
+            array_values($rs)
+        );
+    }
+
+    return array($rs, $total);
+}
+
+function nvweb_list_source_brand($vars, $params)
+{
+    global $DB;
+    global $website;
+
+    // TODO: add filters (search, more filters, exclude, etc.)
+    $filters = '';
+    if(!empty($vars['filter']))
+    {
+        $filters = nvweb_list_parse_filters($vars['filter'], 'brand');
+    }
+
+    $query = '
+        SELECT b.*, b.name AS title, b.id as pdate
+          FROM nv_brands b			          
+         WHERE b.website = :wid
+         '.$filters.' 
+         '.$params['orderby'].'
+         LIMIT '.$params['items'].'
+        OFFSET '.$params['offset'];
+
+    $DB->query(
+        $query,
+        'object',
+        array(
+            ':wid' => $website->id
+        )
+    );
+
+    $rs = $DB->result();
+    $total = $DB->foundRows();
+
+    return array($rs, $total);
+}
+
+function nvweb_list_source_custom($vars, $params)
+{
+    if($vars['source']=='comment')
+    {
+        $vars['source'] = 'comments';
+    }
+
+    $fname = 'nvweb_'.$vars['source'].'_list';
+
+    if($vars['source']=='website_comments')
+    {
+        $vars['source'] = 'comments';
+    }
+
+    @nvweb_webget_load($vars['source']);
+
+    if(function_exists($fname))
+    {
+        @list($rs, $total, $processed_html) = $fname($params['offset'], $params['items'], $params['permission'], $params['order'], $vars);
+    }
+
+    return array($rs, $total, $processed_html);
+}
+
+function nvweb_list_prepare_object($row, $vars)
+{
+    // ignore empty objects, except in custom_source or cart modes
+    if( (!isset($vars['custom_source']) || $vars['custom_source']!='true') )
+    {
+        if(
+            ($vars['source']!='gallery' && empty($row->id))  ||
+            ($vars['source']=='gallery' && empty($row['file']))
+        )
+        {
+            return null;
+        }
+    }
+
+    // prepare a standard-object called  $item  with the current element
+    switch($vars['source'])
+    {
+        case 'comment':
+        case 'comments':
+            $item = new comment();
+            $item->load_from_resultset(array($row));
+            break;
+
+        case 'structure':
+        case 'category':
+            $item = new structure();
+            $item->load($row->id);
+            $item->date_to_display = $rs[$i]->pdate;
+            break;
+
+        case 'rss':
+        case 'twitter':
+        case 'block_link':
+            // item is virtually created
+            $item = $row;
+            break;
+
+        case 'block':
+        case 'block_group':
+            if(get_class($row)=='block')
+            {
+                // standard block
+                $item = $row;
+            }
+            else if(isset($row->_object_type) && ($row->_object_type == "block_group_block_type"))
+            {
+                // block type definition (mainly used to add a title before a list of blocks of the same type)
+                $item = $row;
+            }
+            else if(isset($row->extension))
+            {
+                // extension block
+                $item = block::extension_block($row->extension, $rs[$i]->id);
+                if(empty($item)) // empty or inexistant block, ignore
+                {
+                    return null;
+                }
+                $item->type = "extension";
+                $item->extension = $rs[$i]->extension;
+                $item->uid = $rs[$i]->uid;
+            }
+            else
+            {
+                // block from block group
+                $item = new block();
+                $item->load_from_block_group($vars['type'], $row->id, $row->uid);
+            }
+            break;
+
+        case 'gallery':
+            $item = $row;
+            break;
+
+        case 'product':
+            $item = new product();
+            if(!empty($row->id)) // custom_source mode may return empty IDs
+            {
+                $item->load($row->id);
+                // if the product comes from a custom source, save the original query result
+                // this allows getting a special field without extra work ;)
+                $item->_query = $row;
+            }
+            else
+            {
+                // for custom_source mode without product->id information,
+                // just return the whole object returned (to be used with "query" source, for example)
+                $item = $row;
+            }
+            break;
+
+        case 'cart':
+            $item = new product();
+            $item->load($row->id);
+            $item->_cart = $row;
+            break;
+
+        case 'brand':
+            $item = new brand();
+            $item->load_from_resultset(array($row));
+            break;
+
+        case 'order':
+            // we can't load the product, as it may not exist anymore
+            $item = $row;
+            break;
+
+        case 'element':
+        case 'item':
+        default:
+            $item = new item();
+            if(!empty($row->id)) // custom_source mode may return empty IDs
+            {
+                $item->load($row->id);
+                // if the item comes from a custom source, save the original query result
+                // this allows getting a special field without extra work ;)
+                $item->_query = $row;
+            }
+            else
+            {
+                // for custom_source mode without element->id information,
+                // just return the whole object returned (to be used with "query" source, for example)
+                $item = $row;
+            }
+            break;
+    }
+
+    return $item;
 }
 
 function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_position, $item_absolute_position, $total)
@@ -3347,4 +3365,65 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
 	return $paginator_html;
 }
 
+function nvweb_list_no_results($vars)
+{
+    // special case, no results found
+    // get the nv list template and parse only the following conditional: <nvlist_conditional by="count" value="empty"> (or value=0)
+    $item_html = $vars['template'];
+
+    // now, parse the nvlist_conditional tags (with html source code inside (and other nvlist tags))
+    unset($nested_condition_fragments);
+    list($item_html, $nested_conditional_fragments) = nvweb_list_isolate_conditionals($item_html, array('count'));
+
+    // if we can't find a suitable conditional, let's assume the list content will be empty
+    $item_html = "";
+
+    // check every nvlist_conditional found, looking for count = [0 or empty]
+    // we only process the first found!
+    foreach($nested_conditional_fragments as $ncf)
+    {
+        if( $ncf['attributes']['value'] == '0' ||
+            $ncf['attributes']['value'] == 'empty')
+        {
+            $item_html = $ncf['nvlist_conditional_template'];
+            break;
+        }
+    }
+
+    return $item_html;
+}
+
+function nvweb_list_process_special_tags($vars, $rs, $total)
+{
+    if(isset($vars['current_page_objects_count_tag_id']))
+    {
+        $count = count($rs);
+        $current_page_objects_count_func = function() use ($vars, $count)
+        {
+            global $html;
+            $html = nvweb_replace_tag_contents(
+                $vars['current_page_objects_count_tag_id'],
+                $count,
+                $html
+            );
+        };
+
+        nvweb_after_body('php', $current_page_objects_count_func);
+    }
+
+    if(isset($vars['results_found_tag_id']))
+    {
+        $results_found_func = function() use ($vars, $total)
+        {
+            global $html;
+            $html = nvweb_replace_tag_contents(
+                $vars['results_found_tag_id'],
+                $total,
+                $html
+            );
+        };
+
+        nvweb_after_body('php', $results_found_func);
+    }
+}
 ?>
