@@ -15,7 +15,21 @@ function run()
 	switch($_REQUEST['act'])
 	{
         case 'theme_info':
-            echo '<iframe src="'.NAVIGATE_URL.'/themes/'.$_REQUEST['theme'].'/'.$_REQUEST['theme'].'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
+            $themes_available = $theme->list_available();
+            $found = false;
+            foreach($themes_available as $ta)
+            {
+                if($ta['code'] == $_REQUEST['theme'])
+                {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if($found)
+            {
+                echo '<iframe src="'.NAVIGATE_URL.'/themes/'.$_REQUEST['theme'].'/'.$_REQUEST['theme'].'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
+            }
             core_terminate();
             break;
 
