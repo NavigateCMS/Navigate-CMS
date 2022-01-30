@@ -175,7 +175,7 @@ function run()
                     break;
 
                 case 'description':
-                    $item->load($_REQUEST['id']);
+                    $item->load(intval($_REQUEST['id']));
 
                     if(!empty($_POST))
                     {
@@ -210,7 +210,7 @@ function run()
                     break;
 
                 case 'focalpoint':
-                    $item->load($_REQUEST['id']);
+                    $item->load(intval($_REQUEST['id']));
                     if(!empty($_POST))
                     {
                         if(naviforms::check_csrf_token('header'))
@@ -295,7 +295,11 @@ function run()
 			
 		case 2:	// show/edit item properties
         case "edit":
-			$item->load($_REQUEST['id']);
+            $id = intval($_REQUEST['id']);
+            if(!empty($id))
+            {
+                $item->load($id);
+            }
 
             if(@$_REQUEST['op']=='replace_file' && !empty($_FILES))
             {
@@ -349,7 +353,7 @@ function run()
 					$item->save();
 					unset($item);
 					$item = new file();
-					$item->load($_REQUEST['id']);
+					$item->load(intval($_REQUEST['id']));
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 				}
 				catch(Exception $e)

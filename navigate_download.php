@@ -50,7 +50,7 @@ $item = new file();
 $id = $_REQUEST['id'];
 if(!empty($_REQUEST['id']))
 {
-    if(is_int($id))
+    if(is_numeric($id) && $_REQUEST['id'] == intval($_REQUEST['id']))
     {
         $item->load($id);
     }
