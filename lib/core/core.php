@@ -1044,6 +1044,13 @@ function core_bytes($bytes)
  */
 function core_http_request($url, $timeout = 12)
 {	
+    // security: require $url to be a real http(s) request
+    $url = filter_var($url, FILTER_VALIDATE_URL);
+    if(!$url || empty($url))
+    {
+        return null;
+    }
+
 	if(function_exists('curl_init'))
 	{
 		$ch = curl_init();
