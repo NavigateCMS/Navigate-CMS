@@ -24,6 +24,10 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
         array (
             'Mpdf\\' => 5,
         ),
+        'I' => 
+        array (
+            'IpUtils\\' => 8,
+        ),
         'D' => 
         array (
             'DeepCopy\\' => 9,
@@ -48,6 +52,10 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
         array (
             0 => __DIR__ . '/..' . '/mpdf/mpdf/src',
         ),
+        'IpUtils\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/jycr753/ip-utils/src',
+        ),
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
@@ -59,6 +67,13 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
     );
 
     public static $prefixesPsr0 = array (
+        'W' => 
+        array (
+            'Whitelist\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/jalle19/php-whitelist-check/src',
+            ),
+        ),
         'U' => 
         array (
             'URLify' => 
@@ -69,6 +84,7 @@ class ComposerStaticInit9ba73c33f2d589941eb6a39fb3336378
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'FPDF_TPL' => __DIR__ . '/..' . '/setasign/fpdi/fpdf_tpl.php',
         'FPDI' => __DIR__ . '/..' . '/setasign/fpdi/fpdi.php',
         'FilterASCII85' => __DIR__ . '/..' . '/setasign/fpdi/filters/FilterASCII85.php',

@@ -9,6 +9,7 @@ return array(
     'voku\\' => array($vendorDir . '/voku/portable-ascii/src/voku', $vendorDir . '/voku/stop-words/src/voku'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Mpdf\\' => array($vendorDir . '/mpdf/mpdf/src'),
+    'IpUtils\\' => array($vendorDir . '/jycr753/ip-utils/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'Algo26\\IdnaConvert\\' => array($vendorDir . '/algo26-matthias/idna-convert/src'),
 );

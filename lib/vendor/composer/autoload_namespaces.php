@@ -6,5 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Whitelist\\' => array($vendorDir . '/jalle19/php-whitelist-check/src'),
     'URLify' => array($vendorDir . '/jbroadway/urlify'),
 );

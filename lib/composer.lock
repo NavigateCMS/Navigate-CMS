@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2817a8c3ba437b2279432b82238ee90a",
+    "content-hash": "f26884eb4236cfeed925dc8006bd15c1",
     "packages": [
         {
             "name": "algo26-matthias/idna-convert",
@@ -92,6 +92,51 @@
             "time": "2017-05-01T15:36:40+00:00"
         },
         {
+            "name": "jalle19/php-whitelist-check",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jalle19/php-whitelist-check.git",
+                "reference": "17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jalle19/php-whitelist-check/zipball/17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1",
+                "reference": "17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1",
+                "shasum": ""
+            },
+            "require": {
+                "jycr753/ip-utils": "~2.0.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Whitelist\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "description": "Provides a simple way to check whether an address or domain is on a whitelist",
+            "homepage": "https://github.com/Jalle19/php-whitelist-check",
+            "keywords": [
+                "cidr",
+                "ipv4",
+                "ipv6",
+                "whitelist"
+            ],
+            "support": {
+                "issues": "https://github.com/Jalle19/php-whitelist-check/issues",
+                "source": "https://github.com/Jalle19/php-whitelist-check/tree/1.1.0"
+            },
+            "time": "2020-08-24T15:52:46+00:00"
+        },
+        {
             "name": "jbroadway/urlify",
             "version": "1.2.0-stable",
             "source": {
@@ -149,6 +194,61 @@
                 "urlify"
             ],
             "time": "2019-12-13T19:53:11+00:00"
+        },
+        {
+            "name": "jycr753/ip-utils",
+            "version": "v2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/coquer/ip-utils.git",
+                "reference": "18f84cac2d4d914ec67941d2608c982a58e21246"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coquer/ip-utils/zipball/18f84cac2d4d914ec67941d2608c982a58e21246",
+                "reference": "18f84cac2d4d914ec67941d2608c982a58e21246",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5.10",
+                "squizlabs/php_codesniffer": "^3.4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "IpUtils\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Mewes",
+                    "homepage": "http://www.xrstf.de/"
+                },
+                {
+                    "name": "Jorge Y. C. Rodriguez",
+                    "email": "self@jorgerodriguez.dk"
+                }
+            ],
+            "description": "small library to deal with IPv4 & IPv6 addresses and subnets",
+            "keywords": [
+                "IP",
+                "ipv4",
+                "ipv6",
+                "matching",
+                "subnet"
+            ],
+            "support": {
+                "issues": "https://github.com/coquer/ip-utils/issues",
+                "source": "https://github.com/coquer/ip-utils/tree/v2.0.3"
+            },
+            "time": "2022-02-13T18:00:58+00:00"
         },
         {
             "name": "mpdf/mpdf",
@@ -503,5 +603,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

@@ -1,511 +1,631 @@
-[
-    {
-        "name": "algo26-matthias/idna-convert",
-        "version": "v3.0.4",
-        "version_normalized": "3.0.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/algo26-matthias/idna-convert.git",
-            "reference": "0786979b5ee8a8fee4731bd6d2be34490174bf74"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/algo26-matthias/idna-convert/zipball/0786979b5ee8a8fee4731bd6d2be34490174bf74",
-            "reference": "0786979b5ee8a8fee4731bd6d2be34490174bf74",
-            "shasum": ""
-        },
-        "require": {
-            "ext-pcre": "*",
-            "jakeasmith/http_build_url": "^1",
-            "php": "^7.2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "7.5.14"
-        },
-        "suggest": {
-            "ext-iconv": "Install ext/iconv for using input / output other than UTF-8 or ISO-8859-1",
-            "ext-mbstring": "Install ext/mbstring for using input / output other than UTF-8 or ISO-8859-1"
-        },
-        "time": "2019-12-05T12:27:39+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Algo26\\IdnaConvert\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "LGPL-2.1+"
-        ],
-        "authors": [
-            {
-                "name": "Matthias Sommerfeld",
-                "email": "matthias.sommerfeld@algo26.de",
-                "role": "Developer"
-            }
-        ],
-        "description": "A library for encoding and decoding internationalized domain names",
-        "homepage": "http://idnaconv.net/",
-        "keywords": [
-            "idn",
-            "idna",
-            "php"
-        ]
-    },
-    {
-        "name": "jakeasmith/http_build_url",
-        "version": "1.0.1",
-        "version_normalized": "1.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/jakeasmith/http_build_url.git",
-            "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/jakeasmith/http_build_url/zipball/93c273e77cb1edead0cf8bcf8cd2003428e74e37",
-            "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37",
-            "shasum": ""
-        },
-        "time": "2017-05-01T15:36:40+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "src/http_build_url.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jake A. Smith",
-                "email": "theman@jakeasmith.com"
-            }
-        ],
-        "description": "Provides functionality for http_build_url() to environments without pecl_http."
-    },
-    {
-        "name": "jbroadway/urlify",
-        "version": "1.2.0-stable",
-        "version_normalized": "1.2.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/jbroadway/urlify.git",
-            "reference": "b917c8c9274a9784a2eb30c657fc386ad591fdcd"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/jbroadway/urlify/zipball/b917c8c9274a9784a2eb30c657fc386ad591fdcd",
-            "reference": "b917c8c9274a9784a2eb30c657fc386ad591fdcd",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.0.0",
-            "voku/portable-ascii": "^1.4",
-            "voku/stop-words": "^2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~6.0 || ~7.0"
-        },
-        "time": "2019-12-13T19:53:11+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "URLify": ""
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause-Clear"
-        ],
-        "authors": [
-            {
-                "name": "Johnny Broadway",
-                "email": "johnny@johnnybroadway.com",
-                "homepage": "http://www.johnnybroadway.com/"
-            }
-        ],
-        "description": "PHP port of URLify.js from the Django project. Transliterates non-ascii characters for use in URLs.",
-        "homepage": "https://github.com/jbroadway/urlify",
-        "keywords": [
-            "encode",
-            "iconv",
-            "link",
-            "slug",
-            "translit",
-            "transliterate",
-            "transliteration",
-            "url",
-            "urlify"
-        ]
-    },
-    {
-        "name": "mpdf/mpdf",
-        "version": "v7.1.6",
-        "version_normalized": "7.1.6.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/mpdf/mpdf.git",
-            "reference": "ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/mpdf/mpdf/zipball/ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd",
-            "reference": "ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd",
-            "shasum": ""
-        },
-        "require": {
-            "ext-gd": "*",
-            "ext-mbstring": "*",
-            "myclabs/deep-copy": "^1.7",
-            "paragonie/random_compat": "^1.4|^2.0|9.99.99",
-            "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0",
-            "psr/log": "^1.0",
-            "setasign/fpdi": "1.6.*"
-        },
-        "require-dev": {
-            "mockery/mockery": "^0.9.5",
-            "phpunit/phpunit": "^5.0",
-            "squizlabs/php_codesniffer": "^2.7.0",
-            "tracy/tracy": "^2.4"
-        },
-        "suggest": {
-            "ext-bcmath": "Needed for generation of some types of barcodes",
-            "ext-xml": "Needed mainly for SVG manipulation",
-            "ext-zlib": "Needed for compression of embedded resources, such as fonts"
-        },
-        "time": "2018-10-18T11:37:12+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-development": "7.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Mpdf\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-2.0-only"
-        ],
-        "authors": [
-            {
-                "name": "Matěj Humpál",
-                "role": "Developer, maintainer"
+{
+    "packages": [
+        {
+            "name": "algo26-matthias/idna-convert",
+            "version": "v3.0.4",
+            "version_normalized": "3.0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/algo26-matthias/idna-convert.git",
+                "reference": "0786979b5ee8a8fee4731bd6d2be34490174bf74"
             },
-            {
-                "name": "Ian Back",
-                "role": "Developer (retired)"
-            }
-        ],
-        "description": "A PHP class to generate PDF files from HTML with Unicode/UTF-8 and CJK support",
-        "homepage": "https://mpdf.github.io",
-        "keywords": [
-            "pdf",
-            "php",
-            "utf-8"
-        ]
-    },
-    {
-        "name": "myclabs/deep-copy",
-        "version": "1.7.0",
-        "version_normalized": "1.7.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/myclabs/DeepCopy.git",
-            "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
-            "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.6 || ^7.0"
-        },
-        "require-dev": {
-            "doctrine/collections": "^1.0",
-            "doctrine/common": "^2.6",
-            "phpunit/phpunit": "^4.1"
-        },
-        "time": "2017-10-19T19:58:43+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "DeepCopy\\": "src/DeepCopy/"
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/algo26-matthias/idna-convert/zipball/0786979b5ee8a8fee4731bd6d2be34490174bf74",
+                "reference": "0786979b5ee8a8fee4731bd6d2be34490174bf74",
+                "shasum": ""
             },
-            "files": [
-                "src/DeepCopy/deep_copy.php"
-            ]
+            "require": {
+                "ext-pcre": "*",
+                "jakeasmith/http_build_url": "^1",
+                "php": "^7.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "7.5.14"
+            },
+            "suggest": {
+                "ext-iconv": "Install ext/iconv for using input / output other than UTF-8 or ISO-8859-1",
+                "ext-mbstring": "Install ext/mbstring for using input / output other than UTF-8 or ISO-8859-1"
+            },
+            "time": "2019-12-05T12:27:39+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Algo26\\IdnaConvert\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1+"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Sommerfeld",
+                    "email": "matthias.sommerfeld@algo26.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A library for encoding and decoding internationalized domain names",
+            "homepage": "http://idnaconv.net/",
+            "keywords": [
+                "idn",
+                "idna",
+                "php"
+            ],
+            "install-path": "../algo26-matthias/idna-convert"
         },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "description": "Create deep copies (clones) of your objects",
-        "keywords": [
-            "clone",
-            "copy",
-            "duplicate",
-            "object",
-            "object graph"
-        ]
-    },
-    {
-        "name": "paragonie/random_compat",
-        "version": "v9.99.99",
-        "version_normalized": "9.99.99.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/paragonie/random_compat.git",
-            "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95"
+        {
+            "name": "jakeasmith/http_build_url",
+            "version": "1.0.1",
+            "version_normalized": "1.0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jakeasmith/http_build_url.git",
+                "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jakeasmith/http_build_url/zipball/93c273e77cb1edead0cf8bcf8cd2003428e74e37",
+                "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37",
+                "shasum": ""
+            },
+            "time": "2017-05-01T15:36:40+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "src/http_build_url.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jake A. Smith",
+                    "email": "theman@jakeasmith.com"
+                }
+            ],
+            "description": "Provides functionality for http_build_url() to environments without pecl_http.",
+            "install-path": "../jakeasmith/http_build_url"
         },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/paragonie/random_compat/zipball/84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
-            "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
-            "shasum": ""
+        {
+            "name": "jalle19/php-whitelist-check",
+            "version": "1.1.0",
+            "version_normalized": "1.1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Jalle19/php-whitelist-check.git",
+                "reference": "17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Jalle19/php-whitelist-check/zipball/17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1",
+                "reference": "17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1",
+                "shasum": ""
+            },
+            "require": {
+                "jycr753/ip-utils": "~2.0.0",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "time": "2020-08-24T15:52:46+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "Whitelist\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "description": "Provides a simple way to check whether an address or domain is on a whitelist",
+            "homepage": "https://github.com/Jalle19/php-whitelist-check",
+            "keywords": [
+                "cidr",
+                "ipv4",
+                "ipv6",
+                "whitelist"
+            ],
+            "support": {
+                "issues": "https://github.com/Jalle19/php-whitelist-check/issues",
+                "source": "https://github.com/Jalle19/php-whitelist-check/tree/1.1.0"
+            },
+            "install-path": "../jalle19/php-whitelist-check"
         },
-        "require": {
-            "php": "^7"
+        {
+            "name": "jbroadway/urlify",
+            "version": "1.2.0-stable",
+            "version_normalized": "1.2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jbroadway/urlify.git",
+                "reference": "b917c8c9274a9784a2eb30c657fc386ad591fdcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jbroadway/urlify/zipball/b917c8c9274a9784a2eb30c657fc386ad591fdcd",
+                "reference": "b917c8c9274a9784a2eb30c657fc386ad591fdcd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "voku/portable-ascii": "^1.4",
+                "voku/stop-words": "^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0"
+            },
+            "time": "2019-12-13T19:53:11+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "URLify": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause-Clear"
+            ],
+            "authors": [
+                {
+                    "name": "Johnny Broadway",
+                    "email": "johnny@johnnybroadway.com",
+                    "homepage": "http://www.johnnybroadway.com/"
+                }
+            ],
+            "description": "PHP port of URLify.js from the Django project. Transliterates non-ascii characters for use in URLs.",
+            "homepage": "https://github.com/jbroadway/urlify",
+            "keywords": [
+                "encode",
+                "iconv",
+                "link",
+                "slug",
+                "translit",
+                "transliterate",
+                "transliteration",
+                "url",
+                "urlify"
+            ],
+            "install-path": "../jbroadway/urlify"
         },
-        "require-dev": {
-            "phpunit/phpunit": "4.*|5.*",
-            "vimeo/psalm": "^1"
+        {
+            "name": "jycr753/ip-utils",
+            "version": "v2.0.3",
+            "version_normalized": "2.0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/coquer/ip-utils.git",
+                "reference": "18f84cac2d4d914ec67941d2608c982a58e21246"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/coquer/ip-utils/zipball/18f84cac2d4d914ec67941d2608c982a58e21246",
+                "reference": "18f84cac2d4d914ec67941d2608c982a58e21246",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5.10",
+                "squizlabs/php_codesniffer": "^3.4.2"
+            },
+            "time": "2022-02-13T18:00:58+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "IpUtils\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Mewes",
+                    "homepage": "http://www.xrstf.de/"
+                },
+                {
+                    "name": "Jorge Y. C. Rodriguez",
+                    "email": "self@jorgerodriguez.dk"
+                }
+            ],
+            "description": "small library to deal with IPv4 & IPv6 addresses and subnets",
+            "keywords": [
+                "IP",
+                "ipv4",
+                "ipv6",
+                "matching",
+                "subnet"
+            ],
+            "support": {
+                "issues": "https://github.com/coquer/ip-utils/issues",
+                "source": "https://github.com/coquer/ip-utils/tree/v2.0.3"
+            },
+            "install-path": "../jycr753/ip-utils"
         },
-        "suggest": {
-            "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+        {
+            "name": "mpdf/mpdf",
+            "version": "v7.1.6",
+            "version_normalized": "7.1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mpdf/mpdf.git",
+                "reference": "ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd",
+                "reference": "ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "ext-mbstring": "*",
+                "myclabs/deep-copy": "^1.7",
+                "paragonie/random_compat": "^1.4|^2.0|9.99.99",
+                "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0",
+                "psr/log": "^1.0",
+                "setasign/fpdi": "1.6.*"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^5.0",
+                "squizlabs/php_codesniffer": "^2.7.0",
+                "tracy/tracy": "^2.4"
+            },
+            "suggest": {
+                "ext-bcmath": "Needed for generation of some types of barcodes",
+                "ext-xml": "Needed mainly for SVG manipulation",
+                "ext-zlib": "Needed for compression of embedded resources, such as fonts"
+            },
+            "time": "2018-10-18T11:37:12+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-development": "7.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Mpdf\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Matěj Humpál",
+                    "role": "Developer, maintainer"
+                },
+                {
+                    "name": "Ian Back",
+                    "role": "Developer (retired)"
+                }
+            ],
+            "description": "A PHP class to generate PDF files from HTML with Unicode/UTF-8 and CJK support",
+            "homepage": "https://mpdf.github.io",
+            "keywords": [
+                "pdf",
+                "php",
+                "utf-8"
+            ],
+            "install-path": "../mpdf/mpdf"
         },
-        "time": "2018-07-02T15:55:56+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Paragon Initiative Enterprises",
-                "email": "security@paragonie.com",
-                "homepage": "https://paragonie.com"
-            }
-        ],
-        "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-        "keywords": [
-            "csprng",
-            "polyfill",
-            "pseudorandom",
-            "random"
-        ]
-    },
-    {
-        "name": "psr/log",
-        "version": "1.0.2",
-        "version_normalized": "1.0.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/php-fig/log.git",
-            "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+        {
+            "name": "myclabs/deep-copy",
+            "version": "1.7.0",
+            "version_normalized": "1.7.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/myclabs/DeepCopy.git",
+                "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
+                "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "doctrine/collections": "^1.0",
+                "doctrine/common": "^2.6",
+                "phpunit/phpunit": "^4.1"
+            },
+            "time": "2017-10-19T19:58:43+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "DeepCopy\\": "src/DeepCopy/"
+                },
+                "files": [
+                    "src/DeepCopy/deep_copy.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Create deep copies (clones) of your objects",
+            "keywords": [
+                "clone",
+                "copy",
+                "duplicate",
+                "object",
+                "object graph"
+            ],
+            "install-path": "../myclabs/deep-copy"
         },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-            "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
-            "shasum": ""
+        {
+            "name": "paragonie/random_compat",
+            "version": "v9.99.99",
+            "version_normalized": "9.99.99.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
+                "reference": "84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*",
+                "vimeo/psalm": "^1"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "time": "2018-07-02T15:55:56+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "install-path": "../paragonie/random_compat"
         },
-        "require": {
-            "php": ">=5.3.0"
+        {
+            "name": "psr/log",
+            "version": "1.0.2",
+            "version_normalized": "1.0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "reference": "4ebe3a8bf773a19edfe0a84b6585ba3d401b724d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "time": "2016-10-10T12:19:37+00:00",
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "Psr/Log/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "install-path": "../psr/log"
         },
-        "time": "2016-10-10T12:19:37+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
-            }
+        {
+            "name": "setasign/fpdi",
+            "version": "1.6.2",
+            "version_normalized": "1.6.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Setasign/FPDI.git",
+                "reference": "a6ad58897a6d97cc2d2cd2adaeda343b25a368ea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/a6ad58897a6d97cc2d2cd2adaeda343b25a368ea",
+                "reference": "a6ad58897a6d97cc2d2cd2adaeda343b25a368ea",
+                "shasum": ""
+            },
+            "suggest": {
+                "setasign/fpdf": "FPDI will extend this class but as it is also possible to use \"tecnickcom/tcpdf\" as an alternative there's no fixed dependency configured.",
+                "setasign/fpdi-fpdf": "Use this package to automatically evaluate dependencies to FPDF.",
+                "setasign/fpdi-tcpdf": "Use this package to automatically evaluate dependencies to TCPDF."
+            },
+            "time": "2017-05-11T14:25:49+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "classmap": [
+                    "filters/",
+                    "fpdi.php",
+                    "fpdf_tpl.php",
+                    "fpdi_pdf_parser.php",
+                    "pdf_context.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Slabon",
+                    "email": "jan.slabon@setasign.com",
+                    "homepage": "https://www.setasign.com"
+                }
+            ],
+            "description": "FPDI is a collection of PHP classes facilitating developers to read pages from existing PDF documents and use them as templates in FPDF. Because it is also possible to use FPDI with TCPDF, there are no fixed dependencies defined. Please see suggestions for packages which evaluates the dependencies automatically.",
+            "homepage": "https://www.setasign.com/fpdi",
+            "keywords": [
+                "fpdf",
+                "fpdi",
+                "pdf"
+            ],
+            "install-path": "../setasign/fpdi"
         },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Psr\\Log\\": "Psr/Log/"
-            }
+        {
+            "name": "voku/portable-ascii",
+            "version": "1.5.1",
+            "version_normalized": "1.5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voku/portable-ascii.git",
+                "reference": "e7f9bd5deff09a57318f9b900ab33a05acfcf4d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voku/portable-ascii/zipball/e7f9bd5deff09a57318f9b900ab33a05acfcf4d3",
+                "reference": "e7f9bd5deff09a57318f9b900ab33a05acfcf4d3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0 || ~7.0"
+            },
+            "suggest": {
+                "ext-intl": "Use Intl for transliterator_transliterate() support"
+            },
+            "time": "2020-05-26T06:40:44+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "voku\\": "src/voku/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Moelleken",
+                    "homepage": "http://www.moelleken.org/"
+                }
+            ],
+            "description": "Portable ASCII library - performance optimized (ascii) string functions for php.",
+            "homepage": "https://github.com/voku/portable-ascii",
+            "keywords": [
+                "ascii",
+                "clean",
+                "php"
+            ],
+            "install-path": "../voku/portable-ascii"
         },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "PHP-FIG",
-                "homepage": "http://www.php-fig.org/"
-            }
-        ],
-        "description": "Common interface for logging libraries",
-        "homepage": "https://github.com/php-fig/log",
-        "keywords": [
-            "log",
-            "psr",
-            "psr-3"
-        ]
-    },
-    {
-        "name": "setasign/fpdi",
-        "version": "1.6.2",
-        "version_normalized": "1.6.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/Setasign/FPDI.git",
-            "reference": "a6ad58897a6d97cc2d2cd2adaeda343b25a368ea"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/Setasign/FPDI/zipball/a6ad58897a6d97cc2d2cd2adaeda343b25a368ea",
-            "reference": "a6ad58897a6d97cc2d2cd2adaeda343b25a368ea",
-            "shasum": ""
-        },
-        "suggest": {
-            "setasign/fpdf": "FPDI will extend this class but as it is also possible to use \"tecnickcom/tcpdf\" as an alternative there's no fixed dependency configured.",
-            "setasign/fpdi-fpdf": "Use this package to automatically evaluate dependencies to FPDF.",
-            "setasign/fpdi-tcpdf": "Use this package to automatically evaluate dependencies to TCPDF."
-        },
-        "time": "2017-05-11T14:25:49+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "filters/",
-                "fpdi.php",
-                "fpdf_tpl.php",
-                "fpdi_pdf_parser.php",
-                "pdf_context.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Jan Slabon",
-                "email": "jan.slabon@setasign.com",
-                "homepage": "https://www.setasign.com"
-            }
-        ],
-        "description": "FPDI is a collection of PHP classes facilitating developers to read pages from existing PDF documents and use them as templates in FPDF. Because it is also possible to use FPDI with TCPDF, there are no fixed dependencies defined. Please see suggestions for packages which evaluates the dependencies automatically.",
-        "homepage": "https://www.setasign.com/fpdi",
-        "keywords": [
-            "fpdf",
-            "fpdi",
-            "pdf"
-        ]
-    },
-    {
-        "name": "voku/portable-ascii",
-        "version": "1.5.1",
-        "version_normalized": "1.5.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/voku/portable-ascii.git",
-            "reference": "e7f9bd5deff09a57318f9b900ab33a05acfcf4d3"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/voku/portable-ascii/zipball/e7f9bd5deff09a57318f9b900ab33a05acfcf4d3",
-            "reference": "e7f9bd5deff09a57318f9b900ab33a05acfcf4d3",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~6.0 || ~7.0"
-        },
-        "suggest": {
-            "ext-intl": "Use Intl for transliterator_transliterate() support"
-        },
-        "time": "2020-05-26T06:40:44+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "voku\\": "src/voku/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Lars Moelleken",
-                "homepage": "http://www.moelleken.org/"
-            }
-        ],
-        "description": "Portable ASCII library - performance optimized (ascii) string functions for php.",
-        "homepage": "https://github.com/voku/portable-ascii",
-        "keywords": [
-            "ascii",
-            "clean",
-            "php"
-        ]
-    },
-    {
-        "name": "voku/stop-words",
-        "version": "2.0.1",
-        "version_normalized": "2.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/voku/stop-words.git",
-            "reference": "8e63c0af20f800b1600783764e0ce19e53969f71"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/voku/stop-words/zipball/8e63c0af20f800b1600783764e0ce19e53969f71",
-            "reference": "8e63c0af20f800b1600783764e0ce19e53969f71",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~6.0"
-        },
-        "time": "2018-11-23T01:37:27+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "voku\\": "src/voku/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Lars Moelleken",
-                "homepage": "http://www.moelleken.org/"
-            }
-        ],
-        "description": "Stop-Words via PHP",
-        "keywords": [
-            "stop words",
-            "stop-words"
-        ]
-    }
-]
+        {
+            "name": "voku/stop-words",
+            "version": "2.0.1",
+            "version_normalized": "2.0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/voku/stop-words.git",
+                "reference": "8e63c0af20f800b1600783764e0ce19e53969f71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/voku/stop-words/zipball/8e63c0af20f800b1600783764e0ce19e53969f71",
+                "reference": "8e63c0af20f800b1600783764e0ce19e53969f71",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.0"
+            },
+            "time": "2018-11-23T01:37:27+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "voku\\": "src/voku/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Moelleken",
+                    "homepage": "http://www.moelleken.org/"
+                }
+            ],
+            "description": "Stop-Words via PHP",
+            "keywords": [
+                "stop words",
+                "stop-words"
+            ],
+            "install-path": "../voku/stop-words"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
