@@ -4231,6 +4231,17 @@
 				<source>PHP version {value} or higher is required</source>
 				<target>PHP version {value} or higher is required</target>
 			</trans-unit>
+
+			<trans-unit id="842" approved="yes">
+				<source>Security</source>
+				<target>Security</target>
+			</trans-unit>
+
+			<trans-unit id="843" approved="yes">
+				<source>Accepted hosts</source>
+				<target>Accepted hosts</target>
+			</trans-unit>
+
 		</body>
 
 	</file>

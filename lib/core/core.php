@@ -1043,11 +1043,27 @@ function core_bytes($bytes)
  * @return string Body of the response
  */
 function core_http_request($url, $timeout = 12)
-{	
+{
+    global $website;
+
     // security: require $url to be a real http(s) request
     $url = filter_var($url, FILTER_VALIDATE_URL);
     if(!$url || empty($url))
     {
+        return null;
+    }
+
+    $url_scheme = parse_url($url, PHP_URL_SCHEME);
+    $url_scheme = strtolower($url_scheme);
+    if(!in_array($url_scheme, array('http', 'https')))
+    {
+        return null;
+    }
+
+    $host = parse_url($url, PHP_URL_HOST);
+    if(!website::accepted_host($host))
+    {
+        throw new Exception("Host '".$host."' is not in the website hosts whitelist.");
         return null;
     }
 

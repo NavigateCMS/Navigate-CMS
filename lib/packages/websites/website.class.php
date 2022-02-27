@@ -56,10 +56,19 @@ class website
     public $shop_customer_account_path;
     public $shop_purchase_conditions_path;
 
+    public $hosts_accepted;
+
 	public $theme;
 	public $theme_options;
 	
 	public $languages_list;
+
+	public static $default_hosts_accepted = array(
+	    '*.navigatecms.com',
+        '*.youtube.com',
+        '*.vimeo.com',
+        '*.google.com'
+    );
 
 	public function load($id="")
 	{
@@ -146,7 +155,9 @@ class website
 		$this->mail_user		            = $main->mail_user;
 		$this->mail_address		            = $main->mail_address;
         $this->mail_password	            = $main->mail_password;
-		
+
+        $this->hosts_accepted               = json_decode($main->hosts_accepted, true);
+
 		$this->theme			= $main->theme;
 		$this->theme_options	= json_decode($main->theme_options);
 
@@ -307,6 +318,20 @@ class website
                 }
             }
         }
+
+        $this->hosts_accepted = explode("\n", $_REQUEST['website-hosts_accepted']);
+        for($i=0; $i < count($this->hosts_accepted); $i++)
+        {
+            $value = $this->hosts_accepted[$i];
+            $value = str_replace("\r", "", $value);
+            $value = trim($value);
+            if(empty($value))
+            {
+                $value = null;
+            }
+            $this->hosts_accepted[$i] = $value;
+        }
+        $this->hosts_accepted = array_filter($this->hosts_accepted);
 
         $this->theme_options = array();
 
@@ -521,13 +546,13 @@ class website
                 languages, languages_published, aliases,
                 word_separator, date_format, tinymce_css, resize_uploaded_images,
                 comments_enabled_for, comments_default_moderator, share_files_media_browser, page_cache,
-                tracking_scripts, additional_scripts, additional_styles, permission,
+                tracking_scripts, additional_scripts, additional_styles, block_types, permission,
                 mail_mailer, mail_server, mail_port, mail_security, mail_ignore_ssl_security, mail_user, mail_address, mail_password, 
                 contact_emails, homepage, default_timezone, 
                 metatag_title_order, metatag_description, metatag_keywords, metatags,
                 favicon, decimal_separator, thousands_separator, currency, size_unit, weight_unit,
                 shop_logo, shop_address, shop_legal_info, shop_purchase_conditions_path, shop_customer_account_path,
-                theme, theme_options, block_types
+                hosts_accepted, theme, theme_options
             )
             VALUES
             ( 0,
@@ -554,6 +579,7 @@ class website
               :tracking_scripts,
               :additional_scripts,
               :additional_styles,
+              :block_types,
               :permission,
               :mail_mailer,
               :mail_server,
@@ -581,9 +607,9 @@ class website
               :shop_legal_info,
               :shop_purchase_conditions_path,
               :shop_customer_account_path,
+              :hosts_accepted,
               :theme,
-              :theme_options,
-              :block_types
+              :theme_options              
             )',
 			array(
 				":name" => value_or_default($this->name, ""),
@@ -609,6 +635,7 @@ class website
 				":tracking_scripts" => value_or_default($this->tracking_scripts, ''),
 				":additional_scripts" => value_or_default($this->additional_scripts, ''),
 				":additional_styles" => value_or_default($this->additional_styles, ''),
+                ":block_types" => "",
 				":permission" => $this->permission,
 				":mail_mailer" => value_or_default($this->mail_mailer, ''),
 				":mail_server" => value_or_default($this->mail_server, ''),
@@ -636,9 +663,9 @@ class website
 				":shop_legal_info" => json_encode(value_or_default($this->shop_legal_info, "")),
 				":shop_purchase_conditions_path" => value_or_default($this->shop_purchase_conditions_path, ""),
 				":shop_customer_account_path" => value_or_default($this->shop_customer_account_path, ""),
+				":hosts_accepted" => value_or_default(json_encode($this->hosts_accepted), json_encode(website::$default_hosts_accepted)),
 				":theme" => value_or_default($this->theme, ''),
-				":theme_options" => json_encode($this->theme_options),
-                ":block_types" => ""
+				":theme_options" => json_encode($this->theme_options)
 			)
         );
 		
@@ -758,6 +785,7 @@ class website
                     shop_legal_info = ?,
                     shop_purchase_conditions_path = ?,
                     shop_customer_account_path = ?,
+                    hosts_accepted = ?,
                     theme = ?,
                     theme_options = ?
                 WHERE id = '.$this->id,
@@ -812,6 +840,7 @@ class website
                 json_encode(value_or_default($this->shop_legal_info, "")),
                 value_or_default($this->shop_purchase_conditions_path, ""),
                 value_or_default($this->shop_customer_account_path, ""),
+                value_or_default(json_encode($this->hosts_accepted), ""),
                 value_or_default($this->theme, ""),
                 json_encode($this->theme_options)
             )
@@ -952,6 +981,7 @@ class website
 
         $this->aliases = array();
         $this->theme_options = array();
+        $this->hosts_accepted = website::$default_hosts_accepted;
 
         $this->insert();
 
@@ -1501,6 +1531,38 @@ class website
         return $out;
     }
 
+    public static function accepted_host($host)
+    {
+        global $website;
+
+        // https://github.com/Jalle19/php-whitelist-check
+        $checker = new Whitelist\Check();
+        $hosts_accepted = array();
+
+        if(empty($website))
+        {
+            $hosts_accepted = array(
+                '*.navigatecms.com'
+            );
+        }
+        else
+        {
+            $hosts_accepted = $website->hosts_accepted;
+        }
+
+        try
+        {
+        	$checker->whitelist($hosts_accepted);
+        }
+        catch (InvalidArgumentException $e)
+        {
+        	// thrown when an invalid definition is encountered
+            throw new Exception($e);
+        }
+
+        return $checker->check($host);
+    }
+
     public function windows_locales()
     {
         global $session;
@@ -1884,7 +1946,25 @@ class website
 		else
 		{
 			// default list of unix locales
-			$locales = "aa_DJ,aa_ER,aa_ER@saaho,aa_ET,af_ZA,am_ET,an_ES,ar_AE,ar_BH,ar_DZ,ar_EG,ar_IN,ar_IQ,ar_JO,ar_KW,ar_LB,ar_LY,ar_MA,ar_OM,ar_QA,ar_SA,ar_SD,ar_SY,ar_TN,ar_YE,as_IN,ast_ES,az_AZ,be_BY,be_BY@latin,ber_DZ,ber_MA,bg_BG,bn_BD,bn_IN,bo_CN,bo_IN,bokmal,bokm,br_FR,bs_BA,byn_ER,C,ca_AD,ca_ES,ca_FR,ca_IT,catalan,crh_UA,croatian,csb_PL,cs_CZ,cv_RU,cy_GB,czech,da_DK,danish,dansk,de_AT,de_BE,de_CH,de_DE,de_LU,deutsch,dutch,dv_MV,dv_MV.utf8,dz_BT,dz_BT.utf8,eesti,el_CY,el_GR,en_AG,en_AU,en_BW,en_CA,en_DK,en_GB,en_HK,en_IE,en_IN,en_NG,en_NZ,en_PH,en_SG,en_US,en_ZA,en_ZW,es_AR,es_BO,es_CL,es_CO,es_CR,es_DO,es_EC,es_ES,es_GT,es_HN,es_MX,es_NI,es_PA,es_PE,es_PR,es_PY,es_SV,estonian,es_US,es_UY,es_VE,et_EE,eu_ES,fa_IR,fi_FI,fil_PH,finnish,fo_FO,fran栩s,fr_BE,fr_CA,fr_CH,french,fr_FR,fr_LU,fur_IT,fy_DE,fy_NL,ga_IE,galego,galician,gd_GB,german,gez_ER,gez_ET,gl_ES,greek,gu_IN,gv_GB,ha_NG,hebrew,he_IL,hi_IN,hne_IN,hr_HR,hrvatski,hsb_DE,ht_HT,hu_HU,hungarian,hy_AM,icelandic,id_ID,ig_NG,ik_CA,is_IS,italian,it_CH,it_IT,iu_CA,iw_IL,ja_JP,japanese,ka_GE,kk_KZ,kl_GL,km_KH,kn_IN,kok_IN,ko_KR,korean,ks_IN,ku_TR,kw_GB,ky_KG,lg_UG,li_BE,li_NL,lithuanian,lo_LA,lt_LT,lv_LV,mai_IN,mg_MG,mi_NZ,mk_MK,ml_IN,mn_MN,mr_IN,ms_MY,mt_MT,my_MM,nb_NO,nds_DE,nds_NL,ne_NP,nl_AW,nl_BE,nl_NL,nn_NO,no_NO,norwegian,nr_ZA,nso_ZA,nynorsk,oc_FR,om_ET,om_KE,or_IN,pa_IN,pap_AN,pa_PK,pl_PL,polish,portuguese,POSIX,ps_AF,pt_BR,pt_PT,romanian,ro_RO,ru_RU,russian,ru_UA,rw_RW,sa_IN,sc_IT,sd_IN,se_NO,shs_CA,sid_ET,si_LK,sk_SK,slovak,slovene,slovenian,sl_SI,so_DJ,so_ET,so_KE,so_SO,spanish,sq_AL,sq_MK,sr_ME,sr_RS,ss_ZA,st_ZA,sv_FI,sv_SE,swedish,ta_IN,te_IN,tg_TJ,thai,th_TH,ti_ER,ti_ET,tig_ER,tk_TM,tl_PH,tn_ZA,tr_CY,tr_TR,ts_ZA,tt_RU,turkish,ug_CN,uk_UA,ur_PK,uz_UZ,ve_ZA,vi_VN,wa_BE,wo_SN,xh_ZA,yi_US,yo_NG,zh_CN,zh_HK,zh_SG,zh_TW,zu_ZA";
+			$locales = "aa_DJ,aa_ER,aa_ER@saaho,aa_ET,af_ZA,am_ET,an_ES,ar_AE,ar_BH,ar_DZ,ar_EG,ar_IN,ar_IQ,ar_JO,".
+                "ar_KW,ar_LB,ar_LY,ar_MA,ar_OM,ar_QA,ar_SA,ar_SD,ar_SY,ar_TN,ar_YE,as_IN,ast_ES,az_AZ,be_BY,".
+                "be_BY@latin,ber_DZ,ber_MA,bg_BG,bn_BD,bn_IN,bo_CN,bo_IN,bokmal,bokm,br_FR,bs_BA,byn_ER,C,ca_AD,ca_ES,".
+                "ca_FR,ca_IT,catalan,crh_UA,croatian,csb_PL,cs_CZ,cv_RU,cy_GB,czech,da_DK,danish,dansk,de_AT,de_BE,".
+                "de_CH,de_DE,de_LU,deutsch,dutch,dv_MV,dv_MV.utf8,dz_BT,dz_BT.utf8,eesti,el_CY,el_GR,en_AG,en_AU,".
+                "en_BW,en_CA,en_DK,en_GB,en_HK,en_IE,en_IN,en_NG,en_NZ,en_PH,en_SG,en_US,en_ZA,en_ZW,es_AR,es_BO,".
+                "es_CL,es_CO,es_CR,es_DO,es_EC,es_ES,es_GT,es_HN,es_MX,es_NI,es_PA,es_PE,es_PR,es_PY,es_SV,estonian,".
+                "es_US,es_UY,es_VE,et_EE,eu_ES,fa_IR,fi_FI,fil_PH,finnish,fo_FO,fran栩s,fr_BE,fr_CA,fr_CH,french,".
+                "fr_FR,fr_LU,fur_IT,fy_DE,fy_NL,ga_IE,galego,galician,gd_GB,german,gez_ER,gez_ET,gl_ES,greek,gu_IN,".
+                "gv_GB,ha_NG,hebrew,he_IL,hi_IN,hne_IN,hr_HR,hrvatski,hsb_DE,ht_HT,hu_HU,hungarian,hy_AM,icelandic,".
+                "id_ID,ig_NG,ik_CA,is_IS,italian,it_CH,it_IT,iu_CA,iw_IL,ja_JP,japanese,ka_GE,kk_KZ,kl_GL,km_KH,".
+                "kn_IN,kok_IN,ko_KR,korean,ks_IN,ku_TR,kw_GB,ky_KG,lg_UG,li_BE,li_NL,lithuanian,lo_LA,lt_LT,lv_LV,".
+                "mai_IN,mg_MG,mi_NZ,mk_MK,ml_IN,mn_MN,mr_IN,ms_MY,mt_MT,my_MM,nb_NO,nds_DE,nds_NL,ne_NP,nl_AW,nl_BE,".
+                "nl_NL,nn_NO,no_NO,norwegian,nr_ZA,nso_ZA,nynorsk,oc_FR,om_ET,om_KE,or_IN,pa_IN,pap_AN,pa_PK,pl_PL,".
+                "polish,portuguese,POSIX,ps_AF,pt_BR,pt_PT,romanian,ro_RO,ru_RU,russian,ru_UA,rw_RW,sa_IN,sc_IT,".
+                "sd_IN,se_NO,shs_CA,sid_ET,si_LK,sk_SK,slovak,slovene,slovenian,sl_SI,so_DJ,so_ET,so_KE,so_SO,".
+                "spanish,sq_AL,sq_MK,sr_ME,sr_RS,ss_ZA,st_ZA,sv_FI,sv_SE,swedish,ta_IN,te_IN,tg_TJ,thai,th_TH,ti_ER,".
+                "ti_ET,tig_ER,tk_TM,tl_PH,tn_ZA,tr_CY,tr_TR,ts_ZA,tt_RU,turkish,ug_CN,uk_UA,ur_PK,uz_UZ,ve_ZA,vi_VN,".
+                "wa_BE,wo_SN,xh_ZA,yi_US,yo_NG,zh_CN,zh_HK,zh_SG,zh_TW,zu_ZA";
 			$tmp = explode(",", $locales);
 		}
 

@@ -4245,6 +4245,16 @@
                 <target>Es requreix una versió de PHP igual o superior a {value}</target>
             </trans-unit>
 
+            <trans-unit id="842" approved="yes">
+                <source>Security</source>
+                <target>Seguretat</target>
+            </trans-unit>
+
+            <trans-unit id="843" approved="yes">
+                <source>Accepted hosts</source>
+                <target>Servidors acceptats</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

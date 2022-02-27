@@ -4233,6 +4233,16 @@
                 <target>PHP-versjon {verdi} eller nyere kreves</target>
             </trans-unit>
 
+            <trans-unit id="842" approved="yes">
+                <source>Security</source>
+                <target>Sikkerhet</target>
+            </trans-unit>
+
+            <trans-unit id="843" approved="yes">
+                <source>Accepted hosts</source>
+                <target>Aksepterte verter</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

@@ -2003,6 +2003,19 @@ function websites_form($item)
         navigate_change_website_additional_code();
     ');
 
+    /* TAB: SECURITY */
+    $navibars->add_tab(t(842, "Security"));
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(843, 'Accepted hosts').'</label>',
+            $naviforms->textarea('website-hosts_accepted', implode("\n", value_or_default($item->hosts_accepted, array())), 8),
+            '<div class="subcomment">
+                <img src="img/icons/silk/information.png" align="absmiddle" /> '.t(264, 'One item per row').' (www.domain.tld, *.domain.tld, 0.0.0.0, etc.).
+            </div>'
+        )
+    );
+
 
     if(!empty($item->theme))
     {

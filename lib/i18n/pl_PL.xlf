@@ -4232,6 +4232,15 @@
                 <target>Wymagana jest wersja PHP {value} lub wyższa</target>
             </trans-unit>
 
+            <trans-unit id="842" approved="yes">
+                <source>Security</source>
+                <target>Bezpieczeństwo</target>
+            </trans-unit>
+
+            <trans-unit id="843" approved="yes">
+                <source>Accepted hosts</source>
+                <target>Zaakceptowani gospodarze</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
