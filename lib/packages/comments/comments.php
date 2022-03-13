@@ -265,7 +265,7 @@ function run()
                     ':wid' => $website->id,
                     ':object_type' => $_REQUEST['object_type'],
                     ':object_id' => $_REQUEST['object_id'],
-                    ':date_created' => $_REQUEST['maxdate'],
+                    ':maxdate' => $_REQUEST['maxdate'],
                     ':exclude' => $_REQUEST['exclude'],
                     ':text' => '%' . $_REQUEST['search'] . '%'
                 )
@@ -676,7 +676,7 @@ function comments_form($item)
                 url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=comments&act=json_find_comment",
                 dataType: "json",
                 delay: 100,
-                data: function (params)
+                data: function(params)
                 {
                     return {
                         search: params.term,
