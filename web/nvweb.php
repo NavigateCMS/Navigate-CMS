@@ -455,11 +455,7 @@ function nvweb_parse($request)
 
             foreach (debugger::get_timers() as $key => $debugger_timer)
             {
-                $key = array_keys($debugger_timer);
-                $key = $key[0];
-
-                $val = $debugger_timer[$key];
-                echo '[' . $key . '] => ' . $val . " ms\n";
+                echo '[' . $key . '] => ' . $debugger_timer['elapsed'] . " ms\n";
             }
 
             echo "!-->";

@@ -240,7 +240,7 @@ function nvweb_process_nvweb_tag($tag, $html)
         case 'widget':
         case 'webget':
         case '':
-            debugger::timer('nvweb-templates-nvweb-'.$tag['attributes']['name']);
+            debugger::timer('nvweb-templates-nvweb-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]'.'('.$tag['offset'].')');
 
             // webgets on lib/webgets have priority over private/webgets
             nvweb_webget_load($tag['attributes']['name']);
@@ -254,7 +254,7 @@ function nvweb_process_nvweb_tag($tag, $html)
                 $content = $fname($tag['attributes']);
             }
 
-            debugger::stop_timer('nvweb-templates-webget-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]');
+            debugger::stop_timer('nvweb-templates-nvweb-'.$tag['attributes']['name'].'[mode="'.$tag['attributes']['mode'].'"]'.'('.$tag['offset'].')');
             break;
 
         case 'root':
@@ -721,26 +721,26 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
         // time to process delayed nvlists and nvsearches
         foreach($current['delayed_nvlists'] as $uid => $vars)
         {
-            debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
+            debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]('.$uid.')');
             $content = nvweb_list($vars);
             $html = str_replace('<!--#'.$uid.'#-->', $content, $html);
-            debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
+            debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]('.$uid.')');
         }
 
         foreach($current['delayed_nvsearches'] as $uid => $vars)
         {
-            debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
+            debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]('.$uid.')');
             $content = nvweb_search($vars);
             $html = str_replace('<!--#'.$uid.'#-->', $content, $html);
-            debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
+            debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]('.$uid.')');
         }
 
         foreach($current['delayed_nvconditionals'] as $uid => $vars)
         {
-            debugger::timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+            debugger::timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]('.$uid.')');
             $content = nvweb_conditional($vars);
             $html = str_replace('<!--#'.$uid.'#-->', $content, $html);
-            debugger::stop_timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+            debugger::stop_timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]('.$uid.')');
         }
 
         return $html;
@@ -778,9 +778,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                 }
                 else
                 {
-                    debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
+                    debugger::timer('nvweb-templates-list-[source="'.$vars['source'].'"]('.$tag['offset'].')');
                     $content = nvweb_list($vars);
-                    debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]');
+                    debugger::stop_timer('nvweb-templates-list-[source="'.$vars['source'].'"]('.$tag['offset'].')');
 
                     $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
                     $changed = true;
@@ -804,9 +804,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                 }
                 else
                 {
-                    debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
+                    debugger::timer('nvweb-templates-search-[source="'.$vars['source'].'"]('.$tag['offset'].')');
                     $content = nvweb_search($vars);
-                    debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]');
+                    debugger::stop_timer('nvweb-templates-search-[source="'.$vars['source'].'"]('.$tag['offset'].')');
 
                     $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
                     $changed = true;
@@ -840,9 +840,9 @@ function nvweb_template_parse_lists($html, $process_delayed=false)
                 }
                 else
                 {
-                    debugger::timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+                    debugger::timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]('.$tag['offset'].')');
                     $content = nvweb_conditional($vars);
-                    debugger::stop_timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]');
+                    debugger::stop_timer('nvweb-templates-conditional-[by="'.$vars['by'].'"]('.$tag['offset'].')');
 
                     $html = substr_replace($html, $content, $tag['offset'], $tag['length']);
                     $changed = true;
@@ -1745,7 +1745,6 @@ function nvweb_template_oembed_cache($provider, $oembed_url, $minutes=43200)
     return $response;
 }
 
-
 function nvweb_template_processes($html)
 {
 	global $session;
@@ -1849,7 +1848,6 @@ function nvweb_template_processes($html)
 
 	return $html;
 }
-
 
 /**
  * Autoload a webget when needed, the source can be:

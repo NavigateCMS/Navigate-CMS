@@ -86,24 +86,19 @@ class debugger
         );
     }
 
-    // TODO: maybe create an internal timer without the need of a plugin
     static function timer($name="")
     {
-        global $events;
-        return $events->trigger(
-            'debugger',
-            'timer',
-            array(
-                'name' => $name
-            )
+        self::$timers[$name] = array(
+            'start' => microtime(TRUE),
+            'end' => null,
+            'elapsed' => null
         );
     }
 
     static function stop_timer($name)
     {
-        // code based on Nette Tracy Timers
-        $time_elapsed = (int)self::timer($name);
-        self::$timers[][$name] = $time_elapsed * 1000;
+        self::$timers[$name]['end'] = microtime(TRUE);
+        self::$timers[$name]['elapsed'] = max(0, intval((self::$timers[$name]['end'] - self::$timers[$name]['start']) * 1000));
     }
 
     static function get_timers($format='array')
@@ -111,13 +106,10 @@ class debugger
         if($format=='list')
         {
             $list = "";
-            for($i=0; $i < count(self::$timers); $i++)
-            {
-                $key = array_keys(self::$timers[$i]);
-                $key = $key[0];
-                $val = self::$timers[$i][$key];
 
-                $list .= $key.': '.$val;
+            foreach(self::$timers as $key => $data)
+            {
+                $list .= $key.': '.$data['elapsed'];
                 $list .= "\n";
             }
 

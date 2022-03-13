@@ -323,7 +323,7 @@ class template
         {
             $data = array_merge($data, $out);
         }
-		
+
 		if($DB->query('
 		    SELECT id, title
 			  FROM nv_templates
