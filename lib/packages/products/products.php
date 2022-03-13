@@ -266,7 +266,7 @@ function run()
 						
 						if($dataset[$i]['category'] > 0)
                         {
-                            $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
+                            $category_path = structure::hierarchyPath($dataset[$i]['category'], 'label', $hierarchy);
                             if(is_array($category_path))
                             {
                                 $dataset[$i]['category_path'] = implode(' › ', $category_path);
@@ -675,7 +675,6 @@ function run()
 							  
 			core_terminate();
 			break;
-
 
 		case "copy_from_template_zones":
             // return template sections and (textarea) properties for a content id

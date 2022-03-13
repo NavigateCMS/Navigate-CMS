@@ -259,7 +259,7 @@ function run()
 
 						if($dataset[$i]['category'] > 0)
                         {
-                            $category_path = structure::hierarchyPath($hierarchy, $dataset[$i]['category']);
+                            $category_path = structure::hierarchyPath($dataset[$i]['category'], 'label', $hierarchy);
                             if(is_array($category_path))
                             {
                                 $dataset[$i]['category_path'] = implode(' › ', $category_path);
@@ -2451,7 +2451,6 @@ function items_form($item)
 			// script#8
 			// comments moderation
 		}
-
 
 		if($item->votes > 0)
 		{

@@ -106,7 +106,6 @@ class debugger
         if($format=='list')
         {
             $list = "";
-
             foreach(self::$timers as $key => $data)
             {
                 $list .= $key.': '.$data['elapsed'];
@@ -114,7 +113,6 @@ class debugger
             }
 
             return $list;
-
         }
         else
         {

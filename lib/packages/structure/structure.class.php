@@ -24,6 +24,8 @@ class structure
 	
 	public $dictionary;
 	public $paths;
+
+	public static $_cache = array();
 	
 	public function load($id)
 	{
@@ -140,6 +142,10 @@ class structure
         {
             return $this->insert();
         }
+
+		// remove hierarchy cache
+        $structure_hierarchy_cache_location = NAVIGATE_PRIVATE . '/' .$this->id . '/structure.hierarchy.0.nv_serialize';
+		@unlink($structure_hierarchy_cache_location);
 	}
 	
 	public function delete()
@@ -435,25 +441,26 @@ class structure
         return $out;
     }
 	
-	public static function loadTree($id_parent=0, $ws_id=null)
+	public static function load_tree($id_parent=0, $ws_id=null)
 	{
 		global $DB;	
 		global $website;
 
-		if(empty($ws_id))
+        if(empty($ws_id))
         {
             $ws_id = $website->id;
         }
 
-		$ws = new website();
-		$ws->load($ws_id);
+        if(isset(structure::$_cache['load_tree-'.$id_parent.'-ws-'.$ws_id]))
+        {
+            return structure::$_cache['load_tree-'.$id_parent.'-ws-'.$ws_id];
+        }
 
-        // TODO: consider implementing a cache to avoid extra database queries
 		$DB->query('
             SELECT *
               FROM nv_structure
 			 WHERE parent = '.intval($id_parent).' AND
-			       website = '.$ws->id.'
+			       website = '.$ws_id.'
 		  ORDER BY position ASC, id DESC
 	    ');
 
@@ -466,31 +473,58 @@ class structure
 
 			$result[$i]->dates = $result[$i]->date_published.' - '.$result[$i]->date_unpublish;
 		}
+
+        structure::$_cache['load_tree-'.$id_parent.'-ws-'.$ws_id] = $result;
 		
 		return $result;
 	}
 	
-	public static function hierarchy($id_parent=0, $ws_id=null)
+	public static function hierarchy($id_parent=0, $ws_id=null, $ignore_cache=false)
 	{
 		global $website;
         global $theme;
 
-		if(empty($ws_id))
+        $ws = new website();
+		if(empty($ws_id) || $ws_id == $website->id)
         {
             $ws_id = $website->id;
+            $ws = $website;
         }
-
-		$ws = new website();
-		$ws->load($ws_id);
+		else
+        {
+		    $ws->load($ws_id);
+        }
 
 		$flang = $ws->languages_list[0];
 		if(empty($flang))
         {
             return array();
         }
+
+        $structure_hierarchy_cache_location = NAVIGATE_PRIVATE . '/' .$ws_id . '/cache/structure.hierarchy.0.nv_serialize';
 		
 		$tree = array();
-		
+
+		if(!$ignore_cache)
+        {
+            if(isset(structure::$_cache['hierarchy-'.$id_parent.'-ws-'.$ws_id]))
+            {
+                return structure::$_cache['hierarchy-'.$id_parent.'-ws-'.$ws_id];
+            }
+            else if($id_parent == 0)
+            {
+                // try to collect the structure from the pregenerated cache
+                if( file_exists($structure_hierarchy_cache_location) &&
+                    filemtime($structure_hierarchy_cache_location) + 86400 > time()
+                )
+                {
+                    $tmp = file_get_contents($structure_hierarchy_cache_location);
+                    $tree = unserialize($tmp);
+                    return $tree;
+                }
+            }
+        }
+
 		if($id_parent == -1)
 		{
             // create the virtual root structure entry (the website)
@@ -506,7 +540,9 @@ class structure
 		}
 		else
 		{
-			$tree = structure::loadTree($id_parent, $ws_id);
+		    // TODO: try to optimize all this process, takes much time when the website has a very big menu
+
+			$tree = structure::load_tree($id_parent, $ws_id);
 
             $templates = template::elements('structure');
             if(empty($templates))
@@ -550,6 +586,7 @@ class structure
                     }
 
                     // the following could be removed? seems like is not used
+                    /*
                         $style = '';
                         if($lang != $flang)
                         {
@@ -561,13 +598,22 @@ class structure
                                   .'</span>';
 
                         $bc[$tree[$i]->id][$lang] = $tree[$i]->dictionary[$lang]['title'];
+                    */
                 }
 
                 $children = structure::hierarchy($tree[$i]->id, $ws_id);
+
                 $tree[$i]->children = $children;
             }
 		}
-		
+
+        structure::$_cache['hierarchy-'.$id_parent.'-ws-'.$ws_id] = $tree;
+
+		if($id_parent == 0)
+        {
+            file_put_contents($structure_hierarchy_cache_location, serialize($tree));
+        }
+
 		return $tree;
 	}
 	
@@ -705,23 +751,48 @@ class structure
 
     public static function hierarchyPath($hierarchy, $category)
     {
+        return structure::hierarchy_path($category, 'label', $hierarchy);
+    }
+
+    public static function hierarchy_path($category, $value='label', $hierarchy = array())
+    {
+        if(empty($hierarchy))
+        {
+            $hierarchy = structure::hierarchy(0);
+        }
+
         if(is_array($hierarchy))
         {
             foreach($hierarchy as $node)
             {
                 if(!empty($node->children))
                 {
-                    $val = structure::hierarchyPath($node->children, $category);
+                    // get children info
+                    $val = structure::hierarchy_path($category, $value, $node->children);
                 }
 
                 if($node->id == $category || (!empty($val)) )
                 {
                     if(empty($val))
                     {
-                        return array($node->label);
+                        if($value == 'object')
+                        {
+                            return array($node);
+                        }
+                        else
+                        {
+                            return array($node->$value);
+                        }
                     }
 
-                    return array_merge(array($node->label), $val);
+                    if($value == 'object')
+                    {
+                        return array_merge(array($node), $val);
+                    }
+                    else
+                    {
+                        return array_merge(array($node->$value), $val);
+                    }
                 }
             }
         }
