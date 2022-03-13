@@ -3,7 +3,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php'
 require_once(NAVIGATE_PATH.'/lib/external/class.upload/src/class.upload.php');
 require_once(NAVIGATE_PATH.'/web/nvweb_templates.php');
 
-// remember, all files are saved in the private directory using ID as filename: NAVIGATE_PRIVATE
+// note: all files are saved in the private directory using ID as filename: NAVIGATE_PRIVATE
 
 class file
 {
@@ -154,12 +154,8 @@ class file
 	public function load_from_post()
 	{
         global $website;
-		
-		// ? ==> should be changed?
-	
-		//$this->parent		= $_REQUEST['parent'];
+
 		$this->name			= core_purify_string($_REQUEST['name']);
-		//$this->size			= $_REQUEST['size'];	// ?
         $this->type			= core_purify_string($_REQUEST['type']);
 		$this->mime			= core_purify_string($_REQUEST['mime']);
 
@@ -173,7 +169,6 @@ class file
         }
 
 		$this->date_added	= core_time();
-		//$this->uploaded_by	= $_REQUEST['uploaded_by'];		// ?
 	
 		$this->access		= intval($_REQUEST['access']);
 
@@ -218,7 +213,7 @@ class file
 
         $info = nvweb_template_oembed_cache(
             'youtube',
-            'https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v='.$reference.'&format=json',
+            'https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v='.$reference.'&format=json',
             $cache
         );
 
@@ -244,6 +239,7 @@ class file
         $this->permission	= 0;
         $this->enabled		= 1;
 
+        // download and save a thumbnail of the video to be able to resize it as other images
         $vtpath = $this->video_thumbnail_retrieve('https://img.youtube.com/vi/'.$reference.'/maxresdefault.jpg', "youtube", $reference);
         if(empty($vtpath)) // for some videos, maxresdefault is not available, so try to retrieve the alternative hqdefault thumbnail
         {
@@ -278,7 +274,7 @@ class file
 
         $info = nvweb_template_oembed_cache(
             'vimeo',
-            'http://vimeo.com/api/oembed.json?url=http://vimeo.com/'.$reference.'&format=json',
+            'https://vimeo.com/api/oembed.json?url=https://vimeo.com/'.$reference.'&format=json',
             $cache
         );
 
@@ -317,17 +313,6 @@ class file
 
     public function load_from_custom_url($reference, $cache=true)
     {
-        global $website;
-
-        if($cache)
-        {
-            $cache = 15 * 24 * 60; // 15 days
-        }
-        else
-        {
-            $cache = 0;
-        }
-
         $mime = '';
         $sources = '';
         $name = '';
@@ -399,12 +384,7 @@ class file
 
             if(empty($video_thumbnail_data))
             {
-                // try to retrieve the file via cURL
-                $video_thumbnail_data = @core_file_curl($image_url);
-                if(empty($video_thumbnail_data))
-                {
-                    return;
-                }
+                return;
             }
 
             file_put_contents($video_thumbnail_path, $video_thumbnail_data);
