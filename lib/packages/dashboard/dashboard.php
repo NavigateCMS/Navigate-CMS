@@ -23,7 +23,31 @@ function run()
                 case 'feed':
                     $feed = new feed_parser();
                     $feed->set_cache(4 * 3600); // cache valid for 4 hours
-                    $feed->load($_REQUEST['url']);
+
+                    $url = "";
+                    switch($_REQUEST['url'])
+                    {
+                        case 'navigatecms_news':
+
+                            $lang = 'en';
+                            if(in_array($user->language, array('en', 'es')))
+                            {
+                                $lang = $user->language;
+                            }
+
+                            $url = 'https://www.navigatecms.com/'.$lang.'/rss';
+                            break;
+
+                        default:
+                    }
+
+                    if(empty($url))
+                    {
+                        core_terminate();
+                    }
+
+
+                    $feed->load($url);
                     list($channel, $articles, $count) = $feed->parse(0, $_REQUEST['limit'], 'newest');
                     $items = item::convert_from_rss($articles);
 
@@ -865,7 +889,7 @@ function dashboard_panel_navigatecms_news($params)
         $(window).on("load", function()
         {        
             $("#navigate-panel-navigatecms-feed .navigate-panel-body")
-                .load("?fid=dashboard&act=json&oper=feed", {limit: 5, language: "en", url: "http://www.navigatecms.com/en/rss"});
+                .load("?fid=dashboard&act=json&oper=feed", {limit: 5, language: "en", url: "navigatecms_news"});
         });
         
         $("#navigate-panel-navigatecms-feed").on("mouseenter", ".navigate-panel-body-title", function()
