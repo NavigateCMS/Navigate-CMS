@@ -49,7 +49,9 @@ function nvweb_conditional($vars=array())
             // so we try to find the first element assigned to the current category
             $categories = array();
             if(!empty($current['object']->id))
+            {
                 $categories = array($current['object']->id);
+            }
 
             if(isset($vars['categories']))
             {
@@ -71,7 +73,9 @@ function nvweb_conditional($vars=array())
                     foreach($webuser->groups as $wg)
                     {
                         if(empty($wg))
+                        {
                             continue;
+                        }
                         $access_groups[] = 's.groups LIKE "%g'.$wg.'%"';
                     }
                     if(!empty($access_groups))
@@ -82,9 +86,13 @@ function nvweb_conditional($vars=array())
             // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
             $order      = @$_REQUEST['order'];
             if(empty($order))
+            {
                 $order  = @$vars['order'];
+            }
             if(empty($order))   // default order: latest
+            {
                 $order = 'latest';
+            }
 
             $orderby = nvweb_list_get_orderby($order);
 
@@ -684,6 +692,17 @@ function nvweb_conditional($vars=array())
                         $out = "";
                     }
                     break;
+            }
+            break;
+
+        case 'request':
+            if(isset($_REQUEST[$vars['value']]))
+            {
+                $out = $item_html;
+            }
+            else
+            {
+                $out = "";
             }
             break;
 
