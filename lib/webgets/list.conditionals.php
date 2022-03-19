@@ -717,6 +717,35 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
             }
             break;
 
+        case 'brand':
+
+            if(isset($tag['attributes']['image']))
+            {
+                if($tag['attributes']['image'] == 'true')
+                {
+                    if(!empty($item->image))
+                    {
+                        $out = $item_html;
+                    }
+                    else
+                    {
+                        $out = "";
+                    }
+                }
+                else if($tag['attributes']['image'] == 'false')
+                {
+                    if(empty($item->image))
+                    {
+                        $out = $item_html;
+                    }
+                    else
+                    {
+                        $out = "";
+                    }
+                }
+            }
+            break;
+
         case 'query':
             switch($tag['attributes']['check'])
             {
