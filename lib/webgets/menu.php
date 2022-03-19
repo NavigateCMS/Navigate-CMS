@@ -133,6 +133,7 @@ function nvweb_menu($vars=array())
             'class' => value_or_default($vars['class'], ""),
             'active_class' => value_or_default($vars['active_class'], "menu_option_active"),
             'select_tag_name' => value_or_default($vars['select_tag_name'], uniqid("nvmenu-")),
+            'select_submenu_separator' => value_or_default($vars['select_submenu_separator'], '&ndash;&nbsp;'),
             'exclude' => $exclude
         );
 
@@ -186,6 +187,7 @@ function nvweb_menu_generate($params)
         'class' => "",
         'active_class' => "menu_option_active",
         'select_tag_name' => uniqid("nvmenu-"),
+        'select_submenu_separator' => '&ndash;&nbsp;',
         'exclude' => array()
     );
 
@@ -361,12 +363,14 @@ function nvweb_menu_generate($params)
                     $submenu = nvweb_menu_generate($params_sub);
                     $submenu = strip_tags($submenu, '<option>');
 
+                    $submenu_separator = value_or_default($params['select_submenu_separator'], "&ndash;&nbsp;");
+
                     $parts = explode('>', $submenu);
                     for($p=0; $p < count($parts); $p++)
                     {
                         if(strpos($parts[$p], '</option')!==false)
                         {
-                            $parts[$p] = '&ndash;&nbsp;'.$parts[$p];
+                            $parts[$p] = $submenu_separator.$parts[$p];
                         }
                     }
                     $submenu = implode('>', $parts);
@@ -477,7 +481,9 @@ function nvweb_menu_action($id, $force_type=NULL, $use_javascript=true, $include
                 }
             }
             else
+            {
                 $url = nvweb_prepare_link($url);
+            }
 
 			$action = ' href="'.$url.'" ';
             if($include_datasid)
@@ -773,9 +779,13 @@ function nvweb_menu_render_arrow($vars=array())
     // look for the category before and after the current one
 
     if($current['type']=='structure')
+    {
         $parent = $current['object']->parent;
+    }
     else if($current['category'] > 0)
+    {
         $parent = $current['hierarchy'][count($current['category'])-1];
+    }
 
     // if we have found the parent
     // AND
