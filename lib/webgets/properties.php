@@ -4,7 +4,6 @@ nvweb_webget_load('content');
 
 function nvweb_properties($vars=array())
 {
-	global $website;
 	global $DB;
 	global $current;
 	global $cache;
@@ -229,7 +228,9 @@ function nvweb_properties($vars=array())
 			// now we try to find the property requested
 
             if(!is_array($current_properties))
-			    $current_properties = array();
+            {
+                $current_properties = array();
+            }
 
 			foreach($current_properties as $property)
 			{
@@ -327,6 +328,11 @@ function nvweb_properties($vars=array())
 		default:
             // find the property source by its name
             $current_properties = array();
+
+            if(!isset($vars['property']))
+            {
+                return $out;
+            }
 
             // is a theme property?
             $current_properties[] = new property();
@@ -615,7 +621,13 @@ function nvweb_properties_render($property, $vars)
             }
             else
             {
-				$out = '<a href="'.$link.'" target="'.$target.'">'.$title.'</a>';
+                $classes = "";
+                if(isset($vars['class']))
+                {
+                    $classes = $vars['class'];
+                }
+
+				$out = '<a href="'.$link.'" target="'.$target.'" class="'.$classes.'">'.$title.'</a>';
             }
 			break;
 
