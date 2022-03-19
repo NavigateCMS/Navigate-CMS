@@ -66,7 +66,6 @@ function nvweb_webuser($vars=array())
         }
     }
 
-
 	$out = '';
 
     switch($vars['mode'])
@@ -298,9 +297,13 @@ function nvweb_webuser($vars=array())
 
                     case 'inline':
                         if($ok)
+                        {
                             $out = '<div class="nvweb-forgot-password-form-success">'.$message.'</div>';
+                        }
                         else
+                        {
                             $out = '<div class="nvweb-forgot-password-form-error">'.$message.'</div>';
+                        }
                         break;
 
                     case 'boolean':
@@ -718,6 +721,26 @@ function nvweb_webuser($vars=array())
 
         case 'customer_account':
             $out = nvweb_webuser_customer_account($vars);
+            break;
+
+        case 'vote':
+            // return score given by that webuser for the current object type
+            // defaults to 0
+            $out = 0;
+
+            $webuser_votes = webuser_vote::object_vote_by_webuser($current['type'], $current['id'], $current['webuser']);
+
+            if(!empty($webuser_votes) && !empty($webuser_votes[0]))
+            {
+                $out = $webuser_votes[0]['value'];
+            }
+
+            if($vars['half']=='true')
+            {
+                $out = $out / 2;
+            }
+
+            $out = number_format($out, 2, '.', '');
             break;
     }
 
