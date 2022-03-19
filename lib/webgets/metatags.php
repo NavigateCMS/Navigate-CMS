@@ -4,11 +4,11 @@ require_once(NAVIGATE_PATH.'/lib/webgets/breadcrumbs.php');
 
 function nvweb_metatags($vars=array())
 {
-	global $website;
-	global $current;
-	global $DB;
-    global $structure;
+    global $DB;
+    global $website;
+    global $current;
     global $events;
+    global $theme;
 
 	// process page title
     $page_title_parts = array($website->name);
@@ -43,14 +43,21 @@ function nvweb_metatags($vars=array())
             break;
 
 		case 'structure':
-            $breadcrumbs = nvweb_breadcrumbs(
-                array(
-                    'separator' => $separator,
-                    'links' => 'false'
-                )
-            );
-            $breadcrumbs = explode($separator, $breadcrumbs);
-            $page_title_parts = array_merge($page_title_parts, $breadcrumbs);
+		    if($current['template']=='not_found')
+            {
+                $page_title_parts[] = value_or_default($theme->t("not_found"), t("13", "Not found"));
+            }
+		    else
+            {
+                $breadcrumbs = nvweb_breadcrumbs(
+                    array(
+                        'separator' => $separator,
+                        'links' => 'false'
+                    )
+                );
+                $breadcrumbs = explode($separator, $breadcrumbs);
+                $page_title_parts = array_merge($page_title_parts, $breadcrumbs);
+            }
 			break;
 					
 		default:
