@@ -75,7 +75,6 @@ function run()
                     }
                     $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
-
                     $sql = ' SELECT SQL_CALC_FOUND_ROWS
 					                pm.id, pm.codename, pm.extension, pm.image, pm.permission, d.text as title                                    
 							   FROM nv_payment_methods pm
@@ -152,7 +151,7 @@ function run()
 				{
                     naviforms::check_csrf_token();
 
-					//$object->save();
+					$object->save();
 					property::save_properties_from_post('payment_method', $object->id);
 
                     // set block order

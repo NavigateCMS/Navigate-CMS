@@ -21,7 +21,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/payment_methods/payment_method.class.p
     7) order complete
 */
 
-
 function nvweb_cart($vars=array())
 {
     global $DB;
@@ -1477,10 +1476,12 @@ function nvweb_cart_address_page($cart)
                     
                     <h3>'.t(717, "Billing address").'</h3>
                     
-                    <input type="checkbox" name="order_billing_same_as_shipping" 
-                           id="order_billing_same_as_shipping" value="1" 
-                           '.($billing_same_as_shipping? 'checked="checked"' : '').'/>
-                    <label for="order_billing_same_as_shipping">'.t(751, "Same as shipping address").'</label>
+                    <div>
+                        <input type="checkbox" name="order_billing_same_as_shipping" 
+                               id="order_billing_same_as_shipping" value="1" 
+                                '.($billing_same_as_shipping? 'checked="checked"' : '').'/>
+                        <label for="order_billing_same_as_shipping">'.t(751, "Same as shipping address").'</label>
+                    </div>
                     
                     <div class="order_billing_address_wrapper">
                     
@@ -1810,7 +1811,7 @@ function nvweb_cart_summary_page($cart)
     // PAYMENT METHOD (choose)
     $out[] = '    <div>';
     $out[] = '        <h5>'.t(727, "Payment method").'</h5>';
-    $out[] = '        <p>';
+    $out[] = '        <div class="nv_cart_order_payment_methods">';
     foreach($payment_methods as $pm)
     {
         $payment_method_title = core_special_chars($pm->dictionary[$current['lang']]['title']);
@@ -1823,18 +1824,18 @@ function nvweb_cart_summary_page($cart)
                 $payment_method_title = $icon_html.' '.$payment_method_title;
             }
 
-            $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
+            $out[] = '<div class="nv_cart_order_payment_method"><label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
                 $payment_method_title .
-                '</label>';
+                '</label></div>';
         }
         else
         {
-            $out[] = '<label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
+            $out[] = '<div class="nv_cart_order_payment_method"><label><input type="radio" name="payment_method[]" value="' . $pm->id . '" /> ' .
                 '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$payment_method_title.'" style="height:24px; width: auto;" />' .
-                '</label>';
+                '</label></div>';
         }
     }
-    $out[] = '        </p>';
+    $out[] = '        </div>';
     $out[] = '    </div>';
 
     // SHIPPING INFO
@@ -2033,7 +2034,7 @@ function nvweb_cart_payment_failed($order)
 
     $out[] = '    <form action="?" class="payment_failed_choose_method" method="post">';
     $out[] = '        <h5>'.t(727, "Payment method").'</h5>';
-    $out[] = '        <p>';
+    $out[] = '        <div class="nv_cart_order_payment_methods">';
     foreach($payment_methods as $pm)
     {
         $payment_method_title = core_special_chars($pm->dictionary[$current['lang']]['title']);
@@ -2046,18 +2047,18 @@ function nvweb_cart_payment_failed($order)
                 $payment_method_title = $icon_html.' '.$payment_method_title;
             }
 
-            $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
+            $out[] = '<div class="nv_cart_order_payment_method"><label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
                  $payment_method_title .
-                '</label>';
+                '</label></div>';
         }
         else
         {
-            $out[] = '<label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
+            $out[] = '<div class="nv_cart_order_payment_method"><label><input type="radio" name="payment_method_change[]" value="' . $pm->id . '" /> ' .
                 '<img src="'.file::file_url($pm->image, 'inline').'" title="'.$payment_method_title.'" style="height:24px; width: auto;" />' .
-                '</label>';
+                '</label></div>';
         }
     }
-    $out[] = '        </p>';
+    $out[] = '        </div>';
     $out[] = '        <button type="submit">'.t(152, "Continue").'</button>';
     $out[] = '    </form>';
 
