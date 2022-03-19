@@ -53,7 +53,7 @@ function nvweb_load_website_by_url($url, $exit=true)
 
     if(filter_var($host, FILTER_VALIDATE_IP) !== false)
     {
-        // it is an ip, do nothing
+        // it is an IP, do nothing
     }
     else
     {
@@ -243,13 +243,6 @@ function nvweb_load_website_by_url($url, $exit=true)
         // no 'real' website found using this address
 		if($subdomain == 'nv')
 		{
-            /*
-			$website->load(); // first available, it doesn't matter
-			$nvweb_absolute = (empty($website->protocol)? 'http://' : $website->protocol);
-			if(!empty($website->subdomain))
-				$nvweb_absolute .= $website->subdomain.'.';
-			$nvweb_absolute .= $website->domain.$website->folder;
-            */
 			$nvweb_absolute = NAVIGATE_PARENT.NAVIGATE_FOLDER;
 			nvweb_clean_exit($nvweb_absolute);
 		}
@@ -316,6 +309,8 @@ function nvweb_prepare_link($path="", $root=NVWEB_ABSOLUTE)
     if(	substr(strtolower($path), 0, 7)=='http://' ||
 		substr(strtolower($path), 0, 8)=='https://' ||
 		substr(strtolower($path), 0, 5)=='nv://' ||
+		substr(strtolower($path), 0, 7)=='mailto:' ||
+		substr(strtolower($path), 0, 11)=='javascript:' ||
 		substr(strtolower($path), 0, 1)=='#'
 	)
     {
@@ -335,8 +330,8 @@ function nvweb_prepare_link($path="", $root=NVWEB_ABSOLUTE)
 
 function nvweb_route_parse($route="")
 {
-	global $website;
-	global $DB;
+    global $DB;
+    global $website;
 	global $current;
 	global $session;
     global $theme;
@@ -407,7 +402,7 @@ function nvweb_route_parse($route="")
 
                     $session['nv.webuser/verify:email_confirmed'] = time();
 
-                    // autologin after callback
+                    // auto-login after callback
                     $webuser->set_cookie();
 
                     if(!empty($_REQUEST['callback']))
@@ -488,7 +483,9 @@ function nvweb_route_parse($route="")
 				$current['template'] = $current['object']->template;
 
 				if($current['navigate_session']==1 && !empty($_REQUEST['template']))
-					$current['template'] = $_REQUEST['template'];
+                {
+                    $current['template'] = $_REQUEST['template'];
+                }
 			}
 			break;
 
@@ -681,7 +678,9 @@ function nvweb_route_parse($route="")
                         {
                             $masked_path = $obj->dictionary[$current['lang']]['action-masked-redirect'];
                             if(strpos($masked_path, "/")===0)
+                            {
                                 $masked_path = substr($masked_path, 1);
+                            }
 
                             // decompose masked_path in route / url parameters
                             $masked_path_parsed = parse_url($masked_path);
@@ -697,7 +696,9 @@ function nvweb_route_parse($route="")
                                 foreach($masked_path_params as $key => $val)
                                 {
                                     if($key == 'route')
+                                    {
                                         continue;
+                                    }
                                     $request[$key] = $val;
                                 }
                             }
@@ -833,7 +834,9 @@ function nvweb_check_permission()
                 {
                     $groups = array_intersect($webuser->groups, $groups);
                     if(count($groups) > 0)
+                    {
                         $access = true;
+                    }
                 }
                 break;
 
@@ -881,7 +884,7 @@ function nvweb_object_enabled($object)
 	// the following check is mainly used for blocks
 	if($enabled && property_exists($object, 'enabled'))
     {
-        $enabled = ($object->enabled=='1');
+        $enabled = ($object->enabled == '1');
     }
 
 	$enabled = $enabled && (empty($object->date_published) || ($object->date_published=="&infin;") || ($object->date_published < core_time()));
@@ -1017,7 +1020,9 @@ function nvweb_source_url($type, $id, $lang='')
                 )
             );
             if(!empty($id))
+            {
                 $type = 'structure';
+            }
         }
 
         // TODO: try to find custom extension paths
