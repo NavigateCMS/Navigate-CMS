@@ -1181,14 +1181,21 @@ function nvweb_list_parse_filters($raw, $object='item')
                     else
                     {
                         // TODO: improve product price calculation in SQL to be able to compare easily
-                        $filters[] = ' AND ( p.base_price = '.floatval($value).' OR p.offer_price = '.floatval($value).') ';
+                        $filters[] = ' AND ( p.base_price = '.floatval($value).' OR 
+                                             p.offer_price = '.floatval($value).'
+                                       ) ';
                     }
 
                     $direct_filter = false;
                     break;
 
                 case 'offer':
-                    if($value == 'true' || $value===true)
+                    if(substr($value, 0, 1) == "$")
+                    {
+                        $value = $_REQUEST[substr($value, 1)];
+                    }
+
+                    if($value == 'true' || $value===true || $value == '1')
                     {
                         $filters[] = ' AND (
                             ' . $alias . '.offer_price > 0 
@@ -1196,7 +1203,7 @@ function nvweb_list_parse_filters($raw, $object='item')
                             AND ( ' . $alias . '.offer_end_date = 0 OR '.core_time().' <= '.$alias.'.offer_end_date)
                         )';
                     }
-                    else
+                    else if($value === false || $value === 'false')
                     {
                         $filters[] = ' AND (
                             ' . $alias . '.offer_price = 0 
