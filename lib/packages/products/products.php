@@ -266,14 +266,14 @@ function run()
 						
 						if($dataset[$i]['category'] > 0)
                         {
-                            $category_path = structure::hierarchyPath($dataset[$i]['category'], 'label', $hierarchy);
+                            $category_path = structure::hierarchy_path($dataset[$i]['category'], 'label', $hierarchy);
                             if(is_array($category_path))
                             {
                                 $dataset[$i]['category_path'] = implode(' › ', $category_path);
                             }
                             else
                             {
-                                $dataset[$i]['category_path'] = $category_path;
+                                $dataset[$i]['category_path'] = value_or_default($category_path, "[ ? ]");
                             }
                         }
 
@@ -346,7 +346,7 @@ function run()
                             1	=> $item_image,
 							2 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.$dataset[$i]['title'].'</div>',
 							3   => empty($dataset[$i]['brand_name'])? '' : '<span data-brand-id="'.$dataset[$i]['brand'].'">'.$dataset[$i]['brand_name'].'</span>',
-							4	=> core_special_chars($dataset[$i]['category_path']),
+							4	=> core_special_chars(trim($dataset[$i]['category_path'])),
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							6	=> $access[$dataset[$i]['access']].' '.$permissions[$dataset[$i]['permission']],
                             7 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,

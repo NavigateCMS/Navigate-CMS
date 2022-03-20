@@ -259,7 +259,8 @@ function run()
 
 						if($dataset[$i]['category'] > 0)
                         {
-                            $category_path = structure::hierarchyPath($dataset[$i]['category'], 'label', $hierarchy);
+                            $category_path = structure::hierarchy_path($dataset[$i]['category'], 'label', $hierarchy);
+
                             if(is_array($category_path))
                             {
                                 $dataset[$i]['category_path'] = implode(' › ', $category_path);
@@ -277,7 +278,7 @@ function run()
                         }
                         else
                         {
-                            $category_text = $dataset[$i]['category_path'];
+                            $category_text = value_or_default($dataset[$i]['category_path'], "[ ? ]");
                         }
 
 						$item_views = $dataset[$i]['views'];
