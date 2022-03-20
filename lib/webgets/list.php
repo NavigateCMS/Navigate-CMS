@@ -1178,7 +1178,7 @@ function nvweb_list_source_product($vars, $params)
     }
 
     // reuse structure.access permission
-    $access_extra_items = str_replace('s.', 'p.', $params['access_extra']);
+    $access_extra_products = str_replace('s.', 'p.', $params['access_extra']);
 
     $embedded = ($vars['embedded']=='true'? '1' : '0');
 
@@ -1241,6 +1241,8 @@ function nvweb_list_source_product($vars, $params)
             ) AS sale_price';
     }
 
+    $params['orderby'] = str_replace('i.', 'p.', $params['orderby']);
+
     // default source for retrieving items
     $query = '
         SELECT SQL_CALC_FOUND_ROWS p.id, p.permission, p.date_published, p.date_unpublish,
@@ -1257,7 +1259,7 @@ function nvweb_list_source_product($vars, $params)
            AND (s.date_unpublish = 0 OR s.date_unpublish > :time)
            AND s.permission <= '.$params['permission'].'
            AND (s.access = 0 OR s.access = '.$params['access'].$params['access_extra'].')
-           AND (p.access = 0 OR p.access = '.$params['access'].$params['access_extra_items'].')
+           AND (p.access = 0 OR p.access = '.$params['access'].$access_extra_products.')
            AND d.website = p.website
            AND d.node_type = "product"
            AND d.subtype = "title"
@@ -3131,12 +3133,12 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
         {
             foreach($val as $val_item)
             {
-                $url_suffix .= '&' . $key . '[]=' . $val_item;
+                $url_suffix .= '&' . $key . '[]=' . urlencode($val_item);
             }
         }
         else
         {
-            $url_suffix .= '&' . $key . '=' . $val;
+            $url_suffix .= '&' . $key . '=' . urlencode($val);
         }
     }
 
