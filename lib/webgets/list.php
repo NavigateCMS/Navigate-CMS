@@ -1993,8 +1993,13 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
                 case 'vote':
+                case 'vote%': // vote in percentage
                     // retrieve the vote assigned by the user to this object
-                    $webuser_vote = webuser_vote::object_vote_by_webuser($item->object_type, $item->object_id, $item->user);
+                    $webuser_vote = webuser_vote::object_vote_by_webuser(
+                        $item->object_type,
+                        $item->object_id,
+                        $item->user
+                    );
 
                     if(empty($webuser_vote))
                     {
@@ -2004,6 +2009,17 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     {
                         $webuser_vote = $webuser_vote[0];
                         $out  = $webuser_vote['value'];
+                    }
+
+                    if($tag['attributes']['value']=='vote%')
+                    {
+                        // original score goes from 0 to 10
+                        if(empty($out))
+                        {
+                            $out = 0;
+                        }
+
+                        $out = $out * 10;
                     }
                     break;
 
@@ -2421,7 +2437,25 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
                 case 'score':
-                    $out = nvweb_votes_calc($item, $tag['attributes']['round'], $tag['attributes']['half'], $tag['attributes']['min'], $tag['attributes']['max']);
+                case 'score%':
+                    $out = nvweb_votes_calc(
+                        $item,
+                        $tag['attributes']['round'],
+                        $tag['attributes']['half'],
+                        $tag['attributes']['min'],
+                        $tag['attributes']['max']
+                    );
+
+                    if($tag['attributes']['value']=='score%')
+                    {
+                        // original score goes from 0 to 10
+                        if(empty($out))
+                        {
+                            $out = 0;
+                        }
+
+                        $out = $out * 10;
+                    }
                     break;
 
                 case 'votes':
@@ -2823,8 +2857,26 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
                     break;
 
 				case 'score':
-                    $out = nvweb_votes_calc($item, $tag['attributes']['round'], $tag['attributes']['half'], $tag['attributes']['min'], $tag['attributes']['max']);
-					break;
+				case 'score%':
+                    $out = nvweb_votes_calc(
+                        $item,
+                        $tag['attributes']['round'],
+                        $tag['attributes']['half'],
+                        $tag['attributes']['min'],
+                        $tag['attributes']['max']
+                    );
+
+                    if($tag['attributes']['value']=='score%')
+                    {
+                        // original score goes from 0 to 10
+                        if(empty($out))
+                        {
+                            $out = 0;
+                        }
+
+                        $out = $out * 10;
+                    }
+                    break;
 
 				case 'votes':
 					$out = intval($item->votes);
