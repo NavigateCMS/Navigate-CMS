@@ -165,6 +165,21 @@ function nvweb_list($vars=array())
         $rs = array();
     }
 
+    if(isset($vars['return']) && $vars['return'] == 'array')
+    {
+        $items = array();
+        for($i = 0; $i < count($rs); $i++)
+       	{
+       	    $item = nvweb_list_prepare_object($rs[$i], $vars);
+       	    if(!empty($item))
+            {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
 	for($i = 0; $i < count($rs); $i++)
 	{
 	    $item = nvweb_list_prepare_object($rs[$i], $vars);
@@ -498,8 +513,6 @@ function nvweb_list_process_items($vars = array())
                 $items = $max;
             }
         }
-
-
     }
     else
     {
@@ -815,7 +828,6 @@ function nvweb_list_convert_orderby($order)
         case 'price_desc':
             $orderby = ' ORDER BY sale_price DESC';
             break;
-
 
         default:
 
