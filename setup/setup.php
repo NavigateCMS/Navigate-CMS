@@ -17,7 +17,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.9.4');
+	define('APP_VERSION', '2.9.5');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -84,7 +84,10 @@ $lang = navigate_install_load_language();
 // 6: clean setup files and redirect to navigate login
 
 // check if navigate is already installed
-//if(file_exists('cfg/globals.php') && file_exists('img/empty.png'))	die(APP_NAME.' is already installed!');
+if(file_exists('cfg/globals.php') && file_exists('img/empty.png'))
+{
+    die(APP_NAME.' is already installed!');
+}
 
 ?>
 <!DOCTYPE html>
@@ -361,7 +364,7 @@ function navigate_install_requirements()
                     <input type="text" value="<?php echo $_SERVER['SERVER_SOFTWARE'];?>" class="<?php echo ($checks['server']? 'green' : 'red');?>" />
                 </div>                 
                 <div>
-                    <label>PHP &ge; 5.4</label>
+                    <label>PHP &ge; 7.2</label>
                     <input type="text" value="<?php echo ($checks['php7.2']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php7.2']? 'green' : 'red');?>" />
                 </div>                    
                 <div>
@@ -1356,7 +1359,10 @@ function process()
 				$zip = new ZipArchive;
 				if ($zip->open('package.zip') === TRUE) 
 				{
-					$zip->extractTo($npath);
+					if(!$zip->extractTo($npath))
+                    {
+                        die(json_encode($lang['extraction_failed']));
+                    }
 					$zip->close();
                     copy($npath . '/crossdomain.xml', dirname($npath).'/crossdomain.xml');
 					die(json_encode(true));

@@ -584,21 +584,6 @@ class structure
                     {
                         core_special_chars($tree[$i]->dictionary[$lang]['title']);
                     }
-
-                    // the following could be removed? seems like is not used
-                    /*
-                        $style = '';
-                        if($lang != $flang)
-                        {
-                            $style = 'display: none';
-                        }
-
-                        $label[] = '<span class="structure-label" lang="'.$lang.'" style="'.$style.'">'
-                                  .core_special_chars($tree[$i]->dictionary[$lang]['title'])
-                                  .'</span>';
-
-                        $bc[$tree[$i]->id][$lang] = $tree[$i]->dictionary[$lang]['title'];
-                    */
                 }
 
                 $children = structure::hierarchy($tree[$i]->id, $ws_id);
