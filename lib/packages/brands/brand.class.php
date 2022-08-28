@@ -152,6 +152,30 @@ class brand
         return $out;
     }
 
+    public static function all_in_array($value="name")
+    {
+        global $DB;
+        global $website;
+        $out = array();
+
+        $DB->query('
+            SELECT *
+            FROM nv_brands
+            WHERE website = '.intval($website->id)
+        );
+        $rs = $DB->result();
+
+        foreach($rs as $row)
+        {
+            if(!empty($row->name))
+            {
+                $out[$row->id] = $row->name;
+            }
+        }
+
+        return $out;
+    }
+
 }
 
 ?>

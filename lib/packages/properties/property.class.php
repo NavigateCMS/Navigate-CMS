@@ -721,6 +721,7 @@ class property
             'country'		=>	t(224, 'Country'),
             'coordinates'	=>	t(297, 'Coordinates'),
             'product'		=>	t(198, 'Product'),
+            'brands'		=>	t(681, 'Brands'),
             'category'		=>	t(78, 'Category'),
             'categories'	=>	t(330, 'Categories'),
             'item'		    =>	t(180, 'Item'),
@@ -1167,6 +1168,11 @@ class property
                 $property_value = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
             }
 
+            if($property->type=='brands' && !empty($_REQUEST['property-'.$property->id]))
+            {
+                $property_value = 'g'.implode(',g', $_REQUEST['property-'.$property->id]);
+            }
+
             // boolean (checkbox): if not checked,  form does not send the value
             if($property->type=='boolean' && !isset($_REQUEST['property-'.$property->id]))
             {
@@ -1471,6 +1477,11 @@ class property
             // (no thousands separator, dot as decimal separator)
 
             if($property->type=='webuser_groups' && !empty($value))
+            {
+                $value = 'g'.implode(',g', $value);
+            }
+
+            if($property->type=='brands' && !empty($value))
             {
                 $value = 'g'.implode(',g', $value);
             }

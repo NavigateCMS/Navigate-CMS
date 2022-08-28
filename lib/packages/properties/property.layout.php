@@ -1,5 +1,6 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+require_once(NAVIGATE_PATH.'/lib/packages/brands/brand.class.php');
 
 function navigate_property_layout_form($element, $code, $object, $object_id)
 {
@@ -1542,7 +1543,33 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
         case 'product':
             // TO DO (when navigate has products!)
+            break;
 
+        case 'brands':
+            $brands = brand::all_in_array();
+
+            // to get the array of groups first we remove the "g" character
+            $property->value    = str_replace('g', '', $property->value);
+            $property->value    = explode(',', $property->value);
+
+            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
+            $field[] = '<label>'.$property_name.'</label>';
+            $field[] = $naviforms->multiselect(
+                'property-'.$property->id,
+                array_keys($brands),
+                array_values($brands),
+                $property->value
+            );
+            if(!empty($property->helper))
+            {
+                $helper_text = $property->helper;
+                if(!empty($object))
+                {
+                    $helper_text = $object->t($helper_text);
+                }
+                $field[] = '<div class="subcomment">'.$helper_text.'</div>';
+            }
+            $field[] = '</div>';
             break;
 			
 		default:
