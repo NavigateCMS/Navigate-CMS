@@ -1587,15 +1587,33 @@ class naviforms
         $out = array();
 
         $out[] = '<select name="'.$id.'[]" id="'.$id.'" multiple="multiple" style=" '.$style.' " >';
+        $out_selected = array();
+        $out_unselected = array();
 
         for($i=0; $i < count($values); $i++)
         {
             if( (is_array($selected_values) && in_array($values[$i], $selected_values)) ||
-                ($values[$i]==$selected_values))
-                $out[] = '<option value="'.$values[$i].'" selected="selected"  title="'.$titles[$i].'">'.$texts[$i].'</option>';
+                ($values[$i]==$selected_values)
+            )
+            {
+                $os_index = array_search($values[$i], $selected_values);
+                $out_selected[$os_index] = '<option value="'.$values[$i].'" selected="selected"  title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            }
             else
-                $out[] = '<option value="'.$values[$i].'"  title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            {
+                $out_unselected[] = '<option value="'.$values[$i].'"  title="'.$titles[$i].'">'.$texts[$i].'</option>';
+            }
         }
+
+        for($i=0; $i < count($out_selected); $i++)
+        {
+            if(!empty($out_selected[$i]))
+            {
+                $out[] = $out_selected[$i];
+            }
+        }
+
+        $out[] = implode("\n", $out_unselected);
 
         $out[] = '</select>';
 
