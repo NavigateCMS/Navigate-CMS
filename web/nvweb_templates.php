@@ -1084,7 +1084,7 @@ function nvweb_country_language()
  */
 function nvweb_template_fix_download_paths($in)
 {
-    $regex = '/https?\:\/\/[^\" ]+/i';
+	$regex = '/((https:|http:|ftp:)?\/\/)?([a-z0-9-.]*)\.([a-z]{2,63})([\p{L}\p{M}0-9+&@#\/%?=~_|$!:,.;-]*)/iu';
     preg_match_all($regex, $in, $data);
 
     $out = $in;
