@@ -1,33 +1,34 @@
 <?php
-
-declare(strict_types=1);
+/*
+ * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
+ *
+ * This file is released under the terms of the MIT license. You can find the
+ * complete text in the attached LICENSE file or online at:
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace Tests;
 
+use Doctrine\Instantiator\Exception\UnexpectedValueException;
 use IpUtils\Factory;
 use PHPUnit\Framework\TestCase;
-use IpUtils\Address\IPv4;
-use IpUtils\Address\IPv6;
-use IpUtils\Expression\Literal;
-use IpUtils\Expression\Pattern;
-use IpUtils\Expression\Subnet;
-use UnexpectedValueException;
 
-final class FactoryTest extends TestCase
+class FactoryTest extends TestCase
 {
     /**
      * @dataProvider  validAddressProvider
      */
-    public function testGetAddress($address, $expected): void
+    public function testGetAddress($address, $expected)
     {
         $address = Factory::getAddress($address);
         $this->assertInstanceOf($expected, $address);
     }
 
-    public function validAddressProvider(): array
+    public function validAddressProvider()
     {
-        $v4 = IPv4::class;
-        $v6 = IPv6::class;
+        $v4 = 'IpUtils\Address\IPv4';
+        $v6 = 'IpUtils\Address\IPv6';
 
         return [
             ['0.0.0.0', $v4],
@@ -39,14 +40,14 @@ final class FactoryTest extends TestCase
 
     /**
      * @dataProvider invalidAddressProvider
+     * @expectedException UnexpectedValueException
      */
-    public function testGetInvalidAddress(string $address): void
+    public function testGetInvalidAddress($address)
     {
-        $this->expectException(UnexpectedValueException::class);
         Factory::getAddress($address);
     }
 
-    public function invalidAddressProvider(): array
+    public function invalidAddressProvider()
     {
         return [
             ['0.0.0.300'],
@@ -58,17 +59,17 @@ final class FactoryTest extends TestCase
     /**
      * @dataProvider  expressionProvider
      */
-    public function testGetExpression($expr, $expected): void
+    public function testGetExpression($expr, $expected)
     {
         $expr = Factory::getExpression($expr);
         $this->assertInstanceOf($expected, $expr);
     }
 
-    public function expressionProvider(): array
+    public function expressionProvider()
     {
-        $literal = Literal::class;
-        $pattern = Pattern::class;
-        $subnet = Subnet::class;
+        $literal = 'IpUtils\Expression\Literal';
+        $pattern = 'IpUtils\Expression\Pattern';
+        $subnet = 'IpUtils\Expression\Subnet';
 
         return [
             ['0.0.0.0', $literal],

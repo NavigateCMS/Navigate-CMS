@@ -1,6 +1,12 @@
 <?php
-
-declare(strict_types=1);
+/*
+ * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
+ *
+ * This file is released under the terms of the MIT license. You can find the
+ * complete text in the attached LICENSE file or online at:
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace Tests\Address;
 
@@ -8,7 +14,7 @@ use IpUtils\Address\IPv4;
 use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
 
-final class IPv4Test extends TestCase
+class IPv4Test extends TestCase
 {
     /**
      * @dataProvider  addressProvider

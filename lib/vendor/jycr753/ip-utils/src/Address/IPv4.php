@@ -1,6 +1,12 @@
 <?php
-
-declare(strict_types=1);
+/*
+ * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
+ *
+ * This file is released under the terms of the MIT license. You can find the
+ * complete text in the attached LICENSE file or online at:
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace IpUtils\Address;
 
@@ -10,63 +16,113 @@ use UnexpectedValueException;
 
 class IPv4 implements AddressInterface
 {
-    protected string $address;
+    protected $address;
 
-    public function __construct(string $address)
+    public function __construct($address)
     {
         if (! self::isValid($address)) {
-            throw new UnexpectedValueException('"' . $address . '" is no valid IPv4 address.');
+            throw new UnexpectedValueException('"'.$address.'" is no valid IPv4 address.');
         }
 
         $this->address = $address;
     }
 
-    public static function isValid(string $address): bool
+    /**
+     * @param $address
+     *
+     * @return boolean
+     */
+    public static function isValid($address)
     {
         return filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
     }
 
-    public static function isValidNetmask(int $netmask): bool
+    /**
+     * @param  int  $netmask
+     *
+     * @return boolean
+     */
+    public static function isValidNetmask($netmask)
     {
         return $netmask >= 1 && $netmask <= 32;
     }
 
-    public static function getLoopback(): self
+    /**
+     * @return IPv4
+     */
+    public static function getLoopback()
     {
         return new self('127.0.0.1');
     }
 
+    /**
+     * returns the compact representation
+     *
+     * @return string
+     */
     public function __toString()
     {
         return $this->getCompact();
     }
 
-    public function getCompact(): string
+    /**
+     * get compact address representation
+     *
+     * @return string
+     */
+    public function getCompact()
     {
         return $this->getExpanded();
     }
 
-    public function getExpanded(): string
+    /**
+     * get fully expanded address
+     *
+     * @return string
+     */
+    public function getExpanded()
     {
         return $this->address;
     }
 
-    public function getChunks(): array
+    /**
+     * get IP-specific chunks ([127,0,0,1])
+     *
+     * @return array
+     */
+    public function getChunks()
     {
         return explode('.', $this->getExpanded());
     }
 
-    public function isLoopback(): bool
+    /**
+     * check whether the IP points to the loopback (localhost) device
+     *
+     * @return boolean
+     */
+    public function isLoopback()
     {
         return $this->matches(new Subnet('127.0.0.0/8'));
     }
 
-    public function matches(ExpressionInterface $expression): bool
+    /**
+     * check whether the address matches a given pattern/range
+     *
+     * @param  ExpressionInterface  $expression
+     *
+     * @return boolean
+     */
+    public function matches(ExpressionInterface $expression)
     {
         return $expression->matches($this);
     }
 
-    public function isPrivate(): bool
+    /**
+     * check whether the IP is inside a private network
+     *
+     * @return boolean
+     */
+    public function isPrivate()
     {
         return
             $this->matches(new Subnet('10.0.0.0/8')) ||
@@ -74,12 +130,20 @@ class IPv4 implements AddressInterface
             $this->matches(new Subnet('192.168.0.0/16'));
     }
 
-    public function isMulticast(): bool
+    /**
+     * check whether the IP is a multicast address
+     */
+    public function isMulticast()
     {
         return $this->matches(new Subnet('224.0.0.0/4'));
     }
 
-    public function isLinkLocal(): bool
+    /**
+     * check whether the IP is a link-local address
+     *
+     * @return boolean
+     */
+    public function isLinkLocal()
     {
         return $this->matches(new Subnet('169.254.1.0/24'));
     }

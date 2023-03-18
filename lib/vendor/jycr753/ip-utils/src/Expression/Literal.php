@@ -1,6 +1,12 @@
 <?php
-
-declare(strict_types=1);
+/*
+ * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
+ *
+ * This file is released under the terms of the MIT license. You can find the
+ * complete text in the attached LICENSE file or online at:
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace IpUtils\Expression;
 
@@ -11,11 +17,8 @@ use IpUtils\Exception\InvalidExpressionException;
 
 class Literal implements ExpressionInterface
 {
-    protected string $expression;
+    protected $expression;
 
-    /**
-     * @throws \IpUtils\Exception\InvalidExpressionException
-     */
     public function __construct($expression)
     {
         $expression = strtolower(trim($expression));
@@ -33,8 +36,12 @@ class Literal implements ExpressionInterface
 
     /**
      * check whether the expression matches an address
+     *
+     * @param  AddressInterface  $address
+     *
+     * @return boolean
      */
-    public function matches(AddressInterface $address): bool
+    public function matches(AddressInterface $address)
     {
         return $address->getCompact() === $this->expression;
     }

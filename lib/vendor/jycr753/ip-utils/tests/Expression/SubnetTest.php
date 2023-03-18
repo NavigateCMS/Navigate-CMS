@@ -1,22 +1,26 @@
 <?php
-
-declare(strict_types=1);
+/*
+ * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
+ *
+ * This file is released under the terms of the MIT license. You can find the
+ * complete text in the attached LICENSE file or online at:
+ *
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 
 namespace Tests\Expression;
 
 use IpUtils\Address\IPv4;
 use IpUtils\Address\IPv6;
-use IpUtils\Exception\InvalidExpressionException;
 use IpUtils\Expression\Subnet;
-use LogicException;
 use PHPUnit\Framework\TestCase;
 
-final class SubnetTest extends TestCase
+class SubnetTest extends TestCase
 {
     /**
      * @dataProvider  addressProvider
      */
-    public function testMatches($subnet, $address, $expected): void
+    public function testMatches($subnet, $address, $expected)
     {
         $subnet = new Subnet($subnet);
 
@@ -24,7 +28,7 @@ final class SubnetTest extends TestCase
         $this->assertSame($expected, $subnet->matches($address));
     }
 
-    public function addressProvider(): array
+    public function addressProvider()
     {
         return [
             ['1.0.0.0/1', new IPv4('1.0.0.0'), true],
@@ -46,15 +50,15 @@ final class SubnetTest extends TestCase
     }
 
     /**
-     * @dataProvider  invalidProvider
+     * @dataProvider       invalidProvider
+     *  @expectedException  \IpUtils\Exception\InvalidExpressionException
      */
-    public function testInvalidFormats($subnet): void
+    public function testInvalidFormats($subnet)
     {
-        $this->expectException(InvalidExpressionException::class);
-        new Subnet($subnet);
+        $subnet = new Subnet($subnet);
     }
 
-    public function invalidProvider(): array
+    public function invalidProvider()
     {
         return [
             ['1.0.0.0/'],
@@ -77,15 +81,15 @@ final class SubnetTest extends TestCase
 
     /**
      * @dataProvider       mixedProvider
+     * @expectedException  \LogicException
      */
-    public function testMixedVersions($subnet, $address): void
+    public function testMixedVersions($subnet, $address)
     {
-        $this->expectException(LogicException::class);
         $subnet = new Subnet($subnet);
         $subnet->matches($address);
     }
 
-    public function mixedProvider(): array
+    public function mixedProvider()
     {
         return [
             ['::/128', new IPv4('127.0.0.1')],

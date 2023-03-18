@@ -19,19 +19,19 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '664449c8f06cb440f14b222f03550cabecf84d05',
+    'reference' => '56c9e583f69e0c0004d68eb412069e8e2d678ca1',
     'name' => 'navigatecms/lib',
   ),
   'versions' => 
   array (
     'algo26-matthias/idna-convert' => 
     array (
-      'pretty_version' => 'v3.0.4',
-      'version' => '3.0.4.0',
+      'pretty_version' => 'v3.1.0',
+      'version' => '3.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0786979b5ee8a8fee4731bd6d2be34490174bf74',
+      'reference' => '340a4dc65f6b0d9884853a3d32895d82f0c1502a',
     ),
     'jakeasmith/http_build_url' => 
     array (
@@ -53,39 +53,39 @@ private static $installed = array (
     ),
     'jbroadway/urlify' => 
     array (
-      'pretty_version' => '1.2.0-stable',
-      'version' => '1.2.0.0',
+      'pretty_version' => '1.2.4-stable',
+      'version' => '1.2.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b917c8c9274a9784a2eb30c657fc386ad591fdcd',
+      'reference' => 'd0fafbaa1dc14e8039cdf5c72a932a8d1de1750e',
     ),
     'jycr753/ip-utils' => 
     array (
-      'pretty_version' => 'v2.0.3',
-      'version' => '2.0.3.0',
+      'pretty_version' => '2.0.1',
+      'version' => '2.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '18f84cac2d4d914ec67941d2608c982a58e21246',
+      'reference' => '6e8ab3e3bc3c2b816bfc682197edc8239ca08857',
     ),
     'mpdf/mpdf' => 
     array (
-      'pretty_version' => 'v7.1.6',
-      'version' => '7.1.6.0',
+      'pretty_version' => 'v7.1.9',
+      'version' => '7.1.9.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ef5d8cf2c63def40fb76fc0a9e286721cb4dffcd',
+      'reference' => 'a0fc1215d2306aa3b4ba6e97bd6ebe4bab6a88fb',
     ),
     'myclabs/deep-copy' => 
     array (
-      'pretty_version' => '1.7.0',
-      'version' => '1.7.0.0',
+      'pretty_version' => '1.11.1',
+      'version' => '1.11.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e',
+      'reference' => '7284c22080590fb39f2ffa3e9057f10a4ddd0e0c',
     ),
     'navigatecms/lib' => 
     array (
@@ -94,7 +94,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '664449c8f06cb440f14b222f03550cabecf84d05',
+      'reference' => '56c9e583f69e0c0004d68eb412069e8e2d678ca1',
     ),
     'paragonie/random_compat' => 
     array (
@@ -107,12 +107,12 @@ private static $installed = array (
     ),
     'psr/log' => 
     array (
-      'pretty_version' => '1.0.2',
-      'version' => '1.0.2.0',
+      'pretty_version' => '1.1.4',
+      'version' => '1.1.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '4ebe3a8bf773a19edfe0a84b6585ba3d401b724d',
+      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
     ),
     'setasign/fpdi' => 
     array (
@@ -125,12 +125,12 @@ private static $installed = array (
     ),
     'voku/portable-ascii' => 
     array (
-      'pretty_version' => '1.5.1',
-      'version' => '1.5.1.0',
+      'pretty_version' => '2.0.1',
+      'version' => '2.0.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e7f9bd5deff09a57318f9b900ab33a05acfcf4d3',
+      'reference' => 'b56450eed252f6801410d810c8e1727224ae0743',
     ),
     'voku/stop-words' => 
     array (
