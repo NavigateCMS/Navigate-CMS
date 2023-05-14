@@ -60,7 +60,7 @@ function nvweb_parse($request)
         }
 
         // protocol check
-        if(parse_url($url, PHP_URL_SCHEME) == 'http' && $website->protocol == 'https://')
+        if(parse_url($url, PHP_URL_SCHEME) == 'http' && $website->protocol == 'https://' && !APP_FAILSAFE)
         {
             // auto redirect to https, unless it is a POST request
             if(empty($_POST))
@@ -102,6 +102,11 @@ function nvweb_parse($request)
         }
 
         $route = $request['route'];
+
+        // sanitize URL
+        $route = strip_tags( $route );
+        $route = str_replace( array('"', '>', '<'), '', $route );
+
         // remove last '/' in route if exists
         if(substr($route, -1) == '/')
         {
