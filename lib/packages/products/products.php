@@ -2344,7 +2344,7 @@ function products_form($item)
 
 		if(!empty($item->template) && $item->template != '0')
         {
-            $properties_html = navigate_property_layout_form('product', $item->template, 'product', $item->id);
+            $properties_html = navigate_property_layout_form('product', $item->template, 'product', $item->id);            
         }
 
 		if(!empty($properties_html))

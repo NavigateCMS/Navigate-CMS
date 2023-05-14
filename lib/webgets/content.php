@@ -11,17 +11,30 @@ function nvweb_content($vars=array())
 	global $template;
 	global $structure;
 	
-	$out = '';	
+	$out = '';
+
+	$object = $current['object'];
+
+	if(!empty($vars['id']))
+    {
+        $object = new item();
+        $object->load(intval($vars['id']));
+        if($object->website != $website->id)
+        {
+            $object = $current['object'];
+        }
+    }
+
 	switch(@$vars['mode'])
 	{
         case 'id':
-            $out = $current['object']->id;
+            $out = $object->id;
             break;
 
 		case 'title':
 			if($current['type']=='structure')
 			{
-                $rs = nvweb_content_items($current['object']->id, true, 1);
+                $rs = nvweb_content_items($object->id, true, 1);
 				$texts = webdictionary::load_element_strings('item', $rs[0]->id);
 				$out = $texts[$current['lang']]['title'];
 				// sanitize output to avoid XSS problems
@@ -29,7 +42,7 @@ function nvweb_content($vars=array())
 			}
 			else
 			{				
-				$texts = webdictionary::load_element_strings($current['type'], $current['object']->id);				
+				$texts = webdictionary::load_element_strings($current['type'], $object->id);
 				$out = $texts[$current['lang']]['title'];
                 // sanitize output to avoid XSS problems
                 $out = core_special_chars($out);
@@ -43,7 +56,7 @@ function nvweb_content($vars=array())
 
         case 'date':
 		case 'date_post':
-            $ts = $current['object']->date_to_display;
+            $ts = $object->date_to_display;
             // if no date, return nothing
             if(!empty($ts))
             {
@@ -52,18 +65,18 @@ function nvweb_content($vars=array())
 			break;
 			
 		case 'date_created':
-			$ts = $current['object']->date_created;
+			$ts = $object->date_created;
 			$out = $vars['format'];
 			$out = nvweb_content_date_format($out, $ts);			
 			break;
 			
 		case 'comments':
 			// display published comments number for the current item
-			$out = nvweb_content_comments_count();
+			$out = nvweb_content_comments_count($object->id);
 			break;
 
         case 'views':
-            $out = $current['object']->views;
+            $out = $object->views;
             break;
 			
 		case 'summary':
@@ -73,7 +86,7 @@ function nvweb_content($vars=array())
             {
                 $length = intval($vars['length']);
             }
-			$texts = webdictionary::load_element_strings('item', $current['object']->id);				
+			$texts = webdictionary::load_element_strings('item', $object->id);
 			$text = $texts[$current['lang']]['main'];
             if(!empty($vars['allowed_tags']))
             {
@@ -83,10 +96,10 @@ function nvweb_content($vars=array())
 			break;
 
         case 'author':
-            if(!empty($current['object']->author))
+            if(!empty($object->author))
             {
                 $nu = new user();
-                $nu->load($current['object']->author);
+                $nu->load($object->author);
                 $out = $nu->username;
                 unset($nu);
             }
@@ -104,7 +117,7 @@ function nvweb_content($vars=array())
             $structure_id = 0;
             if($current['type']=='item')
             {
-                $structure_id = $current['object']->category;
+                $structure_id = $object->category;
             }
             else if($current['type']=='structure')
             {
@@ -187,11 +200,11 @@ function nvweb_content($vars=array())
             }
             else if($current['type']=='item')
             {
-                $enabled = nvweb_object_enabled($current['object']);
+                $enabled = nvweb_object_enabled($object);
 
                 if($enabled)
                 {
-                    $texts = webdictionary::load_element_strings('item', $current['object']->id);
+                    $texts = webdictionary::load_element_strings('item', $object->id);
                     $itags = explode(',', $texts[$current['lang']]['tags']);
                     if(!empty($itags))
                     {
@@ -270,18 +283,18 @@ function nvweb_content($vars=array())
 			if($current['type']=='item')
 			{
 				// check publishing is enabled
-				$enabled = nvweb_object_enabled($current['object']);
+				$enabled = nvweb_object_enabled($object);
                 $texts = NULL;
 
                 // retrieve last saved text (is a preview request from navigate)
 				if($_REQUEST['preview']=='true' && $current['navigate_session']==1)
                 {
-                    $texts = webdictionary_history::load_element_strings('item', $current['object']->id, 'latest');
+                    $texts = webdictionary_history::load_element_strings('item', $object->id, 'latest');
                 }
                 // or last approved/saved text
 				else if($enabled)
                 {
-                    $texts = webdictionary::load_element_strings('item', $current['object']->id);
+                    $texts = webdictionary::load_element_strings('item', $object->id);
                 }
 
                 // have we found any content?

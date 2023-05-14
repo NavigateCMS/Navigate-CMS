@@ -584,7 +584,7 @@ function nvweb_blocks_render($type, $trigger, $action, $zone="", $block=NULL, $v
 
                 $title = core_special_chars($title);
                 $link = core_special_chars($link);
-                $trigger_html[] = $prefix.'<a href="'.$link.'"'.$new_window.'>'.$icon.$title.'</a>'.$suffix;
+                $trigger_html[] = $prefix.'<a href="'.$link.'"'.$new_window.'>'.$icon.'<span>'.$title.'</span></a>'.$suffix;
             }
 
             $glue = '';
