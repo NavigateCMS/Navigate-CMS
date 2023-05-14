@@ -1,5 +1,5 @@
 <?php
-function nvweb_self_url()
+function nvweb_self_url($ignore_parameters=false)
 { 
 	if(!isset($_SERVER['REQUEST_URI']))
     {
@@ -34,6 +34,11 @@ function nvweb_self_url()
     if(substr($url, -1)=='/')
     {
         $url = substr($url, 0, -1);
+    }
+
+    if($ignore_parameters)
+    {
+    	$url = strtok( $url, '?');
     }
 
 	return $url;
