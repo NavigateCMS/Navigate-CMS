@@ -18,7 +18,7 @@ function run()
                 $user->load_from_settings_post();
                 if(!empty($_REQUEST['user-password']))
                 {
-                    $this->set_password($_REQUEST['user-password']);
+                    $user->set_password($_REQUEST['user-password']);
                 }
 				$user->update();
                 $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');

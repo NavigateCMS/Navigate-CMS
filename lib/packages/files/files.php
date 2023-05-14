@@ -186,13 +186,14 @@ function run()
                         {
                             $lcode = $language['code'];
 
-                            if(!isset($_REQUEST['titles'][$lcode]))
+                            if( !isset($_REQUEST['titles'][$lcode]) &&
+                                !isset($_REQUEST['descriptions'][$lcode]))
                             {
-                                break;
+                                continue;
                             }
 
-                            $item->title[$lcode] = core_purify_string($_REQUEST['titles'][$lcode]);
-                            $item->description[$lcode]	= core_purify_string($_REQUEST['descriptions'][$lcode]);
+                            $item->title[$lcode] = @core_purify_string($_REQUEST['titles'][$lcode]);
+                            $item->description[$lcode]	= @core_purify_string($_REQUEST['descriptions'][$lcode]);
                         }
 
                         $status = $item->save();
