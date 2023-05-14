@@ -24,7 +24,6 @@ class database
 		$this->lastError = '';
 		$this->lastAffectedRows = '';
 		$this->lastResult = "";
-		$this->fetchAs = PDO::FETCH_OBJ;
 		$this->db = NULL;
 		$this->queries_count = 0;
 	}
@@ -227,11 +226,16 @@ class database
 	 * @param integer $max How many rows will be returned of the resultset (after applying offset)
 	 * @return boolean True if the query could be executed without errors
 	 */	
-	public function	queryLimit($cols, $table, $where="1=1", $order="", $offset=0, $max=100, $parameters=array())
+	public function	queryLimit($cols, $table, $where="1=1", $order="", $offset=0, $max=100, $parameters=array(), $fetch_mode="array")
 	{		
 		$this->lastError = '';
 		$this->lastResult = '';	
+		
 		$fetch = PDO::FETCH_ASSOC;
+		if($fetch_mode == 'object')
+		{
+			$fetch = PDO::FETCH_OBJ;
+		}
 
 		if(empty(trim($order)))
         {
@@ -463,7 +467,6 @@ class database
         }
 		return $value;
 	}
-	
 
 	/**
 	 * Count how many rows meet the conditions of the last query sent to database
@@ -512,7 +515,6 @@ class database
 
 		return $str;
 	}
-	
 
 	/**
 	 * Sets an attribute on the database handle.
