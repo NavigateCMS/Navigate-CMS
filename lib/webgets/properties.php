@@ -31,7 +31,6 @@ function nvweb_properties($vars=array())
             }
             break;
 
-
         case 'element':
 		case 'item': // deprecated, may be removed in a future version
 
@@ -586,7 +585,9 @@ function nvweb_properties_render($property, $vars)
                 $title = @$link[1];
                 $link = $link[0];
                 if(empty($title))
+                {
                     $title = $link;
+                }
             }
             else
             {
@@ -594,6 +595,8 @@ function nvweb_properties_render($property, $vars)
                 $link = $property->value[$current['lang']];
                 $target = '_self';
             }
+
+            $target = value_or_default($vars['target'], $target);
 
             if(strpos($link, '://')===false && strpos($link, 'mailto:')===false)
             {
@@ -882,6 +885,32 @@ function nvweb_properties_render($property, $vars)
 		case 'product':
 			// TO DO
 			break;
+
+        case 'brands':
+            $return = @$vars['return'];
+            switch($return)
+            {
+                case 'array':
+                    $out = array();
+                    $values = explode(",", $property->value);
+                    if(!empty($values))
+                    {
+                        foreach($values as $brand_id)
+                        {
+                            $brand_id = str_replace('g', '', $brand_id);
+                            unset($b);
+                            $b = new brand();
+                            $b->load($brand_id);
+                            $out[] = $b;
+                        }
+                    }
+                    break;
+
+                default:
+                    $value = str_replace('g', '', $property->value);
+                    $out = $value;
+            }
+            break;
 			
 		case 'category':
             $return = @$vars['return'];
