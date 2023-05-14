@@ -441,7 +441,7 @@ class structure
         return $out;
     }
 	
-	public static function load_tree($id_parent=0, $ws_id=null)
+	public static function load_tree($id_parent=0, $ws_id=null, $ignore_cache=false)
 	{
 		global $DB;	
 		global $website;
@@ -451,7 +451,7 @@ class structure
             $ws_id = $website->id;
         }
 
-        if(isset(structure::$_cache['load_tree-'.$id_parent.'-ws-'.$ws_id]))
+        if(isset(structure::$_cache['load_tree-'.$id_parent.'-ws-'.$ws_id]) && !$ignore_cache)
         {
             return structure::$_cache['load_tree-'.$id_parent.'-ws-'.$ws_id];
         }
@@ -505,7 +505,7 @@ class structure
 		
 		$tree = array();
 
-		if(!$ignore_cache)
+		if(false && !$ignore_cache)
         {
             if(isset(structure::$_cache['hierarchy-'.$id_parent.'-ws-'.$ws_id]))
             {
@@ -542,7 +542,7 @@ class structure
 		{
 		    // TODO: try to optimize all this process, takes much time when the website has a very big menu
 
-			$tree = structure::load_tree($id_parent, $ws_id);
+			$tree = structure::load_tree($id_parent, $ws_id, $ignore_cache);
 
             $templates = template::elements('structure');
             if(empty($templates))

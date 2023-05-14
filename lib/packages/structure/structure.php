@@ -103,7 +103,7 @@ function run()
 				if($item->delete() > 0)
 				{
 					$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
-					$structure = structure::hierarchy(-1); // root level (0) including Web node (-1)
+					$structure = structure::hierarchy(-1, null, true); // root level (0) including Web node (-1)
 					$out = structure_tree($structure);
                     users_log::action($_REQUEST['fid'], $item->id, 'remove');
 				}
@@ -406,7 +406,7 @@ function run()
 		
 		case 0: // tree / search result
 		default:			
-			$structure = structure::hierarchy(-1); // root level (0) including Web node (-1)
+			$structure = structure::hierarchy(-1, null, true); // root level (0) including Web node (-1)
 			$out = structure_tree($structure);
 			break;
 	}
@@ -756,7 +756,7 @@ function structure_form($item)
 
 	$navibars->add_tab_content($naviforms->hidden('id', $item->id));
 
-	$hierarchy = structure::hierarchy(0);
+	$hierarchy = structure::hierarchy(0, null, true);
 	$categories_list = structure::hierarchyList($hierarchy, $item->parent);
 
     if(empty($categories_list))
