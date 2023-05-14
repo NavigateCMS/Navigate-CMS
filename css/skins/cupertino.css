@@ -3815,3 +3815,9 @@ label:hover::before
 {
     color: #333;
 }
+
+
+div[aria-describedby=shipping_methods_rates_edit_dialog] .ui-dialog-buttonpane
+{
+	border: none;
+}

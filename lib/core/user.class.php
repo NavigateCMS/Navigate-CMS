@@ -531,7 +531,7 @@ class user
         {
 	        $url = 'http:' . $url;
         }
-        
+
         $out = array();
 
         $out[] = '<div style=" background: #E5F1FF; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';

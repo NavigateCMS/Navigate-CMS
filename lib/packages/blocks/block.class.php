@@ -165,9 +165,11 @@ class block
 
         $this->elements = array();
         if(!empty($_REQUEST['elements_selection']) && $_REQUEST['elements_display'][0] != 'all')
-        $this->elements = array(
-            $_REQUEST['elements_display'][0] => $_REQUEST['elements_selection']
-        );
+        {
+            $this->elements = array(
+                $_REQUEST['elements_display'][0] => $_REQUEST['elements_selection']
+            );
+        }
 
 		$this->dictionary		= array();	// for titles
 		$this->trigger			= array();

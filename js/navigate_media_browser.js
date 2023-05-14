@@ -771,6 +771,8 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
     if(!title)
     {
         var title = [];
+
+        // try to retrieve the info from Media browser window
         if($('#file-' + file_id).length > 0)
         {
             title = $('#file-' + file_id).attr('image-title');
@@ -782,6 +784,7 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
     if(!alt)
     {
         var alt = [];
+        // try to retrieve the info from Media browser window
         if($('#file-' + file_id).length > 0)
         {
             alt = $('#file-' + file_id).attr('image-description');

@@ -2017,9 +2017,13 @@ function blocks_form($item)
 		{
 			el = $(el).prev();
 			if($(el).val()=="all")
+			{
 				$("#elements_selection_wrapper").hide();
+			}
 			else
+			{
 				$("#elements_selection_wrapper").show();
+			}
 		}
 
 		navigate_blocks_elements_display_change($("label[for=elements_display_'.$elements_display.']"));
