@@ -2248,7 +2248,23 @@ function items_form($item)
 			// now the image captions	
 			foreach($item->galleries[0] as $image_id => $image_dictionary)
 			{		
-				if(!is_array($image_dictionary)) $image_dictionary = array();	
+				if(!is_array($image_dictionary))
+				{
+					$image_dictionary = array();
+				}
+
+				$image_obj = new file();
+				@$image_obj->load($image_id);
+				if(!empty($image_obj->title))
+				{
+					$gallery .= $naviforms->hidden('items-gallery-item-'.$image_id.'-titles', base64_encode(json_encode($image_obj->title)));
+				}
+
+				if(!empty($image_obj->description))
+				{
+					$gallery .= $naviforms->hidden('items-gallery-item-'.$image_id.'-descriptions', base64_encode(json_encode($image_obj->description)));
+				}
+
 				foreach($website->languages_list as $lang)
 				{
 					$gallery .= $naviforms->hidden('items-gallery-item-'.$image_id.'-dictionary-'.$lang, $image_dictionary[$lang]);
