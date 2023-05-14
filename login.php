@@ -3,7 +3,7 @@ require_once('cfg/globals.php');
 require_once('cfg/common.php');
 
 core_define_navigate_url('login.php', !APP_FAILSAFE); // in APP_FAILSAFE mode, omit HTTPS check
-if(nvweb_self_url() != NAVIGATE_URL.'/login.php')
+if(nvweb_self_url(true) != NAVIGATE_URL.'/login.php' && !APP_FAILSAFE)
 {
     // redirect in case of HTTPS available
     core_terminate(NAVIGATE_URL.'/login.php');

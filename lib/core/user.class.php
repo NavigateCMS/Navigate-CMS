@@ -526,8 +526,12 @@ class user
 
         $subject = 'Navigate CMS | '.t(407, 'Forgot password?');
 
-        $url = 'http:' . NAVIGATE_PARENT.NAVIGATE_FOLDER.'/login.php?action=password-reset&value='.$this->activation_key;
-
+        $url = NAVIGATE_PARENT . NAVIGATE_FOLDER . '/login.php?action=password-reset&value='.$this->activation_key;
+        if(substr($url, 0, 4)!='http')
+        {
+	        $url = 'http:' . $url;
+        }
+        
         $out = array();
 
         $out[] = '<div style=" background: #E5F1FF; width: 600px; border-radius: 6px; margin: 10px auto; padding: 1px 20px 20px 20px;">';
