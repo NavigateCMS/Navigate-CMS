@@ -56,11 +56,17 @@ function nvweb_parse($request)
         }
         else
         {
+            // also treats website aliases
             $website = nvweb_load_website_by_url($url);
         }
 
+
+
         // protocol check
-        if(parse_url($url, PHP_URL_SCHEME) == 'http' && $website->protocol == 'https://' && !APP_FAILSAFE)
+        if( parse_url($url, PHP_URL_SCHEME) == 'http' &&
+            $website->protocol == 'https://' &&
+            !APP_FAILSAFE
+        )
         {
             // auto redirect to https, unless it is a POST request
             if(empty($_POST))
@@ -73,6 +79,7 @@ function nvweb_parse($request)
         $events = new events();
         $events->load_extensions_installed();
         $events->extension_preinit_bindings();
+
         // we can't start the debugger before the website object is loaded
         // (because an extension could be disabled for that website)
         debugger::init();
@@ -340,7 +347,6 @@ function nvweb_parse($request)
 
         $template = nvweb_template_load();
         $events->trigger('theme', 'template_load', array('template' => &$template));
-
         if(empty($template))
         {
             throw new Exception('Navigate CMS: no template found!');

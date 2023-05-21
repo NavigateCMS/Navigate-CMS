@@ -593,41 +593,10 @@ function nvweb_route_parse($route="")
 
     		if(empty($rs))
 			{
-                // no one knows about this route,
-                // so we have to take it as a wrong path;
-                // apply the default setting
-                switch($website->wrong_path_action)
-                {
-                    case 'homepage':
-	                case 'homepage_redirect':
-                        header('location: '.NVWEB_ABSOLUTE.$website->homepage());
-                        nvweb_clean_exit();
-                        break;
-
-                    case 'http_404':
-                        header("HTTP/1.0 404 Not Found");
-                        nvweb_clean_exit();
-                        break;
-
-                    case 'theme_404':
-                        $current['template'] = 'not_found';
-                        $current['type']	 = 'structure';
-                        $current['id'] 		 = 0;
-                        $current['object']   = new structure();
-                        return;
-                        break;
-
-                    case 'website_path':
-                        $redirect_url = nvweb_template_convert_nv_paths($website->wrong_path_redirect);
-                        header('location: '.$redirect_url);
-                        nvweb_clean_exit();
-                        break;
-
-                    case 'blank':
-                    default:
-                        nvweb_clean_exit();
-                        break;
-                }
+				// no one knows about this route,
+				// so we have to take it as a wrong path;
+				// apply the default setting
+				nv_route_nonexistent();
 			}
 			else
 			{
@@ -661,6 +630,13 @@ function nvweb_route_parse($route="")
                     case 'structure':
                         $obj = new structure();
                         $obj->load($current['id']);
+
+                        if(empty($obj->id))
+                        {
+                        	// path exists on nv_paths
+	                        // but the structure object referenced does not exist
+	                        nv_route_nonexistent();
+                        }
 
                         // check if it is a direct access to a "jump to another branch" path
                         if($obj->dictionary[$current['lang']]['action-type']=='jump-branch')
@@ -732,6 +708,13 @@ function nvweb_route_parse($route="")
 
                         $current['object'] = $DB->first();
 
+	                    if(empty($current['object']->id))
+                        {
+                            // path exists on nv_paths
+                            // but the object referenced does not exist
+                            nv_route_nonexistent();
+                        }
+
                         // let's count a hit (except admin)
                         if($current['navigate_session']!=1 && !nvweb_is_bot())
                         {
@@ -747,6 +730,13 @@ function nvweb_route_parse($route="")
                                        AND website = '.$website->id);
 
                         $current['object'] = $DB->first();
+
+	                    if(empty($current['object']->id))
+                        {
+                            // path exists on nv_paths
+                            // but the object referenced does not exist
+                            nv_route_nonexistent();
+                        }
 
                         // let's count a hit (except admin)
                         if($current['navigate_session']!=1 && !nvweb_is_bot())
@@ -795,7 +785,10 @@ function nvweb_route_parse($route="")
                         );
 				}
 
-				$current['template'] = $current['object']->template;
+				if(!empty($current['object']->template))
+				{
+					$current['template'] = $current['object']->template;
+				}
 			}
 			break;			
 	}
@@ -1117,6 +1110,44 @@ function nvweb_is_bot()
     //isBot() can be used to check if the request is bot request before incrementing the visit count.
     //check if bot request.
     return ( true == is_array( $arrstrBotMatches ) && 0 < count( $arrstrBotMatches )) ? 1 : 0;
+}
+
+function nv_route_nonexistent()
+{
+	global $website;
+	global $current;
+
+	switch($website->wrong_path_action)
+	{
+	    case 'homepage':
+	    case 'homepage_redirect':
+	        header('location: '.NVWEB_ABSOLUTE.$website->homepage());
+	        nvweb_clean_exit();
+	        break;
+
+	    case 'http_404':
+	        header("HTTP/1.0 404 Not Found");
+	        nvweb_clean_exit();
+	        break;
+
+	    case 'theme_404':
+	        $current['template'] = 'not_found';
+	        $current['type']	 = 'structure';
+	        $current['id'] 		 = 0;
+	        $current['object']   = new structure();
+	        break;
+
+	    case 'website_path':
+	        $redirect_url = nvweb_template_convert_nv_paths($website->wrong_path_redirect);
+	        header('location: '.$redirect_url);
+	        nvweb_clean_exit();
+	        break;
+
+	    case 'blank':
+	    default:
+	        nvweb_clean_exit();
+	        break;
+	}
 }
 
 function nvweb_clean_exit($url='')
