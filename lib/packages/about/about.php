@@ -406,7 +406,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="https://github.com/yatt/jquery.base64/" target="_blank">jQuery.base64 v2013.03.26</a><br />'
+			'<a href="https://github.com/dankogai/js-base64" target="_blank">base64.js 3.7.5</a><br />'
 		)
 	);
 

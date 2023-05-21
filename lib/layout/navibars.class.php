@@ -173,12 +173,18 @@ class navibars
 			{
 			    $icon = "";
 			    if(!empty($tabs[$t]['icon']))
-			        $icon = '<i class="'.$tabs[$t]['icon'].'"></i> ';
+                {
+                    $icon = '<i class="'.$tabs[$t]['icon'].'"></i> ';
+                }
 
 				if(empty($tabs[$t]['href']))
-					$buffer[] = '<li><a href="#navigate-content-tabs-'.($t+1).'">'.$icon.$tabs[$t]['name'].'</a></li>';
+                {
+                    $buffer[] = '<li><a href="#navigate-content-tabs-'.($t+1).'">'.$icon.$tabs[$t]['name'].'</a></li>';
+                }
 				else
-					$buffer[] = '<li><a href="'.$tabs[$t]['href'].'">'.$icon.$tabs[$t]['name'].'</a></li>';
+                {
+                    $buffer[] = '<li><a href="'.$tabs[$t]['href'].'">'.$icon.$tabs[$t]['name'].'</a></li>';
+                }
 			}
 			$buffer[] =  '</ul>';			
 			
@@ -189,7 +195,9 @@ class navibars
 				$buffer[] = '<div id="navigate-content-tabs-'.($t+1).'">';
 				
 				if(!empty($this->elements['tabs_content'][$t]))
-					$buffer[] = implode("\n", $this->elements['tabs_content'][$t]);
+                {
+                    $buffer[] = implode("\n", $this->elements['tabs_content'][$t]);
+                }
 					
 				$buffer[] = '</div>';				
 			}			
@@ -229,16 +237,24 @@ class navibars
 		$buffer[] = '<div id="navigate-content-top-spacer"></div>';
 		
 		if(!empty($this->elements['form']))
-			$buffer[] = $this->elements['form'];
+        {
+            $buffer[] = $this->elements['form'];
+        }
 
 		if(!empty($this->elements['tabs']))
-			$buffer[] = $this->generate_tabs();
+        {
+            $buffer[] = $this->generate_tabs();
+        }
 			
 		if(!empty($this->elements['form']))
-			$buffer[] = '</form>';			
+        {
+            $buffer[] = '</form>';
+        }
 			
 		if(!empty($this->elements['html']))
-			$buffer[] = implode("\n", $this->elements['html']);
+        {
+            $buffer[] = implode("\n", $this->elements['html']);
+        }
 		
 		return implode("\n", $buffer);	
 	}

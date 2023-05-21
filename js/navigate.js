@@ -614,7 +614,7 @@ function navigate_tinymce_add_content_event(editor_id, file_id, media, mime, web
                     var buttons_html = "";
                     for(extension_name in json_rs)
                     {
-                        buttons_html += '<button data-extension="'+extension_name+'" data-content="'+$.base64.encode(json_rs[extension_name]['out'])+'">' +
+                        buttons_html += '<button data-extension="'+extension_name+'" data-content="'+Base64.encode(json_rs[extension_name]['out'])+'">' +
                                             '<img src="plugins/'+extension_name+'/thumbnail.png" /><br /><br />' +
                                             json_rs[extension_name]['title'] +
                                         '</button>';
@@ -647,7 +647,7 @@ function navigate_tinymce_add_content_event(editor_id, file_id, media, mime, web
                             }
                             else
                             {
-                                var html = $.base64.decode($(this).data('content'));
+                                var html = Base64.decode($(this).data('content'));
                                 var editor = tinyMCE.get(editor_id);
 
                                 var selection_active  = (editor.selection.getContent({format : 'text'})!="");
@@ -796,8 +796,8 @@ function navigate_tinymce_add_content(editor_id, file_id, media, mime, web_id, e
             {
                 image_width = $(element).attr("image-width");
                 image_height = $(element).attr("image-height");
-                title = $.base64.decode($(element).attr('image-title'));
-                alt = $.base64.decode($(element).attr('image-description'));
+                title = Base64.decode($(element).attr('image-title'));
+                alt = Base64.decode($(element).attr('image-description'));
             }
 
             var body_width = $(editor.contentAreaContainer).width() - 37;

@@ -776,7 +776,7 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
         if($('#file-' + file_id).length > 0)
         {
             title = $('#file-' + file_id).attr('image-title');
-            title = $.base64.decode(title);
+            title = Base64.decode(title);
             title = $.parseJSON(title);
         }
     }
@@ -788,7 +788,7 @@ function navigate_contextmenu_description_dialog(file_id, trigger, title, alt)
         if($('#file-' + file_id).length > 0)
         {
             alt = $('#file-' + file_id).attr('image-description');
-            alt = $.base64.decode(alt)
+            alt = Base64.decode(alt)
             alt = $.parseJSON(alt);
         }
     }

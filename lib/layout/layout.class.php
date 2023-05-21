@@ -167,7 +167,7 @@ class layout
 
         $this->add_script_tag('js/plugins/jquery.hotkeys.js');
         $this->add_script_tag('lib/external/jquery-caret/jquery.caret.js');
-        $this->add_script_tag('lib/external/jquery.base64/jquery.base64.js');
+        $this->add_script_tag('lib/node_modules/js-base64/base64.js');
         $this->add_script_tag('lib/external/jquery-truncate/jquery.truncate.js');
 
 		// tinymce 4

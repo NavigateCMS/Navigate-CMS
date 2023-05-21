@@ -767,7 +767,7 @@ class naviforms
                     }
                 );
                 
-                cm.doc.setValue($.base64.decode($("#'.$name.'").val()));
+                cm.doc.setValue(Base64.decode($("#'.$name.'").val()));
 
 		        CodeMirror.commands.autocomplete = function(cm) {
                     CodeMirror.showHint(cm, CodeMirror.htmlHint);

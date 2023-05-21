@@ -1,0 +1,14 @@
+{
+  "name": "navigatecms-lib",
+  "version": "1.0.0",
+  "description": "Collection of npm packages used in Navigate CMS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Navigate CMS",
+  "license": "ISC",
+  "dependencies": {
+    "js-base64": "^3.7.5"
+  }
+}
