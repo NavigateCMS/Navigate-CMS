@@ -99,7 +99,11 @@ if($user->permission("files.upload")=="true")
                     die('{"jsonrpc": "2.0", "error": {"code": 100, "message": "Uploaded file missing."}, "id" : "id"}');
                 }
 
-                $original_filename = mb_convert_encoding($_FILES['upload']['name'], 'UTF-8', value_or_default($_SERVER['HTTP_ACCEPT_CHARSET'], 'UTF-8'));
+                $original_filename = mb_convert_encoding(
+                    $_FILES['upload']['name'], 
+                    'UTF-8', 
+                    value_or_default(array($_SERVER, 'HTTP_ACCEPT_CHARSET'), 'UTF-8')
+                );
 
                 if(move_uploaded_file($_FILES['upload']['tmp_name'], $targetDir.'/'.$tmpfilename))
                 {

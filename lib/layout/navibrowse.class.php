@@ -16,7 +16,8 @@ class navibrowse
 	public $url;
 	public $onDblClick;
     public $onRightClick;
-
+	public $onMove;
+	
     public $default_view;
 
 	public function __construct($id)	

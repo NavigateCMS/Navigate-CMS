@@ -6,8 +6,8 @@
  * @copyright All rights reserved to each function author.
  * @author Various (PHP Community)
  * @license GPLv2 License
- * @version 1.5
- * @updated 2020-05-30
+ * @version 1.6
+ * @updated 2025-08-25
  * @note if you are the creator of one of this functions and your name is not here send an email to info@navigatecms.com to be properly credited :)
  *
  */
@@ -29,7 +29,7 @@
 function mb_unserialize($var)
 {
     $out = $var;
-    if(!is_object($var) && !is_array($var))
+    if(!is_object($var) && !is_array($var) && !is_null($var))
     {
         $out = unserialize($var);
 
@@ -699,6 +699,23 @@ function slug($input)
 
 function value_or_default($value, $default="")
 {
+    // If the value is an array, check if the second element is a key
+	if(is_array($value) && count($value) == 2 && is_array($value[0]))
+	{
+		$array = $value[0];
+		$key = $value[1];
+		
+		if(isset($array[$key]))
+		{
+			return $array[$key];
+		}
+		else
+		{
+			return $default;
+		}
+	}
+	
+	// original behaviour
 	if((is_null($value) || $value=="") && !is_numeric($value))
     {
         return $default;
@@ -1044,6 +1061,12 @@ function setcookie_samesite($name, $value=NULL, $expire=0, $path='/', $domain='n
         {
             $secure = true;
         }
+    }
+
+    // Convert null value to empty string for PHP 8+ compatibility
+    if(is_null($value))
+    {
+        $value = '';
     }
 
     if(version_compare(phpversion(), '7.3', '<'))

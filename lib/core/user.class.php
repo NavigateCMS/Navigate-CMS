@@ -1,4 +1,5 @@
 <?php
+
 class user
 {
 	public $id;
@@ -456,7 +457,7 @@ class user
             $this->permissions['values'] = permission::get_values('user', $this, $this->permissions['definitions'], $website->id);
         }
 
-        return $this->permissions['values'][$name];
+        return value_or_default($this->permissions['values'][$name], '');
     }
 
 	/**

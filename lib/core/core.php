@@ -90,6 +90,7 @@ function core_define_navigate_url($file, $https_check=false)
     }
 
     // prevent URL XSS attacks
+    $navigate_url = value_or_default($navigate_url, "");
     $navigate_url = strip_tags($navigate_url);
     if(!filter_var($navigate_url, FILTER_VALIDATE_URL))
     {
@@ -675,7 +676,8 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         $mail->IsHTML(true);
 
         $mail->Subject = $subject;
-        $mail->MsgHTML($body);
+        $body = value_or_default($body, "");
+        $mail->MsgHTML($body);        
         $mail->AltBody = strip_tags($body);
 
         if(is_array($attachments))
@@ -766,6 +768,7 @@ function is_not_empty($text)
  */
 function core_string_clean($text="")
 {
+    $text = value_or_default($text, "");
 	$text = strip_tags($text);
 	$text = str_replace("\n", " ", $text);
 	$text = str_replace("\r", " ", $text);	
@@ -795,6 +798,7 @@ function core_remove_nvtags($text)
  */
 function core_special_chars($text)
 {
+    $text = value_or_default($text, "");    
     $out = htmlspecialchars($text, ENT_QUOTES, 'UTF-8', false);
     return $out;
 }
@@ -828,6 +832,10 @@ function core_purify_string($input, $remove_quotes=false)
  */
 function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=array())
 {
+    // truncate by plain text
+    // Ensure $text is not null before calling strip_tags
+    $text = value_or_default($text, "");
+
     if(!empty($allowedtags))
     {
 	    if(!is_array($allowedtags))
@@ -839,8 +847,7 @@ function core_string_cut($text, $maxlen, $morechar='&hellip;', $allowedtags=arra
         $text = core_truncate_html($text, $maxlen, $morechar);
     }
     else
-    {
-        // truncate by plain text
+    {        
         $text = strip_tags($text);
         $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
         $olen = strlen($text);

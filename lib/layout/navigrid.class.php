@@ -71,7 +71,8 @@ class navigrid
 			
 			$html[] = '<div class="navigrid-item ui-corner-all" id="item-'.$item['id'].'" style=" width: '.$this->item_width.'px; height: '.$this->item_height.'px; ">';		
 			$html[] = $item['header'];
-			$html[] = '		<img src="'.$item['thumbnail'].'"  width="'.$this->thumbnail_width.'" height="'.$this->thumbnail_height.'" title="'.$item['description'].'"  />';
+			$description = value_or_default(array($item, 'description'), '');
+			$html[] = '		<img src="'.$item['thumbnail'].'"  width="'.$this->thumbnail_width.'" height="'.$this->thumbnail_height.'" title="'.$description.'"  />';
 			$html[] = '		<div class="navigrid-item-name">'.$item['name'].'</div>';
 			$html[] = $item['footer'];
 			$html[] = '</div>';

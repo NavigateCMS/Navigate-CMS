@@ -2,7 +2,7 @@
 /**
  * Navigate CMS database functions
  * 
- * @copyright Copyright (C) 2010-2019 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2025 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com)
  * @license GPLv2
  */
@@ -77,7 +77,7 @@ class database
 	 */		
 	public function disconnect()
 	{
-		unset($this->db);
+		$this->db = null;
 	}
 
 	/**
@@ -142,6 +142,9 @@ class database
 			$statement->setFetchMode($fetch);
 			$this->lastResult = $statement->fetchAll();
 			$statement->closeCursor();
+			
+			// $fullQuery = $statement->debugDumpParams();
+
 			unset($statement);
 		}
 		catch(PDOException $e)

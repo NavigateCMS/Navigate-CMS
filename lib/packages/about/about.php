@@ -1,7 +1,8 @@
 <?php
+
 function run()
 {
-	switch(@$_REQUEST['act'])
+	switch(value_or_default(array($_REQUEST, 'act'), ''))
 	{
 		default:
 			$out = about_layout();

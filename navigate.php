@@ -2,8 +2,8 @@
 // +------------------------------------------------------------------------+
 // | NAVIGATE CMS                                                           |
 // +------------------------------------------------------------------------+
-// | Copyright (c) Naviwebs 2010-2023. All rights reserved.                 |
-// | Last modified 2020-06-17                                               |
+// | Copyright (c) Naviwebs 2010-2025. All rights reserved.                 |
+// | Last modified 2025-08-25                                               |
 // | Email         info@naviwebs.com                                        |
 // | Web           http://www.navigatecms.com                               |
 // +------------------------------------------------------------------------+
@@ -49,8 +49,12 @@ global $events;
 global $current_version;
 global $world_languages; // filled in language.class.php
 
+// Initialize commonly used REQUEST variables to prevent "undefined array key" warnings in PHP 8+
+$fid = isset($_REQUEST['fid']) ? $_REQUEST['fid'] : '';
+$act = isset($_REQUEST['act']) ? $_REQUEST['act'] : '';
+
 // is a simple keep alive request?
-if(@$_REQUEST['fid']=='keep_alive')
+if($fid == 'keep_alive')
 {
 	session_write_close();
 	echo 'true';
@@ -58,10 +62,10 @@ if(@$_REQUEST['fid']=='keep_alive')
 }
 
 // is an extension run request? (special fid 'ext_extensionname')
-if(substr($_REQUEST['fid'], 0, '4')=='ext_')
+if(substr($fid, 0, 4) == 'ext_')
 {
     $_REQUEST['act'] = 'run';
-    $_REQUEST['extension'] = substr($_REQUEST['fid'], 4);
+    $_REQUEST['extension'] = substr($fid, 4);
     $_REQUEST['fid'] = 'extensions';
     $fid = 'extensions';
 }
@@ -207,7 +211,7 @@ $events->extension_backend_bindings(null, false);
 $website->bind_events();
 
 // no valid website found; show Create first website wizard
-if(empty($_SESSION['website_active']) && $_REQUEST['fid']!='websites')
+if(empty($_SESSION['website_active']) && $fid != 'websites')
 {
 	header('location: '.NAVIGATE_MAIN.'?fid=websites&act=wizard');
 	core_terminate();

@@ -599,11 +599,8 @@ class layout
 		global $user;
 		global $DB;
 
-		$fid = core_purify_string($_REQUEST['fid'], true);
-		if(empty($fid))
-        {
-            $fid = 'dashboard';
-        }
+		$fid = value_or_default(array($_REQUEST, 'fid'), 'dashboard');
+        $fid = core_purify_string($fid, true);
 
 		$user_profile_name = $DB->query_single(
 		    'name',
@@ -1563,7 +1560,7 @@ class layout
 		
 		foreach($tags as $tag)
 		{
-			if(strpos($tag['attributes']['src'], '/icons/silk/') !== false)
+			if(isset($tag['attributes']['src']) && strpos($tag['attributes']['src'], '/icons/silk/') !== false)
 			{
 				if(@$tag['attributes']['sprite']=='false')
                 {

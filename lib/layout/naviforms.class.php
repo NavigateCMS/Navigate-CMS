@@ -73,11 +73,10 @@ class naviforms
 
 		for($i=0; $i < count($values); $i++)
 		{
-            if(!isset($titles[$i]))
-            {
-                $titles[$i] = "";
-            }
-
+            $titles[$i] = value_or_default(array($titles, $i), "");
+            $values[$i] = value_or_default(array($values, $i), "");
+            $texts[$i] = value_or_default(array($texts, $i), "");
+            
 			if( (is_array($selected_value) && in_array($values[$i], $selected_value)) ||
 				($values[$i]==$selected_value))
             {
@@ -800,6 +799,8 @@ class naviforms
             $ws->load($website_id);
         }
 
+        $value = value_or_default($value, "");
+		
 		$text = htmlentities($value, ENT_HTML5 | ENT_NOQUOTES, 'UTF-8', true);
 
 		// remove unneeded new lines (to fix a problem of extra spaces in pre/code tags)
@@ -1592,6 +1593,11 @@ class naviforms
 
         for($i=0; $i < count($values); $i++)
         {
+            // Ensure titles and texts array keys exist
+
+            $titles[$i] = value_or_default(array($titles, $i), "");            
+            $texts[$i] = value_or_default(array($texts, $i), "");
+            
             if( (is_array($selected_values) && in_array($values[$i], $selected_values)) ||
                 ($values[$i]==$selected_values)
             )
@@ -1736,24 +1742,24 @@ class naviforms
     {
         if($variable_name == 'header')
         {
-            $token_sent = $_SERVER['HTTP_X_CSRF_TOKEN'];
+            $token_sent = value_or_default($_SERVER['HTTP_X_CSRF_TOKEN'], '');
         }
         else if(!empty($variable_name))
         {
-            $token_sent = $_REQUEST[$variable_name];
+            $token_sent = value_or_default($_REQUEST[$variable_name], '');
         }
         else // default variable name
         {
-            $token_sent = $_REQUEST['_nv_csrf_token'];
+            $token_sent = value_or_default($_REQUEST['_nv_csrf_token'], '');
         }
 
         if(function_exists('hash_equals'))
         {
-            $csrf_check = @hash_equals($_SESSION['csrf_token'], $token_sent);
+            $csrf_check = @hash_equals(value_or_default($_SESSION['csrf_token'], ''), $token_sent);
         }
         else
         {
-            $csrf_check = ($_SESSION['csrf_token'] === $token_sent);
+            $csrf_check = ((value_or_default($_SESSION['csrf_token'], '')) === $token_sent);
         }
 
         if(!$csrf_check)

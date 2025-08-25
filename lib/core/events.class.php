@@ -1,4 +1,5 @@
 <?php
+
 class events
 {
     public $events;
@@ -77,6 +78,11 @@ class events
                     }
                 }
 
+                if(empty($trigger['extension']))
+                {
+                    $trigger['extension'] = $trigger['function'];
+                }
+
                 $messages[$trigger['extension']] = array(
                     'out' => $event_out,
                     'title' => @$extension_info['title']
@@ -89,7 +95,7 @@ class events
 
     public function add_actions($module, $parameters, $extra=array(), $extra_parent_action='')
     {
-        if(is_array($this->events[$module]['actions']))
+        if(isset($this->events[$module]['actions']) && is_array($this->events[$module]['actions']))
         {
             foreach($this->events[$module]['actions'] as $trigger)
             {
@@ -141,8 +147,12 @@ class events
                 {
                     foreach($extensions[$e]['bindings'] as $binding)
                     {
-                        extension::include_php($extensions[$e]['code']);
-                        $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
+                        // Check if required properties exist before accessing them
+                        if(isset($binding->module) && isset($binding->event) && isset($binding->function))
+                        {
+                            extension::include_php($extensions[$e]['code']);
+                            $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
+                        }
                     }
                 }
             }
@@ -170,8 +180,12 @@ class events
                 {
                     foreach($extensions[$e]['bindings'] as $binding)
                     {
-                        extension::include_php($extensions[$e]['code']);
-                        $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
+                        // Check if required properties exist before accessing them
+                        if(isset($binding->module) && isset($binding->event) && isset($binding->function))
+                        {
+                            extension::include_php($extensions[$e]['code']);
+                            $this->bind($binding->module, $binding->event, $extensions[$e]['code'], $binding->function);
+                        }
                     }
                 }
             }
