@@ -11,15 +11,19 @@ function run()
 	$out = '';
 	$object = new coupon();
 			
-	switch($_REQUEST['act'])
+	// Extract safe values for array access
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
-			switch($_REQUEST['oper'])
+			// Extract safe values for array access
+			$oper = value_or_default(array($_REQUEST, 'oper'), '');
+			switch($oper)
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
                     {
-                        $ids = $_REQUEST['ids'];
+                        $ids = value_or_default(array($_REQUEST, 'ids'), array());
                         foreach($ids as $id)
                         {
                             $object->load($id);
@@ -34,38 +38,43 @@ function run()
 					break;
 					
 				default: // list or search	
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$page = intval(value_or_default(array($_REQUEST, 'page'), 0));
+					$max = intval(value_or_default(array($_REQUEST, 'rows'), 10));
 					$offset = ($page - 1) * $max;
 					$where = " c.website = ".intval($website->id)." ";
 					$parameters = array();
 										
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					$search_param = value_or_default(array($_REQUEST, '_search'), '');
+				    
+                    if($search_param=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $object->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $object->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
-                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                            $where .= navitable::jqgridsearch(value_or_default(array($_REQUEST, 'filters'), ''));
                         }
 						else	// single search
                         {
-                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                            $where .= ' AND '.navitable::jqgridcompare(value_or_default(array($_REQUEST, 'searchField'), ''), value_or_default(array($_REQUEST, 'searchOper'), ''), value_or_default(array($_REQUEST, 'searchString'), ''));
                         }
 					}
 
-                    // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'name'))
+                    // Extract safe values for validation
+                    $sord = value_or_default(array($_REQUEST, 'sord'), '');
+                    $sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+                    
+                    if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'name'))
                     )
                     {
                         return false;
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 				
                     $sql = ' SELECT SQL_CALC_FOUND_ROWS
 					                c.id, c.code, c.date_begin, c.date_end, c.type, d.text as name, d.lang as language                                    
@@ -125,7 +134,7 @@ function run()
 
         case 'create':
 		case 'edit':
-			if(!empty($_REQUEST['id']))
+			if(!empty(value_or_default(array($_REQUEST, 'id'), '')))
 				$object->load(intval($_REQUEST['id']));
 
 			if(isset($_REQUEST['form-sent']))
@@ -147,12 +156,12 @@ function run()
 			break;
 					
 		case 'delete':
-            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            if(value_or_default(array($_REQUEST, 'rtk'), '') != $_SESSION['request_token'])
             {
                 $layout->navigate_notification(t(344, 'Security error'), true, true);
                 break;
             }
-            else if(!empty($_REQUEST['id']))
+            else if(!empty(value_or_default(array($_REQUEST, 'id'), '')))
 			{
 				$object->load(intval($_REQUEST['id']));	
 				if($object->delete() > 0)
@@ -192,9 +201,9 @@ function coupons_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=coupons&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -504,4 +513,5 @@ function coupons_form($object)
 
 	return $navibars->generate();
 }
+
 ?>

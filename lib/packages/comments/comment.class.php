@@ -61,7 +61,7 @@ class comment
 		$this->message		= html_entity_decode($main->message, ENT_COMPAT, "UTF-8");
 
         $this->pending_revision = ($main->status == -1);
-        $this->avatar       = $main->avatar;
+        $this->avatar       = isset($main->avatar) ? $main->avatar : '';
 	}
 	
 	public function load_from_post()
@@ -301,7 +301,7 @@ class comment
         );
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

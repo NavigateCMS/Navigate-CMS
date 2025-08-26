@@ -3,10 +3,10 @@
  * 
  * Navigate CMS common core functions
  * 
- * @copyright Copyright (C) 2010-2019 Naviwebs. All rights reserved.
+ * @copyright Copyright (C) 2010-2025 Naviwebs. All rights reserved.
  * @author Naviwebs (http://www.naviwebs.com/) 
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2 License
- * @version 2.8.8 2019-01-20
+ * @version 2.9.8 2025-08-26
  *
  */
 
@@ -1051,10 +1051,9 @@ function core_bytes($bytes)
  */
 function core_http_request($url, $timeout = 12)
 {
-    global $website;
-
     // security: require $url to be a real http(s) request
     $url = filter_var($url, FILTER_VALIDATE_URL);
+
     if(!$url || empty($url))
     {
         return null;
@@ -1076,13 +1075,7 @@ function core_http_request($url, $timeout = 12)
 
 	if(function_exists('curl_init'))
 	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout); 
-		$data = curl_exec($ch);
-		curl_close($ch);
+        $data = core_curl_post($url);        
 	}
 	else
 	{

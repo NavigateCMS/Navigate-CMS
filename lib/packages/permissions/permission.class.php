@@ -427,13 +427,12 @@ class permission
     public function backup($type='json')
     {
         global $DB;
-        global $website;
 
         $out = array();
 
         $DB->query('SELECT * FROM nv_permissions', 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }

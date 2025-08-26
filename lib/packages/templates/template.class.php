@@ -5,6 +5,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/themes/theme.class.php');
 class template
 {
 	public $id;
+	public $website;
 	public $title;
 	public $file;
 	public $sections;
@@ -14,6 +15,7 @@ class template
 	public $statistics;
 	public $permission; // 0 => public, 1 => private (only navigate cms users), 2 => hidden
 	public $enabled;
+	public $properties;
 	
 	public function load($id)
 	{
@@ -468,7 +470,7 @@ class template
 
         $DB->query('SELECT * FROM nv_templates WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }

@@ -283,7 +283,7 @@ class grid_notes
         );
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

@@ -24,6 +24,7 @@ class theme
 	public $blocks;
 	public $templates;
     public $webusers;
+    public $content_samples;
 
     public $sections;
 	public $dictionary;
@@ -182,7 +183,7 @@ class theme
 
             // if we are in Navigate CMS, user has the default language
             // if we call this function from the website, the session has the default language
-            $current_language = $session['lang'];
+            $current_language = (is_array($session) ? value_or_default(array($session, 'lang'), null) : null);
             if(empty($current_language) && !empty($webuser))
             {
                 $current_language = $webuser->language;

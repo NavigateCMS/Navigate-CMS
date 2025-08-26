@@ -333,9 +333,13 @@ class product
 	public function save()
 	{
 		if(!empty($this->id))
-			return $this->update();
+		{
+            return $this->update();
+        }
 		else
-			return $this->insert();			
+		{
+            return $this->insert();
+        }
 	}
 	
 	public function delete()
@@ -932,7 +936,7 @@ class product
         $out = array();
         $DB->query('SELECT * FROM nv_products WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }
@@ -1153,6 +1157,81 @@ class product
         );
 
         return $tax_classes;
+    }
+
+    public static function get_title($id, $language=null)
+    {
+        global $DB;
+        global $website;
+
+        $DB->queryLimit(
+            'text, lang',
+            'nv_webdictionary',
+            '
+                node_type = "product" AND
+                website = :website_id AND
+                node_id = :node_id AND
+                subtype = "title"
+            ',
+            'lang ASC',
+            0,
+            1000,
+            array(
+                ':website_id' => $website->id,
+                ':node_id' => $id
+            ),
+            'object'
+        );            
+
+        $rs = $DB->result();
+
+        $language_default = $website->languages_published[0];
+        if(empty($language))
+        {
+            $language = $language_default;
+        }
+
+        $title_default = "";
+        $title = "";
+        $out = "";
+
+        foreach($rs as $row)
+        {
+            if($row->lang == $language_default)
+            {
+                $title_default = $row->text;
+            }
+            
+            if($row->lang == $language)
+            {
+                $title = $row->text;
+            }
+
+            if(empty($out))
+            {
+                // set a fallback title in the first language found
+                $out = '['.$row->lang.'] '.$row->text;
+            }
+
+            if(!empty($title) && !empty($title_default))
+            {
+                break;
+            }
+        }
+
+        if(!empty($title))
+        {
+            // title found in the language requested
+            $out = $title;
+        }
+        else if(!empty($title_default))
+        {
+            // title not found in the language requested, but found in the website main language
+            $out = '['.$language_default.'] '.$title_default;
+        }
+        // else return the fallback title found in any existing language
+
+        return $out;
     }
 
 	public static function __set_state(array $obj)

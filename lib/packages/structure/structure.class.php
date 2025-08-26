@@ -644,12 +644,12 @@ class structure
             if(empty($lang))
             {
                 $title = core_special_chars($node->label);
-                $path = array_values($node->paths)[0];
+                $path = (isset($node->paths) && is_array($node->paths) && !empty($node->paths)) ? array_values($node->paths)[0] : '';
             }
             else
             {
-                $title = core_special_chars($node->dictionary[$lang]['title']);
-                $path = $node->paths[$lang];
+                $title = core_special_chars(value_or_default(array($node->dictionary, 'title'), $lang));
+                $path = value_or_default(array($node->paths, $lang), '');
             }
 
             $path = nvweb_prepare_link($path, $website->absolute_path());
@@ -795,7 +795,7 @@ class structure
 
         foreach($hierarchy as $node)
         {
-            $post_html = structure::hierarchyListClasses($node->children, $level+1);
+            $post_html = structure::hierarchyListClasses(isset($node->children) ? $node->children : array(), $level+1);
 
             if(empty($html) && $level==1)
             {
@@ -934,7 +934,7 @@ class structure
 
         $DB->query('SELECT * FROM nv_structure WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }

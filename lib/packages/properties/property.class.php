@@ -17,6 +17,10 @@ class property
     public $width;
 	public $position;
 	public $enabled;
+    
+    public $value;
+    public $function;
+    public $conditional;
 
     // decimal properties extra fields
     public $precision;
@@ -219,30 +223,30 @@ class property
 
         $this->id = $theme_option->id;
         $this->website = $ws->id;
-       	$this->element = $theme_option->element;
+       	$this->element = isset($theme_option->element) ? $theme_option->element : null;
        	$this->template = '';
        	$this->name = $theme_option->name;
        	$this->type = $theme_option->type;
-       	$this->options = (array)$theme_option->options;
+       	$this->options = isset($theme_option->options) ? (array)$theme_option->options : array();
        	$this->dvalue = $theme_option->dvalue;	// default value
-        $this->width = $theme_option->width;
-       	$this->multilanguage = $theme_option->multilanguage;
-       	$this->helper = $theme_option->helper;
-        $this->function = $theme_option->function;
-        $this->conditional = $theme_option->conditional;
+        $this->width = isset($theme_option->width) ? $theme_option->width : null;
+       	$this->multilanguage = isset($theme_option->multilanguage) ? $theme_option->multilanguage : null;
+       	$this->helper = isset($theme_option->helper) ? $theme_option->helper : null;
+        $this->function = isset($theme_option->function) ? $theme_option->function : null;
+        $this->conditional = isset($theme_option->conditional) ? $theme_option->conditional : null;
        	$this->position = 0;
        	$this->enabled = 1;
         // decimal format extra fields
-        $this->precision    = $theme_option->precision;
-        $this->prefix       = $theme_option->prefix;
-        $this->suffix       = $theme_option->suffix;
+        $this->precision    = isset($theme_option->precision) ? $theme_option->precision : null;
+        $this->prefix       = isset($theme_option->prefix) ? $theme_option->prefix : null;
+        $this->suffix       = isset($theme_option->suffix) ? $theme_option->suffix : null;
 
-        if(substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
+        if(isset($this->name) && substr($this->name, 0, 1)=='@')  // get translation from theme dictionary
         {
             $this->name = $ws_theme->t(substr($this->name, 1));
         }
 
-        if(substr($this->helper, 0, 1)=='@')
+        if(isset($this->helper) && substr($this->helper, 0, 1)=='@')
         {
             $this->helper = $ws_theme->t(substr($this->helper, 1));
         }
@@ -632,7 +636,7 @@ class property
 
                     $theme_template->load_from_theme($code, $ws_theme);
 
-                    $comments_properties = $theme_template->comments->properties;
+                    $comments_properties = (is_object($theme_template->comments) && isset($theme_template->comments->properties)) ? $theme_template->comments->properties : array();
 
                     if(empty($comments_properties))
                         $comments_properties = array();
@@ -682,10 +686,10 @@ class property
                         // note: in this case, "element" is an alias of "item"
 
                         if( empty($element) ||
-                            ($element == 'item' && empty($template_properties[$p]->element)) ||
-                            ($element == 'product' && empty($template_properties[$p]->element)) ||
-                            ($element == 'item' && $template_properties[$p]->element=="element") ||
-                            $template_properties[$p]->element == $element
+                            ($element == 'item' && (!isset($template_properties[$p]->element) || empty($template_properties[$p]->element))) ||
+                            ($element == 'product' && (!isset($template_properties[$p]->element) || empty($template_properties[$p]->element))) ||
+                            ($element == 'item' && isset($template_properties[$p]->element) && $template_properties[$p]->element=="element") ||
+                            (isset($template_properties[$p]->element) && $template_properties[$p]->element == $element)
                         )
                         {
                             $data[] = $template_properties[$p];
@@ -725,6 +729,8 @@ class property
             'category'		=>	t(78, 'Category'),
             'categories'	=>	t(330, 'Categories'),
             'item'		    =>	t(180, 'Item'),
+            'element'	    =>	t(630, 'Element'),
+            'elements'	    =>	t(22, 'Elements'),
             'source_code'   =>  t(489, 'Source code'),
             'webuser_groups'=>  t(512, 'Selected web user groups')
         );
@@ -1022,7 +1028,7 @@ class property
                 }
             }
 
-            if(is_object($o_properties[$p]->value))
+            if(isset($o_properties[$p]->value) && is_object($o_properties[$p]->value))
             {
                 $o_properties[$p]->value = (array)$o_properties[$p]->value;
             }
@@ -1834,7 +1840,7 @@ class property
                 default:
                     // leave it in english
             }
-            $city = str_replace('_', ' ', $ex[1]);
+            $city = isset($ex[1]) ? str_replace('_', ' ', $ex[1]) : '';
 
             if(!empty($city))
             {
@@ -1887,19 +1893,19 @@ class property
 
         $DB->query('SELECT * FROM nv_properties WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out['nv_properties'] = json_encode($DB->result());
         }
 
         $DB->query('SELECT * FROM nv_properties_items WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out['nv_properties_items'] = json_encode($DB->result());
         }
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

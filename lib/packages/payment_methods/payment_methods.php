@@ -13,10 +13,14 @@ function run()
 	$out = '';
 	$object = new payment_method();
 			
-	switch($_REQUEST['act'])
+	// Extract safe values for array access
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
-			switch($_REQUEST['oper'])
+			// Extract safe values for array access
+			$oper = value_or_default(array($_REQUEST, 'oper'), '');
+			switch($oper)
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -48,11 +52,11 @@ function run()
                         2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
                     );
 
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $object->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $object->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -219,9 +223,9 @@ function payment_methods_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=payment_methods&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -460,7 +464,7 @@ function payment_methods_form($object)
     }
 
     // script will be bound to onload event at the end of this php function (after getScript is done)
-    $onload_language = $_REQUEST['tab_language'];
+    $onload_language = value_or_default(array($_REQUEST, 'tab_language'), '');
     if(empty($onload_language))
     {
         $onload_language = $website->languages_list[0];

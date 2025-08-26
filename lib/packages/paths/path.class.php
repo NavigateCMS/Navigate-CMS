@@ -9,8 +9,8 @@ class path
 	public $lang;
 	public $path;
   
-  public $cache_file;
-  public $cache_expires;
+  	public $cache_file;
+  	public $cache_expires;
   	
 	public function load($id)
 	{
@@ -121,7 +121,9 @@ class path
 		);
 
 		if(!$ok)
+		{
 			throw new Exception($DB->get_last_error());
+		}
 		
 		return true;
 	}	  
@@ -132,7 +134,9 @@ class path
 		global $website;
 
 		if(empty($website_id))
+		{
 			$website_id = $website->id;
+		}
 
 		$ok = $DB->query('
 			SELECT *
@@ -149,10 +153,15 @@ class path
 		);
 
 	    if(!$ok)
-		    throw new Exception($DB->get_last_error());
+		{
+			throw new Exception($DB->get_last_error());
+		}
     
 		$data = $DB->result();
-		if(!is_array($data)) $data = array();
+		if(!is_array($data)) 
+		{
+			$data = array();
+		}
 		
 		$out = array();
 		
@@ -243,8 +252,10 @@ class path
         );
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
+		{
             $out = json_encode($out);
+		}
 
         return $out;
     }

@@ -12,14 +12,16 @@ function run()
 	
 	$out = '';
 
-	switch($_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'theme_info':
+            $theme_code = value_or_default(array($_REQUEST, 'theme'), '');
             $themes_available = $theme->list_available();
             $found = false;
             foreach($themes_available as $ta)
             {
-                if($ta['code'] == $_REQUEST['theme'])
+                if($ta['code'] == $theme_code)
                 {
                     $found = true;
                     break;
@@ -28,7 +30,7 @@ function run()
 
             if($found)
             {
-                echo '<iframe src="'.NAVIGATE_URL.'/themes/'.$_REQUEST['theme'].'/'.$_REQUEST['theme'].'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
+                echo '<iframe src="'.NAVIGATE_URL.'/themes/'.$theme_code.'/'.$theme_code.'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
             }
             core_terminate();
             break;
@@ -40,6 +42,7 @@ function run()
             }
             else
             {
+                $theme_code = isset($_REQUEST['theme']) ? $_REQUEST['theme'] : '';
                 // check the theme is not actually used in any website
                 $usages = $DB->query_single(
                     'COUNT(*)',
@@ -47,7 +50,7 @@ function run()
                     ' theme = :theme',
                     null,
                     array(
-                        ':theme' => $_REQUEST['theme']
+                        ':theme' => $theme_code
                     )
                 );
                 if($usages == 0)
@@ -55,7 +58,7 @@ function run()
                     try
                     {
                         $theme = new theme();
-                        $theme->load($_REQUEST['theme']);
+                        $theme->load($theme_code);
                         $status = $theme->delete();
                         echo json_encode($status);
                     }
@@ -80,7 +83,8 @@ function run()
         */
 
         case 'theme_sample_content_import':
-            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            $rtk = isset($_REQUEST['rtk']) ? $_REQUEST['rtk'] : '';
+            if($rtk != $_SESSION['request_token'])
             {
                 $layout->navigate_notification(t(344, 'Security error'), true, true);
                 break;
@@ -188,7 +192,7 @@ function run()
                             <p>'.t(529, "It has not been possible to download the item you have just bought from the marketplace.").'</p>
                             <p>'.t(530, "You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.").'</p>
                             <p>'.t(531, "Sorry for the inconvenience.").'</p>
-                            <a class="uibutton" href="http://www.navigatecms.com/en/marketplace/dashboard" target="_blank"><span class="ui-icon ui-icon-extlink" style="float: left;"></span> '.t(532, "Navigate CMS Marketplace").'</a>
+                            <a class="uibutton" href="https://www.navigatecms.com/en/marketplace/dashboard" target="_blank"><span class="ui-icon ui-icon-extlink" style="float: left;"></span> '.t(532, "Navigate CMS Marketplace").'</a>
                         </div>
                     ');
                     $layout->add_script('
@@ -474,7 +478,7 @@ function themes_grid($list)
             </div>
         ';
         $html .= '
-            <iframe src="http://www.navigatecms.com/en/marketplace/themes"
+            <iframe src="https://www.navigatecms.com/en/marketplace/themes"
                     style="visibility: hidden; width: 1px; height: 1px;"
                     class="ui-corner-all"
                     border="0" frameborder="0" allowtransparency="true">
@@ -514,21 +518,36 @@ function themes_grid($list)
            if(typeof(window.addEventListener) != "undefined")
             {
                 window.addEventListener("message", function(event) {
-                    if(event.data != "")
+                    // Check if the message is from Navigate CMS marketplace
+                    if(event.origin === "https://www.navigatecms.com" && 
+                       event.data && 
+                       typeof event.data === "string" && 
+                       event.data.indexOf("navigate_marketplace") === 0)
                     {
-                        navigatecms_marketplace_install_from_hash(event.data);
+                        console.log("Navigate CMS marketplace message received");
+                        console.log(event);
+                        var hash = event.data.replace("navigate_marketplace:", "");
+                        navigatecms_marketplace_install_from_hash(hash);
                     }
                 }, false);
             }
             else
             {
                 window.attachEvent("onmessage", function(e) {
-                    if(event.data != "")
+                    // Check if the message is from Navigate CMS marketplace
+                    if(e.origin === "https://www.navigatecms.com" && 
+                       e.data && 
+                       typeof e.data === "string" && 
+                       e.data.indexOf("navigate_marketplace") === 0)
                     {
-                        navigatecms_marketplace_install_from_hash(e.data);
+                        console.log("Navigate CMS marketplace message received");
+                        console.log(e);
+                        var hash = e.data.replace("navigate_marketplace:", "");
+                        navigatecms_marketplace_install_from_hash(hash);
                     }
                 });
             }
+            
         }
     ');
 

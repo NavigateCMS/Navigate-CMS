@@ -52,8 +52,6 @@ class profile
 
 	public function save()
 	{
-		global $DB;
-
 		if(!empty($this->id))
         {
             return $this->update();
@@ -173,7 +171,7 @@ class profile
         $DB->query('SELECT * FROM nv_profiles', 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

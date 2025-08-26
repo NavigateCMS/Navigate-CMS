@@ -1,7 +1,8 @@
 <?php
 function run()
 {
-	switch(@$_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
 		case 'geocode':
 			if($_REQUEST['format'] == 'gisgraphy_json')

@@ -6,6 +6,7 @@ class feed
 {
 	public $id;
 	public $website;
+	public $title;
 	public $categories;
 	public $image;	
 	public $format;
@@ -36,7 +37,7 @@ class feed
 		
 		$this->id			= $main->id;
 		$this->website		= $main->website;		
-		$this->title  		= $main->title;
+		$this->title  		= isset($main->title) ? $main->title : '';
 		$this->categories	= explode(',', $main->categories);
 		$this->format		= $main->format;
 		$this->image		= $main->image;
@@ -198,7 +199,9 @@ class feed
 		global $events;
 
 		if(!is_array($this->categories))
+		{
 			$this->categories = array();
+		}
 			
 		$ok = $DB->execute(' 
  			UPDATE nv_feeds
@@ -501,14 +504,14 @@ class feed
         $DB->query('SELECT * FROM nv_feeds WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }
 
         return $out;
     }
-
+	
 }
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 function nvweb_permissions_rows($website_id, $object_type, $object_id)
 {
     global $DB;
@@ -34,26 +35,35 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
 
     for($i=0; $i < count($permissions_definitions); $i++)
     {
+        // Extract and validate permission name to prevent empty key access
+        $permission_name = value_or_default(array($permissions_definitions[$i], 'name'), '');
+        if(empty($permission_name)) {
+            continue; // Skip invalid permission definitions without names
+        }
+
         $control = '';
         $type = '';
         $scope = t(470, 'System');
 
-        $field_name = "wid".$website_id.".".$permissions_definitions[$i]['name'];
+        $field_name = "wid".$website_id.".".$permission_name;
+        
+        // Get permission value safely using validated key
+        $permission_value = isset($permissions_values[$permission_name]) ? $permissions_values[$permission_name] : '';
 
-        if($permissions_definitions[$i]['scope']=='functions')
+        if(value_or_default(array($permissions_definitions[$i], 'scope'), '')=='functions')
         {
             $scope = t(240, 'Functions');
         }
-        else if($permissions_definitions[$i]['scope']=='settings')
+        else if(value_or_default(array($permissions_definitions[$i], 'scope'), '')=='settings')
         {
             $scope = t(459, 'Settings');
         }
-        else if($permissions_definitions[$i]['scope']=='extensions')
+        else if(value_or_default(array($permissions_definitions[$i], 'scope'), '')=='extensions')
         {
             $scope = t(327, 'Extensions');
         }
 
-        switch($permissions_definitions[$i]['type'])
+        switch(value_or_default(array($permissions_definitions[$i], 'type'), ''))
         {
             case 'boolean':
                 $type = t(206, 'Boolean');
@@ -63,7 +73,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                         'true' => '<span class="ui-icon ui-icon-circle-check"></span>',
                         'false' => '<span class="ui-icon ui-icon-circle-close"></span>'
                     ),
-                    $permissions_values[$permissions_definitions[$i]['name']],
+                    $permission_value,
                     "navigate_permission_change_boolean(this);"
                 );
                 break;
@@ -72,7 +82,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                 $type = t(468, 'Integer');
                 $control = $naviforms->textfield(
                     $field_name,
-                    $permissions_values[$permissions_definitions[$i]['name']],
+                    $permission_value,
                     '99%',
                     'navigate_permission_change_text(this);'
                 );
@@ -81,7 +91,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
             case 'option':
             case 'moption':
 
-                $options = $permissions_definitions[$i]['options'];
+                $options = value_or_default(array($permissions_definitions[$i], 'options'), array());
 
                 switch($options)
                 {
@@ -106,13 +116,13 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
 
                     case "structure":
                         $options = array();
-                        $categories = $permissions_values[$permissions_definitions[$i]['name']];
+                        $categories = $permission_value;
                         if(!is_array($categories))
                         {
                             $categories = array();
                         }
                         $categories = array_filter($categories);
-                        $control = '<button data-permission-name="'.$permissions_definitions[$i]['name'].'" 
+                        $control = '<button data-permission-name="'.$permission_name.'" 
                                                     data-action="structure" data-value="'.json_encode($categories).'" 
                                                     title="'.count($categories).'"><i class="fa fa-sitemap fa-fw"></i> '.
                             t(611, "Choose").
@@ -129,9 +139,9 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                         $field_name,
                         array_keys($options),
                         array_values($options),
-                        $permissions_values[$permissions_definitions[$i]['name']],
+                        $permission_value,
                         'navigate_permission_change_option(this);',
-                        ($permissions_definitions[$i]['type']=='moption'), // multiple?
+                        (value_or_default(array($permissions_definitions[$i], 'type'), '')=='moption'), // multiple?
                         NULL,
                         NULL,
                         false,
@@ -146,7 +156,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                 $type = t(441, 'Color');
                 $control = $naviforms->colorfield(
                     $field_name,
-                    $permissions_values[$permissions_definitions[$i]['name']],
+                    $permission_value,
                     array(),
                     'navigate_permission_change_text'
                 );
@@ -157,7 +167,7 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
                 $type = t(469, 'String');
                 $control = $naviforms->textfield(
                     $field_name,
-                    $permissions_values[$permissions_definitions[$i]['name']],
+                    $permission_value,
                     '99%',
                     'navigate_permission_change_text(this);'
                 );
@@ -169,10 +179,10 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
         {
             $include = navitable::jqgridCheck(
                 array(
-                    'name' => $permissions_definitions[$i]['name'],
+                    'name' => $permission_name,
                     'scope' => $scope,
                     'type' => $type,
-                    'value' => $permissions_values[$permissions_definitions[$i]['name']]
+                    'value' => $permission_value
                 ),
                 $_REQUEST['filters']
             );
@@ -184,10 +194,10 @@ function nvweb_permissions_rows($website_id, $object_type, $object_id)
         }
 
         $out[$iRow] = array(
-            0	=> $permissions_definitions[$i]['name'],
-            1	=> '<div data-description="'.$permissions_definitions[$i]['description'].'">'.
+            0	=> $permission_name,
+            1	=> '<div data-description="'.value_or_default(array($permissions_definitions[$i], 'description'), '').'">'.
                 '<span class="ui-icon ui-icon-float ui-icon-info"></span>&nbsp;'.
-                '<span>'.$permissions_definitions[$i]['name'].'</span></div>',
+                '<span>'.$permission_name.'</span></div>',
             2	=> $scope,
             3   => $type,
             4   => $control

@@ -628,7 +628,7 @@ class webdictionary
 
         $DB->query('SELECT * FROM nv_webdictionary WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }

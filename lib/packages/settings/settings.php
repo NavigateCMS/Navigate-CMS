@@ -1,12 +1,14 @@
 <?php
 require_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+
 function run()
 {
 	global $user;	
 	global $layout;
 	$out = '';
 		
-	switch($_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '0');
+	switch($act)
 	{
 		case 2: // form
 		case 0:	// default
@@ -151,7 +153,7 @@ function settings_form()
         2	=> json_decode('{"code": ".", "name": ". ---> 1.234.567"}'),
     );
 
-    $select = $naviforms->select_from_object_array('user-thousands_separator', $data, 'code', 'name', $item->thousands_separator);
+    $select = $naviforms->select_from_object_array('user-thousands_separator', $data, 'code', 'name', $user->thousands_separator);
     $navibars->add_tab_content_row(
         array(
             '<label>'.t(644, 'Thousands separator').'</label>',
@@ -179,4 +181,5 @@ function settings_form()
 
 	return $navibars->generate();
 }
+
 ?>

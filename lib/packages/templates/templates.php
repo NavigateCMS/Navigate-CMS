@@ -11,11 +11,12 @@ function run()
 	$out = '';
 	$item = new template();
 			
-	switch($_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
 		case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -49,9 +50,9 @@ function run()
                     }
                     $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
 
-					if(isset($_REQUEST['quicksearch']))
+					if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                     {
-                        $dataset = template::search($orderby, array('quicksearch' => $_REQUEST['quicksearch']));
+                        $dataset = template::search($orderby, array('quicksearch' => value_or_default(array($_REQUEST, 'quicksearch'), '')));
                     }
 	                else
                     {
@@ -200,7 +201,7 @@ function run()
 			header('Content-type: text/json');
 
 			$types = property::types();
-			$property->type_text = $types[$property->type];
+			$property->type_text = value_or_default(array($types, $property->type), '');
 
 			echo json_encode($property);
 						
@@ -223,7 +224,7 @@ function run()
 			header('Content-type: text/json');
 
 			$types = property::types();
-			$property->type_text = $types[$property->type];
+			$property->type_text = value_or_default(array($types, $property->type), '');
 
 			echo json_encode($property);			
 			
@@ -273,9 +274,9 @@ function templates_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '') == 'true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$_REQUEST['fid'].'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
@@ -552,8 +553,8 @@ function templates_form($item)
 			
 			$select_editor = '<select name="template-sections-editor[]" style=" width: 125px; ">';
 			$select_editor.= '	<option value="tinymce" '.$selected['tinymce'].'>TinyMCE</option>';
-			$select_editor.= '	<option value="html" '.$selected['html'].'>'.t(269, 'HTML code').'</option>';
-			$select_editor.= '	<option value="raw" '.$selected['raw'].'>'.t(268, 'Raw').'</option>';			
+			$select_editor.= '	<option value="html" '.value_or_default(array($selected, 'html'), '').'>'.t(269, 'HTML code').'</option>';
+			$select_editor.= '	<option value="raw" '.value_or_default(array($selected, 'raw'), '').'>'.t(268, 'Raw').'</option>';			
 			$select_editor.= '</select>';
 			
 			$table->addRow(
@@ -711,8 +712,8 @@ function templates_form($item)
                 array(
                     array('content' => $properties[$p]->name, 'align' => 'left'),
                     array('content' => $types[$properties[$p]->type], 'align' => 'left'),
-                    array('content' => $element_types[$properties[$p]->element], 'align' => 'left'),
-                    array('content' => '<input type="checkbox" name="property-enabled[]" class="raw-checkbox" value="'.$properties[$p]->id.'" '.(($properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),
+                    array('content' => value_or_default(array($element_types, (isset($properties[$p]->element) ? $properties[$p]->element : '')), ''), 'align' => 'left'),
+                    array('content' => '<input type="checkbox" name="property-enabled[]" class="raw-checkbox" value="'.$properties[$p]->id.'" '.((isset($properties[$p]->enabled) && $properties[$p]->enabled=='1'? ' checked=checked ' : '')).' />', 'align' => 'center'),
                 )
             );
 		}

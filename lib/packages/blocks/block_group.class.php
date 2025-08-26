@@ -1,4 +1,5 @@
 <?php
+
 class block_group
 {
 	public $id;
@@ -262,7 +263,7 @@ class block_group
         );
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

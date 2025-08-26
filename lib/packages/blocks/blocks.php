@@ -12,19 +12,33 @@ function run()
 	global $DB;
 	global $website;
 	
+	// Initialize commonly used REQUEST variables to prevent "undefined array key" warnings in PHP 8+
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	$oper = value_or_default(array($_REQUEST, 'oper'), '');
+	$ids = value_or_default(array($_REQUEST, 'ids'), array());
+	$page = intval(value_or_default(array($_REQUEST, 'page'), 1));
+	$rows = intval(value_or_default(array($_REQUEST, 'rows'), 20));
+	$search = value_or_default(array($_REQUEST, '_search'), '');
+	$quicksearch = value_or_default(array($_REQUEST, 'quicksearch'), '');
+	$filters = value_or_default(array($_REQUEST, 'filters'), '');
+	$searchField = value_or_default(array($_REQUEST, 'searchField'), '');
+	$searchOper = value_or_default(array($_REQUEST, 'searchOper'), '');
+	$searchString = value_or_default(array($_REQUEST, 'searchString'), '');
+	$sord = value_or_default(array($_REQUEST, 'sord'), '');
+	$sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+	
 	$out = '';
 	$item = new block();
 			
-	switch($_REQUEST['act'])
+	switch($act)
 	{
         case 'json':
 		case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch($oper)
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
                     {
-                        $ids = $_REQUEST['ids'];
                         foreach($ids as $id)
                         {
                             $item->load($id);
@@ -40,7 +54,7 @@ function run()
 					
 				default: // list or search	
 					// translation of request search & order fields
-					switch($_REQUEST['searchField'])
+					switch(value_or_default(array($_REQUEST, 'searchField'), ''))
 					{
 						case 'id':
 							$_REQUEST['searchField'] = 'b.id';
@@ -72,22 +86,21 @@ function run()
 					}
 
 					$parameters = array();
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$max	= $rows;
 					$offset = ($page - 1) * $max;
 					$where = " 1=1 ";
 					
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($search=='true' || !empty($quicksearch))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty($quicksearch))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch($quicksearch);
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
-						else if(isset($_REQUEST['filters']))
+						else if(!empty($filters))
                         {
-							$where .= navitable::jqgridsearch($_REQUEST['filters']);
+							$where .= navitable::jqgridsearch($filters);
                             // special case
                             if( strpos($where, 'title LIKE')!== false)
                             {
@@ -96,22 +109,22 @@ function run()
                         }
 						else	// single search
                         {
-                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                            $where .= ' AND '.navitable::jqgridcompare($searchField, $searchOper, $searchString);
                         }
 					}
 
                     // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'type', 'title', 'dates', 'date_modified', 'access', 'enabled'))
+                    if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'type', 'title', 'dates', 'date_modified', 'access', 'enabled'))
                     )
                     {
                         return false;
                     }
-                    if($_REQUEST['sidx']=='dates')
+                    if($sidx=='dates')
                     {
-                        $_REQUEST['sidx'] = 'b.date_published';
+                        $sidx = 'b.date_published';
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 
 										
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS b.*, d.text as title 
@@ -172,7 +185,7 @@ function run()
 						$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
 						$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
 
-						if($dataset[$i]['category'] > 0)
+						if(isset($dataset[$i]['category']) && $dataset[$i]['category'] > 0)
                         {
                             $dataset[$i]['category'] = $DB->query_single(
                                 'text',
@@ -585,7 +598,7 @@ function run()
             header('Content-type: text/json');
 
             $types = property::types();
-            $property->type_text = $types[$property->type];
+            $property->type_text = value_or_default(array($types, $property->type), '');
 
             echo json_encode($property);
 
@@ -608,7 +621,7 @@ function run()
             header('Content-type: text/json');
 
             $types = property::types();
-            $property->type_text = $types[$property->type];
+            $property->type_text = value_or_default(array($types, $property->type), '');
 
             echo json_encode($property);
 
@@ -734,9 +747,9 @@ function blocks_list()
         )
     );
 	
-	if(@$_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=blocks&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	

@@ -4,7 +4,6 @@ require_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	global $website;
@@ -12,11 +11,11 @@ function run()
 	$out = '';
 	$item = new feed();
 			
-	switch($_REQUEST['act'])
+	switch(value_or_default(array($_REQUEST, 'act'), ''))
 	{
         case 'json':
 	    case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -36,17 +35,17 @@ function run()
 					break;
 					
 				default: // list or search	
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$page = intval(value_or_default(array($_REQUEST, 'page'), 0));
+					$max	= intval(value_or_default(array($_REQUEST, 'rows'), 25));
 					$offset = ($page - 1) * $max;
 					$where = " f.website = ".$website->id;
 					$parameters = array();
 										
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if(value_or_default(array($_REQUEST, '_search'), '') == 'true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -60,14 +59,17 @@ function run()
                         }
 					}
 
+					$sord = value_or_default(array($_REQUEST, 'sord'), '');
+					$sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+
                     // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'title', 'categories', 'format', 'views', 'permission', 'enabled'))
+                    if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'title', 'categories', 'format', 'views', 'permission', 'enabled'))
                     )
                     {
                         return false;
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 								
 					$sql = ' SELECT SQL_CALC_FOUND_ROWS f.*, d.text as title
 							   FROM nv_feeds f
@@ -205,7 +207,7 @@ function run()
 
 function feeds_list()
 {
-    $fid = core_purify_string($_REQUEST['fid'], true);
+    $fid = core_purify_string(value_or_default(array($_REQUEST, 'fid'), ''), true);
 
 	$navibars = new navibars();
 	$navitable = new navitable("feeds_list");
@@ -216,9 +218,9 @@ function feeds_list()
 									'<a href="?fid='.$fid.'&act=0"><img height="16" align="absmiddle" width="16" src="img/icons/silk/application_view_list.png"> '.t(39, 'List').'</a>',
 									'search_form' ));
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '') == 'true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
@@ -242,8 +244,6 @@ function feeds_list()
 
 function feeds_form($item)
 {
-	global $user;
-	global $DB;
 	global $website;
 	global $layout;
 	
@@ -668,4 +668,5 @@ function feeds_form($item)
 
 	return $navibars->generate();
 }
+
 ?>

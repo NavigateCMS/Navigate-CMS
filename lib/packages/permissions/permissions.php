@@ -3,7 +3,8 @@ require_once(NAVIGATE_PATH.'/lib/packages/permissions/permissions.functions.php'
 
 function run()
 {
-	switch(@$_REQUEST['act'])
+    $act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'list':
             $object_type    = $_REQUEST['object'];

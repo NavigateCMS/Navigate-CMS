@@ -20,7 +20,8 @@ function run()
 	$out = '';
 	$item = new structure();
 			
-	switch($_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '');	
+	switch($act)
 	{
 		case 'load':
         case 'edit':
@@ -60,14 +61,25 @@ function run()
 
 				if(!empty($item->id))
                 {
-                    users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+                    users_log::action(
+						$_REQUEST['fid'], 
+						$item->id, 
+						'save', 
+						value_or_default(array($item->dictionary[$website->languages_list[0]], 'title'), ""), 
+						json_encode($_REQUEST)
+					);
                 }
 			}
 			else
             {
                 if(!empty($item->id))
                 {
-                    users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+                    users_log::action(
+						$_REQUEST['fid'], 
+						$item->id, 
+						'load', 
+						value_or_default(array($item->dictionary[$website->languages_list[0]], 'title'), ""), 
+					);
                 }
             }
 		
@@ -176,8 +188,8 @@ function run()
 				   AND nvw.website = nvi.website
 				   AND nvw.text LIKE :text
 		      ORDER BY nvw.text ASC
-			     LIMIT '.intval($_REQUEST['page_limit']).'
-			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
+			     LIMIT '.intval(value_or_default(array($_REQUEST, 'page_limit'), 20)).'
+			     OFFSET '.max(0, (intval(value_or_default(array($_REQUEST, 'page_limit'), 0)) * (intval(value_or_default(array($_REQUEST, 'page'), 1))-1))),
 				'array',
                 $query_params
 			);
@@ -234,8 +246,8 @@ function run()
 				   AND nvw.website = nvs.website
 				   AND nvw.text LIKE :text
 		      ORDER BY nvw.text ASC
-			     LIMIT '.intval($_REQUEST['page_limit']).'
-			     OFFSET '.max(0, (intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1))),
+			     LIMIT '.intval(value_or_default(array($_REQUEST, 'page_limit'), 20)).'
+			     OFFSET '.max(0, (intval(value_or_default(array($_REQUEST, 'page_limit'), 0)) * (intval(value_or_default(array($_REQUEST, 'page'), 1))-1))),
 				'array'
 			);
 
@@ -385,12 +397,17 @@ function run()
 			$offset = ($page - 1) * $max;	
 		
 			if($_REQUEST['_search']=='false')
+			{
 				list($dataset, $total) = webuser_vote::object_votes_by_webuser('structure', intval($_REQUEST['id']), $_REQUEST['sidx'].' '.$_REQUEST['sord'], $offset, $max);
+			}
 		
 			$out = array();								
 			for($i=0; $i < count($dataset); $i++)
 			{
-				if(empty($dataset[$i])) continue;
+				if(empty($dataset[$i])) 
+				{
+					continue;
+				}
 														
 				$out[$i] = array(
 					0	=> $dataset[$i]['id'],
@@ -549,11 +566,13 @@ function structure_tree($hierarchy)
 		}
 	');
 
-	if(!empty($_REQUEST['navigate-quicksearch']))
+	$navigate_quicksearch = value_or_default(array($_REQUEST, 'navigate-quicksearch'), '');
+
+	if(!empty($navigate_quicksearch))
 	{
 		$navitree->setState('expanded');
 		$layout->add_script('
-			$(window).on("load", function() { navitable_quicksearch("'.$_REQUEST['navigate-quicksearch'].'");});
+			$(window).on("load", function() { navitable_quicksearch("'.$navigate_quicksearch.'");});
 		');
 	}
 
@@ -695,7 +714,7 @@ function structure_form($item)
             $extra_actions[] = '    <a href="?fid=structure&act=edit&id='.$parent->id.'">
                                         <img height="16" align="absmiddle" width="16" src="img/icons/silk/resultset_first.png"> 
                                         <small>('.mb_strtolower(t(84, 'Parent')).')</small> '.
-                                        core_special_chars($parent->dictionary[$website->languages_list[0]]["title"]).
+                                        core_special_chars(value_or_default(array($parent->dictionary[$website->languages_list[0]],"title"), "")).
                                     '</a>';
         }
 
@@ -942,7 +961,10 @@ function structure_form($item)
 		$navibars->add_tab_content_row(
 		    array(
 		        '<label>'.t(67, 'Title').'</label>',
-				$naviforms->textfield('title-'.$lang_code, @$item->dictionary[$lang_code]['title'])
+				$naviforms->textfield(
+					'title-'.$lang_code, 					
+					value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), "title"), "")
+				)
             )
         );
 											
@@ -982,7 +1004,7 @@ function structure_form($item)
                             3 => t(688, 'Masked redirect'),
                             4 => t(183, 'Do nothing')
                         ),
-                    $item->dictionary[$lang_code]['action-type'],
+					value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), "action-type"), ""),
                     "navigate_structure_action_change('".$lang_code."', this);"
                 )
             )
@@ -991,16 +1013,16 @@ function structure_form($item)
 		// load item title if action was "jump to an element"				
 		$jump_item_id = '';
 		$jump_item_title = '';
-		if(!empty($item->dictionary[$lang_code]['action-jump-item']))
+		if(!empty(value_or_default(array($item->dictionary, $lang_code), array())) && !empty(value_or_default(array($item->dictionary[$lang_code], 'action-jump-item'), '')))
 		{
 			$tmp = new Item();
 			$tmp->load($item->dictionary[$lang_code]['action-jump-item']);
-			$jump_item_title = array(core_special_chars($tmp->dictionary[$lang_code]['title']));
+			$jump_item_title = array(core_special_chars(value_or_default(array(value_or_default(array($tmp->dictionary, $lang_code), array()), 'title'), '')));
 			$jump_item_id = array($item->dictionary[$lang_code]['action-jump-item']);
 		}
         $navibars->add_tab_content_row(array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(180, 'Item').' ['.t(67, 'Title').']</label>',
-			$naviforms->selectfield('action-jump-item-'.$lang_code, $jump_item_id, $jump_item_title, $item->dictionary[$lang_code]['action-jump-item'], null, false, null, null, false),
+            $naviforms->selectfield('action-jump-item-'.$lang_code, $jump_item_id, $jump_item_title, value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), 'action-jump-item'), ''), null, false, null, null, false),
             '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.
                 t(534, "You can only select elements which have their own path (no category embedded elements)").
             '</div>'
@@ -1009,14 +1031,14 @@ function structure_form($item)
         // show URL if action was "masked-redirect"
         $navibars->add_tab_content_row(array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(75, 'Path').'</label>',
-            $naviforms->textfield('action-masked-redirect-'.$lang_code, $item->dictionary[$lang_code]['action-masked-redirect']),
+            $naviforms->textfield('action-masked-redirect-'.$lang_code, value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), 'action-masked-redirect'), '')),
             '<div class="subcomment"><span class="ui-icon ui-icon-info" style=" float: left; margin-left: -3px; "></span> '.
                 '<span>'.t(689, "Load the content of an internal path without changing the browser URL").'</span>'.
             '</div>'
         ));
 
 
-		$categories_list = structure::hierarchyList($hierarchy, $item->dictionary[$lang_code]['action-jump-branch'], $lang_code);
+		$categories_list = structure::hierarchyList($hierarchy, value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), 'action-jump-branch'), ''), $lang_code);
 
 		$navibars->add_tab_content_row(
             array(
@@ -1025,14 +1047,14 @@ function structure_form($item)
 				        <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
                         '<div class="category_tree_ul">'.$categories_list.'</div>'.
                 '</div>',
-				$naviforms->hidden('action-jump-branch-'.$lang_code, $item->dictionary[$lang_code]['action-jump-branch'])
+				$naviforms->hidden('action-jump-branch-'.$lang_code, value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), 'action-jump-branch'), ''))
             )
         );
 										
 		$navibars->add_tab_content_row(
             array(
                 '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(324, 'New window').'</label>',
-				$naviforms->checkbox('action-new-window-'.$lang_code, $item->dictionary[$lang_code]['action-new-window'])
+				$naviforms->checkbox('action-new-window-'.$lang_code, value_or_default(array(value_or_default(array($item->dictionary, $lang_code), array()), 'action-new-window'), ''))
             )
         );
 										
@@ -1495,7 +1517,10 @@ function structure_form($item)
             $table->addRow($element->id,
                 array(
                     array('content' => $element->id, 'align' => 'left'),
-                    array('content' => core_special_chars($element->dictionary[$website->languages_list[0]]['title']), 'align' => 'left')
+                    array(
+						'content' => core_special_chars(value_or_default(array($element->dictionary[$website->languages_list[0]], 'title'), "")), 
+						'align' => 'left'
+					)
                 )
             );
             $ids[] = $element->id;

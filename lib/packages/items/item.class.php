@@ -33,6 +33,9 @@ class item
     public $dictionary;
     public $paths;
 	public $properties;
+    
+    public $_created_from; // RSS conversion metadata
+    public $_rss_images; // RSS images array
 
     private $_comments_count;
 		
@@ -68,6 +71,11 @@ class item
 	
 	public function load_from_resultset($rs)
 	{
+		if(empty($rs) || !isset($rs[0]))
+		{
+			return;
+		}
+		
 		$main = $rs[0];
 		
 		$this->id				= $main->id;
@@ -744,7 +752,7 @@ class item
             $item->date_unpublish = 0;
             $item->galleries = 0;
             $item->date_created = $article['timestamp'];
-            $item->data_modified = $article['timestamp'];
+            $item->date_modified = $article['timestamp'];
             $item->comments_enabled_to = 2; // 0 => nobody, 1=>registered, 2=>everyone
             $item->comments_moderator = 0; // user_id
             $item->access = 0; // 0 => everyone, 1 => registered and logged in, 2 => not registered or not logged in
@@ -886,7 +894,7 @@ class item
         $out = array();
         $DB->query('SELECT * FROM nv_items WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }

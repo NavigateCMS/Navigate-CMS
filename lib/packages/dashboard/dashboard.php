@@ -5,15 +5,15 @@ function run()
 {
     global $user;
 
-	switch(@$_REQUEST['act'])
+	switch(isset($_REQUEST['act']) ? $_REQUEST['act'] : '')
 	{
         case 'json':
-            switch($_REQUEST['oper'])
+            switch(value_or_default($_REQUEST['oper'], ''))
             {
                 case 'settings_panels':	// save dashboard panels state
                     if(naviforms::check_csrf_token('header'))
                     {
-                        $dashboard_panels = $_REQUEST['dashboard_panels'];
+                        $dashboard_panels = value_or_default($_REQUEST['dashboard_panels'], array());
                         $user->setting('dashboard-panels', json_encode($dashboard_panels));
                         echo json_encode(true);
                     }
@@ -25,7 +25,7 @@ function run()
                     $feed->set_cache(4 * 3600); // cache valid for 4 hours
 
                     $url = "";
-                    switch($_REQUEST['url'])
+                    switch(value_or_default($_REQUEST['url'], ''))
                     {
                         case 'navigatecms_news':
 
@@ -36,6 +36,7 @@ function run()
                             }
 
                             $url = 'https://www.navigatecms.com/'.$lang.'/rss';
+
                             break;
 
                         default:
@@ -48,14 +49,18 @@ function run()
 
 
                     $feed->load($url);
-                    list($channel, $articles, $count) = $feed->parse(0, $_REQUEST['limit'], 'newest');
+                    $parse_result = $feed->parse(0, value_or_default(array($_REQUEST, 'limit'), 10), 'newest');
+                    $channel = value_or_default(array($parse_result, 0), null);
+                    $articles = value_or_default(array($parse_result, 1), array());
+                    $count = value_or_default(array($parse_result, 2), 0);
+
                     $items = item::convert_from_rss($articles);
 
-                    $display_language = $_REQUEST['language'];
+                    $display_language = value_or_default($_REQUEST['language'], 'en');
 
+                    $feed_html = '';
                     if(!empty($items))
                     {
-                        $feed_html = '';
                         for($c=0; $c < count($items); $c++)
                         {
                             if(empty($items[$c])) break;
@@ -90,7 +95,7 @@ function run()
             break;
 
 		case 'recent_items':
-            $ri = users_log::recent_items(value_or_default($_REQUEST['limit']), 10);
+            $ri = users_log::recent_items(value_or_default(array($_REQUEST, 'limit'), 10));
 
             if(!is_array($ri))
             {
@@ -135,7 +140,7 @@ function dashboard_create()
 	if($user->profile==1) // Administrator
 	{
 		$installed_version = update::latest_installed();		
-		$latest_update = $_SESSION['latest_update'];
+		$latest_update = value_or_default($_SESSION['latest_update'], null);
 		
 		if(!empty($latest_update->Revision) && $latest_update->Revision > $installed_version->revision)
 		{
@@ -420,7 +425,9 @@ function dashboard_panel_top_pages($params)
     $url = $website->protocol;
 
     if(!empty($website->subdomain))
+    {
         $url .= $website->subdomain.'.';
+    }
     $url .= $website->domain;
     $url .= $website->folder;
 
@@ -490,12 +497,27 @@ function dashboard_panel_recent_comments($params)
         $comments_html = '<div style=" height: 280px; overflow: auto; ">';
         for($c=0; $c < $comments_limit; $c++)
         {
-            if(empty($comments[$c])) break;
+            if(empty($comments[$c])) 
+            {
+                break;
+            }
 
-            if($comments[$c]->status==2)		$comment_status = 'hidden';
-            else if($comments[$c]->status==1)	$comment_status = 'private';
-            else if($comments[$c]->status==-1)	$comment_status = 'new';
-            else								$comment_status = 'public';
+            if($comments[$c]->status==2)		
+            {
+                $comment_status = 'hidden';
+            }
+            else if($comments[$c]->status==1)	
+            {
+                $comment_status = 'private';
+            }
+            else if($comments[$c]->status==-1)	
+            {
+                $comment_status = 'new';
+            }
+            else								
+            {
+                $comment_status = 'public';
+            }
 
             $tmp = array(
                 '<div class="navigate-panel-recent-comments-username ui-corner-all items-comment-status-'.$comment_status.'">'.
@@ -656,7 +678,6 @@ function dashboard_panel_top_elements($params)
 {
     global $DB;
     global $website;
-    global $layout;
 
     $stats = &$params['statistics'];
     $navibars = &$params['navibars'];
@@ -727,7 +748,6 @@ function dashboard_panel_recent_elements($params)
 {
     global $DB;
     global $website;
-    global $layout;
 
     $stats = &$params['statistics'];
     $navibars = &$params['navibars'];
@@ -773,7 +793,6 @@ function dashboard_panel_latest_searches($params)
 {
     global $DB;
     global $website;
-    global $layout;
 
     $stats = &$params['statistics'];
     $navibars = &$params['navibars'];
@@ -812,7 +831,6 @@ function dashboard_panel_latest_searches($params)
 
 function dashboard_panel_public_wall($params)
 {
-    global $DB;
     global $website;
     global $layout;
 
@@ -866,10 +884,7 @@ function dashboard_panel_public_wall($params)
 
 function dashboard_panel_navigatecms_news($params)
 {
-    global $DB;
-    global $website;
     global $layout;
-    global $current;
 
     $stats = &$params['statistics'];
     $navibars = &$params['navibars'];

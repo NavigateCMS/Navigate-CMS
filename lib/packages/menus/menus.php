@@ -4,18 +4,21 @@ require_once(NAVIGATE_PATH.'/lib/packages/functions/nv_function.class.php');
 
 function run()
 {
-	global $user;	
 	global $layout;
 	global $DB;
 	
 	$out = '';
 	$item = new menu();
 			
-	switch($_REQUEST['act'])
+	// Extract safe values for array access
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
 		case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			// Extract safe values for array access
+			$oper = value_or_default(array($_REQUEST, 'oper'), '');
+			switch($oper)
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -41,11 +44,11 @@ function run()
 					$where = " 1=1 ";
 					$parameters = array();
 										
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -178,9 +181,9 @@ function functions_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
@@ -203,9 +206,7 @@ function functions_list()
 
 function functions_form($item)
 {
-	global $user;
 	global $DB;
-	global $website;
 	global $layout;
 	
 	$navibars = new navibars();

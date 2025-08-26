@@ -14,11 +14,11 @@ function run()
 	$out = '';
 	$item = new comment();
 			
-	switch($_REQUEST['act'])
+	switch(value_or_default(array($_REQUEST, 'act'), ''))
 	{
         case 'json':
 		case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -38,18 +38,18 @@ function run()
 					break;
 					
 				default: // list or search	
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$page = intval(value_or_default(array($_REQUEST, 'page'), 0));
+					$max	= intval(value_or_default(array($_REQUEST, 'rows'), 25));
 					$offset = max(0, ($page - 1) * $max);
 					$parameters = array();
 
 					$where = ' website = '.$website->id;
 
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if(value_or_default(array($_REQUEST, '_search'), '') == 'true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -63,14 +63,17 @@ function run()
                         }
 					}
 
+                    $sord = value_or_default(array($_REQUEST, 'sord'), '');
+                    $sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+
 					// filter orderby vars
-					if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'object_type', 'object_id', 'date_created', 'user', 'message', 'status'))
+					if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'object_type', 'object_id', 'date_created', 'user', 'message', 'status'))
                     )
                     {
                         return false;
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 
 					$DB->queryLimit(
                         'id,object_type,object_id,user,email,date_created,status,message',
@@ -104,7 +107,10 @@ function run()
 											
 					for($i=0; $i < count($dataset); $i++)
 					{						
-						if(empty($dataset[$i])) continue;
+						if(empty($dataset[$i])) 
+                        {
+                            continue;
+                        }
 					
 						// retrieve webuser name
 						$webuser = $DB->query_single('username', 'nv_webusers', ' id = '.$dataset[$i]['user']);
@@ -120,7 +126,7 @@ function run()
                         }
 
                         $item->load($dataset[$i]['object_id']);
-                        $title = $item->dictionary[$website->languages_list[0]]['title'];
+                        $title = value_or_default(array(value_or_default(array($item->dictionary, $website->languages_list[0]), array()), 'title'), '');
 
 						$message = core_string_clean($dataset[$i]['message']);
 						$message = core_string_cut($message, 60, '&hellip;');
@@ -165,13 +171,18 @@ function run()
 				{
 					$layout->navigate_notification($e->getMessage(), true, true);	
 				}
-				if(!empty($item->id))
-					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->name, json_encode($_REQUEST));
+				
+                if(!empty($item->id))					
+                {
+                    users_log::action($_REQUEST['fid'], $item->id, 'save', $item->name, json_encode($_REQUEST));
+                }
 			}
 			else
 			{
 				if(!empty($item->id))
+                {
 					users_log::action($_REQUEST['fid'], $item->id, 'load', $item->name);
+                }
 			}
 		
 			$out = comments_form($item);
@@ -232,7 +243,7 @@ function run()
                 'array',
                 array(
                     ':wid' => $website->id,
-                    ':username' => '%' . $_REQUEST['username'] . '%'
+                    ':username' => '%' . value_or_default(array($_REQUEST, 'username'), '') . '%'
                 )
             );
 
@@ -263,11 +274,11 @@ function run()
                 'array',
                 array(
                     ':wid' => $website->id,
-                    ':object_type' => $_REQUEST['object_type'],
-                    ':object_id' => $_REQUEST['object_id'],
-                    ':maxdate' => $_REQUEST['maxdate'],
-                    ':exclude' => $_REQUEST['exclude'],
-                    ':text' => '%' . $_REQUEST['search'] . '%'
+                    ':object_type' => value_or_default(array($_REQUEST, 'object_type'), ''),
+                    ':object_id' => value_or_default(array($_REQUEST, 'object_id'), 0),
+                    ':maxdate' => value_or_default(array($_REQUEST, 'maxdate'), ''),
+                    ':exclude' => value_or_default(array($_REQUEST, 'exclude'), 0),
+                    ':text' => '%' . value_or_default(array($_REQUEST, 'search'), '') . '%'
                 )
             );
 
@@ -275,7 +286,9 @@ function run()
             $total = $DB->foundRows();
 
             for($r=0; $r < count($rows); $r++)
+            {
                 $rows[$r]['text'] = '<span title="'.core_string_cut($rows[$r]['message'], 100).'"><i class="fa fa-user"></i> '.$rows[$r]['name'].$rows[$r]['username'].' <i class="fa fa-clock-o"></i> '.core_ts2date($rows[$r]['date_created'], true).'</span>';
+            }
 
             echo json_encode(array('items' => $rows, 'totalCount' => $total));
 
@@ -289,7 +302,7 @@ function run()
                       LEFT JOIN nv_webusers u ON c.user = u.id
                      WHERE
                         c.website = '.$website->id.' AND
-                        c.id = '.intval($_REQUEST['id'])
+                        c.id = '.intval(value_or_default(array($_REQUEST, 'id'), 0))
             );
 
             $comment = $DB->first();
@@ -312,9 +325,9 @@ function run()
                       LIMIT 30',
                     'array',
                     array(
-                        ':object_type' => $_REQUEST['object_type'],
+                        ':object_type' => value_or_default(array($_REQUEST, 'object_type'), ''),
                         ':wid' => $website->id,
-                        ':text' => '%'.$_REQUEST['title'].'%'
+                        ':text' => '%'.value_or_default(array($_REQUEST, 'title'), '').'%'
                     )
                     // AND lang = '.protect($_REQUEST['lang']).'
             );
@@ -337,7 +350,7 @@ function comments_list()
 {
     global $layout;
 
-    $fid = core_purify_string($_REQUEST['fid'], true);
+    $fid = core_purify_string(value_or_default(array($_REQUEST, 'fid'), ''), true);
 
 	$navibars = new navibars();
 	$navitable = new navitable("comments_list");
@@ -373,9 +386,9 @@ function comments_list()
 		'search_form' )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '') == 'true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
@@ -410,9 +423,13 @@ function comments_form($item)
 	$naviforms = new naviforms();
 	
 	if(empty($item->id))
-		$navibars->title(t(250, 'Comments').' / '.t(38, 'Create'));	
+	{
+        $navibars->title(t(250, 'Comments').' / '.t(38, 'Create'));	
+    }
 	else
-		$navibars->title(t(250, 'Comments').' / '.t(170, 'Edit').' ['.$item->id.']');		
+    {
+		$navibars->title(t(250, 'Comments').' / '.t(170, 'Edit').' ['.$item->id.']');
+    }
 
 	if(empty($item->id))
 	{
@@ -552,7 +569,7 @@ function comments_form($item)
 						method: "GET",
 						data: {	
                             "title": request.term,
-                            "lang": "'.$website->languages[0].'",
+                            "lang": "'.value_or_default(array($website->languages, 0), '').'",
                             "object_type": $("#comment-object_type").val(),
                             "nd": new Date().getTime()
                         },
@@ -572,6 +589,7 @@ function comments_form($item)
 
 
 	$webuser_id = '';
+	$webuser_username = '';
 	if(!empty($item->user))
 	{
 		$webuser_username = $DB->query_single('username', 'nv_webusers', ' id = '.$item->user);

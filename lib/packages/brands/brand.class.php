@@ -1,4 +1,5 @@
 <?php
+
 class brand
 {
     public $id;
@@ -144,7 +145,7 @@ class brand
         $DB->query('SELECT * FROM nv_brands WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

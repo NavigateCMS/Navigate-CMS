@@ -23,10 +23,10 @@ function navigate_property_layout_form($element, $code, $object, $object_id)
 	// generate the form
 	for($p = 0; $p < count($properties); $p++)
 	{
-		if( $properties[$p]->enabled === '0' ||
+		if( (isset($properties[$p]->enabled) && ($properties[$p]->enabled === '0' ||
             $properties[$p]->enabled === 0 ||
             $properties[$p]->enabled === "false" ||
-            $properties[$p]->enabled === false)
+            $properties[$p]->enabled === false)))
 		    continue;
 
 		$property_rows[] = navigate_property_layout_field($properties[$p], $obj);
@@ -204,18 +204,19 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 			break;
 
 		case 'rating':
-            $half_stars_enabled = value_or_default($property->max, true);
+            $half_stars_enabled = isset($property->max) ? value_or_default($property->max, true) : true;
             if(isset($property->max))
             {
                 $stars = $property->max;
                 if(!isset($property->value))
                 {
-                    $property->value = $property->dvalue;
+                    $property->value = isset($property->dvalue) ? $property->dvalue : '';
                 }
             }
             else // navigate cms < 2.2 compatability
             {
-                $default = explode('#', $property->dvalue);
+                $dvalue = isset($property->dvalue) ? $property->dvalue : '';
+                $default = explode('#', $dvalue);
                 $stars = @$default[1];
 
                 // if no default value is specified, we take the old navigate 1.x half star format, that is:
@@ -225,8 +226,10 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
                 $half_stars_enabled = false;
 
-                if($property->value == $property->dvalue)
+                if($property->value == $dvalue)
+                {
                     $property->value = intval($default[0]);
+                }
             }
 
 			$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" style=" min-height: 18px; ">';
@@ -1341,10 +1344,10 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 	        }
             $field[] = '</div>';
 
-            $template_filter = @$property->element_template;
+            $template_filter = isset($property->element_template) ? $property->element_template : null;
             if(empty($template_filter))
             {
-                $template_filter = $property->item_template;
+                $template_filter = isset($property->item_template) ? $property->item_template : null;
             }
 
             $layout->add_script('
@@ -1410,7 +1413,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
             $template_filter = @$property->element_template;
             if(empty($template_filter))
             {
-                $template_filter = $property->item_template;
+                $template_filter = isset($property->item_template) ? $property->item_template : null;
             }
 
             $layout->add_script('			                
@@ -1681,4 +1684,5 @@ function navigate_property_layout_scripts($website_id="")
 	    });  
 	');
 }
+
 ?>

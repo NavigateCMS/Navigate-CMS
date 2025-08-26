@@ -7,25 +7,25 @@ function run()
 {
 	global $user;	
 	global $layout;
-	global $DB;
-	global $website;
 	global $events;
 	
 	$out = '';
-	$item = new extension();
 
-	switch($_REQUEST['act'])
+	$act = isset($_REQUEST['act']) ? $_REQUEST['act'] : '';
+	switch($act)
 	{
         case 'extension_info':
-            echo '<iframe src="'.NAVIGATE_URL.'/plugins/'.$_REQUEST['extension'].'/'.$_REQUEST['extension'].'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
+            $extension_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
+            echo '<iframe src="'.NAVIGATE_URL.'/plugins/'.$extension_code.'/'.$extension_code.'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
             core_terminate();
             break;
 
         case 'disable':
             if(naviforms::check_csrf_token('header'))
             {
+                $extension_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
                 $extension = new extension();
-                $extension->load($_REQUEST['extension']);
+                $extension->load($extension_code);
                 $extension->enabled = 0;
                 $ok = $extension->save();
                 echo json_encode($ok);
@@ -36,8 +36,9 @@ function run()
         case 'enable':
             if(naviforms::check_csrf_token('header'))
             {
+                $extension_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
                 $extension = new extension();
-                $extension->load($_REQUEST['extension']);
+                $extension->load($extension_code);
                 $extension->enabled = 1;
                 $ok = $extension->save();
                 echo json_encode($ok);
@@ -218,7 +219,7 @@ function run()
                             <p>'.t(529, "It has not been possible to download from the marketplace.").'</p>
                             <p>'.t(530, "You have to visit your Marketplace Dashboard and download the file, then use the <strong>Install from file</strong> button you'll find in the actions bar on the right.").'</p>
                             <p>'.t(531, "Sorry for the inconvenience.").'</p>
-                            <a class="uibutton" href="http://www.navigatecms.com/en/marketplace/dashboard" target="_blank"><span class="ui-icon ui-icon-extlink" style="float: left;"></span> '.t(532, "Navigate CMS Marketplace").'</a>
+                            <a class="uibutton" href="https://www.navigatecms.com/en/marketplace/dashboard" target="_blank"><span class="ui-icon ui-icon-extlink" style="float: left;"></span> '.t(532, "Navigate CMS Marketplace").'</a>
                         </div>
                     ');
                     $layout->add_script('
@@ -367,7 +368,7 @@ function extensions_grid($list)
                 'footer' => '
                     <div class="buttonset navigrid-item-buttonset" style=" font-size: 0.6em; margin-top: 5px; visibility: hidden; "
                          extension="'.$list[$i]['code'].'" extension-title="'.$list[$i]['title'].'"
-                         run="'.$list[$i]['run'].'" enabled="'.$list[$i]['enabled'].'"  favorite="'.$list[$i]['favorite'].'">
+                         run="'.(isset($list[$i]['run']) ? $list[$i]['run'] : '').'" enabled="'.$list[$i]['enabled'].'"  favorite="'.(isset($list[$i]['favorite']) ? $list[$i]['favorite'] : '0').'">
                         <button class="navigrid-extensions-info" title="'.t(457, 'Information').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/information.png"></button>'.
                         //(empty($list[$i]['run'])?       '' : '<button class="navigrid-extensions-favorite" title="'.t(464, 'Favorite').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/heart_'.($list[$i]['favorite']=='1'? 'delete' : 'add').'.png"></button>').
                         (!$extension_has_options?   '' : '<button class="navigrid-extensions-settings" title="'.t(459, 'Settings').'"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cog.png"></button>').
@@ -427,7 +428,7 @@ function extensions_grid($list)
             </div>
         ';
         $html .= '
-            <iframe src="http://www.navigatecms.com/en/marketplace/extensions"
+            <iframe src="https://www.navigatecms.com/en/marketplace/extensions"
                     style="visibility: hidden; width: 1px; height: 1px;"
                     class="ui-corner-all"
                     border="0" frameborder="0" allowtransparency="true">
@@ -469,13 +470,29 @@ function extensions_grid($list)
            if(typeof(window.addEventListener) != "undefined")
             {
                 window.addEventListener("message", function(event) {
-                    navigatecms_marketplace_install_from_hash(event.data);
+                    // Check if the message is from Navigate CMS marketplace
+                    if(event.origin === "https://www.navigatecms.com" && 
+                       event.data && 
+                       typeof event.data === "string" && 
+                       event.data.indexOf("navigate_marketplace") === 0)
+                    {
+                        var hash = event.data.replace("navigate_marketplace:", "");
+                        navigatecms_marketplace_install_from_hash(hash);
+                    }
                 }, false);
             }
             else
             {
                 window.attachEvent("onmessage", function(e) {
-                    navigatecms_marketplace_install_from_hash(e.data);
+                    // Check if the message is from Navigate CMS marketplace
+                    if(e.origin === "https://www.navigatecms.com" && 
+                       e.data && 
+                       typeof e.data === "string" && 
+                       e.data.indexOf("navigate_marketplace") === 0)
+                    {
+                        var hash = e.data.replace("navigate_marketplace:", "");
+                        navigatecms_marketplace_install_from_hash(hash);
+                    }
                 });
             }
         }
@@ -498,7 +515,6 @@ function extensions_options($extension, $saved=null)
 {
     global $layout;
     global $website;
-    global $events;
 
     $layout = null;
     $layout = new layout('navigate');

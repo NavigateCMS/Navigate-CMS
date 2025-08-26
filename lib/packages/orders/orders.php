@@ -12,15 +12,17 @@ function run()
 	$out = '';
 	$object = new order();
 			
-	switch($_REQUEST['act'])
+    $act = value_or_default(array($_REQUEST, 'act'), '');
+
+	switch($act)
 	{
         case 'json':
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
                     {
-                        $ids = $_REQUEST['ids'];
+                        $ids = value_or_default(array($_REQUEST, 'ids'), array());
                         foreach($ids as $id)
                         {
                             $object->load($id);
@@ -44,7 +46,7 @@ function run()
                         'array',
                         array(
                             ':wid' => $website->id,
-                            ':username' => '%' . $_REQUEST['username'] . '%'
+                            ':username' => '%' . value_or_default(array($_REQUEST, 'username'), '') . '%'
                         )
                     );
 
@@ -57,38 +59,41 @@ function run()
 
 
                 default: // list or search
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$page = intval(value_or_default(array($_REQUEST, 'page'), 1));
+					$max	= intval(value_or_default(array($_REQUEST, 'rows'), 25));
 					$offset = ($page - 1) * $max;
 					$where = " o.website = ".intval($website->id)." ";
 					$parameters = array();
 										
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if(value_or_default(array($_REQUEST, '_search'), '')=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $object->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $object->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
 						else if(isset($_REQUEST['filters']))
                         {
-                            $where .= navitable::jqgridsearch($_REQUEST['filters']);
+                            $where .= navitable::jqgridsearch(value_or_default(array($_REQUEST, 'filters'), ''));
                         }
 						else	// single search
                         {
-                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                            $where .= ' AND '.navitable::jqgridcompare(value_or_default(array($_REQUEST, 'searchField'), ''), value_or_default(array($_REQUEST, 'searchOper'), ''), value_or_default(array($_REQUEST, 'searchString'), ''));
                         }
 					}
 
+                    $sord = value_or_default(array($_REQUEST, 'sord'), '');
+                    $sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+
                     // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'reference', 'date_created', 'total', 'payment_done', 'status'))
+                    if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'reference', 'date_created', 'total', 'payment_done', 'status'))
                     )
                     {
                         return false;
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 
 
                     $sql = ' SELECT SQL_CALC_FOUND_ROWS
@@ -123,15 +128,20 @@ function run()
 											
 					for($i=0; $i < count($dataset); $i++)
 					{
+						// Extract safe values for array access  
+						$currency_code = value_or_default(array($dataset[$i], 'currency'), '');
+						$status_code = value_or_default(array($dataset[$i], 'status'), '');
+						$currency_display = value_or_default(array($currencies, $currency_code), $currency_code);
+						$status_display = value_or_default(array($states, $status_code), $status_code);
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1	=> $dataset[$i]['reference'],
 							2	=> core_ts2date($dataset[$i]['date_created'], true),
 							3	=> $dataset[$i]['customer_name'],
 							4	=> $dataset[$i]['lines_count'],
-							5	=> core_decimal2string($dataset[$i]['total'], 2).' '.$currencies[$dataset[$i]['currency']],
+							5	=> core_decimal2string($dataset[$i]['total'], 2).' '.$currency_display,
 							6	=> ($dataset[$i]['payment_done']=='1'? '<i class="fa fa-fw fa-lg fa-check"></i>' : '<i class="fa fa-fw fa-lg fa-exclamation-circle"></i>'),
-							7	=> $states[$dataset[$i]['status']],
+							7	=> $status_display,
                             8 	=> $dataset[$i]['_grid_notes_html']
 						);
 					}
@@ -171,7 +181,7 @@ function run()
 			break;
 					
 		case 'delete':
-            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            if(value_or_default(array($_REQUEST, 'rtk'), '') != $_SESSION['request_token'])
             {
                 $layout->navigate_notification(t(344, 'Security error'), true, true);
                 break;
@@ -193,9 +203,9 @@ function run()
 			break;
 
         case 'order_timeline_detail':
-            $object->load(intval($_REQUEST['id']));
-            $event = $object->history[intval($_REQUEST['hid'])];
-            if($event[0] == $_REQUEST['time'])
+            $object->load(intval(value_or_default(array($_REQUEST, 'id'), 0)));
+            $event = $object->history[intval(value_or_default(array($_REQUEST, 'hid'), 0))];
+            if($event[0] == value_or_default(array($_REQUEST, 'time'), ''))
             {
                 $out = @r($event[2]);
                 echo $out;
@@ -240,9 +250,9 @@ function orders_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=orders&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -357,7 +367,9 @@ function orders_form($object)
     $navibars->add_tab_content($naviforms->csrf_token());
 
 	$currencies = product::currencies();
-	$currency_symbol = $currencies[$object->currency];
+	// Extract safe values for object and array access
+	$currency_code = (isset($object->currency) && !empty($object->currency)) ? $object->currency : '';
+	$currency_symbol = value_or_default(array($currencies, $currency_code), $currency_code);
 	
 	$navibars->add_tab_content_row(
 	    array(
@@ -560,7 +572,7 @@ function orders_form($object)
         )
     );
 
-    if($object->date_modified > 0)
+    if(isset($object->date_modified) && $object->date_modified > 0)
     {
         $navibars->add_tab_content_row(
             array(
@@ -754,14 +766,14 @@ function orders_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(721, 'Shipment reference').'</label>',
-            $naviforms->textfield('shipping_data-reference', $object->shipping_data->reference)
+            $naviforms->textfield('shipping_data-reference', (isset($object->shipping_data->reference) ? $object->shipping_data->reference : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(722, 'Tracking URL').'</label>',
-            $naviforms->textfield('shipping_data-tracking_url', $object->shipping_data->tracking_url)
+            $naviforms->textfield('shipping_data-tracking_url', (isset($object->shipping_data->tracking_url) ? $object->shipping_data->tracking_url : ''))
         )
     );
 
@@ -775,63 +787,63 @@ function orders_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(159, 'Name').'</label>',
-            $naviforms->textfield('shipping_address-name', $object->shipping_address->name)
+            $naviforms->textfield('shipping_address-name', (isset($object->shipping_address->name) ? $object->shipping_address->name : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(778, 'National identification number').'</label>',
-            $naviforms->textfield('shipping_address-nin', $object->shipping_address->nin)
+            $naviforms->textfield('shipping_address-nin', (isset($object->shipping_address->nin) ? $object->shipping_address->nin : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(592, 'Company').'</label>',
-            $naviforms->textfield('shipping_address-company', $object->shipping_address->company)
+            $naviforms->textfield('shipping_address-company', (isset($object->shipping_address->company) ? $object->shipping_address->company : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(233, 'Address').'</label>',
-            $naviforms->textfield('shipping_address-address', $object->shipping_address->address)
+            $naviforms->textfield('shipping_address-address', (isset($object->shipping_address->address) ? $object->shipping_address->address : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(319, 'Location').'</label>',
-            $naviforms->textfield('shipping_address-location', $object->shipping_address->location)
+            $naviforms->textfield('shipping_address-location', (isset($object->shipping_address->location) ? $object->shipping_address->location : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(318, 'Zip code').'</label>',
-            $naviforms->textfield('shipping_address-zipcode', $object->shipping_address->zipcode)
+            $naviforms->textfield('shipping_address-zipcode', (isset($object->shipping_address->zipcode) ? $object->shipping_address->zipcode : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(224, 'Country').'</label>',
-            $naviforms->countryfield('shipping_address-country', $object->shipping_address->country)
+            $naviforms->countryfield('shipping_address-country', (isset($object->shipping_address->country) ? $object->shipping_address->country : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(473, 'Region').'</label>',
-            $naviforms->countryregionfield('shipping_address-region', $object->shipping_address->region, 'shipping_address-country')
+            $naviforms->countryregionfield('shipping_address-region', (isset($object->shipping_address->region) ? $object->shipping_address->region : ''), 'shipping_address-country')
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(320, 'Phone').'</label>',
-            $naviforms->textfield('shipping_address-phone', $object->shipping_address->phone)
+            $naviforms->textfield('shipping_address-phone', (isset($object->shipping_address->phone) ? $object->shipping_address->phone : ''))
         )
     );
 
@@ -864,70 +876,70 @@ function orders_form($object)
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(159, 'Name').'</label>',
-            $naviforms->textfield('billing_address-name', $object->billing_address->name)
+            $naviforms->textfield('billing_address-name', (isset($object->billing_address->name) ? $object->billing_address->name : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(592, 'Company').'</label>',
-            $naviforms->textfield('billing_address-company', $object->billing_address->company)
+            $naviforms->textfield('billing_address-company', (isset($object->billing_address->company) ? $object->billing_address->company : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(778, 'National identification number').'</label>',
-            $naviforms->textfield('billing_address-nin', $object->billing_address->nin)
+            $naviforms->textfield('billing_address-nin', (isset($object->billing_address->nin) ? $object->billing_address->nin : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(233, 'Address').'</label>',
-            $naviforms->textfield('billing_address-address', $object->billing_address->address)
+            $naviforms->textfield('billing_address-address', (isset($object->billing_address->address) ? $object->billing_address->address : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(319, 'Location').'</label>',
-            $naviforms->textfield('billing_address-location', $object->billing_address->location)
+            $naviforms->textfield('billing_address-location', (isset($object->billing_address->location) ? $object->billing_address->location : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(318, 'Zip code').'</label>',
-            $naviforms->textfield('billing_address-zipcode', $object->billing_address->zipcode)
+            $naviforms->textfield('billing_address-zipcode', (isset($object->billing_address->zipcode) ? $object->billing_address->zipcode : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(224, 'Country').'</label>',
-            $naviforms->countryfield('billing_address-country', $object->billing_address->country)
+            $naviforms->countryfield('billing_address-country', (isset($object->billing_address->country) ? $object->billing_address->country : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(473, 'Region').'</label>',
-            $naviforms->countryregionfield('billing_address-region', $object->billing_address->region, 'billing_address-country')
+            $naviforms->countryregionfield('billing_address-region', (isset($object->billing_address->region) ? $object->billing_address->region : ''), 'billing_address-country')
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(320, 'Phone').'</label>',
-            $naviforms->textfield('billing_address-phone', $object->billing_address->phone)
+            $naviforms->textfield('billing_address-phone', (isset($object->billing_address->phone) ? $object->billing_address->phone : ''))
         )
     );
 
     $navibars->add_tab_content_row(
         array(
             '<label>&nbsp;&nbsp;<i class="fa fa-angle-right"></i> '.t(44, 'E-Mail').'</label>',
-            $naviforms->textfield('billing_address-email', $object->billing_address->email)
+            $naviforms->textfield('billing_address-email', (isset($object->billing_address->email) ? $object->billing_address->email : ''))
         )
     );
 
@@ -995,6 +1007,5 @@ function orders_form($object)
 
 	return $navibars->generate();
 }
-
 
 ?>

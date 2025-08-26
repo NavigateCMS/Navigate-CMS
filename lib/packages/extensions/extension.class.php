@@ -248,7 +248,7 @@ class extension
 
             // if we are in Navigate CMS, user has the default language
             // if we call this function from the website, the session has the default language
-            $current_language = $session['lang'];
+            $current_language = (is_array($session) ? value_or_default(array($session, 'lang'), null) : null);
             if(empty($current_language) && !empty($webuser))
             {
                 $current_language = $webuser->language;
@@ -396,7 +396,7 @@ class extension
         }
 
         $allowed_extensions = array();  // empty => all of them
-        if(!$ignore_permissions)
+        if(!$ignore_permissions && !empty($user))
         {
             if(method_exists($user, "permission"))
             {
@@ -463,7 +463,7 @@ class extension
 
         $extensions = array_filter($extensions);
         sort($extensions);
-
+        
         return $extensions;
     }
 

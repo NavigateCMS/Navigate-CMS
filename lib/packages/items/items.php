@@ -20,11 +20,13 @@ function run()
 	$out = '';
 	$item = new item();
 			
-	switch($_REQUEST['act'])
+    $act = value_or_default(array($_REQUEST, 'act'), '');
+
+	switch($act)
 	{
 		case 'json':
 		case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -76,7 +78,7 @@ function run()
 					
 				default: // list or search	
 					// translation of request search & order fields
-					switch($_REQUEST['searchField'])
+					switch(value_or_default(array($_REQUEST, 'searchField'), ''))
 					{
 						case 'id':
 							$_REQUEST['searchField'] = 'i.id';
@@ -100,31 +102,31 @@ function run()
 					}
 
                     // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'dates', 'title', 'comments', 'category', 'date_to_display', 'date_modified', 'permission', 'note'))
+                    if( !in_array(value_or_default(array($_REQUEST, 'sord'), ''), array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array(value_or_default(array($_REQUEST, 'sidx'), ''), array('id', 'dates', 'title', 'comments', 'category', 'date_to_display', 'date_modified', 'permission', 'note'))
                     )
                     {
                         return false;
                     }
 								
-					if($_REQUEST['sidx']=='dates')
+					if(value_or_default(array($_REQUEST, 'sidx'), '')=='dates')
                     {
                         $_REQUEST['sidx'] = 'i.date_published';
                     }
 
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = value_or_default(array($_REQUEST, 'sidx'), 'id').' '.value_or_default(array($_REQUEST, 'sord'), 'ASC');
 
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$page = intval(value_or_default(array($_REQUEST, 'page'), 1));
+					$max	= intval(value_or_default(array($_REQUEST, 'rows'), 25));
 					$offset = ($page - 1) * $max;
 					$where = ' i.website = '.$website->id;
 					$parameters = array();
 					
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if(value_or_default(array($_REQUEST, '_search'), '')=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -616,7 +618,7 @@ function run()
                 $_REQUEST['section'] = 'main';
             }
 		
-			if($_REQUEST['history']=='true')
+			if(value_or_default(array($_REQUEST, 'history'), '')=='true')
 			{
 				$DB->query('SELECT text
 							  FROM nv_webdictionary_history
@@ -851,7 +853,7 @@ function run()
                 $query_params[':embedding'] = $_REQUEST['embedding'];
             }
 
-            $limit = intval($_REQUEST['page_limit']);
+            $limit = intval(value_or_default(array($_REQUEST, 'page_limit'), 20));
             if(empty($limit))
             {
                 $limit = null;
@@ -873,7 +875,7 @@ function run()
 		        GROUP BY nvw.node_id, nvw.text
 		        ORDER BY nvw.text ASC
 			     LIMIT '.$limit.'
-			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
+			     OFFSET '.max(0, intval(value_or_default(array($_REQUEST, 'page_limit'), 0)) * (intval(value_or_default(array($_REQUEST, 'page'), 1))-1));
 
             $DB->query($sql, 'array', $query_params);
             $rows = $DB->result();
@@ -1141,9 +1143,9 @@ function items_list()
         "?fid=items&act=edit&id="
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '') == 'true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
@@ -2162,7 +2164,7 @@ function items_form($item)
 		');
 		
 		// script will be bound to onload event at the end of this php function (after getScript is done)
-		$onload_language = $_REQUEST['tab_language'];
+		$onload_language = value_or_default(array($_REQUEST, 'tab_language'), '');
 		if(empty($onload_language))
         {
             $onload_language = $website->languages_list[0];

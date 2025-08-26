@@ -10,14 +10,18 @@ function run()
 	$out = '';
 	$item = new backup();
 			
-	switch($_REQUEST['act'])
+	// Extract safe values for array access
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
 	    case 1:	// json data retrieval & operations
-			switch($_REQUEST['oper'])
+			// Extract safe values for array access
+			$oper = value_or_default(array($_REQUEST, 'oper'), '');
+			switch($oper)
 			{
 				case 'del':	// remove rows
-					$ids = $_REQUEST['ids'];
+					$ids = value_or_default(array($_REQUEST, 'ids'), array());
 					foreach($ids as $id)
 					{
 						$item->load($id);
@@ -27,17 +31,17 @@ function run()
 					break;
 					
 				default: // list or search	
-					$page = intval($_REQUEST['page']);
-					$max	= intval($_REQUEST['rows']);
+					$page = intval(value_or_default(array($_REQUEST, 'page'), 0));
+					$max = intval(value_or_default(array($_REQUEST, 'rows'), 10));
 					$offset = ($page - 1) * $max;
 					$where = " i.website = ".$website->id;
 					$parameters = array();
 										
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -111,7 +115,7 @@ function run()
 				$item->load(intval($_REQUEST['id']));	
 			}
 							
-			if($_REQUEST['form-sent']=='true')
+			if(value_or_default(array($_REQUEST, 'form-sent'), '')=='true')
 			{						
 				$item->load_from_post();
                 naviforms::check_csrf_token();
@@ -231,9 +235,9 @@ function backups_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=backups&act=1&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -425,4 +429,5 @@ function backups_form($item)
 
 	return $navibars->generate();
 }
+
 ?>

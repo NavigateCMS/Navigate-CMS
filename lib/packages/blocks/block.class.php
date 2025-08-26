@@ -25,6 +25,8 @@ class block
     public $uid;
     public $properties;
 
+    public $_block_group_id;
+
     public function __clone()
     {
         foreach($this as $key => $val)
@@ -714,7 +716,7 @@ class block
         // Navigate 1.6.6 compatibility (before title/code separation)
         for($d=0; $d < count($data); $d++)
         {
-        	if(function_exists($theme->t))
+        	if(isset($theme->t) && !empty($theme->t) && function_exists($theme->t))
             {
                 $data[$d]['title'] = $theme->t($data[$d]['title']);
             }
@@ -782,7 +784,7 @@ class block
 					
 		if(!$ok)
         {
-            throw new Exception($DB->last_error());
+            throw new Exception($DB->get_last_error());
         }
 							
 		return true;
@@ -1076,7 +1078,7 @@ class block
 
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

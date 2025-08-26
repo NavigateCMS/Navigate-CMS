@@ -7,14 +7,12 @@ require_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
 
 function run()
 {
-	global $layout;
-	global $DB;
-	global $website;
 	global $theme;
 
 	$out = '';
 
-	switch($_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
 		case "copy_from_template_zones":
 			// return template sections and (textarea) properties for a content id
@@ -26,7 +24,10 @@ function run()
             {
 	            $title = $theme->t($template->sections[$ts]['name']);
 	            if($title == '#main#')
-		            $title = t(238, 'Main content');
+				{
+					$title = t(238, 'Main content');
+				}
+
 	            $zones[] = array(
 		            'type' => 'section',
 		            'code' => $template->sections[$ts]['code'],
@@ -38,7 +39,9 @@ function run()
 			{
 				// ignore non-textual properties
 				if(!in_array($template->properties[$ps]->type, array("text", "textarea", "rich_textarea")))
+				{
 					continue;
+				}
 
 				$zones[] = array(
 		            'type' => 'property',

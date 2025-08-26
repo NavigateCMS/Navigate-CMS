@@ -10,7 +10,8 @@ function run()
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");	
 	
-	switch(@$_REQUEST['act'])
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
 		case 'manual_update':
 			$ok = update::install_from_repository(intval($_POST['update_manual_file']));
@@ -76,13 +77,9 @@ function run()
 
 function update_list()
 {
-	global $user;
-	global $DB;
-	global $website;
 	global $layout;
 	
 	$navibars = new navibars();
-	$naviforms = new naviforms();
 	
 	$navibars->title(t(285, 'Update'));
 	
@@ -203,6 +200,5 @@ function update_list()
 	
 	return $navibars->generate();
 }
-
 
 ?>

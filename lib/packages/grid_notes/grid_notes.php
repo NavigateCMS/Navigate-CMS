@@ -1,9 +1,10 @@
 <?php
+
 function run()
 {
 	$out = '';
 	
-	switch(@$_REQUEST['act'])
+	switch(isset($_REQUEST['act']) ? $_REQUEST['act'] : '')
 	{
 		case 'grid_note_background':
             if(naviforms::check_csrf_token('header'))

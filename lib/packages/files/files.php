@@ -11,11 +11,12 @@ function run()
 	$out = '';
 	$item = new file();
 			
-	switch($_REQUEST['act'])
+	$act = value_or_default($_REQUEST['act'], '');
+	switch($act)
 	{
         case "json":
         case 1: // json retrieval & operations
-			if($_REQUEST['op']=='upload')
+			if(value_or_default(array($_REQUEST, 'op'), '')=='upload')
 			{
 			    if(!naviforms::check_csrf_token(null, false))
                 {
@@ -53,7 +54,7 @@ function run()
 				}
 			}
 
-            switch($_REQUEST['op'])
+            switch(value_or_default(array($_REQUEST, 'op'), ''))
             {
                 case 'create_folder':
                     $folder = file::create_folder(
@@ -237,15 +238,15 @@ function run()
                     break;
 
                 case 'video_info':
-                    if($_REQUEST['provider']=='youtube')
+                    if(value_or_default(array($_REQUEST, 'provider'), '')=='youtube')
                     {
                         $item->load_from_youtube($_REQUEST['reference'], false); // force cache reload
                     }
-                    else if($_REQUEST['provider']=='vimeo')
+                    else if(value_or_default(array($_REQUEST, 'provider'), '')=='vimeo')
                     {
                         $item->load_from_vimeo($_REQUEST['reference'], false); // force cache reload
                     }
-                    else if($_REQUEST['provider']=='direct')
+                    else if(value_or_default(array($_REQUEST, 'provider'), '')=='direct')
                     {
                         $reference = json_decode($_REQUEST['reference']);
                         $item->load_from_custom_url($reference);
@@ -374,14 +375,16 @@ function run()
 		case 0: // list / search result
 		default:						
 			// show requested folder or search
+			$parent = value_or_default($_REQUEST['parent'], '');
+			$quicksearch = value_or_default(array($_REQUEST, 'navigate-quicksearch'), '');
 			$out = files_browser(
-			    core_purify_string($_REQUEST['parent']),
-                core_purify_string($_REQUEST['navigate-quicksearch'])
+			    core_purify_string($parent),
+                core_purify_string($quicksearch)
             );
 
             users_log::action(
-                core_purify_string($_REQUEST['fid']),
-                intval($_REQUEST['parent']),
+                core_purify_string(value_or_default($_REQUEST['fid'], '')),
+                intval(value_or_default($_REQUEST['parent'], 0)),
                 'list',
                 '',
                 json_encode($_REQUEST)

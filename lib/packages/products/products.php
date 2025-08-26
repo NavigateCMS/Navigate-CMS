@@ -21,15 +21,16 @@ function run()
 	$out = '';
 	$item = new product();
 			
-	switch($_REQUEST['act'])
+    $act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
 		case 'json':
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
                     {
-                        $ids = $_REQUEST['ids'];
+                        $ids = value_or_default(array($_REQUEST, 'ids'), array());
                         foreach($ids as $id)
                         {
                             $item->load($id);
@@ -65,8 +66,8 @@ function run()
                         'object',
                         array(
                             ':wid' => $website->id,
-                            ':lang' => $_REQUEST['lang'],
-                            ':tag' => $_REQUEST['tag']
+                            ':lang' => value_or_default(array($_REQUEST, 'lang'), ''),
+                            ':tag' => value_or_default(array($_REQUEST, 'tag'), '')
                         )
                     );
 
@@ -82,7 +83,7 @@ function run()
 
 				default: // list or search
 					// translation of request search & order fields
-					switch($_REQUEST['searchField'])
+					switch(value_or_default(array($_REQUEST, 'searchField'), ''))
 					{
 						case 'id':
 							$_REQUEST['searchField'] = 'p.id';
@@ -111,32 +112,35 @@ function run()
 						default:
 					}
 
+                    $sord = value_or_default(array($_REQUEST, 'sord'), '');
+                    $sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+
                     // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'dates', 'title', 'category', 'date_modified', 'permission', 'brand', 'comments'))
+                    if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'dates', 'title', 'category', 'date_modified', 'permission', 'brand', 'comments'))
                     )
                     {
                         return false;
                     }
 
-					if($_REQUEST['sidx']=='dates')
+					if($sidx=='dates')
                     {
-                        $_REQUEST['sidx'] = 'p.date_published';
+                        $sidx = 'p.date_published';
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 
 				
-					$page       =   intval($_REQUEST['page']);
-					$max	    =   intval($_REQUEST['rows']);
+					$page       =   intval(value_or_default(array($_REQUEST, 'page'), 1));
+					$max	    =   intval(value_or_default(array($_REQUEST, 'rows'), 25));
 					$offset     =   ($page - 1) * $max;
 					$where      =   ' p.website = :wid';
 					$parameters =   array();
 
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if(value_or_default(array($_REQUEST, '_search'), '')=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -181,7 +185,7 @@ function run()
 						}
 						else	// single search
                         {
-                            $where .= ' AND '.navitable::jqgridcompare($_REQUEST['searchField'], $_REQUEST['searchOper'], $_REQUEST['searchString']);
+                            $where .= ' AND '.navitable::jqgridcompare(value_or_default(array($_REQUEST, 'searchField'), ''), value_or_default(array($_REQUEST, 'searchOper'), ''), value_or_default(array($_REQUEST, 'searchString'), ''));
                         }
 					}
 
@@ -281,8 +285,8 @@ function run()
                         $item_galleries = mb_unserialize($dataset[$i]['galleries']);
 						if(is_array($item_galleries))
                         {
-                            $item_image = array_keys($item_galleries[0]);
-                            $item_image = $item_image[0];
+                            $item_image = array_keys(value_or_default(array($item_galleries, 0), array()));
+                            $item_image = value_or_default(array($item_image, 0), '');
                             if(is_numeric($item_image))
                             {
                                 $item_image = '<img class="products_list_image_lazyload" src="'.NVWEB_OBJECT.'?type=blank" width="64" height="48" data-src="'.file::file_url($item_image, 'inline').'&width=64&height=48&border=true" />';
@@ -404,7 +408,7 @@ function run()
 
 					$layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
 					$item->load($item->id);
-					users_log::action($_REQUEST['fid'], $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+					users_log::action(value_or_default(array($_REQUEST, 'fid'), ''), $item->id, 'save', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 				}
 				catch(Exception $e)
 				{
@@ -413,14 +417,14 @@ function run()
 			}
 			else
             {
-                users_log::action($_REQUEST['fid'], $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
+                users_log::action(value_or_default(array($_REQUEST, 'fid'), ''), $item->id, 'load', $item->dictionary[$website->languages_list[0]]['title']);
             }
 		
 			$out = products_form($item);
 			break;
 
         case 'delete':
-            if($_REQUEST['rtk'] != $_SESSION['request_token'])
+            if(value_or_default(array($_REQUEST, 'rtk'), '') != $_SESSION['request_token'])
             {
                 $layout->navigate_notification(t(344, 'Security error'), true, true);
                 break;
@@ -439,7 +443,7 @@ function run()
 						{
 							$layout->navigate_notification(t(55, 'Item removed successfully.'), false);
 							$out = products_list();
-							users_log::action($_REQUEST['fid'], $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+							users_log::action(value_or_default(array($_REQUEST, 'fid'), ''), $item->id, 'remove', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 						}
 					}
 
@@ -470,7 +474,7 @@ function run()
         case 'duplicate':
 			if(!empty($_REQUEST['id']))
 			{
-                if($_REQUEST['rtk'] != $_SESSION['request_token'])
+                if(value_or_default(array($_REQUEST, 'rtk'), '') != $_SESSION['request_token'])
                 {
                     $layout->navigate_notification(t(344, 'Security error'), true, true);
                     break;
@@ -508,7 +512,7 @@ function run()
                     $out = products_form($item);
 				}
 
-				users_log::action($_REQUEST['fid'], $item->id, 'duplicate', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
+				users_log::action(value_or_default(array($_REQUEST, 'fid'), ''), $item->id, 'duplicate', $item->dictionary[$website->languages_list[0]]['title'], json_encode($_REQUEST));
 			}
 			break;
 
@@ -555,9 +559,9 @@ function run()
                 'array',
                 array(
                     ':wid' => $website->id,
-                    ':lang' => $_REQUEST['lang'],
-                    ':node_id' => $_REQUEST['id'],
-                    ':subtype' => 'section-'.$_REQUEST['section']
+                    ':lang' => value_or_default(array($_REQUEST, 'lang'), ''),
+                    ':node_id' => value_or_default(array($_REQUEST, 'id'), ''),
+                    ':subtype' => 'section-'.value_or_default(array($_REQUEST, 'section'), '')
                 )
             );
 			
@@ -597,8 +601,8 @@ function run()
 				'array',
                 array(
                     ':wid' => $website->id,
-                    ':lang' => $_REQUEST['lang'],
-                    ':text' => '%' . $_REQUEST['title'] . '%'
+                    ':lang' => value_or_default(array($_REQUEST, 'lang'), ''),
+                    ':text' => '%' . value_or_default(array($_REQUEST, 'title'), '') . '%'
                 )
 			);
 
@@ -614,7 +618,7 @@ function run()
                 $_REQUEST['section'] = 'main';
             }
 		
-			if($_REQUEST['history']=='true')
+			if(value_or_default(array($_REQUEST, 'history'), '')=='true')
 			{
 				$DB->query(
 				    'SELECT text
@@ -662,10 +666,10 @@ function run()
                            AND node_id = :node_id',
                     'array',
                     array(
-                        ':subtype' => 'property-'.$_REQUEST['section'].'-'.$_REQUEST['lang'],
-                        ':lang' => $_REQUEST['lang'],
+                        ':subtype' => 'property-'.value_or_default(array($_REQUEST, 'section'), '').'-'.value_or_default(array($_REQUEST, 'lang'), ''),
+                        ':lang' => value_or_default(array($_REQUEST, 'lang'), ''),
                         ':wid' => $website->id,
-                        ':node_id' => $_REQUEST['node_id']
+                        ':node_id' => value_or_default(array($_REQUEST, 'node_id'), '')
                     )
                 );
 
@@ -744,7 +748,7 @@ function run()
             'object',
                 array(
                     ':wid' => $website->id,
-                    ':path' => $_REQUEST['path']
+                    ':path' => value_or_default(array($_REQUEST, 'path'), '')
                 )
             );
 			
@@ -755,7 +759,7 @@ function run()
 			break;
 
         case 'sku_free_check':
-			$sku = trim($_REQUEST['sku']);
+			$sku = trim(value_or_default(array($_REQUEST, 'sku'), ''));
 
 			$DB->query('
                 SELECT id
@@ -789,18 +793,18 @@ function run()
 			     LIMIT 30',
 				'array',
                 array(
-                    ':username' => '%'.$_REQUEST['username'].'%'
+                    ':username' => '%'.value_or_default(array($_REQUEST, 'username'), '').'%'
                 )
             );
 						
 			$rows = $DB->result();
             $total = $DB->foundRows();
 
-            if(empty($_REQUEST['format']) || $_REQUEST['format']=='select2')
+            if(empty(value_or_default(array($_REQUEST, 'format'), '')) || value_or_default(array($_REQUEST, 'format'), '')=='select2')
             {
                 echo json_encode(array('items' => $rows, 'totalCount' => $total));
             }
-            else if($_REQUEST['format'] == 'autocomplete')
+            else if(value_or_default(array($_REQUEST, 'format'), '') == 'autocomplete')
             {
                 $out = array();
                 foreach($rows as $row)
@@ -836,7 +840,7 @@ function run()
                 $query_params[':template'] = $_REQUEST['template'];
             }
 
-            $limit = intval($_REQUEST['page_limit']);
+            $limit = intval(value_or_default(array($_REQUEST, 'page_limit'), 20));
             if(empty($limit))
             {
                 $limit = null;
@@ -858,7 +862,7 @@ function run()
 		        GROUP BY nvw.node_id, nvw.text
 		        ORDER BY nvw.text ASC
 			     LIMIT '.$limit.'
-			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
+			     OFFSET '.max(0, intval(value_or_default(array($_REQUEST, 'page_limit'), 0)) * (intval(value_or_default(array($_REQUEST, 'page'), 1))-1));
 
             $DB->query($sql, 'array', $query_params);
             $rows = $DB->result();
@@ -890,7 +894,7 @@ function run()
             // find a brand by its name
             $text = $_REQUEST['term'];
 
-            $limit = intval($_REQUEST['page_limit']);
+            $limit = intval(value_or_default(array($_REQUEST, 'page_limit'), 20));
             if(empty($limit))
             {
                 $limit = null;
@@ -906,7 +910,7 @@ function run()
                        )
 		        ORDER BY nvb.name ASC
 			     LIMIT '.$limit.'
-			     OFFSET '.max(0, intval($_REQUEST['page_limit']) * (intval($_REQUEST['page'])-1));
+			     OFFSET '.max(0, intval(value_or_default(array($_REQUEST, 'page_limit'), 0)) * (intval(value_or_default(array($_REQUEST, 'page'), 1))-1));
 
             $DB->query(
                 $sql,
@@ -1186,9 +1190,9 @@ function products_list()
         "?fid=products&act=edit&id="
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=products&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -2175,7 +2179,7 @@ function products_form($item)
 		');
 		
 		// script will be bound to onload event at the end of this php function (after getScript is done)
-		$onload_language = $_REQUEST['tab_language'];
+		$onload_language = value_or_default(array($_REQUEST, 'tab_language'), '');
 		if(empty($onload_language))
         {
             $onload_language = $website->languages_list[0];

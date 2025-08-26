@@ -10,10 +10,14 @@ function run()
 	$out = '';
 	$object = new brand();
 			
-	switch($_REQUEST['act'])
+	// Extract safe values for array access
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
-			switch($_REQUEST['oper'])
+			// Extract safe values for array access
+			$oper = value_or_default(array($_REQUEST, 'oper'), '');
+			switch($oper)
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -39,11 +43,11 @@ function run()
                     $parameters = array();
                     $where = " website = ".intval($website->id)." ";
 
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $object->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $object->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -181,9 +185,9 @@ function brands_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=brands&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -215,9 +219,13 @@ function brands_form($object)
     $layout->navigate_editorfield_link_dialog();
 	
 	if(empty($object->id))
-		$navibars->title(t(681, 'Brands').' / '.t(38, 'Create'));
+    {
+        $navibars->title(t(681, 'Brands').' / '.t(38, 'Create'));
+    }
 	else
+    {
 		$navibars->title(t(681, 'Brands').' / '.t(170, 'Edit').' ['.$object->id.']');
+    }
 
     $navibars->add_actions(
         array(

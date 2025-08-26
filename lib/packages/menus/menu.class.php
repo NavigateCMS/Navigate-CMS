@@ -191,7 +191,7 @@ class menu
         $DB->query('SELECT * FROM nv_menus', 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }

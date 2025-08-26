@@ -519,7 +519,7 @@ class file
             (   id, website, type, parent, name, size, mime,
                 width, height, focalpoint, title, description,
                 date_added, uploaded_by,
-                permission, access, groups, system, enabled)
+                permission, access, `groups`, `system`, enabled)
             VALUES
             ( 0,
               :website, :type, :parent, :fname, :size, :mime,
@@ -597,8 +597,8 @@ class file
                 uploaded_by	=	:uploaded_by,
                 permission	=	:permission,
                 access		=	:access,
-                groups      =   :groups,
-                system		=	:system,
+                `groups`      =   :groups,
+                `system`		=	:system,
                 enabled		=	:enabled
             WHERE id = :id
               AND website = :website_id
@@ -2705,7 +2705,7 @@ class file
         $DB->query('SELECT * FROM nv_files WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }
