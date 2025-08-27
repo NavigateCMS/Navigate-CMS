@@ -13,11 +13,12 @@ function run()
 	$out = '';
 	$item = new website();
 
-	switch(@$_REQUEST['act'])
+    $act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
 		case 'json':
 		case 1:	// json data retrieval & operations
-			switch(@$_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'search_links': // active website only!
 					$text = $_REQUEST['text'];
@@ -87,11 +88,11 @@ function run()
 					$where = " 1=1 ";
 					$parameters = array();
 
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $item->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $item->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -447,9 +448,9 @@ function websites_list()
         )
     );
 
-	if(@$_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 
@@ -607,52 +608,52 @@ function websites_form($item)
 
 		    $extra_actions[] = '<a href="#" action="navigate_remove_website_data" onclick="javascript: navigate_remove_website_data();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/cross.png"> '.t(208, 'Remove all content').'</a>';
 		    $layout->add_script('
-            function navigate_remove_website_data()
-            {
-                var confirmation = "<div>";
-                confirmation += "<br /><div><strong>'.t(497, 'Do you really want to erase this data?').'</strong> ('.t(16, "Structure").', '.t(22, "Elements").', '.t(23, "Blocks").', '.t(250, "Comments").'...)</div><br />";
-                confirmation += "<form action=\"?\" onSubmit=\"return false;\"><div class=\"navigate-form-row\"><label>'.t(2, "Password").'</label></div><input type=\"password\" id=\"navigate_remove_website_data_password\" style=\"width: 90%;\" /></form></div>";
-                confirmation += "</div>";
+                function navigate_remove_website_data()
+                {
+                    var confirmation = "<div>";
+                    confirmation += "<br /><div><strong>'.t(497, 'Do you really want to erase this data?').'</strong> ('.t(16, "Structure").', '.t(22, "Elements").', '.t(23, "Blocks").', '.t(250, "Comments").'...)</div><br />";
+                    confirmation += "<form action=\"?\" onSubmit=\"return false;\"><div class=\"navigate-form-row\"><label>'.t(2, "Password").'</label></div><input type=\"password\" id=\"navigate_remove_website_data_password\" style=\"width: 90%;\" /></form></div>";
+                    confirmation += "</div>";
 
-                $(confirmation).dialog({
-                    resizable: true,
-                    height: 250,
-                    width: 400,
-                    modal: true,
-                    title: "'.t(59, 'Confirmation').'",
-                    buttons: {
-                        "'.t(190, 'Ok').'": function()
-                        {
-                            $(this).dialog("close");
+                    $(confirmation).dialog({
+                        resizable: true,
+                        height: 250,
+                        width: 400,
+                        modal: true,
+                        title: "'.t(59, 'Confirmation').'",
+                        buttons: {
+                            "'.t(190, 'Ok').'": function()
+                            {
+                                $(this).dialog("close");
 
-                            $.post(
-                                "?fid=websites&act=remove_content",
-                                {
-                                    website: $("#id").val(),
-                                    password: $("#navigate_remove_website_data_password").val()
-                                },
-                                function(data)
-                                {
-                                    if(data=="true")
+                                $.post(
+                                    "?fid=websites&act=remove_content",
                                     {
-                                        navigate_notification("'.t(419, "Process complete").'");
-                                        $("a[action=\'navigate_remove_website_data\']").parent().fadeOut();
-                                    }
-                                    else
+                                        website: $("#id").val(),
+                                        password: $("#navigate_remove_website_data_password").val()
+                                    },
+                                    function(data)
                                     {
-                                        navigate_notification("'.t(56, "Unexpected error.").' " + data, true);
+                                        if(data=="true")
+                                        {
+                                            navigate_notification("'.t(419, "Process complete").'");
+                                            $("a[action=\'navigate_remove_website_data\']").parent().fadeOut();
+                                        }
+                                        else
+                                        {
+                                            navigate_notification("'.t(56, "Unexpected error.").' " + data, true);
+                                        }
                                     }
-                                }
-                            );
-                        },
-                        "'.t(58, 'Cancel').'": function()
-                        {
-                            $(this).dialog("close");
+                                );
+                            },
+                            "'.t(58, 'Cancel').'": function()
+                            {
+                                $(this).dialog("close");
+                            }
                         }
-                    }
-                });
-            }
-        ');
+                    });
+                }
+            ');
 	    }
 
 	    // we attach an event to "websites" which will be fired by navibars to put an extra button

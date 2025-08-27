@@ -218,11 +218,16 @@ function nvweb_search($vars=array())
 		$offset = intval($_GET['page'] - 1) * $vars['items'];
 
         // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
-        $order      = @$_REQUEST['order'];
+        $order = value_or_default(array($_REQUEST, 'order'), '');
+        
         if(empty($order))
+        {
             $order  = @$vars['order'];
+        }
         if(empty($order))   // default order: latest
+        {
             $order = 'latest';
+        }
 
         $orderby = nvweb_list_get_orderby($order);
         // we can't use the title alias in search; in fact it does not make sense, as the search

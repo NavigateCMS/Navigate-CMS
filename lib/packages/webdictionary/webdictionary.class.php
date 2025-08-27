@@ -24,10 +24,12 @@ class webdictionary
 
 		if(is_numeric($id))
 		{
-			if($DB->query('SELECT * FROM nv_webdictionary
-							WHERE node_id = '.intval($id).'
-							  AND node_type = "global"
-							  AND website = '.intval($website->id))
+			if($DB->query('
+				SELECT * FROM nv_webdictionary
+				WHERE node_id = '.intval($id).'
+					AND node_type = "global"
+					AND website = '.intval($website->id)
+				)
             )
 			{
 				$data = $DB->result();
@@ -513,7 +515,6 @@ class webdictionary
 	{
 		global $DB;
 		global $website;
-		global $theme;
 
 		$errors = array();
 

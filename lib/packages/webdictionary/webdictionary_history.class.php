@@ -130,7 +130,11 @@ class webdictionary_history
 				
 		$data = $DB->result();
 		
-		if(!is_array($data)) $data = array();
+		if(!is_array($data)) 
+		{
+			$data = array();
+		}
+		
 		$dictionary = array();
 		
 		foreach($data as $item)
@@ -154,8 +158,10 @@ class webdictionary_history
 	        'object'
         );
 
-        if($type='json')
+        if($type=='json')
+		{
             $out = json_encode($DB->result());
+		}
 
         return $out;
     }

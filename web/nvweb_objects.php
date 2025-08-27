@@ -1,8 +1,8 @@
 <?php
+
 function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL)
 {
 	global $website;
-    global $DB;
 	
 	session_write_close();
 	ob_end_clean();
@@ -173,8 +173,8 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                 else
                 {
                     $border = (@$_REQUEST['border'] == 'false' ? false : true);
-                    $opacity = value_or_default(@$_REQUEST['opacity'], NULL);
-                    $scale_up_force = value_or_default(@$_REQUEST['force_scale'], NULL);
+                    $opacity = value_or_default(array($_REQUEST, 'opacity'), NULL);
+                    $scale_up_force = value_or_default(array($_REQUEST, 'force_scale'), NULL);
 
                     $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, $scale_up_force, $opacity);
                     if(empty($path))

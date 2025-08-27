@@ -1142,7 +1142,7 @@ function nvweb_webuser_customer_account($vars=array())
 
         // TODO: create an event to allow modifying this menu details
 
-        $render_section = value_or_default($_REQUEST['s'], '');
+        $render_section = value_or_default(array($_REQUEST, 's'), '');
 
         $customer_account_menu_html = array();
         $customer_account_menu_html[] = '<ul class="nv_wu-customer_account_menu">';

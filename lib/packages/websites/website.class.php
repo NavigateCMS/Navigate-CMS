@@ -1,4 +1,5 @@
 <?php
+
 class website
 {
 	public $id; 
@@ -1523,7 +1524,7 @@ class website
 
         $DB->query('SELECT * FROM nv_websites WHERE id = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }
@@ -1923,12 +1924,15 @@ class website
 
         $win_loc = json_decode($win_loc, true);
 
-        $countries = property::countries($session['lang'], true);
+        $countries = property::countries(isset($session['lang']) ? $session['lang'] : '', true);
 
         $locales = array();
         foreach($win_loc as $short => $locale)
         {
-            $locales[$locale['locale']] = $locale['lang_name'].' ('.$countries[$locale['country']].') ['.$short.']';
+            if(isset($locale['locale']) && isset($locale['lang_name']) && isset($locale['country']) && isset($countries[$locale['country']]))
+            {
+                $locales[$locale['locale']] = $locale['lang_name'].' ('.$countries[$locale['country']].') ['.$short.']';
+            }
         }
 
         return $locales;
@@ -1941,6 +1945,10 @@ class website
 		if(is_callable('shell_exec') && false === stripos(ini_get('disable_functions'), 'shell_exec'))
 		{
         	$locales = shell_exec('locale -a');
+			if($locales === null) 
+            {
+				$locales = '';
+			}
 			$tmp = explode("\n", $locales);
 		}
 		else
@@ -1970,7 +1978,7 @@ class website
 
         $locales = array();
         $languages = language::language_names(false);
-        $countries = property::countries($session['lang'], true);
+        $countries = property::countries(isset($session['lang']) ? $session['lang'] : '', true);
         $tmp = array_filter($tmp);
         foreach($tmp as $loc)
         {
@@ -1996,12 +2004,16 @@ class website
                 }
             }
 
-            $language = @$languages[substr($loc, 0, 2)];
+            $language = '';
+            if(is_array($languages) && strlen($loc) >= 2)
+            {
+                $language = value_or_default(array($languages, substr($loc, 0, 2)), '');
+            }
             if(empty($language))
             {
                 $language = '?';
             }
-            $country = @$countries[substr($loc, 3,2)];
+            $country = value_or_default(array($countries, substr($loc, 3,2)), '');
             if(!empty($country))
             {
                 $country = ' ('.$country.')';
@@ -2022,7 +2034,7 @@ class website
 
 		if(is_array($homepage_routes))
 		{
-			if(isset($current) && !empty($current['lang']))
+			if(isset($current) && !empty($current['lang']) && isset($homepage_routes[$current['lang']]))
             {
                 $homepage = $homepage_routes[$current['lang']];
             }
@@ -2091,4 +2103,5 @@ class website
         return array($where, $parameters);
     }
 }
+
 ?>

@@ -3,7 +3,6 @@ nvweb_webget_load('properties');
 
 function nvweb_menu($vars=array())
 {
-	global $website;
 	global $DB;
 	global $structure;
 	global $current;
@@ -361,7 +360,7 @@ function nvweb_menu_generate($params)
                     );
 
                     $submenu = nvweb_menu_generate($params_sub);
-                    $submenu = strip_tags($submenu, '<option>');
+                    $submenu = ($submenu === null) ? '' : strip_tags($submenu, '<option>');
 
                     $submenu_separator = value_or_default($params['select_submenu_separator'], "&ndash;&nbsp;");
 

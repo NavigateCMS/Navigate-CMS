@@ -1,4 +1,5 @@
 <?php
+
 class webuser_vote
 {
 	public $id;
@@ -14,9 +15,12 @@ class webuser_vote
 		global $DB;
 		global $website;
 		
-		if($DB->query('SELECT * FROM nv_webuser_votes
-						WHERE id = '.intval($id).'
-						  AND website = '.$website->id))
+		if($DB->query('
+			SELECT * FROM nv_webuser_votes
+			WHERE id = '.intval($id).'
+			  AND website = '.$website->id
+			)
+		)
 		{
 			$data = $DB->result();
 			$this->load_from_resultset($data);
@@ -447,7 +451,7 @@ class webuser_vote
 
         $DB->query('SELECT * FROM nv_webuser_votes WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($DB->result());
         }

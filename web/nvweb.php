@@ -111,7 +111,7 @@ function nvweb_parse($request)
         $route = $request['route'];
 
         // sanitize URL
-        $route = strip_tags( $route );
+        $route = ($route === null) ? '' : strip_tags( $route );
         $route = str_replace( array('"', '>', '<'), '', $route );
 
         // remove last '/' in route if exists

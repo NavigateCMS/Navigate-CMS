@@ -12,14 +12,7 @@ require_once(NAVIGATE_PATH.'/lib/packages/feeds/feed_parser.class.php');
 
 function nvweb_list($vars=array())
 {
-	global $website;
-	global $DB;
 	global $current;
-	global $cache;
-	global $structure;
-	global $webgets;
-    global $theme;
-    global $webuser;
     global $session;
 
 	$out = array();
@@ -678,7 +671,7 @@ function nvweb_list_process_offset($vars = array(), $items)
     {
         $vars['page_parameter'] = 'page';
     }
-    $page = value_or_default($_REQUEST[$vars['page_parameter']], 1);
+    $page = value_or_default(array($_REQUEST, $vars['page_parameter']), 1);
 
     $offset = intval($page - 1) * $items;
 
@@ -731,7 +724,7 @@ function nvweb_list_process_order($vars=array())
     // get order type: REQUEST PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
     $order_by_default = "latest";
 
-    $order = @$_REQUEST['order'];
+    $order = value_or_default(array($_REQUEST, 'order'), '');
 
     if(empty($order))
     {
@@ -1018,13 +1011,12 @@ function nvweb_list_source_structure($vars, $params = array())
         array(
             ':wid' => $website->id,
             ':lang' => $current['lang'],
-            ':time' => core_time(),
-            //':categories' => implode(",", $categories)
+            ':time' => core_time()
         )
     );
 
     $rs = $DB->result();
-    $total = $DB->foundRows();
+    $total = $DB->foundRows();    
 
     return array($rs, $total);
 }
@@ -1637,7 +1629,7 @@ function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_positi
 
 			break;
 
-		// NOTE: the following refers to structure information of an ITEM, useless if the source are categories!
+		// NOTE: the following refers to structure information of an ELEMENT, useless if the source are already categories!
 		case 'structure':
 		case 'category':
 			nvweb_menu_load_dictionary(); // load menu translations if not already done
@@ -3492,4 +3484,5 @@ function nvweb_list_process_special_tags($vars, $rs, $total)
         nvweb_after_body('php', $results_found_func);
     }
 }
+
 ?>

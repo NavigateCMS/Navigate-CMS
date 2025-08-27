@@ -1,4 +1,5 @@
 <?php
+
 function nvweb_self_url($ignore_parameters=false)
 { 
 	if(!isset($_SERVER['REQUEST_URI']))
@@ -309,6 +310,10 @@ function nvweb_load_website_by_url($url, $exit=true)
 
 function nvweb_prepare_link($path="", $root=NVWEB_ABSOLUTE)
 {
+	if($path === null) 
+    { 
+        $path = ''; 
+    }
 	$path = trim($path);
 
     if(	substr(strtolower($path), 0, 7)=='http://' ||
@@ -937,7 +942,7 @@ function nvweb_source_url($type, $id, $lang='')
 	
 	if(empty($lang)) 
     {
-        $lang = $current['lang'];
+        $lang = (isset($current) && is_array($current)) ? value_or_default(array($current, 'lang'), '') : '';
         if(empty($lang))
         {
             $lang = $website->languages_published[0];

@@ -262,14 +262,15 @@ function nvweb_comments($vars=array())
                     $object = $vars['element'];
                 }
 
-				$comment_name = @$_REQUEST[$vars['field-name']];
-				$comment_email = @$_REQUEST[$vars['field-email']];
-				$comment_url = @$_REQUEST[$vars['field-url']];
-				$comment_message = @$_REQUEST[$vars['field-message']];
-                $comment_subscribe = (@in_array($_REQUEST[$vars['field-subscribe']], array('1', true, 'true')))? 1 : 0;
-                $comment_reply_to = @$_REQUEST[$vars['field-reply_to']];
+				$comment_name = isset($_REQUEST[$vars['field-name']]) ? $_REQUEST[$vars['field-name']] : '';
+				$comment_email = isset($_REQUEST[$vars['field-email']]) ? $_REQUEST[$vars['field-email']] : '';
+				$comment_url = isset($_REQUEST[$vars['field-url']]) ? $_REQUEST[$vars['field-url']] : '';
+				$comment_message = isset($_REQUEST[$vars['field-message']]) ? $_REQUEST[$vars['field-message']] : '';
+                $comment_subscribe = isset($_REQUEST[$vars['field-subscribe']]) && in_array($_REQUEST[$vars['field-subscribe']], array('1', true, 'true')) ? 1 : 0;
+                $comment_reply_to = isset($_REQUEST[$vars['field-reply_to']]) ? $_REQUEST[$vars['field-reply_to']] : '';
 
-                if($session['comments_csrf'][$object->id] != $_REQUEST['_comment_csrf'])
+                $comment_csrf = isset($_REQUEST['_comment_csrf']) ? $_REQUEST['_comment_csrf'] : '';
+                if($session['comments_csrf'][$object->id] != $comment_csrf)
                 {
                     $response = $webgets[$webget]['translations']['security_error'];
 
@@ -315,7 +316,7 @@ function nvweb_comments($vars=array())
 
                 // remove any <nv /> or {{nv}} tag
                 $comment_name = core_remove_nvtags($comment_name);
-                $comment_name = strip_tags($comment_name);
+                $comment_name = ($comment_name === null) ? '' : strip_tags($comment_name);
                 $comment_message = core_remove_nvtags($comment_message);
 
                 $comment = new comment();

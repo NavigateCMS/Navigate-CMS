@@ -8,11 +8,13 @@ function run()
 
 	$out = '';
 	$wtext = new webdictionary();
+
+	$act = value_or_default(array($_REQUEST, 'act'), '');
 			
-	switch($_REQUEST['act'])
+	switch($act)
 	{
 		case 'json': // json data retrieval & operations
-			switch($_REQUEST['oper'])
+			switch(value_or_default(array($_REQUEST, 'oper'), ''))
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -39,11 +41,11 @@ function run()
 					$where = ' website = '.$website->id;
 					$parameters = array();
 															
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $wtext->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $wtext->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -99,7 +101,7 @@ function run()
 							0	=> $string_id,	// this 4th column won't appear, it works as ghost column for setting a unique ID to the row
 							1	=> $dataset[$i]['node_id'], // id of the word (Ex. word "3" in English -> test, word "3" in Spanish -> prueba)
 							2	=> $origin,
-							3 	=> language::name_by_code($dataset[$i]['lang']),
+							3 	=> (isset($dataset[$i]['lang']) && !empty($dataset[$i]['lang']) ? language::name_by_code($dataset[$i]['lang']) : ''),
 							4	=> core_special_chars($dataset[$i]['text']),
 							5   => $dataset[$i]['source']
 						);
@@ -165,7 +167,7 @@ function run()
 			break;
 
 		case 'edit_language':
-			if($_REQUEST['form-sent']=='true')
+			if(value_or_default(array($_REQUEST, 'form-sent'), '')=='true')
 			{
                 naviforms::check_csrf_token();
 				$status = webdictionary::save_translations_post($_REQUEST['code']);
@@ -207,7 +209,7 @@ function webdictionary_list()
 	{
 		foreach($website->languages as $wslg_code => $wslg)
         {
-            $wslg_links[] = '<a href="?fid='.$fid.'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.language::name_by_code($wslg_code).'</a>';
+            $wslg_links[] = '<a href="?fid='.$fid.'&act=edit_language&code='.$wslg_code.'"><i class="fa fa-fw fa-caret-right"></i> '.(isset($wslg_code) && !empty($wslg_code) ? language::name_by_code($wslg_code) : '').'</a>';
         }
 
 		$events->add_actions(
@@ -230,9 +232,9 @@ function webdictionary_list()
 	);
 
 	$navitable->setQuickSearchURL('?fid='.$fid.'&act=json&_search=true&quicksearch=');
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), "")=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=".$fid.'&act=json&_search=true&quicksearch='.$nv_qs_text);
     }
 	
@@ -345,7 +347,7 @@ function webdictionary_form($item)
     $data = array();
     foreach($website->languages_list as $l)
     {
-        $data[$l] = language::name_by_code($l);
+        $data[$l] = (isset($l) && !empty($l) ? language::name_by_code($l) : '');
     }
 
 	// load installed translation services
@@ -380,9 +382,9 @@ function webdictionary_form($item)
 		if(count($website->languages_list) > 1)
 		{
 			$navibars->add_tab_content_row(array(
-                '<label>'.language::name_by_code($lang).'</label>',
+                '<label>'.(isset($lang) && !empty($lang) ? language::name_by_code($lang) : '').'</label>',
                 '<div style="float: left; ">',
-                $naviforms->textarea('webdictionary-text-'.$lang, $item->text[$lang]),
+                $naviforms->textarea('webdictionary-text-'.$lang, value_or_default(array($item->text, $lang), "")),
                 '</div>',
                 '<div style="float: left; margin-left: 10px; ">',
                 $translate_menu,
@@ -393,7 +395,7 @@ function webdictionary_form($item)
 		{
 			$navibars->add_tab_content_row(
 				array(
-					'<label>'.language::name_by_code($lang).'</label>',
+					'<label>'.(isset($lang) && !empty($lang) ? language::name_by_code($lang) : '').'</label>',
 					$naviforms->textarea('webdictionary-text-'.$lang, $item->text[$lang])
 				)
 			);
@@ -417,7 +419,7 @@ function webdictionary_search($where, $orderby, $offset, $max, $parameters)
     //$qsearch = substr($where, strpos($where, ' LIKE "%') + 8);
     //$qsearch = mb_strtolower(substr($qsearch, 0, strpos($qsearch, '%" OR')));
     //$qsearch = trim($qsearch);
-    $qsearch = $parameters[':qs_text'];
+    $qsearch = value_or_default(array($parameters, ':qs_text'), '');
 
 	if(!empty($theme))
 	{
@@ -515,6 +517,11 @@ function webdictionary_search($where, $orderby, $offset, $max, $parameters)
 	{
 		for($trs=0; $trs < count($theme_translations); $trs++)
 		{				
+			if(!isset($theme_translations[$trs]))
+			{
+				break;
+			}
+
 			if(	$resultset[$dbrs]['node_type'] == "theme"	&&
 				$resultset[$dbrs]['node_id'] == $theme_translations[$trs]['node_id']	&&
 				$resultset[$dbrs]['lang'] == $theme_translations[$trs]['lang']
@@ -543,6 +550,11 @@ function webdictionary_search($where, $orderby, $offset, $max, $parameters)
 	{
 		for($trs=0; $trs < count($extensions_translations); $trs++)
 		{
+			if(!isset($extensions_translations[$trs]))
+			{
+				break;
+			}
+
 			if(	$resultset[$dbrs]['node_type'] == "extension"	&&
 				$resultset[$dbrs]['extension'] == $extensions_translations[$trs]['extension']	&&
 				$resultset[$dbrs]['node_id'] == $extensions_translations[$trs]['node_id']	&&
@@ -721,7 +733,7 @@ function webdictionary_edit_language_form($code)
 	// generate table
 
 	$table = '<table class="box-table">';
-	$table.= '<tr><th>'.t(237, "Code").'</th><th>'.language::name_by_code($origin).'</th><th>'.language::name_by_code($code).'</th></tr>';
+	$table.= '<tr><th>'.t(237, "Code").'</th><th>'.(isset($origin) ? language::name_by_code($origin) : '').'</th><th>'.(isset($code) ? language::name_by_code($code) : '').'</th></tr>';
 
 	foreach($theme->dictionaries as $otext)
 	{

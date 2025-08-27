@@ -14,9 +14,6 @@ function nvweb_conditional($vars=array())
 	global $website;
 	global $DB;
 	global $current;
-	global $cache;
-	global $structure;
-	global $webgets;
     global $webuser;
     global $session;
 
@@ -84,7 +81,7 @@ function nvweb_conditional($vars=array())
             }
 
             // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
-            $order      = @$_REQUEST['order'];
+            $order      = isset($_REQUEST['order']) ? $_REQUEST['order'] : '';
             if(empty($order))
             {
                 $order  = @$vars['order'];

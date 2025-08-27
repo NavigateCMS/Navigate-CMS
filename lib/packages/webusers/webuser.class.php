@@ -175,13 +175,13 @@ class webuser
 	{
 		//$this->website      = $_REQUEST['webuser-website'];
 
-		$username           = core_purify_string($_REQUEST['webuser-username']);
+		$username           = core_purify_string(value_or_default(array($_REQUEST, 'webuser-username'), ''));
 		$username_changed = ($this->username != $username);
         $this->username = $username;
 
-		if(!empty($_REQUEST['webuser-password']))
+		if(!empty(value_or_default(array($_REQUEST, 'webuser-password'), '')))
         {
-            $this->set_password($_REQUEST['webuser-password']);
+            $this->set_password(value_or_default(array($_REQUEST, 'webuser-password'), ''));
         }
 		else if($username_changed)
         {
@@ -191,36 +191,36 @@ class webuser
             $this->set_password($this->_new_password);
         }
 
-   		$this->email	    = core_purify_string($_REQUEST['webuser-email']);
-   		$this->groups	    = $_REQUEST['webuser-groups'];
-		$this->fullname		= core_purify_string($_REQUEST['webuser-fullname']);
-		$this->gender		= $_REQUEST['webuser-gender'][0];		
-		$this->avatar		= $_REQUEST['webuser-avatar'];		
-		if(!empty($_REQUEST['webuser-birthdate']))
+   		$this->email	    = core_purify_string(value_or_default(array($_REQUEST, 'webuser-email'), ''));
+   		$this->groups	    = value_or_default(array($_REQUEST, 'webuser-groups'), array());
+		$this->fullname		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-fullname'), ''));
+		$this->gender		= value_or_default(array($_REQUEST, 'webuser-gender', 0), '');		
+		$this->avatar		= value_or_default(array($_REQUEST, 'webuser-avatar'), '');		
+		if(!empty(value_or_default(array($_REQUEST, 'webuser-birthdate'), '')))
         {
-            $this->birthdate	= core_date2ts(core_purify_string($_REQUEST['webuser-birthdate']));
+            $this->birthdate	= core_date2ts(core_purify_string(value_or_default(array($_REQUEST, 'webuser-birthdate'), '')));
         }
 		else
         {
             $this->birthdate	= '';
         }
-		$this->language		= $_REQUEST['webuser-language'];			
-		$this->newsletter	= ($_REQUEST['webuser-newsletter']=='1'? '1' : '0');
-		$this->access		= $_REQUEST['webuser-access'];
-		$this->access_begin	= (empty($_REQUEST['webuser-access-begin'])? '' : core_date2ts($_REQUEST['webuser-access-begin']));
-		$this->access_end	= (empty($_REQUEST['webuser-access-end'])? '' : core_date2ts($_REQUEST['webuser-access-end']));
+		$this->language		= value_or_default(array($_REQUEST, 'webuser-language'), '');			
+		$this->newsletter	= (value_or_default(array($_REQUEST, 'webuser-newsletter'), '')=='1'? '1' : '0');
+		$this->access		= value_or_default(array($_REQUEST, 'webuser-access'), '');
+		$this->access_begin	= (empty(value_or_default(array($_REQUEST, 'webuser-access-begin'), ''))? '' : core_date2ts(value_or_default(array($_REQUEST, 'webuser-access-begin'), '')));
+		$this->access_end	= (empty(value_or_default(array($_REQUEST, 'webuser-access-end'), ''))? '' : core_date2ts(value_or_default(array($_REQUEST, 'webuser-access-end'), '')));
 
-		$this->country		= $_REQUEST['webuser-country'];
-		$this->region		= $_REQUEST['webuser-region'];
-		$this->timezone		= $_REQUEST['webuser-timezone'];
-		$this->company		= core_purify_string($_REQUEST['webuser-company']);
-		$this->nin  		= core_purify_string($_REQUEST['webuser-nin']);
-		$this->address		= core_purify_string($_REQUEST['webuser-address']);
-		$this->zipcode		= core_purify_string($_REQUEST['webuser-zipcode']);
-		$this->location		= core_purify_string($_REQUEST['webuser-location']);
-		$this->phone		= core_purify_string($_REQUEST['webuser-phone']);
-		$this->social_website = core_purify_string($_REQUEST['webuser-social_website']);
-		$this->private_comment = core_purify_string($_REQUEST['webuser-private_comment']);
+		$this->country		= value_or_default(array($_REQUEST, 'webuser-country'), '');
+		$this->region		= value_or_default(array($_REQUEST, 'webuser-region'), '');
+		$this->timezone		= value_or_default(array($_REQUEST, 'webuser-timezone'), '');
+		$this->company		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-company'), ''));
+		$this->nin  		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-nin'), ''));
+		$this->address		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-address'), ''));
+		$this->zipcode		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-zipcode'), ''));
+		$this->location		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-location'), ''));
+		$this->phone		= core_purify_string(value_or_default(array($_REQUEST, 'webuser-phone'), ''));
+		$this->social_website = core_purify_string(value_or_default(array($_REQUEST, 'webuser-social_website'), ''));
+		$this->private_comment = core_purify_string(value_or_default(array($_REQUEST, 'webuser-private_comment'), ''));
 
         // social profiles is a navigate cms private field
 	}
@@ -609,7 +609,8 @@ class webuser
 		global $website;
 
 		$session['webuser'] = $this->id;
-		$this->cookie_hash = sha1(rand(1, 9999999));
+		//$this->cookie_hash = sha1(rand(1, 9999999));
+		$this->cookie_hash = sha1(bin2hex(random_bytes(16)));
 		$this->update();
 
         $cookie_domain = $website->domain;
@@ -1176,7 +1177,7 @@ class webuser
 
         $DB->query('SELECT * FROM nv_webusers WHERE website = '.intval($website->id), 'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out['nv_webusers'] = json_encode($DB->result());
         }
@@ -1186,12 +1187,12 @@ class webuser
                       AND nw.website = '.intval($website->id),
             'object');
 
-        if($type='json')
+        if($type=='json')
         {
             $out['nv_webuser_profiles'] = json_encode($DB->result());
         }
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }
