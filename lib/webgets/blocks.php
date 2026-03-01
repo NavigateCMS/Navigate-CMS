@@ -692,7 +692,7 @@ function nvweb_blocks_render_poll($object)
         $session['polls'][$object->id] = false;
     }
 
-    if(($_GET['poll_vote']==$object->id && !empty($_POST['vote'])))
+    if((nv_global_var("GET", 'poll_vote')==$object->id && !empty($_POST['vote'])))
     {
         // submit vote and show results
         if(empty($session['polls'][$object->id]))
@@ -713,7 +713,7 @@ function nvweb_blocks_render_poll($object)
         echo $out;
         nvweb_clean_exit();
     }
-    else if($_GET['poll_result']==$object->id)
+    else if(nv_global_var("GET", 'poll_result')==$object->id)
     {
         echo nvweb_blocks_render_poll_results($object);
         nvweb_clean_exit();

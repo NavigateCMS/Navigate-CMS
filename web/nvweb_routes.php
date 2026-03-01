@@ -380,8 +380,8 @@ function nvweb_route_parse($route="")
             break;
 
 		case 'nv.webuser/verify':
-			$hash = $_REQUEST['hash'];
-			$email = filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL);
+			$hash = nv_global_var("REQUEST", 'hash', '');
+			$email = filter_var(nv_global_var("REQUEST", 'email', ''), FILTER_VALIDATE_EMAIL);
 			if(!empty($hash) && !empty($email))
 			{
 				$ok = webuser::email_verification($email, $hash);
@@ -399,8 +399,8 @@ function nvweb_route_parse($route="")
 			break;
 
         case 'nv.webuser/confirm':
-			$hash = $_REQUEST['hash'];
-			$email = filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL);
+			$hash = nv_global_var("REQUEST", 'hash', '');
+			$email = filter_var(nv_global_var("REQUEST", 'email', ''), FILTER_VALIDATE_EMAIL);
 			$redirect = NVWEB_ABSOLUTE.$website->homepage().'?_s='.time();
 			if(!empty($hash) && !empty($email))
 			{
@@ -417,7 +417,7 @@ function nvweb_route_parse($route="")
 
                     if(!empty($_REQUEST['callback']))
                     {
-                        $redirect = base64_decode($_REQUEST['callback']);
+                        $redirect = base64_decode(nv_global_var("REQUEST", 'callback', ''));
                     }
                 }
                 else
@@ -430,8 +430,8 @@ function nvweb_route_parse($route="")
 			break;
 
         case 'nv.comments/unsubscribe':
-			$cid = $_REQUEST['cid'];
-			$hash = $_REQUEST['hash'];
+			$cid = nv_global_var("REQUEST", 'cid', '');
+			$hash = nv_global_var("REQUEST", 'hash', '');
 			if(!empty($hash) && !empty($cid))
 			{
 				$ok = comment::notifications_unsubscribe($cid, $hash);

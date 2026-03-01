@@ -130,16 +130,16 @@ function nvweb_comments($vars=array())
 	switch(@$vars['mode'])
 	{
 		case 'process':
-
+            
             if(isset($_GET['nv_approve_comment']))
             {
                 // process 1-click comment approval
                 $comment = new comment();
-                $comment->load($_GET['id']);
+                $comment->load(nv_global_var("GET", 'id', 0));
 
                 if(!empty($comment->id) && $comment->status == -1) // comment is still not reviewed
                 {
-                    $hash = $_GET['hash'];
+                    $hash = nv_global_var("GET", 'hash', '');
                     if($hash == sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails)))
                     {
                         // hash check passed
@@ -192,11 +192,11 @@ function nvweb_comments($vars=array())
             {
                 // process 1-click comment removal
                 $comment = new comment();
-                $comment->load($_GET['id']);
+                $comment->load(nv_global_var("GET", 'id', 0));
 
                 if(!empty($comment->id) && $comment->status <= 0) // comment is still not reviewed or already published
                 {
-                    $hash = $_GET['hash'];
+                    $hash = nv_global_var("GET", 'hash', '');
                     if($hash == sha1($comment->id . $comment->email . APP_UNIQUE . serialize($website->contact_emails)))
                     {
                         // hash check passed
@@ -240,7 +240,7 @@ function nvweb_comments($vars=array())
                 $website->purge_pages_cache();
             }
 
-			if($_REQUEST['form-type']=='comment-reply' || isset($_POST[$vars['field-message']]))
+			if(nv_global_var("REQUEST", 'form-type')=='comment-reply' || isset($_POST[$vars['field-message']]))
 			{
 				// user wants to add a new comment
                 $vars['field-name'] = value_or_default($vars['field-name'], 'reply-name');

@@ -123,14 +123,14 @@ function nvweb_webuser($vars=array())
                 $webuser_website = $website->id;
             }
 
-            $signin_username = $_REQUEST[(empty($vars['username_field'])? 'signin_username' : $vars['username_field'])];
-            $signin_password = $_REQUEST[(empty($vars['password_field'])? 'signin_password' : $vars['password_field'])];
+            $signin_username = nv_global_var("REQUEST", (empty($vars['username_field'])? 'signin_username' : $vars['username_field']), '');
+            $signin_password = nv_global_var("REQUEST", (empty($vars['password_field'])? 'signin_password' : $vars['password_field']), '');
 
             // a page may have several forms, which one do we have to check?
             if(!empty($vars['form']))
             {
                 list($field_name, $field_value) = explode('=', $vars['form']);
-                if($_POST[$field_name]!=$field_value)
+                if(nv_global_var("POST", $field_name)!=$field_value)
                 {
                     return;
                 }
@@ -195,7 +195,7 @@ function nvweb_webuser($vars=array())
             if(!empty($vars['form']))
             {
                 list($field_name, $field_value) = explode('=', $vars['form']);
-                if($_POST[$field_name]!=$field_value)
+                if(nv_global_var("POST", $field_name)!=$field_value)
                 {
                     return;
                 }
@@ -213,7 +213,7 @@ function nvweb_webuser($vars=array())
                 $vars['email_field'] = 'newsletter_email';
             }
 
-            $email = $_REQUEST[$vars['email_field']];
+            $email = nv_global_var("REQUEST", $vars['email_field'], '');
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
 
             if(!empty($vars['email_field']) && !empty($email))
@@ -348,14 +348,14 @@ function nvweb_webuser($vars=array())
             // if no account confirmation is required, auto login
 
             // required fields
-            $email = strtolower(trim($_POST[$vars['email_field']]));
-            $password = trim($_POST[$vars['password_field']]);
+            $email = strtolower(trim(nv_global_var("POST", $vars['email_field'], '')));
+            $password = trim(nv_global_var("POST", $vars['password_field'], ''));
 
             // required fields, only if the form has them
-            $conditions = $_POST[$vars['conditions_field']];
+            $conditions = nv_global_var("POST", $vars['conditions_field']);
 
             // optional fields
-            $username = trim($_POST[$vars['username_field']]);
+            $username = trim(nv_global_var("POST", $vars['username_field'], ''));
             if(empty($username))
             {
                 $username = nvweb_webuser_generate_username($email);
@@ -521,7 +521,7 @@ function nvweb_webuser($vars=array())
             if(!empty($vars['form']))
             {
                 list($field_name, $field_value) = explode('=', $vars['form']);
-                if($_POST[$field_name]!=$field_value)
+                if(nv_global_var("POST", $field_name)!=$field_value)
                 {
                     return;
                 }
@@ -539,7 +539,7 @@ function nvweb_webuser($vars=array())
                 $vars['email_field'] = 'newsletter_email';
             }
 
-            $email = $_REQUEST[$vars['email_field']];
+            $email = nv_global_var("REQUEST", $vars['email_field'], '');
             $email = filter_var($email, FILTER_SANITIZE_EMAIL);
 
             if(!empty($vars['email_field']) && !empty($email))
@@ -917,11 +917,11 @@ function nvweb_webuser_customer_account($vars=array())
         // process form, if sent
         if(!empty($_POST))
         {
-            switch($_POST["nv_wu_submit"])
+            switch(nv_global_var("POST", "nv_wu_submit"))
             {
                 case 'sign_in':
-                    $emailuser_field = $_POST['nv_wu_sign_in_emailusername'];
-                    $password_field = $_POST['nv_wu_sign_in_password'];
+                    $emailuser_field = nv_global_var("POST", 'nv_wu_sign_in_emailusername', '');
+                    $password_field = nv_global_var("POST", 'nv_wu_sign_in_password', '');
 
                     $ok = $webuser->authenticate($website->id, $emailuser_field, $password_field);
                     if(!$ok)
@@ -1041,11 +1041,11 @@ function nvweb_webuser_customer_account($vars=array())
                                   <h3>'.$sign_up_symbol.t(759, "Sign up").'</h3>
                                   <div>
                                       <label>'.t(44, "E-Mail").'</label>
-                                      <input type="text" name="nv_wu_sign_up_email" value="'.core_special_chars($_POST['nv_wu_sign_up_email']).'" />
+                                      <input type="text" name="nv_wu_sign_up_email" value="'.core_special_chars(nv_global_var("POST", 'nv_wu_sign_up_email', '')).'" />
                                   </div>
                                   <div>
                                       <label>'.t(1, "User").' ('.t(764, "optional").')</label>
-                                      <input type="text" name="nv_wu_sign_up_username" value="'.core_special_chars($_POST['nv_wu_sign_up_username']).'" />
+                                      <input type="text" name="nv_wu_sign_up_username" value="'.core_special_chars(nv_global_var("POST", 'nv_wu_sign_up_username', '')).'" />
                                   </div>
                                   <div>
                                       <label>'.t(2, "Password").'</label>
@@ -1529,15 +1529,15 @@ function nvweb_webuser_customer_account_addresses()
     if(!empty($_POST))
     {
         $address_shipping = array(
-            'name'     => trim($_POST['wu_cusacc_shipping_name']),
-            'nin'      => trim($_POST['wu_cusacc_shipping_nin']), // National identification number
-            'company'  => trim($_POST['wu_cusacc_shipping_company']),
-            'address'  => trim($_POST['wu_cusacc_shipping_address']),
-            'location' => trim($_POST['wu_cusacc_shipping_location']),
-            'zipcode'  => trim($_POST['wu_cusacc_shipping_zipcode']),
-            'country'  => trim($_POST['wu_cusacc_shipping_country']),
-            'region'   => trim($_POST['wu_cusacc_shipping_region']),
-            'phone'    => trim($_POST['wu_cusacc_shipping_phone'])
+            'name'     => trim(nv_global_var("POST", 'wu_cusacc_shipping_name', '')),
+            'nin'      => trim(nv_global_var("POST", 'wu_cusacc_shipping_nin', '')), // National identification number
+            'company'  => trim(nv_global_var("POST", 'wu_cusacc_shipping_company', '')),
+            'address'  => trim(nv_global_var("POST", 'wu_cusacc_shipping_address', '')),
+            'location' => trim(nv_global_var("POST", 'wu_cusacc_shipping_location', '')),
+            'zipcode'  => trim(nv_global_var("POST", 'wu_cusacc_shipping_zipcode', '')),
+            'country'  => trim(nv_global_var("POST", 'wu_cusacc_shipping_country', '')),
+            'region'   => trim(nv_global_var("POST", 'wu_cusacc_shipping_region', '')),
+            'phone'    => trim(nv_global_var("POST", 'wu_cusacc_shipping_phone', ''))
         );
 /*
         if(isset($_POST['wu_cusacc_billing_same_as_shipping']) && $_POST['wu_cusacc_billing_same_as_shipping']=='1')
@@ -1548,16 +1548,16 @@ function nvweb_webuser_customer_account_addresses()
         {
             $billing_same_as_shipping = false;
             $address_billing = array(
-                'name'     => trim($_POST['wu_cusacc_billing_name']),
-                'nin'      => trim($_POST['wu_cusacc_billing_nin']),
-                'company'  => trim($_POST['wu_cusacc_billing_company']),
-                'address'  => trim($_POST['wu_cusacc_billing_address']),
-                'location' => trim($_POST['wu_cusacc_billing_location']),
-                'zipcode'  => trim($_POST['wu_cusacc_billing_zipcode']),
-                'country'  => trim($_POST['wu_cusacc_billing_country']),
-                'region'   => trim($_POST['wu_cusacc_billing_region']),
-                'email'    => trim($_POST['wu_cusacc_billing_email']),
-                'phone'    => trim($_POST['wu_cusacc_billing_phone'])
+                'name'     => trim(nv_global_var("POST", 'wu_cusacc_billing_name', '')),
+                'nin'      => trim(nv_global_var("POST", 'wu_cusacc_billing_nin', '')),
+                'company'  => trim(nv_global_var("POST", 'wu_cusacc_billing_company', '')),
+                'address'  => trim(nv_global_var("POST", 'wu_cusacc_billing_address', '')),
+                'location' => trim(nv_global_var("POST", 'wu_cusacc_billing_location', '')),
+                'zipcode'  => trim(nv_global_var("POST", 'wu_cusacc_billing_zipcode', '')),
+                'country'  => trim(nv_global_var("POST", 'wu_cusacc_billing_country', '')),
+                'region'   => trim(nv_global_var("POST", 'wu_cusacc_billing_region', '')),
+                'email'    => trim(nv_global_var("POST", 'wu_cusacc_billing_email', '')),
+                'phone'    => trim(nv_global_var("POST", 'wu_cusacc_billing_phone', ''))
             );
         }
 
@@ -1843,13 +1843,13 @@ function nvweb_webuser_customer_account_settings()
     if(!empty($_POST))
     {
         // password verify
-        $password_current = $_POST['wu_cusacc_settings_password_current'];
+        $password_current = nv_global_var("POST", 'wu_cusacc_settings_password_current', '');
         if(!$webuser->check_password($password_current))
         {
             $errors[] = t(833, "Incorrect password");
         }
 
-        $fullname = core_purify_string(filter_input(INPUT_POST, 'wu_cusacc_settings_fullname', FILTER_SANITIZE_STRING));
+        $fullname = core_purify_string(filter_input(INPUT_POST, 'wu_cusacc_settings_fullname', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
         if(empty($fullname))
         {
             $blank_fields = t(752, "Full name");
@@ -1859,7 +1859,7 @@ function nvweb_webuser_customer_account_settings()
             $webuser->fullname = $fullname;
         }
 
-        $username = core_purify_string(filter_input(INPUT_POST, 'wu_cusacc_settings_username', FILTER_SANITIZE_STRING));
+        $username = core_purify_string(filter_input(INPUT_POST, 'wu_cusacc_settings_username', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
         if(empty($username))
         {
             $blank_fields = t(1, "User");
@@ -1882,7 +1882,7 @@ function nvweb_webuser_customer_account_settings()
             }
         }
 
-        $email = core_purify_string($_POST['wu_cusacc_settings_email']);
+        $email = core_purify_string(nv_global_var("POST", 'wu_cusacc_settings_email', ''));
         if(empty($email))
         {
             $blank_fields = t(44, "E-Mail");
@@ -1935,8 +1935,8 @@ function nvweb_webuser_customer_account_settings()
             }
         }
 
-        $password_new = trim($_POST['wu_cusacc_settings_password_new']);
-        $password_confirmation = trim($_POST['wu_cusacc_settings_password_confirmation']);
+        $password_new = trim(nv_global_var("POST", 'wu_cusacc_settings_password_new', ''));
+        $password_confirmation = trim(nv_global_var("POST", 'wu_cusacc_settings_password_confirmation', ''));
         if(!empty($password_new))
         {
             if(nvweb_webuser_password_strength($password_new, $webuser->username, $webuser->email) < 50)

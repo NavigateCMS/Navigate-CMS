@@ -46,7 +46,7 @@ else
 	}
 }
 
-if($_REQUEST['step']=='cleaning')
+if(nv_global_var("REQUEST", 'step')=='cleaning')
 {
     // remove installation files
     @unlink('navigate.sql');
@@ -263,7 +263,7 @@ if(file_exists('cfg/globals.php') && file_exists('img/empty.png'))
        <a href="http://www.navigatecms.com" target="_blank"><img src="<?php echo navigate_install_logo();?>" width="150" height="70" /></a>
     </div>
     <?php
-	switch($_REQUEST['step'])
+	switch(nv_global_var("REQUEST", 'step'))
 	{
         case 5:
 			navigate_install_completed();
@@ -449,7 +449,7 @@ function navigate_install_configuration()
     $app_owner_default = substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.'));
     $app_owner_default = str_replace('www.', '', $app_owner_default);
 
-    $_REQUEST['APP_OWNER'] = navigate_simple_xss_cleaner($_REQUEST['APP_OWNER']);
+    $_REQUEST['APP_OWNER'] = navigate_simple_xss_cleaner(nv_global_var("REQUEST", 'APP_OWNER', ''));
 
 	$defaults = array(
 		'APP_OWNER' 		=> (empty($_REQUEST['APP_OWNER']))? $app_owner_default : $_REQUEST['APP_OWNER'],
@@ -557,10 +557,10 @@ function navigate_install_configuration()
 			{
 				$_SESSION['NAVIGATE-SETUP'] = serialize(
 					array(
-						'ADMIN_USERNAME' => $_REQUEST['ADMIN_USERNAME'],
-						'ADMIN_PASSWORD' => $_REQUEST['ADMIN_PASSWORD'],
-						'ADMIN_EMAIL' => $_REQUEST['ADMIN_EMAIL'],
-						'DEFAULT_THEME' => $_REQUEST['DEFAULT_THEME']
+						'ADMIN_USERNAME' => nv_global_var("REQUEST", 'ADMIN_USERNAME', ''),
+						'ADMIN_PASSWORD' => nv_global_var("REQUEST", 'ADMIN_PASSWORD', ''),
+						'ADMIN_EMAIL' => nv_global_var("REQUEST", 'ADMIN_EMAIL', ''),
+						'DEFAULT_THEME' => nv_global_var("REQUEST", 'DEFAULT_THEME', '')
 					)
 				);
 				session_write_close();
@@ -1305,7 +1305,7 @@ function process()
 	setlocale(LC_ALL, $_SESSION['navigate_install_locale']);
 	$lang = navigate_install_load_language();
 	
-	switch($_REQUEST['process'])
+	switch(nv_global_var("REQUEST", 'process'))
 	{
 		case 'verify_zip':
 			sleep(1);

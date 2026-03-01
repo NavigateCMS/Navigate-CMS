@@ -25,7 +25,7 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
         {
             // sanitize "id" parameter to avoid XSS problems
             // note: if the "id" parameter is not numeric, then it could be the path of a navigate theme file
-            $url = $_REQUEST['id'];
+            $url = nv_global_var("REQUEST", 'id', '');
 
             $url = filter_var($url, FILTER_SANITIZE_URL);
 
@@ -83,17 +83,17 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			break;
 				
 		case 'flag':
-			if($_REQUEST['code']=='ca')
+			if(nv_global_var("REQUEST", 'code')=='ca')
             {
                 $_REQUEST['code'] = 'catalonia';
             }
 				
-			header('Content-Disposition: attachment; filename="'.$_REQUEST['code'].'.png"');
+			header('Content-Disposition: attachment; filename="'.nv_global_var("REQUEST", 'code', '').'.png"');
 			header('Content-Type: image/png');
-			header('Content-Disposition: inline; filename="'.$_REQUEST['code'].'.png"');			
+			header('Content-Disposition: inline; filename="'.nv_global_var("REQUEST", 'code', '').'.png"');			
 			header("Content-Transfer-Encoding: binary\n");
 
-			$path = NAVIGATE_PATH.'/img/icons/flags/'.$_REQUEST['code'].'.png';
+			$path = NAVIGATE_PATH.'/img/icons/flags/'.nv_global_var("REQUEST", 'code', '').'.png';
             if(!file_exists($path))
             {
                 $path = NAVIGATE_PATH.'/img/transparent.gif';

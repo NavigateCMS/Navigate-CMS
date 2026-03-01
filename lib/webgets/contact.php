@@ -69,14 +69,14 @@ function nvweb_contact($vars=array())
 	{	
 		case 'send':
             if(!empty($_POST))  // form sent
-            {
+            {                
                 // a page may have several forms, which one do we have to check?
                 if(!empty($vars['form']))
                 {
                     list($field_name, $field_value) = explode('=', $vars['form']);
                     $field_name = trim($field_name);
                     $field_value = trim($field_value);
-                    if($_POST[$field_name]!=$field_value)
+                    if(nv_global_var("POST", $field_name)!=$field_value)
                     {
                         return;
                     }
@@ -134,7 +134,7 @@ function nvweb_contact($vars=array())
                     foreach($required as $field)
                     {
                         $field = trim($field);
-                        $value = trim($_POST[$field]);
+                        $value = trim(nv_global_var("POST", $field, ''));
                         if(empty($value))
                         {
                             $errors[] = $fields[$field];
@@ -219,7 +219,7 @@ function nvweb_contact($vars=array())
                         }
                         else
                         {
-                            $confirmation_email = $_POST[$vars['receipt_confirmation_email']];
+                            $confirmation_email = nv_global_var("POST", $vars['receipt_confirmation_email'], '');
                         }
 
                         if(!empty($confirmation_email))
@@ -358,7 +358,7 @@ function nvweb_contact_generate($fields)
                 $field = substr($field, 0, -2);
             }
 
-            if(is_array($_REQUEST[$field]))
+            if(is_array(nv_global_var("REQUEST", $field)))
             {
                 $value = print_r($_REQUEST[$field], true);
                 $value = str_replace("Array\n", '', $value);
@@ -366,7 +366,7 @@ function nvweb_contact_generate($fields)
             }
             else
             {
-                $value = nl2br($_REQUEST[$field]);
+                $value = nl2br(nv_global_var("REQUEST", $field, ''));
             }
 
 	        if(empty($value) && isset($_FILES[$field]))

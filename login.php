@@ -53,7 +53,7 @@ if(!empty($_COOKIE['navigate-remember-user-token']) && !empty($_COOKIE['navigate
 
 if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 {
-    $error = !@hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
+    $error = !@hash_equals($_SESSION['csrf_token'], nv_global_var("POST", 'csrf_token', ''));
 
     if(empty($error))
     {
@@ -69,7 +69,7 @@ if(!empty($_POST['login-username']) && !empty($_POST['login-password']))
 	{
 		$_SESSION['APP_USER#'.APP_UNIQUE] = $user->id;
 
-        if($_REQUEST['login-remember']=='1')
+        if(nv_global_var("REQUEST", 'login-remember')=='1')
         {
             $user->set_cookie();
         }
@@ -147,7 +147,7 @@ $lang->load($language_default);
 // is it a recover password request?
 if(isset($_REQUEST['action']) && $_REQUEST['action']=='forgot-password' && !empty($_REQUEST['value']))
 {
-    $value = mb_strtolower(trim($_REQUEST['value']));
+    $value = mb_strtolower(trim(nv_global_var("REQUEST", 'value', '')));
     // look for an existing username or e-mail in Navigate CMS users table
     $found_id = $DB->query_single(
         'id',
@@ -334,7 +334,7 @@ $(document).ready(function()
     // are we on a password change process?
     if(isset($_REQUEST['action']) && $_REQUEST['action']=='password-reset' && !empty($_REQUEST['value']))
     {
-        $value = trim($_REQUEST['value']);
+        $value = trim(nv_global_var("REQUEST", 'value', ''));
 
         // look for an existing username or e-mail in Navigate CMS users table
         $found_id = $DB->query_single(
@@ -352,7 +352,7 @@ $(document).ready(function()
             if(!empty($_REQUEST['login-password']))
             {
                 $user->activation_key = '';
-                $user->set_password(trim($_REQUEST['login-password']));
+                $user->set_password(trim(nv_global_var("REQUEST", 'login-password', '')));
                 $user->save();
                 ?>
                 <script language="javascript">

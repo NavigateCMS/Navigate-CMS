@@ -410,7 +410,7 @@ function nvweb_list_process_categories($vars = array())
     // example: request_categories="c" ... in the url &q=text&c=23,35
     if(!empty($vars['request_categories']))
     {
-        $categories_filter = explode(",", $_REQUEST[$vars['request_categories']]);
+        $categories_filter = explode(",", nv_global_var("REQUEST", $vars['request_categories'], ''));
         if(empty($categories))
         {
             // note: categories may be empty by the rules applies on categories + children;
@@ -457,7 +457,7 @@ function nvweb_list_process_items($vars = array())
         {
             // url variable
             $items_source = ltrim($items_source, '$');
-            $items = intval($_REQUEST[$items_source]);
+            $items = intval(nv_global_var("REQUEST", $items_source, 0));
         }
         else
         {
@@ -569,7 +569,7 @@ function nvweb_list_process_search($vars = array())
 
         if(substr($vars['search'], 0, 1)=='$')
         {
-            $search_what = $_REQUEST[substr($vars['search'], 1)];
+            $search_what = nv_global_var("REQUEST", substr($vars['search'], 1), '');
         }
 
         if(!empty($search_what) && !isset($_SESSION['APP_USER#'.APP_UNIQUE]))
@@ -739,7 +739,7 @@ function nvweb_list_process_order($vars=array())
         {
             // url variable
             $order = ltrim($order, '$');
-            $order = trim($_REQUEST[$order]);
+            $order = trim(nv_global_var("REQUEST", $order, ''));
         }
     }
 
@@ -877,7 +877,7 @@ function nvweb_list_source_elements($vars, $params)
     {
         if(strpos($vars['templates'], '$')===0)
         {
-            $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            $templates = explode(",", nv_global_var("REQUEST", substr($vars['templates'], 1), ''));
         }
         else
         {
@@ -974,7 +974,7 @@ function nvweb_list_source_structure($vars, $params = array())
     {
         if(strpos($vars['templates'], '$')===0)
         {
-            $templates = explode(",", $_REQUEST[substr($vars['templates'], 1)]);
+            $templates = explode(",", nv_global_var("REQUEST", substr($vars['templates'], 1), ''));
         }
         else
         {

@@ -16,7 +16,7 @@ function nvweb_search($vars=array())
 
 	$out = array();
 
-	$search_what = $_REQUEST[$vars['request']];
+	$search_what = nv_global_var("REQUEST", $vars['request'], '');
     $search_archive = array();
 
     // COMPATIBILITY LAYER (to run nv object="search" on old themes)
@@ -36,7 +36,7 @@ function nvweb_search($vars=array())
     }
 
     if(!empty($_REQUEST['archive']))
-        $search_archive = explode("-", $_REQUEST['archive']);  // YEAR, MONTH, CATEGORIES (separated by commas)
+        $search_archive = explode("-", nv_global_var("REQUEST", 'archive', ''));  // YEAR, MONTH, CATEGORIES (separated by commas)
 
 	if(isset($_REQUEST[$vars['request']]) || (!empty($search_archive[0]) && !empty($search_archive[1])))
 	{
@@ -189,7 +189,7 @@ function nvweb_search($vars=array())
 		// example: request_categories="c" ... in the url &q=text&c=23,35
 		if(!empty($vars['request_categories']))
 		{
-			$categories_filter = explode(",", $_REQUEST[$vars['request_categories']]);
+			$categories_filter = explode(",", nv_global_var("REQUEST", $vars['request_categories'], ''));
 			if(empty($categories))
 			{
 				// note: categories may be empty by the rules applies on categories + children;
@@ -215,7 +215,7 @@ function nvweb_search($vars=array())
         $access     = (!empty($current['webuser'])? 1 : 2);
 
 		if(empty($_GET['page'])) $_GET['page'] = 1;
-		$offset = intval($_GET['page'] - 1) * $vars['items'];
+		$offset = intval((nv_global_var("GET", 'page', 1)) - 1) * $vars['items'];
 
         // get order type: PARAMETER > NV TAG PROPERTY > DEFAULT (priority given in CMS)
         $order = value_or_default(array($_REQUEST, 'order'), '');
@@ -388,14 +388,14 @@ function nvweb_search($vars=array())
             }
         }
 
-        $archive = $_REQUEST['archive'];
+        $archive = nv_global_var("REQUEST", 'archive', '');
         if(!empty($archive))
            $archive = 'archive='.$archive.'&';
 
 		if(isset($vars['paginator']) && $vars['paginator']!='false')
 		{
-			$search_url = '?'.$archive.$vars['request'].'='.$_REQUEST[$vars['request']].'&page=';
-			$out[] = nvweb_list_paginator($vars['paginator'], $_GET['page'], $total, $vars['items'], $vars, $search_url);
+			$search_url = '?'.$archive.$vars['request'].'='.nv_global_var("REQUEST", $vars['request'], '').'&page=';
+			$out[] = nvweb_list_paginator($vars['paginator'], nv_global_var("GET", 'page', 1), $total, $vars['items'], $vars, $search_url);
 		}
 	}
 	

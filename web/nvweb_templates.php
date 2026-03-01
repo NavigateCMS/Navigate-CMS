@@ -365,11 +365,11 @@ function nvweb_process_nvweb_tag($tag, $html)
         case 'request':
             if(!empty($tag['attributes']['name']))
             {
-                $content = $_REQUEST[$tag['attributes']['name']];
+                $content = nv_global_var("REQUEST", $tag['attributes']['name'], '');
             }
             else // deprecated: use "request" as attribute [will be removed on navigate cms 2.0]
             {
-                $content = $_REQUEST[$tag['attributes']['request']];
+                $content = nv_global_var("REQUEST", $tag['attributes']['request'], '');
             }
 
             if(is_array($content))

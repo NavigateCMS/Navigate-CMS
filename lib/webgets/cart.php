@@ -80,12 +80,12 @@ function nvweb_cart($vars=array())
     {
         case 'process':
             // process action by URL parameters (only affects relative to the "cart" step)
-            switch($_REQUEST['action'])
+            switch(nv_global_var("REQUEST", 'action'))
             {
                 case 'add_product':
                     $product = new product();
-                    $product->load($_REQUEST['product']);
-                    $quantity = value_or_default($_REQUEST['quantity'], 1);
+                    $product->load(nv_global_var("REQUEST", 'product', 0));
+                    $quantity = value_or_default(array($_REQUEST, 'quantity'), 1);
                     // TODO: include product "option" (variant), when implemented
 
                     if(!empty($product->id))
@@ -135,10 +135,10 @@ function nvweb_cart($vars=array())
 
                 case 'add_one':
                     $product = new product();
-                    $product->load($_REQUEST['product']);
+                    $product->load(nv_global_var("REQUEST", 'product', 0));
                     for($i = 0; $i < count($cart['lines']); $i++)
                     {
-                        if($cart['lines'][$i]['id'] == $_REQUEST['product'])
+                        if($cart['lines'][$i]['id'] == nv_global_var("REQUEST", 'product'))
                         {
                             if( !isset($_REQUEST['ta']) ||
                                 (isset($_REQUEST['ta']) && $_REQUEST['ta'] == $cart['lines'][$i]['timestamp_added'])
@@ -154,7 +154,7 @@ function nvweb_cart($vars=array())
                 case 'remove_one':
                     for($i = 0; $i < count($cart['lines']); $i++)
                     {
-                        if($cart['lines'][$i]['id'] == $_REQUEST['product'])
+                        if($cart['lines'][$i]['id'] == nv_global_var("REQUEST", 'product'))
                         {
                             if( !isset($_REQUEST['ta']) ||
                                 (isset($_REQUEST['ta']) && $_REQUEST['ta'] == $cart['lines'][$i]['timestamp_added'])
@@ -172,13 +172,13 @@ function nvweb_cart($vars=array())
                 case 'update_qty':
                     for($i = 0; $i < count($cart['lines']); $i++)
                     {
-                        if($cart['lines'][$i]['id'] == $_REQUEST['product'])
+                        if($cart['lines'][$i]['id'] == nv_global_var("REQUEST", 'product'))
                         {
                             if( !isset($_REQUEST['ta']) ||
                                 (isset($_REQUEST['ta']) && $_REQUEST['ta'] == $cart['lines'][$i]['timestamp_added'])
                             )
                             {
-                                $cart['lines'][$i]['quantity'] = $_REQUEST['qty'];
+                                $cart['lines'][$i]['quantity'] = nv_global_var("REQUEST", 'qty', 0);
                                 if($cart['lines'][$i]['quantity'] <= 0)
                                     unset($cart['lines'][$i]);
                             }
@@ -189,7 +189,7 @@ function nvweb_cart($vars=array())
 
                 case 'remove_product':
                     $product = new product();
-                    $product->load($_REQUEST['product']);
+                    $product->load(nv_global_var("REQUEST", 'product', 0));
                     for($i = 0; $i < count($cart['lines']); $i++)
                     {
                         if($cart['lines'][$i]['id'] == $product->id)
@@ -205,7 +205,7 @@ function nvweb_cart($vars=array())
 
                 case 'apply_coupon':
                     // check coupon
-                    $coupon_code = trim($_REQUEST['order_coupon']);
+                    $coupon_code = trim(nv_global_var("REQUEST", 'order_coupon', ''));
                     $coupon = coupon::find($coupon_code);
 
                     if(!$coupon)
@@ -244,7 +244,7 @@ function nvweb_cart($vars=array())
 
                 case 'checkout':
                     // check current step: cart, identification, address, shipping, summary, payment, notification
-                    if(empty($cart['checkout_step']) || $_POST['action'] == 'checkout')
+                    if(empty($cart['checkout_step']) || nv_global_var("POST", 'action') == 'checkout')
                     {
                         $cart['checkout_step'] = 'cart';
                     }
@@ -1071,11 +1071,11 @@ function nvweb_cart_identification_page($cart)
     // process form, if sent
     if(!empty($_POST))
     {
-        switch($_POST["nv_cart_wu_submit"])
+        switch(nv_global_var("POST", "nv_cart_wu_submit"))
         {
             case 'sign_in':
-                $emailuser_field = $_POST['nv_cart_wu_sign_in_emailusername'];
-                $password_field = $_POST['nv_cart_wu_sign_in_password'];
+                $emailuser_field = nv_global_var("POST", 'nv_cart_wu_sign_in_emailusername', '');
+                $password_field = nv_global_var("POST", 'nv_cart_wu_sign_in_password', '');
 
                 $ok = $webuser->authenticate($website->id, $emailuser_field, $password_field);
                 if(!$ok)
@@ -1207,11 +1207,11 @@ function nvweb_cart_identification_page($cart)
                               <h3>'.$sign_up_symbol.t(759, "Sign up").'</h3>
                               <div>
                                   <label>'.t(44, "E-Mail").'</label>
-                                  <input type="text" name="nv_cart_wu_sign_up_email" value="'.core_special_chars($_POST['nv_cart_wu_sign_up_email']).'" />
+                                  <input type="text" name="nv_cart_wu_sign_up_email" value="'.core_special_chars(nv_global_var("POST", 'nv_cart_wu_sign_up_email', '')).'" />
                               </div>
                               <div>
                                   <label>'.t(1, "User").' ('.t(764, "optional").')</label>
-                                  <input type="text" name="nv_cart_wu_sign_up_username" value="'.core_special_chars($_POST['nv_cart_wu_sign_up_username']).'" />
+                                  <input type="text" name="nv_cart_wu_sign_up_username" value="'.core_special_chars(nv_global_var("POST", 'nv_cart_wu_sign_up_username', '')).'" />
                               </div>
                               <div>
                                   <label>'.t(2, "Password").'</label>
@@ -1292,16 +1292,16 @@ function nvweb_cart_address_page($cart)
     if(!empty($_POST))
     {
         $address_shipping = array(
-            'name'     => trim($_POST['order_shipping_name']),
-            'nin'      => trim($_POST['order_shipping_nin']), // National identification number
-            'company'  => trim($_POST['order_shipping_company']),
-            'address'  => trim($_POST['order_shipping_address']),
-            'location' => trim($_POST['order_shipping_location']),
-            'zipcode'  => trim($_POST['order_shipping_zipcode']),
-            'country'  => trim($_POST['order_shipping_country']),
-            'region'   => trim($_POST['order_shipping_region']),
-            'email'    => trim($_POST['order_shipping_email']),
-            'phone'    => trim($_POST['order_shipping_phone'])
+            'name'     => trim(nv_global_var("POST", 'order_shipping_name', '')),
+            'nin'      => trim(nv_global_var("POST", 'order_shipping_nin', '')), // National identification number
+            'company'  => trim(nv_global_var("POST", 'order_shipping_company', '')),
+            'address'  => trim(nv_global_var("POST", 'order_shipping_address', '')),
+            'location' => trim(nv_global_var("POST", 'order_shipping_location', '')),
+            'zipcode'  => trim(nv_global_var("POST", 'order_shipping_zipcode', '')),
+            'country'  => trim(nv_global_var("POST", 'order_shipping_country', '')),
+            'region'   => trim(nv_global_var("POST", 'order_shipping_region', '')),
+            'email'    => trim(nv_global_var("POST", 'order_shipping_email', '')),
+            'phone'    => trim(nv_global_var("POST", 'order_shipping_phone', ''))
         );
 
         if(isset($_POST['order_billing_same_as_shipping']) && $_POST['order_billing_same_as_shipping']=='1')
@@ -1312,16 +1312,16 @@ function nvweb_cart_address_page($cart)
         {
             $billing_same_as_shipping = false;
             $address_billing = array(
-                'name'     => trim($_POST['order_billing_name']),
-                'nin'      => trim($_POST['order_billing_nin']),
-                'company'  => trim($_POST['order_billing_company']),
-                'address'  => trim($_POST['order_billing_address']),
-                'location' => trim($_POST['order_billing_location']),
-                'zipcode'  => trim($_POST['order_billing_zipcode']),
-                'country'  => trim($_POST['order_billing_country']),
-                'region'   => trim($_POST['order_billing_region']),
-                'email'    => trim($_POST['order_billing_email']),
-                'phone'    => trim($_POST['order_billing_phone'])
+                'name'     => trim(nv_global_var("POST", 'order_billing_name', '')),
+                'nin'      => trim(nv_global_var("POST", 'order_billing_nin', '')),
+                'company'  => trim(nv_global_var("POST", 'order_billing_company', '')),
+                'address'  => trim(nv_global_var("POST", 'order_billing_address', '')),
+                'location' => trim(nv_global_var("POST", 'order_billing_location', '')),
+                'zipcode'  => trim(nv_global_var("POST", 'order_billing_zipcode', '')),
+                'country'  => trim(nv_global_var("POST", 'order_billing_country', '')),
+                'region'   => trim(nv_global_var("POST", 'order_billing_region', '')),
+                'email'    => trim(nv_global_var("POST", 'order_billing_email', '')),
+                'phone'    => trim(nv_global_var("POST", 'order_billing_phone', ''))
             );
         }
 
@@ -1589,10 +1589,10 @@ function nvweb_cart_shipping_page($cart)
 
     if(!empty($_POST))
     {
-        $customer_notes = core_purify_string(trim($_POST['order_notes']));
+        $customer_notes = core_purify_string(trim(nv_global_var("POST", 'order_notes', '')));
         $cart['customer_notes']    = $customer_notes;
 
-        list($order_shipping_method, $order_shipping_method_rate) = explode("/", $_POST['order_shipping_method']);
+        list($order_shipping_method, $order_shipping_method_rate) = explode("/", nv_global_var("POST", 'order_shipping_method', ''));
         $cart['shipping_method'] = $order_shipping_method;
         $cart['shipping_rate'] = $order_shipping_method_rate;
 
@@ -1778,7 +1778,7 @@ function nvweb_cart_summary_page($cart)
     {
         if(!empty($_POST['payment_method']))
         {
-            $cart['payment_method'] = $_POST['payment_method'][0];
+            $cart['payment_method'] = nv_global_var("POST", 'payment_method');
             $cart['checkout_step'] = 'payment';
             $session['cart'] = $cart;
             nvweb_clean_exit($checkout_url);
