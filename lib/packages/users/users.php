@@ -533,7 +533,7 @@ function users_form($item)
 	        complete: function()
 	        {
                 navigate_window_resize();
-			'.implode("\n", $scripts_after_load).'
+				'.implode("\n", $scripts_after_load).'
 	        }
 	    });
 	');

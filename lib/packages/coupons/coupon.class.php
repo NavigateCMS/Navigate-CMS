@@ -1,4 +1,5 @@
 <?php
+
 class coupon
 {
     public $id;
@@ -266,7 +267,7 @@ class coupon
         $DB->query('SELECT * FROM nv_coupons WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }
@@ -382,4 +383,5 @@ class coupon
     }
 
 }
+
 ?>

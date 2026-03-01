@@ -357,7 +357,7 @@ class payment_method
         $DB->query('SELECT * FROM nv_payment_methods WHERE website = '.intval($website->id), 'object');
         $out = $DB->result();
 
-        if($type='json')
+        if($type=='json')
         {
             $out = json_encode($out);
         }
