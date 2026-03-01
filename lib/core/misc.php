@@ -53,28 +53,27 @@ function mb_unserialize($var)
 
 
 /**
- * Cleans unwanted quotes from the superglobals GET, POST, COOKIE and REQUEST. If PHP has magic_quotes off, no cleaning is done.
- * Not needed since PHP 5.4, as magic quotes function has been removed
- * @author Unknown
+ * Safe access to superglobal arrays (PHP 8.0+ compatible).
+ * Prevents "Undefined array key" warnings when accessing $_REQUEST, $_POST, $_GET, $_COOKIE.
+ *
+ * @param string $type Superglobal type: "GET", "POST", "REQUEST", "COOKIE"
+ * @param string $key Key to look up
+ * @param mixed $default Value to return if key is not set (default: null)
+ * @return mixed
  */
-function disable_magic_quotes()
+function nv_global_var($type, $key, $default = null)
 {
-	if(function_exists("get_magic_quotes_gpc") && PHP_VERSION_ID < 50400)
-	{
-		if(get_magic_quotes_gpc())
-		{
-			function stripslashes_gpc(&$value)
-			{
-				$value = stripslashes($value);
-			}
-
-			array_walk_recursive($_GET, 'stripslashes_gpc');
-			array_walk_recursive($_POST, 'stripslashes_gpc');
-			array_walk_recursive($_COOKIE, 'stripslashes_gpc');
-			array_walk_recursive($_REQUEST, 'stripslashes_gpc');
-		}
-	}
+    switch(strtoupper($type))
+    {
+        case 'GET':     return $_GET[$key] ?? $default;
+        case 'POST':    return $_POST[$key] ?? $default;
+        case 'REQUEST': return $_REQUEST[$key] ?? $default;
+        case 'COOKIE':  return $_COOKIE[$key] ?? $default;
+        default:        return $default;
+    }
 }
+
+
 
 function core_recursive_file_search($folder, $pattern)
 {

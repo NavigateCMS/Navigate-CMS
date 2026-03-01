@@ -47,7 +47,6 @@ require_once(NAVIGATE_PATH.'/lib/vendor/autoload.php');
 
 /* prepare PHP to run Navigate CMS */
 
-disable_magic_quotes();
 @ini_set('default_charset', 'utf-8');
 
 $max_upload = (int)(ini_get('upload_max_filesize'));
