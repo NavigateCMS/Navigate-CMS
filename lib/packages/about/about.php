@@ -302,7 +302,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v5.2.22</a><br />'
+			'<a href="https://github.com/PHPMailer/PHPMailer" target="_blank">PHP Mailer v7.0.2</a><br />'
 		)
 	);
 

@@ -10,6 +10,9 @@
  *
  */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 /**
  * Returns the translated version of an internal CMS string
  *
@@ -22,6 +25,7 @@
  * @param boolean $encodeChars Encode some special characters as HTML entities
  * @return string
  */
+
 function t($id, $default='', $replace=array(), $encodeChars=false)
 {
 	global $lang;
@@ -593,6 +597,7 @@ function core_decimal2string($value, $decimals=2,  $force_decimals=false)
 function navigate_send_email($subject, $body, $recipients=array(), $attachments=array(), $quiet=false)
 {
 	global $website;
+    
 
     $mail = new PHPMailer(true); // the true param means it will throw exceptions on errors, which we need to catch
     $mail->CharSet = 'UTF-8';
@@ -720,7 +725,7 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
 
         $ok = true; // no exceptions => mail sent
     }
-    catch (phpmailerException $e)
+    catch (Exception $e)
     {
         if(!$quiet)
         {
@@ -729,7 +734,7 @@ function navigate_send_email($subject, $body, $recipients=array(), $attachments=
         }
         $ok = false;
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
         if(!$quiet)
         {

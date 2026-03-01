@@ -1,4 +1,7 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 require_once(NAVIGATE_PATH.'/lib/core/core.php');
 require_once(NAVIGATE_PATH.'/lib/core/misc.php');
 require_once(NAVIGATE_PATH.'/lib/core/database.class.php');
@@ -26,8 +29,10 @@ require_once(NAVIGATE_PATH.'/lib/packages/extensions/extension.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/users_log/users_log.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
 
-require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
-require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
+require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/Exception.php');
+require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/PHPMailer.php');
+require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/SMTP.php');
+
 
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 
