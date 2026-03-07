@@ -26,8 +26,35 @@ function nvweb_list_parse_conditional($tag, $item, $item_html, $position, $total
                 return "";
             }
 
-            $property_value = $item->property($property_name);
-            $property_definition = $item->property_definition($property_name);
+            if(!isset($tag['attributes']['source']))
+            {
+                $tag['attributes']['source'] = 'element';
+            }
+
+            switch($tag['attributes']['source'])
+            {
+                case 'structure':
+                case 'category':
+                    $id = $item->category;
+
+                    if(empty($id))
+                    {
+                        return "";
+                    }
+
+                    $structure = new structure();
+                    $structure->load($id);                    
+
+                    $property_value = $structure->property($property_name);
+                    $property_definition = $structure->property_definition($property_name);
+                    break;
+                
+                default:
+                // element (item)
+                    $property_value = $item->property($property_name);
+                    $property_definition = $item->property_definition($property_name);
+                    break;
+            }            
 
             $condition_value = $tag['attributes']['property_value'];
 

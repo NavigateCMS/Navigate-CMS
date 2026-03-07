@@ -433,8 +433,15 @@ class theme
                                 $name .= $col.str_pad("", $col, "-");
                                 $scol = $col * 2;
                                 // set the small column to the closest step: 6 or 12
-                                if($scol >= 8) $scol = 12;
-                                if($scol <= 7) $scol = 6;
+                                if($scol >= 8) 
+                                {
+                                    $scol = 12;
+                                }
+                                
+                                if($scol <= 7) 
+                                {
+                                    $scol = 6;
+                                }
 
                                 $html .= '<div class="col-md-'.$col.' medium-'.$col.' col-xs-'.$scol.' small-'.$scol.' columns">'.$text.'</div>';
                             }
@@ -484,8 +491,14 @@ class theme
                                 $name .= $col.str_pad("", $col, "-");
                                 $scol = $col * 2;
                                 // set the small column to the closest step: 6 or 12
-                                if($scol >= 8) $scol = 12;
-                                if($scol <= 7) $scol = 6;
+                                if($scol >= 8) 
+                                {
+                                    $scol = 12;
+                                }
+                                if($scol <= 7) 
+                                {
+                                    $scol = 6;
+                                }
 
                                 $html .= '<div class="'.$translate[$col].' columns">'.$text.'</div>';
                             }
@@ -1618,6 +1631,7 @@ class theme
                     {
                         continue;
                     }
+                    
                     $offset = $matches_nd[$m][1] + strlen(NAVIGATE_DOWNLOAD);
                     $end = strpos($content, '"', $offset);
                     $file_query = substr($content, $offset + 1, $end - $offset - 1);
