@@ -1,5 +1,5 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
+
 require_once(NAVIGATE_PATH.'/lib/packages/products/product.class.php');
 
 nvweb_webget_load("menu");

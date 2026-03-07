@@ -1,7 +1,4 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
 require_once(NAVIGATE_PATH.'/lib/core/core.php');
 require_once(NAVIGATE_PATH.'/lib/core/misc.php');
 require_once(NAVIGATE_PATH.'/lib/core/database.class.php');
@@ -33,16 +30,17 @@ require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/Exception.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/PHPMailer.php');
 require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/SMTP.php');
 
-
 require_once(NAVIGATE_PATH.'/lib/external/misc/cssmin.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/htmlpurifier-lite/library/HTMLPurifier.auto.php');
+require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
 
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/ref/ref.php');
 
 require_once(NAVIGATE_PATH.'/lib/vendor/autoload.php');
+
 
 
 /* prepare PHP to run Navigate CMS */

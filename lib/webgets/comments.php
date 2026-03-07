@@ -1,5 +1,5 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
+
 
 function nvweb_comments($vars=array())
 {
@@ -683,7 +683,7 @@ function nvweb_comments($vars=array())
 					<div class="comment"'.$depth.'>
 						<div class="comment-avatar">'.$avatar.'</div>
 						<div class="comment-username">'.$message_username.'</div>
-						<div class="comment-date">'.Encoding::toUTF8(strftime($vars['date_format'], $comments[$c]->date_created)).'</div>
+						<div class="comment-date">'.core_strftime($vars['date_format'], $comments[$c]->date_created).'</div>
 						<div class="comment-message">'.nl2br($message_text).'</div>
 						<div style="clear:both"></div>
 					</div>

@@ -27,7 +27,7 @@ is("Encoding::toWin1252() convierte los UTF-8 a Windows-1252", Encoding::toWin12
 is("Encoding::toWin1252() convierte los UTF-8 con caracteres convertidos desde Windows-1252 a Windows-1252", Encoding::toWin1252($utf8_from_win), "\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f");
 is("Encoding::toWin1252() convierte los UTF-8 con caracteres convertidos desde ISO8859-1 a Windows-1252", Encoding::toWin1252($utf8_from_iso), "\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f");
 
-is("Encoding::fixUTF8() corrige UTF-8 convertido repetidamente", Encoding::fixUTF8(utf8_encode(utf8_encode(utf8_encode($orig)))), "\xc3\xa1\xc5\xa1\xc3\xa1\xc5\xa1\xc3\xa1\xc5\xa1\xc3\xa1\xc3\xa9\xc3\xad");
+is("Encoding::fixUTF8() corrige UTF-8 convertido repetidamente", Encoding::fixUTF8(mb_convert_encoding(mb_convert_encoding(mb_convert_encoding($orig, 'UTF-8', 'ISO-8859-1'), 'UTF-8', 'ISO-8859-1'), 'UTF-8', 'ISO-8859-1')), "\xc3\xa1\xc5\xa1\xc3\xa1\xc5\xa1\xc3\xa1\xc5\xa1\xc3\xa1\xc3\xa9\xc3\xad");
 
 
 

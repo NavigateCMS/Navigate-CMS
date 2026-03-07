@@ -605,8 +605,9 @@ class order
         // TODO: generate a reference using rules provided
 
         // timestamp method
-        $reference = strftime("%Y%m%d%H%M%S").$order->webuser;
+        $reference = date("YmdHis").$order->webuser;
 
+    
         return $reference;
     }
 

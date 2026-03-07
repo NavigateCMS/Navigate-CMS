@@ -1,5 +1,5 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
+
 
 nvweb_webget_load("menu");
 nvweb_webget_load("list");
@@ -417,7 +417,7 @@ function nvweb_content_date_format($format="", $ts)
         // deprecated: used until Navigate CMS 1.6.7; to be removed in Navigate CMS 2.0
         $out = str_replace('%br', '<br />', $format);
         $out = str_replace('%day', date("d", $ts), $out);
-        $out = str_replace('%month_abr', Encoding::toUTF8(strtoupper(strftime("%b", $ts))), $out);
+        $out = str_replace('%month_abr', strtoupper(core_strftime("%b", $ts)), $out);
         $out = str_replace('%month', date("m", $ts), $out);
         $out = str_replace('%year4', date("Y", $ts), $out);
     }
@@ -425,7 +425,7 @@ function nvweb_content_date_format($format="", $ts)
     {
         if(!empty($ts))
         {
-            $out = Encoding::toUTF8(strftime($format, intval($ts)));
+            $out = core_strftime($format, intval($ts));
         }
     }
 

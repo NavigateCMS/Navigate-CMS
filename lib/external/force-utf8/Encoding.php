@@ -214,7 +214,7 @@ class Encoding {
       }
       return $text;
     } elseif(is_string($text)) {
-      return utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), self::toUTF8($text)));
+      return mb_convert_encoding(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), self::toUTF8($text)), 'ISO-8859-1', 'UTF-8');
     } else {
       return $text;
     }
@@ -239,9 +239,9 @@ class Encoding {
     $last = "";
     while($last <> $text){
       $last = $text;
-      $text = self::toUTF8(utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text)));
+      $text = self::toUTF8(mb_convert_encoding(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text), 'ISO-8859-1', 'UTF-8'));
     }
-    $text = self::toUTF8(utf8_decode(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text)));
+    $text = self::toUTF8(mb_convert_encoding(str_replace(array_keys(self::$utf8ToWin1252), array_values(self::$utf8ToWin1252), $text), 'ISO-8859-1', 'UTF-8'));
     return $text;
   }
   

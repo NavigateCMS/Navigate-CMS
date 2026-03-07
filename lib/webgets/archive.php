@@ -1,5 +1,5 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
+
 
 function nvweb_archive($vars=array())
 {
@@ -140,7 +140,7 @@ function nvweb_archive_render($type, $dataset, $archive_url, $categories)
             $year_months[$row->year][] =
                 '<div>
                     <a href="'.$archive_url.'?archive='.$row->year.'-'.$row->month.'-'.implode(',', $categories).'">'.
-                        Encoding::toUTF8(ucfirst(strftime('%B', mktime(0,0,0,$row->month,1,2000)))).' ('.$row->total.')
+                        ucfirst(core_strftime('%B', mktime(0,0,0,$row->month,1,2000))).' ('.$row->total.')
                     </a>
                  </div>';
             $year_stats[$row->year]['total'] += $row->total;
@@ -170,7 +170,7 @@ function nvweb_archive_render($type, $dataset, $archive_url, $categories)
             $out[] =
                 '<div>
                     <a href="'.$archive_url.'?archive='.$row->year.'-'.$row->month.'-'.implode(',', $categories).'">'.
-                        Encoding::toUTF8(ucfirst(strftime('%B', mktime(0,0,0,$row->month,1,2000)))).' '.$row->year.' ('.$row->total.')
+                        ucfirst(core_strftime('%B', mktime(0,0,0,$row->month,1,2000))).' '.$row->year.' ('.$row->total.')
                     </a>
                  </div>';
         }

@@ -1,5 +1,4 @@
 <?php
-require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
 nvweb_webget_load('content');
 
 function nvweb_properties($vars=array())
@@ -560,15 +559,19 @@ function nvweb_properties_render($property, $vars)
 
 		case 'date':
             if(!empty($vars['format']))
-			    $out = Encoding::toUTF8(strftime($vars['format'], $property->value));
+            {
+			    $out = core_strftime($vars['format'], $property->value);
+            }
             else
+            {
                 $out = date($website->date_format, $property->value);
+            }
 			break;
 			
 		case 'datetime':
             if(!empty($vars['format']))
             {
-                $out = Encoding::toUTF8(strftime($vars['format'], $property->value));
+                $out = core_strftime($vars['format'], $property->value);
             }
             else
             {

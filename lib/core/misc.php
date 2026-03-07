@@ -22,7 +22,7 @@
  * 'a:2:{i:0;s:5:"héllö";i:1;s:5:"wörld";}'
  *
  * @param string UTF-8 or ASCII string to be unserialized
- * @return string
+ * @return mixed
  *
  */
 
@@ -112,21 +112,10 @@ function core_ip()
           {
                if(!preg_match("/^(10|172\.16|192\.168)\./i", $ips[$i]))
                {
-                    if(version_compare(phpversion(), "5.0.0", ">="))
+                    if(ip2long($ips[$i]) !== false)
                     {
-                         if(ip2long($ips[$i]) != false)
-                         {
-                              $ip = $ips[$i];
-                              break;
-                         }
-                    }
-                    else
-                    {
-                         if(ip2long($ips[$i]) != - 1)
-                         {
-                              $ip = $ips[$i];
-                              break;
-                         }
+                         $ip = $ips[$i];
+                         break;
                     }
                }
           }
@@ -1106,5 +1095,104 @@ function html_tag_has_attribute($full_tag, $attribute)
     return false;
 }
 
+
+/**
+ * Replacement for strftime which is deprecated in PHP 8.1
+ *
+ * @param string $format
+ * @param int|null $timestamp
+ * @return string
+ */
+
+function core_strftime($format, $timestamp = null)
+{
+    if ($timestamp === null) {
+        $timestamp = time();
+    }
+
+    $placeholders = [];
+    $placeholder_count = 0;
+
+    // 1. Handle locale-dependent tokens using IntlDateFormatter if available
+    if (class_exists('IntlDateFormatter')) {
+        $locale = setlocale(LC_TIME, 0);
+        if (!$locale || $locale === 'C') $locale = 'en_US';
+
+        $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+        
+        // Tokens that return localized text
+        $tokens = ['%a' => 'EEE', '%A' => 'EEEE', '%b' => 'MMM', '%B' => 'MMMM'];
+        
+        foreach ($tokens as $token => $pattern) {
+            if (strpos($format, $token) !== false) {
+                $formatter->setPattern($pattern);
+                $replacement = $formatter->format($timestamp);
+                
+                // Use a simple placeholder
+                $placeholder = '##LOCALE_TOKEN_' . ($placeholder_count++) . '##';
+                $placeholders[$placeholder] = $replacement;
+                
+                $format = str_replace($token, $placeholder, $format);
+            }
+        }
+    }
+
+    // 2. Map remaining strftime tokens to date() format
+    $mapping = array(
+        '%d' => 'd', '%e' => 'j', '%j' => 'z',
+        '%u' => 'N', '%w' => 'w', '%U' => 'W', '%V' => 'W', '%W' => 'W',
+        '%m' => 'm',
+        '%C' => 'Y', '%g' => 'y', '%G' => 'Y', '%y' => 'y', '%Y' => 'Y',
+        '%H' => 'H', '%k' => 'G', '%I' => 'h', '%l' => 'g',
+        '%M' => 'i', '%p' => 'A', '%P' => 'a', '%r' => 'h:i:s A',
+        '%R' => 'H:i', '%S' => 's', '%T' => 'H:i:s', '%X' => 'H:i:s',
+        '%z' => 'O', '%Z' => 'T',
+        '%c' => 'D M j H:i:s Y',
+        '%D' => 'm/d/y',
+        '%F' => 'Y-m-d',
+        '%s' => 'U',
+        '%x' => 'm/d/y',
+        '%n' => "\n", '%t' => "\t", '%%' => '%'
+    );
+
+    $date_format = '';
+    $length = strlen($format);
+    
+    for ($i = 0; $i < $length; $i++) {
+        $char = $format[$i];
+        
+        if ($char === '%') {
+            $next = ($i + 1 < $length) ? $format[$i + 1] : '';
+            if (isset($mapping['%' . $next])) {
+                $date_format .= $mapping['%' . $next];
+                $i++; 
+            } elseif ($next === '%') {
+                $date_format .= '%';
+                $i++;
+            } else {
+                // Unknown token, treat as literal
+                $date_format .= '\\' . $char;
+            }
+        } else {
+            // Literal character. Escape if it's a date() format char.
+            if (preg_match('/[a-zA-Z]/', $char)) {
+                $date_format .= '\\' . $char;
+            } else {
+                $date_format .= $char;
+            }
+        }
+    }
+    
+    $result = date($date_format, $timestamp);
+    
+    // 3. Restore placeholders
+    if (!empty($placeholders)) {
+        $result = str_replace(array_keys($placeholders), array_values($placeholders), $result);
+    }
+    
+    $result = Encoding::toUTF8($result);
+
+    return $result;
+}
 
 ?>
