@@ -964,7 +964,7 @@ function nvweb_list_source_structure($vars, $params = array())
     $orderby = str_replace(array('i.', 'p.'), 's.', $params['orderby']);
 
     $visible = '';
-    if($vars['filter']=='menu')
+    if($vars['filter']=='menu' || $vars['filter']=='visible')
     {
         $visible = ' AND s.visible = 1 ';
     }
@@ -3177,12 +3177,12 @@ function nvweb_list_paginator($type, $page, $total, $items_per_page, $params=arr
         {
             foreach($val as $val_item)
             {
-                $url_suffix .= '&' . $key . '[]=' . urlencode($val_item);
+                $url_suffix .= '&' . urlencode($key) . '[]=' . urlencode($val_item);
             }
         }
         else
         {
-            $url_suffix .= '&' . $key . '=' . urlencode($val);
+            $url_suffix .= '&' . urlencode($key) . '=' . urlencode($val);
         }
     }
 
