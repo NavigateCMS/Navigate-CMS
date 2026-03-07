@@ -411,19 +411,24 @@ function nvweb_process_nvweb_tag($tag, $html)
                     }
                     else
                     {
-                        $content = $DB->query_single(
-                            'text',
-                            'nv_webdictionary', '
-                                   node_type = "structure"
-                               AND subtype = "title"
-                               AND node_id = '.$tmp.'
-                               AND lang = :lang
-                               AND website = '.$website->id,
-                            NULL,
-                            array(
-                                ':lang' => $current['lang']
-                            )
-                        );
+                        $content = $tmp; // the ID
+
+                        if(isset($tag['attributes']['part'])=='title')
+                        {
+                            $content = $DB->query_single(
+                                'text',
+                                'nv_webdictionary', '
+                                    node_type = "structure"
+                                AND subtype = "title"
+                                AND node_id = '.$tmp.'
+                                AND lang = :lang
+                                AND website = '.$website->id,
+                                NULL,
+                                array(
+                                    ':lang' => $current['lang']
+                                )
+                            );
+                        }
                     }
                     break;
 
@@ -1592,7 +1597,7 @@ function nvweb_template_oembed_parse($html)
             }
 
             // find all urls in content as PLAIN TEXT urls
-            if(preg_match_all($reg_exUrl, strip_tags($text), $url))
+            if(preg_match_all($reg_exUrl, ($text === null) ? '' : strip_tags($text), $url))
             {
                 $matches = array_unique($url[0]);
                 foreach($matches as $match)
