@@ -24,10 +24,12 @@ require_once(NAVIGATE_PATH.'/lib/packages/extensions/extension.class.php');
 require_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
 require_once(NAVIGATE_PATH.'/lib/external/php-ixr/IXR_Library.php');
 
-require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.phpmailer.php');
-require_once(NAVIGATE_PATH.'/lib/external/phpmailer/class.smtp.php');
+require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/Exception.php');
+require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/PHPMailer.php');
+require_once(NAVIGATE_PATH.'/lib/external/phpmailer/src/SMTP.php');
 
 require_once(NAVIGATE_PATH.'/lib/external/htmlpurifier-lite/library/HTMLPurifier.auto.php');
+require_once(NAVIGATE_PATH.'/lib/external/force-utf8/Encoding.php');
 
 require_once(NAVIGATE_PATH.'/lib/core/debugger.php');
 

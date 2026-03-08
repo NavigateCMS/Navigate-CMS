@@ -1106,7 +1106,8 @@ function html_tag_has_attribute($full_tag, $attribute)
 
 function core_strftime($format, $timestamp = null)
 {
-    if ($timestamp === null) {
+    if($timestamp === null) 
+    {
         $timestamp = time();
     }
 
@@ -1114,25 +1115,55 @@ function core_strftime($format, $timestamp = null)
     $placeholder_count = 0;
 
     // 1. Handle locale-dependent tokens using IntlDateFormatter if available
-    if (class_exists('IntlDateFormatter')) {
+    if(class_exists('IntlDateFormatter')) 
+    {
         $locale = setlocale(LC_TIME, 0);
-        if (!$locale || $locale === 'C') $locale = 'en_US';
+        if(!$locale || $locale === 'C') 
+        {
+            $locale = 'en_US';
+        }
 
-        $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+        $formatter = null;
         
         // Tokens that return localized text
         $tokens = ['%a' => 'EEE', '%A' => 'EEEE', '%b' => 'MMM', '%B' => 'MMMM'];
         
-        foreach ($tokens as $token => $pattern) {
-            if (strpos($format, $token) !== false) {
-                $formatter->setPattern($pattern);
-                $replacement = $formatter->format($timestamp);
-                
-                // Use a simple placeholder
-                $placeholder = '##LOCALE_TOKEN_' . ($placeholder_count++) . '##';
-                $placeholders[$placeholder] = $replacement;
-                
-                $format = str_replace($token, $placeholder, $format);
+        foreach($tokens as $token => $pattern) 
+        {
+            if(strpos($format, $token) !== false) 
+            {
+                try 
+                {
+                    if($formatter === null) 
+                    {
+                        $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+                    }
+                    
+                    if($formatter) 
+                    {
+                        $formatter->setPattern($pattern);
+                        $replacement = $formatter->format($timestamp);
+                        
+                        if($replacement !== false) 
+                        {
+                            // Use a simple placeholder
+                            $placeholder = '##LOCALE_TOKEN_' . ($placeholder_count++) . '##';
+                            $placeholders[$placeholder] = $replacement;
+                            
+                            $format = str_replace($token, $placeholder, $format);
+                        }
+                    }
+                } 
+                catch(\Throwable $e) 
+                {
+                    // IntlDateFormatter failed, skip to fallback standard mapping
+                    $formatter = false; 
+                } 
+                catch(\Exception $e) 
+                {
+                    // Fallback for older PHP versions
+                    $formatter = false;
+                }
             }
         }
     }
@@ -1158,26 +1189,37 @@ function core_strftime($format, $timestamp = null)
     $date_format = '';
     $length = strlen($format);
     
-    for ($i = 0; $i < $length; $i++) {
+    for ($i = 0; $i < $length; $i++) 
+    {
         $char = $format[$i];
         
-        if ($char === '%') {
+        if ($char === '%') 
+        {
             $next = ($i + 1 < $length) ? $format[$i + 1] : '';
-            if (isset($mapping['%' . $next])) {
+            if (isset($mapping['%' . $next])) 
+            {
                 $date_format .= $mapping['%' . $next];
                 $i++; 
-            } elseif ($next === '%') {
+            } 
+            elseif ($next === '%') {
                 $date_format .= '%';
                 $i++;
-            } else {
+            } 
+            else 
+            {
                 // Unknown token, treat as literal
                 $date_format .= '\\' . $char;
             }
-        } else {
+        } 
+        else 
+        {
             // Literal character. Escape if it's a date() format char.
-            if (preg_match('/[a-zA-Z]/', $char)) {
+            if (preg_match('/[a-zA-Z]/', $char)) 
+            {
                 $date_format .= '\\' . $char;
-            } else {
+            } 
+            else 
+            {
                 $date_format .= $char;
             }
         }
@@ -1186,8 +1228,13 @@ function core_strftime($format, $timestamp = null)
     $result = date($date_format, $timestamp);
     
     // 3. Restore placeholders
-    if (!empty($placeholders)) {
-        $result = str_replace(array_keys($placeholders), array_values($placeholders), $result);
+    if (!empty($placeholders)) 
+    {
+        $result = str_replace(
+            array_keys($placeholders), 
+            array_values($placeholders), 
+            $result
+        );
     }
     
     $result = Encoding::toUTF8($result);

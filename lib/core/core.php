@@ -31,10 +31,10 @@ function t($id, $default='', $replace=array(), $encodeChars=false)
 	global $lang;
 	global $session;
 
-	if(!method_exists($lang, 't'))
+	if(!isset($lang) || !method_exists($lang, 't'))
     {
         $lang = new language();
-        $lang->load($session['lang']);
+        $lang->load(@$session['lang']);
     }
 	
 	$out = $lang->t($id, $default, $replace, $encodeChars);

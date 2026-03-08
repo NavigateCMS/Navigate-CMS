@@ -34,6 +34,13 @@ function nvweb_parse($request)
     global $idn;
     global $html;
 
+    // global helper variables
+    $session = array();        // webuser session
+    $structure = array();    // web menu structure
+    $webgets = array();    // webgets static data
+    $webuser = new webuser();
+    $theme = new theme();
+
     $idn = new \Algo26\IdnaConvert\ToIdn();
 
     // create database connection
@@ -97,12 +104,6 @@ function nvweb_parse($request)
             nvweb_clean_exit();
         }
 
-        // global helper variables
-        $session = array();        // webuser session
-        $structure = array();    // web menu structure
-        $webgets = array();    // webgets static data
-        $webuser = new webuser();
-        $theme = new theme();
         if(!empty($website->theme))
         {
             $theme->load($website->theme);
