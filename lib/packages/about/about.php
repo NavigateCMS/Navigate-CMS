@@ -316,14 +316,14 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="https://mpdf.github.io" target="_blank">mPDF v7.1.9</a><br />'	// via composer
+			'<a href="https://mpdf.github.io" target="_blank">mPDF v8.2.7</a><br />'	// via composer
 		)
 	);
 
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="http://idnaconv.net" target="_blank">IDNA Convert v3.1.0</a><br />' // via composer
+			'<a href="https://github.com/algo26-matthias/idna-convert" target="_blank">IDNA Convert v3.2.1</a><br />' // via composer
 		)
 	);
 

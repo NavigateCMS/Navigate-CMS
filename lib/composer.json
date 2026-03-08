@@ -1,7 +1,7 @@
 {
     "name": "navigatecms/lib",
     "require": {
-        "mpdf/mpdf": "^7.1",
+        "mpdf/mpdf": "^8.0",
         "jbroadway/urlify": "^1.2",
         "algo26-matthias/idna-convert": "^3.0",
         "jalle19/php-whitelist-check": "^1.1"

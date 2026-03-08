@@ -54,3 +54,8 @@ composer.phar
 .vscode
 !/.phpunit.result.cache
 !/.vscode/
+composer.lock
+
+.idea/
+
+.phpunit.result.cache

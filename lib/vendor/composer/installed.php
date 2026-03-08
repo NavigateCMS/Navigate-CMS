@@ -1,132 +1,158 @@
-<?php return array (
-  'root' => 
-  array (
-    'pretty_version' => 'dev-master',
-    'version' => 'dev-master',
-    'aliases' => 
-    array (
+<?php return array(
+    'root' => array(
+        'name' => 'navigatecms/lib',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '215d7fdc96217960634755da7df3793c852110b4',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
     ),
-    'reference' => '56c9e583f69e0c0004d68eb412069e8e2d678ca1',
-    'name' => 'navigatecms/lib',
-  ),
-  'versions' => 
-  array (
-    'algo26-matthias/idna-convert' => 
-    array (
-      'pretty_version' => 'v3.1.0',
-      'version' => '3.1.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '340a4dc65f6b0d9884853a3d32895d82f0c1502a',
+    'versions' => array(
+        'algo26-matthias/idna-convert' => array(
+            'pretty_version' => 'v3.2.1',
+            'version' => '3.2.1.0',
+            'reference' => '82fe7b60e1a1620c72e68803cc5dcff0b5f59bdc',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../algo26-matthias/idna-convert',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'jakeasmith/http_build_url' => array(
+            'pretty_version' => '1.0.1',
+            'version' => '1.0.1.0',
+            'reference' => '93c273e77cb1edead0cf8bcf8cd2003428e74e37',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../jakeasmith/http_build_url',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'jalle19/php-whitelist-check' => array(
+            'pretty_version' => '1.2.0',
+            'version' => '1.2.0.0',
+            'reference' => '4c8565362d00ea9321c81a9d599b17fcd7665b6f',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../jalle19/php-whitelist-check',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'jbroadway/urlify' => array(
+            'pretty_version' => '1.2.5-stable',
+            'version' => '1.2.5.0',
+            'reference' => '62f75cfa5ec06935091b348cac52c6672a7ca1f4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../jbroadway/urlify',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'jycr753/ip-utils' => array(
+            'pretty_version' => 'v3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => '00aeae82d3f942b4bdb82af69c36049e5553b4a8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../jycr753/ip-utils',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'mpdf/mpdf' => array(
+            'pretty_version' => 'v8.2.7',
+            'version' => '8.2.7.0',
+            'reference' => 'b59670a09498689c33ce639bac8f5ba26721dab3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mpdf/mpdf',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'mpdf/psr-http-message-shim' => array(
+            'pretty_version' => 'v2.0.1',
+            'version' => '2.0.1.0',
+            'reference' => 'f25a0153d645e234f9db42e5433b16d9b113920f',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mpdf/psr-http-message-shim',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'mpdf/psr-log-aware-trait' => array(
+            'pretty_version' => 'v3.0.0',
+            'version' => '3.0.0.0',
+            'reference' => 'a633da6065e946cc491e1c962850344bb0bf3e78',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../mpdf/psr-log-aware-trait',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'myclabs/deep-copy' => array(
+            'pretty_version' => '1.13.4',
+            'version' => '1.13.4.0',
+            'reference' => '07d290f0c47959fd5eed98c95ee5602db07e0b6a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../myclabs/deep-copy',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'navigatecms/lib' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '215d7fdc96217960634755da7df3793c852110b4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'paragonie/random_compat' => array(
+            'pretty_version' => 'v9.99.100',
+            'version' => '9.99.100.0',
+            'reference' => '996434e5492cb4c3edcb9168db6fbb1359ef965a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../paragonie/random_compat',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'psr/http-message' => array(
+            'pretty_version' => '2.0',
+            'version' => '2.0.0.0',
+            'reference' => '402d35bcb92c70c026d1a6a9883f06b2ead23d71',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/http-message',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'psr/log' => array(
+            'pretty_version' => '3.0.2',
+            'version' => '3.0.2.0',
+            'reference' => 'f16e1d5863e37f8d8c2a01719f5b34baa2b714d3',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/log',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'setasign/fpdi' => array(
+            'pretty_version' => 'v2.6.4',
+            'version' => '2.6.4.0',
+            'reference' => '4b53852fde2734ec6a07e458a085db627c60eada',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../setasign/fpdi',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'voku/portable-ascii' => array(
+            'pretty_version' => '2.0.3',
+            'version' => '2.0.3.0',
+            'reference' => 'b1d923f88091c6bf09699efcd7c8a1b1bfd7351d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../voku/portable-ascii',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'voku/stop-words' => array(
+            'pretty_version' => '2.0.1',
+            'version' => '2.0.1.0',
+            'reference' => '8e63c0af20f800b1600783764e0ce19e53969f71',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../voku/stop-words',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
     ),
-    'jakeasmith/http_build_url' => 
-    array (
-      'pretty_version' => '1.0.1',
-      'version' => '1.0.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '93c273e77cb1edead0cf8bcf8cd2003428e74e37',
-    ),
-    'jalle19/php-whitelist-check' => 
-    array (
-      'pretty_version' => '1.1.0',
-      'version' => '1.1.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '17be2c12c3b308b28f5d5b2b76d82a6b0eacfef1',
-    ),
-    'jbroadway/urlify' => 
-    array (
-      'pretty_version' => '1.2.4-stable',
-      'version' => '1.2.4.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd0fafbaa1dc14e8039cdf5c72a932a8d1de1750e',
-    ),
-    'jycr753/ip-utils' => 
-    array (
-      'pretty_version' => '2.0.1',
-      'version' => '2.0.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '6e8ab3e3bc3c2b816bfc682197edc8239ca08857',
-    ),
-    'mpdf/mpdf' => 
-    array (
-      'pretty_version' => 'v7.1.9',
-      'version' => '7.1.9.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'a0fc1215d2306aa3b4ba6e97bd6ebe4bab6a88fb',
-    ),
-    'myclabs/deep-copy' => 
-    array (
-      'pretty_version' => '1.11.1',
-      'version' => '1.11.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '7284c22080590fb39f2ffa3e9057f10a4ddd0e0c',
-    ),
-    'navigatecms/lib' => 
-    array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '56c9e583f69e0c0004d68eb412069e8e2d678ca1',
-    ),
-    'paragonie/random_compat' => 
-    array (
-      'pretty_version' => 'v9.99.99',
-      'version' => '9.99.99.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '84b4dfb120c6f9b4ff7b3685f9b8f1aa365a0c95',
-    ),
-    'psr/log' => 
-    array (
-      'pretty_version' => '1.1.4',
-      'version' => '1.1.4.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
-    ),
-    'setasign/fpdi' => 
-    array (
-      'pretty_version' => '1.6.2',
-      'version' => '1.6.2.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'a6ad58897a6d97cc2d2cd2adaeda343b25a368ea',
-    ),
-    'voku/portable-ascii' => 
-    array (
-      'pretty_version' => '2.0.1',
-      'version' => '2.0.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'b56450eed252f6801410d810c8e1727224ae0743',
-    ),
-    'voku/stop-words' => 
-    array (
-      'pretty_version' => '2.0.1',
-      'version' => '2.0.1.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '8e63c0af20f800b1600783764e0ce19e53969f71',
-    ),
-  ),
 );

@@ -1,12 +1,6 @@
 <?php
-/*
- * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
- *
- * This file is released under the terms of the MIT license. You can find the
- * complete text in the attached LICENSE file or online at:
- *
- * http://www.opensource.org/licenses/mit-license.php
- */
+
+declare(strict_types=1);
 
 namespace IpUtils\Address;
 
@@ -16,31 +10,21 @@ interface AddressInterface
 {
     /**
      * get fully expanded address
-     *
-     * @return string
      */
-    public function getExpanded();
+    public function getExpanded(): string;
 
     /**
      * get compact address representation
-     *
-     * @return string
      */
-    public function getCompact();
+    public function getCompact(): string;
 
     /**
      * get IP-specific chunks ([127,000,000,001] for IPv4 or [0000,0000,00ff,00ea,0001,...] for IPv6)
-     *
-     * @return array
      */
-    public function getChunks();
+    public function getChunks(): array;
 
     /**
      * check whether the address matches a given pattern/range
-     *
-     * @param  ExpressionInterface  $expression
-     *
-     * @return boolean
      */
-    public function matches(ExpressionInterface $expression);
+    public function matches(ExpressionInterface $expression): bool;
 }

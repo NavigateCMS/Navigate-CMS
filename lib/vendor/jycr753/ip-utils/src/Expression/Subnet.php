@@ -1,12 +1,6 @@
 <?php
-/*
- * Copyright (c) 2013, Christoph Mewes, http://www.xrstf.de
- *
- * This file is released under the terms of the MIT license. You can find the
- * complete text in the attached LICENSE file or online at:
- *
- * http://www.opensource.org/licenses/mit-license.php
- */
+
+declare(strict_types=1);
 
 namespace IpUtils\Expression;
 
@@ -18,16 +12,16 @@ use LogicException;
 
 class Subnet implements ExpressionInterface
 {
-    protected $lower;
-    protected $netmask;
+    protected AddressInterface $lower;
+    protected int $netmask;
 
     public function __construct($expression)
     {
         if (strpos($expression, '/') === false) {
-            throw new InvalidExpressionException('Invalid subnet expression "'.$expression.'" given.');
+            throw new InvalidExpressionException('Invalid subnet expression "' . $expression . '" given.');
         }
 
-        list($lower, $netmask) = explode('/', $expression, 2);
+        [$lower, $netmask] = explode('/', $expression, 2);
 
         if (strpos($netmask, '.') !== false || strpos($netmask, ':') !== false) {
             throw new InvalidExpressionException('Netmasks may not use the IP address format ("127.0.0.1/255.0.0.0").');
@@ -40,7 +34,7 @@ class Subnet implements ExpressionInterface
         } elseif (IPv6::isValid($lower)) {
             $ip = new IPv6($lower);
         } else {
-            throw new InvalidExpressionException('Subnet expression "'.$expression.'" contains an invalid IP.');
+            throw new InvalidExpressionException('Subnet expression "' . $expression . '" contains an invalid IP.');
         }
 
         // now we can properly handle the netmask range
@@ -57,12 +51,8 @@ class Subnet implements ExpressionInterface
 
     /**
      * check whether the expression matches an address
-     *
-     * @param  AddressInterface  $address
-     *
-     * @return boolean
      */
-    public function matches(AddressInterface $address)
+    public function matches(AddressInterface $address): bool
     {
         $lower = $this->lower->getExpanded();
         $addr = $address->getExpanded();
@@ -74,8 +64,10 @@ class Subnet implements ExpressionInterface
             $netmask = -1 << (32 - $this->netmask) & ip2long('255.255.255.255');
             $lower &= $netmask;
 
-            return ($addr & $netmask) == $lower;
-        } elseif ($address instanceof IPv6 && $this->lower instanceof IPv6) {
+            return ($addr & $netmask) === $lower;
+        }
+
+        if ($address instanceof IPv6 && $this->lower instanceof IPv6) {
             $lower = unpack('n*', inet_pton($lower));
             $addr = unpack('n*', inet_pton($addr));
 
@@ -84,7 +76,7 @@ class Subnet implements ExpressionInterface
                 $left = ($left <= 16) ? $left : 16;
                 $mask = ~(0xffff >> $left) & 0xffff;
 
-                if (($addr[$i] & $mask) != ($lower[$i] & $mask)) {
+                if (($addr[$i] & $mask) !== ($lower[$i] & $mask)) {
                     return false;
                 }
             }
