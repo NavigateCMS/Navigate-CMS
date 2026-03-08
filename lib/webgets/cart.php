@@ -676,6 +676,7 @@ function nvweb_cart_view($cart, $mode='view')
     global $website;
     global $html;
     global $current;
+    global $events;
 
     $out = array();
 
@@ -698,6 +699,15 @@ function nvweb_cart_view($cart, $mode='view')
         $remove_symbol = '<i class="fa fa-fw fa-trash"></i>';
         $shipping_symbol = '<i class="fa fa-fw fa-info-circle"></i>';
         $alert_symbol = '<i class="fa fa-fw fa-exclamation-triangle"></i>';
+    }
+
+    $cart_view_before_event_out = $events->trigger('cart', 'view_before', array('cart' => $cart));
+    foreach($cart_view_before_event_out as $event)
+    {
+        if(!empty($event['out']))
+        {
+            $out[] = $event['out'];
+        }
     }
 
     $lines_coupon = !@empty($cart['lines'][0]['coupon_amount']);
@@ -876,6 +886,15 @@ function nvweb_cart_view($cart, $mode='view')
 
     $out[] = '    </form>';
     $out[] = '</div>';
+
+    $cart_view_after_event_out = $events->trigger('cart', 'view_after', array('cart' => $cart, 'html' => $out));
+    foreach($cart_view_after_event_out as $event)
+    {
+        if(!empty($event['out']))
+        {
+            $out[] = $event['out'];
+        }
+    }
 
     nvweb_after_body(
         'html',

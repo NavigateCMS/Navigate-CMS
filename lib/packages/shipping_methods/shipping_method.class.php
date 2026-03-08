@@ -7,6 +7,9 @@ class shipping_method
     public $image;
     public $permission;
     public $rates;  // table of countries, states/provinces (zones), weight range, subtotal range, base_price, tax
+    public $categories;
+    public $categories_exclusions;
+    public $products;
 
     public $dictionary;
 
@@ -30,13 +33,17 @@ class shipping_method
     {
         $main = $rs[0];
 
-        $this->id			= $main->id;
-        $this->website		= $main->website;
-        $this->codename		= $main->codename;
-        $this->image		= $main->image;
-        $this->permission	= $main->permission;
-        $this->dictionary	= webdictionary::load_element_strings('shipping_method', $this->id);
-        $this->rates        = json_decode($main->rates);
+        $this->id			        = $main->id;
+        $this->website		        = $main->website;
+        $this->codename		        = $main->codename;
+        $this->image		        = $main->image;
+        $this->permission	        = $main->permission;
+        $this->dictionary	        = webdictionary::load_element_strings('shipping_method', $this->id);
+        $this->rates                = json_decode($main->rates);
+        $this->categories		    = array_filter(explode(',', $main->categories));
+        $this->categories_exclusions= array_filter(explode(',', $main->categories_exclusions));
+        $this->products             = json_decode($main->products, true);
+
     }
 
     public function load_from_post()
@@ -79,14 +86,45 @@ class shipping_method
                 $this->rates[] = $rate_detail;
             }
         }
+        
+
+	    $this->categories 	= '';
+        if(!empty($_REQUEST['categories']))
+        {
+            $this->categories	= explode(',', $_REQUEST['categories']);
+        }
+
+        $this->categories_exclusions 	= '';
+        if(!empty($_REQUEST['categories_exclusions']))
+        {
+            $this->categories_exclusions = explode(',', $_REQUEST['categories_exclusions']);
+        }
+
+        if($_REQUEST['all_categories']=='1' || (is_array($_REQUEST['all_categories']) && $_REQUEST['all_categories'][0] == '1'))
+        {
+            $this->categories = array();
+            $this->categories_exclusions = array();
+        }
+
+        $this->products = array();
+        if(!empty($_REQUEST['products_selection']) && $_REQUEST['products_display'][0] != 'all')
+        {
+            $this->products = array(
+                $_REQUEST['products_display'][0] => $_REQUEST['products_selection']
+            );
+        }
     }
 
     public function save()
     {
         if(!empty($this->id))
+        {
             return $this->update();
+        }
         else
+        {
             return $this->insert();
+        }
     }
 
     public function delete()
@@ -117,18 +155,39 @@ class shipping_method
         global $DB;
         global $website;
 
+        if(!is_array($this->categories))
+        {
+            $this->categories = array();
+        }
+
+        if(!is_array($this->categories_exclusions))
+        {
+            $this->categories_exclusions = array();
+        }
+
         $DB->execute(' 
  			INSERT INTO nv_shipping_methods
-				(id, website, codename, image, permission, rates)
+				(   id, website, codename, image, permission, 
+                    rates, 
+                    categories, categories_exclusions, 
+                    products
+                )
 			VALUES 
-				( 0, :website, :codename, :image, :permission, :rates)
+				(   0, :website, :codename, :image, :permission, 
+                    :rates, 
+                    :categories, :categories_exclusions, 
+                    :products
+                )
 			',
             array(
                 'website' => value_or_default($this->website, $website->id),
                 'codename' => value_or_default($this->codename, ""),
                 'image' => value_or_default($this->image, 0),
                 'permission' => value_or_default($this->permission, 0),
-                'rates' => value_or_default(json_encode($this->rates), "")
+                'rates' => value_or_default(json_encode($this->rates), ""),
+                'categories' =>  implode(',', $this->categories),
+                'exclusions' =>  implode(',', $this->categories_exclusions),
+                'elements' =>  json_encode($this->products)
             )
         );
 
@@ -143,22 +202,40 @@ class shipping_method
     {
         global $DB;
 
+        if(!is_array($this->categories))
+        {
+            $this->categories = array();
+        }
+
+        if(!is_array($this->categories_exclusions))
+        {
+            $this->categories_exclusions = array();
+        }
+
         $ok = $DB->execute(' 
  			UPDATE nv_shipping_methods
-			  SET codename = :codename, image = :image, permission = :permission, rates = :rates
-			WHERE id = :id	AND	website = :website',
+			  SET codename = :codename, image = :image, permission = :permission, rates = :rates,
+                  categories = :categories, categories_exclusions = :categories_exclusions, 
+                  products = :products
+			WHERE id = :id	
+              AND	website = :website',
             array(
                 'id' => $this->id,
                 'website' => $this->website,
                 'codename' => value_or_default($this->codename, ""),
                 'image' => value_or_default($this->image, 0),
                 'permission' => value_or_default($this->permission, 0),
-                'rates' => value_or_default(json_encode($this->rates), "")
+                'rates' => value_or_default(json_encode($this->rates), ""),
+                'categories' =>  implode(',', $this->categories),
+                'categories_exclusions' =>  implode(',', $this->categories_exclusions),
+                'products' =>  json_encode($this->products),
             )
         );
 
         if(!$ok)
+        {
             throw new Exception($DB->get_last_error());
+        }
 
         webdictionary::save_element_strings('shipping_method', $this->id, $this->dictionary, $this->website);
 

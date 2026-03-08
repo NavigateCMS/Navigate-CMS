@@ -11,10 +11,14 @@ function run()
 	$out = '';
 	$object = new shipping_method();
 			
-	switch($_REQUEST['act'])
+	// Extract safe values for array access
+	$act = value_or_default(array($_REQUEST, 'act'), '');
+	switch($act)
 	{
         case 'json':
-			switch($_REQUEST['oper'])
+			// Extract safe values for array access
+			$oper = value_or_default(array($_REQUEST, 'oper'), '');
+			switch($oper)
 			{
 				case 'del':	// remove rows
                     if(naviforms::check_csrf_token('header'))
@@ -78,11 +82,11 @@ function run()
                         2 => '<img src="img/icons/silk/world_night.png" align="absmiddle" /> '.t(81, 'Hidden')
                     );
 
-					if($_REQUEST['_search']=='true' || isset($_REQUEST['quicksearch']))
+					if($_REQUEST['_search']=='true' || !empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
 					{
-						if(isset($_REQUEST['quicksearch']))
+						if(!empty(value_or_default(array($_REQUEST, 'quicksearch'), '')))
                         {
-                            list($qs_where, $qs_params) = $object->quicksearch($_REQUEST['quicksearch']);
+                            list($qs_where, $qs_params) = $object->quicksearch(value_or_default(array($_REQUEST, 'quicksearch'), ''));
                             $where .= $qs_where;
                             $parameters = array_merge($parameters, $qs_params);
                         }
@@ -96,14 +100,17 @@ function run()
                         }
 					}
 
+                    $sord = value_or_default(array($_REQUEST, 'sord'), '');
+                    $sidx = value_or_default(array($_REQUEST, 'sidx'), '');
+
                     // filter orderby vars
-                    if( !in_array($_REQUEST['sord'], array('', 'desc', 'DESC', 'asc', 'ASC')) ||
-                        !in_array($_REQUEST['sidx'], array('id', 'codename', 'title', 'permission'))
+                    if( !in_array($sord, array('', 'desc', 'DESC', 'asc', 'ASC')) ||
+                        !in_array($sidx, array('id', 'codename', 'title', 'permission'))
                     )
                     {
                         return false;
                     }
-                    $orderby = $_REQUEST['sidx'].' '.$_REQUEST['sord'];
+                    $orderby = $sidx.' '.$sord;
 
 
                     $sql = ' SELECT SQL_CALC_FOUND_ROWS
@@ -234,9 +241,9 @@ function shipping_methods_list()
         )
     );
 	
-	if($_REQUEST['quicksearch']=='true')
+	if(value_or_default(array($_REQUEST, 'quicksearch'), '')=='true')
     {
-        $nv_qs_text = core_purify_string($_REQUEST['navigate-quicksearch'], true);
+        $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=shipping_methods&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
 	
@@ -354,7 +361,9 @@ function shipping_methods_form($object)
     }
 
     if(!empty($object->id))
+    {
         $layout->navigate_notes_dialog('shipping_method', $object->id);
+    }
 	
 	$navibars->add_actions(
 	    array(
@@ -514,10 +523,10 @@ function shipping_methods_form($object)
                          ' - '.
                          ($rate->subtotal->max==0? '&infin;' : core_decimal2string($rate->subtotal->max)).
                          ' '.
-                        $currencies[$rate->subtotal->currency];
+                        value_or_default(array($currencies, $rate->subtotal->currency), '');
 
-        $rate_cost = core_decimal2string($rate->cost->value).' '.$currencies[$rate->cost->currency];
-        $rate_tax = ($rate->tax->class=="custom")? core_decimal2string($rate->tax->value).' %' : $tax_classes[$rate->tax->class];
+        $rate_cost = core_decimal2string($rate->cost->value).' '.value_or_default(array($currencies, $rate->cost->currency), '');
+        $rate_tax = ($rate->tax->class=="custom")? core_decimal2string($rate->tax->value).' %' : value_or_default(array($tax_classes, $rate->tax->class), '');
 
         $rate_details = base64_encode(json_encode($rate));
 
@@ -560,53 +569,248 @@ function shipping_methods_form($object)
 
     $navibars->add_tab_content('
         <div id="shipping_methods_rates_edit_dialog" style="display: none;">
-            <div class="navigate-form-row">
-                <label>'.t(224, "Country").'</label>
-                '.$naviforms->selectfield('shipping_methods_dialog-country', $country_codes, $country_names, "", "nv_shipping_methods_dialog_regions_how_change();").'                            
+            <ul>
+                <li><a href="#shipping_methods_rates_edit_dialog_tab_main">'.t(43, "Main").'</a></li>
+                <li><a href="#shipping_methods_rates_edit_dialog_tab_regions">'.t(684, "Regions").'</a></li>
+                <li><a href="#shipping_methods_rates_edit_dialog_tab_conditions">'.t(700, "Conditions").'</a></li>
+            </ul>
+ 
+            <div id="shipping_methods_rates_edit_dialog_tab_regions">
+                <div class="navigate-form-row">
+                    <label>'.t(224, "Country").'</label>
+                    '.$naviforms->selectfield('shipping_methods_dialog-country', $country_codes, $country_names, "", "nv_shipping_methods_dialog_regions_how_change();").'                            
+                </div>
+                <div class="navigate-form-row">
+                    <label>'.t(684, "Regions").'</label>
+                    '.$naviforms->selectfield(
+                        'shipping_methods_dialog-regions-how',
+                        array(0 => 'all', 1 => 'selection'),
+                        array(0 => t(443, "All"), 1 => t(405, "Selection")),
+                        'all',
+                        "nv_shipping_methods_dialog_regions_how_change();").'                
+                </div>
+                <div class="navigate-form-row" id="shipping_methods_dialog-regions-selection" style="display: none;">
+                    <label><!--'.t(684, "Regions").'--></label>
+                    '.$naviforms->multiselect('shipping_methods_dialog-regions', array(), array(), array(), NULL, NULL, "height: 216px; width: 620px; ").'                
+                </div>
             </div>
-            <div class="navigate-form-row">
-                <label>'.t(684, "Regions").'</label>
-                '.$naviforms->selectfield(
-                    'shipping_methods_dialog-regions-how',
-                    array(0 => 'all', 1 => 'selection'),
-                    array(0 => t(443, "All"), 1 => t(405, "Selection")),
-                    'all',
-                    "nv_shipping_methods_dialog_regions_how_change();").'                
+            <div id="shipping_methods_rates_edit_dialog_tab_conditions">
+                <div class="navigate-form-row">
+                    <label>'.t(670, "Weight").'</label>'.
+                    $naviforms->decimalfield('shipping_methods_dialog-weight_min', "",2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').' - '.
+                    $naviforms->decimalfield('shipping_methods_dialog-weight_max', "", 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').'&nbsp;&nbsp;'.
+                    $naviforms->selectfield('shipping_methods_dialog-weight_unit', product::weight_units(), product::weight_units(), $website->weight_unit, "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'
+                    <div class="subcomment">'.t(686, 'min').' - '.t(687, 'max').'</div>
+                </div>
+                <div class="navigate-form-row">
+                    <label>'.t(685, "Subtotal").'</label>'.
+                    $naviforms->decimalfield('shipping_methods_dialog-subtotal_min', "",2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').' - '.
+                    $naviforms->decimalfield('shipping_methods_dialog-subtotal_max', "", 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').'&nbsp;&nbsp;'.
+                    $naviforms->selectfield('shipping_methods_dialog-subtotal_currency', array_keys(product::currencies()), array_values(product::currencies()), $website->currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'
+                    <div class="subcomment">'.t(686, 'min').' - '.t(687, 'max').' (0 =&gt; &infin;)</div>                                                            
+                </div>
             </div>
-            <div class="navigate-form-row" id="shipping_methods_dialog-regions-selection" style="display: none;">
-                <label><!--'.t(684, "Regions").'--></label>
-                '.$naviforms->multiselect('shipping_methods_dialog-regions', array(), array(), array(), NULL, NULL, "height: 216px; width: 620px; ").'                
-            </div>
-            <div class="navigate-form-row">
-                <label>'.t(670, "Weight").'</label>'.
-                $naviforms->decimalfield('shipping_methods_dialog-weight_min', "",2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').' - '.
-                $naviforms->decimalfield('shipping_methods_dialog-weight_max', "", 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').'&nbsp;&nbsp;'.
-                $naviforms->selectfield('shipping_methods_dialog-weight_unit', product::weight_units(), product::weight_units(), $website->weight_unit, "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'
-                <div class="subcomment">'.t(686, 'min').' - '.t(687, 'max').'</div>
-            </div>
-            <div class="navigate-form-row">
-                <label>'.t(685, "Subtotal").'</label>'.
-                $naviforms->decimalfield('shipping_methods_dialog-subtotal_min', "",2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').' - '.
-                $naviforms->decimalfield('shipping_methods_dialog-subtotal_max', "", 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').'&nbsp;&nbsp;'.
-                $naviforms->selectfield('shipping_methods_dialog-subtotal_currency', array_keys(product::currencies()), array_values(product::currencies()), $website->currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'
-                <div class="subcomment">'.t(686, 'min').' - '.t(687, 'max').' (0 =&gt; &infin;)</div>                                                            
-            </div>
-            <div class="navigate-form-row">
-                <label>'.t(678, "Cost").'</label>
-                '.$naviforms->decimalfield('shipping_methods_dialog-cost', "", 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').'                            
-                '.$naviforms->selectfield('shipping_methods_dialog-cost_currency', array_keys(product::currencies()), array_values(product::currencies()), $website->currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'                            
-            </div>
-            <div class="navigate-form-row">
-                <label>'.t(677, "Tax").'</label>
-                '.$naviforms->selectfield('shipping_methods_dialog-tax_class', array_keys(product::tax_classes()), array_values(product::tax_classes()), "", "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'                            
-                '.$naviforms->decimalfield('shipping_methods_dialog-tax_value', "", 2, $user->decimal_separator, $user->thousands_separator, '', '%', '60px').'                            
-            </div>
-            <div class="navigate-form-row">
-                <label>'.t(65, "Enabled").'</label>
-                '.$naviforms->checkbox("shipping_methods_dialog-enabled", false).'
+            <div id="shipping_methods_rates_edit_dialog_tab_main">
+                <div class="navigate-form-row">
+                    <label>'.t(678, "Cost").'</label>
+                    '.$naviforms->decimalfield('shipping_methods_dialog-cost', "", 2, $user->decimal_separator, $user->thousands_separator, '', '', '60px').'                            
+                    '.$naviforms->selectfield('shipping_methods_dialog-cost_currency', array_keys(product::currencies()), array_values(product::currencies()), $website->currency, "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'                            
+                </div>
+                <div class="navigate-form-row">
+                    <label>'.t(677, "Tax").'</label>
+                    '.$naviforms->selectfield('shipping_methods_dialog-tax_class', array_keys(product::tax_classes()), array_values(product::tax_classes()), "", "", false, array(), "width: 80px;", true, false, "select2-align-with-input").'                            
+                    '.$naviforms->decimalfield('shipping_methods_dialog-tax_value', "", 2, $user->decimal_separator, $user->thousands_separator, '', '%', '60px').'                            
+                </div>
+                <div class="navigate-form-row">
+                    <label>'.t(65, "Enabled").'</label>
+                    '.$naviforms->checkbox("shipping_methods_dialog-enabled", false).'
+                </div>
             </div>
         </div>
     ');
+
+    $navibars->add_tab(t(700, "Conditions"), "", 'fa fa-filter');
+
+    $default_value = 1;
+    if(!empty($object->categories))
+    {
+        $default_value = 0;
+    }
+    else if(!empty($object->categories_exclusions))
+    {
+        $default_value = 2;
+    }
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(330, 'Categories').'</label>',
+        $naviforms->buttonset(
+            'all_categories',
+            array(
+                '1' => t(396, 'All categories'),
+                '0' => t(405, 'Selection'),
+                '2' => t(552, 'Exclusions')
+            ),
+            $default_value
+        )
+    ));
+
+    $hierarchy = structure::hierarchy(0);
+    $categories_list = structure::hierarchyList($hierarchy, $object->categories);
+    $exclusions_list = structure::hierarchyList($hierarchy, $object->categories_exclusions);
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+            '<div class="category_tree" id="category-tree-parent">
+                <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+                '<div class="tree_ul">'.$categories_list.'</div>'.
+            '</div>'
+        )
+    );
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+            '<div class="category_tree" id="category-exclusions-tree-parent">
+                <img src="img/icons/silk/world.png" align="absmiddle" /> '.$website->name.
+                '<div class="tree_ul">'.$exclusions_list.'</div>'.
+            '</div>'
+        )
+    );
+
+    if(!is_array($object->categories))
+    {
+        $object->categories = array();
+    }
+
+    if(!is_array($object->categories_exclusions))
+    {
+        $object->categories_exclusions = array();
+    }
+
+    $navibars->add_tab_content($naviforms->hidden('categories', implode(',', $object->categories)));
+    $navibars->add_tab_content($naviforms->hidden('categories_exclusions', implode(',', $object->categories_exclusions)));
+
+    $products_display = "all";
+    if(!empty($object->products['exclusions']))
+    {
+        $products_display = "exclusions";
+    }
+    else if(!empty($object->products['selection']))
+    {
+        $products_display = "selection";
+    }
+
+    $navibars->add_tab_content_row(array(
+        '<label>'.t(25, 'Products').'</label>',
+        $naviforms->buttonset(
+            'products_display',
+            array(
+                'all' => t(443, 'All'),
+                'selection' => t(405, 'Selection'),
+                'exclusions' => t(552, 'Exclusions')
+            ),
+            $products_display,
+            "navigate_shipping_methods_products_display_change(this)"
+        )
+    ));
+
+    $layout->add_script('
+        function navigate_shipping_methods_products_display_change(el)
+        {
+            el = $(el).prev();
+            if($(el).val()=="all")
+            {
+                $("#products_selection_wrapper").hide();
+            }
+            else
+            {
+                $("#products_selection_wrapper").show();
+            }
+        }
+
+        navigate_shipping_methods_products_display_change($("label[for=products_display_'.$products_display.']"));
+    ');
+
+    if(!is_array($object->products))
+    {
+        $object->products = array();
+    }
+    $items_ids = array_values($object->products);
+    $items_ids = $items_ids[0];
+    if(empty($items_ids))
+    {
+        $items_ids = array();
+    }
+    $items_titles = array();
+    for($i=0; $i < count($items_ids); $i++)
+    {
+        $item_title = product::get_title($items_ids[$i], $website->languages_published[0]);                        
+        $items_titles[$i] = $item_title;
+    }
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>&nbsp;</label>',
+            $naviforms->selectfield("products_selection", $items_ids, $items_titles, $items_ids, null, true, null, null, false)
+        ),
+        "products_selection_wrapper"
+    );
+
+    $layout->add_script('
+        $("#products_selection").select2({
+            placeholder: "'.t(808, "Find product by title").'",
+            minimumInputLength: 1,
+            ajax: {
+                url: "'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'?fid=products&act=json_find_product",
+                dataType: "json",
+                delay: 100,
+
+                data: function(params)
+                {
+                    return {
+                        title: params.term,
+                        //association: "free",
+                        embedding: 0,
+                        nd: new Date().getTime(),
+                        page_limit: 30, // page size
+                        page: params.page // page number
+                    };
+                },
+                processResults: function (data, params)
+                {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.items,
+                        pagination: { more: (params.page * 30) < data.total_count }
+                    };
+                }
+            },
+            templateSelection: function(row)
+            {
+                if(row.id)
+                    return row.text + " <helper style=\'opacity: .5;\'>#" + row.id + "</helper>";
+                else
+                    return row.text;
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            triggerChange: true
+        });
+        
+        $("#products_selection_wrapper").find(".select2-search__field").css("width", "408px");		
+        $("#products_selection_wrapper").find("li.select2-search").css("width", "auto");
+    ');
+
+    $navibars->add_tab_content_row(
+        array(
+            '<label>'.t(552, "Exclusions").' [per propietat de producte]</label>',
+            '<span>no sé com, posar condicions per indicar valors de propietats dels productes que facin rebutjar la tarifa (exemple Frio=true)</span>'
+        )
+    );
+
+    $product_properties = property::load_properties('product', 'product', 'product', null);
+
+    debugger::bar_dump($product_properties);
 
     $layout->add_script('
         var navigate_shipping_methods_object_id = '.($object->id + 0).';
@@ -632,7 +836,7 @@ function shipping_methods_form($object)
     ');
 
     // script will be bound to onload event at the end of this php function (after getScript is done)
-    $onload_language = $_REQUEST['tab_language'];
+    $onload_language = value_or_default(array($_REQUEST, 'tab_language'), '');
     if(empty($onload_language))
     {
         $onload_language = $website->languages_list[0];
@@ -654,6 +858,7 @@ function shipping_methods_form($object)
                 if(typeof navigate_shipping_methods_onload == "function")
                 {
 				    navigate_shipping_methods_onload("'.$onload_language.'");
+				    $("#shipping_methods_rates_edit_dialog").tabs();
                 }
 	        }
 	    });
@@ -661,4 +866,5 @@ function shipping_methods_form($object)
 
 	return $navibars->generate();
 }
+
 ?>
