@@ -295,7 +295,7 @@ function nvweb_parse($request)
         nvweb_plugins_load();
 
         $current['plugins'] = $plugins;
-        $events->extension_backend_bindings(null, true);
+        $events->extension_backend_bindings(null);
 
         debugger::stop_timer('nvweb-load-plugins');
 
