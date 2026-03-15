@@ -316,7 +316,7 @@ function about_layout()
     $navibars->add_tab_content_row(
     	array(
     		'<label>&nbsp;</label>',
-			'<a href="https://mpdf.github.io" target="_blank">mPDF v8.2.7</a><br />'	// via composer
+			'<a href="https://mpdf.github.io" target="_blank">mPDF v8.3.1</a><br />'	// via composer
 		)
 	);
 

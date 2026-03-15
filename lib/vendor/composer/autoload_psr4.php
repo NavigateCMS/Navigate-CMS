@@ -8,7 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'voku\\' => array($vendorDir . '/voku/stop-words/src/voku', $vendorDir . '/voku/portable-ascii/src/voku'),
     'setasign\\Fpdi\\' => array($vendorDir . '/setasign/fpdi/src'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log/src'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Mpdf\\PsrLogAwareTrait\\' => array($vendorDir . '/mpdf/psr-log-aware-trait/src'),
     'Mpdf\\PsrHttpMessageShim\\' => array($vendorDir . '/mpdf/psr-http-message-shim/src'),
