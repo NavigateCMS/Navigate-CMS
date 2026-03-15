@@ -3,7 +3,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 @ini_set('display_errors', 1);
 @ini_set('magic_quotes_runtime', 0);
 @session_start();
-date_default_timezone_set("UTC");
+date_default_timezone_set("UTC");    
 
 if(!empty($_POST['NAVIGATE_FOLDER']))
 {
@@ -17,7 +17,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.9.5');
+	define('APP_VERSION', '2.9.6');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -46,7 +46,7 @@ else
 	}
 }
 
-if(nv_global_var("REQUEST", 'step')=='cleaning')
+if(nv_setup_global_var("REQUEST", 'step')=='cleaning')
 {
     // remove installation files
     @unlink('navigate.sql');
@@ -263,7 +263,7 @@ if(file_exists('cfg/globals.php') && file_exists('img/empty.png'))
        <a href="http://www.navigatecms.com" target="_blank"><img src="<?php echo navigate_install_logo();?>" width="150" height="70" /></a>
     </div>
     <?php
-	switch(nv_global_var("REQUEST", 'step'))
+	switch(nv_setup_global_var("REQUEST", 'step'))
 	{
         case 5:
 			navigate_install_completed();
@@ -312,7 +312,7 @@ function navigate_install_requirements()
 
 	$checks['diskspace'] = floor(disk_free_space(dirname($_SERVER['SCRIPT_FILENAME'])) / (1024*1024)) > 50;
 	$checks['server'] = true; //(stripos($_SERVER['SERVER_SOFTWARE'], 'apache')!==false);
-	$checks['php7.2'] = (version_compare(PHP_VERSION, '7.2.0') >= 0);
+	$checks['php7.4'] = (version_compare(PHP_VERSION, '7.4.0') >= 0);
 	$checks['gd'] = extension_loaded('gd');
 	//$checks['imap'] = extension_loaded('imap');
 	$checks['json'] = extension_loaded('json');
@@ -364,8 +364,8 @@ function navigate_install_requirements()
                     <input type="text" value="<?php echo $_SERVER['SERVER_SOFTWARE'];?>" class="<?php echo ($checks['server']? 'green' : 'red');?>" />
                 </div>                 
                 <div>
-                    <label>PHP &ge; 7.2</label>
-                    <input type="text" value="<?php echo ($checks['php7.2']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php7.2']? 'green' : 'red');?>" />
+                    <label>PHP &ge; 7.4</label>
+                    <input type="text" value="<?php echo ($checks['php7.4']? $lang['found'] : $lang['not_found']);?> (<?php echo PHP_VERSION;?>)" class="<?php echo ($checks['php7.4']? 'green' : 'red');?>" />
                 </div>                    
                 <div>
                     <label>&raquo; GD</label>
@@ -449,7 +449,7 @@ function navigate_install_configuration()
     $app_owner_default = substr($_SERVER['HTTP_HOST'], 0, strrpos($_SERVER['HTTP_HOST'], '.'));
     $app_owner_default = str_replace('www.', '', $app_owner_default);
 
-    $_REQUEST['APP_OWNER'] = navigate_simple_xss_cleaner(nv_global_var("REQUEST", 'APP_OWNER', ''));
+    $_REQUEST['APP_OWNER'] = navigate_simple_xss_cleaner(nv_setup_global_var("REQUEST", 'APP_OWNER', ''));
 
 	$defaults = array(
 		'APP_OWNER' 		=> (empty($_REQUEST['APP_OWNER']))? $app_owner_default : $_REQUEST['APP_OWNER'],
@@ -557,10 +557,10 @@ function navigate_install_configuration()
 			{
 				$_SESSION['NAVIGATE-SETUP'] = serialize(
 					array(
-						'ADMIN_USERNAME' => nv_global_var("REQUEST", 'ADMIN_USERNAME', ''),
-						'ADMIN_PASSWORD' => nv_global_var("REQUEST", 'ADMIN_PASSWORD', ''),
-						'ADMIN_EMAIL' => nv_global_var("REQUEST", 'ADMIN_EMAIL', ''),
-						'DEFAULT_THEME' => nv_global_var("REQUEST", 'DEFAULT_THEME', '')
+						'ADMIN_USERNAME' => nv_setup_global_var("REQUEST", 'ADMIN_USERNAME', ''),
+						'ADMIN_PASSWORD' => nv_setup_global_var("REQUEST", 'ADMIN_PASSWORD', ''),
+						'ADMIN_EMAIL' => nv_setup_global_var("REQUEST", 'ADMIN_EMAIL', ''),
+						'DEFAULT_THEME' => nv_setup_global_var("REQUEST", 'DEFAULT_THEME', '')
 					)
 				);
 				session_write_close();
@@ -936,24 +936,31 @@ function navigate_install_decompress()
 		});
 	}
 	
-	function extract_zip()
+	function extract_zip(file_index)
 	{
 		$('.navigate-install-decompress-extraction').show();
+        if(file_index === undefined) file_index = 0;
 		
 		$.ajax({
             url: '<?php echo $_SERVER['PHP_SELF'];?>?process=extract_zip',
             dataType: 'json',
-            data: {},
+            data: { file_index: file_index },
             success: function(data)
             {
-                if(data!=true)
+                if(data.error)
                 {
-                    $('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="'+data+'" class="red" />');
+                    $('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="'+data.error+'" class="red" />');
+                }
+                else if(data.done)
+                {
+                    $('.navigate-install-decompress-extraction .progressbar').progressbar('value', 100);
+                    $('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
+                    chmod_files();
                 }
                 else
                 {
-                    $('.navigate-install-decompress-extraction').find('div:first').removeClass().html('<input type="text" name="" value="<?php echo $lang['done'];?>" class="green" />');
-                    chmod_files();
+                    $('.navigate-install-decompress-extraction .progressbar').progressbar('value', data.percentage);
+                    extract_zip(data.next_index);
                 }
             }
         });
@@ -1305,7 +1312,7 @@ function process()
 	setlocale(LC_ALL, $_SESSION['navigate_install_locale']);
 	$lang = navigate_install_load_language();
 	
-	switch(nv_global_var("REQUEST", 'process'))
+	switch(nv_setup_global_var("REQUEST", 'process'))
 	{
 		case 'verify_zip':
 			sleep(1);
@@ -1353,26 +1360,65 @@ function process()
 		case 'extract_zip':
             $npath = getcwd().NAVIGATE_FOLDER;
             $npath = str_replace('\\', '/', $npath);
+            $file_index = isset($_REQUEST['file_index']) ? intval($_REQUEST['file_index']) : 0;
+            $batch_size = ($file_index >= 4900) ? 25 : 50;
 			
 			if(file_exists($npath))
 			{
 				$zip = new ZipArchive;
 				if ($zip->open('package.zip') === TRUE) 
 				{
-					if(!$zip->extractTo($npath))
+                    $numFiles = $zip->numFiles;
+                    if($file_index >= $numFiles)
                     {
-                        die(json_encode($lang['extraction_failed']));
+					    $zip->close();
+                        @copy($npath . '/crossdomain.xml', dirname($npath).'/crossdomain.xml');
+					    die(json_encode(array('done' => true)));
                     }
-					$zip->close();
-                    copy($npath . '/crossdomain.xml', dirname($npath).'/crossdomain.xml');
-					die(json_encode(true));
+
+                    for($i = $file_index; $i < min($file_index + $batch_size, $numFiles); $i++)
+                    {
+                        $stat = $zip->statIndex($i);
+                        if($stat)
+                        {
+                            $filename = $stat['name'];
+                            if(substr($filename, -1) == '/')
+                            {
+                                if(!is_dir($npath.'/'.$filename))
+                                {
+                                    @mkdir($npath.'/'.$filename, 0755, true);
+                                }
+                            }
+                            else
+                            {
+                                $dir = dirname($filename);
+                                if($dir != '.' && !is_dir($npath.'/'.$dir))
+                                {
+                                    @mkdir($npath.'/'.$dir, 0755, true);
+                                }
+                                $content = $zip->getFromIndex($i);
+                                file_put_contents($npath.'/'.$filename, $content);
+                            }
+                        }
+                    }
+
+                    $next_index = $file_index + $batch_size;
+                    $percentage = round(($next_index / $numFiles) * 100);
+                    if($percentage > 100) $percentage = 100;
+                    
+                    $zip->close();
+                    
+                    die(json_encode(array(
+                        'next_index' => $next_index,
+                        'percentage' => $percentage
+                    )));
 				} 
 				else 
 				{
-					die(json_encode($lang['extraction_failed']));
+					die(json_encode(array('error' => $lang['extraction_failed'])));
 				}
 			}
-			die(json_encode($lang['folder_not_exists']));
+			die(json_encode(array('error' => $lang['folder_not_exists'])));
 		
 			break;
 			
@@ -1869,6 +1915,18 @@ function navigate_install_load_language()
 
 	setlocale(LC_ALL, $_SESSION['navigate_install_locale']);
 	return $lang;
+}
+
+function nv_setup_global_var($type, $key, $default = null)
+{
+    switch(strtoupper($type))
+    {
+        case 'GET':     return $_GET[$key] ?? $default;
+        case 'POST':    return $_POST[$key] ?? $default;
+        case 'REQUEST': return $_REQUEST[$key] ?? $default;
+        case 'COOKIE':  return $_COOKIE[$key] ?? $default;
+        default:        return $default;
+    }
 }
 
 ?>
