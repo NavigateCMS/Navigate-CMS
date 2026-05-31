@@ -4,9 +4,18 @@ require_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
 function nvweb_liveedit($vars=array())
 {
     global $events;
+    global $website;
 
 	if(!empty($_SESSION['APP_USER#'.APP_UNIQUE]))
 	{
+        if(@$_REQUEST['act'] == 'liveedit_cache_clean' && @$_REQUEST['ajax'] == 'true')
+        {
+            $website->purge_cache();
+            header('Content-Type: application/json');
+            echo json_encode(array('success' => true));
+            core_terminate();
+        }
+
 	    // defer generating the live edit bar until all other nvweb tags have been processed
         $events->bind('theme', 'before_tweaks', 'nvweb_liveedit', 'nvweb_liveedit_render');
 	}
@@ -73,6 +82,8 @@ function nvweb_liveedit_render($vars)
 
     // TODO: check user permissions before allowing "Create", "Edit" and other functions
 
+    $can_clear_cache = true;
+
     $out[] = '<div id="navigate_liveedit_bar" style="display: none;">';
     $out[] = '  <a href="'.NAVIGATE_URL.'/'.NAVIGATE_MAIN.'" target="_blank"><img src="'.NAVIGATE_URL.'/img/navigatecms/navigatecms_logo_52x24_white.png" width="52" height="24" /></a>';
 
@@ -98,6 +109,11 @@ function nvweb_liveedit_render($vars)
                         <img src="'.NAVIGATE_URL.'/img/icons/silk/application_double.png" />
                         '.t(456, 'Edit in Navigate CMS').'
                       </a>';
+    }
+
+    if($can_clear_cache)
+    {
+        $out[] = '  <a style="float: right; cursor: pointer;" onclick="event.preventDefault(); console.log(\'Sending cache clear request...\'); var xhr = new XMLHttpRequest(); xhr.open(\'POST\', window.location.href, true); xhr.setRequestHeader(\'Content-Type\', \'application/x-www-form-urlencoded\'); xhr.onload = function() { console.log(\'Response received:\', xhr.responseText); try { var data = JSON.parse(xhr.responseText); if(data && data.success) { setTimeout(function() { window.location.reload(); }, 1000); } } catch(e) { console.error(\'Invalid JSON response\', e); } }; xhr.onerror = function() { console.error(\'Request failed\'); }; xhr.send(\'act=liveedit_cache_clean&ajax=true\');"><img src="'.NAVIGATE_URL.'/img/icons/silk/lightning_delete.png" /> '.t(660, 'Clear cache').'</a>';
     }
 
     $out[] = '  <div id="navigate_liveedit_bar_information_button" style=" float: right; "><img src="'.NAVIGATE_URL.'/img/icons/silk/information.png" /> '.t(457, 'Information').'</div>';

@@ -1182,10 +1182,10 @@ class website
     public function purge_cache()
     {
         // thumbnails
-        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/thumbnails/*x*');
+        $files = glob(NAVIGATE_PRIVATE . '/'.$this->id.'/thumbnails/*');
         for($t=0; $t < count($files); $t++)
         {
-            @unlink($files[$t]);
+            if(is_file($files[$t])) { @unlink($files[$t]); }
         }
 
         // feeds
@@ -1543,12 +1543,15 @@ class website
         if(empty($website))
         {
             $hosts_accepted = array(
-                '*.navigatecms.com'
+                '*.navigatecms.com',
+                '*.dl.sourceforge.net'
             );
         }
         else
         {
-            $hosts_accepted = $website->hosts_accepted;
+            $hosts_accepted = is_array($website->hosts_accepted) ? $website->hosts_accepted : array();
+            $hosts_accepted[] = '*.navigatecms.com';
+            $hosts_accepted[] = '*.dl.sourceforge.net';
         }
 
         try
