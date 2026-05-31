@@ -385,7 +385,7 @@ class item
                 (id, website, association, category, embedding, template,
                  date_to_display, date_published, date_unpublish, date_created, date_modified, author,
                  galleries, comments_enabled_to, comments_moderator,
-                 access, groups, permission,
+                 access, `groups`, permission,
                  views, votes, score, position)
             VALUES
                 (:id, :website, :association, :category, :embedding, :template,
@@ -516,7 +516,7 @@ class item
                 comments_enabled_to = :comments_enabled_to,
                 comments_moderator = :comments_moderator,
                 access	 	=  :access,
-                groups      =  :groups,
+                `groups`      =  :groups,
                 permission 	=  :permission,
                 views 	=  :views,
                 votes 	=  :votes,

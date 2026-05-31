@@ -1100,7 +1100,7 @@ class webuser
         $out = array();
 
         $DB->query('
-            SELECT id, website, username, email, groups, fullname, gender,
+            SELECT id, website, username, email, `groups`, fullname, gender,
                 '/*avatar,*/.'
                 birthdate, language, country, region, timezone,
                 company, nin, address, zipcode, location, phone, social_website,

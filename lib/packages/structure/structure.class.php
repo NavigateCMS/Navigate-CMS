@@ -237,7 +237,7 @@ class structure
 
         $ok = $DB->execute('
 			INSERT INTO nv_structure
-				(	id, website, parent, position, access, groups, permission,
+				(	id, website, parent, position, access, `groups`, permission,
 					icon, metatags, template, date_published, date_unpublish,
 					visible, views, votes, score
 				)
@@ -313,7 +313,7 @@ class structure
 
 		$ok = $DB->execute('
  			UPDATE nv_structure
-			   SET  parent = :parent, position = :position, access = :access, groups = :groups,
+			   SET  parent = :parent, position = :position, access = :access, `groups` = :groups,
 			   		permission = :permission, icon = :icon, metatags = :metatags,
 					date_published = :date_published, date_unpublish = :date_unpublish,
 					template = :template, visible = :visible, views = :views, votes = :votes, score = :score

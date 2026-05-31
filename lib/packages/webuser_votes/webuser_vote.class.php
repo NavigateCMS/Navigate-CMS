@@ -78,7 +78,7 @@ class webuser_vote
 		
 		$ok = $DB->execute(' 
  			INSERT INTO nv_webuser_votes
-				(id, website, webuser, object, object_id, value, date)
+				(id, website, webuser, object, object_id, `value`, date)
 			VALUES 
 				( 0, :website, :webuser, :object, :object_id, :value, :date )',
 			array(
@@ -110,7 +110,7 @@ class webuser_vote
 			
 		$ok = $DB->execute(' 
  			UPDATE nv_webuser_votes
-				SET webuser	= :webuser, object = :object, object_id = :object_id, value = :value, date = :date
+				SET webuser	= :webuser, object = :object, object_id = :object_id, `value` = :value, date = :date
 			WHERE id = :id AND website = :website',
 			array(
 				'id' => $this->id,

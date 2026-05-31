@@ -474,7 +474,7 @@ class product
                  inventory, stock_available, 
                  options,
                  galleries, comments_enabled_to, comments_moderator,
-                 access, groups, permission, views, votes, score, position)
+                 access, `groups`, permission, views, votes, score, position)
             VALUES
                 (:id, :website, :category, :type, :template, :author, :brand,
                  :date_to_display, :date_published, :date_unpublish, :date_created, :date_modified,
@@ -630,7 +630,7 @@ class product
                   comments_enabled_to = :comments_enabled_to,
                   comments_moderator = :comments_moderator,
                   access = :access,
-                  groups = :groups,
+                  `groups` = :groups,
                   permission = :permission,
                   views = :views,
                   votes = :votes,

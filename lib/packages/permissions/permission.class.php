@@ -116,7 +116,7 @@ class permission
 
         $ok = $DB->execute(
             'INSERT INTO nv_permissions
-                (id, website, name, scope, type, function, profile, user, value)
+                (id, website, name, scope, type, `function`, profile, `user`, `value`)
                 VALUES
                 ( 0,
                   :website,
@@ -179,10 +179,10 @@ class permission
 			       name       = :name,
 			       scope      = :scope,
 			       type		  = :type,
-			       function   = :function,
+			       `function`   = :function,
 			       profile    = :profile,
-			       user       = :user,
-			       value      = :value
+			       `user`       = :user,
+			       `value`      = :value
 			 WHERE id = :id',
             array(
                 ':id'        =>  $this->id,

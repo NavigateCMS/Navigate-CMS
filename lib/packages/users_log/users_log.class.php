@@ -100,7 +100,7 @@ class users_log
 		// prepared statement			
 		$ok = $DB->execute(' 
  			INSERT INTO nv_users_log
-				(id, `date`, user, website, `function`, item, action, item_title, data)
+				(id, `date`, `user`, website, `function`, item, action, item_title, data)
 			VALUES 
 				( :id, :date, :user, :website, :function, :item, :action, :item_title, :data )',
 			array(

@@ -475,7 +475,7 @@ class block
             'INSERT INTO nv_blocks
                 (id, website, type, date_published, date_unpublish,
                  position, fixed, categories, exclusions, elements,
-                 access, groups, enabled, `trigger`, action, notes,
+                 access, `groups`, enabled, `trigger`, action, notes,
                  date_modified)
                 VALUES
                 ( 0,
@@ -591,7 +591,7 @@ class block
                 `trigger` 		= :trigger,
                 `action` 		= :action,
                 access 			= :access,
-                groups          = :groups,
+                `groups`        = :groups,
                 enabled 		= :enabled,
                 notes	 		= :notes,
                 date_modified	= :date_modified
