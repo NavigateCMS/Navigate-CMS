@@ -256,6 +256,19 @@ function run()
                             continue;
                         }
 						
+                        $row_permission = $dataset[$i]['permission'];
+                        $now = core_time();
+
+                        if(!empty($dataset[$i]['date_published']) && intval($dataset[$i]['date_published']) > $now)
+                        {
+                            $row_permission = 2;
+                        }
+
+                        if(!empty($dataset[$i]['date_unpublish']) && intval($dataset[$i]['date_unpublish']) < $now)
+                        {
+                            $row_permission = 2;
+                        }
+
 						$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
                         $dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
 
@@ -348,7 +361,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
                             1	=> $item_image,
-							2 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.$dataset[$i]['title'].'</div>',
+							2 	=> '<div class="list-row" data-permission="'.$row_permission.'">'.$dataset[$i]['title'].'</div>',
 							3   => empty($dataset[$i]['brand_name'])? '' : '<span data-brand-id="'.$dataset[$i]['brand'].'">'.$dataset[$i]['brand_name'].'</span>',
 							4	=> core_special_chars(trim($dataset[$i]['category_path'])),
 							5	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],

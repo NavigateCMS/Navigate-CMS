@@ -182,6 +182,19 @@ function run()
                             3 => '<img src="img/icons/silk/group_key.png" align="absmiddle" title="'.t(512, "Selected web user groups").'" />'
 						);						
 						
+                        $is_published = true;
+                        $now = core_time();
+                        if(!empty($dataset[$i]['date_published']) && intval($dataset[$i]['date_published']) > $now)
+                        {
+                            $is_published = false;
+                        }
+                        if(!empty($dataset[$i]['date_unpublish']) && intval($dataset[$i]['date_unpublish']) < $now)
+                        {
+                            $is_published = false;
+                        }
+
+                        $row_enabled = $is_published ? $dataset[$i]['enabled'] : 0;
+
 						$dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
 						$dataset[$i]['date_unpublish'] = core_ts2date($dataset[$i]['date_unpublish'], false, true);
 
@@ -209,7 +222,7 @@ function run()
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
 							1 	=> core_special_chars($block_types_list[$dataset[$i]['type']]),
-                            2 	=> '<div class="list-row" data-enabled="'.$dataset[$i]['enabled'].'">'.core_special_chars($dataset[$i]['title']).'</div>',
+                            2 	=> '<div class="list-row" data-enabled="'.$row_enabled.'">'.core_special_chars($dataset[$i]['title']).'</div>',
 							3	=> $dataset[$i]['date_published'].' - '.$dataset[$i]['date_unpublish'],
 							4	=> $access[$dataset[$i]['access']],
 							5	=> (($dataset[$i]['enabled']==1)? '<img src="img/icons/silk/accept.png" />' : '<img src="img/icons/silk/cancel.png" />'),

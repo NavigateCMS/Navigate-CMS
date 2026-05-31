@@ -236,15 +236,19 @@ function run()
                         }
 
                         $permission = $permissions[$dataset[$i]['permission']];
+                        $row_permission = $dataset[$i]['permission'];
+                        $now = core_time();
 
-                        if(!empty($dataset[$i]['date_published']) && intval($dataset[$i]['date_published']) >= core_time())
+                        if(!empty($dataset[$i]['date_published']) && intval($dataset[$i]['date_published']) > $now)
                         {
                             $permission = $permissions["published_later"];
+                            $row_permission = 2;
                         }
 
-                        if(!empty($dataset[$i]['date_unpublish']) && intval($dataset[$i]['date_unpublish']) < core_time())
+                        if(!empty($dataset[$i]['date_unpublish']) && intval($dataset[$i]['date_unpublish']) < $now)
                         {
                             $permission = $permissions["unpublished"];
+                            $row_permission = 2;
                         }
 
                         $dataset[$i]['date_published'] = core_ts2date($dataset[$i]['date_published'], false, true);
@@ -332,7 +336,7 @@ function run()
 
 						$out[$i] = array(
 							0	=> $dataset[$i]['id'],
-							1 	=> '<div class="list-row" data-permission="'.$dataset[$i]['permission'].'">'.core_special_chars($dataset[$i]['title']).'</div>',
+							1 	=> '<div class="list-row" data-permission="'.$row_permission.'">'.core_special_chars($dataset[$i]['title']).'</div>',
 							2 	=> $social_rating.'&nbsp;&nbsp;'.$social_comments,
 							3	=> core_special_chars($category_text),
 							//4	=> $dataset[$i]['author_username'],
