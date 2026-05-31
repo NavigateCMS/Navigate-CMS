@@ -1080,7 +1080,7 @@ function core_http_request($url, $timeout = 12)
 
 	if(function_exists('curl_init'))
 	{
-        $data = core_curl_post($url);        
+        $data = core_curl_post($url, NULL, NULL, $timeout, 'get');        
 	}
 	else
 	{

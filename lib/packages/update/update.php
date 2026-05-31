@@ -93,6 +93,7 @@ function update_list()
     if(empty($latest_available))
     {
         $layout->navigate_notification(t(578, "Sorry, could not connect to check updates"), true);
+        $latest_available = new stdClass();
         $latest_available->Version = $current_version->version;
         $latest_available->Revision = $current_version->revision;
     }

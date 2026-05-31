@@ -132,7 +132,7 @@ else
 $current_version = update::latest_installed();
 
 // new updates check -> only Administrator (profile=1)
-if($user->profile==1 && empty($_SESSION['latest_update']) && NAVIGATECMS_UPDATES!==false)
+if($user->profile==1 && empty($_SESSION['latest_update']) && (!defined('NAVIGATECMS_UPDATES') || NAVIGATECMS_UPDATES!==false))
 {
 	$_SESSION['latest_update'] = @update::latest_available();
     $_SESSION['extensions_updates'] = @extension::latest_available();

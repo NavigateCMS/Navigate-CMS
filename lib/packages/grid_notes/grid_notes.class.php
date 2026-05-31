@@ -83,6 +83,7 @@ class grid_notes
         
         $ids = array_filter($ids);
 
+        $grid_notes = array();
         if(!empty($ids))
         {
             $DB->query(
