@@ -1067,7 +1067,7 @@ class file
 	}
 
     // $item: file ID or file object
-	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95, $scale_up_force=false, $opacity=1)
+	public static function thumbnail($item, $width=0, $height=0, $border=true, $ftname='', $quality=95, $scale_up_force=false, $opacity=1, $prefer_webp=false)
 	{
         if(is_numeric($item))
         {
@@ -1111,35 +1111,39 @@ class file
 
         // do we have the thumbnail already created for this image?
 
-        // option A) opaque JPEG FILE
+        // Define all possible thumbnail paths
         $thumbnail_path_jpg = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$opacity.'-'.$item_id.'.jpg';
+        $thumbnail_path_png = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$opacity.'-'.$item_id;
+        $thumbnail_path_webp = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$quality.'-'.$opacity.'-'.$item_id.'.webp';
 
-        if(file_exists($thumbnail_path_jpg))
+        // Check for existing thumbnail based on preference
+        if($prefer_webp)
         {
-            // ok, a file exists, but it's older than the image file? (so the original image file has changed)
-            if(filemtime($thumbnail_path_jpg) > filemtime($original))
+            if(file_exists($thumbnail_path_webp) && filemtime($thumbnail_path_webp) > filemtime($original))
             {
-                // the thumbnail already exists and is up to date
-                $thumbnail = $thumbnail_path_jpg;
+                $thumbnail = $thumbnail_path_webp;
+            }
+        }
+        else
+        {
+            // Default: prefer PNG (no quality in path), then JPG
+            if(file_exists($thumbnail_path_png) && filemtime($thumbnail_path_png) > filemtime($original))
+            {
+                $thumbnail = $thumbnail_path_png;
+            }
+            else if(file_exists($thumbnail_path_jpg))
+            {
+                if(filemtime($thumbnail_path_jpg) > filemtime($original))
+                {
+$thumbnail = $thumbnail_path_jpg;
+                }
             }
         }
 
-        // option B) transparent PNG FILE
-        $thumbnail_path_png = NAVIGATE_PRIVATE.'/'.$item->website.'/thumbnails/'.$width.'x'.$height.'-'.$border.'-'.$opacity.'-'.$item_id;
-		if(file_exists($thumbnail_path_png))
-		{
-			// ok, a file exists, but it's older than the image file? (original image file has changed)
-			if(filemtime($thumbnail_path_png) > filemtime($original))
-			{
-				// the thumbnail already exists and is up to date	
-				$thumbnail = $thumbnail_path_png;
-			}
-		}
-
         // do we have to create a new thumbnail?
-		if(empty($thumbnail) || isset($_GET['force']) || !(file_exists($thumbnail) && filesize($thumbnail) > 0))
-		{
-		    if($item->mime == 'application/pdf')
+        if(empty($thumbnail) || isset($_GET['force']) || !(file_exists($thumbnail) && filesize($thumbnail) > 0))
+        {
+            if($item->mime == 'application/pdf')
             {
                 // try to get thumbnail for a PDF document using Image Magick
                 if(extension_loaded('imagick'))
@@ -1159,7 +1163,12 @@ class file
                 }
             }
 
-			$thumbnail = $thumbnail_path_png;
+            // Determine which format to generate based on preference
+            if($prefer_webp)
+            {
+                // Prefer WebP - target path for new thumbnail
+                $thumbnail = $thumbnail_path_webp;
+            }
 
 			$handle = new \Verot\Upload\Upload($original);
 
@@ -1191,8 +1200,14 @@ class file
                 }
             }
 
-			$handle->image_convert = 'png';
-            $handle->file_max_size = '512M'; // maximum image size: 512M (it really depends on available memory)
+			// ADD: Set conversion format based on WebP preference
+			if($prefer_webp) {
+				$handle->image_convert = 'webp';
+				$handle->webp_quality = $quality;
+			} else {
+				$handle->image_convert = 'png';
+			}
+            $handle->file_max_size = '512M';
 
 			// if needed, calculate width or height with aspect ratio
             if(empty($width) && empty($height))
@@ -1203,32 +1218,32 @@ class file
 			else if(empty($width))
 			{
 			    if(!empty($size['height']))
-                {
-                    $width = round(($height / $size['height']) * $size['width']);
-                }
-                else
-                {
-                    $width = NULL;
-                }
-				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity);
+				{
+					$width = round(($height / $size['height']) * $size['width']);
+				}
+				else
+				{
+					$width = NULL;
+				}
+				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity, $prefer_webp);
 			}
 			else if(empty($height))
 			{
 			    if(!empty($size['width']))
-                {
-                    $height = round(($width / $size['width']) * $size['height']);
-                }
-                else
-                {
-                    $height = NULL;
-                }
-				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity);
+				{
+					$height = round(($width / $size['width']) * $size['height']);
+				}
+				else
+				{
+					$height = NULL;
+				}
+				return file::thumbnail($item, $width, $height, $border, $ftname, $quality, $scale_up_force, $opacity, $prefer_webp);
 			}
 
 			$handle->image_x = $width;
 			$handle->image_y = $height;
 
-			if(!empty($opacity) && $opacity != 1)
+			if(!empty($opacity) && is_numeric($opacity) && $opacity != 1)
             {
                 // set opacity changing CSS decimal notation (0 to 1) to class.upload value (0 to 100)
                 $handle->image_opacity = intval($opacity * 100);
@@ -1376,8 +1391,16 @@ class file
                 // Now that it's auto-rotated, make sure the EXIF data is correct in case the EXIF gets saved with the image!
                 $im->setImageOrientation(imagick::ORIENTATION_TOPLEFT);
 
-                if(!$image_is_opaque || (!empty($opacity) && $opacity < 1))
+                // MODIFIED: Smart format selection based on WebP preference and image properties
+                if($prefer_webp) {
+                    // WebP preferred - use it for both transparent and opaque images
+                    $im->setImageFormat('WEBP');
+                    $im->setImageCompressionQuality($quality);
+                    $im->writeimage($thumbnail);
+                    return $thumbnail; // Exit early to avoid the fallback logic
+                } elseif(!$image_is_opaque || (!empty($opacity) && $opacity < 1))
                 {
+                    // WebP not preferred but image needs transparency -> PNG32
                     $im->setImageFormat('PNG32'); // Force a full RGBA image format with full semi-transparency.
                     $im->setBackgroundColor(new ImagickPixel('transparent'));
                     $im->setImageCompression(Imagick::COMPRESSION_UNDEFINED);
@@ -1386,6 +1409,7 @@ class file
                 }
                 else
                 {
+                    // Opaque image and WebP not preferred -> JPG (existing behavior)
                     $im->setImageFormat('JPG'); // create an OPAQUE JPG file with the given quality (default 95%)
                     $im->setImageCompressionQuality($quality);
                     $im->writeimage($thumbnail_path_jpg);

@@ -159,38 +159,68 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                 $resizable = false;
             }
 
-			if( isset($_GET['force']) ||
-                (   (!empty($width) || !empty($height)) &&
-                    ($resizable || @$_REQUEST['force_resize']=='true')
-                )
-            )
-			{
-			    if($item->mime == 'image/svg+xml')
-                {
-                    // TODO: in the future, try to apply border and opacity modifiers in the XML
-                    //       right now just return the original svg
-                }
-                else
-                {
-                    $border = (@$_REQUEST['border'] == 'false' ? false : true);
-                    $opacity = value_or_default(array($_REQUEST, 'opacity'), NULL);
-                    $scale_up_force = value_or_default(array($_REQUEST, 'force_scale'), NULL);
+            // detect WebP support from Accept header OR explicit webp parameter
+            $prefer_webp = isset($_REQUEST['webp']) &&
+                           in_array($_REQUEST['webp'], array('1', 'true', 'yes'));
+            if(!$prefer_webp)
+            {
+                $prefer_webp = isset($_SERVER['HTTP_ACCEPT']) &&
+                               strpos($_SERVER['HTTP_ACCEPT'], 'image/webp') !== false;
+            }
 
-                    $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, $scale_up_force, $opacity);
-                    if(empty($path))
-                    {
-                        die();
-                    }
+            if( isset($_GET['force']) ||
+                $prefer_webp ||
+                 (   (!empty($width) || !empty($height)) &&
+                     ($resizable || @$_REQUEST['force_resize']=='true')
+                 )
+             )
+             {
+                  if($item->mime == 'image/svg+xml')
+                  {
+                      // TODO: in the future, try to apply border and opacity modifiers in the XML
+                      //       right now just return the original svg
+                  }
+                  else
+                  {
+                      // Check if we should generate thumbnail (needs either explicit dimensions or webp conversion)
+                      $has_dimensions = !empty($width) || !empty($height);
+                      $should_generate = $prefer_webp || ($has_dimensions && ($resizable || @$_REQUEST['force_resize']=='true'));
+                      
+                      if($should_generate)
+                      {
+                          $border = (@$_REQUEST['border'] == 'false' ? false : true);
+                          $opacity = value_or_default(array($_REQUEST, 'opacity'), NULL);
+                          $scale_up_force = value_or_default(array($_REQUEST, 'force_scale'), NULL);
+                          
+                          $path = file::thumbnail($item, $width, $height, $border, NULL, $quality, $scale_up_force, $opacity, $prefer_webp);
+                          
+                          if(empty($path))
+                          {
+                              die('Error generating thumbnail');
+                          }
 
-                    $etag_add = '-'.$width.'-'.$height.'-'.$border.'-'.$quality.'-'.$scale_up_force.'-'.$opacity;
-                    $item->name = $width . 'x' . $height . '-' . $item->name;
-                    $item->size = filesize($path);
-                    $item->mime = 'image/png';
-                    if(strpos(basename($path), '.jpg') !== false)
-                    {
-                        $item->mime = 'image/jpeg';
-                    }
-                }
+                          $etag_add = '-'.$width.'-'.$height.'-'.$border.'-'.$quality.'-'.$scale_up_force.'-'.$opacity;
+                          $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+                          $name_without_ext = preg_replace('/\.(jpg|jpeg|png|gif)$/i', '', $item->name);
+                          $item->name = $width . 'x' . $height . '-' . $name_without_ext . '.' . $ext;
+                          $item->size = filesize($path);
+
+                          switch($ext)
+                          {
+                              case 'webp':
+                                  $item->mime = 'image/webp';
+                                  break;
+                              case 'jpg':
+                              case 'jpeg':
+                                  $item->mime = 'image/jpeg';
+                                  break;
+                              case 'png':
+                              default:
+                                  $item->mime = 'image/png';
+                                  break;
+                          }
+                      }
+                  }
 			}
 
 			$etag = $item->id.'-'.$item->name.'-'.$item->date_added.'-'.filesize($path).'-'.filemtime($path).'-'.$item->permission.$etag_add;
