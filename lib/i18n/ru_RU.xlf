@@ -4241,6 +4241,11 @@
 				<source>Accepted hosts</source>
 				<target>Принятые хосты</target>
 			</trans-unit>
+
+			<trans-unit id="844" approved="yes">
+				<source>The unpublish date is not later than the publish date.</source>
+				<target>Дата снятия с публикации не позднее даты публикации.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

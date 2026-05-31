@@ -4241,6 +4241,11 @@
                 <source>Accepted hosts</source>
                 <target>Zaakceptowani gospodarze</target>
             </trans-unit>
+
+            <trans-unit id="844" approved="yes">
+                <source>The unpublish date is not later than the publish date.</source>
+                <target>Data wycofania nie jest późniejsza niż data publikacji.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

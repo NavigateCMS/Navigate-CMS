@@ -4255,6 +4255,11 @@
                 <target>Servidors acceptats</target>
             </trans-unit>
 
+
+            <trans-unit id="844" approved="yes">
+                <source>The unpublish date is not later than the publish date.</source>
+                <target>La data de despublicació no és posterior a la data de publicació.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

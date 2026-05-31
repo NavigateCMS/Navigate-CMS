@@ -593,6 +593,85 @@ function navigate_t(id, text)
     }
 }
 
+/* universal date publish / unpublish validation */
+function navigate_check_dates_order()
+{
+    var dp_val = $("#date_published").val();
+    var du_val = $("#date_unpublish").val();
+
+    // remove any previous warning
+    $("#nv_date_unpublish_warning").remove();
+
+    if(!dp_val || !du_val)
+    {
+        return;
+    }
+
+    try
+    {
+        // parse dates using jQuery UI datepicker format (matches the configured format)
+        var dp_format = $("#date_published").datepicker("option", "dateFormat") ||
+                        ($("#date_published").datetimepicker ? $("#date_published").datetimepicker("option", "dateFormat") : null);
+
+        if(!dp_format) return;
+
+        // extract date and time parts
+        var dp_parts = dp_val.split(" ");
+        var du_parts = du_val.split(" ");
+
+        var dp_date = $.datepicker.parseDate(dp_format, dp_parts[0]);
+        var du_date = $.datepicker.parseDate(dp_format, du_parts[0]);
+
+        // apply time if present (HH:mm format)
+        if(dp_parts.length > 1)
+        {
+            var dp_time = dp_parts[dp_parts.length - 1].split(":");
+            dp_date.setHours(parseInt(dp_time[0]) || 0, parseInt(dp_time[1]) || 0);
+        }
+        if(du_parts.length > 1)
+        {
+            var du_time = du_parts[du_parts.length - 1].split(":");
+            du_date.setHours(parseInt(du_time[0]) || 0, parseInt(du_time[1]) || 0);
+        }
+
+        if(du_date <= dp_date)
+        {
+            var warning_text = $("#date_unpublish").data("warning-date-order") ||
+                               "The unpublish date is not later than the publish date.";
+
+            var $input = $("#date_unpublish");
+            var $row = $input.closest(".navigate-form-row");
+
+            $row.css({
+                "position": "relative",
+                "overflow": "visible"
+            });
+
+            var $warning = $(
+                '<div id="nv_date_unpublish_warning" style="' +
+                    'position: absolute; z-index: 100; ' +
+                    'left: ' + ($input.position().left) + 'px; ' +
+                    'top: ' + ($input.position().top + $input.outerHeight() + 2) + 'px; ' +
+                    'padding: 4px 10px; ' +
+                    'color: #856404; background-color: #fff3cd; border: 1px solid #ffc107; ' +
+                    'border-radius: 3px; font-size: 12px; white-space: nowrap; ' +
+                    'box-shadow: 0 2px 6px rgba(0,0,0,0.15);">' +
+                    '<i class="fa fa-exclamation-triangle"></i> <span style="margin-right: 8px;">' + warning_text + '</span>' +
+                    '<i class="fa fa-times" style="cursor: pointer; opacity: 0.6;" onclick="$(this).parent().remove();" onmouseover="$(this).css(\'opacity\', 1);" onmouseout="$(this).css(\'opacity\', 0.6);"></i>' +
+                '</div>'
+            );
+
+            $row.append($warning);
+        }
+    }
+    catch(e)
+    {
+        // silently ignore parsing errors
+    }
+}
+
+$(document).on("change", "#date_published, #date_unpublish", navigate_check_dates_order);
+
 function navigate_tinymce_add_content_event(editor_id, file_id, media, mime, web_id, element, meta)
 {
     var content_added = false;

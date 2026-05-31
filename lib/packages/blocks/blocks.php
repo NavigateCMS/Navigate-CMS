@@ -254,6 +254,13 @@ function run()
 					$item = new block();
 					$item->load($id);
                     $layout->navigate_notification(t(53, "Data saved successfully."), false, false, 'fa fa-check');
+
+                    // warn if unpublish date is not later than publish date
+                    if(!empty($item->date_unpublish) && !empty($item->date_published)
+                        && $item->date_unpublish <= $item->date_published)
+                    {
+                        $layout->navigate_notification(t(844, "The unpublish date is not later than the publish date."), false, true, 'fa fa-exclamation-triangle');
+                    }
 				}
 				catch(Exception $e)
 				{
@@ -1091,6 +1098,11 @@ function blocks_form($item)
 			$naviforms->datefield('date_unpublish', $item->date_unpublish, true),
         )
     );
+
+    $layout->add_script('
+        $("#date_unpublish").data("warning-date-order", "'.str_replace('"', '\\"', t(844, "The unpublish date is not later than the publish date.")).'");
+        setTimeout(navigate_check_dates_order, 500);
+    ');
 
 	// Notes field is deprecated, but we keep on showing the existing Notes
 	if(!empty($item->notes))

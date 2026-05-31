@@ -4242,6 +4242,11 @@
 				<target>Hôtes acceptés</target>
 			</trans-unit>
 
+
+			<trans-unit id="844" approved="yes">
+				<source>The unpublish date is not later than the publish date.</source>
+				<target>La date de dépublication n'est pas postérieure à la date de publication.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

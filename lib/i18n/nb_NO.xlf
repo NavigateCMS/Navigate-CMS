@@ -4243,6 +4243,11 @@
                 <target>Aksepterte verter</target>
             </trans-unit>
 
+
+            <trans-unit id="844" approved="yes">
+                <source>The unpublish date is not later than the publish date.</source>
+                <target>Avpubliseringsdatoen er ikke senere enn publiseringsdatoen.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

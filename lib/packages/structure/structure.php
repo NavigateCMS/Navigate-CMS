@@ -836,6 +836,11 @@ function structure_form($item)
 	    )
     );
 
+    $layout->add_script('
+        $("#date_unpublish").data("warning-date-order", "'.str_replace('"', '\\"', t(844, "The unpublish date is not later than the publish date.")).'");
+        setTimeout(navigate_check_dates_order, 500);
+    ');
+
 	$navibars->add_tab_content_row(
 	    array(
 	        '<label>'.t(364, 'Access').'</label>',
