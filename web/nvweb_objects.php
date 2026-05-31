@@ -230,7 +230,8 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			header('Access-Control-Allow-Origin: *'); // allow external access (f.e. Photopea, Pixlr, etc.)
 			header("Content-Length: ". $item->size);
             header("Accept-Ranges: bytes");
-			if(empty($_REQUEST['disposition']))
+			
+            if(empty($_REQUEST['disposition']))
             {
                 $_REQUEST['disposition'] = 'inline';
             }

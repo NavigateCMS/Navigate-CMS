@@ -998,7 +998,7 @@ function run()
                 echo 'false';
             }
 			core_terminate();
-			break;
+			break;            
 			
 		case 'votes_by_webuser':
 			if($_POST['oper']=='del')
@@ -1186,7 +1186,7 @@ function items_list()
 
         if($("#jqgh_items_list_category button").length < 1)
         {
-            $("#jqgh_items_list_category").prepend("<button><i class=\"fa fa-bars\"></i></button>");
+            $("#jqgh_items_list_category").prepend("<button type=\"button\"><i class=\"fa fa-bars\"></i></button>");
             $("#jqgh_items_list_category button")
             	.button()
             	.css(
@@ -1194,11 +1194,13 @@ function items_list()
                 	"float": "right",
                 	"margin-top": "-1px"
             	})
-            	.on("click", function(e)
+            	.on("mousedown mouseup click", function(e)
             	{
             	    e.stopPropagation();
-            	    e.preventDefault();
-            	    setTimeout(items_list_choose_categories, 150);
+            	    if(e.type === "click") {
+            	        e.preventDefault();
+            	        setTimeout(items_list_choose_categories, 50);
+            	    }
                 });
 
             $("#jqgh_items_list_category span.ui-button-text").css({"padding-top": "0", "padding-bottom": "0"});
@@ -1211,9 +1213,11 @@ function items_list()
     $hierarchy = structure::hierarchyListClasses($hierarchy);
 
     $navibars->add_content('<div id="filter_categories_window" style="display: none;">'.$hierarchy.'</div>');
-    $layout->add_script('$("#filter_categories_window ul").attr("data-name", "filter_categories_field");');
+    $layout->add_script('$("#filter_categories_window > ul").attr("data-name", "filter_categories_field");');
+    $layout->add_script('$("#filter_categories_window > ul").attr("id", "filter_categories_ul");');
     $layout->add_script('
-        $("#filter_categories_window ul").jAutochecklist({
+        $("#filter_categories_window > ul").jAutochecklist({
+            animation: false,
             popup: false,
             absolutePosition: true,
             width: 0,
@@ -1253,19 +1257,30 @@ function items_list()
         function items_list_choose_categories()
         {
             $("#navigate-quicksearch").parent().on("submit", function(){
-                $("#filter_categories_window ul").jAutochecklist("deselectAll");
+                $("#filter_categories_ul").jAutochecklist("deselectAll");
             });
 
-            $("#filter_categories_window ul").jAutochecklist("open");
-            $(".jAutochecklist_list").css({"position": "absolute"});
-            $(".jAutochecklist_list").css($("#jqgh_items_list_category button").offset());
-            $(".jAutochecklist_dropdown_wrapper").hide();
-            $(".jAutochecklist_list").css({
+            $("#filter_categories_ul").jAutochecklist("open");
+            
+            var $wrapper = $("#jAutochecklist_wrapper_filter_categories_ul");
+            var $list = $wrapper.find(".jAutochecklist_list");
+            
+            $list.css({"position": "absolute"});
+            $list.css($("#jqgh_items_list_category button").offset());
+            
+            // Hiding the dropdown wrapper causes the search input to lose focus.
+            // jAutochecklist has a focusout handler that closes the list if focus leaves the wrapper.
+            // By focusing the list immediately, we keep focus inside the wrapper and prevent closing.
+            $wrapper.find(".jAutochecklist_dropdown_wrapper").hide();
+            $list.attr("tabindex", -1).focus();
+            
+            $list.css({
                 "border-radius": "8px",
                 "margin-left": "-373px",
-                "margin-top": "16px"
+                "margin-top": "16px",
+                "z-index": 9999
             });
-            $(".jAutochecklist_list").addClass("navi-ui-widget-shadow ui-menu ui-widget ui-widget-content ui-corner-all");
+            $list.addClass("navi-ui-widget-shadow ui-menu ui-widget ui-widget-content ui-corner-all");
 
             return false;
         }
