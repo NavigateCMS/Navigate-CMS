@@ -255,12 +255,12 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                 if(isset($_SERVER['HTTP_RANGE']))
                 {
                     list($a, $range) = explode("=", $_SERVER['HTTP_RANGE']);
-                    str_replace($range, "-", $range);
+                    $range = intval(rtrim($range, '-'));
                     $size2 = $size - 1;
                     $new_length = $size - $range;
                     header("HTTP/1.1 206 Partial Content");
                     header("Content-Length: $new_length");
-                    header("Content-Range: bytes $range$size2/$size");
+                    header("Content-Range: bytes $range-$size2/$size");
                 }
                 else
                 {
@@ -350,12 +350,12 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
                 if(isset($_SERVER['HTTP_RANGE']))
                 {
                     list($a, $range) = explode("=", $_SERVER['HTTP_RANGE']);
-                    str_replace($range, "-", $range);
+                    $range = intval(rtrim($range, '-'));
                     $size2 = $size - 1;
                     $new_length = $size - $range;
                     header("HTTP/1.1 206 Partial Content");
                     header("Content-Length: $new_length");
-                    header("Content-Range: bytes $range$size2/$size");
+                    header("Content-Range: bytes $range-$size2/$size");
                 }
                 else
                 {

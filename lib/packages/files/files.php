@@ -11,7 +11,7 @@ function run()
 	$out = '';
 	$item = new file();
 			
-	$act = value_or_default($_REQUEST['act'], '');
+	$act = value_or_default(array($_REQUEST, 'act'), '');
 	switch($act)
 	{
         case "json":
@@ -375,7 +375,7 @@ function run()
 		case 0: // list / search result
 		default:						
 			// show requested folder or search
-			$parent = value_or_default($_REQUEST['parent'], '');
+			$parent = value_or_default(array($_REQUEST, 'parent'), '');
 			$quicksearch = value_or_default(array($_REQUEST, 'navigate-quicksearch'), '');
 			$out = files_browser(
 			    core_purify_string($parent),
@@ -384,7 +384,7 @@ function run()
 
             users_log::action(
                 core_purify_string(value_or_default($_REQUEST['fid'], '')),
-                intval(value_or_default($_REQUEST['parent'], 0)),
+                intval(value_or_default(array($_REQUEST, 'parent'), 0)),
                 'list',
                 '',
                 json_encode($_REQUEST)

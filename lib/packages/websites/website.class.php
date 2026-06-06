@@ -113,28 +113,28 @@ class website
         $this->wrong_path_redirect  = $main->wrong_path_redirect;
         $this->empty_path_action    = $main->empty_path_action;
 
-		$this->languages		    = mb_unserialize($main->languages);
-		$this->languages_published  = array_filter(mb_unserialize($main->languages_published));
-		$this->date_format		    = $main->date_format;
-		$this->tinymce_css		    = $main->tinymce_css;
+		$this->languages		            = mb_unserialize($main->languages);
+		$this->languages_published          = array_filter(mb_unserialize($main->languages_published));
+		$this->date_format		            = $main->date_format;
+		$this->tinymce_css		            = $main->tinymce_css;
 		$this->resize_uploaded_images       = $main->resize_uploaded_images;
         $this->comments_enabled_for         = $main->comments_enabled_for;
         $this->comments_default_moderator   = $main->comments_default_moderator;
 		$this->share_files_media_browser    = $main->share_files_media_browser;
-		$this->page_cache           = $main->page_cache;
+		$this->page_cache                   = $main->page_cache;
 
 		$this->tracking_scripts             = $main->tracking_scripts;
 		$this->additional_scripts           = $main->additional_scripts;
 		$this->additional_styles            = $main->additional_styles;
-		$this->permission		= $main->permission;
-		$this->block_types		= mb_unserialize($main->block_types);
-		$this->homepage			= $main->homepage;	
-		$this->default_timezone = $main->default_timezone;	
-		$this->metatag_title_order	= $main->metatag_title_order;
-		$this->metatag_description	= json_decode($main->metatag_description, true);
-		$this->metatag_keywords 	= json_decode($main->metatag_keywords, true);
-		$this->metatags			    = json_decode($main->metatags, true);
-		$this->favicon			    = $main->favicon;
+		$this->permission		            = $main->permission;
+		$this->block_types		            = mb_unserialize($main->block_types);
+		$this->homepage			            = $main->homepage;	
+		$this->default_timezone             = $main->default_timezone;	
+		$this->metatag_title_order	        = $main->metatag_title_order;
+		$this->metatag_description	        = json_decode($main->metatag_description, true);
+		$this->metatag_keywords 	        = json_decode($main->metatag_keywords, true);
+		$this->metatags			            = json_decode($main->metatags, true);
+		$this->favicon			            = $main->favicon;
 
 		$this->decimal_separator    = $main->decimal_separator;
 		$this->thousands_separator	= $main->thousands_separator;
@@ -157,7 +157,7 @@ class website
 		$this->mail_address		            = $main->mail_address;
         $this->mail_password	            = $main->mail_password;
 
-        $this->hosts_accepted               = json_decode($main->hosts_accepted, true);
+        $this->hosts_accepted       = json_decode($main->hosts_accepted, true);
 
 		$this->theme			= $main->theme;
 		$this->theme_options	= json_decode($main->theme_options);
