@@ -171,9 +171,10 @@ class update
 		return $list;		
 	}
 	
-	public static function install_from_navigatecms($updates=array())
+	public static function install_from_navigatecms($updates=array(), $create_backup = true)
 	{
 		global $DB;
+		global $website;
 		
 		@set_time_limit(0);
         if(empty($updates))
@@ -189,6 +190,27 @@ class update
 		$ulog = NAVIGATE_PATH.'/updates/update-'.$updates[0]['Revision'].'.log.txt';
 		
 		file_put_contents($ulog, "UPDATE PROCESS ".$updates[0]['Revision'].' on '.time()."\n", FILE_APPEND);
+		
+		// Create automatic backup before update (if user confirmed)
+		$backup_result = array('success' => false);
+		if($create_backup)
+		{
+			file_put_contents($ulog, "creating automatic database backup before update...\n", FILE_APPEND);
+			$backup_result = update::create_automatic_backup($ulog, true); // true = all websites
+			
+			if($backup_result['success'])
+			{
+				file_put_contents($ulog, "automatic backup created: ".$backup_result['file']."\n", FILE_APPEND);
+			}
+			else
+			{
+				file_put_contents($ulog, "WARNING: automatic backup failed: ".$backup_result['error']."\n", FILE_APPEND);
+			}
+		}
+		else
+		{
+			file_put_contents($ulog, "user skipped automatic backup\n", FILE_APPEND);
+		}
 		
 		// download 
 		$ufile = NAVIGATE_PATH.'/updates/update-'.$updates[0]['Revision'].'.zip';
@@ -213,7 +235,15 @@ class update
 			file_put_contents($ulog, "update package already downloaded\n", FILE_APPEND);
 		}
 		
-		return update::install_from_file($updates[0]['Version'], $updates[0]['Revision'], $updates[0]['Commit'], $ufile, $ulog);
+		$result = update::install_from_file($updates[0]['Version'], $updates[0]['Revision'], $updates[0]['Commit'], $ufile, $ulog, $backup_result);
+		
+		// If update was successful, delete the automatic backup
+		if($result && $backup_result['success'])
+		{
+			update::delete_automatic_backup($backup_result['file'], $ulog);
+		}
+		
+		return $result;
 	}
 	
 	public static function install_from_repository($file_id)
@@ -235,7 +265,7 @@ class update
 		return update::install_from_file($latest->version.'c', $latest->revision, $latest->commit, $ufile, $ulog);
 	}
 		
-	public static function install_from_file($version, $revision, $commit, $ufile, $ulog)
+	public static function install_from_file($version, $revision, $commit, $ufile, $ulog, $backup_result = array())
 	{	
 		global $DB;
 				
@@ -403,6 +433,14 @@ class update
 			catch (Exception $e) 
 			{
 				file_put_contents($ulog, "transaction error: \n".$e->getMessage()."\n", FILE_APPEND);
+				
+				// Log backup information if available
+				if(!empty($backup_result) && $backup_result['success'])
+				{
+					file_put_contents($ulog, "BACKUP INFORMATION: ".$backup_result['file']."\n", FILE_APPEND);
+					file_put_contents($ulog, "A database backup was created before the update. You can restore it if needed.\n", FILE_APPEND);
+				}
+				
 				//$DB->rollBack();
 				return false;
 			}		
@@ -486,6 +524,92 @@ class update
         {
             @unlink($pages[$t]);
         }
+    }
+
+    /**
+     * Create an automatic database backup before system update
+     * 
+     * @param string $ulog Log file path
+     * @param bool $all_websites Export all websites data (true for system updates)
+     * @return array Result with 'success', 'file', and optional 'error'
+     */
+    public static function create_automatic_backup($ulog = '', $all_websites = true)
+    {
+        global $website;
+        
+        try
+        {
+            // Create backup directory if it doesn't exist
+            $backup_dir = NAVIGATE_PRIVATE.'/backups/auto';
+            if(!file_exists($backup_dir))
+            {
+                @mkdir($backup_dir, 0744, true);
+            }
+            
+            // Generate backup filename with timestamp
+            $backup_filename = 'auto_backup_pre_update_'.date('Y-m-d_His').'.sql';
+            $backup_path = $backup_dir.'/'.$backup_filename;
+            
+            // Load backup class and export database
+            require_once(NAVIGATE_PATH.'/lib/packages/backups/backup.class.php');
+            // For system updates, export ALL websites (website_only = false)
+            $sql_content = backup::export_database_sql(!$all_websites);
+            
+            // Save backup to file
+            if(file_put_contents($backup_path, $sql_content) === false)
+            {
+                return array(
+                    'success' => false,
+                    'error' => 'Failed to write backup file'
+                );
+            }
+            
+            return array(
+                'success' => true,
+                'file' => $backup_path,
+                'filename' => $backup_filename
+            );
+        }
+        catch(Exception $e)
+        {
+            return array(
+                'success' => false,
+                'error' => $e->getMessage()
+            );
+        }
+    }
+
+    /**
+     * Delete automatic backup after successful update
+     * 
+     * @param string $backup_file Path to backup file
+     * @param string $ulog Log file path
+     */
+    public static function delete_automatic_backup($backup_file, $ulog = '')
+    {
+        if(!empty($backup_file) && file_exists($backup_file))
+        {
+            @unlink($backup_file);
+            if(!empty($ulog))
+            {
+                file_put_contents($ulog, "automatic backup deleted: ".$backup_file."\n", FILE_APPEND);
+            }
+        }
+    }
+
+    /**
+     * Get information about automatic backup for error reporting
+     * 
+     * @param array $backup_result Backup result from create_automatic_backup
+     * @return string Formatted backup information for error messages
+     */
+    public static function get_backup_info_for_error($backup_result)
+    {
+        if($backup_result['success'] && !empty($backup_result['filename']))
+        {
+            return 'A backup was created before the update: '.$backup_result['filename'];
+        }
+        return '';
     }
 }
 ?>

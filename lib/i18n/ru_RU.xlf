@@ -4246,6 +4246,67 @@
 				<source>The unpublish date is not later than the publish date.</source>
 				<target>Дата снятия с публикации не позднее даты публикации.</target>
 			</trans-unit>
+
+			<trans-unit id="845" approved="yes">
+				<source>Export database (SQL)</source>
+				<target>Экспорт базы данных (SQL)</target>
+			</trans-unit>
+
+			<trans-unit id="846" approved="yes">
+				<source>Backup available</source>
+				<target>Резервная копия доступна</target>
+			</trans-unit>
+
+			<trans-unit id="847" approved="yes">
+				<source>A database backup was created before the update. Check the log file for backup location.</source>
+				<target>Перед обновлением была создана резервная копия базы данных. Проверьте файл журнала, чтобы узнать расположение резервной копии.</target>
+			</trans-unit>
+
+			<trans-unit id="848" approved="yes">
+				<source>Backup before update</source>
+				<target>Резервная копия перед обновлением</target>
+			</trans-unit>
+
+			<trans-unit id="849" approved="yes">
+				<source>Create backup and update</source>
+				<target>Создать резервную копию и обновить</target>
+			</trans-unit>
+
+			<trans-unit id="850" approved="yes">
+				<source>Update without backup</source>
+				<target>Обновить без резервной копии</target>
+			</trans-unit>
+
+			<trans-unit id="851" approved="yes">
+				<source>It is recommended to create a complete database backup before updating the system.</source>
+				<target>Рекомендуется создать полную резервную копию базы данных перед обновлением системы.</target>
+			</trans-unit>
+
+			<trans-unit id="852" approved="yes">
+				<source>Do you want to create a backup before proceeding with the update?</source>
+				<target>Хотите создать резервную копию перед продолжением обновления?</target>
+			</trans-unit>
+
+			<trans-unit id="853" approved="yes">
+				<source>The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.</source>
+				<target>Резервная копия будет включать полную базу данных со всеми веб-сайтами. Если обновление завершится ошибкой, вы можете восстановить базу данных из этой резервной копии.</target>
+			</trans-unit>
+
+			<trans-unit id="854" approved="yes">
+				<source>Error details</source>
+				<target>Детали ошибки</target>
+			</trans-unit>
+
+			<trans-unit id="855" approved="yes">
+				<source>An error occurred during the backup process. Check the log files for details.</source>
+				<target>Произошла ошибка во время процесса резервного копирования. Проверьте файлы журнала для получения подробной информации.</target>
+			</trans-unit>
+
+			<trans-unit id="856" approved="yes">
+				<source>View error log file</source>
+				<target>Просмотреть файл журнала ошибок</target>
+			</trans-unit>
+			
 		</body>
 	</file>
 </xliff>

@@ -4247,6 +4247,66 @@
 				<source>The unpublish date is not later than the publish date.</source>
 				<target>Das Veröffentlichungsende liegt nicht nach dem Veröffentlichungsdatum.</target>
 			</trans-unit>
+
+			<trans-unit id="845" approved="yes">
+				<source>Export database (SQL)</source>
+				<target>Datenbank exportieren (SQL)</target>
+			</trans-unit>
+
+			<trans-unit id="846" approved="yes">
+				<source>Backup available</source>
+				<target>Backup verfügbar</target>
+			</trans-unit>
+
+			<trans-unit id="847" approved="yes">
+				<source>A database backup was created before the update. Check the log file for backup location.</source>
+				<target>Vor dem Update wurde ein Datenbank-Backup erstellt. Überprüfen Sie die Protokolldatei für den Backup-Speicherort.</target>
+			</trans-unit>
+
+			<trans-unit id="848" approved="yes">
+				<source>Backup before update</source>
+				<target>Backup vor dem Update</target>
+			</trans-unit>
+
+			<trans-unit id="849" approved="yes">
+				<source>Create backup and update</source>
+				<target>Backup erstellen und aktualisieren</target>
+			</trans-unit>
+
+			<trans-unit id="850" approved="yes">
+				<source>Update without backup</source>
+				<target>Ohne Backup aktualisieren</target>
+			</trans-unit>
+
+			<trans-unit id="851" approved="yes">
+				<source>It is recommended to create a complete database backup before updating the system.</source>
+				<target>Es wird empfohlen, vor dem Systemupdate ein vollständiges Datenbank-Backup zu erstellen.</target>
+			</trans-unit>
+
+			<trans-unit id="852" approved="yes">
+				<source>Do you want to create a backup before proceeding with the update?</source>
+				<target>Möchten Sie vor dem Update ein Backup erstellen?</target>
+			</trans-unit>
+
+			<trans-unit id="853" approved="yes">
+				<source>The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.</source>
+				<target>Das Backup enthält die vollständige Datenbank mit allen Websites. Wenn das Update fehlschlägt, können Sie die Datenbank aus diesem Backup wiederherstellen.</target>
+			</trans-unit>
+
+			<trans-unit id="854" approved="yes">
+				<source>Error details</source>
+				<target>Fehlerdetails</target>
+			</trans-unit>
+
+			<trans-unit id="855" approved="yes">
+				<source>An error occurred during the backup process. Check the log files for details.</source>
+				<target>Während des Sicherungsvorgangs ist ein Fehler aufgetreten. Überprüfen Sie die Protokolldateien für Details.</target>
+			</trans-unit>
+
+			<trans-unit id="856" approved="yes">
+				<source>View error log file</source>
+				<target>Fehlerprotokolldatei anzeigen</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

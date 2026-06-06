@@ -32,10 +32,64 @@ function run()
 			break;
 			
 		case 'install_next_update':
+			// Check if user confirmed backup
+			if(!isset($_REQUEST['backup_confirmed']))
+			{
+				// Show confirmation dialog
+				$updates = update::updates_available();
+				$update_summary = base64_decode($updates[0]['text']);
+				
+				$layout->add_script('
+					$(function() {
+						$("#update-backup-dialog").dialog({
+							modal: true,
+							title: "'.t(848, 'Backup before update').'",
+							width: 550,
+							height: 300,
+							buttons: {
+								"'.t(849, 'Create backup and update').'": function() {
+									window.location.href = "?fid=updates&act=install_next_update&backup_confirmed=yes&rtk='.$_SESSION['request_token'].'";
+								},
+								"'.t(850, 'Update without backup').'": function() {
+									window.location.href = "?fid=updates&act=install_next_update&backup_confirmed=no&rtk='.$_SESSION['request_token'].'";
+								},
+								"'.t(117, 'Cancel').'": function() {
+									$(this).dialog("close");
+									window.history.back();
+								}
+							}
+						});
+					});
+				');
+				
+				$layout->add_content('
+					<div id="update-backup-dialog" style="display:none;">
+						<p>'.t(851, 'It is recommended to create a complete database backup before updating the system.').'</p>
+						<p><strong>'.t(852, 'Do you want to create a backup before proceeding with the update?').'</strong></p>
+						<div class="ui-state-highlight ui-corner-all" style="padding: 10px; margin-top: 15px;">
+							<i class="fa fa-info-circle"></i> '.t(853, 'The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.').'
+						</div>
+					</div>
+				');
+				
+				return '';
+			}
+			
+			// Check request token for security
+			if($_REQUEST['rtk'] != $_SESSION['request_token'])
+			{
+				$layout->navigate_notification(t(344, 'Security error'), true, true);
+				$out = update_list();
+				break;
+			}
+			
+			// User has made a decision about backup
+			$create_backup = ($_REQUEST['backup_confirmed'] == 'yes');
+			
 			// install next update
             $updates = update::updates_available();
             $update_summary = base64_decode($updates[0]['text']);
-			$ok = update::install_from_navigatecms($updates);
+			$ok = update::install_from_navigatecms($updates, $create_backup);
 
             if($ok)
             {
@@ -57,10 +111,22 @@ function run()
 				$files = glob(NAVIGATE_PATH.'/updates/update-*.log.txt');
 				$log_location = array_pop($files);
 				$log_location = str_replace(NAVIGATE_PATH, NAVIGATE_URL, $log_location);
-				$layout->navigate_notification(t(294, "Error updating.")."<br /><a href='".$log_location."' target='_blank'>".t(366, "Log")."</a>", true, true);
+				
+				// Check if there's backup information in the log
+				$log_content = file_get_contents($log_location);
+				$backup_info = '';
+				if(strpos($log_content, 'BACKUP INFORMATION:') !== false)
+				{
+					$backup_info = '<br /><div class="ui-state-highlight ui-corner-all" style="padding: 10px; margin-top: 10px;">';
+					$backup_info .= '<strong>'.t(846, 'Backup available').'</strong><br />';
+					$backup_info .= t(847, 'A database backup was created before the update. Check the log file for backup location.');
+					$backup_info .= '</div>';
+				}
+				
+				$layout->navigate_notification(t(294, "Error updating.")."<br /><a href='".$log_location."' target='_blank'>".t(366, "Log")."</a>".$backup_info, true, true);
 			}
 			
-			$out = update_list();
+			core_terminate();
 			break;
 
         case 'cache_clean':

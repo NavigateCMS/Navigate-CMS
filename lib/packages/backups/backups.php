@@ -179,8 +179,16 @@ function run()
                 session_write_close();
                 // now the process is running in the server, the client thinks the http request has finished
                 
-				$item->load(intval($_REQUEST['id']));
-                $item->backup();
+				try
+				{
+					$item->load(intval($_REQUEST['id']));
+                    $item->backup();
+				}
+				catch(Exception $e)
+				{
+					// Error already logged in backup() method
+					// Log file created at: NAVIGATE_PRIVATE/{website}/backups/backup-error-*.log
+				}
 			}
             core_terminate();
             break;
@@ -203,6 +211,37 @@ function run()
 
             core_terminate();
             break;
+
+        case 'export_sql':
+            // export database as SQL (admin only)
+            global $user;
+            
+            // Check if user is administrator
+            // Administrator profile typically has ID 1, but we also check for system-level permissions
+            $is_admin = ($user->profile == 1);
+            
+            // Additional check: verify if user has access to system administration features
+            if(!$is_admin)
+            {
+                header('HTTP/1.1 403 Forbidden');
+                echo 'Access denied';
+                core_terminate();
+            }
+
+            // Generate SQL export
+            $sql_content = backup::export_database_sql();
+            $filename = 'database_backup_'.$website->id.'_'.date('Y-m-d_His').'.sql';
+
+            ob_end_flush();
+
+            header('Content-type: application/sql');
+            header("Content-Length: ".strlen($sql_content));
+            header('Content-Disposition: attachment; filename="'.$filename.'"');
+
+            echo $sql_content;
+
+            core_terminate();
+            break;
 			
 		case 0: // list / search result
 		default:			
@@ -217,6 +256,7 @@ function backups_list()
 {
 	$navibars = new navibars();
 	$navitable = new navitable("backups_list");
+	global $user;
 	
 	$navibars->title(t(329, 'Backups'));
 
@@ -226,6 +266,19 @@ function backups_list()
         array(	'<a href="#" onclick="navigate_restore_dialog();"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database_refresh.png"> '.t(412, 'Restore').'</a> ' )
     );
     */
+
+        // Add SQL export button for admin users only
+    // Administrator profile typically has ID 1
+    $is_admin = ($user->profile == 1);
+    
+    if($is_admin)
+    {
+        $navibars->add_actions(
+            array(
+                '<a href="?fid=backups&act=export_sql"><img height="16" align="absmiddle" width="16" src="img/icons/silk/database.png"> '.t(845, 'Export database (SQL)').'</a>'
+            )
+        );
+    }
 
 	$navibars->add_actions(
 	    array(
@@ -260,6 +313,7 @@ function backups_list()
 function backups_form($item)
 {
 	global $layout;
+	global $website;
 	
 	$navibars = new navibars();
 	$naviforms = new naviforms();
@@ -425,6 +479,41 @@ function backups_form($item)
             )
         );
 
+    }
+    else if($item->status == 'error') // process failed with error
+    {
+        $navibars->add_tab_content_row(array('<br />'));
+        
+        // Display error message from error_message field
+        $error_message = !empty($item->error_message) ? $item->error_message : '';
+        
+        $navibars->add_tab_content_row(
+            array(
+                '<label>'.t(854, 'Error details').'</label>',
+                '<div class="ui-state-error ui-corner-all" style="padding: 10px;">'.
+                '<span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span>'.
+                '<strong>'.t(56, 'Unexpected error').':</strong><br />'.
+                (!empty($error_message) ? core_special_chars($error_message) : t(855, 'An error occurred during the backup process. Check the log files for details.')).
+                '</div>'
+            )
+        );
+        
+        // Show log file location if available
+        $log_files = glob(NAVIGATE_PRIVATE.'/'.$website->id.'/backups/backup-error-*.log');
+        if(!empty($log_files))
+        {
+            $latest_log = array_pop($log_files);
+            $log_url = str_replace(NAVIGATE_PRIVATE, NAVIGATE_URL.'/private', $latest_log);
+            
+            $navibars->add_tab_content_row(
+                array(
+                    '<label>'.t(366, 'Log').'</label>',
+                    '<a href="'.$log_url.'" target="_blank" class="navigate-external-link">'.
+                    '<i class="fa fa-external-link"></i> '.t(856, 'View error log file').
+                    '</a>'
+                )
+            );
+        }
     }
 
 	return $navibars->generate();

@@ -13,6 +13,7 @@ class backup
 	public $file;
 	public $runtime; // seconds needed to create the backup
 	public $version; // navigate cms version when the backup was created (ex. 1.6.6 r368)
+    public $error_message; // stores error message if backup fails
 
     public function __construct()
     {
@@ -45,6 +46,7 @@ class backup
 		$this->file  		= $main->file;
 		$this->runtime 		= $main->runtime;
 		$this->version 		= $main->version;
+		$this->error_message = !empty($main->error_message) ? $main->error_message : '';
 	}
 	
 	public function load_from_post()
@@ -95,9 +97,9 @@ class backup
 
 		$ok = $DB->execute('
 			INSERT INTO nv_backups
-				(id, website, date_created, size, status, title, notes, file, runtime, version)
+				(id, website, date_created, size, status, title, notes, file, runtime, version, error_message)
 			VALUES 
-				( 0, :website, :date_created, :size, :status, :title, :notes, :file, :runtime, :version)
+				( 0, :website, :date_created, :size, :status, :title, :notes, :file, :runtime, :version, :error_message)
 			',
 			array(
 				'website' => $website->id,
@@ -108,7 +110,8 @@ class backup
 				'notes' => value_or_default($this->notes, ''),
 				'file'  => value_or_default($this->file, ''),
 				'runtime' => value_or_default($this->runtime, 0),
-				'version' => $current_version->version.' r'.$current_version->revision
+				'version' => $current_version->version.' r'.$current_version->revision,
+				'error_message' => value_or_default($this->error_message, '')
 			)
 		);
 
@@ -123,7 +126,7 @@ class backup
 			
 		$ok = $DB->execute('
 			UPDATE nv_backups
-			SET size = :size, status = :status, title = :title, notes = :notes, file = :file, runtime = :runtime
+			SET size = :size, status = :status, title = :title, notes = :notes, file = :file, runtime = :runtime, error_message = :error_message
 			WHERE id = :id 
 			  AND website = :website',
 			array(
@@ -134,7 +137,8 @@ class backup
 				'title' => value_or_default($this->title, ''),
 				'notes' => value_or_default($this->notes, ''),
 				'file'  => value_or_default($this->file, ''),
-				'runtime' => value_or_default($this->runtime, 0)
+				'runtime' => value_or_default($this->runtime, 0),
+				'error_message' => value_or_default($this->error_message, '')
 			)
 		);
 							  
@@ -224,170 +228,255 @@ class backup
             core_terminate();
         }
 
-        // prepare temporary folder
-        if(!file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/backups'))
+        try
         {
-            @mkdir(NAVIGATE_PRIVATE.'/'.$website->id.'/backups', 0744, true);
-        }
+            // prepare temporary folder
+            if(!file_exists(NAVIGATE_PRIVATE.'/'.$website->id.'/backups'))
+            {
+                @mkdir(NAVIGATE_PRIVATE.'/'.$website->id.'/backups', 0744, true);
+            }
 
-        $zip = new ZipArchive();
+            $zip = new ZipArchive();
 
-        $backup_filename = '/'.$website->id.'/backups/backup-'.time().'.zip';
+            $backup_filename = '/'.$website->id.'/backups/backup-'.time().'.zip';
 
-        if($zip->open(NAVIGATE_PRIVATE.$backup_filename, ZIPARCHIVE::CREATE)!==TRUE)
-        {
-            $this->status = 'ZipArchive error: '.NAVIGATE_PRIVATE.'/'.$website->id.'/backups/backup-'.time().'.zip';
+            if($zip->open(NAVIGATE_PRIVATE.$backup_filename, ZIPARCHIVE::CREATE)!==TRUE)
+            {
+                throw new Exception('Failed to create ZIP archive: '.NAVIGATE_PRIVATE.'/'.$website->id.'/backups/backup-'.time().'.zip');
+            }
+
+            $this->status = 'database';
             $this->update();
-            throw new Exception('ZipArchive error: '.NAVIGATE_PRIVATE.'/'.$website->id.'/backups/backup-'.time().'.zip');
-        }
 
-        $this->status = 'database';
-        $this->update();
+            // database
+            //--> call the exporter (backup) of each object type
+            // TODO: add shopping related exporters!
+            $objects = array(
+                'block', // blocks
+                'item',
+                'comment',
+                'feed',
+                'file',
+                'grid_notes',
+                'menu',
+                'path',
+                'profile',
+                'property', // property_items?
+                'structure',
+                'template',
+                'user', // User
+                'permission',
+                'webdictionary',
+                'webdictionary_history',
+                'website',
+                'webuser',
+                'webuser_group',
+                //'webuser_favorites', // ???
+                'webuser_vote'
+            );
 
-        // database
-        //--> call the exporter (backup) of each object type
-        // TODO: add shopping related exporters!
-        $objects = array(
-            'block', // blocks
-            'item',
-            'comment',
-            'feed',
-            'file',
-            'grid_notes',
-            'menu',
-            'path',
-            'profile',
-            'property', // property_items?
-            'structure',
-            'template',
-            'user', // User
-            'permission',
-            'webdictionary',
-            'webdictionary_history',
-            'website',
-            'webuser',
-            'webuser_group',
-            //'webuser_favorites', // ???
-            'webuser_vote'
-        );
+            include_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/feeds/feed.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/grid_notes/grid_notes.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/menus/menu.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/profiles/profile.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/templates/template.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
+            include_once(NAVIGATE_PATH.'/lib/core/user.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary_history.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/websites/website.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_profile.class.php');
+            include_once(NAVIGATE_PATH.'/lib/packages/webuser_votes/webuser_vote.class.php');
 
-        include_once(NAVIGATE_PATH.'/lib/packages/blocks/block.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/items/item.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/comments/comment.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/feeds/feed.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/files/file.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/grid_notes/grid_notes.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/menus/menu.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/paths/path.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/profiles/profile.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/properties/property.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/structure/structure.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/templates/template.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/permissions/permission.class.php');
-        include_once(NAVIGATE_PATH.'/lib/core/user.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/webdictionary/webdictionary_history.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/websites/website.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_group.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/webusers/webuser_profile.class.php');
-        include_once(NAVIGATE_PATH.'/lib/packages/webuser_votes/webuser_vote.class.php');
+            foreach($objects as $object)
+            {
+                $instance = new $object();
+                $json = $instance->backup('json');
+                
+                // Ensure we always get a JSON string, not an array
+                if(is_array($json))
+                {
+                    $json = json_encode($json);
+                }
+                
+                $zip->addFromString('database/'.$object.'.json', $json);
+            }
 
-        foreach($objects as $object)
-        {
-            $json = $object::backup('json');
-            $zip->addFromString('database/'.$object.'.json', $json);
-        }
-
-        // themes
-        $DB->reconnect();
-        $this->status = 'themes';
-        $this->update();
-        $files = rglob("*", GLOB_MARK, NAVIGATE_PATH.'/themes');
-        foreach($files as $file)
-        {
-            if(!file_exists($file)) continue;
-            $file = substr($file, strlen(NAVIGATE_PATH.'/'));
-            if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
-            $zip->addFile($file);
-        }
-
-        // templates
-        $files = rglob("*", GLOB_MARK, NAVIGATE_PRIVATE.'/'.$website->id.'/templates');
-        foreach($files as $file)
-        {
-            if(!file_exists($file)) continue;
-            $file = substr($file, strlen(NAVIGATE_PATH.'/'));
-            if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
-            $zip->addFile($file);
-        }
-
-        // webgets
-        $files = rglob("*", GLOB_MARK, NAVIGATE_PRIVATE.'/'.$website->id.'/webgets');
-        foreach($files as $file)
-        {
-            if(!file_exists($file)) continue;
-            $file = substr($file, strlen(NAVIGATE_PATH.'/'));
-            if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
-            $zip->addFile($file);
-        }
-
-        // extensions
-        $DB->reconnect();
-        $this->status = 'extensions';
-        $this->update();
-        $files = rglob("*", GLOB_MARK, NAVIGATE_PATH.'/plugins');
-        foreach($files as $file)
-        {
-            if(!file_exists($file)) continue;
-            $file = substr($file, strlen(NAVIGATE_PATH.'/'));
-            if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
-            $zip->addFile($file);
-        }
-
-        // files (uploads)
-        $DB->reconnect();
-        $this->status = 'files';
-        $this->update();
-
-        $files = rglob("*", GLOB_MARK, NAVIGATE_PRIVATE.'/'.$website->id.'/files');
-        foreach($files as $file)
-        {
-            if(!file_exists($file)) continue;
-            $file = substr($file, strlen(NAVIGATE_PATH.'/'));
-            if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
-            $zip->addFile($file);
-        }
-
-        $DB->reconnect();
-        $this->status = 'compress';
-        $this->update();
-
-        // compress
-        $zip->close();
-
-        // to do: upload to naviwebs backup service
-        /*
-        if($this->upload)
-        {
+            // themes
             $DB->reconnect();
-            $this->status = 'upload';
+            $this->status = 'themes';
             $this->update();
+            $files = rglob("*", GLOB_MARK, NAVIGATE_PATH.'/themes');
+            foreach($files as $file)
+            {
+                if(!file_exists($file)) continue;
+                $file = substr($file, strlen(NAVIGATE_PATH.'/'));
+                if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
+                $zip->addFile($file);
+            }
+
+            // templates
+            $files = rglob("*", GLOB_MARK, NAVIGATE_PRIVATE.'/'.$website->id.'/templates');
+            foreach($files as $file)
+            {
+                if(!file_exists($file)) continue;
+                $file = substr($file, strlen(NAVIGATE_PATH.'/'));
+                if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
+                $zip->addFile($file);
+            }
+
+            // webgets
+            $files = rglob("*", GLOB_MARK, NAVIGATE_PRIVATE.'/'.$website->id.'/webgets');
+            foreach($files as $file)
+            {
+                if(!file_exists($file)) continue;
+                $file = substr($file, strlen(NAVIGATE_PATH.'/'));
+                if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
+                $zip->addFile($file);
+            }
+
+            // extensions
+            $DB->reconnect();
+            $this->status = 'extensions';
+            $this->update();
+            $files = rglob("*", GLOB_MARK, NAVIGATE_PATH.'/plugins');
+            foreach($files as $file)
+            {
+                if(!file_exists($file)) continue;
+                $file = substr($file, strlen(NAVIGATE_PATH.'/'));
+                if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
+                $zip->addFile($file);
+            }
+
+            // files (uploads)
+            $DB->reconnect();
+            $this->status = 'files';
+            $this->update();
+
+            $files = rglob("*", GLOB_MARK, NAVIGATE_PRIVATE.'/'.$website->id.'/files');
+            foreach($files as $file)
+            {
+                if(!file_exists($file)) continue;
+                $file = substr($file, strlen(NAVIGATE_PATH.'/'));
+                if(substr($file, -1, 1)=="\\" || substr($file, -1, 1)=="/") continue;
+                $zip->addFile($file);
+            }
+
+            $DB->reconnect();
+            $this->status = 'compress';
+            $this->update();
+
+            // compress
+            $zip->close();
+
+            // to do: upload to naviwebs backup service
+            /*
+            if($this->upload)
+            {
+                $DB->reconnect();
+                $this->status = 'upload';
+                $this->update();
+            }
+            */
+
+            $DB->reconnect();
+            $this->status = 'completed';
+            $this->size = filesize(NAVIGATE_PRIVATE.$backup_filename);
+            $this->file = $backup_filename;
+            $this->update();
+
+            unset($zip);
         }
-        */
-
-        $DB->reconnect();
-        $this->status = 'completed';
-        $this->size = filesize(NAVIGATE_PRIVATE.$backup_filename);
-        $this->file = $backup_filename;
-        $this->update();
-
-        unset($zip);
+        catch(Exception $e)
+        {
+            // Log the error
+            $error_message = $e->getMessage();
+            $error_log_file = NAVIGATE_PRIVATE.'/'.$website->id.'/backups/backup-error-'.time().'.log';
+            @file_put_contents($error_log_file, "Backup Error: ".$error_message."\nDate: ".date('Y-m-d H:i:s')."\n");
+            
+            // Update status to error and store error message
+            $this->status = 'error';
+            $this->error_message = $error_message;
+            $this->update();
+            
+            throw $e;
+        }
     }
 
     public function restore()
     {
         // TODO
+    }
+
+    public static function export_database_sql()
+    {
+        global $DB;
+        global $website;
+
+        // Get all tables
+        $DB->query('SHOW TABLES', 'array');
+        $tmp = array_keys($DB->first());
+        $tmp = $tmp[0];
+        $tables = array_values($DB->result($tmp));
+
+        $sql = array();
+        $sql[] = '-- Navigate CMS Database Export';
+        $sql[] = '-- Website ID: '.$website->id;
+        $sql[] = '-- Export Date: '.date('Y-m-d H:i:s');
+        $sql[] = '';
+
+        // Export structure and data for each table
+        foreach($tables as $table)
+        {
+            // Drop table statement
+            $sql[] = 'DROP TABLE IF EXISTS `'.$table.'`;';
+            
+            // Get create table statement
+            $DB->query('SHOW CREATE TABLE `'.$table.'`', 'array');
+            $create = $DB->first();
+            $sql[] = $create['Create Table'].';';
+            $sql[] = '';
+
+            // Get data
+            $DB->query('SELECT * FROM `'.$table.'`', 'array');
+            $rows = $DB->result();
+            
+            if(!empty($rows))
+            {
+                foreach($rows as $row)
+                {
+                    $values = array();
+                    foreach($row as $key => $value)
+                    {
+                        if(is_null($value))
+                        {
+                            $values[] = 'NULL';
+                        }
+                        else if(is_numeric($value))
+                        {
+                            $values[] = $value;
+                        }
+                        else
+                        {
+                            $values[] = $DB->protect($value, 'single');
+                        }
+                    }
+                    $sql[] = 'INSERT INTO `'.$table.'` VALUES ('.implode(', ', $values).');';
+                }
+                $sql[] = '';
+            }
+        }
+
+        return implode("\n", $sql);
     }
 }
 

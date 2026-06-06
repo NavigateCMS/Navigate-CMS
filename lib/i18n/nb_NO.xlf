@@ -4248,6 +4248,67 @@
                 <source>The unpublish date is not later than the publish date.</source>
                 <target>Avpubliseringsdatoen er ikke senere enn publiseringsdatoen.</target>
             </trans-unit>
+
+            <trans-unit id="845" approved="yes">
+                <source>Export database (SQL)</source>
+                <target>Eksporter database (SQL)</target>
+            </trans-unit>
+
+            <trans-unit id="846" approved="yes">
+                <source>Backup available</source>
+                <target>Backup tilgjengelig</target>
+            </trans-unit>
+
+            <trans-unit id="847" approved="yes">
+                <source>A database backup was created before the update. Check the log file for backup location.</source>
+                <target>En database-backup ble opprettet før oppdateringen. Sjekk loggfilen for backup-plassering.</target>
+            </trans-unit>
+
+            <trans-unit id="848" approved="yes">
+                <source>Backup before update</source>
+                <target>Backup før oppdatering</target>
+            </trans-unit>
+
+            <trans-unit id="849" approved="yes">
+                <source>Create backup and update</source>
+                <target>Opprett backup og oppdater</target>
+            </trans-unit>
+
+            <trans-unit id="850" approved="yes">
+                <source>Update without backup</source>
+                <target>Oppdater uten backup</target>
+            </trans-unit>
+
+            <trans-unit id="851" approved="yes">
+                <source>It is recommended to create a complete database backup before updating the system.</source>
+                <target>Det anbefales å opprette en fullstilig database-backup før du oppdaterer systemet.</target>
+            </trans-unit>
+
+            <trans-unit id="852" approved="yes">
+                <source>Do you want to create a backup before proceeding with the update?</source>
+                <target>Ønsker du å opprette en backup før du fortsetter med oppdateringen?</target>
+            </trans-unit>
+
+            <trans-unit id="853" approved="yes">
+                <source>The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.</source>
+                <target>Backupen vil inkludere hele databasen med alle nettsteder. Hvis oppdateringen mislykkes, kan du gjenopprette databasen fra denne backupen.</target>
+            </trans-unit>
+
+            <trans-unit id="854" approved="yes">
+                <source>Error details</source>
+                <target>Feildetaljer</target>
+            </trans-unit>
+
+            <trans-unit id="855" approved="yes">
+                <source>An error occurred during the backup process. Check the log files for details.</source>
+                <target>Det oppstod en feil under sikkerhetskopieringsprosessen. Sjekk loggfilene for detaljer.</target>
+            </trans-unit>
+
+            <trans-unit id="856" approved="yes">
+                <source>View error log file</source>
+                <target>Vis feilloggfil</target>
+            </trans-unit>
+            
         </body>
     </file>
 </xliff>

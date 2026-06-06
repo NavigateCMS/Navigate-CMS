@@ -4242,12 +4242,71 @@
 				<target>Accepted hosts</target>
 			</trans-unit>
 
-
 			<trans-unit id="844" approved="yes">
 				<source>The unpublish date is not later than the publish date.</source>
 				<target>The unpublish date is not later than the publish date.</target>
 			</trans-unit>
-		</body>
 
+			<trans-unit id="845" approved="yes">
+				<source>Export database (SQL)</source>
+				<target>Export database (SQL)</target>
+			</trans-unit>
+
+			<trans-unit id="846" approved="yes">
+				<source>Backup available</source>
+				<target>Backup available</target>
+			</trans-unit>
+
+			<trans-unit id="847" approved="yes">
+				<source>A database backup was created before the update. Check the log file for backup location.</source>
+				<target>A database backup was created before the update. Check the log file for backup location.</target>
+			</trans-unit>
+
+			<trans-unit id="848" approved="yes">
+				<source>Backup before update</source>
+				<target>Backup before update</target>
+			</trans-unit>
+
+			<trans-unit id="849" approved="yes">
+				<source>Create backup and update</source>
+				<target>Create backup and update</target>
+			</trans-unit>
+
+			<trans-unit id="850" approved="yes">
+				<source>Update without backup</source>
+				<target>Update without backup</target>
+			</trans-unit>
+
+			<trans-unit id="851" approved="yes">
+				<source>It is recommended to create a complete database backup before updating the system.</source>
+				<target>It is recommended to create a complete database backup before updating the system.</target>
+			</trans-unit>
+
+			<trans-unit id="852" approved="yes">
+				<source>Do you want to create a backup before proceeding with the update?</source>
+				<target>Do you want to create a backup before proceeding with the update?</target>
+			</trans-unit>
+
+			<trans-unit id="853" approved="yes">
+				<source>The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.</source>
+				<target>The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.</target>
+			</trans-unit>
+
+			<trans-unit id="854" approved="yes">
+				<source>Error details</source>
+				<target>Error details</target>
+			</trans-unit>
+
+			<trans-unit id="855" approved="yes">
+				<source>An error occurred during the backup process. Check the log files for details.</source>
+				<target>An error occurred during the backup process. Check the log files for details.</target>
+			</trans-unit>
+
+			<trans-unit id="856" approved="yes">
+				<source>View error log file</source>
+				<target>View error log file</target>
+			</trans-unit>
+
+		</body>
 	</file>
 </xliff>
