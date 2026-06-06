@@ -211,14 +211,7 @@ function about_layout()
 	$navibars->add_tab_content_row(
 		array(
 			'<label>&nbsp;</label>',
-			'<a href="http://player.bitgravity.com" target="_blank">Bitgravity free video player v6</a><br />'
-		)
-	);
-											
-	$navibars->add_tab_content_row(
-		array(
-			'<label>&nbsp;</label>',
-			'<a href="http://mediaelementjs.com/" target="_blank">MediaElement.js v2.11.2</a><br />'
+			'<a href="https://github.com/sampotts/plyr" target="_blank">Plyr v3.7.8</a><br />'
 		)
 	);
 

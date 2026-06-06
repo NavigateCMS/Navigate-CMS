@@ -1182,44 +1182,23 @@ function files_item_properties($item)
 	else if($item->type=='video')
 	{
 		$navibars->add_tab(t(272, "Video"));
-		/*
-		$navibars->add_tab_content_row(array(	'<label>'.t(272, 'Video').'</label>',
-												'<div id="video_'.$item->id.'" style="display:block;width:640px;height:360px;float:left;" class="video">',
-												'<video controls="controls">',
-												'	<source src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline" type="'.$item->mime.'" />',
-												'</video>',
-												'</div>'
-                                            ));	
-																						
-		$layout->add_script('         
-			$("#video_'.$item->id.' video").mediaelementplayer(
-			{
-				pluginPath: "'.NAVIGATE_URL.'/lib/external/mediaelement/"
-			});
-		');				
-		*/	
-	
+
 		$navibars->add_tab_content_row(
 		    array(
 		        '<label>'.t(272, 'Video').'</label>',
-				'<div id="video_'.$item->id.'" style="display:block;width:640px;height:360px;float:left;" class="video">
-				    <a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a>
-				 </div>',
-				'<script language="javascript" type="text/javascript" src="http://bitcast-b.bitgravity.com/player/6/functions.js"></script>'
+				'<div style="display:block;width:640px;float:left;" class="video">',
+				'<video id="video_'.$item->id.'" controls playsinline>',
+				'	<source src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline" type="'.$item->mime.'" />',
+				'</video>',
+				'</div>'
             )
         );
-	
-		$layout->add_script('         
-			var flashvars = {};
-			flashvars.AutoPlay = "false";
-			flashvars.File = "'.urlencode(NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline').'";
-			flashvars.Mode = "ondemand";
-			var params = {};
-			params.allowFullScreen = "true";
-			params.allowScriptAccess = "always";
-			var attributes = {};
-			attributes.id = "bitgravity_player_6";
-			swfobject.embedSWF(stablerelease, "video_'.$item->id.'", "640", "360", "9.0.115", "http://bitcast-b.bitgravity.com/player/expressInstall.swf", flashvars, params, attributes);	
+
+		$layout->add_script('
+			var plyrVideo = new Plyr("#video_'.$item->id.'", {
+				iconUrl: "'.NAVIGATE_URL.'/lib/external/plyr/plyr.svg",
+				controls: ["play-large", "play", "progress", "current-time", "duration", "mute", "volume", "captions", "settings", "pip", "airplay", "fullscreen"]
+			});
 		');
 	}
 	else if($item->type=='audio')
@@ -1229,23 +1208,19 @@ function files_item_properties($item)
 		$navibars->add_tab_content_row(
 		    array(
 		        '<label>'.t(31, 'Audio').'</label>',
-				'<div id="audio_'.$item->id.'" style="display:block;float:left;" class="audio">',
-				'<audio controls="controls">',
+				'<div style="display:block;float:left;" class="audio">',
+				'<audio id="audio_'.$item->id.'" controls>',
 				'	<source src="'.NAVIGATE_DOWNLOAD.'?wid='.$website->id.'&id='.$item->id.'&disposition=inline" type="'.$item->mime.'" />',
 				'</audio>',
 				'</div>'
             )
         );
-																						
-		$layout->add_script('         
-			$("#audio_'.$item->id.' audio").mediaelementplayer(
-			{
-				pluginPath: "'.NAVIGATE_URL.'/lib/external/mediaelement/"
-			});
 
-			$("#audio_'.$item->id.'").addClass("ui-state-default");
-		');												
-		
+		$layout->add_script('
+			var plyrAudio = new Plyr("#audio_'.$item->id.'", {
+				iconUrl: "'.NAVIGATE_URL.'/lib/external/plyr/plyr.svg"
+			});
+		');
 	}
 										
 	return $navibars->generate();

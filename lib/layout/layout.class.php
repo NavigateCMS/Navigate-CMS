@@ -239,8 +239,8 @@ class layout
 		$this->add_style_tag('lib/external/codemirror/lib/codemirror.css');
 		$this->add_style_tag('lib/external/codemirror/addon/hint/show-hint.css');
 
-		$this->add_script_tag('lib/external/mediaelement/mediaelement-and-player.js');
-		$this->add_style_tag('lib/external/mediaelement/mediaelementplayer.css');
+		$this->add_script_tag('lib/external/plyr/plyr.polyfilled.js');
+		$this->add_style_tag('lib/external/plyr/plyr.css');
 
         $this->add_style_tag('lib/external/leaflet/leaflet.css');
         $this->add_script_tag('lib/external/leaflet/leaflet.js');

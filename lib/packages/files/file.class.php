@@ -26,6 +26,7 @@ class file
 	public $permission;
 	public $system;
 	public $enabled;
+	public $extra;
 
 	public function load($id)
 	{
@@ -140,11 +141,12 @@ class file
         if($this->type=='video')
         {
             // set extra information
-            $vsrc = NVWEB_OBJECT.'?type=file&id='.$this->id.'&disposition=inline';
+            $base_url = defined('NVWEB_OBJECT') ? NVWEB_OBJECT : (defined('NAVIGATE_DOWNLOAD') ? NAVIGATE_DOWNLOAD : NAVIGATE_PARENT.NAVIGATE_FOLDER.'/navigate_download.php');
+            $vsrc = $base_url.'?type=file&id='.$this->id.'&disposition=inline';
             $this->extra        = array(
                 'reference'  =>  $this->id,
                 'link'      =>  $vsrc,
-                'thumbnail_url' => NVWEB_OBJECT.'?type=blank',
+                'thumbnail_url' => (defined('NVWEB_OBJECT') ? NVWEB_OBJECT.'?type=blank' : ''),
                 'duration' => '',
                 'embed_code'  => '<video id="video-file-'.$this->id.'" controls="controls" preload="metadata" poster=""><source src="'.$vsrc.'" type="'.$this->mime.'" /><p>Error loading video</p></video>'
             );
