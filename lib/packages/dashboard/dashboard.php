@@ -140,7 +140,7 @@ function dashboard_create()
 	if($user->profile==1) // Administrator
 	{
 		$installed_version = update::latest_installed();		
-		$latest_update = value_or_default($_SESSION['latest_update'], null);
+		$latest_update = value_or_default(array($_SESSION, 'latest_update'), null);
 		
 		if(!empty($latest_update->Revision) && $latest_update->Revision > $installed_version->revision)
 		{

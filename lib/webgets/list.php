@@ -663,7 +663,7 @@ function nvweb_list_process_search($vars = array())
     return $search;
 }
 
-function nvweb_list_process_offset($vars = array(), $items)
+function nvweb_list_process_offset($vars, $items)
 {
     // calculate the offset of the first element to retrieve
     // what is the name of the "page" parameter in the url
@@ -1587,7 +1587,7 @@ function nvweb_list_prepare_object($row, $vars)
     return $item;
 }
 
-function nvweb_list_parse_tag($tag, $item, $source='item', $item_relative_position, $item_absolute_position, $total)
+function nvweb_list_parse_tag($tag, $item, $source, $item_relative_position, $item_absolute_position, $total)
 {
 	global $current;
 	global $website;
@@ -3102,7 +3102,7 @@ function nvweb_list_get_from_rss($url, $cache_time=3600, $offset=0, $items=null,
     return array($items, $count);
 }
 
-function nvweb_list_get_from_twitter($username, $cache_time=3600, $offset, $items=10, $permission, $order)
+function nvweb_list_get_from_twitter($username, $cache_time, $offset, $items, $permission, $order)
 {
     // DEPRECATED: the following process does not work anymore due Twitter API changes
     $url = 'https://api.twitter.com/1/statuses/user_timeline.rss?include_rts=true&contributor_details=false&screen_name='.$username.'&count='.$items;

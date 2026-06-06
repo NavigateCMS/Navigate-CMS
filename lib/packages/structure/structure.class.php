@@ -24,6 +24,11 @@ class structure
 	
 	public $dictionary;
 	public $paths;
+	
+    public $label;
+	public $_multilanguage_label;
+	public $children;
+	public $properties;
 
 	public static $_cache = array();
 	

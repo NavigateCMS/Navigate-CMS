@@ -748,7 +748,7 @@ class naviforms
 	{
 		global $layout;
 
-		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" '.$style.' " rows="10">'.base64_encode($value).'</textarea>';
+		$out = '<textarea name="'.$name.'" id="'.$name.'" style=" '.$style.' " rows="10">'.base64_encode(value_or_default($value, '')).'</textarea>';
 
 		$layout->add_script('
 			$(window).on("load", function()
@@ -1422,6 +1422,7 @@ class naviforms
 				});
 			');
 			
+			$accept = '';
 			if(!empty($media))
             {
                 $accept = 'accept: ".draggable-'.$media.'",';

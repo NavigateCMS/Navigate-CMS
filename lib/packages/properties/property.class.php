@@ -358,22 +358,22 @@ class property
 
         $this->id = $object->id;
         $this->website = $website->id;
-       	$this->element = $object->element;
+       	$this->element = isset($object->element) ? $object->element : '';
        	$this->template = '';
        	$this->name = $object->name;
        	$this->type = $object->type;
-       	$this->options = (array)$object->options;
-       	$this->dvalue = $object->dvalue;	// default value
-       	$this->multilanguage = $object->multilanguage;
-       	$this->helper = $object->helper;
-       	$this->width = $object->width;
-        $this->function = $object->function;
+       	$this->options = isset($object->options) ? (array)$object->options : array();
+       	$this->dvalue = isset($object->dvalue) ? $object->dvalue : '';	// default value
+       	$this->multilanguage = isset($object->multilanguage) ? $object->multilanguage : 'false';
+       	$this->helper = isset($object->helper) ? $object->helper : '';
+       	$this->width = isset($object->width) ? $object->width : '';
+        $this->function = isset($object->function) ? $object->function : '';
        	$this->position = 0;
        	$this->enabled = 1;
 
-        $this->precision    = $object->precision;
-        $this->prefix       = $object->prefix;
-        $this->suffix       = $object->suffix;
+        $this->precision    = isset($object->precision) ? $object->precision : '';
+        $this->prefix       = isset($object->prefix) ? $object->prefix : '';
+        $this->suffix       = isset($object->suffix) ? $object->suffix : '';
 
         if(!empty($dictionary))
         {
@@ -597,7 +597,7 @@ class property
                     {
                         if($theme->blocks[$b]->id == $code)
                         {
-                            $data = $theme->blocks[$b]->properties;
+                            $data = isset($theme->blocks[$b]->properties) ? $theme->blocks[$b]->properties : array();
                             break;
                         }
                     }
@@ -1014,7 +1014,7 @@ class property
 						$o_properties[$p]->value = array();
 						foreach($website->languages_list as $lang)
 						{
-							$o_properties[$p]->value[$lang] = $dictionary[$lang]['property-'.$o_properties[$p]->id.'-'.$lang];
+							$o_properties[$p]->value[$lang] = value_or_default(array(value_or_default(array($dictionary, $lang), array()), 'property-'.$o_properties[$p]->id.'-'.$lang), '');
 						}
 					}
 				}

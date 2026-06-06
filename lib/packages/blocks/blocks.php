@@ -897,7 +897,7 @@ function blocks_form($item)
     global $events;
     global $theme;
 
-    $current_version = $_SESSION['current_version'];
+    $current_version = value_or_default(array($_SESSION, 'current_version'), null);
     $extra_actions = array();
 	
 	$navibars = new navibars();
@@ -1036,7 +1036,7 @@ function blocks_form($item)
 	$navibars->form(NULL, '?fid=blocks&act=edit&id='.$item->id);
 
     $navibars->add_content('
-        <script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.$current_version->revision.'"></script>
+        <script type="text/javascript" src="lib/packages/blocks/blocks.js?r='.(!empty($current_version) ? $current_version->revision : 0).'"></script>
     ');
 
 	$navibars->add_tab(t(43, "Main"));
@@ -1060,7 +1060,7 @@ function blocks_form($item)
 	{
         if($item->type == $block_types[$i]['code'])
         {
-            $block_type_width = $block_types[$i]['width'];
+            $block_type_width = value_or_default(array($block_types[$i], 'width'), '');
         }
 
 		$block_size_helper = '';
@@ -1394,7 +1394,7 @@ function blocks_form($item)
                         $naviforms->selectfield('trigger-type-'.$lang,
                             array_keys($block_trigger_types),
                             array_values($block_trigger_types),
-                            $item->trigger['trigger-type'][$lang],
+                            value_or_default(array($item->trigger['trigger-type'], $lang), ''),
                             "navigate_blocks_trigger_change('".$lang."', this);"
                         )
                     )
@@ -1478,25 +1478,38 @@ function blocks_form($item)
                     foreach($tlinks['link'] as $key => $link)
                     {
                         $uid = uniqid();
+
+                        // pre-extract tlinks sub-values safely (may be arrays in legacy data)
+                        $tlink_icon = value_or_default(array(value_or_default(array($tlinks, 'icon'), array()), $key), '');
+                        $tlink_icon = is_scalar($tlink_icon) ? (string)$tlink_icon : '';
+                        $tlink_title = value_or_default(array(value_or_default(array($tlinks, 'title'), array()), $key), '');
+                        $tlink_title = is_scalar($tlink_title) ? (string)$tlink_title : '';
+                        $tlink_link = value_or_default(array(value_or_default(array($tlinks, 'link'), array()), $key), '');
+                        $tlink_link = is_scalar($tlink_link) ? (string)$tlink_link : '';
+                        $tlink_new_window = value_or_default(array(value_or_default(array($tlinks, 'new_window'), array()), $key), '');
+                        $tlink_new_window = is_scalar($tlink_new_window) ? (string)$tlink_new_window : '';
+                        $tlink_access = value_or_default(array(value_or_default(array($tlinks, 'access'), array()), $key), 0);
+                        $tlink_access = is_scalar($tlink_access) ? (string)$tlink_access : '0';
+
                         $table->addRow(
                             uniqid('trigger-links-table-row-'),
                             array(
 	                            ( empty($links_icons)?
 	                                array('content' => '-', 'align' => 'center') :
-	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlinks['icon'][$key].'"  data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
+	                                array('content' => '<select name="trigger-links-table-icon-'.$lang.'['.$uid.']" data-select2-value="'.$tlink_icon.'"  data-role="icon" style="width: 190px;"></select>', 'align' => 'left')
                                 ),
-                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.core_special_chars($tlinks['title'][$key]).'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
-                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.core_special_chars($tlinks['link'][$key]).'" data-role="link" style="width: 260px;" />'.
+                                array('content' => '<input type="text" name="trigger-links-table-title-'.$lang.'['.$uid.']" value="'.core_special_chars($tlink_title).'" data-role="title" style="width: 250px;" />', 'align' => 'left'),
+                                array('content' => '<input type="text" name="trigger-links-table-link-'.$lang.'['.$uid.']" value="'.core_special_chars($tlink_link).'" data-role="link" style="width: 260px;" />'.
                                                    '<a class="uibutton naviforms-pathfield-trigger"><i class="fa fa-sitemap"></i></a>',
                                       'align' => 'left',
                                       'style' => 'white-space: nowrap;'
                                 ),
-                                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlinks['new_window'][$key]=='1'? 'checked="checked"' : '').' />
+                                array('content' => '<input type="checkbox" name="trigger-links-table-new_window-'.$lang.'['.$uid.']" data-role="target" id="trigger-links-table-new_window-'.$lang.'['.$uid.']" value="1" '.($tlink_new_window=='1'? 'checked="checked"' : '').' />
                                                     <label for="trigger-links-table-new_window-'.$lang.'['.$uid.']" />',
                                       'align' => 'left'),
-                                array('content' => '<input type="hidden" name="trigger-links-table-access-'.$lang.'['.$uid.']" data-role="access" id="trigger-links-table-access-'.$lang.'['.$uid.']" value="'.value_or_default($tlinks['access'][$key], 0).'" />
-                                                    <i class="fa fa-fw fa-lg fa-eye '.($tlinks['access'][$key]=='1'? 'hidden' : '').'" onclick="navigate_blocks_trigger_links_table_row_access(this);" data-value="0" for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>
-                                                    <i class="fa fa-fw fa-lg fa-eye-slash '.($tlinks['access'][$key]=='1'? '' : 'hidden').'" onclick="navigate_blocks_trigger_links_table_row_access(this);" data-value="1" for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>',
+                                array('content' => '<input type="hidden" name="trigger-links-table-access-'.$lang.'['.$uid.']" data-role="access" id="trigger-links-table-access-'.$lang.'['.$uid.']" value="'.$tlink_access.'" />
+                                                    <i class="fa fa-fw fa-lg fa-eye '.($tlink_access=='1'? 'hidden' : '').'" onclick="navigate_blocks_trigger_links_table_row_access(this);" data-value="0" for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>
+                                                    <i class="fa fa-fw fa-lg fa-eye-slash '.($tlink_access=='1'? '' : 'hidden').'" onclick="navigate_blocks_trigger_links_table_row_access(this);" data-value="1" for="trigger-links-table-access-'.$lang.'['.$uid.']"></i>',
                                       'align' => 'center'),
                                 array('content' => '<img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" style="cursor: pointer;" onclick="navigate_blocks_trigger_links_table_row_remove(this);" />', 'align' => 'center')
                             )
@@ -1632,7 +1645,7 @@ function blocks_form($item)
                                 4 => t(175, 'Download file'),
                                 5 => t(176, 'View image')
                             ),
-                            $item->action['action-type'][$lang],
+                            value_or_default(array(value_or_default(array($item->action, 'action-type'), array()), $lang), ''),
                             "navigate_blocks_action_change('".$lang."', this);"
                         )
                     )
@@ -1896,9 +1909,9 @@ function blocks_form($item)
                 $layout->add_script('
 					$(window).on("load", function()
 					{
-						$("#trigger-type-'.$alang.'").val("'.$item->trigger['trigger-type'][$alang].'");
-						$("#action-type-'.$alang.'").val("'.$item->action['action-type'][$alang].'");
-						navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.core_special_chars($item->trigger['trigger-type'][$alang]).'\" />"));
+						$("#trigger-type-'.$alang.'").val("'.value_or_default(array($item->trigger['trigger-type'], $alang), '').'");
+						$("#action-type-'.$alang.'").val("'.value_or_default(array(value_or_default(array($item->action, 'action-type'), array()), $alang), '').'");
+						navigate_blocks_trigger_change("'.$alang.'", $("<input type=\"hidden\" value=\"'.core_special_chars(value_or_default(array($item->trigger['trigger-type'], $alang), '')).'\" />"));
 
 						links_table_row_models["'.$alang.'"] = $("#trigger-links-table-row-model-'.$alang.'").html();
 						if($("#trigger_links_table_'.$alang.'").find("tr").not(".nodrag").length > 1)
@@ -2072,7 +2085,7 @@ function blocks_form($item)
         $item->elements = array();
     }
 	$items_ids = array_values($item->elements);
-	$items_ids = $items_ids[0];
+	$items_ids = value_or_default(array($items_ids, 0), array());
 	if(empty($items_ids))
     {
         $items_ids = array();
@@ -2995,10 +3008,10 @@ function block_group_form($item)
                     $blocks_selected[] = '
                         <div class="block_group_block ui-state-default" data-block-id="'.$block['code'].'" data-block-type="block_type" data-block-uid="'.$item->blocks[$p]['uid'].'">
                             <div class="actions">
-                                <a href="#" data-block-group="'.$block['block_group'].'" data-block-type-code="'.$block['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$item->blocks[$p]['title'].'</span></a>
+                                <a href="#" data-block-group="'.value_or_default(array($block, 'block_group'), '').'" data-block-type-code="'.$block['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$item->blocks[$p]['title'].'</span></a>
                                 <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
                             </div>
-                            <div class="title" title="'.$block['description'].'">'.$block['title'].'</div>
+                            <div class="title" title="'.value_or_default(array($block, 'description'), '').'">'.$block['title'].'</div>
                             <div class="subcomment">
                                 <span style="float: right;">ID '.$block['code'].'</span>
                                 <img src="img/icons/silk/brick_link.png" /> '.$block['count'].' '.($block['count']==1? t(437, "Block") : t(23, "Blocks")).'
@@ -3021,7 +3034,7 @@ function block_group_form($item)
                                         'type' => $bg->blocks[$i]->id,
                                         'title' => $theme->t($bg->blocks[$i]->title),
                                         'description'  => $theme->t($bg->blocks[$i]->description),
-                                        'properties'  => $bg->blocks[$i]->properties,
+                                        'properties'  => isset($bg->blocks[$i]->properties) ? $bg->blocks[$i]->properties : array(),
                                         'block_group' => $bg->id
                                     );
                                     break;
@@ -3159,7 +3172,7 @@ function block_group_form($item)
 
                                 $html = '<div class="'.$classes.'" data-block-id="'.$b['id'].'" data-block-type="block_type">'.
                                     '<div class="actions">
-                                        <a href="#" data-block-group="'.$b['block_group'].'" data-block-type-code="'.$b['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.$b['block_type_title'].'</span></a>
+                                        <a href="#" data-block-group="'.value_or_default(array($b, 'block_group'), '').'" data-block-type-code="'.$b['code'].'" data-block-type-title="(span)" onclick="navigate_blocks_block_type_title(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/text_horizontalrule.png" /><span class="hidden">'.value_or_default(array($b, 'block_type_title'), '').'</span></a>
                                         <a href="#" onclick="navigate_blocks_selection_remove(this);"><img src="'.NAVIGATE_URL.'/img/icons/silk/cancel.png" /></a>
                                     </div>'.
                                     '<div class="title">'.$b['title'].'</div>'.

@@ -2295,7 +2295,7 @@ function products_form($item)
                 }
 				foreach($website->languages_list as $lang)
 				{
-					$gallery .= $naviforms->hidden('products-gallery-item-'.$image_id.'-dictionary-'.$lang, $image_dictionary[$lang]);
+					$gallery .= $naviforms->hidden('products-gallery-item-'.$image_id.'-dictionary-'.$lang, value_or_default(array($image_dictionary, $lang), ''));
 				}
 			}	
 			
@@ -2404,6 +2404,7 @@ function products_form($item)
 			);
 
 			$moderator_id = '';
+			$moderator_username = array();
 			if(!empty($item->comments_moderator))
 			{
 				$moderator_username = $DB->query_single('username', 'nv_users', ' id = '.$item->comments_moderator);

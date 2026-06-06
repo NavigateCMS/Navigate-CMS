@@ -378,9 +378,10 @@ function themes_grid($list)
         {
             $theme = new theme();
             $theme->load($website->theme, true);
-            $update_ver = $_SESSION['themes_updates'][$theme->name];
+            $theme_updates = value_or_default(array($_SESSION, 'themes_updates'), array());
+            $update_ver = value_or_default(array($theme_updates, $theme->name), '');
 
-            if(version_compare($update_ver, $theme->version, '<='))
+            if(empty($update_ver) || version_compare($update_ver, $theme->version, '<='))
                 $update_ver = '';
             else
                 $update_ver = $theme->version.' &raquo; '.$update_ver;

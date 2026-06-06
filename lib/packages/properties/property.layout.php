@@ -96,7 +96,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
 	if(!isset($property->value))
     {
-        $property->value = $property->dvalue;
+        $property->value = isset($property->dvalue) ? $property->dvalue : '';
     }
 
     if(!isset($property->multilanguage))
@@ -620,7 +620,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
 				$field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'" lang="'.$lang.'">';
 				$field[] = '<label>'.$property_name.' '.$language_info.'</label>';
-				$field[] = $naviforms->textfield("property-".$property->id."-".$lang, $property->value[$lang]);
+				$field[] = $naviforms->textfield("property-".$property->id."-".$lang, value_or_default(array($property->value, $lang), ''));
 				if(!empty($property->helper))
 				{
 					$helper_text = $property->helper;

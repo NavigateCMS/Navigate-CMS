@@ -24,6 +24,7 @@ class block
 
     public $uid;
     public $properties;
+    public $website;
 
     public $_block_group_id;
 
@@ -73,7 +74,7 @@ class block
 
 		$this->trigger			= mb_unserialize($main->trigger);
 				
-		if(is_array($this->trigger['trigger-html']))
+		if(is_array($this->trigger) && !empty($this->trigger['trigger-html']))
 		{
 			foreach($this->trigger['trigger-html'] as $language => $code)
 			{
@@ -81,7 +82,7 @@ class block
 			}
 		}
 		
-		if(is_array($this->trigger['trigger-content']))
+		if(is_array($this->trigger) && !empty($this->trigger['trigger-content']))
 		{
 			foreach($this->trigger['trigger-content'] as $language => $code)
 			{

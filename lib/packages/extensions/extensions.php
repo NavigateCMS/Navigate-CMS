@@ -586,7 +586,7 @@ function extensions_options($extension, $saved=null)
     foreach($extension->definition->options as $option)
     {
         $property = new property();
-        $property->load_from_object($option, $extension->settings[$option->id], $extension);
+        $property->load_from_object($option, value_or_default(array($extension->settings, $option->id), null), $extension);
 
         if($property->type == 'tab')
         {

@@ -10,6 +10,7 @@ class navitree
 	public $columns;
 	public $treeColumn;
     public $showLanguages;
+	public $initialState;
 
 	public function __construct($id)	
 	{
@@ -84,7 +85,7 @@ class navitree
                 $treecolumn = true;
             }
 
-			if( $node->{$col['property']}===NULL &&
+			if( !isset($node->{$col['property']}) &&
                 strpos($col['property'], 'dictionary|')===false
             )
 			{
