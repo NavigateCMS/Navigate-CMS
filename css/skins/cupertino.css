@@ -1847,6 +1847,169 @@ table.treeTable
 	float: left;
 }
 
+#media_browser_view_toggle
+{
+	float: right;
+	margin-top: 2px;
+	margin-right: 6px;
+}
+
+#media_browser_view_toggle input[type="radio"]
+{
+	display: none;
+}
+
+#media_browser_view_toggle label
+{
+	cursor: pointer;
+	padding: 2px 4px;
+	color: #999;
+}
+
+#media_browser_view_toggle input[type="radio"]:checked + label
+{
+	color: #333;
+}
+
+/* Hide list-info in grid view (default) */
+#navigate_media_browser_items .file-list-info,
+.navigate_media_browser_clone .file-list-info
+{
+	display: none;
+}
+
+/* List view mode */
+#navigate_media_browser_items.media-browser-view-list > div
+{
+	width: 100%;
+	min-height: 52px;
+	height: auto;
+	float: none;
+	margin-right: 0;
+	margin-bottom: 2px;
+	text-align: left;
+	display: flex;
+	align-items: center;
+	padding: 2px 4px;
+	box-sizing: border-box;
+}
+
+#navigate_media_browser_items.media-browser-view-list > div > img,
+#navigate_media_browser_items.media-browser-view-list .file-image-wrapper,
+#navigate_media_browser_items.media-browser-view-list .file-icon-wrapper
+{
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-image-wrapper
+{
+	width: 48px;
+	height: 48px;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-image-wrapper img
+{
+	max-width: 48px;
+	max-height: 48px;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-icon-wrapper
+{
+	width: 48px;
+	height: 48px;
+	flex-shrink: 0;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-icon-wrapper img
+{
+	width: 48px;
+	height: 48px;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-list-info
+{
+	display: flex;
+	align-items: center;
+	flex: 1;
+	margin-left: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-list-info .file-list-name
+{
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-list-info .file-list-used
+{
+	flex-shrink: 0;
+	margin-left: 8px;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-list-info .file-list-used img
+{
+	opacity: 0.75;
+	margin: 0;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-list-info .file-list-size
+{
+	flex-shrink: 0;
+	margin-left: 12px;
+	font-size: 10px;
+	color: #888;
+	cursor: default;
+}
+
+#navigate_media_browser_items.media-browser-view-list div.file-access-icons
+{
+	position: static;
+	width: auto;
+	height: auto;
+	margin: 0;
+	flex-shrink: 0;
+	margin-left: 8px;
+	text-align: right;
+	order: 10;
+}
+
+#navigate_media_browser_items.media-browser-view-list > div[data-prioritary=true]
+{
+	background-color: #fff9d6;
+}
+
+#navigate_media_browser_items.media-browser-view-list > div > span
+{
+	display: none;
+}
+
+#navigate_media_browser_items.media-browser-view-list .file-list-name-folder
+{
+	display: none;
+}
+
+#navigate_media_browser_items.media-browser-view-list #file-more
+{
+	display: block;
+	text-align: center;
+}
+
 #navigate_media_browser_items
 {
 	width: 100%;
@@ -2056,9 +2219,14 @@ label.ui-state-active #navigate_media_browser_folder_path
 #navigate_media_browser_items .file-image-wrapper
 {
 	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 80px;
 	height: 78px;
 	margin-top: 1px;
+	overflow: hidden;
+	padding: 4px;
+	box-sizing: border-box;
 }
 
 .navigate_media_browser_clone
@@ -2077,6 +2245,84 @@ label.ui-state-active #navigate_media_browser_folder_path
 	display: block;
 }
 
+.navigate_media_browser_clone > span
+{
+	display: none;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list
+{
+	width: auto;
+	min-width: 200px;
+	max-width: 400px;
+	height: 52px;
+	padding: 2px 8px;
+	display: flex;
+	align-items: center;
+	text-align: left;
+	font-size: 11px;
+	box-sizing: border-box;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-image-wrapper,
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-icon-wrapper
+{
+	width: 48px;
+	height: 48px;
+	flex-shrink: 0;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-image-wrapper img,
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-icon-wrapper img
+{
+	max-width: 48px;
+	max-height: 48px;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-list-info
+{
+	display: flex;
+	align-items: center;
+	flex: 1;
+	margin-left: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-list-name
+{
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-list-size
+{
+	display: none;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-list-used
+{
+	flex-shrink: 0;
+	margin-left: 8px;
+}
+
+.navigate_media_browser_clone.navigate_media_browser_clone_list .file-list-name-folder,
+.navigate_media_browser_clone.navigate_media_browser_clone_list > span
+{
+	display: none;
+}
+
 .navigate_media_browser_clone.draggable-image
 {
 	display: flex;
@@ -2085,13 +2331,33 @@ label.ui-state-active #navigate_media_browser_folder_path
 .navigate_media_browser_clone .file-image-wrapper
 {
 	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 80px;
 	height: 78px;
+	overflow: hidden;
+	padding: 4px;
+	box-sizing: border-box;
+}
+
+.navigate_media_browser_clone .file-image-wrapper img,
+.navigate_media_browser_clone .file-icon-wrapper img
+{
+	max-width: 100%;
+	max-height: 100%;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
 
 .file-image-wrapper img
 {
 	margin: auto; /* center image vertically & horizontally when parent has display: flex; */
+	max-width: 100%;
+	max-height: 100%;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
 }
 
 
@@ -2126,6 +2392,11 @@ label.ui-state-active #navigate_media_browser_folder_path
 .navigate-droppable[data-media="image"] img:first-child
 {
 	margin: auto; /* center vertical & horizontal when parent has display: flex; */
+	max-width: 100%;
+	max-height: 100%;
+	padding: 4px;
+	box-sizing: border-box;
+	object-fit: contain;
 }
 
 .navigate-droppable-hover

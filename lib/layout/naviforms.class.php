@@ -1432,6 +1432,8 @@ class naviforms
 				$("#'.$name.'-droppable").droppable(
 				{
 					'.$accept.'
+					tolerance: "pointer",
+					refreshPositions: true,
                     classes: {
                         "ui-droppable-hover": "navigate-droppable-hover"
                     },				
@@ -1445,13 +1447,28 @@ class naviforms
 						{
 						    draggable_content = $(draggable_content).find(".file-image-wrapper").html();
                         }
+                        else if($(draggable_content).find(".file-icon-wrapper").length > 0)
+                        {
+                            draggable_content = $(draggable_content).find(".file-icon-wrapper").html();
+                        }
                         else
                         {
-                            draggable_content = $(ui.draggable).html();
+                            var clone = $(ui.draggable).clone();
+                            var img = clone.find("img[src]").first();
+                            if(img.length > 0)
+                            {
+                                draggable_content = $("<div />").append(img.clone()).html();
+                            }
+                            else
+                            {
+                                clone.find(".file-list-info, .file-list-name-folder, .file-access-icons").remove();
+                                draggable_content = clone.html();
+                            }
                         }
 
 						$(this).html(draggable_content);
 						$(this).find("div.file-access-icons").remove();
+
 
 						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
 					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();

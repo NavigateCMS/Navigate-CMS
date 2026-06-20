@@ -4,6 +4,7 @@ var navigate_media_browser_parent = 0;
 var navigate_media_browser_website = 0;
 var navigate_media_browser_order = 'date_added_DESC';
 var navigate_media_browser_folderpath = 0;
+var navigate_media_browser_view = 'grid';
 
 function navigate_media_browser() 
 {
@@ -24,6 +25,14 @@ function navigate_media_browser()
 
 	$("#navigate_media_browser_buttons").find("div").eq(0).controlgroup().css("float", "left");
 	$("#media_browser_search img").button().removeClass('ui-corner-all');
+
+	/* view toggle */
+	$("input[name='media_browser_view']").on("click", function()
+	{
+		navigate_media_browser_view = $(this).val();
+		navigate_media_browser_apply_view();
+		navigate_media_browser_save_position();
+	});
 
 	navigate_media_browser_website = navigate['website_id'];
 	
@@ -46,6 +55,13 @@ function navigate_media_browser()
 			if(pos)
 			{
                 navigate_media_browser_order = pos.order;
+
+				if(pos.view)
+				{
+					navigate_media_browser_view = pos.view;
+					$('input[name="media_browser_view"]').prop('checked', false);
+					$('input[name="media_browser_view"][value="' + pos.view + '"]').prop('checked', true);
+				}
 
 				$("#navigate-media-browser").parent().css({top: pos.top, left: pos.left, width: pos.width, height: pos.height});
 				$("#navigate-media-browser").parent().addClass("navi-ui-widget-shadow");
@@ -74,6 +90,8 @@ function navigate_media_browser()
             $('select[name="media_browser_order"]').imageselectmenu( "updateIcon" );
 
             navigate_media_browser_reload();
+
+            navigate_media_browser_apply_view();
 
             // user is allowed to upload files, otherwise the upload_button won't be inserted
             if($("#navigate_media_browser_upload_button").length > 0)
@@ -213,12 +231,41 @@ function navigate_media_browser_refresh()
                             {
                                 $(ui.helper).find('div.file-access-icons').hide();
                                 $(ui.helper).addClass("navigate_media_browser_clone");
+                                if(navigate_media_browser_view === 'list')
+                                {
+                                    $(ui.helper).addClass("navigate_media_browser_clone_list");
+                                }
+                                // lower dialog z-index so droppables can detect the cursor
+                                $("#navigate-media-browser").parent().css("z-index", 100);
+                            },
+                            drag: function(event, ui)
+                            {
+                                // manually detect droppable hover for reliability
+                                var x = event.pageX;
+                                var y = event.pageY;
+                                $(".navigate-droppable:visible").each(function()
+                                {
+                                    var offset = $(this).offset();
+                                    var w = $(this).outerWidth();
+                                    var h = $(this).outerHeight();
+                                    if(x >= offset.left && x <= offset.left + w && y >= offset.top && y <= offset.top + h)
+                                    {
+                                        $(this).addClass("navigate-droppable-hover");
+                                    }
+                                    else
+                                    {
+                                        $(this).removeClass("navigate-droppable-hover");
+                                    }
+                                });
                             },
                             stop: function (event, ui)
                             {
                                 $(ui.helper).find('div.file-access-icons').show();
                                 $(that).draggable("destroy");
                                 navigate_media_browser_refresh_files_used();
+                                // restore dialog z-index and clear hover states
+                                $("#navigate-media-browser").parent().css("z-index", "");
+                                $(".navigate-droppable").removeClass("navigate-droppable-hover");
                             }
                         }
                     );
@@ -330,7 +377,7 @@ function navigate_media_browser_refresh()
     }
 
     $("#navigate_media_browser_items div")
-        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".draggable-folder").not(".file-access-icons")
+        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".draggable-folder").not(".file-access-icons").not(".file-list-info").not(".file-list-used").not(".file-list-name").not(".file-list-size").not(".file-list-name-folder")
         .off("contextmenu")
         .on("contextmenu", function(e)
         {
@@ -454,7 +501,7 @@ function navigate_media_browser_refresh()
     );
 
     $("#navigate_media_browser_items div.draggable-folder")
-        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".file-access-icons")
+        .not("#file-more").not(".file-image-wrapper").not(".file-icon-wrapper").not(".file-access-icons").not(".file-list-info").not(".file-list-used").not(".file-list-name").not(".file-list-size").not(".file-list-name-folder")
         .off("contextmenu")
         .on("contextmenu", function(e)
         {
@@ -519,6 +566,7 @@ function navigate_media_browser_refresh_files_used()
 
     // 1. remove all existing marks
     $("#navigate_media_browser_items").find(".file-access-icons").find(".file-used").remove();
+    $("#navigate_media_browser_items").find(".file-list-used").find(".file-used").remove();
     var files_used = [];
 
     // 2. find files used in properties
@@ -570,10 +618,17 @@ function navigate_media_browser_refresh_files_used()
 		// ignore default theme images including a slash
 		if(files_used[i].indexOf('/') < 0)
 		{
-			$("#navigate_media_browser_items")
-				.find("#file-" + files_used[i])
-				.find(".file-access-icons")
-				.append('<img align="absmiddle" class="file-used" title="'+navigate_t(580, "Used in this page")+'" src="img/icons/silk/tick.png">');
+			var file_element = $("#navigate_media_browser_items").find("#file-" + files_used[i]);
+			var tick_html = '<img align="absmiddle" class="file-used" title="'+navigate_t(580, "Used in this page")+'" src="img/icons/silk/tick.png">';
+
+			if(navigate_media_browser_view === 'list')
+			{
+				file_element.find(".file-list-used").html(tick_html);
+			}
+			else
+			{
+				file_element.find(".file-access-icons").append(tick_html);
+			}
 		}
     }
 }
@@ -993,6 +1048,7 @@ function navigate_media_browser_reload(priority)
 			
 			// drag & drop support and contextmenu!
 			navigate_media_browser_refresh();
+			navigate_media_browser_apply_view();
 			
 			$("#file-more").on("click", function()
 			{
@@ -1051,6 +1107,7 @@ function navigate_media_browser_save_position()
 	var folder_path = navigate_media_browser_folderpath;
 	var type = $('select[name="media_browser_type"]').val();
 	var order = $('select[name="media_browser_order"]').val();
+	var view = navigate_media_browser_view;
 
 	if(type!='folder')
 	{
@@ -1066,6 +1123,7 @@ function navigate_media_browser_save_position()
 		height: height,
 		type: type,
 		order: order,
+		view: view,
 		folder_id: folder_id,
 		folder_path: folder_path
 	}); 				
@@ -1232,6 +1290,27 @@ function navigate_media_browser_focalpoint(file_id)
 
         }
     );
+}
+
+function navigate_media_browser_apply_view()
+{
+	var items = $("#navigate_media_browser_items");
+	items.removeClass("media-browser-view-grid media-browser-view-list");
+	items.addClass("media-browser-view-" + navigate_media_browser_view);
+
+	// sync radio button state
+	$('input[name="media_browser_view"]').prop('checked', false);
+	$('input[name="media_browser_view"][value="' + navigate_media_browser_view + '"]').prop('checked', true);
+	
+	try {
+	    if ($('input[name="media_browser_view"]').checkboxradio('instance')) {
+	        $('input[name="media_browser_view"]').checkboxradio('refresh');
+	    } else if ($('input[name="media_browser_view"]').button('instance')) {
+	        $('input[name="media_browser_view"]').button('refresh');
+	    } else {
+	        $('input[name="media_browser_view"]').button('refresh'); // fallback
+	    }
+	} catch(e) {}
 }
 
 function navigate_media_browser_select_type( event, ui )

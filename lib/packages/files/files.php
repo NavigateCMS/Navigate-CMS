@@ -1193,7 +1193,7 @@ function files_item_properties($item)
 				'</div>'
             )
         );
-
+        
 		$layout->add_script('
 			var plyrVideo = new Plyr("#video_'.$item->id.'", {
 				iconUrl: "'.NAVIGATE_URL.'/lib/external/plyr/plyr.svg",
@@ -1394,7 +1394,10 @@ function files_media_browser($limit = 50, $offset = 0)
             }
 	        $download_link = $website_root.'?id='.$f->id.'&disposition=attachment';
 
-	        if($f->type == 'image')
+	        $file_size_label = !empty($f->size) ? core_bytes($f->size) : '';
+	        $file_date_label = !empty($f->date_added) ? core_ts2date($f->date_added, true) : '';
+
+        if($f->type == 'image')
 			{
 	            $f->title = json_decode($f->title, true);
 	            $f->description = json_decode($f->description, true);
@@ -1411,10 +1414,13 @@ function files_media_browser($limit = 50, $offset = 0)
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"	
 				               data-website-id="'.$f->website.'"	
+				               data-file-size="'.$file_size_label.'"
 				               data-prioritary="'.(isset($f->_media_browser_prioritary)? 'true' : 'false').'"		               
+				               data-date-added="'.$file_date_label.'"
 				               id="file-'.$f->id.'">
 				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
 				               <div class="file-image-wrapper"><img loading="lazy" src="'.$icon.'" title="'.$f->name.'" data-src-original="'.$original.'" /></div>
+				               <div class="file-list-info"><span class="file-list-name">'.$f->name.'</span><span class="file-list-used"></span><span class="file-list-size" title="'.$file_date_label.'">'.$file_size_label.'</span></div>
 	                      </div>';
 			}
 	        else if($f->type == 'youtube')
@@ -1451,13 +1457,16 @@ function files_media_browser($limit = 50, $offset = 0)
 				               navipath="'.$navipath.'"
 				               download-link="'.$download_link.'"
 				               data-file-id="'.$f->id.'"
-				               data-website-id="'.$f->website.'"
+				               data-website-id="'.($f->website ?? '').'"
 				               data-prioritary="'.(isset($f->_media_browser_prioritary)? 'true' : 'false').'"
+				               data-date-added="'.$file_date_label.'"
+				               data-file-size="'.$file_size_label.'"
 				               id="file-'.$f->id.'">
-				               <div class="file-access-icons">'.$access[$f->access].$permissions[$f->permission].'</div>
+				               <div class="file-access-icons">'.$access[$f->access ?? 0].$permissions[$f->permission ?? 0].'</div>
 				               <div class="file-icon-wrapper"><img loading="lazy" src="'.$icon.'" width="50" height="50" title="'.$f->name.'" /></div>
 	                           <span style="clear: both; display: block; height: 0px;"></span>'.
-	                           $f->name.'
+	                           '<span class="file-list-name-folder">'.$f->name.'</span>'.
+	                       '<div class="file-list-info"><span class="file-list-name">'.$f->name.'</span><span class="file-list-used"></span><span class="file-list-size" title="'.$file_date_label.'">'.$file_size_label.'</span></div>
 	                       </div>';
 			}
 		}

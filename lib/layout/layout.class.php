@@ -240,7 +240,7 @@ class layout
 		$this->add_style_tag('lib/external/codemirror/addon/hint/show-hint.css');
 
 		$this->add_script_tag('lib/external/plyr/plyr.polyfilled.js');
-		$this->add_style_tag('lib/external/plyr/plyr.css');
+		$this->add_style_tag('lib/external/plyr/plyr.css');        
 
         $this->add_style_tag('lib/external/leaflet/leaflet.css');
         $this->add_script_tag('lib/external/leaflet/leaflet.js');
@@ -1057,6 +1057,14 @@ class layout
         $html[] = '             <option value="name_ASC" data-class="silk-sprite silk-sort_ascending" id="nvmb-name_ASC">'.t(159, 'Name').'</option>';
         $html[] = '             <option value="name_DESC" data-class="silk-sprite silk-sort_descending" id="nvmb-name_DESC">'.t(159, 'Name').'</option>';
         $html[] = '         </select>';
+
+		// view toggle button
+		$html[] = '		    <div id="media_browser_view_toggle">
+		                            <input type="radio" id="media_browser_view_grid" name="media_browser_view" value="grid" checked="checked" />
+		                            <label title="'.t(179, 'Thumbnails').'" for="media_browser_view_grid"><img src="img/icons/silk/application_view_tile.png" width="16" height="16" align="absmiddle" /></label>
+		                            <input type="radio" id="media_browser_view_list" name="media_browser_view" value="list" />
+		                            <label title="'.t(39, 'List').'" for="media_browser_view_list"><img src="img/icons/silk/application_view_list.png" width="16" height="16" align="absmiddle" /></label>
+		                        </div>';
 
 		// search box
 		$html[] = '		    <div id="media_browser_search">
