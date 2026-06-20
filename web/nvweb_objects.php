@@ -87,13 +87,16 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
             {
                 $_REQUEST['code'] = 'catalonia';
             }
-				
-			header('Content-Disposition: attachment; filename="'.nv_global_var("REQUEST", 'code', '').'.png"');
+
+			// Sanitize flag code to prevent path traversal: only allow alphanumeric, dash, underscore
+			$flag_code = preg_replace('/[^a-zA-Z0-9_\-]/', '', nv_global_var("REQUEST", 'code', ''));            
+
+			header('Content-Disposition: attachment; filename="'.$flag_code.'.png"');
 			header('Content-Type: image/png');
-			header('Content-Disposition: inline; filename="'.nv_global_var("REQUEST", 'code', '').'.png"');			
+			header('Content-Disposition: inline; filename="'.$flag_code.'.png"');			
 			header("Content-Transfer-Encoding: binary\n");
 
-			$path = NAVIGATE_PATH.'/img/icons/flags/'.nv_global_var("REQUEST", 'code', '').'.png';
+			$path = NAVIGATE_PATH.'/img/icons/flags/'.$flag_code.'.png';
             if(!file_exists($path))
             {
                 $path = NAVIGATE_PATH.'/img/transparent.gif';

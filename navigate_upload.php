@@ -187,8 +187,8 @@ if($user->permission("files.upload")=="true")
                     }
                     else
                     {
-                        @unlink($targetDir.'/'.$_REQUEST['id'].'.photopea'); // too small, ignore image
-
+                        @unlink($targetDir.'/'.$file_id.'.photopea'); // too small, ignore image
+                        
                         header("HTTP/1.1 200 OK");
                         header('Access-Control-Allow-Origin: *');
                         echo 'ERROR!'; // output content

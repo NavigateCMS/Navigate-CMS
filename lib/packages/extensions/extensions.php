@@ -16,7 +16,16 @@ function run()
 	{
         case 'extension_info':
             $extension_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
-            echo '<iframe src="'.NAVIGATE_URL.'/plugins/'.$extension_code.'/'.$extension_code.'.info.html'.'" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
+            // Prevent path traversal in extension code
+            if(preg_match('/[\/\\\\]|\.\./', $extension_code))
+            {
+                echo 'Invalid extension code.';
+                core_terminate();
+                break;
+            }
+            $extension_code = basename($extension_code);
+            $extension_code_safe = htmlspecialchars($extension_code, ENT_QUOTES, 'UTF-8');
+            echo '<iframe src="'.NAVIGATE_URL.'/plugins/'.$extension_code_safe.'/'.$extension_code_safe.'.info.html" scrolling="auto" frameborder="0"  width="100%" height="100%"></iframe>';
             core_terminate();
             break;
 
@@ -250,9 +259,12 @@ function run()
             {
                 // uncompress ZIP and copy it to the extensions dir
                 $tmp = trim(substr($_FILES['extension-upload']['name'], 0, strpos($_FILES['extension-upload']['name'], '.')));
-                $extension_name = filter_var($tmp, FILTER_SANITIZE_EMAIL);
+                
+                // Use basename to strip path traversal, then allow only safe filename characters
+                $tmp = basename($tmp);
+                $extension_name = preg_replace('/[^a-zA-Z0-9_\-]/', '', $tmp);
 
-                if($tmp != $extension_name) // INVALID file name
+                if($tmp === '' || $tmp != $extension_name) // INVALID file name
                 {
                     $layout->navigate_notification(t(344, 'Security error'), true, true);
                 }

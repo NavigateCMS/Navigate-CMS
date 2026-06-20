@@ -1564,18 +1564,36 @@ $thumbnail = $thumbnail_path_jpg;
         }
 		else
         {
-            if(file_exists(NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$this->id))
+            // Reject path traversal characters in the id
+            if(strpos($this->id, '..') !== false || strpos($this->id, "\0") !== false)
             {
-                $path = NAVIGATE_PATH . '/themes/' . $website->theme . '/' . $this->id;
+                return "";
+            }            
+
+            $path = "";
+            $candidate = NAVIGATE_PATH.'/themes/'.$website->theme.'/'.$this->id;
+            if(file_exists($candidate))
+            {
+                $resolved = realpath($candidate);
+                $base = realpath(NAVIGATE_PATH.'/themes/'.$website->theme);
+                if($resolved && $base && strpos($resolved, $base) === 0)
+                {
+                    $path = $resolved;
+                }
             }
-            else if(file_exists(NAVIGATE_PATH.'/'.$this->id))
+
+            if(empty($path))
             {
-                $path = NAVIGATE_PATH . '/' . $this->id;
-            }
-            else
-            {
-                // the requested file is not found in the navigate folder, so we return empty
-                $path = ""; //$this->id;
+                $candidate = NAVIGATE_PATH.'/'.$this->id;
+                if(file_exists($candidate))
+                {
+                    $resolved = realpath($candidate);
+                    $base = realpath(NAVIGATE_PATH);
+                    if($resolved && $base && strpos($resolved, $base) === 0)
+                    {
+                        $path = $resolved;
+                    }
+                }
             }
         }
 

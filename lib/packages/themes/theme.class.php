@@ -32,6 +32,13 @@ class theme
 	
 	public function load($name)
 	{
+		// Prevent path traversal: theme name must be a plain directory name
+		if(!is_string($name) || preg_match('/[\/\\\\]|\.\./', $name) || $name === '' || $name === '.' || $name === '..')
+		{
+			return false;
+		}
+		$name = basename($name);
+
 		$json = @file_get_contents(NAVIGATE_PATH.'/themes/'.$name.'/'.$name.'.theme');
 
 		if(empty($json))
@@ -523,6 +530,13 @@ class theme
 
     public static function check_upload($file_upload, $theme_name)
     {
+        // Prevent path traversal in theme name
+        $theme_name = basename($theme_name);
+        if(empty($theme_name) || preg_match('/[\/\\\\]|\.\./', $theme_name))
+        {
+            return false;
+        }        
+
         // check mime
         if(!in_array($file_upload['type'], array('application/zip', 'application/x-zip-compressed')))
         {

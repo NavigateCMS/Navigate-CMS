@@ -223,9 +223,12 @@ function run()
             {
                 // uncompress ZIP and copy it to the themes dir
                 $tmp = trim(substr($_FILES['theme-upload']['name'], 0, strpos($_FILES['theme-upload']['name'], '.')));
-                $theme_name = filter_var($tmp, FILTER_SANITIZE_EMAIL);
+                
+                // Use basename to strip path traversal, then allow only safe filename characters
+                $tmp = basename($tmp);
+                $theme_name = preg_replace('/[^a-zA-Z0-9_\-]/', '', $tmp);
 
-                if($tmp!=$theme_name) // INVALID file name
+                if($tmp === '' || $tmp != $theme_name) // INVALID file name
                 {
                     $layout->navigate_notification(t(344, 'Security error'), true, true);
                 }

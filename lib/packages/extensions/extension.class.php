@@ -19,6 +19,13 @@ class extension
 		global $DB;
         global $website;
 
+        // Prevent path traversal: extension code must be a plain directory name
+        if(preg_match('/[\/\\\\]|\.\./', $code))
+        {
+            throw new Exception('Invalid extension code: path traversal characters are not allowed.');
+        }
+        $code = basename($code);
+
         // retrieve extension definition from filesystem
         if(file_exists(NAVIGATE_PATH.'/plugins/'.$code.'/'.$code.'.plugin'))
         {
@@ -509,6 +516,13 @@ class extension
 
     public static function check_upload($file_upload, $extension_name)
     {
+        // Prevent path traversal in extension name
+        $extension_name = basename($extension_name);
+        if(empty($extension_name) || preg_match('/[\/\\\\]|\.\./', $extension_name))
+        {
+            return false;
+        }        
+
         // check mime
         if(!in_array($file_upload['type'], array('application/zip', 'application/x-zip-compressed')))
         {

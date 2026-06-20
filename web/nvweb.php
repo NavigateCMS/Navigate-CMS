@@ -182,6 +182,9 @@ function nvweb_parse($request)
             $session['lang'] = $website->languages_published[0];
         }
 
+        // Sanitize lang code for filesystem safety (used in cache file paths)        
+        $session['lang'] = preg_replace('/[^a-zA-Z0-9_\-]/', '', $session['lang']);
+
         // global data across webgets
         $current = array(
             'lang'               => $session['lang'],

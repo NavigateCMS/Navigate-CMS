@@ -1391,14 +1391,23 @@ function core_remove_directory_traversal($path)
 {
     // info: https://es.wikipedia.org/wiki/Directory_traversal
 
-    $path = str_replace(
-        array(
-            '../', '..\\',
-            '%2e%2e%2f', '%2e%2e/', '..%2f', '%2e%2e%5c',
-            '..%c1%1c', '..%c0%9v', '..%c0%af'
-        ),
-        '',
-        $path);
+    // Remove null bytes first (can truncate paths in some PHP versions)
+    $path = str_replace("\0", '', $path);
+
+    // Repeatedly remove traversal sequences until none remain
+    // (handles nested bypasses like ....// which becomes ../ after one pass)
+    $patterns = array(
+        '../', '..\\', '..',
+        '%2e%2e%2f', '%2e%2e/', '..%2f', '%2e%2e%5c',
+        '%2e%2e', '..%c1%1c', '..%c0%9v', '..%c0%af'
+    );
+
+    do 
+    {
+        $previous = $path;
+        $path = str_ireplace($patterns, '', $path);
+    } 
+    while($path !== $previous);
 
     return $path;
 }
