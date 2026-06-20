@@ -4306,6 +4306,46 @@
                 <source>View error log file</source>
                 <target>Zobacz plik dziennika błędów</target>
             </trans-unit>
+
+            <trans-unit id="857" approved="yes">
+                <source>Priorities</source>
+                <target>Priorytety</target>
+            </trans-unit>
+
+            <trans-unit id="858" approved="yes">
+                <source>Brand Priorities</source>
+                <target>Priorytety marek</target>
+            </trans-unit>
+
+            <trans-unit id="859" approved="yes">
+                <source>Move to top</source>
+                <target>Przenieś na samą górę</target>
+            </trans-unit>
+
+            <trans-unit id="860" approved="yes">
+                <source>Move up</source>
+                <target>Przenieś w górę</target>
+            </trans-unit>
+
+            <trans-unit id="861" approved="yes">
+                <source>Move down</source>
+                <target>Przenieś w dół</target>
+            </trans-unit>
+
+            <trans-unit id="862" approved="yes">
+                <source>Move to bottom</source>
+                <target>Przenieś na sam dół</target>
+            </trans-unit>
+
+            <trans-unit id="863" approved="yes">
+                <source>No brands</source>
+                <target>Brak marek</target>
+            </trans-unit>
+
+            <trans-unit id="864" approved="yes">
+                <source>Connection error</source>
+                <target>Błąd połączenia</target>
+            </trans-unit>
             
         </body>
     </file>

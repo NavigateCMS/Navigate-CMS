@@ -4307,6 +4307,46 @@
 				<source>View error log file</source>
 				<target>Voir le fichier journal d'erreur</target>
 			</trans-unit>
+
+			<trans-unit id="857" approved="yes">
+				<source>Priorities</source>
+				<target>Priorités</target>
+			</trans-unit>
+
+			<trans-unit id="858" approved="yes">
+				<source>Brand Priorities</source>
+				<target>Priorités des marques</target>
+			</trans-unit>
+
+			<trans-unit id="859" approved="yes">
+				<source>Move to top</source>
+				<target>Déplacer tout en haut</target>
+			</trans-unit>
+
+			<trans-unit id="860" approved="yes">
+				<source>Move up</source>
+				<target>Monter</target>
+			</trans-unit>
+
+			<trans-unit id="861" approved="yes">
+				<source>Move down</source>
+				<target>Descendre</target>
+			</trans-unit>
+
+			<trans-unit id="862" approved="yes">
+				<source>Move to bottom</source>
+				<target>Déplacer tout en bas</target>
+			</trans-unit>
+
+			<trans-unit id="863" approved="yes">
+				<source>No brands</source>
+				<target>Aucune marque</target>
+			</trans-unit>
+
+			<trans-unit id="864" approved="yes">
+				<source>Connection error</source>
+				<target>Erreur de connexion</target>
+			</trans-unit>
 			
 		</body>
 	</file>

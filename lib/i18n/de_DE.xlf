@@ -4307,6 +4307,46 @@
 				<source>View error log file</source>
 				<target>Fehlerprotokolldatei anzeigen</target>
 			</trans-unit>
+
+			<trans-unit id="857" approved="yes">
+				<source>Priorities</source>
+				<target>Prioritäten</target>
+			</trans-unit>
+
+			<trans-unit id="858" approved="yes">
+				<source>Brand Priorities</source>
+				<target>Markenprioritäten</target>
+			</trans-unit>
+
+			<trans-unit id="859" approved="yes">
+				<source>Move to top</source>
+				<target>Ganz nach oben</target>
+			</trans-unit>
+
+			<trans-unit id="860" approved="yes">
+				<source>Move up</source>
+				<target>Nach oben</target>
+			</trans-unit>
+
+			<trans-unit id="861" approved="yes">
+				<source>Move down</source>
+				<target>Nach unten</target>
+			</trans-unit>
+
+			<trans-unit id="862" approved="yes">
+				<source>Move to bottom</source>
+				<target>Ganz nach unten</target>
+			</trans-unit>
+
+			<trans-unit id="863" approved="yes">
+				<source>No brands</source>
+				<target>Keine Marken</target>
+			</trans-unit>
+
+			<trans-unit id="864" approved="yes">
+				<source>Connection error</source>
+				<target>Verbindungsfehler</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

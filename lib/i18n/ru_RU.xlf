@@ -4306,6 +4306,46 @@
 				<source>View error log file</source>
 				<target>Просмотреть файл журнала ошибок</target>
 			</trans-unit>
+
+			<trans-unit id="857" approved="yes">
+				<source>Priorities</source>
+				<target>Приоритеты</target>
+			</trans-unit>
+
+			<trans-unit id="858" approved="yes">
+				<source>Brand Priorities</source>
+				<target>Приоритеты брендов</target>
+			</trans-unit>
+
+			<trans-unit id="859" approved="yes">
+				<source>Move to top</source>
+				<target>Переместить в начало</target>
+			</trans-unit>
+
+			<trans-unit id="860" approved="yes">
+				<source>Move up</source>
+				<target>Переместить вверх</target>
+			</trans-unit>
+
+			<trans-unit id="861" approved="yes">
+				<source>Move down</source>
+				<target>Переместить вниз</target>
+			</trans-unit>
+
+			<trans-unit id="862" approved="yes">
+				<source>Move to bottom</source>
+				<target>Переместить в конец</target>
+			</trans-unit>
+
+			<trans-unit id="863" approved="yes">
+				<source>No brands</source>
+				<target>Нет брендов</target>
+			</trans-unit>
+
+			<trans-unit id="864" approved="yes">
+				<source>Connection error</source>
+				<target>Ошибка соединения</target>
+			</trans-unit>
 			
 		</body>
 	</file>

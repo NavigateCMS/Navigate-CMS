@@ -4320,6 +4320,46 @@
                 <source>View error log file</source>
                 <target>Veure fitxer de registre d'errors</target>
             </trans-unit>
+
+            <trans-unit id="857" approved="yes">
+                <source>Priorities</source>
+                <target>Prioritats</target>
+            </trans-unit>
+
+            <trans-unit id="858" approved="yes">
+                <source>Brand Priorities</source>
+                <target>Prioritats de Marques</target>
+            </trans-unit>
+
+            <trans-unit id="859" approved="yes">
+                <source>Move to top</source>
+                <target>Moure a dalt de tot</target>
+            </trans-unit>
+
+            <trans-unit id="860" approved="yes">
+                <source>Move up</source>
+                <target>Pujar</target>
+            </trans-unit>
+
+            <trans-unit id="861" approved="yes">
+                <source>Move down</source>
+                <target>Baixar</target>
+            </trans-unit>
+
+            <trans-unit id="862" approved="yes">
+                <source>Move to bottom</source>
+                <target>Moure a baix de tot</target>
+            </trans-unit>
+
+            <trans-unit id="863" approved="yes">
+                <source>No brands</source>
+                <target>No hi ha marques</target>
+            </trans-unit>
+
+            <trans-unit id="864" approved="yes">
+                <source>Connection error</source>
+                <target>Error de connexió</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

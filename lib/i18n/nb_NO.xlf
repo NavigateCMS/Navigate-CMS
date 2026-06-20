@@ -4308,6 +4308,46 @@
                 <source>View error log file</source>
                 <target>Vis feilloggfil</target>
             </trans-unit>
+
+            <trans-unit id="857" approved="yes">
+                <source>Priorities</source>
+                <target>Prioriteringer</target>
+            </trans-unit>
+
+            <trans-unit id="858" approved="yes">
+                <source>Brand Priorities</source>
+                <target>Merkeprioriteringer</target>
+            </trans-unit>
+
+            <trans-unit id="859" approved="yes">
+                <source>Move to top</source>
+                <target>Flytt til toppen</target>
+            </trans-unit>
+
+            <trans-unit id="860" approved="yes">
+                <source>Move up</source>
+                <target>Flytt opp</target>
+            </trans-unit>
+
+            <trans-unit id="861" approved="yes">
+                <source>Move down</source>
+                <target>Flytt ned</target>
+            </trans-unit>
+
+            <trans-unit id="862" approved="yes">
+                <source>Move to bottom</source>
+                <target>Flytt til bunnen</target>
+            </trans-unit>
+
+            <trans-unit id="863" approved="yes">
+                <source>No brands</source>
+                <target>Ingen merker</target>
+            </trans-unit>
+
+            <trans-unit id="864" approved="yes">
+                <source>Connection error</source>
+                <target>Tilkoblingsfeil</target>
+            </trans-unit>
             
         </body>
     </file>
