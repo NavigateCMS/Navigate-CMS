@@ -161,6 +161,59 @@ function run()
 			}
 			break;
 					
+        case 'priorities':
+            // AJAX endpoint: get brands list or save reordered IDs
+            if($_SERVER['REQUEST_METHOD'] === 'POST')
+            {
+                if(naviforms::check_csrf_token('_nv_csrf_token', false))
+                {
+                    $ids = isset($_REQUEST['brand_ids']) ? $_REQUEST['brand_ids'] : array();
+                    if(is_array($ids) && !empty($ids))
+                    {
+                        brand::reorder($ids);
+                        echo json_encode(array('status' => 'ok'));
+                    }
+                    else
+                    {
+                        echo json_encode(array('status' => 'error', 'message' => 'No IDs provided'));
+                    }
+                }
+                else
+                {
+                    echo json_encode(array('status' => 'error', 'message' => 'CSRF token error'));
+                }
+            }
+            else
+            {
+                // GET: return all brands ordered by position
+                $DB->query('
+                    SELECT id, name, image, position 
+                      FROM nv_brands 
+                     WHERE website = '.intval($website->id).'
+                     ORDER BY position ASC, id ASC',
+                    'object'
+                );
+                $brands = $DB->result();
+                $out = array();
+                foreach($brands as $b)
+                {
+                    $brand_image_html = '';
+                    if(!empty($b->image))
+                    {
+                        $brand_image_html = '<img src="'.file::file_url($b->image, 'inline').'&width=48&height=36&border=true" style="vertical-align:middle;margin-right:6px;" />';
+                    }
+                    $out[] = array(
+                        'id' => $b->id,
+                        'name' => $b->name,
+                        'image_html' => $brand_image_html
+                    );
+                }
+                echo json_encode($out);
+            }
+            session_write_close();
+            exit;
+            break;
+
 		case 'list':
 		default:			
 			$out = brands_list();
@@ -172,10 +225,18 @@ function run()
 
 function brands_list()
 {
+	global $layout;
+
 	$navibars = new navibars();
 	$navitable = new navitable("brands_list");
 	
 	$navibars->title(t(681, 'Brands'));
+
+	$navibars->add_actions(
+	    array(
+			'<a href="#" onclick="brands_priorities_dialog(); return false;"><img height="16" align="absmiddle" width="16" src="img/icons/silk/table_sort.png"> '.t(857, 'Priorities').'</a>'
+        )
+    );
 
 	$navibars->add_actions(
 	    array(
@@ -190,7 +251,7 @@ function brands_list()
         $nv_qs_text = core_purify_string(value_or_default(array($_REQUEST, 'navigate-quicksearch'), ''), true);
         $navitable->setInitialURL("?fid=brands&act=json&_search=true&quicksearch=".$nv_qs_text);
     }
-	
+		
 	$navitable->setURL('?fid=brands&act=json');
 	$navitable->sortBy('id');
 	$navitable->setDataIndex('id');
@@ -203,6 +264,125 @@ function brands_list()
     $navitable->addCol(t(168, 'Notes'), 'note', "50", "false", "center");
 	
 	$navibars->add_content($navitable->generate());
+
+	$layout->add_script('
+		function brands_priorities_dialog()
+		{
+			// show loading state
+			var $dialog = $("<div id=\"brands-priorities-dialog\"><p style=\"text-align:center;padding:20px;\"><img src=\"img/loader.gif\" /> '.t(6, "Loading") .'...</p></div>");
+
+			$dialog.dialog({
+				width: 600,
+				height: 500,
+				modal: true,
+				title: "<img src=\"img/icons/silk/table_sort.png\" align=\"absmiddle\"> '.t(858, "Brand Priorities") .'",
+				buttons: [
+					{
+						text: "'.t(34, "Save") .'",
+						click: function() {
+							var ids = [];
+							$("#brands-priorities-list li").each(function() {
+								ids.push($(this).data("brand-id"));
+							});
+							$.ajax({
+								url: "?fid=brands&act=priorities",
+								method: "POST",
+								data: {
+									brand_ids: ids,
+									_nv_csrf_token: navigatecms.csrf_token
+								},
+								success: function(resp) {
+									var data = (typeof resp === "string") ? JSON.parse(resp) : resp;
+									if(data.status === "ok") {
+										$dialog.dialog("close");
+										navigate_notification("'.t(53, "Data saved successfully.") .'", false, false, "fa fa-check");
+									} else {
+										alert("Error: " + (data.message || "Unknown"));
+									}
+								},
+								error: function() {
+									alert("'.t(864, "Connection error") .'");
+								}
+							});
+						}
+					},
+					{
+						text: "'.t(58, "Cancel") .'",
+						click: function() { $(this).dialog("close"); }
+					}
+				],
+				close: function() { $(this).remove(); }
+			});
+
+			// fetch brands list
+			$.getJSON("?fid=brands&act=priorities", function(brands) {
+				var html = "";
+				html += "<style>";
+				html += "#brands-priorities-list { list-style:none; padding:0; margin:0; }";
+				html += "#brands-priorities-list li { display:flex; align-items:center; padding:6px 8px; margin:2px 0; background:#fff; border:1px solid #ccc; border-radius:3px; cursor:move; }";
+				html += "#brands-priorities-list li.ui-sortable-helper { background:#e8f4fd; border-color:#2196F3; box-shadow:0 2px 8px rgba(0,0,0,0.2); }";
+				html += "#brands-priorities-list li .brand-name { flex:1; font-weight:500; }";
+				html += "#brands-priorities-list li .brand-actions { white-space:nowrap; }";
+				html += "#brands-priorities-list li .brand-actions button { margin-left:2px; padding:2px 6px; font-size:11px; cursor:pointer; }";
+				html += "</style>";
+				html += "<ul id=\"brands-priorities-list\">";
+
+				for(var i = 0; i < brands.length; i++) {
+					var b = brands[i];
+					html += "<li data-brand-id=\"" + b.id + "\">";
+					html += "<span class=\"brand-name\">" + b.image_html + core_special_chars_js(b.name) + " <small style=\"color:#999;\">(#" + b.id + ")</small></span>";
+					html += "<span class=\"brand-actions\">";
+					html += "<button type=\"button\" onclick=\"brand_move_top(this)\" title=\"'.t(859, "Move to top") .'\">&#x21C8;</button>";
+					html += "<button type=\"button\" onclick=\"brand_move_up(this)\" title=\"'.t(860, "Move up") .'\">&#x25B2;</button>";
+					html += "<button type=\"button\" onclick=\"brand_move_down(this)\" title=\"'.t(861, "Move down") .'\">&#x25BC;</button>";
+					html += "<button type=\"button\" onclick=\"brand_move_bottom(this)\" title=\"'.t(862, "Move to bottom") .'\">&#x21CA;</button>";
+					html += "</span>";
+					html += "</li>";
+				}
+				html += "</ul>";
+
+				if(brands.length === 0) {
+					html = "<p style=\"text-align:center;color:#999;\">'.t(863, "No brands.") .'</p>";
+				}
+
+				$dialog.html(html);
+
+				// init sortable
+				$("#brands-priorities-list").sortable({
+					placeholder: "ui-sortable-placeholder",
+					axis: "y",
+					tolerance: "pointer"
+				});
+			});
+		}
+
+		function core_special_chars_js(str) {
+			if(!str) return "";
+			return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+		}
+
+		function brand_move_up(btn) {
+			var $li = $(btn).closest("li");
+			var $prev = $li.prev();
+			if($prev.length) { $li.insertBefore($prev); }
+		}
+
+		function brand_move_down(btn) {
+			var $li = $(btn).closest("li");
+			var $next = $li.next();
+			if($next.length) { $li.insertAfter($next); }
+		}
+
+		function brand_move_top(btn) {
+			var $li = $(btn).closest("li");
+			$li.parent().prepend($li);
+		}
+
+		function brand_move_bottom(btn) {
+			var $li = $(btn).closest("li");
+			$li.parent().append($li);
+		}
+	');
 
 	return $navibars->generate();
 }

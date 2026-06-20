@@ -980,7 +980,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
             {
 	            $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 	            $field[] = '<label>'.$property_name.'</label>';
-	            $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video", false, $property->dvalue, $website_id);
+	            $field[] = $naviforms->dropbox("property-".$property->id, $property->value, "video", false, isset($property->dvalue) ? $property->dvalue : '', $website_id);
 		        if(!empty($property->helper))
 		        {
 			        $helper_text = $property->helper;
@@ -1008,7 +1008,7 @@ function navigate_property_layout_field($property, $object="", $website_id="")
 
 	                $field[] = '<div class="navigate-form-row" nv_property="'.$property->id.'">';
 		            $field[] = '<label>'.$property_name.' '.$language_info.'</label>';
-		            $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "video", false, $property->dvalue, $website_id);
+		            $field[] = $naviforms->dropbox("property-".$property->id."-".$lang, $property->value[$lang], "video", false, isset($property->dvalue) ? $property->dvalue : '', $website_id);
 			        if(!empty($property->helper))
 			        {
 				        $helper_text = $property->helper;

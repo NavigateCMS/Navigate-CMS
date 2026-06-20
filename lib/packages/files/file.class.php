@@ -203,6 +203,13 @@ class file
     {
         global $website;
 
+        // YouTube video IDs are up to 11 chars: alphanumeric, dash, underscore
+        $reference = preg_replace('/[^a-zA-Z0-9_\-]/', '', $reference);
+        if(empty($reference) || strlen($reference) > 20)
+        {
+            return false;
+        }
+
         // check cache before trying to download oembed info
         if($cache)
         {
@@ -264,6 +271,13 @@ class file
     public function load_from_vimeo($reference, $cache=true)
     {
         global $website;
+
+        // Vimeo video IDs are numeric
+        $reference = preg_replace('/[^0-9]/', '', $reference);
+        if(empty($reference))
+        {
+            return false;
+        }
 
         if($cache)
         {
@@ -369,6 +383,14 @@ class file
     public function video_thumbnail_retrieve($image_url, $provider, $reference)
     {
         global $website;
+
+        // Prevent path traversal in provider and reference used in filesystem paths
+        $provider = preg_replace('/[^a-zA-Z0-9_\-]/', '', $provider);
+        $reference = preg_replace('/[^a-zA-Z0-9_\-]/', '', $reference);
+        if(empty($provider) || empty($reference))
+        {
+            return;
+        }
 
         $video_thumbnail_path = NAVIGATE_PRIVATE.'/'.$website->id.'/thumbnails/video-'.$provider.'-'.$reference;
         $video_thumbnail_data = "";

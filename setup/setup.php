@@ -1807,15 +1807,39 @@ function navigate_install_load_language()
 {
 	$lang = array();
 
+	// Whitelist of supported language codes to prevent path traversal / SSRF
+	$allowed_locales   = array(
+		'en' => 'en_US',
+		'es' => 'es_ES',
+		'de' => 'de_DE',
+		'ca' => 'ca_ES',
+		'pl' => 'pl_PL'
+	);    
+    $allowed_languages = array_keys($allowed_locales);
+
 	if(!empty($_REQUEST['lang']))
 	{
-		$_SESSION['navigate_install_lang'] = substr($_REQUEST['lang'], 0, 2);	
-		$_SESSION['navigate_install_locale'] = substr($_REQUEST['lang'], 3, 5);	
+		$candidate_lang   = strtolower(substr($_REQUEST['lang'], 0, 2));
+		$candidate_locale = substr($_REQUEST['lang'], 3, 5);
+
+		if(in_array($candidate_lang, $allowed_languages, true))
+		{
+			$_SESSION['navigate_install_lang']   = $candidate_lang;
+			$_SESSION['navigate_install_locale'] = isset($allowed_locales[$candidate_lang])
+				? $allowed_locales[$candidate_lang]
+				: $candidate_locale;
+		}
+	}
+
+	if(!isset($_SESSION['navigate_install_lang']))
+	{
+		$_SESSION['navigate_install_lang'] = 'en';
+		$_SESSION['navigate_install_locale'] = 'en_US';
 	}
 
 	if($_SESSION['navigate_install_lang']!='en-en_US' && !empty($_SESSION['navigate_install_lang']))
 	{
-        $translation_url = 'http://tools.navigatecms.com/installer/translation/'.$_SESSION['navigate_install_lang'];
+        $translation_url = 'http://tools.navigatecms.com/installer/translation/'.urlencode($_SESSION['navigate_install_lang']);
 
 		// retrieve language strings from server	
 		$lang_resource = @fopen($translation_url, "rb");

@@ -7,6 +7,7 @@ class brand
     public $name;
     public $image;
     public $url;
+    public $position;
 
     public function load($id)
     {
@@ -33,6 +34,7 @@ class brand
         $this->name 		= $main->name;
         $this->image		= $main->image;
         $this->url          = $main->url;
+        $this->position     = isset($main->position) ? intval($main->position) : 0;
     }
 
     public function load_from_post()
@@ -80,17 +82,21 @@ class brand
         global $DB;
         global $website;
 
+        // set position to max + 1 for this website
+        $max_position = $DB->query_single('MAX(position)', 'nv_brands', 'website = '.intval(value_or_default($this->website, $website->id)));
+
         $DB->execute(' 
  			INSERT INTO nv_brands
-				(id, website, name, image, url)
+				(id, website, name, image, url, position)
 			VALUES 
-				( 0, :website, :name, :image, :url)
+				( 0, :website, :name, :image, :url, :position)
 			',
             array(
                 'website' => value_or_default($this->website, $website->id),
                 'name' => $this->name,
                 'image' => value_or_default($this->image, 0),
-                'url' => value_or_default($this->url, "")
+                'url' => value_or_default($this->url, ""),
+                'position' => intval($max_position) + 1
             )
         );
 
@@ -151,6 +157,32 @@ class brand
         }
 
         return $out;
+    }
+
+    public static function reorder($ids)
+    {
+        global $DB;
+        global $website;
+
+        if(!is_array($ids) || empty($ids)) return false;
+
+        $position = 1;
+        foreach($ids as $id)
+        {
+            $DB->execute('
+                UPDATE nv_brands 
+                   SET position = :position 
+                 WHERE id = :id AND website = :website',
+                array(
+                    'id' => intval($id),
+                    'website' => intval($website->id),
+                    'position' => $position
+                )
+            );
+            $position++;
+        }        
+
+        return true;
     }
 
     public static function all_in_array($value="name")
