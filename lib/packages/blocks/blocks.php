@@ -483,8 +483,8 @@ function run()
                     'type' => core_special_chars($block_modes[$row['type']]),
                     'code' => core_special_chars($row['code']),
                     'title' => core_special_chars($row['title']),
-                    'width' => core_special_chars($row['width']),
-                    'height' => core_special_chars($row['height'])
+                    'width' => core_special_chars(value_or_default(array($row, 'width'), '')),
+                    'height' => core_special_chars(value_or_default(array($row, 'height'), ''))
                 );
             }
 
@@ -611,7 +611,9 @@ function run()
                 }
                 else
                 {
-                    $property->load_from_theme($_REQUEST['id'], null, 'block', $_REQUEST['block']);
+                    $safe_id = htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8');
+                    $safe_block = isset($_REQUEST['block']) ? htmlspecialchars($_REQUEST['block'], ENT_QUOTES, 'UTF-8') : '';
+                    $property->load_from_theme($safe_id, null, 'block', $safe_block);
                 }
             }
 

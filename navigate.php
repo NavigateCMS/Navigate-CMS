@@ -113,7 +113,14 @@ if(empty($_SESSION['APP_USER#'.APP_UNIQUE]) || isset($_GET['logout']))
 	if($_SERVER['QUERY_STRING'] != 'logout')
     {
         // save URL query to be applied once the user is logged in
-        $_SESSION["login_request_uri"] = $_SERVER['QUERY_STRING'];
+        // Sanitize: strip CR/LF/null bytes to prevent header injection and open redirects
+        $safe_uri = str_replace(array("\r", "\n", "\0"), '', $_SERVER['QUERY_STRING']);
+        // Reject URIs that attempt protocol-relative or absolute external redirects
+        if(preg_match('/^(https?:\/\/|^\/\/)/i', $safe_uri))
+        {
+            $safe_uri = '';
+        }
+        $_SESSION["login_request_uri"] = $safe_uri;
     }
 
 	core_terminate('login.php');

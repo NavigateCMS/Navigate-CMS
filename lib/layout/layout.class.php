@@ -487,10 +487,12 @@ class layout
 		}
 
         // csrf token for ajax requests and uploads
+        $csrf_safe = htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8');
+        $reqtoken_safe = htmlspecialchars($_SESSION['request_token'] ?? '', ENT_QUOTES, 'UTF-8');
         $out[] = '<script language="javascript" type="text/javascript">
-                    $.ajaxSetup({ beforeSend: function(xhr) {xhr.setRequestHeader("X-Csrf-Token", "'.$_SESSION['csrf_token'].'"); }});
-                    navigatecms.csrf_token = "'.$_SESSION['csrf_token'].'";
-                    navigatecms.request_token = "'.$_SESSION['request_token'].'";
+                    $.ajaxSetup({ beforeSend: function(xhr) {xhr.setRequestHeader("X-Csrf-Token", "'.$csrf_safe.'"); }});
+                    navigatecms.csrf_token = "'.$csrf_safe.'";
+                    navigatecms.request_token = "'.$reqtoken_safe.'";
                  </script>';
 
         return implode("\n", $out);
@@ -1354,7 +1356,7 @@ class layout
                     flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
                     silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap",
                     multipart_params: {
-                        "_nv_csrf_token" : "'.$_SESSION['csrf_token'].'"
+                        "_nv_csrf_token" : "'.htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8').'"
                     }
                 });
 

@@ -33,6 +33,13 @@ function run()
             if(naviforms::check_csrf_token('header'))
             {
                 $extension_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
+                // Sanitize extension code: only allow alphanumeric, dash, underscore
+                if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $extension_code))
+                {
+                    echo json_encode(false);
+                    core_terminate();
+                    break;
+                }
                 $extension = new extension();
                 $extension->load($extension_code);
                 $extension->enabled = 0;
@@ -46,6 +53,12 @@ function run()
             if(naviforms::check_csrf_token('header'))
             {
                 $extension_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
+                if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $extension_code))
+                {
+                    echo json_encode(false);
+                    core_terminate();
+                    break;
+                }
                 $extension = new extension();
                 $extension->load($extension_code);
                 $extension->enabled = 1;
@@ -75,8 +88,13 @@ function run()
                     throw new Exception(t(344, "Security error"));
                 }
 
+                $ext_remove_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
+                if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $ext_remove_code))
+                {
+                    throw new Exception('Invalid extension code.');
+                }
                 $extension = new extension();
-                $extension->load($_REQUEST['extension']);
+                $extension->load($ext_remove_code);
                 $status = $extension->delete();
                 echo json_encode($status);
             }
@@ -88,8 +106,15 @@ function run()
             break;
 
         case 'options':
+            $ext_options_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
+            if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $ext_options_code))
+            {
+                echo 'Invalid extension code.';
+                core_terminate();
+                break;
+            }
             $extension = new extension();
-            $extension->load($_REQUEST['extension']);
+            $extension->load($ext_options_code);
 
             $status = null;
             if(isset($_REQUEST['form-sent']))
@@ -106,24 +131,51 @@ function run()
             break;
 
         case 'dialog':
+            $ext_dialog_code = isset($_REQUEST['extension']) ? $_REQUEST['extension'] : '';
+            if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $ext_dialog_code))
+            {
+                echo 'Invalid extension code.';
+                core_terminate();
+                break;
+            }
             $extension = new extension();
-            $extension->load($_REQUEST['extension']);
-            $out = extensions_dialog($extension, $_REQUEST['function'], $_REQUEST);
+            $extension->load($ext_dialog_code);
+            // Sanitize function name: only allow alphanumeric, underscore (must be extension-provided)
+            $dialog_function = isset($_REQUEST['function']) ? $_REQUEST['function'] : '';
+            if(!preg_match('/^[a-zA-Z0-9_]+$/', $dialog_function))
+            {
+                echo 'Invalid function name.';
+                core_terminate();
+                break;
+            }
+            $out = extensions_dialog($extension, $dialog_function, $_REQUEST);
             echo $out;
 
             core_terminate();
             break;
 
         case 'process':
-            $extension = trim($_REQUEST['extension']);
+            $extension = trim($_REQUEST['extension'] ?? '');
+            if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $extension))
+            {
+                echo 'Invalid extension code.';
+                core_terminate();
+                break;
+            }
             call_user_func("nvweb_".$extension."_plugin", $_REQUEST);
             core_terminate();
             break;
 
         case 'run':
-            $extension = trim($_REQUEST['extension']);
+            $extension = trim($_REQUEST['extension'] ?? '');
+            // Sanitize extension name: prevent path traversal and code injection
+            if(!preg_match('/^[a-zA-Z0-9_\-]+$/', $extension))
+            {
+                $out = t(610, "Sorry, you are not allowed to execute this function.");
+                break;
+            }
 
-            $extensions_allowed = $user->permission("extensions.allowed");
+            $extensions_allowed = $user->permission("extensions.allowed"); // returns array or empty
             if(!empty($extensions_allowed) && !in_array($extension, $extensions_allowed))
             {
                 $out = t(610, "Sorry, you are not allowed to execute this function.");
@@ -133,9 +185,10 @@ function run()
                 if(file_exists(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php'))
                 {
                     include_once(NAVIGATE_PATH.'/plugins/'.$extension.'/run.php');
-                    if(function_exists($extension.'_run'))
+                    $run_func = $extension.'_run';
+                    if(function_exists($run_func))
                     {
-                        eval('$out = '.$extension.'_run();');
+                        $out = call_user_func($run_func);
                     }
                 }
             }

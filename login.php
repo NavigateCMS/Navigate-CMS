@@ -216,7 +216,7 @@ echo $layout->head();
                 <label style=" padding-top: 6px; margin-bottom: 6px; font-size: 15px; "><?php echo t(1, 'User');?></label>
                 <br />
                 <input type="text" value="" size="32" name="login-username" id="login-username" style=" width: 278px; font-size: 20px; " />
-                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'];?>" />
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8');?>" />
             </div>
             <div class="navigate-form-row">
                 <label style=" padding-top: 6px; margin-bottom: 6px; font-size: 15px; "><?php echo t(2, 'Password');?></label>
@@ -375,7 +375,7 @@ $(document).ready(function()
                         $('#login-remember').parent().remove();
                         $('#login-button').remove();
                         $('#navigate-lost-password-dialog').remove();
-                        $('form').attr('action', $('form').attr('action') + '?action=password-reset&value=<?php echo $value;?>');
+                        $('form').attr('action', $('form').attr('action') + '?action=password-reset&value=<?php echo htmlspecialchars($value, ENT_QUOTES, 'UTF-8');?>');
                         $('form').append('<button id="login-button" style="margin-top: 20px; font-size: 14px; "><?php echo t(34, "Save");?></button>');
                     });
                 </script>

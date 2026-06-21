@@ -570,7 +570,7 @@ function files_browser($parent, $search="")
 					flash_swf_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.swf",
 			        silverlight_xap_url: "'.NAVIGATE_URL.'/lib/external/plupload/js/Moxie.xap",
 			        multipart_params : {
-                        "_nv_csrf_token" : "'.$_SESSION['csrf_token'].'"
+                        "_nv_csrf_token" : "'.htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8').'"
                     }
 				});
 

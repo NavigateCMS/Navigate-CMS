@@ -412,7 +412,8 @@ class permission
 
             $permission = new permission();
             $permission->load($key, intval($profile_id), intval($user_id), $ws);
-            $permission->value = trim($value);
+            // trim() only applies to scalar values; arrays (from moption selects) must be kept as-is
+            $permission->value = is_array($value) ? $value : trim($value);
             $permission->save();
         }
     }

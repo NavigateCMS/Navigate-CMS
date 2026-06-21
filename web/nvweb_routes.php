@@ -417,7 +417,12 @@ function nvweb_route_parse($route="")
 
                     if(!empty($_REQUEST['callback']))
                     {
-                        $redirect = base64_decode(nv_global_var("REQUEST", 'callback', ''));
+                        $callback_url = base64_decode(nv_global_var("REQUEST", 'callback', ''));
+                        // Prevent open redirect: only allow redirects to same-origin URLs
+                        if(!empty($callback_url) && strpos($callback_url, NVWEB_ABSOLUTE) === 0)
+                        {
+                            $redirect = $callback_url;
+                        }
                     }
                 }
                 else
@@ -466,7 +471,12 @@ function nvweb_route_parse($route="")
 
 				if($current['navigate_session']==1 && !empty($_REQUEST['template']))
                 {
-                    $current['template'] = $_REQUEST['template'];
+                    // Sanitize template name: only allow alphanumeric, dash, underscore
+                    $template_override = $_REQUEST['template'];
+                    if(preg_match('/^[a-zA-Z0-9_\-]+$/', $template_override))
+                    {
+                        $current['template'] = $template_override;
+                    }
                 }
 			}
 			break;
@@ -494,7 +504,12 @@ function nvweb_route_parse($route="")
 
 				if($current['navigate_session']==1 && !empty($_REQUEST['template']))
                 {
-                    $current['template'] = $_REQUEST['template'];
+                    // Sanitize template name: only allow alphanumeric, dash, underscore
+                    $template_override = $_REQUEST['template'];
+                    if(preg_match('/^[a-zA-Z0-9_\-]+$/', $template_override))
+                    {
+                        $current['template'] = $template_override;
+                    }
                 }
 			}
 			break;

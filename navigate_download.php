@@ -1,5 +1,5 @@
 <?php
-if(!empty($_REQUEST['sid']))
+if(!empty($_REQUEST['sid']) && preg_match('/^[a-zA-Z0-9\-]+$/', $_REQUEST['sid']))
 {
     session_id($_REQUEST['sid']);
 }
@@ -88,7 +88,7 @@ if(!empty($_REQUEST['id']))
 
 if(!$item->id)
 {
-    echo 'Error: no item found with id '.$_REQUEST['id'].'.';
+    echo 'Error: no item found with id '.htmlspecialchars($_REQUEST['id'], ENT_QUOTES, 'UTF-8').'.';
     core_terminate();
 }
 

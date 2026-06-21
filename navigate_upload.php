@@ -4,7 +4,7 @@
 
 header("Content-Type: application/json");
 
-if(empty($_REQUEST['session_id']))
+if(empty($_REQUEST['session_id']) || !preg_match('/^[a-zA-Z0-9\-]+$/', $_REQUEST['session_id']))
 {
     die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to retrieve session_id."}, "id" : "id"}');
 }

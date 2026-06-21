@@ -332,7 +332,7 @@ function navigate_install_requirements()
     $pre_folder_path = rtrim($pre_folder_path, '\\');
 	?>
     <h2>
-	    <a href="https://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_requirements" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+	    <a href="https://www.navigatecms.com/help?lang=<?php echo htmlspecialchars($_SESSION['navigate_install_lang'], ENT_QUOTES, 'UTF-8');?>&fid=setup_requirements" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [1/5]: <?php echo $lang['requirements'];?>
     </h2>
 	<form action="?step=2" method="post">
@@ -353,7 +353,7 @@ function navigate_install_requirements()
                 <div>
                     <label><?php echo $lang['app_folder'];?></label>
                     <input type="text" name="NAVIGATE_FOLDER" value="<?php echo NAVIGATE_FOLDER;?>" />
-                    <div class="field-help-text"><?php echo $pre_folder_path;?><strong id="app_folder_example"><?php echo NAVIGATE_FOLDER;?></strong></div>
+                    <div class="field-help-text"><?php echo htmlspecialchars($pre_folder_path, ENT_QUOTES, 'UTF-8');?><strong id="app_folder_example"><?php echo NAVIGATE_FOLDER;?></strong></div>
                 </div>
                 <div>
                     <label><?php echo $lang['disk_space'];?></label>
@@ -361,7 +361,7 @@ function navigate_install_requirements()
                 </div>
                 <div>
                     <label><?php echo $lang['server'];?></label>
-                    <input type="text" value="<?php echo $_SERVER['SERVER_SOFTWARE'];?>" class="<?php echo ($checks['server']? 'green' : 'red');?>" />
+                    <input type="text" value="<?php echo htmlspecialchars($_SERVER['SERVER_SOFTWARE'], ENT_QUOTES, 'UTF-8');?>" class="<?php echo ($checks['server']? 'green' : 'red');?>" />
                 </div>                 
                 <div>
                     <label>PHP &ge; 7.4</label>
@@ -583,7 +583,7 @@ function navigate_install_configuration()
 		
 	?>
     <h2>
-        <a href="https://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+        <a href="https://www.navigatecms.com/help?lang=<?php echo htmlspecialchars($_SESSION['navigate_install_lang'], ENT_QUOTES, 'UTF-8');?>&fid=setup_configuration" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [3/5]: <?php echo $lang['configuration'];?>
     </h2>
 	<form action="?step=3" method="post" onsubmit=" return false; ">
@@ -793,7 +793,7 @@ function navigate_install_configuration()
 		$('body').css('cursor', 'wait');
 		$('#navigate-database-check').html('');
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=verify_database',
+		  url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=verify_database',
 		  dataType: 'json',
 		  type: 'post',
 		  async: false,
@@ -848,7 +848,7 @@ function navigate_install_decompress()
 	global $lang;
 	?>
     <h2>
-    	<a href="https://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_decompress" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+    	<a href="https://www.navigatecms.com/help?lang=<?php echo htmlspecialchars($_SESSION['navigate_install_lang'], ENT_QUOTES, 'UTF-8');?>&fid=setup_decompress" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [2/5]: <?php echo $lang['decompress'];?>
     </h2>
 	<form action="?step=3" method="post">
@@ -895,7 +895,7 @@ function navigate_install_decompress()
 	function verify_zip()
 	{
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=verify_zip',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=verify_zip',
             dataType: 'json',
             data: {},
             success: function(data)
@@ -918,7 +918,7 @@ function navigate_install_decompress()
         $('.navigate-install-make-dir-check').show();
 
 		$.ajax({
-		  url: '<?php echo $_SERVER['PHP_SELF'];?>?process=make_dir',
+		  url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=make_dir',
 		  dataType: 'json',
 		  data: {},
 		  success: function(data)
@@ -942,7 +942,7 @@ function navigate_install_decompress()
         if(file_index === undefined) file_index = 0;
 		
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=extract_zip',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=extract_zip',
             dataType: 'json',
             data: { file_index: file_index },
             success: function(data)
@@ -971,7 +971,7 @@ function navigate_install_decompress()
 		$('.navigate-install-decompress-permissions').show();
 		
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=chmod',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=chmod',
             dataType: 'json',
             data: {},
             success: function(data)
@@ -1046,7 +1046,7 @@ function navigate_install_create_database()
 
 	?>
     <h2>
-    	<a href="https://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_configuration" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+    	<a href="https://www.navigatecms.com/help?lang=<?php echo htmlspecialchars($_SESSION['navigate_install_lang'], ENT_QUOTES, 'UTF-8');?>&fid=setup_configuration" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [4/5]: <?php echo $lang['database_import'];?>
     </h2>
 	<form action="?step=5" method="post">
@@ -1093,7 +1093,7 @@ function navigate_install_create_database()
 	function database_create()
 	{
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=database_create',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=database_create',
             dataType: 'json',
             data: {},
             success: function(data)
@@ -1117,7 +1117,7 @@ function navigate_install_create_database()
 		$('.navigate-install-database-import').show();
 		
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=database_import',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=database_import',
             dataType: 'json',
             data: {},
             success: function(data)
@@ -1141,7 +1141,7 @@ function navigate_install_create_database()
 		$('.navigate-install-database-account').show();
 		
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=create_account',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=create_account',
             dataType: 'json',
             data: {},
             success: function(data)
@@ -1164,7 +1164,7 @@ function navigate_install_create_database()
 		$('.navigate-install-default-theme').show();
 
 		$.ajax({
-            url: '<?php echo $_SERVER['PHP_SELF'];?>?process=install_default_theme',
+            url: '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=install_default_theme',
             dataType: 'json',
             data: {},
             success: function(data)
@@ -1191,7 +1191,7 @@ function navigate_install_completed()
 	global $lang;
 	?>
     <h2>
-    	<a href="https://www.navigatecms.com/help?lang=<?php echo $_SESSION['navigate_install_lang'];?>&fid=setup_completion" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
+    	<a href="https://www.navigatecms.com/help?lang=<?php echo htmlspecialchars($_SESSION['navigate_install_lang'], ENT_QUOTES, 'UTF-8');?>&fid=setup_completion" target="_blank" class="help"><img src="<?php echo navigate_help_icon(); ?>" width="32" height="32" /></a>
 		<?php echo $lang['navigate_installer'];?> [5/5]: <?php echo $lang['install_completed'];?>
     </h2>
 	<form action="setup.php?step=cleaning" method="post">
@@ -1261,7 +1261,7 @@ function navigate_install_completed()
 					{
 						$( this ).dialog( "close" );
 						$.getJSON(
-						    '<?php echo $_SERVER['PHP_SELF'];?>?process=apache_htaccess',
+						    '<?php echo htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'UTF-8');?>?process=apache_htaccess',
 							{},
 							function success(data, textStatus, jqXHR) 
 							{

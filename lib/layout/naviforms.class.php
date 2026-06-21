@@ -169,7 +169,7 @@ class naviforms
 
 	public function csrf_token($name='_nv_csrf_token')
     {
-        return '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.$_SESSION['csrf_token'].'" />';
+        return '<input type="hidden" id="'.$name.'" name="'.$name.'" value="'.htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8').'" />';
     }
 	
 	public function textarea($name, $value="", $rows=4, $cols=48, $style="")
@@ -896,7 +896,7 @@ class naviforms
 				
 				automatic_uploads: true,
 			    paste_data_images: true,
-				images_upload_url: "navigate_upload.php?engine=tinymce&_nv_csrf_token='.$_SESSION['csrf_token'].'&session_id='.session_id().'",
+				images_upload_url: "navigate_upload.php?engine=tinymce&_nv_csrf_token='.htmlspecialchars($_SESSION['csrf_token'] ?? '', ENT_QUOTES, 'UTF-8').'&session_id='.session_id().'",
 				
 				fontsize_formats: "8px 9px 10px 11px 12px 13px 14px 15px 16px 17px 18px 20px 24px 26px 28px 30px 32px 36px 42px 48px 56px 64px", 
                 

@@ -71,6 +71,6 @@ if(!isset($_SESSION['csrf_token']))
     $_SESSION['request_token'] = bin2hex(openssl_random_pseudo_bytes( 16 ));
 }
 
-header('X-Csrf-Token: '.$_SESSION['csrf_token']);
+header('X-Csrf-Token: '.preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION['csrf_token']));
 
 ?>
