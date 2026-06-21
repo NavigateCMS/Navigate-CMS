@@ -1741,6 +1741,15 @@ table.treeTable
 .navigrid-items div.navigrid-item-buttonset
 {
 	overflow: visible;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 1px;
+}
+
+.navigrid-items div.navigrid-item-buttonset .ui-button
+{
+    float: none;
 }
 
 
@@ -2382,6 +2391,7 @@ label.ui-state-active #navigate_media_browser_folder_path
 	padding-top: 2px;
     float: left;
 	display: block;
+	position: relative;
 }
 
 .navigate-droppable[data-media="image"]
@@ -2389,14 +2399,28 @@ label.ui-state-active #navigate_media_browser_folder_path
 	display: flex;
 }
 
-.navigate-droppable[data-media="image"] img:first-child
-{
-	margin: auto; /* center vertical & horizontal when parent has display: flex; */
-	max-width: 100%;
-	max-height: 100%;
-	padding: 4px;
-	box-sizing: border-box;
-	object-fit: contain;
+.navigate-droppable[data-media="image"] > img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    margin: auto;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.navigate-droppable div.file-access-icons {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 24px;
+    text-align: right;
+    pointer-events: none;
+}
+
+.navigate-droppable div.file-access-icons img {
+    opacity: .75;
+    margin: 1px;
 }
 
 .navigate-droppable-hover
@@ -2413,8 +2437,13 @@ label.ui-state-active #navigate_media_browser_folder_path
     position: absolute;
     width: 16px;
     height: 16px;
-    display: none;
+	display: none;
     float: left;
+}
+
+.ui-sortable-helper .navigate-droppable-cancel
+{
+    display: none !important;
 }
 
 .navigate-droppable-create-contextmenu,

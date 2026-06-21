@@ -2713,7 +2713,21 @@ function navigate_dropbox_load_video(name, value)
                 return false;
             }
 
-            $("#" + name + "-droppable").html("<img src=\""+data.extra.thumbnail_cache_absolute+"&width=80&height=60&border=false\" />");
+            var thumb_src = "";
+            if(data.extra.thumbnail_cache_absolute)
+            {
+                thumb_src = data.extra.thumbnail_cache_absolute + "&width=80&height=60&border=false";
+            }
+            else if(data.extra.thumbnail_url)
+            {
+                thumb_src = data.extra.thumbnail_url;
+            }
+            else if(data.extra.thumbnail)
+            {
+                thumb_src = data.extra.thumbnail;
+            }
+
+            $("#" + name + "-droppable").html("<img src=\""+thumb_src+"\" />");
 
             if(data.mime=='video/youtube' || data.mime=='video/vimeo')
             {

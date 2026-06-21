@@ -245,7 +245,11 @@ class extension
 
         if(empty($this->dictionary))
         {
-            $extension_languages = (array)$this->definition->languages;
+            $extension_languages = array();
+            if(isset($this->definition->languages))
+            {
+                $extension_languages = (array)$this->definition->languages;
+            }
             $file = '';
 
             if(!is_array($extension_languages))

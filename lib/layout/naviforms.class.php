@@ -1443,6 +1443,12 @@ class naviforms
 						$("#'.$name.'").val(file_id);
 						var draggable_content = $(ui.draggable);
 
+						var access_icons = "";
+                        if($(ui.draggable).find(".file-access-icons").length > 0)
+                        {
+                            access_icons = $("<div />").append($(ui.draggable).find(".file-access-icons").clone()).html();
+                        }
+
 						if($(draggable_content).find(".file-image-wrapper").length > 0)
 						{
 						    draggable_content = $(draggable_content).find(".file-image-wrapper").html();
@@ -1454,6 +1460,7 @@ class naviforms
                         else
                         {
                             var clone = $(ui.draggable).clone();
+                            clone.find(".file-list-info, .file-list-name-folder, .file-access-icons").remove();
                             var img = clone.find("img[src]").first();
                             if(img.length > 0)
                             {
@@ -1461,20 +1468,28 @@ class naviforms
                             }
                             else
                             {
-                                clone.find(".file-list-info, .file-list-name-folder, .file-access-icons").remove();
                                 draggable_content = clone.html();
                             }
                         }
 
-						$(this).html(draggable_content);
-						$(this).find("div.file-access-icons").remove();
+						$(this).html(access_icons + draggable_content);
 
 
 						$("#'.$name.'-droppable").parent().find(".navigate-droppable-cancel").show();
 					    $("#'.$name.'-droppable").parent().find(".navigate-droppable-create").hide();
-                        $("#'.$name.'-droppable-info").find(".navigate-droppable-info-title").html("");
-                        $("#'.$name.'-droppable-info").find(".navigate-droppable-info-provider").html("");
-                        $("#'.$name.'-droppable-info").find(".navigate-droppable-info-extra").html("");
+                        if($(ui.draggable).attr("mediatype")=="video" || $(ui.draggable).attr("mediatype")=="audio")
+                        {
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-title").html($(ui.draggable).find(".file-list-name").text());
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-provider").html($(ui.draggable).attr("mimetype"));
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-extra").html("");
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-extra").hide();
+                        }
+                        else
+                        {
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-title").html("");
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-provider").html("");
+                            $("#'.$name.'-droppable-info").find(".navigate-droppable-info-extra").html("");
+                        }
 					}
 				});
 			');

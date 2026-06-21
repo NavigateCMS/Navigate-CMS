@@ -234,11 +234,12 @@ function nvweb_object($ignoreEnabled=false, $ignorePermissions=false, $item=NULL
 			header("Content-Length: ". $item->size);
             header("Accept-Ranges: bytes");
 			
-            if(empty($_REQUEST['disposition']))
+            if(empty($_REQUEST['disposition']) || !in_array($_REQUEST['disposition'], array('inline', 'attachment'), true))
             {
                 $_REQUEST['disposition'] = 'inline';
             }
-			header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$item->name.'"');						
+			$safe_filename = str_replace(array('"', "\r", "\n"), '', $item->name);
+			header('Content-Disposition: '.$_REQUEST['disposition'].'; filename="'.$safe_filename.'"');						
 			
 			// check the browser cache and stop downloading again the file
 			$cached = file::cacheHeaders(filemtime($path), $etag);
