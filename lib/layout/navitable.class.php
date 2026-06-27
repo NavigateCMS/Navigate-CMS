@@ -493,7 +493,8 @@ class navitable
         return $result;
     }
 	
-	public function setEditUrl($index = 'id', $url, $extra=NULL)
+	// $index default was 'id'
+	public function setEditUrl($index, $url, $extra=NULL)
 	{
 		$this->edit_index = $index;
 		$this->edit_url = $url;

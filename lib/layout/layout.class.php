@@ -895,7 +895,8 @@ class layout
 		//$this->add_script('$(".jGrowl-notification").css({"background-color": "#fda700", "background-image": "none", "border-color": "#6c1108"});');
 	}
 	
-	public function navigate_message($type="info", $title, $text)
+	// $type default was "info"
+	public function navigate_message($type, $title, $text)
 	{
 		$navibars = new navibars();
 		$navibars->title($title);

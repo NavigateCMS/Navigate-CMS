@@ -303,7 +303,8 @@ class naviforms
 		return $out;
 	}
 	
-	public function autocomplete($name, $value="", $source, $callback='""', $width="400px", $add_custom_value=false)
+	// $value default was ""
+	public function autocomplete($name, $value, $source, $callback='""', $width="400px", $add_custom_value=false)
 	{
 		global $layout;
 		
