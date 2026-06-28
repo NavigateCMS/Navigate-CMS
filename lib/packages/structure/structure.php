@@ -206,7 +206,7 @@ function run()
                 $tags_json = array();
                 foreach($rows as $row)
                 {
-                    $tags_json[] = json_decode('{ "id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'" }');
+                    $tags_json[] = array("id" => $row['id'], "label" => $row['text'], "value" => $row['text']);
                 }
                 echo json_encode($tags_json);
             }
@@ -219,7 +219,7 @@ function run()
             // find elements by its title
             // the items must have its own path (free OR not embedded to a category)
 
-            $text = $_REQUEST['title'];
+            $text = value_or_default(array($_REQUEST, 'title'), '');
             if(!empty($_REQUEST['term'])) // tagit request
                 $text = $_REQUEST['term'];
 
@@ -263,7 +263,7 @@ function run()
                 $tags_json = array();
                 foreach($rows as $row)
                 {
-                    $tags_json[] = json_decode('{ "id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'" }');
+                    $tags_json[] = array("id" => $row['id'], "label" => $row['text'], "value" => $row['text']);
                 }
                 echo json_encode($tags_json);
             }

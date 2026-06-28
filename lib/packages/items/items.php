@@ -825,7 +825,7 @@ function run()
             // find items by its title
             // any language
 
-            $text = $_REQUEST['title'];
+            $text = value_or_default(array($_REQUEST, 'title'), '');
             if(!empty($_REQUEST['term'])) // tagit request
             {
                 $text = $_REQUEST['term'];
@@ -900,7 +900,7 @@ function run()
                 $tags_json = array();
                 foreach($rows as $row)
                 {
-                    $tags_json[] = json_decode('{"id": "'.$row['id'].'", "label": "'.$row['text'].'", "value": "'.$row['text'].'"}');
+                    $tags_json[] = array("id" => $row['id'], "label" => $row['text'], "value" => $row['text']);
                 }
                 echo json_encode($tags_json);
             }
@@ -1088,7 +1088,7 @@ function run()
 			$tags_json = array();
 			foreach(array_keys($tags) as $tag)
             {
-                $tags_json[] = json_decode('{ "id": "'.$tag.'", "label": "'.$tag.'", "value": "'.$tag.'" }');
+                $tags_json[] = array("id" => $tag, "label" => $tag, "value" => $tag);
             }
 			echo json_encode($tags_json);
 
