@@ -331,7 +331,7 @@ function nvweb_parse($request)
 
         if($current['pagecache_enabled'])
         {
-            $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
+            $page_cache = NAVIGATE_PRIVATE.'/'.intval($website->id).'/cache/'.sha1($route).'.'.$session['lang'].'.page';
 
             // the cache for this page has been created in the last hour?
             if(file_exists($page_cache) && filemtime($page_cache) > (core_time() - 3600))
@@ -458,12 +458,12 @@ function nvweb_parse($request)
             $stmp = $_SESSION;
             foreach ($stmp as $key => $val)
             {
-                if (substr($key, 0, 4) == 'PMA_') // hide phpMyAdmin single signon settings!!
+                if(substr($key, 0, 4) == 'PMA_') // hide phpMyAdmin single signon settings!!
                 {
                     continue;
                 }
 
-                echo '[' . $key . '] => ' . print_r($val, true) . "\n";
+                echo '[' . htmlspecialchars($key, ENT_QUOTES, 'UTF-8') . '] => ' . htmlspecialchars(print_r($val, true), ENT_QUOTES, 'UTF-8') . "\n";
             }
 
             echo "\n\r!--><!--\n\r" . 'profiling:' . "\n\r";
@@ -507,7 +507,7 @@ function nvweb_parse($request)
             // finally, save this page request into the website pages cache (only for anonymous users)
             if($current['pagecache_enabled'])
             {
-                $page_cache = NAVIGATE_PRIVATE.'/'.$website->id.'/cache/'.sha1($route).'.'.$session['lang'].'.page';
+                $page_cache = NAVIGATE_PRIVATE.'/'.intval($website->id).'/cache/'.sha1($route).'.'.$session['lang'].'.page';
                 @file_put_contents($page_cache, $html);
             }
         }

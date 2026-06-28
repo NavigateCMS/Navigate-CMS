@@ -227,7 +227,8 @@ function run()
 
                 if(parse_url($url, PHP_URL_HOST) == 'www.navigatecms.com')
                 {
-                    $tmp_file = sys_get_temp_dir().DIRECTORY_SEPARATOR.$query['code'].'.zip';
+                    $extension_code = basename($query['code']);
+                    $tmp_file = sys_get_temp_dir().DIRECTORY_SEPARATOR.$extension_code.'.zip';
                     @core_file_curl($url, $tmp_file);
                 }
 

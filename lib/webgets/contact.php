@@ -280,25 +280,25 @@ function nvweb_contact_notify($vars, $is_error, $message)
             break;
 
         case 'alert':
-            nvweb_after_body('js', 'alert("'.$message.'");');
+            nvweb_after_body('js', 'alert('.json_encode($message).');');
             break;
 
         default:
             // if empty, default is alert
             if(empty($vars['notify']))
             {
-                nvweb_after_body('js', 'alert("'.$message.'");');
+                nvweb_after_body('js', 'alert('.json_encode($message).');');
             }
             else
             {
                 // if not empty, it's a javascript function call
                 if($is_error && !empty($vars['error_callback']))
                 {
-                    nvweb_after_body('js', $vars['error_callback'].'("'.$message.'");');
+                    nvweb_after_body('js', $vars['error_callback'].'('.json_encode($message).');');
                 }
                 else
                 {
-                    nvweb_after_body('js', $vars['notify'].'("'.$message.'");');
+                    nvweb_after_body('js', $vars['notify'].'('.json_encode($message).');');
                 }
             }
             break;

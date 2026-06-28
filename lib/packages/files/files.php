@@ -1269,6 +1269,12 @@ function files_media_browser($limit = 50, $offset = 0)
 	if( $ws->id == $website->id || $ws->share_files_media_browser == '1' )
 	{
 		$media = (empty($_REQUEST['media'])? 'image' : core_purify_string($_REQUEST['media']));
+		// Whitelist valid media types to prevent SQL injection
+		$valid_media_types = array('image', 'video', 'audio', 'flash', 'document', 'archive', 'font', 'file', 'folder', 'youtube');
+		if(!in_array($media, $valid_media_types))
+		{
+			$media = 'image';
+		}
 		$text = core_purify_string($_REQUEST['text']);
 
 		$out = array();

@@ -390,12 +390,14 @@ function nvweb_search($vars=array())
 
         $archive = nv_global_var("REQUEST", 'archive', '');
         if(!empty($archive))
-           $archive = 'archive='.$archive.'&';
+        {
+            $archive = 'archive='.htmlspecialchars(urlencode($archive), ENT_QUOTES, 'UTF-8').'&';
+        }
 
 		if(isset($vars['paginator']) && $vars['paginator']!='false')
 		{
-			$search_url = '?'.$archive.$vars['request'].'='.nv_global_var("REQUEST", $vars['request'], '').'&page=';
-			$out[] = nvweb_list_paginator($vars['paginator'], nv_global_var("GET", 'page', 1), $total, $vars['items'], $vars, $search_url);
+			$search_url = '?'.$archive.htmlspecialchars($vars['request'], ENT_QUOTES, 'UTF-8').'='.htmlspecialchars(urlencode(nv_global_var("REQUEST", $vars['request'], '')), ENT_QUOTES, 'UTF-8').'&page=';
+			$out[] = nvweb_list_paginator($vars['paginator'], intval(nv_global_var("GET", 'page', 1)), $total, $vars['items'], $vars, $search_url);
 		}
 	}
 	

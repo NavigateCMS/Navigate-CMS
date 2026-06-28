@@ -85,7 +85,9 @@ function nvweb_comments($vars=array())
 
     // set default callback
 	if(empty($vars['callback']))
+    {
         $vars['callback'] = 'alert';
+    }
 
     // check callback attributes
     $callback = $vars['callback'];
@@ -154,7 +156,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback.'("'.$response.'");');
+                            nvweb_after_body("js", $callback.'('.json_encode($response).');');
                         }
                     }
                     else
@@ -167,7 +169,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                            nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                         }
                     }
                 }
@@ -181,7 +183,7 @@ function nvweb_comments($vars=array())
                     }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
                     {
-                        nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                     }
                 }
 
@@ -208,7 +210,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback.'("'.$response.'");');
+                            nvweb_after_body("js", $callback.'('.json_encode($response).');');
                         }
                     }
                     else
@@ -220,7 +222,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                            nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                         }
                     }
                 }
@@ -233,7 +235,7 @@ function nvweb_comments($vars=array())
                     }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
                     {
-                        nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                     }
                 }
 
@@ -280,7 +282,7 @@ function nvweb_comments($vars=array())
                     }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
                     {
-                        nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                     }
 
                     return $out;
@@ -300,7 +302,7 @@ function nvweb_comments($vars=array())
                     }
                     else if(!isset($vars['notify']) || $vars['notify']=='callback')
                     {
-                        nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                        nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                     }
 
 					return $out;
@@ -373,7 +375,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback_error.'("'.$response.'");');
+                            nvweb_after_body("js", $callback_error.'('.json_encode($response).');');
                         }
                         return $out;
                     }
@@ -425,7 +427,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback.'("'.$response.'");');
+                            nvweb_after_body("js", $callback.'('.json_encode($response).');');
                         }
                     }
                     else
@@ -437,7 +439,7 @@ function nvweb_comments($vars=array())
                         }
                         else if(!isset($vars['notify']) || $vars['notify']=='callback')
                         {
-                            nvweb_after_body("js", $callback.'("'.$response.'");');
+                            nvweb_after_body("js", $callback.'('.json_encode($response).');');
                         }
                     }
                 }

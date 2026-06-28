@@ -321,6 +321,8 @@ function nvweb_list_process_categories($vars = array())
 
                 // $request_parameter_name (which may be formatted as a list of comma separated values)
                 $categories = explode(",", $_REQUEST[substr($request_parameter, 1)]);
+                // Sanitize: category IDs must be integers to prevent SQL injection
+                $categories = array_map('intval', $categories);
 
                 // if categories parameter is empty, then default to the root category
                 if($categories=="" || $categories[0]=="")
@@ -411,6 +413,8 @@ function nvweb_list_process_categories($vars = array())
     if(!empty($vars['request_categories']))
     {
         $categories_filter = explode(",", nv_global_var("REQUEST", $vars['request_categories'], ''));
+        // Sanitize: category IDs must be integers to prevent SQL injection
+        $categories_filter = array_map('intval', $categories_filter);
         if(empty($categories))
         {
             // note: categories may be empty by the rules applies on categories + children;
@@ -878,6 +882,8 @@ function nvweb_list_source_elements($vars, $params)
         if(strpos($vars['templates'], '$')===0)
         {
             $templates = explode(",", nv_global_var("REQUEST", substr($vars['templates'], 1), ''));
+            // Sanitize: strip characters that could break SQL string context (templates can be IDs or names)
+            $templates = array_map(function($t){ return preg_replace('/[^a-zA-Z0-9_\-\.]/', '', trim($t)); }, $templates);
         }
         else
         {
