@@ -113,6 +113,11 @@ class shipping_method
                 $_REQUEST['products_display'][0] => $_REQUEST['products_selection']
             );
         }
+
+        if(!empty($_REQUEST['properties_exclusions']))
+        {
+            $this->products['properties_exclusions'] = $_REQUEST['properties_exclusions'];
+        }
     }
 
     public function save()

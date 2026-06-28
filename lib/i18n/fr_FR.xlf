@@ -4347,7 +4347,11 @@
 				<source>Connection error</source>
 				<target>Erreur de connexion</target>
 			</trans-unit>
-			
+			<trans-unit id="865" approved="yes">
+				<source>(by product property)</source>
+				<target>(par propriété de produit)</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

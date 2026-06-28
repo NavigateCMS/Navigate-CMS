@@ -4346,7 +4346,11 @@
                 <source>Connection error</source>
                 <target>Błąd połączenia</target>
             </trans-unit>
-            
-        </body>
+			<trans-unit id="865" approved="yes">
+				<source>(by product property)</source>
+				<target>(według właściwości produktu)</target>
+			</trans-unit>
+
+		</body>
     </file>
 </xliff>

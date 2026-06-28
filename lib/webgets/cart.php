@@ -503,20 +503,57 @@ function nvweb_cart_update($old_cart)
         $sm = new shipping_method();
         $sm->load($cart['shipping_method']);
 
-        $shipping_rate = $sm->calculate(
-            $cart['address_shipping']['country'],
-            $cart['address_shipping']['region'],
-            $cart['weight'],
-            $cart['subtotal']
-        );
+        $excluded_by_property = false;
+        if(!empty($sm->products['properties_exclusions']))
+        {
+            foreach($cart['lines'] as $line)
+            {
+                $product = new product();
+                $product->load($line['id']);
+                foreach($sm->products['properties_exclusions'] as $p_id)
+                {
+                    $val = $product->property($p_id);
+                    if(!empty($val) && $val !== 'false' && $val !== '0')
+                    {
+                        $excluded_by_property = true;
+                        break;
+                    }
+                }
+                if($excluded_by_property) break;
+            }
+        }
 
-        $cart['shipping_carrier'] = $shipping_rate->dictionary[$current['lang']]['title'];
-        $cart['shipping_price_without_taxes'] = round($shipping_rate->cost->value, 2);
-        $cart['shipping_tax_value'] = ($shipping_rate->cost->tax->class=='custom'? $shipping_rate->cost->tax->value : 0);
-        $cart['shipping_tax_amount'] = $cart['shipping_price_without_taxes'] * ($cart['shipping_tax_value'] / 100);
-        $cart['shipping_price'] = $cart['shipping_price_without_taxes'] + $cart['shipping_tax_amount'];
+        if($excluded_by_property)
+        {
+            $cart['shipping_method'] = null;
+            $cart['shipping_rate'] = null;
+            $cart['shipping_carrier'] = null;
+            $cart['shipping_price_without_taxes'] = 0;
+            $cart['shipping_tax_value'] = 0;
+            $cart['shipping_tax_amount'] = 0;
+            $cart['shipping_price'] = 0;
+            $cart['shipping_method_data'] = null;
+        }
+        else
+        {
+            $shipping_rate = $sm->calculate(
+                $cart['address_shipping']['country'],
+                $cart['address_shipping']['region'],
+                $cart['weight'],
+                $cart['subtotal']
+            );
 
-        $cart['shipping_method_data'] = json_encode($sm);
+            if(!empty($shipping_rate))
+            {
+                $cart['shipping_carrier'] = $shipping_rate->dictionary[$current['lang']]['title'];
+                $cart['shipping_price_without_taxes'] = round($shipping_rate->cost->value, 2);
+                $cart['shipping_tax_value'] = ($shipping_rate->cost->tax->class=='custom'? $shipping_rate->cost->tax->value : 0);
+                $cart['shipping_tax_amount'] = $cart['shipping_price_without_taxes'] * ($cart['shipping_tax_value'] / 100);
+                $cart['shipping_price'] = $cart['shipping_price_without_taxes'] + $cart['shipping_tax_amount'];
+
+                $cart['shipping_method_data'] = json_encode($sm);
+            }
+        }
     }
 
     // apply coupon, if any
@@ -1667,6 +1704,27 @@ function nvweb_cart_shipping_page($cart)
         {
             continue;
         }
+
+        $excluded_by_property = false;
+        if(!empty($sm->products['properties_exclusions']))
+        {
+            foreach($cart['lines'] as $line)
+            {
+                $product = new product();
+                $product->load($line['id']);
+                foreach($sm->products['properties_exclusions'] as $p_id)
+                {
+                    $val = $product->property($p_id);
+                    if(!empty($val) && $val !== 'false' && $val !== '0')
+                    {
+                        $excluded_by_property = true;
+                        break;
+                    }
+                }
+                if($excluded_by_property) break;
+            }
+        }
+        if($excluded_by_property) continue;
 
         $shipping_methods_available++;
 

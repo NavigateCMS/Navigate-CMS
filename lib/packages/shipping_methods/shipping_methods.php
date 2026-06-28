@@ -736,12 +736,17 @@ function shipping_methods_form($object)
     {
         $object->products = array();
     }
-    $items_ids = array_values($object->products);
-    $items_ids = $items_ids[0];
-    if(empty($items_ids))
+    $items_ids = array();
+
+    if($products_display == "exclusions" && !empty($object->products['exclusions']))
     {
-        $items_ids = array();
+        $items_ids = $object->products['exclusions'];
     }
+    else if($products_display == "selection" && !empty($object->products['selection']))
+    {
+        $items_ids = $object->products['selection'];
+    }
+    
     $items_titles = array();
     for($i=0; $i < count($items_ids); $i++)
     {
@@ -801,16 +806,34 @@ function shipping_methods_form($object)
         $("#products_selection_wrapper").find("li.select2-search").css("width", "auto");
     ');
 
+    $product_templates = template::elements('product');
+    $boolean_properties = array();
+    foreach($product_templates as $pt)
+    {
+        $props = property::load_properties('product', $pt->id, 'product', null);
+        if(is_array($props))
+        {
+            foreach($props as $p)
+            {
+                if($p->type == 'boolean')
+                {
+                    $boolean_properties[$p->id] = $p->name . ' ('.$pt->title.')';
+                }
+            }
+        }
+    }
+
+    if(!isset($object->products['properties_exclusions']) || !is_array($object->products['properties_exclusions']))
+    {
+        $object->products['properties_exclusions'] = array();
+    }
+
     $navibars->add_tab_content_row(
         array(
-            '<label>'.t(552, "Exclusions").' [per propietat de producte]</label>',
-            '<span>no sé com, posar condicions per indicar valors de propietats dels productes que facin rebutjar la tarifa (exemple Frio=true)</span>'
+            '<label>'.t(552, "Exclusions").' '.t(865, "(by product property)").'</label>',
+            $naviforms->multiselect("properties_exclusions", array_keys($boolean_properties), array_values($boolean_properties), $object->products['properties_exclusions'])
         )
     );
-
-    $product_properties = property::load_properties('product', 'product', 'product', null);
-
-    debugger::bar_dump($product_properties);
 
     $layout->add_script('
         var navigate_shipping_methods_object_id = '.($object->id + 0).';

@@ -4360,6 +4360,11 @@
                 <source>Connection error</source>
                 <target>Error de connexió</target>
             </trans-unit>
-        </body>
+			<trans-unit id="865" approved="yes">
+				<source>(by product property)</source>
+				<target>(per propietat de producte)</target>
+			</trans-unit>
+
+		</body>
     </file>
 </xliff>

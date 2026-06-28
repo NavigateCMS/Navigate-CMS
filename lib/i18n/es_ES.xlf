@@ -4346,7 +4346,11 @@
 				<source>Connection error</source>
 				<target>Error de conexión</target>
 			</trans-unit>
-			
+			<trans-unit id="865" approved="yes">
+				<source>(by product property)</source>
+				<target>(por propiedad de producto)</target>
+			</trans-unit>
+
 		</body>
 	</file>
 </xliff>

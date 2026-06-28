@@ -4348,7 +4348,11 @@
                 <source>Connection error</source>
                 <target>Tilkoblingsfeil</target>
             </trans-unit>
-            
-        </body>
+			<trans-unit id="865" approved="yes">
+				<source>(by product property)</source>
+				<target>(etter produktegenskap)</target>
+			</trans-unit>
+
+		</body>
     </file>
 </xliff>
