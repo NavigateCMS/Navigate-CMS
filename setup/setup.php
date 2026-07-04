@@ -17,7 +17,7 @@ if(empty($_SESSION['NAVIGATE_FOLDER']))
 if(!file_exists(basename($_SESSION['NAVIGATE_FOLDER']).'/cfg/globals.php'))
 {
 	define('APP_NAME', 'Navigate CMS');
-	define('APP_VERSION', '2.9.6');
+	define('APP_VERSION', '2.9.7');
     define('NAVIGATE_FOLDER', $_SESSION['NAVIGATE_FOLDER']);
 
 	@session_start();
@@ -1341,10 +1341,16 @@ function process()
 
             if(!file_exists($npath))
             {
-                $result = @mkdir($npath);
+                $result = @mkdir($npath, 0777, true);
                 if(!$result)
                 {
-                    die(json_encode($lang['folder_create_error']));
+                    $err = error_get_last();
+                    $error_msg = $lang['folder_create_error'];
+                    if(!empty($err['message']))
+                    {
+                        $error_msg .= ' - ' . $err['message'];
+                    }
+                    die(json_encode($error_msg));
                 }
                 else
                 {

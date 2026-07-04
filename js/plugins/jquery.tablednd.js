@@ -228,6 +228,12 @@ jQuery.tableDnD = {
     /** This function makes all the rows on the table draggable apart from those marked as "NoDrag" */
     makeDraggable: function(table) {
         var config = table.tableDnDConfig;
+        
+        $(table).bind("dragstart", function(e) {
+            if (e.target.tagName == "IMG") {
+                return false;
+            }
+        });
 
         config.dragHandle
             // We only need to add the event to the specified cells
@@ -245,7 +251,7 @@ jQuery.tableDnD = {
                 if (! $(this).hasClass("nodrag")) {
                     $(this).bind(startEvent, function(e)
                     {
-                        var allowed_targets = ["IMG", "INPUT", "TEXTAREA", "SELECT"];
+                        var allowed_targets = ["INPUT", "TEXTAREA", "SELECT"];
                         if($.inArray(e.target.tagName, allowed_targets) < 0) // was (e.target.tagName == "TD")
                         {
                             $.tableDnD.initialiseDrag(this, table, this, e, config);
