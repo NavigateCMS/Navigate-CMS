@@ -1979,7 +1979,7 @@ class theme
         }
 
         $latest_update = core_curl_post(
-            'http://update.navigatecms.com/themes',
+            'https://update.navigatecms.com/themes',
             array(
                 'themes' => json_encode($post)
             )

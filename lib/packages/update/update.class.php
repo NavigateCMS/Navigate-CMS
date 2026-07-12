@@ -8,8 +8,8 @@ class update
 	public $date_updated;
 	public $status;
 	public $changelog;
-	public static $latest_version_endpoint = 'http://update.navigatecms.com/latest';
-	public static $updates_list_endpoint = 'http://update.navigatecms.com/from?revision=';
+	public static $latest_version_endpoint = 'https://update.navigatecms.com/latest';
+	public static $updates_list_endpoint = 'https://update.navigatecms.com/from?revision=';
 
 	public function __construct()
     {
@@ -186,7 +186,12 @@ class update
         {
             return false;
         }
-		
+
+		if(!is_dir(NAVIGATE_PATH.'/updates'))
+		{
+			@mkdir(NAVIGATE_PATH.'/updates', 0777, true);
+		}
+
 		$ulog = NAVIGATE_PATH.'/updates/update-'.$updates[0]['Revision'].'.log.txt';
 		
 		file_put_contents($ulog, "UPDATE PROCESS ".$updates[0]['Revision'].' on '.time()."\n", FILE_APPEND);
@@ -275,7 +280,7 @@ class update
 				
 		// decompress
 		file_put_contents($ulog, "create new folder\n", FILE_APPEND);		
-		mkdir(NAVIGATE_PATH.'/updates/update');
+		@mkdir(NAVIGATE_PATH.'/updates/update', 0777, true);
 		
 		$zip = new ZipArchive;
 		file_put_contents($ulog, "open zip file\n", FILE_APPEND);

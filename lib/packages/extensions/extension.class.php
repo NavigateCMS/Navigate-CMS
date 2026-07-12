@@ -494,7 +494,7 @@ class extension
         }
 
         $latest_update = core_curl_post(
-            'http://update.navigatecms.com/extensions',
+            'https://update.navigatecms.com/extensions',
             array(
                 'extensions' => json_encode($post)
             )

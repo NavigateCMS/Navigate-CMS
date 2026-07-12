@@ -11,6 +11,7 @@ function run()
 	header("Pragma: no-cache");	
 	
 	$act = value_or_default(array($_REQUEST, 'act'), '');
+
 	switch($act)
 	{
 		case 'manual_update':
@@ -23,8 +24,7 @@ function run()
 			else
 			{
 				$files = glob(NAVIGATE_PATH.'/updates/update-*.log.txt');
-				$log_location = array_pop($files);
-				$log_location = str_replace(NAVIGATE_PATH, NAVIGATE_URL, $log_location);
+				$log_location = !empty($files) ? str_replace(NAVIGATE_PATH, NAVIGATE_URL, array_pop($files)) : '';
 				$layout->navigate_notification(t(294, "Error updating.")."<br /><a href='".$log_location."' target='_blank'>".t(366, "Log")."</a>", true, true);
 			}
 
@@ -32,47 +32,14 @@ function run()
 			break;
 			
 		case 'install_next_update':
+
 			// Check if user confirmed backup
 			if(!isset($_REQUEST['backup_confirmed']))
 			{
-				// Show confirmation dialog
-				$updates = update::updates_available();
-				$update_summary = base64_decode($updates[0]['text']);
-				
-				$layout->add_script('
-					$(function() {
-						$("#update-backup-dialog").dialog({
-							modal: true,
-							title: "'.t(848, 'Backup before update').'",
-							width: 550,
-							height: 300,
-							buttons: {
-								"'.t(849, 'Create backup and update').'": function() {
-									window.location.href = "?fid=updates&act=install_next_update&backup_confirmed=yes&rtk='.$_SESSION['request_token'].'";
-								},
-								"'.t(850, 'Update without backup').'": function() {
-									window.location.href = "?fid=updates&act=install_next_update&backup_confirmed=no&rtk='.$_SESSION['request_token'].'";
-								},
-								"'.t(117, 'Cancel').'": function() {
-									$(this).dialog("close");
-									window.history.back();
-								}
-							}
-						});
-					});
-				');
-				
-				$layout->add_content('
-					<div id="update-backup-dialog" style="display:none;">
-						<p>'.t(851, 'It is recommended to create a complete database backup before updating the system.').'</p>
-						<p><strong>'.t(852, 'Do you want to create a backup before proceeding with the update?').'</strong></p>
-						<div class="ui-state-highlight ui-corner-all" style="padding: 10px; margin-top: 15px;">
-							<i class="fa fa-info-circle"></i> '.t(853, 'The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.').'
-						</div>
-					</div>
-				');
-				
-				return '';
+				// Show the update list page; the backup dialog is embedded in update_list()
+				// and will appear when the user clicks the "Update Navigate" button
+				$out = update_list();
+				break;
 			}
 			
 			// Check request token for security
@@ -87,9 +54,34 @@ function run()
 			$create_backup = ($_REQUEST['backup_confirmed'] == 'yes');
 			
 			// install next update
-            $updates = update::updates_available();
-            $update_summary = base64_decode($updates[0]['text']);
-			$ok = update::install_from_navigatecms($updates, $create_backup);
+			$error_message = '';
+
+			// ensure updates directory exists
+			if(!is_dir(NAVIGATE_PATH.'/updates'))
+			{
+				@mkdir(NAVIGATE_PATH.'/updates', 0777, true);
+			}
+
+			try
+			{
+				$updates = update::updates_available();
+
+				if(empty($updates) || empty($updates[0]))
+				{
+					$error_message = 'No updates available from server.';
+					$ok = false;
+				}
+				else
+				{
+					$update_summary = base64_decode($updates[0]['text']);
+					$ok = update::install_from_navigatecms($updates, $create_backup);
+				}
+			}
+			catch(\Throwable $e)
+			{
+				$ok = false;
+				$error_message = $e->getMessage();
+			}
 
             if($ok)
             {
@@ -109,24 +101,57 @@ function run()
 			else
 			{
 				$files = glob(NAVIGATE_PATH.'/updates/update-*.log.txt');
-				$log_location = array_pop($files);
-				$log_location = str_replace(NAVIGATE_PATH, NAVIGATE_URL, $log_location);
-				
-				// Check if there's backup information in the log
-				$log_content = file_get_contents($log_location);
-				$backup_info = '';
-				if(strpos($log_content, 'BACKUP INFORMATION:') !== false)
+				$log_location = '';
+				if(!empty($files))
 				{
-					$backup_info = '<br /><div class="ui-state-highlight ui-corner-all" style="padding: 10px; margin-top: 10px;">';
-					$backup_info .= '<strong>'.t(846, 'Backup available').'</strong><br />';
-					$backup_info .= t(847, 'A database backup was created before the update. Check the log file for backup location.');
-					$backup_info .= '</div>';
+					$log_location = array_pop($files);
+					$log_location = str_replace(NAVIGATE_PATH, NAVIGATE_URL, $log_location);
 				}
 				
-				$layout->navigate_notification(t(294, "Error updating.")."<br /><a href='".$log_location."' target='_blank'>".t(366, "Log")."</a>".$backup_info, true, true);
+				// Check if there's backup information in the log
+				$backup_info = '';
+				if(!empty($log_location))
+				{
+					$log_content = @file_get_contents($log_location);
+					if(!empty($log_content) && strpos($log_content, 'BACKUP INFORMATION:') !== false)
+					{
+						$backup_info = '<br /><div class="ui-state-highlight ui-corner-all" style="padding: 10px; margin-top: 10px;">';
+						$backup_info .= '<strong>'.t(846, 'Backup available').'</strong><br />';
+						$backup_info .= t(847, 'A database backup was created before the update. Check the log file for backup location.');
+						$backup_info .= '</div>';
+					}
+				}
+				
+				$error_msg = t(294, "Error updating.");
+				if(!empty($error_message))
+				{
+					$error_msg .= '<br />'.$error_message;
+				}
+				if(!empty($log_location))
+				{
+					$error_msg .= "<br /><a href='".$log_location."' target='_blank'>".t(366, "Log")."</a>";
+				}
+				$error_msg .= $backup_info;
+
+				$layout->navigate_notification($error_msg, true, true);
+
+				$layout->add_script('
+					$("#update-error-dialog").dialog({
+						modal: true,
+						title: "'.t(294, "Error updating.").'",
+						width: 500,
+						buttons: {
+							"'.t(92, "Close").'": function() {
+								$(this).dialog("close");
+							}
+						}
+					});');
+				$layout->add_content('
+					<div id="update-error-dialog" style="display:none;">'.$error_msg.'</div>
+				');
 			}
 			
-			core_terminate();
+			$out = update_list();
 			break;
 
         case 'cache_clean':
@@ -172,7 +197,7 @@ function update_list()
 	$current[] = '	<h2><img src="img/navigate-logo-150x70.png" /><br />' . $current_version->version . ' r'.$current_version->revision . '</h2>';
 	$current[] = '</div>';
 
-    $navibars->add_actions(	 array(	'<a href="?fid=update&act=cache_clean&debug"><img height="16" align="absmiddle" width="16" src="img/icons/silk/lightning_delete.png"> '.t(660, 'Clear cache').'</a>') );
+    $navibars->add_actions(array('<a href="?fid=update&act=cache_clean&debug"><img height="16" align="absmiddle" width="16" src="img/icons/silk/lightning_delete.png"> '.t(660, 'Clear cache').'</a>') );
 	
 	$navibars->add_tab_content_panel('<img src="img/navigate.png" width="16px" height="16px" align="absmiddle" /> '.t(290, 'Current version'), $current, 'navigate-panel-current-version', '250px', '184px');	
 
@@ -263,6 +288,43 @@ function update_list()
 				}
 			}
         );
+	');
+
+	$navibars->add_content('
+		<div id="update-backup-dialog" style="display:none;">
+			<p>'.t(851, 'It is recommended to create a complete database backup before updating the system.').'</p>
+			<p><strong>'.t(852, 'Do you want to create a backup before proceeding with the update?').'</strong></p>
+			<div class="ui-state-highlight ui-corner-all" style="padding: 10px; margin-top: 15px;">
+				<i class="fa fa-info-circle"></i> '.t(853, 'The backup will include the complete database with all websites. If the update fails, you can restore the database from this backup.').'
+			</div>
+		</div>
+	');
+
+	$layout->add_script('
+		$(function() {
+			$("#update-backup-dialog").dialog({
+				autoOpen: false,
+				modal: true,
+				title: '.json_encode(t(848, 'Backup before update')).',
+				width: 550,
+				height: 300,
+				buttons: {
+					"'.t(849, 'Create backup and update').'": function() {
+						window.location.href = "?fid=update&act=install_next_update&backup_confirmed=yes&rtk='.$_SESSION['request_token'].'";
+					},
+					"'.t(850, 'Update without backup').'": function() {
+						window.location.href = "?fid=update&act=install_next_update&backup_confirmed=no&rtk='.$_SESSION['request_token'].'";
+					},
+					"'.t(58, 'Cancel').'": function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+			$("#navigate-content-actions a[href*=\'act=install_next_update\']").on("click", function(e) {
+				e.preventDefault();
+				$("#update-backup-dialog").dialog("open");
+			});
+		});
 	');
 	
 	return $navibars->generate();
