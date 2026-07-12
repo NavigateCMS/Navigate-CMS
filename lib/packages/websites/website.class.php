@@ -1011,6 +1011,9 @@ class website
 	function absolute_path($folder=true)
 	{	
 		$nvweb_absolute = (empty($this->protocol)? 'http://' : $this->protocol);
+        if ($nvweb_absolute == '//') {
+            $nvweb_absolute = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? "https://" : "http://";
+        }
 
 		if(!empty($this->subdomain))
         {

@@ -422,14 +422,7 @@ function dashboard_panel_top_pages($params)
 
     $pages_html = '';
 
-    $url = $website->protocol;
-
-    if(!empty($website->subdomain))
-    {
-        $url .= $website->subdomain.'.';
-    }
-    $url .= $website->domain;
-    $url .= $website->folder;
+    $url = $website->absolute_path();
 
     for($e = 0; $e < 10; $e++)
     {

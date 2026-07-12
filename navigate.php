@@ -225,7 +225,11 @@ if(empty($_SESSION['website_active']) && $fid != 'websites')
 }
 
 // load website basics
-$nvweb_absolute = (empty($website->protocol)? 'http://' : $website->protocol);
+$protocol = (empty($website->protocol)? 'http://' : $website->protocol);
+if ($protocol == '//') {
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)) ? "https://" : "http://";
+}
+$nvweb_absolute = $protocol;
 if(!empty($website->subdomain))
 {
     $nvweb_absolute .= $website->subdomain.'.';

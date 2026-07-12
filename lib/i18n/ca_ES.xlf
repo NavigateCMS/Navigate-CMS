@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en-US" target-language="ca-ES" datatype="plaintext" original="">
         <body>
@@ -4363,6 +4363,16 @@
 			<trans-unit id="865" approved="yes">
 				<source>(by product property)</source>
 				<target>(per propietat de producte)</target>
+			</trans-unit>
+
+			<trans-unit id="866" approved="yes">
+				<source>(Both protocols)</source>
+				<target>(Ambdós protocols)</target>
+			</trans-unit>
+
+			<trans-unit id="867" approved="yes">
+				<source>This configuration requires your hosting and domain/CDN (like Cloudflare) to support it and be properly configured.</source>
+				<target>Aquesta configuració requereix que l'allotjament i domini/CDN (ex. Cloudflare) ho admetin i estiguin ben configurats.</target>
 			</trans-unit>
 
 		</body>

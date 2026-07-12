@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 	<file source-language="en-US" target-language="ru-RU" datatype="plaintext" original="">
 		<body>
@@ -4346,9 +4346,20 @@
 				<source>Connection error</source>
 				<target>Ошибка соединения</target>
 			</trans-unit>
+
 			<trans-unit id="865" approved="yes">
 				<source>(by product property)</source>
 				<target>(по свойству продукта)</target>
+			</trans-unit>
+
+			<trans-unit id="866" approved="yes">
+				<source>(Both protocols)</source>
+				<target>(Оба протокола)</target>
+			</trans-unit>
+
+			<trans-unit id="867" approved="yes">
+				<source>This configuration requires your hosting and domain/CDN (like Cloudflare) to support it and be properly configured.</source>
+				<target>Для этой конфигурации требуется, чтобы хостинг и домен/CDN (например, Cloudflare) поддерживали это и были правильно настроены.</target>
 			</trans-unit>
 
 		</body>

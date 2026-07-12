@@ -739,16 +739,36 @@ function websites_form($item)
 				'protocol',
 				array(
 					0 => 'http://',
-					1 => 'https://'
+					1 => 'https://',
+					2 => '//'
 				),
 				array(
 					0 => 'HTTP',
-					1 => 'HTTPS ['.t(288, 'Secured site (requires certificate)').']'
+					1 => 'HTTPS ['.t(288, 'Secured site (requires certificate)').']',
+					2 => 'HTTP / HTTPS ['.t(866, 'Both protocols').']'
 				),
-				$item->protocol
-			)
+				$item->protocol,
+                'navigate_website_protocol_changed()'
+			) . '
+            <script>
+                function navigate_website_protocol_changed() {
+                    if($("#protocol").val() == "http://" || $("#protocol").val() == "//") {
+                        $("#protocol_warning").show().parent().slideDown();
+                    } else {
+                        $("#protocol_warning").parent().slideUp();
+                    }
+                }
+                $(window).on("load", function() { 
+                    $("#protocol_warning").parent().hide();
+                    navigate_website_protocol_changed(); 
+                });
+            </script>'
 		)
 	);
+
+    $navibars->add_tab_content_row(array(
+        '<div class="subcomment" id="protocol_warning" style="display: none; color: #e67e22;"><img src="img/icons/silk/information.png" align="absmiddle" /> <span>' . t(867, 'This configuration requires your hosting and domain/CDN (like Cloudflare) to support it and be properly configured.') . '</span></div>'
+    ));
 
 	$navibars->add_tab_content_row(
 		array(
