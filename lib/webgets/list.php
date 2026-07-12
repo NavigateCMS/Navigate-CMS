@@ -675,9 +675,9 @@ function nvweb_list_process_offset($vars, $items)
     {
         $vars['page_parameter'] = 'page';
     }
-    $page = value_or_default(array($_REQUEST, $vars['page_parameter']), 1);
+    $page = intval(value_or_default(array($_REQUEST, $vars['page_parameter']), 1));
 
-    $offset = intval($page - 1) * $items;
+    $offset = ($page - 1) * intval($items);
 
     // this list does not use paginator, so offset must be always zero
     if(!isset($vars['paginator']) || $vars['paginator']=='false')
